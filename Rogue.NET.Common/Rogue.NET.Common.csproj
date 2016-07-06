@@ -1,0 +1,890 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6353F2F1-D936-4F9C-9898-074DC4480D71}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rogue.NET.Common</RootNamespace>
+    <AssemblyName>Rogue.NET.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommandBehaviours">
+      <HintPath>..\Dependencies\CommandBehaviours.dll</HintPath>
+    </Reference>
+    <Reference Include="Dotway.WPF.Effects">
+      <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Controls">
+      <HintPath>..\Dependencies\Microsoft.Expression.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Drawing">
+      <HintPath>..\Dependencies\Microsoft.Expression.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\Dependencies\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Windows.Design.Extensibility, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Windows.Design.Extensibility.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Common">
+      <HintPath>..\Dependencies\PixelLab.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Core">
+      <HintPath>..\Dependencies\PixelLab.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Wpf">
+      <HintPath>..\Dependencies\PixelLab.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="SharpLZW">
+      <HintPath>..\Dependencies\SharpLZW.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WPFToolkit">
+      <HintPath>..\Dependencies\WPFToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Design">
+      <HintPath>..\Dependencies\WPFToolkit.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\Dependencies\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.VisualStudio.Design">
+      <HintPath>..\Dependencies\WPFToolkit.VisualStudio.Design.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\EditableTextBlock.cs" />
+    <Compile Include="Converters.cs" />
+    <Compile Include="DifficultyKey.cs" />
+    <Compile Include="Enums\Animation.cs" />
+    <Compile Include="Enums\Character.cs" />
+    <Compile Include="Enums\Dungeon.cs" />
+    <Compile Include="Enums\Game.cs" />
+    <Compile Include="Enums\Inventory.cs" />
+    <Compile Include="Enums\MetaData.cs" />
+    <Compile Include="Enums\Resource.cs" />
+    <Compile Include="Enums\Skill.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="Events\ExitEvent.cs" />
+    <Compile Include="Events\ScenarioEditor\ExitScenarioEditorEvent.cs" />
+    <Compile Include="Events\Scenario\CommandPreferencesChangedEvent.cs" />
+    <Compile Include="Events\Scenario\ContinueScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\DeleteScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\EditScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\ExitScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\LoadLevelEvent.cs" />
+    <Compile Include="Events\Scenario\NewScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\OpenScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\SaveScenarioEvent.cs" />
+    <Compile Include="Events\Scenario\ScenarioDeletedEvent.cs" />
+    <Compile Include="Events\Scenario\ScenarioSavedEvent.cs" />
+    <Compile Include="Events\Scenario\UserCommandEvent.cs" />
+    <Compile Include="Events\Splash\CreatingScenarioEvent.cs" />
+    <Compile Include="Events\Splash\SplashEvent.cs" />
+    <Compile Include="Events\Splash\MessageBoxEvent.cs" />
+    <Compile Include="Extensions\BlurTransition.cs" />
+    <Compile Include="Extensions\UpdatingTextBox.cs" />
+    <Compile Include="FingerPrint.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="NotifyViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Collections\SerializableDictionary.cs" />
+    <Compile Include="Collections\SerializableObservableCollection.cs" />
+    <Compile Include="Range.cs" />
+    <Compile Include="Events\Splash\SplashUpdateEvent.cs" />
+    <Compile Include="Extensions\ButtonExtension.cs" />
+    <Compile Include="Utilities\Taskbar.cs" />
+    <Compile Include="Utilities\ZipEncoder.cs" />
+    <Compile Include="Views\DisappearingButton.xaml.cs">
+      <DependentUpon>DisappearingButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EnumComboBox.xaml.cs">
+      <DependentUpon>EnumComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressBar.xaml.cs">
+      <DependentUpon>ProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\SpinPanel.cs" />
+    <Compile Include="ValidationRules.cs" />
+    <Compile Include="Views\Smiley.xaml.cs">
+      <DependentUpon>Smiley.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Slider.xaml.cs">
+      <DependentUpon>Slider.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources\Dictionaries\ButtonSpinner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Dictionaries\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ImageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ListBoxTitleItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\RadioButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ShinyButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ShinySmileyButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ShinyTextButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\Strings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\DarkListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\ItemGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\ListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\Dictionaries\Slider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Views\DisappearingButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EnumComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProgressBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Smiley.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Views\Slider.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Configuration\Sorcerer.rdns" />
+    <EmbeddedResource Include="Resources\Configuration\Fighter.rdns" />
+    <EmbeddedResource Include="Resources\Configuration\Witch.rdns" />
+    <EmbeddedResource Include="Resources\Configuration\Paladin.rdns" />
+    <Resource Include="Resources\Fonts\CENTAUR.TTF">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Consumables.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Doodads.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Identify.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Equipment.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\EquipmentGameDisplay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\FullScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\InventorySelect.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Magic.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Normal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Scroll.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\ShopGameDisplay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\SkillsGameDisplay.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Stats.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Agility.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Air.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AirYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AmuletYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArmorYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ArrowYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AttributeYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\AxeYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BeltYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Blunt.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BootsYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BowYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\BubblesYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ClubYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrossbowYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CrownYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\CruciformYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\DaggerYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Dark.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Earth.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Evil1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Evil2.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Evil3.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Fire.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlamePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FlameYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FluidGlobeYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FoodYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\FullScreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Gadget1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Gadget2.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GauntletsYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatAxeYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderGren.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\GreatShoulderYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\HelmetYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Help.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Hp.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Hunger.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Intelligence.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Light.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MacePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MaceYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Manual.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ManualYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\MirrorYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Mp.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\OrbYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PillarYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PITFALL.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionTransparent.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\PotionYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RapierYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RingYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RobeYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Black.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Blue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Fuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Green.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Orange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Puple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Rainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Red.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1White.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock1Yellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Black.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Blue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Fuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Green.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Orange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Purple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Rainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Red.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2White.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock2Yellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Rock3.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\RockYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SavePoint.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ScrollYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShardYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Sharp.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldSmallYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShieldYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Shop.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShortSwordYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\ShoulderYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Skill1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Skill2.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Skill3.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Skill4.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Skill5.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SlingYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SpearYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StaffYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StairsDown.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\StairsUp.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Statue1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Statue2.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Statue3.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Strength.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\SwordYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\teleport1.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\teleport2.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TeleportRandom.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Torch.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TrapYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TreasureChestClosed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\TreasureChestOpen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VilePurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\VileYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WandYellow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\Water.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellBlack.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellBlue.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellFuschia.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellGreen.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellOrange.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellPurple.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellRainbow.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellRed.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellWhite.png" />
+    <EmbeddedResource Include="Resources\Images\ScenarioObjects\WellYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Drop.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\lock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\ShopPicture.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Throw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Trade.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Write.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Consume.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Enchant.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Equip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\Uncurse.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\DownArrow.png" />
+    <Resource Include="Resources\Images\UpArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\LeftArrow.png" />
+    <Resource Include="Resources\Images\RightArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\StairsUp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\ILShakeFest.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\fontawesome-webfont.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

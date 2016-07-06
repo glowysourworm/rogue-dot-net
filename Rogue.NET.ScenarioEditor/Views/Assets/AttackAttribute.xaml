@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.AttackAttribute"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             mc:Ignorable="d" Background="Black"
+             d:DesignWidth="550">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="32" />
+            <RowDefinition Height="32" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Image Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsConverter}}" Margin="10" />
+            <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="14" />
+        </StackPanel>
+        <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
+        <TextBlock Text="Resistance" Grid.Row="2" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
+        <TextBlock Text="Weakness" Grid.Row="3" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
+        <controls:Range DataContext="{Binding Attack}" Grid.Column="1" Grid.Row="1" />
+        <controls:Range DataContext="{Binding Resistance}" Grid.Column="1" Grid.Row="2" />
+        <controls:Range DataContext="{Binding Weakness}" Grid.Column="1" Grid.Row="3" />
+    </Grid>
+</UserControl>

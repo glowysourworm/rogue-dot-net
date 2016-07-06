@@ -1,0 +1,158 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{F865F9BC-6869-446E-A8C6-A2B76095226A}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\Dotway.WPF.Effects.dll = Dependencies\Dotway.WPF.Effects.dll
+		Dependencies\Lovatts.ColorEditor.dll = Dependencies\Lovatts.ColorEditor.dll
+		Dependencies\Microsoft.Expression.Controls.dll = Dependencies\Microsoft.Expression.Controls.dll
+		Dependencies\Microsoft.Expression.Drawing.dll = Dependencies\Microsoft.Expression.Drawing.dll
+		Dependencies\Microsoft.Practices.Prism.dll = Dependencies\Microsoft.Practices.Prism.dll
+		Dependencies\Microsoft.Practices.Prism.Interactivity.dll = Dependencies\Microsoft.Practices.Prism.Interactivity.dll
+		Dependencies\Microsoft.Practices.Prism.MefExtensions.dll = Dependencies\Microsoft.Practices.Prism.MefExtensions.dll
+		Dependencies\Microsoft.Practices.Prism.UnityExtensions.dll = Dependencies\Microsoft.Practices.Prism.UnityExtensions.dll
+		Dependencies\Microsoft.Practices.ServiceLocation.dll = Dependencies\Microsoft.Practices.ServiceLocation.dll
+		Dependencies\Microsoft.Practices.Unity.dll = Dependencies\Microsoft.Practices.Unity.dll
+		Dependencies\Microsoft.Windows.Design.Extensibility.dll = Dependencies\Microsoft.Windows.Design.Extensibility.dll
+		Dependencies\PixelLab.Common.dll = Dependencies\PixelLab.Common.dll
+		Dependencies\PixelLab.Core.dll = Dependencies\PixelLab.Core.dll
+		Dependencies\PixelLab.Wpf.dll = Dependencies\PixelLab.Wpf.dll
+		readme.txt = readme.txt
+		Dependencies\SharpLZW.dll = Dependencies\SharpLZW.dll
+		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Design.4.0.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Design.4.0.dll
+		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.dll
+		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Expression.Design.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Expression.Design.dll
+		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll
+		Dependencies\System.Windows.Controls.Input.Toolkit.Design.dll = Dependencies\System.Windows.Controls.Input.Toolkit.Design.dll
+		Dependencies\System.Windows.Controls.Input.Toolkit.dll = Dependencies\System.Windows.Controls.Input.Toolkit.dll
+		Dependencies\System.Windows.Controls.Input.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.Input.Toolkit.VisualStudio.Design.dll
+		Dependencies\System.Windows.Controls.Layout.Toolkit.Design.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.Design.dll
+		Dependencies\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.dll
+		Dependencies\System.Windows.Controls.Layout.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.VisualStudio.Design.dll
+		Dependencies\WPFToolkit.Design.dll = Dependencies\WPFToolkit.Design.dll
+		Dependencies\WPFToolkit.dll = Dependencies\WPFToolkit.dll
+		Dependencies\WPFToolkit.Extended.dll = Dependencies\WPFToolkit.Extended.dll
+		Dependencies\WPFToolkit.VisualStudio.Design.dll = Dependencies\WPFToolkit.VisualStudio.Design.dll
+		Dependencies\WPGBrushEditor.dll = Dependencies\WPGBrushEditor.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{1661262B-E273-4EF4-A3E1-B14238E86BD6}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Rogue.NET Installer", "Rogue2Setup\Rogue.NET Installer.wixproj", "{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET", "Rogue.NET\Rogue.NET.csproj", "{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Common", "Rogue.NET.Common\Rogue.NET.Common.csproj", "{6353F2F1-D936-4F9C-9898-074DC4480D71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.ScenarioEditor", "Rogue.NET.ScenarioEditor\Rogue.NET.ScenarioEditor.csproj", "{6696051A-37BB-4F3E-9E0B-62B83F298EE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Online", "Rogue.NET.Online\Rogue.NET.Online.csproj", "{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Splash", "Rogue.NET.Splash\Rogue.NET.Splash.csproj", "{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Model", "Rogue.NET.Model\Rogue.NET.Model.csproj", "{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue.NET.Scenario\Rogue.NET.Scenario.csproj", "{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Debug|x86.ActiveCfg = Debug|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|Any CPU.ActiveCfg = Release|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|Any CPU.Build.0 = Release|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|x86.ActiveCfg = Release|x86
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E}.Release|x86.Build.0 = Release|x86
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}.Release|x86.ActiveCfg = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Debug|x86.Build.0 = Debug|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6353F2F1-D936-4F9C-9898-074DC4480D71}.Release|x86.ActiveCfg = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9A77FED1-E693-44F0-9B2F-2C92F9419E1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|x86.ActiveCfg = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9DE3ABA3-6AA8-480A-8B02-7062318C3B5E} = {1661262B-E273-4EF4-A3E1-B14238E86BD6}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Intro.Views.GameSetup.ChooseParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Background="Black"
+             xmlns:commonViews="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+             xmlns:pixelab="clr-namespace:PixelLab.Wpf;assembly=PixelLab.Wpf">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+    </UserControl.Resources>
+    <Grid Margin="80" Width="800" Height="300" VerticalAlignment="Top" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <commonViews:Smiley 
+                        SmileyColor="{Binding SmileyColor}" 
+                        SmileyLineColor="{Binding SmileyLineColor}"
+                        SmileyMood="Happy"
+                        Height="300" Width="200" SmileyRadius="50"
+                            VerticalAlignment="Top"
+                        HorizontalAlignment="Left" />
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Width="400">
+            <Grid Margin="10">
+                <TextBlock Text="Rogue Name" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <extension:UpdatingTextBox Text="{Binding RogueName, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Scenario Seed" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <toolkit:IntegerUpDown Value="{Binding Seed, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" Minimum="1" Maximum="10000" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Survivor Mode" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <CheckBox IsChecked="{Binding SurvivorMode, Mode=TwoWay}" Margin="0,0,-6,0" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Play scenario without save points" />
+            </Grid>
+        </StackPanel>
+        
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,0">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="BackButton" Click="BackButton_Click" Height="54" Width="190" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="border" CornerRadius="10,0,0,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
+                                <Grid>
+                                    <commonViews:Smiley SmileyColor="Blue" 
+                                                        SmileyMood="Scared" 
+                                                        SmileyLineColor="Yellow"
+                                                        SmileyRadius="4"
+                                                        HorizontalAlignment="Left"
+                                                        Margin="8,0,0,0"
+                                                        Height="30"
+                                                        Width="20"/>
+                                    <TextBlock Foreground="White" Text="Hang on a Sec!" FontSize="18" Margin="0,0,8,0" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#888" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="GoButton" Click="GoButton_Click" Height="54" Width="190" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Border x:Name="border" CornerRadius="0,10,10,0" Background="Transparent" BorderBrush="White" BorderThickness="1">
+                                <Grid>
+                                    <commonViews:Smiley SmileyColor="Green" 
+                                                        SmileyMood="Mischievous" 
+                                                        SmileyLineColor="Yellow"
+                                                        SmileyRadius="4"
+                                                        HorizontalAlignment="Right"
+                                                        Margin="0,0,8,0"
+                                                        Height="30"
+                                                        Width="20"/>
+                                    <TextBlock Foreground="White" Text="Lets Rock!" FontSize="18" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#888" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>                            
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Grid>
+        
+    </Grid>
+</UserControl>

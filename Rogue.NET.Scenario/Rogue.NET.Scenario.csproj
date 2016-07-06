@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rogue.NET.Scenario</RootNamespace>
+    <AssemblyName>Rogue.NET.Scenario</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dotway.WPF.Controls">
+      <HintPath>..\Dependencies\Dotway.WPF.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Dotway.WPF.Effects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c96ec94528d172a9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="Dotway.WPF.Panels">
+      <HintPath>..\Dependencies\Dotway.WPF.Panels.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Controls, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Expression.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Drawing">
+      <HintPath>..\Dependencies\Microsoft.Expression.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\Dependencies\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Common">
+      <HintPath>..\Dependencies\PixelLab.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Core">
+      <HintPath>..\Dependencies\PixelLab.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PixelLab.Wpf">
+      <HintPath>..\Dependencies\PixelLab.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WPFToolkit">
+      <HintPath>..\Dependencies\WPFToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Design">
+      <HintPath>..\Dependencies\WPFToolkit.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\Dependencies\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFToolkit.VisualStudio.Design">
+      <HintPath>..\Dependencies\WPFToolkit.VisualStudio.Design.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\ViewModel\ItemGridViewModel.cs" />
+    <Compile Include="Content\Views\Gadgets\EquipmentGadget.xaml.cs">
+      <DependentUpon>EquipmentGadget.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Gadgets\GadgetContainer.xaml.cs">
+      <DependentUpon>GadgetContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\GameInfoView.xaml.cs">
+      <DependentUpon>GameInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\ItemGrid.xaml.cs">
+      <DependentUpon>ItemGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\LevelView.xaml.cs">
+      <DependentUpon>LevelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
+      <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Events\GameSetupDisplayFinished.cs" />
+    <Compile Include="Events\IntroFinishedEvent.cs" />
+    <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
+      <DependentUpon>ChooseParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\ChooseSavedGame.xaml.cs">
+      <DependentUpon>ChooseSavedGame.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\ChooseScenario.xaml.cs">
+      <DependentUpon>ChooseScenario.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\NewOpenEdit.xaml.cs">
+      <DependentUpon>NewOpenEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ScenarioController.cs" />
+    <Compile Include="ScenarioModule.cs" />
+    <Compile Include="Intro\ViewModel\GameSetupViewModel.cs" />
+    <Compile Include="Intro\Views\GameSetupView.xaml.cs">
+      <DependentUpon>GameSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\IntroView.xaml.cs">
+      <DependentUpon>IntroView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeyResolver.cs" />
+    <Compile Include="Outro\Views\Death.xaml.cs">
+      <DependentUpon>Death.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Outro\Views\Outro.xaml.cs">
+      <DependentUpon>Outro.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\LevelCanvas.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Content\Views\Consumables.xaml.cs">
+      <DependentUpon>Consumables.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml.cs">
+      <DependentUpon>DungeonEncyclopediaAttackAttribute.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\DungeonEncyclopedia.xaml.cs">
+      <DependentUpon>DungeonEncyclopedia.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Gadgets\CompassGadget.xaml.cs">
+      <DependentUpon>CompassGadget.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Emphasis.xaml.cs">
+      <DependentUpon>Emphasis.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Gadgets\EnemyScopeGadget.xaml.cs">
+      <DependentUpon>EnemyScopeGadget.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Equipment.xaml.cs">
+      <DependentUpon>Equipment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\EquipmentSelection.xaml.cs">
+      <DependentUpon>EquipmentSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\GameView.xaml.cs">
+      <DependentUpon>GameView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\InventorySelection.xaml.cs">
+      <DependentUpon>InventorySelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Shop.xaml.cs">
+      <DependentUpon>Shop.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\SkillGrid.xaml.cs">
+      <DependentUpon>SkillGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Stats.xaml.cs">
+      <DependentUpon>Stats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Status.xaml.cs">
+      <DependentUpon>Status.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Gadgets\EquipmentGadget.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\Gadgets\GadgetContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\GameInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\ItemGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\LevelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\PlayerSubpanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\ChooseParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\ChooseSavedGame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\ChooseScenario.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\NewOpenEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\IntroView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Outro\Views\Death.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Outro\Views\Outro.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Consumables.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Dictionaries\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="Resources\Dictionaries\Game.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Dictionaries\Intro.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Dictionaries\MainToolbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Dictionaries\ScenarioEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Dictionaries\Shop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\DungeonEncyclopedia.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Gadgets\CompassGadget.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Emphasis.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Gadgets\EnemyScopeGadget.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Equipment.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\EquipmentSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\GameView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\InventorySelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Shop.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\SkillGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Stats.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Content\Views\Status.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
+      <Project>{6353f2f1-d936-4f9c-9898-074dc4480d71}</Project>
+      <Name>Rogue.NET.Common</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rogue.NET.Model\Rogue.NET.Model.csproj">
+      <Project>{ffe92cf3-be4b-463e-a4ab-c5df1ec39304}</Project>
+      <Name>Rogue.NET.Model</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Rogue.NET.Online\Rogue.NET.Online.csproj">
+      <Project>{9a77fed1-e693-44f0-9b2f-2c92f9419e1c}</Project>
+      <Name>Rogue.NET.Online</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\Html\Help\app.js" />
+    <Content Include="Resources\Html\Help\content\background.png" />
+    <Content Include="Resources\Html\Help\content\encyclopedia.png" />
+    <Content Include="Resources\Html\Help\content\equipment-view.png" />
+    <Content Include="Resources\Html\Help\content\gadget-panel.png" />
+    <Content Include="Resources\Html\Help\content\game-view.png" />
+    <Content Include="Resources\Html\Help\content\navigation-init.png" />
+    <Content Include="Resources\Html\Help\content\navigation-open-door.png" />
+    <Content Include="Resources\Html\Help\content\navigation-save-point.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-consumables.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-inventory.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-skills.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-stats.png" />
+    <Content Include="Resources\Html\Help\content\Prociono-Regular-webfont.svg" />
+    <Content Include="Resources\Html\Help\content\scenario-label.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-1.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-2.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-3.png" />
+    <Content Include="Resources\Html\Help\content\skills-level-1.png" />
+    <Content Include="Resources\Html\Help\content\status-panel.png" />
+    <Content Include="Resources\Html\Help\content\top-button-panel.png" />
+    <Content Include="Resources\Html\Help\controllers\CombatCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\CommunityCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\HomeCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\IntroCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\NavbarCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\NavigationCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\SkillsCtrl.js" />
+    <Content Include="Resources\Html\Help\index.html" />
+    <Content Include="Resources\Html\Help\styles\intro.css" />
+    <Content Include="Resources\Html\Help\styles\navbar.css" />
+    <Content Include="Resources\Html\Help\styles\site.css" />
+    <Content Include="Resources\Html\Help\styles\skills.css" />
+    <Content Include="Resources\Html\Help\vendor\angular-route.js" />
+    <Content Include="Resources\Html\Help\vendor\angular.min.js" />
+    <Content Include="Resources\Html\Help\vendor\jquery-1.10.2.min.js" />
+    <Content Include="Resources\Html\Help\views\combat.html" />
+    <Content Include="Resources\Html\Help\views\community.html" />
+    <Content Include="Resources\Html\Help\views\home.html" />
+    <Content Include="Resources\Html\Help\views\intro.html" />
+    <Content Include="Resources\Html\Help\views\navbar.html" />
+    <Content Include="Resources\Html\Help\views\navigation.html" />
+    <Content Include="Resources\Html\Help\views\skills.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Html\Help\content\CENTAUR.TTF" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.eot" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.ttf" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.woff" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

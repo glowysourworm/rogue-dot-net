@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+                    xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common">
+    <DataTemplate x:Key="PlacementItemTemplate">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />                
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="{Binding ImageSource}" Height="15" Width="10" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="1" Text="{Binding Template.Name}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="2" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding Template.Level}" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="4" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <common:Slider SliderValue="{Binding Template.GenerationRate, Mode=TwoWay}" SliderMax="10" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+        </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="LayoutItemTemplate">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Source="{Binding ImageSource}" Height="15" Width="10" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="1" Text="{Binding Template.Name}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="2" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding Template.Level}" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="4" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <common:Slider SliderValue="{Binding Template.GenerationRate, Mode=TwoWay}" SliderMax="1" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

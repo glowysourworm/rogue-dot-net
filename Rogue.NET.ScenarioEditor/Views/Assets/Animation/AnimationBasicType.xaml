@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Animation.AnimationBasicType"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             Background="Black">
+    <Grid>
+        <StackPanel x:Name="RadioStack">
+            <RadioButton x:Name="AuraRB" Checked="RB_Checked" Margin="10" Tag="Aura" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Aura:  This type of animation will create an ellipse around the character" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton x:Name="BarrageRB" Checked="RB_Checked" Margin="10" Tag="Barrage" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Barrage:  An army of ellipses zoom from random points around the character inward" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton x:Name="BlinkRB" Checked="RB_Checked" Margin="10" Tag="Blink" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Blink:  Make the screen flash!" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton x:Name="BubblesRB" Checked="RB_Checked" Margin="10" Tag="Bubbles" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Bubbles: Create a swarm of ellipses around a character that roam around before fading away" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton x:Name="ProjectileRB" Checked="RB_Checked" Margin="10" Tag="Aura" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Projectile: A single ellipse heads from a source character to a target character" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton x:Name="SpiralRB" Checked="RB_Checked" Margin="10" Tag="Aura" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Spiral: An equi-distant set of ellipses surrounds and encircles the player" />
+                </RadioButton.Content>
+            </RadioButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

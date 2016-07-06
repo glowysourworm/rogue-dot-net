@@ -1,0 +1,148 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Editor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views"
+             mc:Ignorable="d" Background="Black"
+             d:DesignHeight="800" d:DesignWidth="1600">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </Grid.Resources>
+            <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="32" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock Text="Rogue.NET Scenario Editor" Grid.ColumnSpan="2" Opacity="1" Background="Transparent" Foreground="White" Margin="20,10,10,10" FontSize="32" />
+
+        <!-- http://fortawesome.github.io/Font-Awesome/cheatsheet/ -->
+        <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Opacity="1">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="DarkBlue" Opacity="0.5" />
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="2">
+            <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                <Button Style="{StaticResource ActionButton}" Content="&#xf15b;" Command="{Binding NewCommand}" Margin="0,0,0,0" /><!-- New -->
+                <Button Style="{StaticResource ActionButton}" Content="&#xf07c;" Margin="2,0,0,0" /><!-- Open -->
+                <Button Style="{StaticResource ActionButton}" 
+                        Command="{Binding SaveCommand}" 
+                        CommandParameter="{Binding ScenarioName}" 
+                        Content="&#xf0c7;" Margin="2,0,0,0" /><!-- Save -->
+
+                <Button Style="{StaticResource ActionButton}" Content="&#xf046;" Margin="16,0,0,0"/><!-- Validate -->
+                <Button Style="{StaticResource ActionButton}" Content="&#xf123;" Command="{Binding ScoreCommand}" Margin="2,0,0,0" /><!-- Score / Rate -->
+                <Button Style="{StaticResource ActionButton}" Content="&#xf093;" Margin="2,0,0,0" /><!-- Upload -->
+                <Button Style="{StaticResource ActionButton}" Content="&#xf019;" Margin="2,0,0,0" /><!-- Download -->
+                
+                <Button Style="{StaticResource ActionButton}" Margin="16,0,0,0">
+                    <Button.Content>
+                        <common:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Fighter" MouseAction="LeftClick" />
+                    </Button.InputBindings>
+                </Button>
+                <Button Style="{StaticResource ActionButton}" Margin="2,0,0,0">
+                    <Button.Content>
+                        <common:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Paladin" MouseAction="LeftClick" />
+                    </Button.InputBindings>                    
+                </Button>
+                <Button Style="{StaticResource ActionButton}" Margin="2,0,0,0">
+                    <Button.Content>
+                        <common:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Witch" MouseAction="LeftClick" />
+                    </Button.InputBindings>                    
+                </Button>
+                <Button Style="{StaticResource ActionButton}" Margin="2,0,0,0">
+                    <Button.Content>
+                        <common:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
+                    </Button.Content>
+                    <Button.InputBindings>
+                        <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Sorcerer" MouseAction="LeftClick" />
+                    </Button.InputBindings>                    
+                </Button>                
+                
+                
+            </StackPanel>
+            <TextBlock x:Name="ScenarioNameTB" 
+                       Text="{Binding ScenarioName}" 
+                       Margin="0,0,20,0"
+                       FontSize="24" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center" 
+                       Foreground="White" />
+
+        </Grid>
+        
+        <Button Height="48" 
+                Width="240" 
+                Command="{Binding ExitCommand}"
+                Grid.Column="1"
+                HorizontalAlignment="Right" Cursor="Hand"
+                Foreground="White" FontSize="24" Margin="8,8,20,8" VerticalAlignment="Center">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border x:Name="border" CornerRadius="10,10,10,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
+                        <Grid>
+                            <common:Smiley SmileyColor="#FF00008F" 
+                                                    SmileyMood="Happy" 
+                                                    SmileyLineColor="Yellow"
+                                           
+                                                    SmileyRadius="4"
+                                                    HorizontalAlignment="Right"
+                                                    Margin="0,0,8,0"
+                                                    Height="30"
+                                                    Width="20"/>
+                            <TextBlock Foreground="White" Text="I'm Done Here Thanks!" FontSize="18" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#888" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <Border Grid.Row="2" Margin="20"  BorderBrush="White" BorderThickness="1">
+            <ContentControl prism:RegionManager.RegionName="ScenarioConstructionRegion" />
+        </Border>
+
+        <Border Grid.Row="3" Grid.RowSpan="2" Margin="20"  BorderBrush="White" BorderThickness="1">
+            <ContentControl prism:RegionManager.RegionName="AssetBrowserRegion" />
+        </Border>
+
+        <Border BorderBrush="White" BorderThickness="1"  Margin="20" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
+            <ContentControl prism:RegionManager.RegionName="DesignRegion" />
+        </Border>
+
+        <Border Margin="20" Grid.Column="1" BorderBrush="White" BorderThickness="1" Grid.Row="4">
+            <ContentControl prism:RegionManager.RegionName="OutputRegion" />
+        </Border>
+        
+    </Grid>
+</UserControl>

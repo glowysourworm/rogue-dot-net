@@ -1,0 +1,47 @@
+﻿<Window x:Class="Rogue.NET.Shell"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://www.codeplex.com/prism"
+        Background="Black"
+        FontFamily="{StaticResource CentaurFont}"
+        WindowState="Maximized"
+        WindowStyle="None"        
+        Title="Rogue.NET">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>        
+    </Window.Resources>
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"  />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="ToolbarGrid" Grid.Row="0" Visibility="Collapsed" Background="#0FFFFFFF">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="FullScreenButton" HorizontalAlignment="Right" Margin="2" Cursor="Hand" Width="24" Height="24" Click="FullScreenButton_Click" ToolTip="Full Screen">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Grid>
+                                        <Rectangle Stroke="White" StrokeThickness="1" Fill="Black" />
+                                        <Image Margin="0" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/FullScreen.png" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </Grid>
+        <ContentControl x:Name="MainRegion" Grid.Row="1"  prism:RegionManager.RegionName="MainRegion"/>
+    </Grid>    
+</Window>
+
+    

@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Intro.Views.GameSetup.ChooseScenario"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:extensions="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             xmlns:pixelab="clr-namespace:PixelLab.Wpf.Transitions;assembly=PixelLab.Wpf"
+             HorizontalContentAlignment="Stretch" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Margin="0,40,0,20" Background="Black" Height="300" Cursor="Hand">
+            <Grid HorizontalAlignment="Left" Width="60">
+                <TextBlock x:Name="LeftArrowTB" MouseDown="LeftArrowTB_MouseDown" Text="&#xf053;" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#888" FontFamily="{StaticResource FontAwesome}" FontSize="48" />
+            </Grid>
+            <Grid Margin="60,0,60,0" 
+                  DataContext="{Binding SelectedItem, ElementName=SmallLB}"
+                  MouseDown="BigLB_MouseDown">
+                <Grid>
+                    <common:Smiley 
+                        Height="300" 
+                        Width="200" 
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        SmileyMood="Happy"
+                        SmileyRadius="50" 
+                        SmileyColor="{Binding SmileyColor}" 
+                        SmileyLineColor="{Binding SmileyLineColor}" />
+                    <StackPanel HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="36" Text="{Binding Name}" />
+                            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="36" Text="Scenario" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="24" Text="{Binding NumberOfLevels}" />
+                            <TextBlock Margin="10,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="24" Text="Levels" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+                <TextBlock HorizontalAlignment="Right" Width="500" VerticalAlignment="Bottom" Foreground="White" FontSize="14" TextWrapping="Wrap" Text="{Binding Description}" />
+            </Grid>
+            <Grid HorizontalAlignment="Right" Width="60" Cursor="Hand">
+                <TextBlock x:Name="RightArrowTB" MouseDown="RightArrowTB_MouseDown" Text="&#xf054;" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#888" FontFamily="{StaticResource FontAwesome}" FontSize="48" />
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ListBox x:Name="SmallLB" ItemsSource="{Binding Configs}" 
+                          Height="100"
+                          MaxWidth="400"
+                          Margin="60,0,60,0"
+                          SelectedIndex="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                          HorizontalAlignment="Center" 
+                          HorizontalContentAlignment="Center">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <StackPanel Margin="10">
+                                <common:Smiley Height="30" 
+                                            Width="20" 
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            SmileyMood="Happy"
+                                            SmileyRadius="5" 
+                                            SmileyColor="{Binding SmileyColor}" 
+                                            SmileyLineColor="{Binding SmileyLineColor}" />
+                                <TextBlock Text="{Binding Name}" Foreground="White" HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" Margin="8" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Black" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>            
+        </Grid>
+    </Grid>
+</UserControl>

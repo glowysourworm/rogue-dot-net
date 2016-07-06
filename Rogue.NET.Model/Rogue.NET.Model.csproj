@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rogue.NET.Model</RootNamespace>
+    <AssemblyName>Rogue.NET.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>..\Dependencies\Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SharpLZW">
+      <HintPath>..\Dependencies\SharpLZW.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandPreferences.cs" />
+    <Compile Include="Converters.cs" />
+    <Compile Include="DataHelper.cs" />
+    <Compile Include="Events\AddScenarioObjectEvent.cs" />
+    <Compile Include="Events\AnimationCompletedEvent.cs" />
+    <Compile Include="Events\AnimationStartEvent.cs" />
+    <Compile Include="Events\EnemyTargetedEvent.cs" />
+    <Compile Include="Events\LevelInitializedEvent.cs" />
+    <Compile Include="Events\LevelLoadedEvent.cs" />
+    <Compile Include="Events\RemoveScenarioObjectEvent.cs" />
+    <Compile Include="Events\ScenarioMessageEvent.cs" />
+    <Compile Include="Events\PlayerDiedEvent.cs" />
+    <Compile Include="Events\ScenarioTickEvent.cs" />
+    <Compile Include="Events\ScenarioInfoUpdatedEvent.cs" />
+    <Compile Include="Events\UpdateScenarioObjectEvent.cs" />
+    <Compile Include="Generation\ContentGenerator.cs" />
+    <Compile Include="Generation\ScenarioGenerator.cs" />
+    <Compile Include="Generation\GeneratorBase.cs" />
+    <Compile Include="Generation\LayoutGenerator.cs" />
+    <Compile Include="Generation\TemplateGenerator.cs" />
+    <Compile Include="LevelData.cs" />
+    <Compile Include="Logic\Calculator.cs" />
+    <Compile Include="Logic\Helper.cs" />
+    <Compile Include="Logic\InteractionLogic.cs" />
+    <Compile Include="Logic\LogicBase.cs" />
+    <Compile Include="Logic\MovementLogic.cs" />
+    <Compile Include="Logic\ScenarioLogic.cs" />
+    <Compile Include="Media\Animation.cs" />
+    <Compile Include="Media\AnimationGenerator.cs" />
+    <Compile Include="Media\AnimationGroup.cs" />
+    <Compile Include="Media\AnimationPrimitive.cs" />
+    <Compile Include="Media\Graphic.cs" />
+    <Compile Include="Media\ITimedGraphic.cs" />
+    <Compile Include="Media\SoundPlayer.cs" />
+    <Compile Include="Media\TimedFigure.cs" />
+    <Compile Include="ModelController.cs" />
+    <Compile Include="ModelModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceManager.cs" />
+    <Compile Include="ResourceService.cs" />
+    <Compile Include="ScenarioConfiguration.cs" />
+    <Compile Include="ScenarioFile.cs" />
+    <Compile Include="Scenario\Alteration.cs" />
+    <Compile Include="Scenario\AttackAttribute.cs" />
+    <Compile Include="Scenario\Behavior.cs" />
+    <Compile Include="Scenario\BehaviorDetails.cs" />
+    <Compile Include="Scenario\Character.cs" />
+    <Compile Include="Scenario\Doodad.cs" />
+    <Compile Include="Scenario\Level.cs" />
+    <Compile Include="Scenario\ScenarioContainer.cs" />
+    <Compile Include="Scenario\LevelGrid.cs" />
+    <Compile Include="Scenario\ScenarioMetaData.cs" />
+    <Compile Include="Scenario\ScenarioObject.cs" />
+    <Compile Include="Scenario\Item.cs" />
+    <Compile Include="Scenario\NamedObject.cs" />
+    <Compile Include="Scenario\Skill.cs" />
+    <Compile Include="Scenario\SkillSet.cs" />
+    <Compile Include="Scenario\SymbolDetails.cs" />
+    <Compile Include="Serializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
+      <Project>{6353f2f1-d936-4f9c-9898-074dc4480d71}</Project>
+      <Name>Rogue.NET.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

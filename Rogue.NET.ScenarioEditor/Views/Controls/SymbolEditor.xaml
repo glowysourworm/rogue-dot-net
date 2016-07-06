@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.SymbolEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"  
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             mc:Ignorable="d" Background="Black"
+             d:DesignWidth="550">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/Converters.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel>
+            <Grid Margin="10">
+                <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
+                <Border HorizontalAlignment="Right" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Offset="0">
+                                <GradientStop.Color>
+                                    <MultiBinding Converter="{StaticResource SymbolDetailsAuraConverter}">
+                                        <Binding Path="CharacterColor" />
+                                        <Binding Path="CharacterSymbol" />
+                                        <Binding Path="Icon" />
+                                        <Binding Path="SmileyAuraColor" />
+                                        <Binding Path="SmileyBodyColor" />
+                                        <Binding Path="SmileyLineColor" />
+                                        <Binding Path="SmileyMood" />
+                                        <Binding Path="Type" />
+                                    </MultiBinding>
+                                </GradientStop.Color>
+                            </GradientStop>
+                            <GradientStop Color="Transparent" Offset="1" />
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Image VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" 
+                           Stretch="None">
+                        <Image.Source>
+                            <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                <Binding Path="CharacterColor" />
+                                <Binding Path="CharacterSymbol" />
+                                <Binding Path="Icon" />
+                                <Binding Path="SmileyAuraColor" />
+                                <Binding Path="SmileyBodyColor" />
+                                <Binding Path="SmileyLineColor" />
+                                <Binding Path="SmileyMood" />
+                                <Binding Path="Type" />
+                            </MultiBinding>
+                        </Image.Source>
+                    </Image>
+                </Border>
+            </Grid>            
+            <Grid Margin="10">
+                <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Type" />
+                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}"  EnumType="{x:Type common:SymbolTypes}" Width="200" HorizontalAlignment="Right" Height="24" />
+            </Grid>
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Smiley}}"  Margin="10" Header="Smiley Parameters">
+                <StackPanel>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Body Color" />
+                        <controls:ColorComboBox Value="{Binding SmileyBodyColor, Mode=TwoWay}"  Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Line Color" />
+                        <controls:ColorComboBox Value="{Binding SmileyLineColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Aura Color" />
+                        <controls:ColorComboBox Value="{Binding SmileyAuraColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Mood" />
+                        <views:EnumComboBox EnumType="{x:Type common:SmileyMoods}"  EnumValue="{Binding SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>                    
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Character}}" Margin="10" Header="UTF-8 Character Parameters">
+                <StackPanel>
+                    <Grid Margin="10">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="CharacterSymbolButton" Click="CharacterSymbolButton_Click" Content="View Symbol Map" HorizontalAlignment="Right" Padding="10,2,10,2" />
+                            <Border BorderBrush="White" BorderThickness="1" CornerRadius="3" Margin="10,0,0,0">
+                                <TextBlock x:Name="CharacterTB"  Text="T" Foreground="White" FontSize="14" Margin="8,4,8,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Color" />
+                        <controls:ColorComboBox Value="{Binding CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
+                <Grid Margin="10">
+                    <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Image" />
+                    <controls:ImageEnumComboBox Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  Value="{Binding Icon, Mode=TwoWay}" />
+                </Grid>
+            </GroupBox>
+            <Grid x:Name="ButtonGrid" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Margin="0,10,4,10" Padding="5" Width="80" Content="OK" extension:ButtonExtension.DialogResult="True" />
+                    <Button Margin="0,10,10,10" Padding="5" Width="80" Content="Cancel" extension:ButtonExtension.DialogResult="False" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

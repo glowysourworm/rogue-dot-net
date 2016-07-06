@@ -1,0 +1,119 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="Rogue.NET.Scenario.Views.ItemGrid"
+             mc:Ignorable="d" Background="Transparent" BorderBrush="Black">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ItemGrid.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/RadioButton.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ImageButton.xaml"/>
+                <ResourceDictionary>
+                    <!-- Resources that reference code behind -->
+                    <DataTemplate x:Key="ButtonCellTemplate">
+                        <Button x:Name="SelectCheckBox" 
+                            Tag="{Binding}" 
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Right" 
+                            Click="SelectCheckBox_Click"
+                            Visibility="{Binding Path=ShowButton, Converter={StaticResource VisConv}, 
+                            UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                            Style="{DynamicResource Rogue2ItemButton}" 
+                            Margin="0" 
+                            Cursor="Hand"/>
+                    </DataTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot">
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="Auto" MinHeight="39.28"/>
+    		<RowDefinition Height="*"/>
+    	</Grid.RowDefinitions>
+        <DataGrid x:Name="TheGrid"
+                  Background="Transparent" 
+                  IsReadOnly="True"
+                  BorderThickness="0,0,0,1"
+                  BorderBrush="Black"
+                  AutoGenerateColumns="False"
+                  HorizontalContentAlignment="Stretch" 
+                  VerticalContentAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  RowHeaderWidth="0" 
+                  CanUserSortColumns="False" 
+                  CanUserResizeColumns="False" 
+                  CanUserReorderColumns="False" 
+                  CanUserResizeRows="False" 
+                  RowBackground="Black"
+                  HorizontalScrollBarVisibility="Hidden" 
+                  VerticalScrollBarVisibility="Auto"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow" 
+                  ColumnHeaderStyle="{DynamicResource Rogue2DataGridColumnHeaderStyle}" 
+                  RowStyle="{DynamicResource Rogue2ItemGridRowStyle}" 
+                  Style="{DynamicResource Rogue2ItemDataGridStyle}" 
+                  RowDetailsVisibilityMode="Collapsed"
+                  CellStyle="{StaticResource DataGridCellStyle}"
+                  ColumnWidth="SizeToCells">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn x:Name="ButtonColumn" Visibility="Collapsed" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource ButtonCellTemplate}" />
+                <DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"  HeaderStyle="{StaticResource HeaderStyle}" />
+            	<DataGridTextColumn x:Name="QuantityColumn" Header="#" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Quantity}" />
+                <DataGridTextColumn x:Name="ClassColumn" Width="Auto" Header="Class" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Class}" />
+                <DataGridTextColumn Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
+                <DataGridTextColumn Header="" Width="0" SortDirection="Ascending" Visibility="Collapsed"  Binding="{Binding Type}" />
+                <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding RogueName}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style BasedOn="{StaticResource DataGridCellStyle}" TargetType="DataGridCell">
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <TextBlock Text="{Binding RogueName}" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center"  />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style BasedOn="{StaticResource HeaderStyle}" TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right" />
+                            <Setter Property="Padding" Value="2,8,0,8" />
+                            <Setter Property="Margin" Value="0" />
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.HorizontalGridLinesBrush>
+                <SolidColorBrush Color="#2Faa99aa" />
+            </DataGrid.HorizontalGridLinesBrush>
+        </DataGrid>
+        <StackPanel Margin="0,0,0,4" Grid.Row="1" x:Name="ButtonStack" Orientation="Horizontal" d:LayoutOverrides="Height" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <RadioButton x:Name="Consume" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Consume.png" BorderBrush="Fuchsia" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
+            <RadioButton x:Name="Equip" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
+            <RadioButton x:Name="Identify" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Identify.png" BorderBrush="Yellow" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Identify" Cursor="Hand" />
+            <RadioButton x:Name="Uncurse" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Uncurse.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Uncurse" Cursor="Hand" />
+            <RadioButton x:Name="Enchant" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Enchant.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant" Cursor="Hand" />
+            <RadioButton x:Name="Trade" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Trade.png" BorderBrush="Green" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" ToolTip="Show Equipment Details" HorizontalAlignment="Right" Cursor="Hand" />
+            <RadioButton x:Name="Throw" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
+            <RadioButton x:Name="Drop" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+        </StackPanel>
+        <TextBlock x:Name="ModeTB"  
+                   Grid.Row="1" 
+                   TextWrapping="Wrap" 
+                   VerticalAlignment="Bottom" 
+                   Foreground="White" 
+                   FontSize="18.667" 
+                   HorizontalAlignment="Left" 
+                   Margin="8,0,0,4" 
+                   d:LayoutOverrides="HorizontalAlignment, HorizontalMargin"/>
+    </Grid>
+</UserControl>    

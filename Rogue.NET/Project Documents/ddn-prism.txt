@@ -1,0 +1,69 @@
+﻿Adding Prism to Rogue.NET
+
+Shell / Bootstraper / Views / Modules / ViewModel / Event Bus / Model / Business Logic
+
+* Custom Event Bus that uses publish / subscriber discover via custom attributes
+* IOC using Unity and Prism
+* Dependency injection using unity
+* View injection using Prism
+
+*** Migrate to Rogue.NET namespace (Rogue.NET.[...])
+
+1) Main view navigation is accomplished using the region manager and view events
+2) MVVM binds view models to view
+3) Event Bus used to update VM from model AND to initiate model changes
+	** The event granulatiry should solve performance issues currently in the application (OnDungeonTick(...))
+
+*** Change naming conventions
+
+1) Switch to "ScenarioConfiguration" for configuration
+
+*** Custom Event Bus
+1) Attribute based discovery:
+
+	[DungeonObjectChanged<T>(options)]
+	
+	options:  publish, subscribe, deliveryThread, ...
+
+	[DungeonCollectionChanged<T>(options)]
+
+	options:  publish, subscribe, deliveryThread, collectionEvent (added, removed, reset)
+
+2) Event Bus initializes by using meta data to make a catalog of expected objects. Will throw
+exceptions if object implements improper attribute / interface pairs
+
+3) Publishers Must implement INotifyPropertyChanged / INotifyCollectionChanged. Collections must be
+observable (rogue observable for serializable collections)
+
+4) Event Bus will have an API to control event flow: Initialize(), Start(), Stop(), ...
+
+*5) Possible API for controlling event sequences.
+
+*** 
+
+MODULES
+-------
+
+- Intro:
+	- View: Splash Screen
+
+- Scenario:
+	- View: Select / New, Open, Delete
+	- View: Local scenarios
+	- View: Online scenarios
+	- Model: Local Scenarios (Loaded on startup)
+	- Model: Online Scenarios (Loaded on request)
+
+- Generation:
+	- View: Generating Dungeon 
+	- View: Loading Dungeon
+	- Model: Generating Dungeon Log
+	- Model: Loading Dungeon Log
+
+- Game: (Many Views / Models)
+
+- Dialog: Views for popups / Models for popups
+
+- Outro:
+	- View: Death Display
+	- View: Outro Display

@@ -1,0 +1,1353 @@
+Calculated Properties / Interactions
+------------------------------------
+
+(Enemy="e"  Player="p" *="Some Operation")
+
+Enemy Turn = (p.Agility*e.Agility)
+
+Player Hit = (p.Level*p.Strength*p.Agility*BaseAttack) - (e.Strength*e.Agility)
+Enemy Hit = (e.Strength*e.Agility) - Defense
+
+Defense = (BaseDefense*p.Strength*p.Level) + (Item/Skill Enhancements)
+
+Magic Defense = BaseDefense * p.Intelligence + (Item / Skill Enhancements)
+
+Memory = Intelligence*p.Level + (Item/Skill/Spell Enhancements) - (State Detractions)
+
+Light Radius = BaseRadius + (Item/Skill/Spell Enhancemenets)
+
+HP Regen = (p.Strength*p.Level) + (Item/Skill/Spell Enhancements) - (State Detractions)
+ 
+MP Regen = (p.Intelligence*p.Level) + (Item/Skill Enhancements) - (State Detractions)
+
+**HP Max = BaseValue + (Level Bonus(p.Strength*p.Level))
+
+**MP Max = BaseValue + (Level Bonus(p.Intelligence*p.Level))
+ 
+Hunger Rate = (FoodUsage*p.Haul) + (Item/Skill Enhancements) - (Item Detraction)
+
+Experience Given = e.ExpGiven*(Item/Skill Enhancements)
+
+Haul = Sum(Inventory Weight)
+
+Haul Max = *p.Strength
+
+
+Base Properties - Each has base value +- Item/Skill/Spell/State Effect
+---------------
+
+Strength
+
+Agility
+
+Intelligence
+
+Level (no boosts / cuts)
+
+Light Radius Base
+
+Food Usage Per Turn Base
+
+Experience
+
+Hunger
+
+
+Item Effects
+------------
+
+Can alter any base property and/or Calculated property as above
+
+States  * => Need special game logic
+------
+
+Hungry     Cause(Hunger > 80)             Effect(HP Regen - 50%)
+Starving   Cause(Hunger > 90)             Effect(HP Regen - 80%)
+Weak	   Cause(Hunger = 100)            Effect(HP Regen = -1 / step)
+*Blindness Cause(Spell / Potion / Curse)  Effect(LightRadius = 0)
+*Confused  Cause(Spell / Potion)	  Effect(Compass goes random for each action)
+*Paralysis Cause(Movement = 0)		  Effect(Can't move for X turns)
+Poison     Cause(Spell / Potion / Curse)  Effect(HP Regen = -1 / step)
+Haste	   Cause(Spell / Potion)	  Effect(Agility *= 2)
+Slow	   Cause(Spell / Potion)	  Effect(Agility /= 2)
+
+
+Scroll
+------
+
+- Can altar both state / base properties / and have magic effects.
+- Can call one time magic spell.
+
+Magic Effects - Base set of behaviors to support for spells / potions / scrolls / Staves
+-------------
+
+HP Damage Player
+MP Damage Player
+
+HP Damage Target
+MP Damage Target
+
+HP Damage Target Area
+
+Instant Death
+
+*Teleport Character
+*Polymorph Character (Mimic monster :))
+
+Alter State Target (state enumerated above)
+Alter State Area Effect
+
+Permanent Stat Change
+Temporary Stat Change
+
+Reveal Items
+Reveal Monsters
+Reveal Save Point
+Reveal Food
+Reveal Area(s)
+Reveal Whole Level
+
+Roaming Light Source
+
+Aura
+
+Spells = magic effect + mp drain + animation
+------
+
+- enumerated behavior
+- See below...
+
+
+Skills
+------
+
+- learned spells
+- enumerated
+
+###################################### End Properties / Interactions
+
+Execution
+---------
+
+Specifies Game Execution of Interactions / Spells / Magic Effects / State Changes.
+
+Player Attack:  Character Calculator calculates hit based on current stats of player
+and Enemy
+
+Enemy Attack: Character Calculator calculates hit based on current stats of player and
+Enemy
+
+End of Turn Vars:  Character Calculator
+
+Level Up vars:  Character Calcualtor
+
+Magic Effects:  Temporal Types:  One Time; Continual with Drain; Permanent Stat Change; State Change (alread timed); other timed.
+If area of effect, All characters within area are targeted, and have effect applied.  If Continual Drain, character calc.
+applies change at end of turn.  if state change, state change applied as normal.
+
+State Change:  Timed event - (certain number of turns).  Could affect stats for that period of time.  The base stats are saved,
+and reapplied at the end of the event.
+
+Level Data
+----------
+
+Layout:  Statically Generated - serialized with XML
+
+Content:  Items / Enemies - Statically + dynamically generated - serialized with XML
+
+Character State Changes:  Dynamically generated - serialized with XML - timed events! (careful)
+
+Character Stat Changes: Dynamically generated - serialized with XML - timed events! (careful)
+
+Magic Effects:  could include visibility changes - serialized with XML - also be careful...
+
+Invoking Magic Effects / Spells
+-------------------------------
+
+The Magic Effects / Spells contain only data to specify
+base quality numbers and area of effect numbers for spells / skills.
+
+These values are stored in the configuration.
+
+When invoking a magic effect or spell, the invoker reads the configuration,
+and looks up the data stored in the effect / spell.  It then creates the
+appropriate character state or stat alterations, and stores them with the 
+Level in two separate collections.  Each of these have counters that will
+be checked at the end of each turn.
+
+Additionally, any animation should be initiated by the invoker - not the invokee (magic effect
+or spell object).
+
+NOTE***  When adding these temporary effects - must pass off to new level at level change.
+
+Spell Execution
+---------------
+
+Spell = MagicEffect + Queue(Animation)
+
+Workflow: 
+	- Command:    User Casts Spell or invokes magic consumable - enemy casts spell
+	- Setup:      User Choses target or target area in range - or none if it is a self cast spell
+	- Execution:  Engine reads configuration / input parameters for spell and calculates Animation
+	Queue.  Animation queue events are executed synchronously.
+	- Update:     Update character parameters
+	- Refresh:    should be automatic refresh of display due to databinding.
+	
+	
+Targeting
+---------
+
+Workflow:
+	- User presses CTRL
+	- Targeting message sent from level module for first
+	enemy in target range - this range is specified by player's current attack type.
+	- User presses direction key - level module cycles through enemies in range, sends
+	back messages to kick off targeting animation.
+	- > Events with locations of targeted enemies sent back to display module via
+	an event.
+	- User releases CTRL - level module executes current attack on targeted enemy.
+
+Static Animations
+-----------------
+
+These will be generated statically and wrap the Rogue2AnimationGenerator class.  The input parameters here
+will be configured the config editor.  
+
+Rogue2AnimationGenerator functions:
+	(Primitive Animations)
+	- GenerateAuraAnimation
+	- GenerateCircularEmbolysm
+	- GenerateProjectilePath
+	- GenerateFocusingProjectile
+	- GenerateBubble
+	- GenerateFadingAura (TODO)
+	
+	(Use them to create these enumerated animations)
+	- Ellipse Projectile Chain
+	- Aura Modulation (animate opacity and/or width and/or height)
+	- Bubbles (random ellipses in an area)
+	- Ellipse Barrage (many ellipse projectiles - starting at random points near the player)
+	- Ellipse Spiral (many ellipses start at point and spiral outward)
+	- Fading Chain (Timed Figure animation whose opacity fades with time - links several characters - chain lightning)
+	- Screen Blink (Timed Figure animation)
+
+***Input Params***
+EllipseProjectileChain:
+	- Point[], Brush, Size1, Size2, Time, Erradicity, RepeatCount, Autoreverse
+
+AuraModulation:
+	- Point, Brush, Size1, Size2, Opacity1, Opacity2, Time, RepeatCount, Autoreverse
+	
+Bubbles:
+	- Count, Rect, Brush, Size1, Size2, ModulationRadius, Irradicity, Time, RepeatCount
+	
+Ellipse Barrage:
+	- Count, Point, RadiusFromPoint, Brush, Size1, Size2, Time, RepeatCount, Autoreverse
+
+Ellipse Spiral:
+	- Count, Point, Radius, Brush, Size1, Size2, Time, RepeatCount, Autoreverse
+	
+Fading Chain:
+	- Point[], Thickness, Brush, RepeatCount, Autoreverse
+	
+Screen Blink:
+	- Brush, Time, RepeatCount, Autoreverse
+	
+All The Things You Can Do to an Equipment Item
+----------------------------------------------
+
+- Equip
+- Drop
+- Identify
+- Uncurse
+
+DOOOoooDad Design - also support built in ones
+------------------
+- Automatic Effect
+- Invoked Effect
+- Level Range
+- IsAutomatic
+- IsInvoked
+- IsVisible
+- Icon
+
+
+5/15/2010 - List of things I can think of that need work
+--------------------------------------------------------
+
+DONE - Consumable ListBox tooltips
+DONE - (bug) can only use a consumable of a type once
+DONE - (bug) fix hunger per turn
+DONE - Add hunger per turn to equipment for ring / orb equip
+DONE - Remove Stairs Down from level N
+DONE - Pitfall level
+DONE - Party rooms
+DONE - (design) Unique Characters??
+DONE - (design) Unique Items??
+DONE - (design) Custom Doodad Support
+DONE - Monster Geration during play
+DONE - Fix string format for monster attack HP
+DONE - Constant velocity animation
+DONE - Fix up Skills Config UI
+DONE - Finish Magic types - support all types.
+DONE - Change the alteration hp mp maxes to +-10000
+DONE - (design) Shop Items
+DONE - (design) Shop Dialog Control
+DONE - (design) Character Gold awards
+
+Skills
+------
+
+DONE - Skill Progress on enemy death
+DONE - Skill leveling up (design)
+DONE - "Learned" skills (from consumable)
+DONE - Skill "Set" - (Leveling)
+
+Layout
+------
+
+DONE - Maze levels too difficult (??) Parameter to take out walls
+
+Magic
+-----
+
+DONE - Add identify function to magic effects
+DONE - Add Uncurse function to magic effects
+
+Monster AI
+----------
+
+DONE - Attack Types
+DONE - Movement Types
+DONE - Magic usage
+
+
+UI
+--
+
+(DONE) - Character stats UI needs work
+(DECIDED AGAINST) - Need pauses between messages (??)
+- Add Smiley Moods
+(DONE) - Hook up Player Level indicator
+(DONE) - (design) character states
+(DONE) - (bug) Fix light aura init problem (doesn't start under player)
+- (BUG) Fix light aura shape? (if possible...maybe opacity mask??)
+(DONE) - Save Game doodad (dialog)..?  Nope - Animation! :)
+(DONE) - Skill UI (glyphs for levels 1, 2, & 3)
+(DECIDED TO JUST USE DEFAULT) - Teleport or special targeting animations
+(ADDED UI - buttons) - Add dialog for identifying and uncursing
+
+- (DONE) Make Messages Game Display: 1. Display all dialog messages; 2. Make level module action args have a list of messages
+3. Put level up messages in a gold color or in a separate listbox or both; 4. put a message indicator near the dialog box.
+
+- (DONE) Need Exit Command - maybe a circular button to anchor the display somewhere.
+
+Objective
+---------
+
+DONE - (design) Dungeon Objective (items / monsters / Level 0 stairs...)
+DONE - (design) Outro screens
+DONE - (design) encrypted keys for other difficulties
+DONE - (design) Dungeon Encyclopedia
+
+Finishing Up
+------------
+
+- Instruction screen
+- Instruction Manual (or HTML)
+- Unit Tests
+- Config Balancing
+- Web Site Deployment
+
+Nice to Have
+------------
+
+- (design) Level music
+(ALMOST DONE) - (design) Dungeon Statistics
+- (design) Web Site for Game Stats
+- Monster Doodad usage
+
+Level Processing
+----------------
+
+DONE - (bug) Check enemy picking up item.. looks like one didn't drop it when dead
+- (bug) when applying blindness - if do two at a time, light radius doesn't recover (have problem applying two or more alterations...)
+DONE - (bug) Passive State Changes...... Redesgin.....
+- Range Weapons / animation
+- Throw command
+
+Configuration UI
+----------------
+
+DONE - 4 categories: Dungeon; Skills; Animations; Alterations
+
+Directory Structure
+-------------------
+
+Rogue2
+- bin
+- save
+- config
+
+Game Statistics
+---------------
+
+(High level)
+- Object Owned by Dungeon (serialized to file)
+- Need generic "entry" - save a list of entries.
+- "entry" view will contain charts of the data
+- Statistics updates are calculated on LevelModule.ProcessTurn
+- Statistics display will show the views for statistics data.
+
+(Data Level)
+- Monster (per monster killed)
+	- Level Killed on
+	- Experience Given
+	- Gold Given
+
+- Item
+	- Level found on
+	- Sell Value
+	- Objective Items
+
+- Skill Progress
+	- Level Learned
+	- Skill Progress (chart per skill)
+	- Level up
+
+- Doodads
+	- Number encountered
+	- Number tripped
+
+COMMON TRAITS (* Cumulative)
+	- Level (encountered / learned / found)
+	- Number*(Level) (tripped / found / fought)
+	- Number(Level) (or Value(Level))
+
+Data Model
+	- DungeonStatistics
+		- Difficulty
+		- Total Play Time
+		- Number of Steps
+		- Number of Deaths (Make these their own entries)
+		- Number of Saves  (Make these their own entries)
+		- List<StatisticsEntry>
+	- StatisticsEntry
+		- Object (type id)
+		- Icon
+		- List<StatisticsUpdate>
+		- (Text) Value Descriptor
+		- (Text) Object Descriptor
+	- StatisticsUpdate
+		- Object (type id)
+		- Level
+		- Value
+		- Some Text (for list view of data)
+
+Data View
+	- Header - Rogue Name / Difficulty
+	- Grid<GlobalStats>
+	- Grid<StatisticsEntry>
+	- Grid<StatisticsUpdate> (raw data)
+
+Player Stats
+- Strength / Strength Max
+- Agility / Agil Max
+- Int. / INt. Max
+- Attack
+- Defense
+- Magic Defense
+- hp regen
+- mp regen
+- food consumption
+- Light Radius
+
+Columns
+- Name
+- Base Value
+- Boost
+- Cut
+
+11/18/2010 - Bugs / Issues
+--------------------------
+
+(DONE) - Can Equip more than one of the same thing
+(DONE) - encyclopedia doesn't yet track doodads / enemies
+(DONE) - Searching opens doors within doors.... (can "search through walls")
+(DONE) - Can drop "through walls"
+(DONE) - Get rid of gold
+(DONE) - Make sure you can't click on spinner ctrl unless its centered
+(DONE) - put different cursor for spinner control
+(DONE) - learned skills
+(DONE) - Moved to status display) - skill display (make spiffier)
+(DONE) - fix up layout on statistics display (maybe use spinner)
+(DONE) - character states
+(DONE) - character skills
+(DONE) - Ep is too strong
+(SEE BALANCING) - Add more beginning monsters (3 per level - one new one every two levels)
+(DONE) - make gauntles bitmaps colorful....
+(DONE) - fix item visibility problem on drop
+(WORKAROUND) - highlight grid row when over action buttons....
+(DONE) - turn down monster generation
+(DONE) - experience curve (figure out)
+(DONE) - don't allow character movement when blocking corners (make like old rogue)
+(DONE) - Config editor: Doesn't update combo boxes when new template selected
+(DONE) - Need level indicator
+(DONE) - Player isn't picking up items
+(DONE) - Config editor: Output summary of projected game stats for player vs enemis.
+(DONE) - Make player level a dependency property
+(DONE) - "Quick Status" above or on dungeon map
+(DONE) - turn off equiped flag on drop
+(DONE) - Implement shop as a "trade shop" calculate trade values on the fly.
+(DONE) - Make shop invisible except for "player on shop"
+(DONE) - Make shop indicator near dialog box
+(DONE) - Make Shop Level Monsterless
+(DONE) - Make status display look like "quick status" on the top of the dungeon control
+(DONE) - Monster killed messages
+(DONE) - Option to go without save points to unlock difficulty levels
+DONE - Line up UI to flow a little better
+DONE - Hook up Reveal All for monsters, doodads, and items
+DONE - implement floating aura support
+DONE - Remove message when enemy steps on doodad or item
+DONE - Add elemental / blunt / sharp to item grid
+DONE - Add Select button for Item Grid
+
+Final Bugs / fixes / enhancements / todo's:
+*******************************************
+
+DONE - Finsih Player death display
+DONE - fix negative stat boosts on startup
+DONE - fix stats display not to reload bindings every turn.
+DONE - KEep smileys from being surprised on splash screen
+DONE - Cancel keyboard commands when not on dungeon map
+DONE - Cancel all actions while animation playing (except when targeting and roaming light)
+DONE - Granular Identify (don't identify new objects of identified type)
+DONE - SHow name for consumables that are type identified...
+DONE - Make icon for unidentified types a "?"
+DONE - Fix Elemental defense 0 - 100 (not -100,100) - work out melee in character calc.
+DONE - Specific Skill icon per config
+DONE - Get rid of some of the rock doodads or make them do something
+DONE - FUll heal on level up.
+DONE - Skill icons
+DONE - Spread apart levels in exp - make level gains greater
+DONE - use intelligence as magic defense.
+DONE - regenerate isn't hooked up to template
+DONE - Rework Quality / Class in the code a bit to make it more reasonable.
+DONE - Fix light radius alteration and blindness
+DONE - Fix love potion crash
+DONE - Make quality columns invisible - make quality a double instead of Range<double>
+DONE - (Minor) Fix name problem in item grid - name doesn't show after ??? -> Identified...? 
+DONE - "One use" flag on doodads
+DONE - Party Rooms
+DONE - Fix equipment display icon to not be so cheesy
+DONE - Fix path finding for monsters....
+DONE - Monster door opening - when standoffish and pursuing.
+DONE - Fix path finding when monster gets stuck trying to open a door on the diagonal.
+DONE - Work out Active skills progression / deactivation when mp used up..
+DONE - Differentiate between emphasized skill and active skill
+DONE - Riddles / Treasure chests
+DONE - make selected color on dialog listbox transparent
+MEH - fix centering of spin panel
+DONE - Fix sizing of consumables control so it scrolls
+DONE - Rework Easy config from ground up starting with alterations / Brushes
+DONE - Static Enemies generated with Arial Font instead of built in Centaur
+DONE - Work out active skills / emphasis
+DONE - Attribute emphasis (strength / agility / int.)
+DONE - Put in "miss" for spells and melee
+DONE - put in "critical hit" for melee
+DONE - Change item grid to work with level on drop / identify / uncurse / select / enchant equipment / sharpen equipment
+DONE - don't apply mp usage on potion or scroll usage
+DONE - Skills not being identified when attained
+DONE - Fix skill leveling
+DONE - Hungery / Weak / Starving messages
+DONE - implement enchant armor / weapons
+DONE - fix monster food dropping
+USE ENCYCLOPEDIA - objective screen
+DONE - dooads showing message when monsters step on them.
+DONE - Serialization code
+MEH - Wait cursor between intro/outro dispays
+DONE - Display game number in game play
+DONE - Fix Survivor mode generation. put in save point last.
+USE ENCYCLOPEDIA - Objectives screen during intro and during game play (maybe during game play)
+DONE - Counter Attack Percentage
+DONE - Make "Pitfall" and "Updraft" spells (level up / down randomly)
+DONE - Can't attack on a diagonal....
+DONE - Fix Enemy Attack (not through doors and make sure it works on diagonal)
+DONE - Fix dropping items on top of other ones.
+DONE - Reveal not showing up / down stairs...
+DONE - Put a larger screen buffer
+DONE - Fix keyboard focusing of dungeon control
+MEH - Show all skills but gray out until they are learned
+DONE - on mouse over item grid highlight the row
+DONE - GAme open display not reloading games from directory on game exit
+DONE - When Load / new screen loads then check for files
+DONE - Throw (either wielded weapon if not cursed OR a consumable - add "projectile attack value" to config)
+DONE - remove equip flag when dropped or THROWN
+DONE - Game seed when reopening game
+DONE - Rogue name when reopening (can tell on death.. so pobably statistics)
+DONE - Invoke Doodad on Shop goes to shop screen
+DONE - (DID 128-bit symm. encry.) Implement private/public key for unlocking config editor
+DONE - Reveal not showing doodad pairs
+DONE - Fix Teleport Pair visibility
+DONE - Class Enchant
+DONE - use actual cipher for serialization
+DONE - Turn down Ep orb probs. 
+DONE - make identify well one use
+DONE - shield was equiped with two weapons in hand...
+DONE - increase orb effectiveness
+DONE - give muse a intelligence boost reward item
+DONE - need more helmets / hats .. fidoras... crowns....
+NICE TO HAVE - Separate equipment into categories
+DONE - (ICONS) Hammers, Daggers, great axes, ...
+DONE - MAke experience curve steeper
+DONE - Add drop to equipment ctrl
+DONE - turn down haul effect on food consumption..
+DONE - make hp,mp,... bars smaller
+DONE - too many goodies?
+DONE - turn down level gains..? or make monsters harder.. or make equipment less effective
+DONE - sharpening stone doesn't work...
+DONE - Add drop enable to additem call for equipment grid.
+DONE - bonus for killing enemies with skill emphasized / AND food usage calculated
+DONE - Dwarf needs steal...
+DONE - Add spell block passive
+DONE - Lower food consumption on skill progress
+DONE - Add skill progress text or background
+DONE - Player skill level up didn't show on skill grid
+- work out identify....
+- fewer strength potions
+- Haul food drain based on percentage...
+- Lower overall food consumption
+- Deployment msi package
+- Store last move in Enemy class to use with path finding so enemies don't get stuck
+- If there's no saved game skip the load/new screen
+- Fix Monsters blocking teleport exit
+- Negative HP on harpy arrow...
+- Make screens more consistent in design. Select/Open and set game params need to be more alike.
+- remove continue screen if in survivor mode
+- Add stats update of "0" for each monster in the encyclopedia on level load...(I think)
+- Make Medium Difficulty
+- Make Hard Difficulty
+- Make Brutal Difficulty
+- haul gets "stuck" somehow.....
+- lengethen torch duration
+- fix code that matches inventory with items.. it's not taking updates from the item
+- Steal didn't update equipment ctrl
+- Fix tabbing on all controls
+- Fix dungeon params control - can't input spaces 'n' such...
+- Identify objectives on startup
+- Open up all difficulty levels
+- Equipment display needs to have smiley body / line color
+- Auto size item grid columns
+- Exit / Continue screen shouldn't have continue if no game saved
+
+NICE TO HAVE's
+**************
+- easing function when spinner stops
+- OPen stored config to get smiley colors for select/open display
+- Separate view from model and put save on background thread
+- PUt loading screen between IRogue2Displays (or at least "generating dungeon...")
+- Put min level for skills in the meta data
+- "enhance search" magic effect
+- FInish stats emphasis grid column
+- Zoom
+- Full Screen Mode
+- Help Menu
+- Fix the damn sizing of the consumable "Select Buton" data grid column and the alignment....
+- (Nice to have) Hook up smiley moods
+- (Nice to have) Character Equipment probability / Equip option in config editor / template generator
+- (Nice to have) make sure spinner selects something on load
+- (Nice to have) when switching types in the encyclopedia, make sure the spinner selects something from the new type
+- (Maybe?) put light fill under visible squares (maybe ellipse in middle?)
+- (Nice to have) Colored rocks
+DONE - (Nice to have) Daggers
+- (Nice to have) full screen mode
+- (Nice to have) Range weapons (Maybe)
+DONE - (Nice to have) Throw
+- (Nice to have) Put Smiley name / mood / class on a 3D panel (OR) put shadow behind Smiley Ctrl there
+
+
+***********
+Rogue Game Play / Balancing:
+
+Basic Attributes:
+
+	Strength: Adds to - HP Level Gain, HP Regen, Attack, Defense. Develops From - Melee Attacks
+	Agility: Adds to - Turn Frequency (vs enemies), Dodge Frequency, Crit Frequency. Develops From - Walking
+	Intelligence: Adds to - MP level Gain, Mp Regen, Elemental Boosts / Cuts. Develops From - Skill Use
+
+Level Gains:
+
+	Build Player (scale parameters) around desired level to reach. Example: Try to reach level 30 near the 
+	end of the dungeon. Need to choose system to describe character development. Some base plus user chosen
+	path. Example: Gaining a level = Plus Range(0,1) for strength / agil / intel plus emphasized gains. 
+
+	For Easy Dungeon: 
+		- Calculated experience by level 15 is ~8500. Player level is desired at approx level 8.
+		- Calculated experience by level 10 is ~4300. Player level is desired at approx level 6
+		- Set initial experience for level 1 at 100
+
+	An exponential curve goes like y = Ae^(Bx). y = next level exp; x = current level
+
+	8500 = Ae^B(7)
+	100 = A
+
+	8500 = (100)e^B(7)
+
+	85 = e^B(7)
+
+	Ln(85) / 7 = B = 0.635
+
+	y = 100e^(0.635)x  (for easy)
+
+- Idea - 
+Create decisions for user on each level. Balance gameplay to keep
+a challenge at each stage (every 5 levels is a stage? sure, why not).
+Each stage will introduce new aspects of the game:
+
+	- (Decision) Dull Vs. Sharp
+	- (Preservation) Trying to stay healthy / well fed... (wells, overabundance of food)
+	- (Exploration) Mundane Vs. Usefull Objects (Doodads)
+	- (Exploration) Use of Rogue2 Encyclopedia for generic (but useful) information about monsters
+	- (Seed for Exploration) Need for more specific info about items
+	- (Decision) Which Attribute to develop (Strength / Agility / Intelligence)
+
+(Easy)
+
+Levels 1-5:
+	- Balance blunt / sharp weapons to kill monsters
+	- Acquire Sharpening stone?
+	- Lots of food
+	- Dull weapons
+	- Mundane Doodads
+	- sharpening stones
+	- Healing wells (low generation)
+	- No Identify scrolls :) (hide blunt / sharp)
+	- Only simple level layouts
+	
+	Choices:
+	- To Sharpen / Not to Sharpen
+	- Keep lots of food?
+	- Keep a dull (maybe high quality) Short sword? (with no identify)
+	- develop attributes (Strength / Agility / Intelligence)
+	
+Levels 6-10: (More Specific when first stage is done)
+	- First Skill learned (Adept)
+	- Orbs introduced
+	- Identify scrolls
+	- Poison
+	- introduce hallway type layout
+	
+
+(New) Code Support:
+
+	New Identify System
+	-------------------
+	- Identify Type (general information about (e.g.) short sword) when item acquired 
+	- Identify Item (detailed item information on inventory screen) when scroll / spell invoked
+	- (Optional)One new string in "Item" for specific item description
+
+	Equipment
+	---------
+	- Earth, Air, Water, Fire, Blunt, Sharp: A/D bonuses, Maxes / Mins
+	- (UI) Change selection control to get rid of list - change to property grid
+	- (UI) Make selection a drop down from the image in the "Smiley Equipment" screen
+	
+	Alterations
+	-----------
+	- Earth, Air, Water, Fire, Blunt, Sharp A/D bonuses
+	
+	Enemies
+	-------
+	- Earth, Air, Water, Fire, Blunt, Sharp A/D bonuses
+	
+	Attribute Development
+	---------------------
+	- At Level up choose which to emphasize for the next level. Calculate bonus based
+	on intelligence based actions (magic), agility based actions (walking?), Strength
+	based actions (melee combat).
+	
+- Idea - (Maybe version 2.....)
+Create interactive objects: Treasure Chests; Puzzles; Riddles; Plain Messages; Locked
+Doors; Locked Stairwells; Multi-part Items (nice to have but muy complicado)
+
+Treasure Chest = Puzzle = Riddle = Plain Message = Shop => Point of interest screen...
+	
+- Balancing / Game Play - 
+Monster behavior more granular. Create other behaviors: Steal, Runaway (disappear), seek
+out object or point of interest.
+
+Asp:  
+		(current) Random movement until in attack range.
+		(new) Random movement. When in attack range roll die for attack or random move
+		
+Krill:  (current) Heat seek to attack.
+		(new) ?? maybe just leave it that way
+		
+Muse: 
+
+		(current) runs away
+		(new) Attacks until low hp - then runs away
+		(or) Maybe melee until low hp - then runs away and fires muse ball thingy
+		(or) maybe seeks out healing well
+		
+Behavior Template (New):
+
+	- Primary Behavior
+	- Secondary Behavior
+	- Secondary Behavior invoke reason: Random (with probability), HP low, Primary behavior invoked
+	
+	Behavior:
+		- Movement Type: Heat Seeker, Standoff-ish, Random, PathFinder (Seek player, Seek Doodad, Seek Door) - need to be added
+		- Attack Type: Melee, Skill, Invoke Doodad, RestIfAtPointOfInterest
+
+- Idea - 		
+Create Monster Invisible Status. Wow... how original... How about invisible objects? Invisible Doodads! That
+would be the shiz. "See Invisible" player status that makes everything invisible except for invisible objects. Even
+Walls! So, the player walks up to this invisible doodad that is a secret and gets something really cool - or maybe
+a treasure chest that is invisible.
+
+- Idea -
+Create item groups - giving an additional passive effect when all item are equiped.. or maybe in inventory
+
+- Some Code Maintainence -
+	
+	(DONE) - Create staic modules for calculating: Enemy reactions, Character stats (have one already), Layout manipulation
+	(DONE) - Embed Enemy font and UI font
+	- Add Probability to enemy / player inventory
+	(DONE) - Fix Layout calculation for dropping items / moving around corners and monsters
+**************
+
+1/23/11 - Design Change / Addition - Elemental and Magic Melee
+**************
+
+Still need Earth / Air / Fire / Water / Blunt / Sharp melee values... During spell / attack these
+get summed up.
+
+1. Change Earth Defense / Air Defense / etc... to Earth / Air / etc... and add these to: Magic Spell;
+and Equipmnt.
+
+2. Change existing ones in Alterations to Earth / Air / Fire etc... 
+
+Still need to utilize Intelligence during melee. Add magic defense based on intelligence
+
+1. Enemy Spell Miss: if player intelligence is greater than enemy intelligence, then Prob(Miss) = 0.5.
+Otherwise it's scaled to 0.5 random times the ratio(player / enemy)
+
+Need to add "Enchant Weapons" effect - will make this affect the magic melee and class values of equipment
+
+1. Add enum values for EnchantWeapon, EnchantArmor, EnchantGauntlets, EnchantBoots
+
+2. Add Permanent Alteration Template values for Air / Fire / Water / ... for enchantment
+
+3. Add Class Enchant Value to permanent alteration
+
+For Paladin want to add Auras
+
+1. Add boolean to passive template to apply to enemies in range
+
+2. Add range value (int) to aura range - don't use light radius
+
+UI - Elemental Values
+**
+
+- Magic Spell Template has them
+- Passive Effect Templates
+- Permanent Alterations
+- Temporary Alterations
+- Equipment 
+- Enemies
+
+**************
+
+Rogue 2 Refactoring:
+-	Separate data from view
+-	Event based update of view from data
+-	Modules operate on data – not view
+-	Don’t make effects all generic. Add them to equipment, consumables
+Level Module:  Should only forward commands to the involved parties
+	Move:  Forward position to character
+	Attack:  Call interaction engine to calculate the interaction
+	Magic:  Spin / Wait for animation to finish.Have a timeout in case...
+	Attack targeted:  same as it is now
+Data -> View:
+	Update the view using events – bind the UI to the view
+	Separated view will allow saving on a background thread
+	Use runtime serialization to save data object to binary file
+
+Configuration: Use property grid
+
+	Types: 
+
+		bool
+		int
+		string,
+		double,
+		Enum,
+		List<T>,
+		Recursive types,
+		Linked types (to other collections. e.g. player consumables links to consumables list)
+
+	Controls:
+
+		Low to High:  if primitive, return control (bool, int, string, double, range, color)
+					  else if List<T>:
+
+						    if (direct property of Configuration && is dungeon object):  create DungeonObjectTabControl
+
+							else if (linked to list) create double list box with names of templates creates instances of items in master list
+
+							else if (Complex type) create list box where each entry is a property grid
+
+							else create list box of primitive types
+
+		              Control hierarchy:  
+
+							if (Template): Create Rogue2PropertyGrid
+
+							else if (List<Template>):  
+								
+								if (Template is DungeonObjectTemplate): Create DungeonObjectTabControl
+								else: Create Rogue2PropertyGrid
+
+				      Example: Configuration.EnemyTemplates (List<EnemyTemplate>):
+
+							 1) List<DungeonObjectTemplate> => create DungeonObjectTabControl
+
+							     (DungeonOBjectTabControl)
+								 2) SymbolDetails is a complext type => create Rogue2PropertyGrid
+
+								 3) BehaviorDetailsTemplate is complex type => create Rogue2PropertyGrid
+
+								 4) BehaviorTemplate is Complex type => create Rogue2PropertyGrid sub grids
+
+								 5) SpellTemplate is linked to a list - and not generic type => create combo box linked to Spell Template list
+
+		How to get objects back out:  Have control tree all operate on the same object
+
+			Example Configuration.EnemyTemplates:  List<EnemyTemplate> theList;
+
+				DungeonObjectTabControl <- theList is item source (image source for tab is EnemyTemplate.SymbolDetilas.ImagePreview)
+
+					(Tab)
+					Rogue2PropertyGrid(SymbolDetails) <- EnemyTemplate.SymbolDetails
+					Rogue2PropertyGrid(BehaviorDetailsTemplate) <- EnemyTemplate.BehaviorDetails
+
+						(SubGrid)
+						Rogue2PropertyGrid(BehaviorDetailsTemplate.PrimaryBehavior) -> EnemyTemplate.BehaviorDetails.PrimaryBehavior
+
+							(ComboBox linked to Configuration.Spells)
+							ComboBoxItem <==> EnemyTemplate.BehaviorDetails.PrimaryBehavior.Spell
+
+						(SubGrid)
+						Rogue2PropertyGrid(BehaviorDetailsTemplate.PrimaryBehavior) -> EnemyTemplate.BehaviorDetails.PrimaryBehavior
+
+							(ComboBox linked to Configuration.Spells)
+							ComboBoxItem <==> EnemyTemplate.BehaviorDetails.SecondaryBehavior.Spell
+				
+Alteration Container - Applies Costs / Effects
+==============================================
+
+Use Case: One Time Cost, Permanent Effect
+
+	- Invoke Spell
+	- Create and apply One Time Cost
+		- Don't store 
+	- Create and apply one time effect
+		- Don't store
+
+Use Case: One Time Cost, Temporary Effect
+
+	- Invoke Spell
+	- Create and apply One Time Cost
+		- Don't store cost
+	- Create temporary effect
+		- Store effect and character
+		- Apply temporary effect to character
+		- calculate stats on turn or accessor / on dungeon tick
+		- keep track of event time in container
+	- Remove temporary effect
+		- when finished, display message and remove from character
+
+Use Case: One Time Cost, Passive Effect
+
+	- 
+
+Use Case: Per Step Cost, Passive Effect
+
+	- Invoke Spell
+	- Create per step cost
+		- Store cost
+		- Apply on tick
+		... blah blah blah
+
+Alteration Container: Collection of AlerationInfo objects : IRogue2Module
+
+	- AlterationInfo
+		- (AlterationEffect)AlterationEffect
+		- (Character)AlterationEffectCharacter
+		- (AlterationCost)AlterationCost
+		- (Character)AlterationCost
+
+FINAL BUGS / FEATURES / BALANCING (4/23/2012)
+--------------------------------
+
+- (DONE) Learning a skill didn't show any player advancement message
+- (DONE) No Image in skill row
+- (DONE) mouse drag for dungeon map
+- (DONE) button recenter for dungeon map
+- (DONE) skill didn't level up
+- (DONE) Muse no intelligence
+- (DONE) updating of grids or item views when an event happens (e.g. identify, skill up)
+- (DONE) Handle playerdied event
+- (DONE) Torch lasted for onestep...
+- (DONE) scroll bar on grid
+- (DONE) Skill number on screen should start at 1 - not 0
+- (DONE) no animation on mana potion
+- (DONE) star width on identify popup grid
+- (DONE) no effect with regenerate
+- (DONE) no targeting
+- (DONE) equipped 3 axexs...
+- (DONE) no animation on agility potion
+- (DONE) no animation on strength potion
+- (DONE) Projectiles
+- (DONE) Cursed / unique / objective item coloring
+- (DONE) Turn down monster generation
+- (DONE) Keep from using multiple items before sequence (animation / splash) completes
+- (DONE) Used non ??? name on consume
+- (DONE) Aura didn't show boost on torch boost. Just showed base as being larger.
+- (DONE) Objective screen
+- (DONE) Help screen
+- (DONE) Hook statis to boosted / cut values and indicate with green / red on the text.
+- (DONE) Skill grid corners are overlapping the border
+- (DONE) Skill grid too small
+- (DONE) More of an HP boost on level up
+- (DONE) Muse spell not having an effect
+- (DONE) If possible edit the consumable types. Remove Gold and other unused and add "Misc"
+- (DONE) Dungeon reopen bug...
+- (DONE) Dungeon cells explored bug on reopen dungeon
+- (DONE) Muse confuse symbol change
+- (DONE) armor too strong..? .. or move leather armor to after fexts
+- (DONE) Yeti has standoffish mixedin...
+- (DONE) Dwarf's spell didn't do anything
+- (DONE) stats grid too short..
+- (DONE) Skill didn't show on level up
+- (DONE) If no saved game - go from death to select open
+- (DONE) Equip spells
+- (DONE) Steal animation not playing
+- (DONE) Fix animation args to contain target enemies
+- (DONE) Hook up sharpening stone
+- (DONE) Big room layout was messed up
+- (DONE) Make sure steal skips objective or equiped items
+- (DONE) for ring of stregth make effect carry the food per turn penalty
+- (DONE) turn down uncurse scroll freq. or mak more cursed things :)
+- (DONE) Dwarf still no animation on run away
+- (DONE) still nothing on teleporters... maybe have to remake the doodad...
+- (DONE) regenerate at 0.01+ per step.. turn up to 0.5 per step.
+- (DONE) Centaur magic arrow healed...
+- (DONE) Door opening via monsters didn't work
+- (DONE) path finding for monsters suuucks
+- (DONE) uncurse splash not hooked up
+- (DONE) Get rid of per step alteration cost
+- (DONE) Add spell blocking item for beating muses
+- (DONE) Make muse behavior more random
+- (DONE) Need attack range for enemy spells (use engage radius)
+- (DONE) Enemies reacting before spell finishes (fire)
+- (DONE) Fire magic didn't have mp cost
+- (DONE) Need to apply magic defense on HP dmg on alteration effects
+- (DONE) Alteration effects use ranges
+- (DONE) Debug level
+- (DONE) reset spell pointers... since they were altered
+- (DONE) Alterations not carried over from previous level
+- (DONE) Staff of wisdom was alter target
+- (DONE) Wisdom potion was alter target and had no animation
+- (DONE) Fire Manual was set to unlimited uses
+- (DONE) Potion of light has lame animation
+- (DONE) splash controls don't initialize with button showing on items
+- (DONE) sleep potion needed enemy target
+- (DONE) potion of poison set to target enemy
+- (DONE) Teleport enemy left target on.
+- (DONE) Monster didn't die right after spell / animation.
+- (DONE)consumable with target needed still was consumed
+- (DONE) Wisdom potion is set to passive
+- (DONE) Haste needs animaition
+- (DONE) Virility needs animation
+- (DONE) manual not consumed 
+- (DONE) amulet of water needs aura
+- (DONE) amulet of earth aura
+- (DONE) ***Alteration Bug:  When dropping an equipped item passives aren't turned off
+- (DONE) ***Use Effect range during passive
+- (DONE) hunger per step went positive er... negative
+- (DONE) Adept 1 didn't have MP penalty
+- (DONE) identify scrolls for player
+- (DONE) skill progress not updated when loaded
+- (DONE) radio buttons all messed up on skill grid - make sure two actions 1) deactivates any existing 2) activates new skill
+- (DONE) Skill progress isn't initializing on load.
+- (DONE) Effect text for spells
+- (DONE) Scale attack stat to 100
+- (DONE) Add aura to adept
+- (DONE) Euqipment control doesn't load with right symbol 
+- (DONE) equip spells should not be temporary (could be permanent or passive)
+- (DONE) remove alteration if can't meet cost
+- (DONE) equip screen not updating on symbol change immediately
+- (DONE) rings / amulets show class
+- (DONE) File indexing for fast loading of dungeons
+- (DONE) Identify all for debug mode
+- (DONE) Symbol alteration not applied right away (e.g. scroll of spell blocking)
+- (DONE) change "Long description" to "Description"
+- (DONE) Fix experience curve
+- (DONE) Center the "Active Skill" Text
+- (DONE) Get rid of message tab - add a splash function for level messages
+- (DONE) Add Debug "Go to Level"
+- (DONE) Get rid of level message log
+- (DONE) Group items by type and order types
+- (DONE) Crash on open dungeon from file
+- (DONE) Shop
+- (DONE) Add section in dungeon file header for smiley body color and line color. Use in open / save control
+- (DONE) Cursed Items / identified curses in item grid
+- (DONE) Add "Unique" in italics to encyclopedia and "Objective" in italics
+- (DONE) Level border
+- (DONE) Consume item buttons turn off after consumption.
+- (DONE) Open / Save / New intro screen not updated when exiting game
+- (DONE) Moved loading of game module from game control
+- (DONE) Black out screen behind splash dialogs (?) - or just make some of them modal
+- (DONE) End of Game
+- (DONE) Unlocking medium, hard, brutal, and custom levels
+- (DONE) consistent sorting in grids (by type then name)
+- (DONE) Amulet of Fire waay too early - move to after level 30.
+- (DONE) Iron ring mail came up at lvl 10.. too soon?
+- (DONE) confused symbol not working (Muse)
+- (DONE) Turn down Iron Woven Robe quality a bit. 
+- (DONE) Set Muse random switch to other attack
+- (DONE) Shields and helmets at lower levels instead of high powered chest armor
+- (DONE) Change dwarf to pathfinder
+- (DONE) Amulet of fire identified twice?
+- (DONE) Game load screen doesn't refresh after death.. 
+- (DONE) muse confuse fired like 5 times on a turn....?
+- (DONE) Learned fire showed twice
+- (DONE) MOnsters don't react after spell (FIRE)
+- (DONE) Monstors should engage if attacked
+- (DONE) Was able to drop cursed short sword - didn't show up red after picked up
+- (DONE) fix first column of maze. Looks like a layout generation bug
+- (DONE) Couldn't perform any ateration actions when MP was low
+- (DONE) Enemies behind stairwells
+- (DONE) Change DungeonTick on Animation return to ProcessTurn - with no enemy reactions.
+- (DONE) fix alterations on level up - doesn't remove
+- (DONE) Deactivate across skill progress up boundary (didn't shut off adept 1 when skill grew up to adept 2)
+- (DONE) Unequipping didn't remove skills / equip spells
+- (DONE) Quality two handed sword waaay to strong?
+- (DONE) Skill level up had wrong level number
+- (DONE) shop level doesn't wait till you step on the shop to show the button
+- (DONE) Text on encyclopedia not initialized to empty string
+- (DONE) Set shop values
+- (DONE) changing skills doesn't deactivate them
+- (DONE) Can't reactivate skills
+- (DONE) Griffin / Troll didn't engage (path finding bug - need to sort cells by closest to player)
+- (DONE) scroll asking for mp
+- (DONE) Thumb on item grid
+- (DONE) Skill grid needs scroll bar
+- (DONE) Succubus sleep is ANNNOYING! Change to longer event time and make it one time only then switch to heatseeker / melee
+- (DONE) reveal monster scroll not working
+- (DONE) Add asuage hunger skill as manual
+- (DONE) Throwable potions (love potion, poison potion, blindness, etc..)
+- (DONE) Remove food cost from staff of wisdom
+- (DONE) Raise cost of Centaur arrow MP (lowered MP)
+- (DONE) Raise damage from Fire 2 and Fire 3
+- (DONE) Add spell to necronamican - use ~25 hunger to go to level up?
+- (DONE) Add physical damage to permanent alteration
+- (DONE) Intelligence boost didn't affect MP regen
+- (DONE) shop items reset after leaving level and returning
+- (DONE) ***Very poor performance on rogue item grid
+- (DONE) Necronamican causes crash
+- (DONE) Orb of slow hunger has random settings on equip (check all equip spells)
+- (DONE) Equiping doesn't show icon (need to invalidate the images)
+- (DONE) Consumables didn't group right before identification
+- (DONE) Pride of hte Dwarves increases aura
+- (DONE) Pride of the dwarves quality too high
+- (DONE) Back button on identify screen doesn't work
+- (DONE) Identify didn't respect individual equipment flags
+- (DONE) consumables not grouped on popups
+
+- (NICE TO HAVE) preference for turning off high quality ray tracing
+- (NICE TO HAVE) Character state indicator (for player) / Alteration list
+- (NICE TO HAVE) Alteration Effect Description / Name
+- (NICE TO HAVE) stats section on the equip screen
+- (NICE TO HAVE) Add inspect object function that shows the short text of identified dungeon object
+- (NICE TO HAVE) Add "Love" character state
+- (NICE TO HAVE) Splash in between levels.. maybe link to game statistics...?
+- (NICE TO HAVE) "Radar" function.. a globe that attaches to the dungeon control and shows doodads, items, monsters (engaged / not engaged)
+- (NICE TO HAVE) Animate splash dialogs
+- (NICE TO HAVE) Random sayings on death screen
+- (NICE TO HAVE) New intro screen explaining dungeon objective
+- (NICE TO HAVE) Make shop keeper smiley the "advisor smiley of the game" - use as icon, and "helpful advisor" - like in skill tooltips
+- (NICE TO HAVE) Chose level of skill to use
+- (NICE TO HAVE) Full screen mode
+- (NICE TO HAVE) Explicitly show emphasized attribute progress
+- (NICE TO HAVE) Scroll bar on skill grid
+- (NICE TO HAVE) Enter dismisses advancement messages
+- (NICE TO HAVE) Image randomizer per object type
+- (NICE TO HAVE) Scale Attack by 200
+- (NICE TO HAVE) function keys to switch screens
+- (NICE TO HAVE) Mouseless consume / equip
+- (NICE TO HAVE) Keyboard shortcut to cycle through active skill
+- (NICE TO HAVE) bringing up popups turn on identify buttons, etc...
+- (NICE TO HAVE) Quick display on dungeon map for equipment
+- (NICE TO HAVE) Spell trades items for experience
+
+- (BALANCE) Text for all effects
+- (BALANCE) Rename Ring of anti magic to Muse's ring - and curse it
+- (BALANCE) Regenerate message empty
+- (BALANCE) Griffins drop mana potions
+- (BALANCE) Jaberwokee's too easy. Give them a magical power
+- (BALANCE) Freezing dagger - make it reduce agility not paralyze
+- (BALANCE) Raise Bolt damage (comes in around level 30)
+- (BALANCE) Lower stun rate of Behemoths to < 1%
+- (BALANCE) Lower probability of finding manuals (maybe add more skills to create variety)
+- (BALANCE) Remove small rock
+- (BALANCE) Incubus, Pegasus, Roc, Ogre = ANNOYING
+- (BALANCE) Introduce more monsters / monster per level after level 25
+- (BALANCE) Traps
+- (BALANCE) More malicious items
+- (BALANCE) Reduce the number of "good items"
+- (BALANCE) Reduce effectiveness of plated armor or move to level 40+
+- (BALANCE) Enemy blocks spell
+
+
+- (PERFORMANCE) Dungeon object deltas via controller.... pretty big refactoring
+
+- (FUNCTION) Stackable / Not-Stackable flag for alterations
+- (FUNCTION) Show skill mastry and remove emphasis at top level
+- (FUNCTION) Include version number in main application and stat upload 
+
+- (BUG) teleport msg for enemy using scroll
+- (BUG) Uncurse broken
+- (BUG) inventory items not updating everywhere
+- (BUG) Skill mastery doesn't stop at top level 
+- (BUG) Vampire spell boosted experience
+
+Attack Attributes
+-----------------
+
+Need to interpret these per alteration type:
+
+PassiveSource:  Attack, Defense get applied to melee
+PassiveAura: N/A
+TemporarySource:  Attack, Defense get applied to melee
+TemporaryTarget:  N/A
+Permanent*:  N/A
+
+Need to couple these to normal attribute alteration: 
+
+Example: Poison - Moemrath casts poison, use attack attribute to calculate loss per step?
+
+Use Diablo 3 calculation:  Damage Reduction Multiplier = Resistance / (C*(Enemy Level) + Resistance)
+
+Just substitute enemy level with attack value:  DRM = R / (A + R)
+
+Example:  Poison Dmg (2 per step) - Armor of +5 Poison Resistance
+	
+	DRM = 5 / 5 + 2 = 5 / 7
+
+	Damage Per Step = (2/7)*2 = 4/7 ~ 0.57 (HP / Step)
+
+Can use Temporary Target Alteration as a vehicle:
+
+Remedies
+--------
+
+Concept:  Need a way to remove "remedy" an alteration by cosuming another object
+
+Example:  Poison - created by a temporary target / source alteration
+
+	1) HP Dmg per step calculated based on player equipment melee values, alteration attack attrib, and any other alteration attrib
+
+	2) Consumable 'x' has remedy alteration set to poison alteration
+
+	3) Consuming 'x' has the affect of removing the alteration
+
+Issues:  
+
+	1) Temporary Source alteration has 2 uses - malign and friendly (attack applied to self, or attack attrib applied to melee)
+
+	2) Consumable can only target one alteration
+
+	3) Unset values have the potential to corrupt character alterations
+
+Design Issues
+-------------
+
+- Attack attributes necessary to create more ways to balance the game. Their interpretation needs to be kept clear
+
+- Spell degeneracy - need to make clearer separation between Target, Source, Special, Aura, Passive, etc... Also, refactoring
+of consumable spells - projectile -> throw, and change UI to only allow what the consumable is capable of (example is flame rock)
+
+- Relies too heavily on skill mastery as a "one bullet solution" - slow down mastery and create more items that use attack attributes
+to balance melee.
+
+- Need "remedies" - consumables that remove alterations. Make sure to have multiple remedy alterations per consumable - and to validate
+against where the alteration is applied - maybe have a flag that says "alteration is remedy-able" ( Handle via permanent alterations)
+
+- Might have to separate attack attribute alterations out - and solve the degeneracy with temporary source alteration. 
+
+- Create and implement "Per Step" Alteration Cost type and get rid of mp per step flag on the alteration
+
+- Add attack attributes directly to equipment and free up equip spell
+
+- Need to create a dungeon object template that only has symbol information and a name and a description - use for attack attributes and
+character classes
+
+- Need "stackable" flag on alterations - also need to double check unique name validation on alterations
+
+- Add symbol detail to spell - along with a description and display name
+
+- Add Shoulder armor type
+- Add Belt armor type
+
+- Refactor physical / spell blocking for player and enemies
+
+- Add AOE types to alterations???
+
+- Randomizable image set???
+
+- Make shop UI more responsive and useable
+
+- Set Items
+
+- Invisibility
+
+Attack Attribute Alteration
+---------------------------
+
+Need to cover the following from normal alterations
+
+PassiveSource:  Attack, Defense get applied to melee
+TemporarySource (Good):  Attack, Defense get applied to melee
+TemporarySource (Malign):  Attack gets applied to self per step
+
+Resulting List of types to support:
+
+Imbue:  Permanently alter equipment with attack attributes
+Passive:  Attack and Defense get applied to melee (example: some sort of skill alteration)
+TemporaryFriendly:  Attack and Defense get applied to melee for the event period
+TemporaryMalign:  Attack is applied per step to the character for the event period
+
+0 - Remove current attack attributes from Easy.r2c - reapply when finished
+1 - Add "AttackAttribute" enum type to alteration type enum
+2 - Add "AttackAttributeSubType" enum type to alteration
+3 - Hide unused UI elements for attack attribute alterations
+4 - Create dungeon object that is Symbol + Name + Description
+5 - Apply to spells, attack attributes, and creature classes
+
+Alteration Validation Rules
+---------------------------
+
+- ONLY SKILLS CAN HAVE PASSIVE ATTACK ATTRIB ALT
+- Equip spell alterations can't have remedies
+- Permanent alterations can't have remedies
+- special effects cant have remedies
+- equipment spell can't have attack attribute alteration
+
+- (Per Step Cost) PASSIVE, PASSIVESOURCE, PASSIVEAURA ONLY
+- Remedied spell alterations can only be permanent type
+- Remedied spells can only be of temporary type or attack attribute temporary malign type
+
+Other Validation Rules

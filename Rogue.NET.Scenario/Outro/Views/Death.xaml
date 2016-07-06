@@ -1,0 +1,290 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
+             x:Class="Rogue.NET.Scenario.Outro.Views.DeathDisplay" 
+             mc:Ignorable="d" 
+             d:DesignHeight="587.833" d:DesignWidth="1127.167">
+	<UserControl.Resources>
+		<Style x:Key="ActivateButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="Background" Value="#F4F4F4"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Content" Value="In-Active" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle1" Stroke="#FF000BFF" Margin="0" Width="Auto" RadiusX="4" RadiusY="4" Fill="#7F000000"/>
+							<Rectangle x:Name="rectangle" Margin="8" Width="Auto" RadiusY="6" RadiusX="4" Stroke="#24000BFF" Opacity="0.495">
+								<Rectangle.Fill>
+									<RadialGradientBrush Center="0.5,0.987" GradientOrigin="0.5,0.987" RadiusX="0.469" RadiusY="0.469">
+										<GradientStop Color="#0A0D00FF" Offset="1"/>
+										<GradientStop Color="#AEFFFFFF"/>
+										<GradientStop Color="#7B6C6C6C" Offset="0.901"/>
+									</RadialGradientBrush>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="StrokeThickness" TargetName="rectangle" Value="2"/>
+								<Setter Property="StrokeThickness" TargetName="rectangle1" Value="2"/>
+								<Setter Property="Opacity" TargetName="rectangle" Value="0.785"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle">
+									<Setter.Value>
+										<RadialGradientBrush Center="0.496,0.026" GradientOrigin="0.496,0.026" RadiusX="0.469" RadiusY="0.469">
+											<GradientStop Color="#0A0D00FF" Offset="0.918"/>
+											<GradientStop Color="#AEFFFFFF"/>
+											<GradientStop Color="#D76C6C6C" Offset="0.901"/>
+										</RadialGradientBrush>
+									</Setter.Value>
+								</Setter>
+								<Setter Property="Fill" TargetName="rectangle1" Value="#7F00FA3E"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle">
+									<Setter.Value>
+										<RadialGradientBrush Center="0.5,0.987" GradientOrigin="0.5,0.987" RadiusX="0.469" RadiusY="0.469">
+											<GradientStop Color="#0AFFFFFF" Offset="1"/>
+											<GradientStop Color="#7F000000" Offset="0"/>
+											<GradientStop Color="#7FFFFFFF" Offset="0.875"/>
+										</RadialGradientBrush>
+									</Setter.Value>
+								</Setter>
+								<Setter Property="Fill" TargetName="rectangle1" Value="#7F000000"/>
+								<Setter Property="Stroke" TargetName="rectangle1" Value="#FF00FF11"/>
+								<Setter Property="Stroke" TargetName="rectangle" Value="#2400FF11"/>
+								<Setter Property="Opacity" TargetName="rectangle" Value="0.71"/>
+								<Setter Property="Content" Value="Active" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Storyboard x:Key="OnMouseEnter1"/>
+		<Storyboard x:Key="OnMouseEnterContinue"/>
+		<Storyboard x:Key="OnMouseEnterExit"/>
+		<Style x:Key="ContinueButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+			<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<ControlTemplate.Resources>
+							<Storyboard x:Key="MouseOverStoryboard">
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SmileyContinue">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.5"/>
+								</DoubleAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Effect).(BlurEffect.Radius)" Storyboard.TargetName="textBlock">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="100"/>
+								</DoubleAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="ellipse">
+									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#0AFFFFFF"/>
+								</ColorAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Offset)" Storyboard.TargetName="ellipse">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+								</DoubleAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Offset)" Storyboard.TargetName="ellipse">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+								</DoubleAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="ellipse">
+									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="White"/>
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</ControlTemplate.Resources>
+						<Grid Height="Auto" Width="Auto">
+							<Grid x:Name="grid" Cursor="Hand" HorizontalAlignment="Center" d:LayoutOverrides="Width, Height" Margin="10,20">
+                                <common:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyMood="Happy" SmileyRadius="13" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
+								<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Continue" Foreground="White" FontSize="32" Margin="0" VerticalAlignment="Center" d:LayoutOverrides="Width" HorizontalAlignment="Center">
+									<TextBlock.Effect>
+										<BlurEffect Radius="0"/>
+									</TextBlock.Effect>
+								</TextBlock>
+							</Grid>
+							<Ellipse x:Name="ellipse" HorizontalAlignment="Stretch">
+								<Ellipse.Fill>
+									<RadialGradientBrush Center="0.495,0.083" GradientOrigin="0.495,0.083" RadiusY="0.439" RadiusX="0.439">
+										<GradientStop Color="#00000000" Offset="1"/>
+										<GradientStop Color="#54FFFFFF"/>
+									</RadialGradientBrush>
+								</Ellipse.Fill>
+								<Ellipse.Stroke>
+									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+										<GradientStop Color="#00000000" Offset="0"/>
+										<GradientStop Color="White" Offset="1"/>
+									</LinearGradientBrush>
+								</Ellipse.Stroke>
+							</Ellipse>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Trigger.ExitActions>
+									<RemoveStoryboard BeginStoryboardName="MouseOverStoryboard_BeginStoryboard"/>
+								</Trigger.ExitActions>
+								<Trigger.EnterActions>
+									<BeginStoryboard x:Name="MouseOverStoryboard_BeginStoryboard" Storyboard="{StaticResource MouseOverStoryboard}"/>
+								</Trigger.EnterActions>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="SmileyMood" TargetName="SmileyContinue" Value="Shocked"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExitButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+			<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid Height="Auto" Width="Auto">
+							<StackPanel Orientation="Horizontal" Cursor="Hand" d:LayoutOverrides="Width, Height" HorizontalAlignment="Center">
+								<common:Smiley x:Name="SmileyExit" Height="45" SmileyColor="#FF0800FF" SmileyLineColor="#FF00FF04" SmileyMood="Sad" SmileyRadius="6" Margin="8" Width="30"/>
+								<TextBlock x:Name="textBlock1" TextWrapping="Wrap" Text="Exit" Margin="8" FontSize="32" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+									<TextBlock.Effect>
+										<BlurEffect Radius="0"/>
+									</TextBlock.Effect>
+								</TextBlock>
+							</StackPanel>
+							<Ellipse Margin="0" VerticalAlignment="Stretch">
+								<Ellipse.Fill>
+									<RadialGradientBrush Center="0.495,0.083" GradientOrigin="0.495,0.083" RadiusY="0.439" RadiusX="0.439">
+										<GradientStop Color="#00000000" Offset="1"/>
+										<GradientStop Color="#54FFFFFF"/>
+									</RadialGradientBrush>
+								</Ellipse.Fill>
+								<Ellipse.Stroke>
+									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+										<GradientStop Color="#00000000" Offset="0"/>
+										<GradientStop Color="White" Offset="1"/>
+									</LinearGradientBrush>
+								</Ellipse.Stroke>
+							</Ellipse>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Effect" TargetName="textBlock1">
+									<Setter.Value>
+										<BlurEffect Radius="10"/>
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ExitButtonStyleNew" TargetType="{x:Type Button}">
+			<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+			<Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<ControlTemplate.Resources>
+							<Storyboard x:Key="MouseOverStoryboard">
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SmileyContinue">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0.5"/>
+								</DoubleAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Effect).(BlurEffect.Radius)" Storyboard.TargetName="textBlock">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="100"/>
+								</DoubleAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="ellipse">
+									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#0AFFFFFF"/>
+								</ColorAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Offset)" Storyboard.TargetName="ellipse">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+								</DoubleAnimationUsingKeyFrames>
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Offset)" Storyboard.TargetName="ellipse">
+									<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+								</DoubleAnimationUsingKeyFrames>
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="ellipse">
+									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="White"/>
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</ControlTemplate.Resources>
+						<Grid Height="Auto" Width="Auto">
+							<Grid x:Name="grid" Cursor="Hand" HorizontalAlignment="Center" d:LayoutOverrides="Width, Height" Margin="10,20">
+								<common:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyMood="Sad" SmileyRadius="13" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
+								<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Exit" Foreground="White" FontSize="32" Margin="0" VerticalAlignment="Center" d:LayoutOverrides="Width" HorizontalAlignment="Center">
+									<TextBlock.Effect>
+										<BlurEffect Radius="0"/>
+									</TextBlock.Effect>
+								</TextBlock>
+							</Grid>
+							<Ellipse x:Name="ellipse" HorizontalAlignment="Stretch">
+								<Ellipse.Fill>
+									<RadialGradientBrush Center="0.495,0.083" GradientOrigin="0.495,0.083" RadiusY="0.439" RadiusX="0.439">
+										<GradientStop Color="#00000000" Offset="1"/>
+										<GradientStop Color="#54FFFFFF"/>
+									</RadialGradientBrush>
+								</Ellipse.Fill>
+								<Ellipse.Stroke>
+									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+										<GradientStop Color="#00000000" Offset="0"/>
+										<GradientStop Color="White" Offset="1"/>
+									</LinearGradientBrush>
+								</Ellipse.Stroke>
+							</Ellipse>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Trigger.ExitActions>
+									<RemoveStoryboard BeginStoryboardName="MouseOverStoryboard_BeginStoryboard"/>
+								</Trigger.ExitActions>
+								<Trigger.EnterActions>
+									<BeginStoryboard x:Name="MouseOverStoryboard_BeginStoryboard" Storyboard="{StaticResource MouseOverStoryboard}"/>
+								</Trigger.EnterActions>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="SmileyMood" TargetName="SmileyContinue" Value="Shocked"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Resources>
+    <Grid Background="Black">
+    	<StackPanel Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+    		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+    			<TextBlock x:Name="NameTextBlock" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PlayerName}"/>
+    			<TextBlock
+    			x:Name="DashTExt" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text=" - "/>
+    			<TextBlock x:Name="DiedOfTextBlock"
+    		TextWrapping="Wrap" Text="{Binding DiedOf}" FontSize="32" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8"/>
+    		</StackPanel>
+    		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    			<Button x:Name="ContinueButton" Click="ContinueButton_Click" Content="Button" Style="{DynamicResource ContinueButtonStyle}" Margin="8" Cursor="Hand" Height="175" Width="175"/>
+    			<Button x:Name="ExitButton" Click="ExitButton_Click" Content="Button" Style="{DynamicResource ExitButtonStyleNew}" Cursor="Hand" Width="175" Height="175" Margin="8"/>
+    		</StackPanel>
+    	</StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.ColorComboBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <UserControl.Resources>
+        <local:ColorItemConverter x:Key="ColorItemConverter" />
+    </UserControl.Resources>
+    <ComboBox x:Name="TheComboBox" SelectionChanged="TheComboBox_SelectionChanged" HorizontalContentAlignment="Stretch">
+        <ComboBox.ItemTemplate>
+            <DataTemplate>
+                <Grid Background="Transparent">
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Name}" />
+                    <Rectangle Width="36" HorizontalAlignment="Right" Fill="{Binding Color}" />
+                </Grid>
+            </DataTemplate>
+        </ComboBox.ItemTemplate>
+    </ComboBox>
+</UserControl>

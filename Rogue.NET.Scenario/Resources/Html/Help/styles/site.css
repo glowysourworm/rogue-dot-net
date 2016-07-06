@@ -1,0 +1,89 @@
+/*
+@font-face {
+	font-family: prociono;
+	src: url('../content/Prociono-Regular-webfont.ttf'),
+    	 url('../content/Prociono-Regular-webfont.eot'),
+		 url('../content/Prociono-Regular-webfont.woff'),    	 
+		 url('../content/Prociono-Regular-webfont.svg');    	 
+	font-weight:100;
+}
+*/
+@font-face {
+	font-family: centaur;
+	src: url('../content/Centaur.ttf');
+}
+
+html {
+	font-family: centaur;
+	font-size:1.2em;
+	text-align:center;
+	width:100%;
+	background-color:black;
+
+	color:white;
+}
+
+.main-view {
+
+	width:960px;
+	text-align:left;
+	margin:auto;
+}
+
+.section {
+	padding:20px;
+	border:1px solid white;
+	margin-bottom:20px;
+}
+
+.section > h3 {
+	color: beige;
+}
+
+.section > img {
+	max-width:920px;
+}
+
+img {
+	max-width:960px;
+}
+
+a {
+	color:#AAF;
+	text-decoration: none;
+}
+
+a:visited {
+	color:#AAF;
+}
+
+.clear {
+	clear:both;
+}
+
+ul {
+	list-style: none;
+}
+
+div.header-list > * {
+	display:inline;
+}
+div.header-list > h4 {
+	color:#AAF;
+}
+div.header-list > p {
+	text-align:right;
+}
+
+.highlight-box {
+	padding:20px;
+	border:solid 1px #888;
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+.highlight-box > h5 {
+	font-size:1.005em;
+	color:#AAF;
+	margin-top:-10px;
+}

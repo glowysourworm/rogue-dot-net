@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Views.Gadgets.GadgetContainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>  
+        <Grid>
+            <Border x:Name="ActiveGadgetBorder" BorderBrush="White" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0.75" Height="24" Width="24" CornerRadius="4">
+                <Image x:Name="ActiveGadget" />
+            </Border>
+            <TextBlock x:Name="ActiveGadgetName" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="#FFFFDE87" />
+            <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="RightButton" Click="RightButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" Margin="2,0,0,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Right" Grid.Row="2" />
+        </Grid>
+        <Grid Grid.Row="1" x:Name="ActiveGadgetContainer" VerticalAlignment="Stretch">
+            
+        </Grid>
+    </Grid>
+</UserControl>

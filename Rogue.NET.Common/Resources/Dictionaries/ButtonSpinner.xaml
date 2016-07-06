@@ -1,0 +1,100 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+                    xmlns:extToolkitChromes="clr-namespace:Xceed.Wpf.Toolkit.Chromes;assembly=WPFToolkit.Extended">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <Style TargetType="{x:Type extToolkit:IntegerUpDown}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Watermark" Value="Enter a Value" />
+    </Style>
+    <Style TargetType="{x:Type extToolkit:DoubleUpDown}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Watermark" Value="Enter a Value" />
+    </Style>    
+    
+    <Style TargetType="{x:Type extToolkit:ButtonSpinner}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="True" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFA3AEB9" Offset="0" />
+                    <GradientStop Color="#FF8399A9" Offset="0.375" />
+                    <GradientStop Color="#FF718597" Offset="0.375" />
+                    <GradientStop Color="#FF617584" Offset="1" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="White" />                
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type extToolkit:ButtonSpinner}">
+                    <Grid>
+                        <Border x:Name="ElementContainer" 
+                                Background="#222222"
+                                BorderBrush="White" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Padding="{TemplateBinding Padding}">
+                            <DockPanel Focusable="False">
+                                <Grid DockPanel.Dock="Right" Visibility="{TemplateBinding ShowButtonSpinner, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="1" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Button x:Name="PART_IncreaseButton" MinWidth="16" Margin="0" SnapsToDevicePixels="True" Grid.Row="0" ClickMode="Press" IsTabStop="{Binding IsTabStop, RelativeSource={RelativeSource TemplatedParent}}">
+                                        <Button.Content>
+                                            <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="8" Text="&#xf077;" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button x:Name="PART_DecreaseButton" MinWidth="16" Margin="0" SnapsToDevicePixels="True" Grid.Row="2" ClickMode="Press" IsTabStop="{Binding IsTabStop, RelativeSource={RelativeSource TemplatedParent}}" >
+                                        <Button.Content>
+                                            <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="8" Text="&#xf078;" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+                                <ContentControl x:Name="presentationSite" Focusable="False"
+                                                Foreground="{TemplateBinding Foreground}"
+                                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                Content="{TemplateBinding Content}" />
+
+                                <!--extToolkit:WatermarkTextBox 
+                                                x:Name="TextBox" 
+                                                AcceptsReturn="False" 
+                                                BorderThickness="0" 
+                                                Background="Transparent" 
+                                                ContextMenu="{TemplateBinding ContextMenu}" 
+                                                Foreground="{TemplateBinding Foreground}" 
+                                                FontWeight="{TemplateBinding FontWeight}" 
+                                                FontStyle="{TemplateBinding FontStyle}" 
+                                                FontStretch="{TemplateBinding FontStretch}" 
+                                                FontSize="{TemplateBinding FontSize}" 
+                                                FontFamily="{TemplateBinding FontFamily}" 
+                                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                MinWidth="20" Padding="0" 
+                                                SelectAllOnGotFocus="{Binding SelectAllOnGotFocus, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                TextWrapping="NoWrap" 
+                                                Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                TabIndex="{TemplateBinding TabIndex}" 
+                                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                WatermarkTemplate="{Binding WatermarkTemplate, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                Watermark="{Binding Watermark, RelativeSource={RelativeSource TemplatedParent}}"/-->
+
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

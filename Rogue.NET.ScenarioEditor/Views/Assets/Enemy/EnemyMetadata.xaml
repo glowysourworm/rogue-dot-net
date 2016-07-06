@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Enemy.EnemyMetadata"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Background="Black"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                <Setter Property="Background" Value="{DynamicResource LightBrush}"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Grid.Column="1">
+            <Grid Margin="10">
+                <TextBlock Text="Short Description" Foreground="White" />
+                <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="300" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Long Description" Foreground="White" />
+                <TextBox Text="{Binding LongDescription}" HorizontalAlignment="Right" Width="300" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Is Unique" Foreground="White"/>
+                <CheckBox IsChecked="{Binding IsUnique}" HorizontalAlignment="Right" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

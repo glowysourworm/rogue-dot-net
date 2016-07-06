@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Spell.SpellTargetType"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Background="Black"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <StackPanel x:Name="RadioStack">
+            <RadioButton Checked="SourceRB_Checked" x:Name="SourceRB" Margin="10" Tag="Aura" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Source:  Affect just the invoker" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Checked="TargetRB_Checked" x:Name="TargetRB" Margin="10" Tag="Barrage" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Target:  Affect the target" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Checked="AllTargetsRB_Checked" x:Name="AllTargetsRB" Margin="10" Tag="Barrage" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="All Targets:  Affects all visible enemies" />
+                </RadioButton.Content>
+            </RadioButton>            
+        </StackPanel>
+    </Grid>
+</UserControl>

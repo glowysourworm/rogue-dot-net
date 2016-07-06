@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.ObjectiveDesign"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             mc:Ignorable="d" Background="Black"
+             d:DesignWidth="550">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+    </UserControl.Resources>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.Resources>
+                <DataTemplate x:Key="ObjectiveItemTemplate" DataType="ListBoxItem">
+                    <Grid Margin="4">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Image Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsConverter}}" />
+                            <TextBlock Foreground="White" Text="{Binding Name}" VerticalAlignment="Center" Margin="4" />
+                        </StackPanel>
+                        <CheckBox IsChecked="{Binding IsObjective, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock FontSize="18" Foreground="White" Text="Objective Design" Margin="10" />
+            <Grid Grid.Row="1">
+                <StackPanel>
+                    <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="The objectives selected here must be met before the player may exit the dungeon and complete the scenario" />
+                    <GroupBox Margin="10" Header="Item Objectives">
+                        <StackPanel>
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Item objectives must be collected by the player. They may be found either on a particular level or held by an enemy." />
+                            <ListBox x:Name="ItemsLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Margin="10" Header="Enemy Objectives">
+                        <StackPanel>
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Enemies set as objectives must be slain before the player may exit the dungeon." />
+                            <ListBox x:Name="EnemyLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Margin="10" Header="Dungeon Object Objectives">
+                        <StackPanel>
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Dungeon Objects selected here must be used at least once before the player may exit." />
+                            <ListBox x:Name="DoodadLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+    </ScrollViewer>
+</UserControl>
+    

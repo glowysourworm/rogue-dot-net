@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Spell.SpellPassive"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             mc:Ignorable="d" Background="Black"
+             d:DesignHeight="500" d:DesignWidth="550">
+    <Grid>
+        <StackPanel x:Name="RadioStack">
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static common:AlterationType.PassiveAura}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Passive Aura:  This type of passive spell affects characters within a radius of the invoker" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static common:AlterationType.PassiveSource}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Passive Source:  This type of passive spell affects just the invoker" />
+                </RadioButton.Content>
+            </RadioButton>
+        </StackPanel>
+    </Grid>
+</UserControl>
