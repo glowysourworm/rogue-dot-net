@@ -17,6 +17,7 @@ using Rogue.NET.Common;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Scenario.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Intro.Views
 {

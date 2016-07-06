@@ -24,6 +24,7 @@ using Rogue.NET.Scenario.ViewModel;
 using Rogue.NET.Model;
 using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Scenario.Views
 {

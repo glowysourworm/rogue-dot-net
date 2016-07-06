@@ -1,4 +1,5 @@
 ﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;

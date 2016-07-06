@@ -9,6 +9,7 @@ using Rogue.NET.Scenario;
 using Rogue.NET.Common;
 using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Model.Scenario;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model.Generation
 {

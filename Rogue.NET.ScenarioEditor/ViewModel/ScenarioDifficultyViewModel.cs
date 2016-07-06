@@ -1,4 +1,5 @@
 ﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Rogue.NET.ScenarioEditor.Events;
 using System;
 using System.Collections.Generic;

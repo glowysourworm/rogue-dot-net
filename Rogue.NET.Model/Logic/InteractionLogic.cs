@@ -12,9 +12,10 @@ using Rogue.NET.Model;
 using Rogue.NET.Scenario.Model;
 using Rogue.NET.Model.Generation;
 using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Unity;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Events.Splash;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.Unity;
 
 namespace Rogue.NET.Model.Logic
 {

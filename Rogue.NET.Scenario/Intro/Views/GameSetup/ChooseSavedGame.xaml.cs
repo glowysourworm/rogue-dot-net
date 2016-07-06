@@ -1,4 +1,5 @@
 ﻿using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using System;

@@ -16,6 +16,7 @@ using Rogue.NET.Intro.Views;
 using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Scenario
 {

@@ -1,34 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{F865F9BC-6869-446E-A8C6-A2B76095226A}"
 	ProjectSection(SolutionItems) = preProject
 		Dependencies\Dotway.WPF.Effects.dll = Dependencies\Dotway.WPF.Effects.dll
 		Dependencies\Lovatts.ColorEditor.dll = Dependencies\Lovatts.ColorEditor.dll
-		Dependencies\Microsoft.Expression.Controls.dll = Dependencies\Microsoft.Expression.Controls.dll
-		Dependencies\Microsoft.Expression.Drawing.dll = Dependencies\Microsoft.Expression.Drawing.dll
-		Dependencies\Microsoft.Practices.Prism.dll = Dependencies\Microsoft.Practices.Prism.dll
-		Dependencies\Microsoft.Practices.Prism.Interactivity.dll = Dependencies\Microsoft.Practices.Prism.Interactivity.dll
-		Dependencies\Microsoft.Practices.Prism.MefExtensions.dll = Dependencies\Microsoft.Practices.Prism.MefExtensions.dll
-		Dependencies\Microsoft.Practices.Prism.UnityExtensions.dll = Dependencies\Microsoft.Practices.Prism.UnityExtensions.dll
-		Dependencies\Microsoft.Practices.ServiceLocation.dll = Dependencies\Microsoft.Practices.ServiceLocation.dll
-		Dependencies\Microsoft.Practices.Unity.dll = Dependencies\Microsoft.Practices.Unity.dll
 		Dependencies\Microsoft.Windows.Design.Extensibility.dll = Dependencies\Microsoft.Windows.Design.Extensibility.dll
 		Dependencies\PixelLab.Common.dll = Dependencies\PixelLab.Common.dll
 		Dependencies\PixelLab.Core.dll = Dependencies\PixelLab.Core.dll
 		Dependencies\PixelLab.Wpf.dll = Dependencies\PixelLab.Wpf.dll
 		readme.txt = readme.txt
 		Dependencies\SharpLZW.dll = Dependencies\SharpLZW.dll
-		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Design.4.0.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Design.4.0.dll
-		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.dll
-		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Expression.Design.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.Expression.Design.dll
-		Dependencies\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll
-		Dependencies\System.Windows.Controls.Input.Toolkit.Design.dll = Dependencies\System.Windows.Controls.Input.Toolkit.Design.dll
-		Dependencies\System.Windows.Controls.Input.Toolkit.dll = Dependencies\System.Windows.Controls.Input.Toolkit.dll
-		Dependencies\System.Windows.Controls.Input.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.Input.Toolkit.VisualStudio.Design.dll
-		Dependencies\System.Windows.Controls.Layout.Toolkit.Design.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.Design.dll
-		Dependencies\System.Windows.Controls.Layout.Toolkit.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.dll
-		Dependencies\System.Windows.Controls.Layout.Toolkit.VisualStudio.Design.dll = Dependencies\System.Windows.Controls.Layout.Toolkit.VisualStudio.Design.dll
 		Dependencies\WPFToolkit.Design.dll = Dependencies\WPFToolkit.Design.dll
 		Dependencies\WPFToolkit.dll = Dependencies\WPFToolkit.dll
 		Dependencies\WPFToolkit.Extended.dll = Dependencies\WPFToolkit.Extended.dll

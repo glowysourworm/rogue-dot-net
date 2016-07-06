@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using Rogue.NET.Splash.ViewModel;
 using Rogue.NET.Splash.Views;
 using PixelLab.Wpf.Transitions;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET
 {

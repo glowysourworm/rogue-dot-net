@@ -18,6 +18,7 @@ using Rogue.NET.Common;
 using Rogue.NET.Model.Scenario;
 using Rogue.NET.Model;
 using Microsoft.Practices.Prism.Events;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Scenario.Views
 {

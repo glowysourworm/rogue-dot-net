@@ -13,6 +13,7 @@ using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Unity;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model.Logic
 {
