@@ -6,7 +6,7 @@
              xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
              xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              mc:Ignorable="d" ScrollViewer.VerticalScrollBarVisibility="Auto"
              d:DesignHeight="500" d:DesignWidth="550">

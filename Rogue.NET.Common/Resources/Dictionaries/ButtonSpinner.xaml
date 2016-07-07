@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
-                    xmlns:extToolkitChromes="clr-namespace:Xceed.Wpf.Toolkit.Chromes;assembly=WPFToolkit.Extended">
+                    xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+                    xmlns:extToolkitChromes="clr-namespace:Xceed.Wpf.Toolkit.Chromes;assembly=Xceed.Wpf.Toolkit">
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     <Style TargetType="{x:Type extToolkit:IntegerUpDown}">

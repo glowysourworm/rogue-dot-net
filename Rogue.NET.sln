@@ -8,15 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 		Dependencies\Dotway.WPF.Effects.dll = Dependencies\Dotway.WPF.Effects.dll
 		Dependencies\Lovatts.ColorEditor.dll = Dependencies\Lovatts.ColorEditor.dll
 		Dependencies\Microsoft.Windows.Design.Extensibility.dll = Dependencies\Microsoft.Windows.Design.Extensibility.dll
-		Dependencies\PixelLab.Common.dll = Dependencies\PixelLab.Common.dll
-		Dependencies\PixelLab.Core.dll = Dependencies\PixelLab.Core.dll
-		Dependencies\PixelLab.Wpf.dll = Dependencies\PixelLab.Wpf.dll
 		readme.txt = readme.txt
-		Dependencies\SharpLZW.dll = Dependencies\SharpLZW.dll
-		Dependencies\WPFToolkit.Design.dll = Dependencies\WPFToolkit.Design.dll
-		Dependencies\WPFToolkit.dll = Dependencies\WPFToolkit.dll
-		Dependencies\WPFToolkit.Extended.dll = Dependencies\WPFToolkit.Extended.dll
-		Dependencies\WPFToolkit.VisualStudio.Design.dll = Dependencies\WPFToolkit.VisualStudio.Design.dll
 		Dependencies\WPGBrushEditor.dll = Dependencies\WPGBrushEditor.dll
 	EndProjectSection
 EndProject

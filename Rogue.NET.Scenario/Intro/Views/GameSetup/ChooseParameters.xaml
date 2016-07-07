@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Background="Black"
              xmlns:commonViews="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:pixelab="clr-namespace:PixelLab.Wpf;assembly=PixelLab.Wpf">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=WPFToolkit.Extended"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" Background="Black"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
