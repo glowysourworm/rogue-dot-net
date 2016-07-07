@@ -30,15 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dotway.WPF.Controls">
-      <HintPath>..\Dependencies\Dotway.WPF.Controls.dll</HintPath>
-    </Reference>
     <Reference Include="Dotway.WPF.Effects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c96ec94528d172a9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
-    </Reference>
-    <Reference Include="Dotway.WPF.Panels">
-      <HintPath>..\Dependencies\Dotway.WPF.Panels.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Composition, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Composition.5.0.0\lib\NET45\Microsoft.Practices.Prism.Composition.dll</HintPath>

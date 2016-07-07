@@ -40,17 +40,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dotway.WPF.Controls">
-      <HintPath>..\Dependencies\Dotway.WPF.Controls.dll</HintPath>
-    </Reference>
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
-    </Reference>
-    <Reference Include="Dotway.WPF.Panels">
-      <HintPath>..\Dependencies\Dotway.WPF.Panels.dll</HintPath>
-    </Reference>
-    <Reference Include="Dotway.WPF.Samples.DotwaySampleApplication">
-      <HintPath>..\Dependencies\Dotway.WPF.Samples.DotwaySampleApplication.exe</HintPath>
     </Reference>
     <Reference Include="Lovatts.ColorEditor">
       <HintPath>..\Dependencies\Lovatts.ColorEditor.dll</HintPath>

@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandBehaviours">
-      <HintPath>..\Dependencies\CommandBehaviours.dll</HintPath>
-    </Reference>
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
     </Reference>
@@ -236,6 +233,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="Events\Splash\SplashUpdateEvent.cs" />
     <Compile Include="Extensions\ButtonExtension.cs" />
+    <Compile Include="Utilities\EventBehaviorFactory.cs" />
     <Compile Include="Utilities\Taskbar.cs" />
     <Compile Include="Utilities\ZipEncoder.cs" />
     <Compile Include="Views\DisappearingButton.xaml.cs">

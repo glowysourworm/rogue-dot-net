@@ -1,5 +1,4 @@
-﻿using FunctionalFun.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Rogue.NET.Common.Utilities;
 
 namespace Rogue.NET.Common.Controls
 {
@@ -236,7 +236,7 @@ namespace Rogue.NET.Common.Controls
     public static class EditableTextBlockBehavior
     {
         public static readonly DependencyProperty LostFocusCommand =
-            EventBehaviourFactory.CreateCommandExecutionEventBehaviour(EditableTextBlock.LostFocusEvent, "LostFocusCommand", typeof(EditableTextBlockBehavior));
+            EventBehaviorFactory.CreateCommandExecutionEventBehaviour(EditableTextBlock.LostFocusEvent, "LostFocusCommand", typeof(EditableTextBlockBehavior));
 
         public static void SetLostFocusCommand(DependencyObject obj, ICommand value)
         {
