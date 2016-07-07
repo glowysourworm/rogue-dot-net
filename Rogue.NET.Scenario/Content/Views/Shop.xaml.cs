@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using Rogue.NET.Common;
 using Rogue.NET.Scenario.Model;
 using Rogue.NET.Model.Scenario;
-using Dotway.WPF.Effects;
 using Rogue.NET.Model;
 
 namespace Rogue.NET.Scenario.Views

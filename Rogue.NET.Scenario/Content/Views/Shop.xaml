@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-             xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects" x:Class="Rogue.NET.Scenario.Views.ShopCtrl">
+             x:Class="Rogue.NET.Scenario.Views.ShopCtrl">
     <UserControl.Resources>
         <DataTemplate x:Key="Rogue2ItemReadonlyListBoxItemTemplate" DataType="ListBoxItem">
             <Grid>
