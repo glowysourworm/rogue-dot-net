@@ -150,6 +150,10 @@
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\WPFToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WPG, Version=2.0.4722.33761, Culture=neutral, PublicKeyToken=8e0591ccfb808881, processorArchitecture=MSIL">
+      <HintPath>..\packages\Wpg.1.0.20150225.1\lib\Net\WPG.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=3.0.16174.17450, Culture=neutral, PublicKeyToken=ba83ff368b7563c6, processorArchitecture=MSIL">
       <HintPath>..\packages\Xceed.Wpf.AvalonDock.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <Private>True</Private>
