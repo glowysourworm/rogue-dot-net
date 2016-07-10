@@ -21,18 +21,18 @@
             </Grid>
             <Grid>
                 <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" Height="24" Grid.Column="1" Grid.Row="5" />
-                <TextBlock Grid.Row="5" Foreground="White" Text="Class" Margin="10" VerticalAlignment="Center" />                
+                <TextBlock Grid.Row="5" Foreground="White" Text="Class" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>
-                <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding WeightRange}" Height="24" Grid.Column="1" Grid.Row="6" />
-                <TextBlock Grid.Row="6" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
+                <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" Height="24" Grid.Column="1" Grid.Row="8" />
+                <TextBlock Grid.Row="7" Foreground="White" Text="Quality" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>
-                <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" Height="24" Grid.Column="1" Grid.Row="7" />
-                <TextBlock Grid.Row="7" Foreground="White" Text="Quality" Margin="10" VerticalAlignment="Center" />                
-            </Grid>
+                <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
+                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
+            </Grid>            
             <Grid>
-                <toolkit:IntegerUpDown Value="{Binding ShopValue, Mode=TwoWay}" HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="8" />
+                <toolkit:IntegerUpDown Value="{Binding ShopValue, Mode=TwoWay}" HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="9" />
                 <TextBlock Grid.Row="8" Foreground="White" Text="Shop Value" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>

@@ -92,7 +92,7 @@ namespace Rogue.NET.Model.Generation
             e.IsCursed = t.IsCursed;
             e.RogueName = t.Name;
             e.AmmoName = t.AmmoTemplate == null ? "" : t.AmmoTemplate.Name;
-            e.Weight = t.WeightRange.GetRandomValue(ref r);
+            e.Weight = t.Weight;
             e.Quality = t.Quality.GetRandomValue(ref r);
             e.ShopValue = t.ShopValue;
 

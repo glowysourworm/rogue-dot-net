@@ -871,7 +871,6 @@ namespace Rogue.NET.Model
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
         private Range<int> _class;
-        private Range<double> _weightRange;
         private Range<double> _quality;
         private EquipmentType _type;
         private SpellTemplate _equipSpell;
@@ -879,6 +878,7 @@ namespace Rogue.NET.Model
         private SpellTemplate _curseSpell;
         private ConsumableTemplate _ammoTemplate;
         private int _shopValue;
+        private double _weight;
         private bool _hasEquipSpell;
         private bool _hasAttackSpell;
         private bool _hasCurseSpell;
@@ -895,15 +895,15 @@ namespace Rogue.NET.Model
                 }
             }
         }
-        public Range<double> WeightRange
+        public double Weight
         {
-            get { return _weightRange; }
+            get { return _weight; }
             set
             {
-                if (_weightRange != value)
+                if (_weight != value)
                 {
-                    _weightRange = value;
-                    OnPropertyChanged("WeightRange");
+                    _weight = value;
+                    OnPropertyChanged("Weight");
                 }
             }
         }
@@ -1032,7 +1032,6 @@ namespace Rogue.NET.Model
         public EquipmentTemplate()
         {
             this.Class = new Range<int>(0, 10);
-            this.WeightRange = new Range<double>(0, 50);
             this.Type = EquipmentType.Ring;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
@@ -1045,7 +1044,6 @@ namespace Rogue.NET.Model
             : base(tmp)
         {
             this.Class = new Range<int>(0, 10);
-            this.WeightRange = new Range<double>(0, 50);
             this.Type = EquipmentType.Ring;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
