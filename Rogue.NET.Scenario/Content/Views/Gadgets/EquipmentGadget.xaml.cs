@@ -27,6 +27,8 @@ namespace Rogue.NET.Scenario.Content.Views.Gadgets
         }
         public void InitializeEvents(IEventAggregator eventAggregator)
         {
+            this.ItemGrid.EventAggregator = eventAggregator;
+
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe((evt) =>
             {
                 this.DataContext = evt.Data;

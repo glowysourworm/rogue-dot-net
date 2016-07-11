@@ -16,6 +16,6 @@
             <Rectangle Fill="DarkBlue" Opacity="0.3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             <TextBlock Text="Equipment" Foreground="#FFFFDE87" Opacity="1" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" />
         </Grid>
-        <scenario:ItemGrid VerticalContentAlignment="Stretch" Grid.Row="1" Mode="Equipment" MinHeight="300" IntendedAction="Equip" />
+        <scenario:ItemGrid x:Name="ItemGrid" VerticalContentAlignment="Stretch" Grid.Row="1" Mode="Equipment" MinHeight="300" IntendedAction="Equip" />
     </Grid>
 </UserControl>
