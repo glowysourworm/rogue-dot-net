@@ -32,7 +32,7 @@
         </Rectangle>
         <Rectangle x:Name="BarGloss" RadiusX="4" RadiusY="4" Grid.Column="1" Margin="0" HorizontalAlignment="Left">
             <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.7">
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" Opacity="0.4">
                     <GradientStop Color="White" Offset="0.2" />
                     <GradientStop Color="Transparent" Offset="0.5" />
                 </LinearGradientBrush>
