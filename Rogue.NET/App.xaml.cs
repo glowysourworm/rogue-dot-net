@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Rogue.NET.Unity;
 
 namespace Rogue.NET
 {
@@ -16,7 +17,8 @@ namespace Rogue.NET
 
             Taskbar.Hide();
 
-            this.DispatcherUnhandledException += (obj, ev) => { this.Shutdown(); };
+            AppDomain.CurrentDomain.UnhandledException += (obj, ev) => { Taskbar.Show(); };
+            AppDomain.CurrentDomain.ProcessExit += (obj, ev) => { Taskbar.Show(); };
 
             // The boostrapper will create the Shell instance, so the App.xaml does not have a StartupUri.
             Bootstrapper bootstrapper = new Bootstrapper();

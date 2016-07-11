@@ -6,7 +6,7 @@ using Microsoft.Practices.Prism.Modularity;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
-namespace Rogue.NET
+namespace Rogue.NET.Unity
 {
     public class AggregateModuleCatalog : IModuleCatalog
     {

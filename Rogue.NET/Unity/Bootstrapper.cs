@@ -23,7 +23,7 @@ using Rogue.NET.Splash.Views;
 using PixelLab.Wpf.Transitions;
 using Microsoft.Practices.Prism.PubSubEvents;
 
-namespace Rogue.NET
+namespace Rogue.NET.Unity
 {
     class Bootstrapper : UnityBootstrapper
     {

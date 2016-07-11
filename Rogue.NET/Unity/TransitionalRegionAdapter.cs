@@ -4,7 +4,7 @@ using Microsoft.Practices.Prism.Regions;
 using System.Collections.Specialized;
 using PixelLab.Wpf.Transitions;
 
-namespace Rogue.NET
+namespace Rogue.NET.Unity
 {
     public class TransitionPresenterRegionAdapater : RegionAdapterBase<TransitionPresenter>
     {

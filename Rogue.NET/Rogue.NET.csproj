@@ -224,18 +224,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AggregateModuleCatalog.cs" />
-    <Compile Include="Bootstrapper.cs" />
-    <Compile Include="BorderRegionAdapter.cs" />
-    <Compile Include="Shell.xaml.cs">
+    <Compile Include="Unity\AggregateModuleCatalog.cs" />
+    <Compile Include="Unity\Bootstrapper.cs" />
+    <Compile Include="Unity\BorderRegionAdapter.cs" />
+    <Compile Include="Unity\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransitionalRegionAdapter.cs" />
-    <Page Include="Shell.xaml">
+    <Compile Include="Unity\TransitionalRegionAdapter.cs" />
+    <Page Include="Unity\Shell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

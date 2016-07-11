@@ -19,7 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Rogue.NET
+namespace Rogue.NET.Unity
 {
     /// <summary>
     /// Interaction logic for Shell.xaml
