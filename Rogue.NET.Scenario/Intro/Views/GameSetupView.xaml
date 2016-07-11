@@ -28,7 +28,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="Rogue.NET" Foreground="White" FontSize="36" Margin="10" />
-        <TextBlock Text="© 2013 - Rogue.NET Project"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <TextBlock Text="© 2016 - Rogue.NET Project"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
         <pixelab:TransitionPresenter Grid.Row="1" 
                                      HorizontalAlignment="Stretch"

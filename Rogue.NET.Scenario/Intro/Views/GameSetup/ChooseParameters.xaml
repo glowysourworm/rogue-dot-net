@@ -22,15 +22,15 @@
                         HorizontalAlignment="Left" />
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Width="400">
             <Grid Margin="10">
-                <TextBlock Text="Rogue Name" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <extension:UpdatingTextBox Text="{Binding RogueName, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" />
+                <TextBlock Text="Rogue Name" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <extension:UpdatingTextBox Text="{Binding RogueName, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" FontSize="20" />
             </Grid>
             <Grid Margin="10">
-                <TextBlock Text="Scenario Seed" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <toolkit:IntegerUpDown Value="{Binding Seed, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" Minimum="1" Maximum="10000" />
+                <TextBlock Text="Scenario #" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <toolkit:IntegerUpDown Value="{Binding Seed, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" Minimum="1" Maximum="10000" FontSize="20" />
             </Grid>
             <Grid Margin="10">
-                <TextBlock Text="Survivor Mode" Foreground="White" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <TextBlock Text="Survivor Mode" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 <CheckBox IsChecked="{Binding SurvivorMode, Mode=TwoWay}" Margin="0,0,-6,0" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Play scenario without save points" />
             </Grid>
         </StackPanel>

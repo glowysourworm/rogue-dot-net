@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <TextBlock x:Name="GeneralInfoTB" VerticalAlignment="Center" Foreground="Beige" FontSize="16" Margin="0, 0, 0, 0" />
-            <TextBlock x:Name="SurvivorModeTB" Visibility="Collapsed" Text="SURVIVOR MODE" Foreground="Magenta" FontSize="16" Margin="10, 0, 0, 0" />
-            <TextBlock x:Name="ObjectiveAcheivedTB" Visibility="Collapsed" Text="Objective Acheived!" Foreground="Goldenrod" FontSize="16" Margin="10, 0, 0, 0" />
+            <TextBlock x:Name="GeneralInfoTB" VerticalAlignment="Center" Foreground="Beige" FontSize="20" Margin="0, 0, 0, 0" />
+            <TextBlock x:Name="SurvivorModeTB" Visibility="Collapsed" Text="SURVIVOR MODE" Foreground="Magenta" FontSize="20" Margin="10, 0, 0, 0" />
+            <TextBlock x:Name="ObjectiveAcheivedTB" Visibility="Collapsed" Text="Objective Acheived!" Foreground="Goldenrod" FontSize="20" Margin="10, 0, 0, 0" />
         </StackPanel>
         <TextBlock x:Name="TicksTB" HorizontalAlignment="Right" Foreground="White" FontSize="14" />
     </Grid>
