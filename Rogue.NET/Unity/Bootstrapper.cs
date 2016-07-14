@@ -8,7 +8,6 @@ using Rogue.NET.Common;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Scenario;
 using Rogue.NET.Model;
-using Rogue.NET.Online;
 using Rogue.NET.ScenarioEditor;
 using Rogue.NET.Splash;
 using System;
@@ -119,14 +118,6 @@ namespace Rogue.NET.Unity
                 InitializationMode = InitializationMode.OnDemand,
                 ModuleName = "Scenario",
                 ModuleType = typeof(ScenarioModule).AssemblyQualifiedName,
-                State = ModuleState.ReadyForInitialization
-            });
-
-            this.ModuleCatalog.AddModule(new ModuleInfo()
-            {
-                InitializationMode = InitializationMode.OnDemand,
-                ModuleName = "Online",
-                ModuleType = typeof(OnlineModule).AssemblyQualifiedName,
                 State = ModuleState.ReadyForInitialization
             });
 

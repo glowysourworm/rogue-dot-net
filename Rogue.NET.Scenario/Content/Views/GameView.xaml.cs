@@ -1,30 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Reflection;
-using System.IO;
-using Rogue.NET.Common;
 using Microsoft.Practices.Unity;
-using Microsoft.Practices.Prism.Events;
 using Microsoft.Practices.Prism.Regions;
-using System.Windows.Media.Animation;
 using Rogue.NET.Model;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Rogue.NET.Common.Views;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -35,13 +21,6 @@ namespace Rogue.NET.Scenario.Views
         readonly IEventAggregator _eventAggregator;
 
         bool _initialized = false;
-
-        readonly IEnumerable<Type> _displayTypes = new Type[]{
-            typeof(EquipmentSelectionCtrl),
-            typeof(DungeonEncyclopedia),
-            typeof(ShopCtrl),
-            typeof(LevelView)
-        };
 
         public GameView(IRegionManager regionManager, IUnityContainer unityContainer, IEventAggregator eventAggregator)
         {
@@ -72,60 +51,17 @@ namespace Rogue.NET.Scenario.Views
             });
         }
 
-        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        private void GameViewButton_Click(object sender, RoutedEventArgs e)
         {
             var levelData = this.DataContext as LevelData;
-            var displayTypes = levelData.Level.IsPlayerOnShop ? _displayTypes : _displayTypes.Except(new Type[] { typeof(ShopCtrl) });
+            var type = (sender as DisappearingButton).Tag as Type;
+
             var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
-            var view = (object)_unityContainer.Resolve<LevelView>();
-            var index = displayTypes.ToList().IndexOf(active.GetType());
-            if (index - 1 < 0)
-                view = _unityContainer.Resolve(displayTypes.Last());
-            else
-                view = _unityContainer.Resolve(displayTypes.ElementAt(index - 1));
+            var view = (object)_unityContainer.Resolve(type);
 
-            // slide animate the view
-            var animation = new DoubleAnimation(this.RenderSize.Width, new TimeSpan(0, 0, 0, 0, 300));
-            var translateTransform = new TranslateTransform(0, 0);
-            animation.Completed += (obj, ev) =>
-            {
-                ((FrameworkElement)active).RenderTransform = null;
-
-                // can use Add repeatedly due to the border region adapter
-                _regionManager.Regions["GameRegion"].Deactivate(active);
-                _regionManager.Regions["GameRegion"].Activate(view);
-            };
-
-            ((FrameworkElement)active).RenderTransform = translateTransform;
-            translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, animation.CreateClock());
-        }
-
-        private void RightButton_Click(object sender, RoutedEventArgs e)
-        {
-            var levelData = this.DataContext as LevelData;
-            var displayTypes = levelData.Level.IsPlayerOnShop ? _displayTypes : _displayTypes.Except(new Type[] { typeof(ShopCtrl) });
-            var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
-            var view = (object)_unityContainer.Resolve<LevelView>();
-            var index = displayTypes.ToList().IndexOf(active.GetType());
-            if (index + 1 >= displayTypes.Count())
-                view = _unityContainer.Resolve(displayTypes.First());
-            else
-                view = _unityContainer.Resolve(displayTypes.ElementAt(index + 1));
-
-            // slide animate the view
-            var animation = new DoubleAnimation(-1 *this.RenderSize.Width, new TimeSpan(0, 0, 0, 0, 300));
-            var translateTransform = new TranslateTransform(0, 0);
-            animation.Completed += (obj, ev) =>
-            {
-                ((FrameworkElement)active).RenderTransform = null;
-
-                // can use Add repeatedly due to the border region adapter
-                _regionManager.Regions["GameRegion"].Deactivate(active);
-                _regionManager.Regions["GameRegion"].Activate(view);
-            };
-
-            ((FrameworkElement)active).RenderTransform = translateTransform;
-            translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, animation.CreateClock());
+            // can use Add repeatedly due to the border region adapter
+            _regionManager.Regions["GameRegion"].Deactivate(active);
+            _regionManager.Regions["GameRegion"].Activate(view);
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -161,11 +97,6 @@ namespace Rogue.NET.Scenario.Views
                  SplashAction = SplashAction.Show,
                  SplashType = SplashEventType.CommandPreferences
             });
-        }
-
-        private void ShopButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)

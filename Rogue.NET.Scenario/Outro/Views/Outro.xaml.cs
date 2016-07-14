@@ -1,6 +1,5 @@
 ﻿using Rogue.NET.Common;
 using Rogue.NET.Scenario;
-using Rogue.NET.Online;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +16,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Rogue.NET.Model;
 
-namespace Rogue.NET.Online
+namespace Rogue.NET.Scenario.Outro
 {
     public partial class OutroDisplay : UserControl
     {
-        IModelController _loader = null;
+        IModelController _modelController = null;
 
         public OutroDisplay()
         {
@@ -29,8 +28,8 @@ namespace Rogue.NET.Online
         }
         public void Initialize(object[] args)
         {
-            _loader = args[0] as IModelController;
-            Dictionary<string, string> gameStatsDictionary = _loader.GetGameDisplayStats();
+            _modelController = args[0] as IModelController;
+            Dictionary<string, string> gameStatsDictionary = _modelController.GetGameDisplayStats();
 
             //Create game stats
             this.GameStatsPanel.Children.Clear();
@@ -58,39 +57,6 @@ namespace Rogue.NET.Online
                 g.Children.Add(val);
                 GameStatsPanel.Children.Add(g);
             }
-        }
-
-        //public event EventHandler<Rogue2DisplayFinishedEventArgs> FinishedEvent;
-        //public event EventHandler<SplashScreenEventArgs> SplashScreenEvent;
-        //public Rogue2Displays DisplayType
-        //{
-        //    get { return Rogue2Displays.Outro; }
-        //}
-
-        private void UploadButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Ask user to upload statistics
-            Window credentialsWindow = new Window();
-            credentialsWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            credentialsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            credentialsWindow.Owner = Application.Current.MainWindow;
-            credentialsWindow.Title = "Rogue.NET User Login - www.roguedotnet.com";
-            Credentials ctrl = new Credentials();
-            credentialsWindow.Content = ctrl;
-            if ((bool)credentialsWindow.ShowDialog())
-            {
-                //Client module = new Client();
-                //string xmlStats = _loader.GetGameStatsXml(ctrl.UserTB.Text, ctrl.PassTB.Password);
-                //if (!module.UploadEncryptedMessage(xmlStats, ctrl.UserTB.Text, ctrl.PassTB.Password))
-                //    MessageBox.Show("There was an error uploading your statistics - make sure you have an account at www.roguedotnet.com and that your user name and password are correct");
-                //else
-                //    FinishedEvent(this, new Rogue2DisplayFinishedEventArgs(Rogue2Displays.Intro, new object[] { }));
-            }
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            //FinishedEvent(this, new Rogue2DisplayFinishedEventArgs(Rogue2Displays.Intro, new object[] { }));
         }
     }
 }

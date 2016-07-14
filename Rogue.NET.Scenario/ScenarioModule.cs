@@ -8,7 +8,6 @@ using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Intro.Views;
 using Rogue.NET.Model;
-using Rogue.NET.Online;
 using Rogue.NET.Scenario;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;

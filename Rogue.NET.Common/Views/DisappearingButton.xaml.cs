@@ -55,6 +55,8 @@ namespace Rogue.NET.Common.Views
             }
         }
 
+        public int ImagePadding { get; set; }
+
         public DisappearingButton()
         {
             InitializeComponent();

@@ -319,10 +319,6 @@
       <Project>{ffe92cf3-be4b-463e-a4ab-c5df1ec39304}</Project>
       <Name>Rogue.NET.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rogue.NET.Online\Rogue.NET.Online.csproj">
-      <Project>{9a77fed1-e693-44f0-9b2f-2c92f9419e1c}</Project>
-      <Name>Rogue.NET.Online</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Rogue.NET.ScenarioEditor\Rogue.NET.ScenarioEditor.csproj">
       <Project>{6696051a-37bb-4f3e-9e0b-62b83f298ee7}</Project>
       <Name>Rogue.NET.ScenarioEditor</Name>
