@@ -340,6 +340,20 @@ namespace Rogue.NET.Scenario.Views
                     this.SubPanel.Children.Add(kvp.Value);
             }
             this.SubPanel.InitializeElements();
+
+            // Attempt to invoke dispatcher to seek nearest after animations initialized
+            // ...Need to figure out how to make "InitializeElements()" complete all the 
+            // required tasks to leave the panel in a truly initialized state on this call
+            // stack.. though may not be possible.
+            //
+            // NOTE*** ApplicationIdle priority required to avoid exceptions with animation clock
+            //         initialization. Should probably be moved inside spin panel initialization
+            this.SubPanel.Visibility = Visibility.Hidden;
+            this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ApplicationIdle, 
+                                        new Action(() => {
+                                            this.SubPanel.SeekToNearest();
+                                            this.SubPanel.Visibility = Visibility.Visible;
+                                        }));
         }
         private void SubPanel_ObjectCentered(object sender, EventArgs e)
         {
