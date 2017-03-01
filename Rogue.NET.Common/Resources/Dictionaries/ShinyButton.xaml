@@ -14,7 +14,7 @@
                             </Ellipse.BitmapEffect>
                         </Ellipse>
                         <Image Source="{Binding Path=Tag, RelativeSource={RelativeSource TemplatedParent}}" 
-                               Margin="{Binding Path=ImagePadding, FallbackValue=4}" 
+                               Margin="{Binding Path=Padding, FallbackValue=4, RelativeSource={RelativeSource TemplatedParent}}" 
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Stretch="Uniform" />

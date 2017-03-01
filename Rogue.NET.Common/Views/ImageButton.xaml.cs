@@ -36,13 +36,10 @@ namespace Rogue.NET.Common.Views
             }
         }
 
-        public int ImagePadding
+        public Thickness ImagePadding
         {
-            get { return (int)this.TheButton.Padding.Bottom; }
-            set
-            {
-                this.TheButton.Padding = new Thickness(value);
-            }
+            get { return this.TheButton.Padding; }
+            set { this.TheButton.Padding = value; }
         }
 
         public ImageButton()
