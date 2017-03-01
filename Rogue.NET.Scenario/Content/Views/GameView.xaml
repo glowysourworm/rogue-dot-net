@@ -13,6 +13,7 @@
 	<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/Converters.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinySmileyButton.xaml" />
@@ -52,10 +53,22 @@
             <Border x:Name="GameRegion" prism:RegionManager.RegionName="GameRegion" Grid.Row="2" Background="Transparent" ScrollViewer.CanContentScroll="True" />
 
             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="3">
-                <common:DisappearingButton ImagePadding="10" Tag="{x:Type local:ShopCtrl}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/ShopGameDisplay.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="ShopViewButton" Click="GameViewButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
-                <common:DisappearingButton ImagePadding="10" Tag="{x:Type local:LevelView}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Normal.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="GameButton" Click="GameViewButton_Click" Foreground="White" FontSize="24"  HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" />
-                <common:DisappearingButton ImagePadding="10" Tag="{x:Type local:EquipmentSelectionCtrl}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/EquipmentGameDisplay.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="EquipmentButton" Click="GameViewButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
-                <common:DisappearingButton ImagePadding="10" Tag="{x:Type local:DungeonEncyclopedia}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Identify.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="GameDictionaryButton" Click="GameViewButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
+                <common:ImageButton ImagePadding="10" 
+                                           Visibility="{Binding Level.IsPlayerOnShop, Converter={ StaticResource VisibilityConverter }}"
+                                           Tag="{x:Type local:ShopCtrl}" 
+                                           Height="64" 
+                                           Width="64" 
+                                           Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/ShopGameDisplay.png" 
+                                           Grid.Row="3" 
+                                           Cursor="Hand" 
+                                           x:Name="ShopViewButton" 
+                                           Foreground="White" 
+                                           FontSize="24" 
+                                           HorizontalAlignment="Right" 
+                                           Margin="8" VerticalAlignment="Center" />
+                <common:ImageButton ImagePadding="10" Tag="{x:Type local:LevelView}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Normal.png" Grid.Row="3" Cursor="Hand" x:Name="GameButton" Foreground="White" FontSize="24"  HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" />
+                <common:ImageButton ImagePadding="10" Tag="{x:Type local:EquipmentSelectionCtrl}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/EquipmentGameDisplay.png" Grid.Row="3" Cursor="Hand" x:Name="EquipmentButton" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
+                <common:ImageButton ImagePadding="10" Tag="{x:Type local:DungeonEncyclopedia}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Identify.png" Grid.Row="3" Cursor="Hand" x:Name="GameDictionaryButton" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
             </StackPanel>
 
             <TextBlock x:Name="DialogTB" Cursor="Hand" MouseDown="DialogTB_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Foreground="Beige" FontSize="24" />

@@ -4,4 +4,5 @@
     <local:VisibilityCollapseConverter x:Key="VisibilityCollapseConverter" />
     <local:VisibilitySymbolEditorConverter x:Key="VisibilitySymbolEditorConverter" />
     <local:StringColorConverter x:Key="StringColorConverter" />
+    <local:VisibilityConverter x:Key="VisibilityConverter" />
 </ResourceDictionary>

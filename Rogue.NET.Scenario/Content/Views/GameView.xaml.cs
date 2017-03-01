@@ -54,7 +54,7 @@ namespace Rogue.NET.Scenario.Views
         private void GameViewButton_Click(object sender, RoutedEventArgs e)
         {
             var levelData = this.DataContext as LevelData;
-            var type = (sender as DisappearingButton).Tag as Type;
+            var type = (sender as ImageButton).Tag as Type;
 
             var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
             var view = (object)_unityContainer.Resolve(type);
