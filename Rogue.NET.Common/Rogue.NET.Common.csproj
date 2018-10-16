@@ -236,8 +236,8 @@
     <Compile Include="Utilities\EventBehaviorFactory.cs" />
     <Compile Include="Utilities\Taskbar.cs" />
     <Compile Include="Utilities\ZipEncoder.cs" />
-    <Compile Include="Views\ImageButton.xaml.cs">
-      <DependentUpon>ImageButton.xaml</DependentUpon>
+    <Compile Include="Views\DisappearingButton.xaml.cs">
+      <DependentUpon>DisappearingButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EnumComboBox.xaml.cs">
       <DependentUpon>EnumComboBox.xaml</DependentUpon>
@@ -272,7 +272,6 @@
     <Page Include="Resources\Dictionaries\Converters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="Resources\Dictionaries\ImageButton.xaml">
       <SubType>Designer</SubType>
@@ -329,7 +328,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
-    <Page Include="Views\ImageButton.xaml">
+    <Page Include="Views\DisappearingButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

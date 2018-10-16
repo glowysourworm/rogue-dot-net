@@ -29,7 +29,7 @@ namespace Rogue.NET.Model.Generation
             for (int i = 0; i < config.DungeonTemplate.NumberOfLevels; i++)
             {
                 // Update progress
-                progress = i / config.DungeonTemplate.NumberOfLevels / 2D;
+                progress = (double)i / (double)config.DungeonTemplate.NumberOfLevels / 2.0D;
                 base.PublishLoadingMessage("Generating Scenario Level Layouts", progress);
 
                 //Calucate list of templates that contain this level in their range

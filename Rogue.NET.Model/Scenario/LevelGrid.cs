@@ -173,11 +173,14 @@ namespace Rogue.NET.Model.Scenario
     public class Cell : Shape, ISerializable
     {
         static Pen _doorPen = null;
+        static Brush _fillBrush = null;
         static Cell()
         {
             _doorPen = new Pen(Brushes.Fuchsia, 4);
             _doorPen.EndLineCap = PenLineCap.Round;
             _doorPen.StartLineCap = PenLineCap.Round;
+
+            _fillBrush = new SolidColorBrush(Color.FromArgb(155, 200, 5, 200));
         }
 
         PathGeometry _definingGeometry;
@@ -337,6 +340,8 @@ namespace Rogue.NET.Model.Scenario
             this.Height = ScenarioConfiguration.CELLHEIGHT;
             this.Width = ScenarioConfiguration.CELLWIDTH;
 
+            this.Fill = _fillBrush;
+
             this.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             this.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             Canvas.SetTop(this, 0);
@@ -355,6 +360,8 @@ namespace Rogue.NET.Model.Scenario
             this.Height = ScenarioConfiguration.CELLHEIGHT;
             this.Width = ScenarioConfiguration.CELLWIDTH;
 
+            this.Fill = _fillBrush;
+
             this.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             this.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             Canvas.SetTop(this, 0);
@@ -372,6 +379,8 @@ namespace Rogue.NET.Model.Scenario
             this.StrokeThickness = 2;
             this.Height = ScenarioConfiguration.CELLHEIGHT;
             this.Width = ScenarioConfiguration.CELLWIDTH;
+
+            this.Fill = _fillBrush;
 
             this.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             this.VerticalAlignment = System.Windows.VerticalAlignment.Top;

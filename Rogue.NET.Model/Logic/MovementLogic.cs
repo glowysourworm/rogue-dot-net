@@ -13,14 +13,18 @@ using Rogue.NET.Model.Scenario;
 using Microsoft.Practices.Prism.Events;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Rogue.NET.Model.Physics;
 
 namespace Rogue.NET.Model.Logic
 {
     public class MovementLogic : LogicBase
     {
-        public MovementLogic(IEventAggregator eventAggregator, IUnityContainer unityContainer)
+        readonly IRayTracer _rayTracer;
+
+        public MovementLogic(IEventAggregator eventAggregator, IUnityContainer unityContainer, IRayTracer rayTracer)
             : base(eventAggregator, unityContainer)
         {
+            _rayTracer = rayTracer;
         }
 
         protected override void OnLevelLoaded(PlayerStartLocation location)
@@ -581,11 +585,11 @@ namespace Rogue.NET.Model.Logic
         }
         public Cell[] ProcessExploredCells()
         {
-            double lr = this.Player.AuraRadius;
+            double lightRadius = this.Player.AuraRadius;
 
             //If blind - no visible cells
-            List<Cell> visibleCells = this.Player.States.Any(z => z == CharacterStateType.Blind)?
-                new List<Cell>() : GetLogicallyVisibleCells(this.Level, this.Player.Location, lr);
+            IEnumerable<Cell> visibleCells = this.Player.States.Any(z => z == CharacterStateType.Blind)?
+                new List<Cell>() : _rayTracer.GetLogicallyVisibleCells(this.Level.Grid, this.Player.Location, (int)lightRadius);
 
             Cell[] currentlyVisibleCells = this.Level.Grid.GetVisibleCells();
 
@@ -611,8 +615,7 @@ namespace Rogue.NET.Model.Logic
             this.Level.ProcessVisibility(visibleCells.ToArray());
 
             //return all affected cells
-            visibleCells.AddRange(currentlyVisibleCells);
-            return visibleCells.ToArray();
+            return visibleCells.Union(currentlyVisibleCells).ToArray();
         }
     }
     public class CellComparer : IComparer<Cell>

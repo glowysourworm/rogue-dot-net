@@ -395,24 +395,20 @@ namespace Rogue.NET.Scenario.Views
         private void EntryLeftButton_Click(object sender, RoutedEventArgs e)
         {
             this.SubPanel.SeekPrevious();
-            this.SubPanel.SeekToNearest();
         }
 
         private void EntryRightButton_Click(object sender, RoutedEventArgs e)
         {
             this.SubPanel.SeekNext();
-            this.SubPanel.SeekToNearest();
         }
 
         private void TypeLeftButton_Click(object sender, RoutedEventArgs e)
         {
             this.TypePanel.SeekPrevious();
-            this.TypePanel.SeekToNearest();
         }
         private void TypeRightButton_Click(object sender, RoutedEventArgs e)
         {
             this.TypePanel.SeekNext();
-            this.TypePanel.SeekToNearest();
         }
     }
 }

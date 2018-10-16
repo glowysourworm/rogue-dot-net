@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Controls.Primitives;
 using System.Collections;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace Rogue.NET.Common.Extensions
 {
@@ -301,52 +300,46 @@ namespace Rogue.NET.Common.Extensions
         }
         private void Scrub(int dx)
         {
-            this.Dispatcher.BeginInvoke(new Action(() =>
+            bool changedDiff = false;
+            foreach (AnimationBundle b in _list)
             {
-                bool changedDiff = false;
-                foreach (AnimationBundle animationBundle in _list)
-                {
-                    TimeSpan currentTime = animationBundle.CurrentTime;
-                    TimeSpan next = TimeSpan.FromMilliseconds(currentTime.TotalMilliseconds + dx);
-                    while (next.TotalMilliseconds < 0)
-                        next = next.Add(animationBundle.Duration);
+                TimeSpan currentTime = b.CurrentTime;
+                TimeSpan next = TimeSpan.FromMilliseconds(currentTime.TotalMilliseconds + dx);
+                while (next.TotalMilliseconds < 0)
+                    next = next.Add(b.Duration);
 
-                    while (next.TotalMilliseconds > animationBundle.Duration.TotalMilliseconds)
-                        next = next.Subtract(animationBundle.Duration);
+                while (next.TotalMilliseconds > b.Duration.TotalMilliseconds)
+                    next = next.Subtract(b.Duration);
 
-                    animationBundle.Seek(next);
-                    int diff = Math.Abs((int)next.TotalMilliseconds - _TOTAL_MILLISEC / 4);
-                    bool on = animationBundle.IsCentered;
-                    animationBundle.IsCentered = diff < 5;
-                    changedDiff |= (on != animationBundle.IsCentered);
+                b.Seek(next);
+                int diff = Math.Abs((int)next.TotalMilliseconds - _TOTAL_MILLISEC / 4);
+                bool on = b.IsCentered;
+                b.IsCentered = diff < 5;
+                changedDiff |= (on != b.IsCentered);
 
-                    if (ObjectCentered != null && changedDiff && animationBundle.IsCentered)
-                        ObjectCentered(animationBundle.GetElement(), null);
+                if (ObjectCentered != null && changedDiff && b.IsCentered)
+                    ObjectCentered(b.GetElement(), null);
 
-                    else if (animationBundle.IsCentered && this.IsSelectable)
-                        animationBundle.GetElement().Cursor = Cursors.Hand;
-                    else
-                        animationBundle.GetElement().Cursor = Cursors.Arrow;
-                }
-            }));
+                else if (b.IsCentered && this.IsSelectable)
+                    b.GetElement().Cursor = Cursors.Hand;
+                else
+                    b.GetElement().Cursor = Cursors.Arrow;
+            }
         }
         public void SeekToNearest()
-        { 
-            this.Dispatcher.BeginInvoke(new Action(() =>
+        {
+            int centerTime = _TOTAL_MILLISEC / 4;
+            int min = int.MaxValue;
+            foreach (AnimationBundle b in _list)
             {
-                int centerTime = _TOTAL_MILLISEC / 4;
-                int min = int.MaxValue;
+                int s = (int)b.CurrentTime.TotalMilliseconds - centerTime;
+                if (Math.Abs(s) < Math.Abs(min))
+                    min = s;
+            }
 
-                foreach (AnimationBundle b in _list)
-                {
-                    int s = (int)b.CurrentTime.TotalMilliseconds - centerTime;
-                    if (Math.Abs(s) < Math.Abs(min))
-                        min = s;
-                }
-                //Seek to this bundle
-                if (min != int.MaxValue)
-                    Scrub(-1 * min);
-            }), DispatcherPriority.ApplicationIdle);
+            //Seek to this bundle
+            if (min != int.MaxValue)
+                Scrub(-1 * min);
         }
         public void SeekNext()
         {

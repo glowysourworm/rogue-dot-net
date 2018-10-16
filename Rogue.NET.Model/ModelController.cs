@@ -7,6 +7,7 @@ using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Model.Generation;
 using Rogue.NET.Model.Logic;
+using Rogue.NET.Model.Physics;
 using Rogue.NET.Model.Scenario;
 using System;
 using System.Collections.Generic;

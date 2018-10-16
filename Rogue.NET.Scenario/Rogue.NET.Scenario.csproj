@@ -92,6 +92,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ObjectModel" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -463,8 +465,57 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Resources\Html\Help\app.js" />
+    <Content Include="Resources\Html\Help\content\background.png" />
+    <Content Include="Resources\Html\Help\content\encyclopedia.png" />
+    <Content Include="Resources\Html\Help\content\equipment-view.png" />
+    <Content Include="Resources\Html\Help\content\gadget-panel.png" />
+    <Content Include="Resources\Html\Help\content\game-view.png" />
+    <Content Include="Resources\Html\Help\content\navigation-init.png" />
+    <Content Include="Resources\Html\Help\content\navigation-open-door.png" />
+    <Content Include="Resources\Html\Help\content\navigation-save-point.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-consumables.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-inventory.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-skills.png" />
+    <Content Include="Resources\Html\Help\content\player-subpanel-stats.png" />
+    <Content Include="Resources\Html\Help\content\Prociono-Regular-webfont.svg" />
+    <Content Include="Resources\Html\Help\content\scenario-label.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-1.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-2.png" />
+    <Content Include="Resources\Html\Help\content\skills-adept-3.png" />
+    <Content Include="Resources\Html\Help\content\skills-level-1.png" />
+    <Content Include="Resources\Html\Help\content\status-panel.png" />
+    <Content Include="Resources\Html\Help\content\top-button-panel.png" />
+    <Content Include="Resources\Html\Help\controllers\CombatCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\CommunityCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\HomeCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\IntroCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\NavbarCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\NavigationCtrl.js" />
+    <Content Include="Resources\Html\Help\controllers\SkillsCtrl.js" />
+    <Content Include="Resources\Html\Help\index.html" />
+    <Content Include="Resources\Html\Help\styles\intro.css" />
+    <Content Include="Resources\Html\Help\styles\navbar.css" />
+    <Content Include="Resources\Html\Help\styles\site.css" />
+    <Content Include="Resources\Html\Help\styles\skills.css" />
+    <Content Include="Resources\Html\Help\vendor\angular-route.js" />
+    <Content Include="Resources\Html\Help\vendor\angular.min.js" />
+    <Content Include="Resources\Html\Help\vendor\jquery-1.10.2.min.js" />
+    <Content Include="Resources\Html\Help\views\combat.html" />
+    <Content Include="Resources\Html\Help\views\community.html" />
+    <Content Include="Resources\Html\Help\views\home.html" />
+    <Content Include="Resources\Html\Help\views\intro.html" />
+    <Content Include="Resources\Html\Help\views\navbar.html" />
+    <Content Include="Resources\Html\Help\views\navigation.html" />
+    <Content Include="Resources\Html\Help\views\skills.html" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Resources\Html\Help\content\CENTAUR.TTF" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.eot" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.ttf" />
+    <None Include="Resources\Html\Help\content\Prociono-Regular-webfont.woff" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
