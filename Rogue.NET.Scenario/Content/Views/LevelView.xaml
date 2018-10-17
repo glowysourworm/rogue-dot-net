@@ -14,20 +14,14 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        
-        <local:StatusCtrl Grid.RowSpan="2" VerticalAlignment="Top" />
-        <local:PlayerSubpanel x:Name="SubPanel" Grid.Row="2" Height="360" VerticalAlignment="Bottom"/>
 
-        <Border ClipToBounds="True" Grid.Column="1" Grid.RowSpan="3" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="0.75, 0.75, 0.75, 0.75">
+        <local:StatusCtrl VerticalAlignment="Top" />
+
+        <Border ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="0.75, 0.75, 0.75, 0.75">
             <local:LevelCanvas x:Name="TheLevelCanvas" />
         </Border>
-        
-        <gadgets:GadgetContainer x:Name="GadgetContainer" VerticalAlignment="Stretch" VerticalContentAlignment="Top" Grid.Column="2" Grid.RowSpan="3" Margin="8" />
-        
+
+        <local:PlayerSubpanel x:Name="SubPanel" Grid.Column="2" VerticalAlignment="Stretch"/>
+
     </Grid>
 </UserControl>

@@ -1,8 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Views.PlayerSubpanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:prism="http://www.codeplex.com/prism"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              Background="Black" Width="250">
     <UserControl.Resources>
@@ -20,17 +19,19 @@
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <Rectangle Fill="DarkBlue" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
-        <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />        
-        <local:Consumables  x:Name="ConsumbalesCtrl" Grid.Row="1" />
-        <local:InventorySelectionCtrl x:Name="InventoryCtrl"  Visibility="Collapsed" Grid.Row="1" />
-        <local:SkillGrid x:Name="SkillCtrl" Visibility="Collapsed" Grid.Row="1" />
-        <local:StatsControl x:Name="StatsCtrl" Visibility="Collapsed" Grid.Row="1" />
+        <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelEquipmentRegion" x:Name="EquipmentCtrl" Padding="4,0,4,0" Grid.Row="1" />
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelConsumablesRegion" x:Name="ConsumablesCtrl" Visibility="Collapsed"  Padding="4,0,4,0" Grid.Row="1" />
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelInventoryRegion" x:Name="InventoryCtrl" Padding="4,0,4,0" Visibility="Collapsed" Grid.Row="1" />
+        <local:SkillGrid x:Name="SkillCtrl" Visibility="Collapsed" Padding="4,0,4,0" Grid.Row="1" />
+        <local:StatsControl x:Name="StatsCtrl" Visibility="Collapsed" Padding="4,0,4,0" Grid.Row="1" />
         <Grid Margin="4,0,4,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/LeftArrow.png" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
             <TextBlock x:Name="TitleTB" Grid.Row="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0,0,0" Foreground="#FFFFDE87" Text="Title" />
             <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="RightButton" Click="RightButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" Margin="2,0,0,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Right" Grid.Row="2" />
         </Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+            <RadioButton x:Name="EquipmentRB" IsEnabled="False" Tag="Equipment" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="CosumablesRB" IsEnabled="False" Tag="Consumables" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="InventoryRB" IsEnabled="False" Tag="Inventory" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="SkillsRB" IsEnabled="False" Tag="Skills" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />

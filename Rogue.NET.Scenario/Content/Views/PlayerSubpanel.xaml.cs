@@ -1,20 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Microsoft.Practices.Prism.PubSubEvents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -31,13 +22,15 @@ namespace Rogue.NET.Scenario.Views
             InitializeComponent();
 
             _ctrlList = new List<FrameworkElement>(new FrameworkElement[]{
-                this.ConsumbalesCtrl,
+                this.EquipmentCtrl,
+                this.ConsumablesCtrl,
                 this.InventoryCtrl,
                 this.SkillCtrl,
                 this.StatsCtrl
             });
 
             _radioList = new List<RadioButton>(new RadioButton[]{
+                this.EquipmentRB,
                 this.CosumablesRB,
                 this.InventoryRB,
                 this.SkillsRB,

@@ -7,6 +7,7 @@
 	xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
     xmlns:model="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model"
     xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+    xmlns:prism="http://www.codeplex.com/prism"
 	x:Class="Rogue.NET.Scenario.Views.EquipmentSelectionCtrl"
 	x:Name="UserControl" d:DesignHeight="598.5" d:DesignWidth="1036.33">
 
@@ -157,7 +158,7 @@
             </Grid>
 		</Border>
 		<Border x:Name="EquipmentListBorder" Grid.Column="1" BorderThickness="1" Background="Black" BorderBrush="White">
-            <local:EquipmentCtrl x:Name="EquipmentListCtrl"  Margin="8" />
+            <ContentControl prism:RegionManager.RegionName="EquipmentSelectionRegion"  x:Name="EquipmentListCtrl"  Margin="8" />
 		</Border>
 	</Grid>
 </UserControl>

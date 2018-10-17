@@ -651,6 +651,10 @@ namespace Rogue.NET.Model.Scenario
             }
         }
 
+        public SkillSet ActiveSkill
+        {
+            get { return this.Skills.FirstOrDefault(x => x.IsActive); }
+        }
 
         private double GetFoodUsagePerTurn()
         {
@@ -782,6 +786,8 @@ namespace Rogue.NET.Model.Scenario
             this.ExperienceNext = Calculator.CalculateExpNext(this);
             this.PerStepAlterationCosts = new SerializableObservableCollection<AlterationCost>();
             this.IsPhysicallyVisible = true;
+
+            this.Skills.CollectionAltered += (obj, e) => { OnPropertyChanged("ActiveSkill"); };
         }
         public Player(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -794,6 +800,8 @@ namespace Rogue.NET.Model.Scenario
                 var val = info.GetValue(property.Name, property.PropertyType);
                 property.SetValue(this, val);
             }
+
+            this.Skills.CollectionAltered += (obj, e) => { OnPropertyChanged("ActiveSkill"); };
         }
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

@@ -331,13 +331,13 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-            	<RowDefinition Height="0" />
-            	<RowDefinition Height="24" />
-            	<RowDefinition Height="24" />
-            	<RowDefinition Height="24" />
-            	<RowDefinition Height="24" />
-            	<RowDefinition Height="24" />
-            	<RowDefinition Height="Auto" />
+                <RowDefinition Height="0" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="24" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid Margin="0,0,8,8">
                 <common:Smiley x:Name="smileyCtrl" Margin="8,0,8,8" SmileyMood="Happy"  SmileyColor="{Binding Level.Player.SmileyBodyColor}" SmileyRadius="8" Width="50" Height="75" d:LayoutOverrides="Width" HorizontalAlignment="Left" SmileyLineColor="{Binding Level.Player.SmileyLineColor}" Cursor="Hand"/>
@@ -356,19 +356,19 @@
             <common:ProgressBar Grid.Row="4" BarColor1="DarkGreen" ValueMax="100" Value="{Binding Player.Hunger}" Margin="8,2" x:Name="HungerBar" VerticalAlignment="Stretch" Height="16" Header="Hunger" ValueTextBrush="#FF9AFFA0" Value2="{Binding Player.Hunger}"/>
             <common:ProgressBar Grid.Row="5" BarColor1="Cyan" ValueMax="{Binding Player.ExperienceNext}" Value="{Binding Player.Experience}" Margin="8,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Height="16"  Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Player.Experience}"/>
             <common:ProgressBar Grid.Row="6" BarColor1="Goldenrod" ValueMax="{Binding Player.HaulMax}" Value="{Binding Player.Haul}" Margin="8,2,8,2" x:Name="HaulBar" VerticalAlignment="Stretch"  Height="16" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Player.Haul}"/>
-            <Grid x:Name="ActiveSkillGrid" Visibility="{Binding Player.ActiveSkill, Converter={StaticResource NullIsConv}}" Grid.Row="7" Margin="8,2">
-            	<Grid.ColumnDefinitions>
-            		<ColumnDefinition Width="80"/>
-            		<ColumnDefinition/>
-            		<ColumnDefinition Width="Auto"/>
-            	</Grid.ColumnDefinitions>
-            	<TextBlock Text="Active Skill" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="#FFFFDE87" Margin="0,4,2,4" d:LayoutOverrides="Height, VerticalMargin" FontSize="14.667"/>
-            	<TextBlock Text="{Binding Player.ActiveSkill.Rogue2Name}" TextWrapping="Wrap" Foreground="White" Margin="0,4" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
-            	<local:Emphasis x:Name="ActiveSkillEmphasisCtrl" Width="42" RedOrbHeight="16" OrbMargin="2" HorizontalAlignment="Right" Margin="0" Grid.Column="2" Value="{Binding Player.ActiveSkill.Emphasis}"/>
+            <Grid x:Name="ActiveSkillGrid" 
+                  Visibility="{Binding Player.ActiveSkill, Converter={StaticResource NullIsConv}}" 
+                  VerticalAlignment="Top"
+                  Grid.Row="7" Margin="8,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Active Skill" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="#FFFFDE87" Margin="0,4,2,4" FontSize="14.667"/>
+                <TextBlock Text="{Binding Player.ActiveSkill.RogueName}" TextWrapping="Wrap" Foreground="White" Margin="0,4" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
+                <local:Emphasis x:Name="ActiveSkillEmphasisCtrl" Width="42" RedOrbHeight="16" OrbMargin="2" HorizontalAlignment="Right" Margin="0" Grid.Column="2" Value="{Binding Player.ActiveSkill.Emphasis}"/>
             </Grid>
         </Grid>
-        <!--Border x:Name="SubPanelContainer" BorderThickness="0.75" BorderBrush="White" Grid.Row="1" Margin="8" CornerRadius="10">
-		    <local:Consumables x:Name="ConsumablesControl"  Margin="0" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" Background="#00000000" />
-        </Border-->
     </Grid>
 </UserControl>

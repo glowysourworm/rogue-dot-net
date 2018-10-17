@@ -17,7 +17,8 @@ namespace Rogue.NET
 
             Taskbar.Hide();
 
-            AppDomain.CurrentDomain.UnhandledException += (obj, ev) => { Taskbar.Show(); };
+            Application.Current.DispatcherUnhandledException += (obj, ev) => { Taskbar.Show(); MessageBox.Show(ev.Exception.Message); };
+            AppDomain.CurrentDomain.UnhandledException += (obj, ev) => { Taskbar.Show(); MessageBox.Show(ev.ExceptionObject.ToString()); };
             AppDomain.CurrentDomain.ProcessExit += (obj, ev) => { Taskbar.Show(); };
 
             // The boostrapper will create the Shell instance, so the App.xaml does not have a StartupUri.

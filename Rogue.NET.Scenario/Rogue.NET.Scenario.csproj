@@ -189,12 +189,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\ViewModel\ItemGridViewModel.cs" />
-    <Compile Include="Content\Views\Gadgets\EquipmentGadget.xaml.cs">
-      <DependentUpon>EquipmentGadget.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Views\Gadgets\GadgetContainer.xaml.cs">
-      <DependentUpon>GadgetContainer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Content\Views\GameInfoView.xaml.cs">
       <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
@@ -239,9 +233,6 @@
     </Compile>
     <Compile Include="Content\Views\LevelCanvas.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Content\Views\Consumables.xaml.cs">
-      <DependentUpon>Consumables.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml.cs">
       <DependentUpon>DungeonEncyclopediaAttackAttribute.xaml</DependentUpon>
     </Compile>
@@ -254,20 +245,11 @@
     <Compile Include="Content\Views\Emphasis.xaml.cs">
       <DependentUpon>Emphasis.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\Gadgets\EnemyScopeGadget.xaml.cs">
-      <DependentUpon>EnemyScopeGadget.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Views\Equipment.xaml.cs">
-      <DependentUpon>Equipment.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Content\Views\EquipmentSelection.xaml.cs">
       <DependentUpon>EquipmentSelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\GameView.xaml.cs">
       <DependentUpon>GameView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Views\InventorySelection.xaml.cs">
-      <DependentUpon>InventorySelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\Shop.xaml.cs">
       <DependentUpon>Shop.xaml</DependentUpon>
@@ -283,14 +265,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Content\Views\Gadgets\EquipmentGadget.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Views\Gadgets\GadgetContainer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Content\Views\GameInfoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -336,10 +310,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Outro\Views\Outro.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Content\Views\Consumables.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -398,18 +368,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Content\Views\Gadgets\EnemyScopeGadget.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Content\Views\Equipment.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="Content\Views\EquipmentSelection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -417,12 +375,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\GameView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Content\Views\InventorySelection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -414,7 +414,7 @@
         			TextWrapping="Wrap" 
         			Grid.Row="1" 
         			Cursor="Arrow"  Style="{StaticResource EntryTextBlockStyleLong}" Grid.Column="1" Margin="8" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16"/>
-                <TextBlock TextWrapping="Wrap" Style="{StaticResource EntryLabelTextBlockStyle}"  Text="Description" Margin="8" VerticalAlignment="Top" d:LayoutOverrides="Width, GridBox" FontSize="16" Grid.Row="1"/>
+                <TextBlock TextWrapping="Wrap" Style="{StaticResource EntryLabelTextBlockStyle}"  Text="Description" Margin="8" VerticalAlignment="Top" FontSize="16" Grid.Row="1"/>
                 <Image Margin="8,0,0,0" Width="20"  Height="30" HorizontalAlignment="Left" Source="{Binding ImageSource}"/>
         	</Grid>
         </Border>

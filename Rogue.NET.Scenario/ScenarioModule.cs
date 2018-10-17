@@ -48,8 +48,6 @@ namespace Rogue.NET.Scenario
 
 
             _unityContainer.RegisterType<GameSetupViewModel, GameSetupViewModel>(new ContainerControlledLifetimeManager());
-            _unityContainer.RegisterType<Consumables, Consumables>();
-            _unityContainer.RegisterType<EquipmentCtrl, EquipmentCtrl>();
             _unityContainer.RegisterType<ItemGrid, ItemGrid>();
             _unityContainer.RegisterType<LevelView, LevelView>(new ContainerControlledLifetimeManager());
 
@@ -78,25 +76,32 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameRegion", () => _unityContainer.Resolve<DungeonEncyclopedia>());
             _regionManager.RegisterViewWithRegion("GameInfoRegion", () => _unityContainer.Resolve<GameInfoView>());
 
-            _regionManager.RegisterViewWithRegion("ConsumablesRegion", () => 
-            {
-                var view = _unityContainer.Resolve<ItemGrid>();
-                view.TheGrid.Height = 300; // scroll bars...
-                view.Mode = ItemGridModes.Consumable;
-                return view;
-            });
+            // Create regions for Player Subpanel
 
-            _regionManager.RegisterViewWithRegion("EquipmentRegion", () =>
+            _regionManager.RegisterViewWithRegion("PlayerSubpanelEquipmentRegion", () =>
             {
                 var view = _unityContainer.Resolve<ItemGrid>();
                 view.Mode = ItemGridModes.Equipment;
                 return view;
             });
 
-            _regionManager.RegisterViewWithRegion("InventoryRegion", () =>
+            _regionManager.RegisterViewWithRegion("EquipmentSelectionRegion", () =>
             {
                 var view = _unityContainer.Resolve<ItemGrid>();
-                view.TheGrid.Height = 300; // scroll bars...
+                view.Mode = ItemGridModes.Equipment;
+                return view;
+            });
+
+            _regionManager.RegisterViewWithRegion("PlayerSubpanelConsumablesRegion", () =>
+            {
+                var view = _unityContainer.Resolve<ItemGrid>();
+                view.Mode = ItemGridModes.Consumable;
+                return view;
+            });
+
+            _regionManager.RegisterViewWithRegion("PlayerSubpanelInventoryRegion", () =>
+            {
+                var view = _unityContainer.Resolve<ItemGrid>();
                 view.Mode = ItemGridModes.Inventory;
                 return view;
             });

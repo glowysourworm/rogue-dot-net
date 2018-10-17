@@ -32,7 +32,6 @@ namespace Rogue.NET.Scenario.Views
             {
                 this.TheLevelCanvas.InitializeEvents(eventAggregator);
                 this.SubPanel.InitializeEvents(eventAggregator);
-                this.GadgetContainer.InitializeEvents(eventAggregator);
             };
 
             this.DataContextChanged += LevelView_DataContextChanged;
