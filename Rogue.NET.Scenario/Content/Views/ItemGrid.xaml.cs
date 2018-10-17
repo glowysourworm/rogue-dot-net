@@ -271,7 +271,24 @@ namespace Rogue.NET.Scenario.Views
             foreach (var item in items.Distinct<Item>(comparer))
                 itemSource.Add(new ItemGridViewModel(item, levelData.Encyclopedia, levelData.Player.ConsumableInventory));
 
-
+            // setup the initial toggle button
+            switch (this.Mode)
+            {
+                case ItemGridModes.Consumable:
+                    SetRadioButtonChecked(this.Consume); break;                    
+                case ItemGridModes.Enchant:
+                    SetRadioButtonChecked(this.Enchant); break;
+                case ItemGridModes.Equipment:
+                    SetRadioButtonChecked(this.Equip); break;
+                case ItemGridModes.Identify:
+                    SetRadioButtonChecked(this.Identify); break;
+                case ItemGridModes.Imbue:
+                    SetRadioButtonChecked(this.Enchant); break;
+                case ItemGridModes.Inventory:
+                    SetRadioButtonChecked(this.Drop); break;
+                case ItemGridModes.Uncurse:
+                    SetRadioButtonChecked(this.Uncurse); break;
+            }
 
             SetItemButtonVisibility();
             InvalidateVisual();
@@ -316,13 +333,18 @@ namespace Rogue.NET.Scenario.Views
         {
             var radioButton = sender as RadioButton;
             if (radioButton != null)
-            {
-                this.ModeTB.Text = radioButton.Name;
-                this.ModeTB.Foreground = radioButton.BorderBrush;
-                this.IntendedAction = (LevelAction)Enum.Parse(typeof(LevelAction), radioButton.Name);
-            }
+                SetRadioButtonChecked(radioButton);
 
             SetItemButtonVisibility();
+        }
+
+        private void SetRadioButtonChecked(RadioButton radioButton)
+        {
+            radioButton.IsChecked = true;
+
+            this.ModeTB.Text = radioButton.Name;
+            this.ModeTB.Foreground = radioButton.BorderBrush;
+            this.IntendedAction = (LevelAction)Enum.Parse(typeof(LevelAction), radioButton.Name);
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

@@ -32,18 +32,18 @@
     </UserControl.Resources>
     <Grid x:Name="LayoutRoot">
     	<Grid.RowDefinitions>
-    		<RowDefinition Height="40" />
+    		<RowDefinition Height="Auto" />
     		<RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
         <TextBlock x:Name="ModeTB"  
                    Grid.Row="0" 
                    TextWrapping="Wrap" 
-                   VerticalAlignment="Bottom" 
+                   VerticalAlignment="Center" 
                    Foreground="White" 
                    FontSize="18.667" 
                    HorizontalAlignment="Left" 
-                   Margin="8,0,0,4" />        
-        <StackPanel Margin="0,0,0,4" Grid.Row="0" x:Name="ButtonStack" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                   Margin="4" />
+        <StackPanel Margin="4" Grid.Row="0" x:Name="ButtonStack" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
             <RadioButton x:Name="Consume" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Consume.png" BorderBrush="Fuchsia" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
             <RadioButton x:Name="Equip" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
             <RadioButton x:Name="Identify" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Identify.png" BorderBrush="Yellow" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Identify" Cursor="Hand" />
@@ -57,6 +57,7 @@
                   Grid.Row="1"
                   Background="Transparent" 
                   IsReadOnly="True"
+                  Margin="0"
                   BorderThickness="0,0,0,1"
                   BorderBrush="Black"
                   AutoGenerateColumns="False"
