@@ -90,17 +90,6 @@
                     <!--TabItem Header="Scenario Creature Classes">
 
             </TabItem-->
-                    <TabItem Header="Scenario Shop">
-                        <StackPanel>
-                            <TextBlock TextWrapping="Wrap" Margin="10" Foreground="White" Text="There is a single shop per scenario. You can create a shop by defining the layout type of a level as type 'Shop'. The shop that appears will have the items defined here. Any subsequent shop levels will share the same items - so trades completed will affect all shop instances in the scenario." />
-                            <GroupBox Header="Consumables" Margin="10">
-                                <controls:ListBuilder x:Name="ConsumablesLB" Height="140" />
-                            </GroupBox>
-                            <GroupBox Header="Equipment" Margin="10">
-                                <controls:ListBuilder x:Name="EquipmentLB" Height="140" />
-                            </GroupBox>
-                        </StackPanel>
-                    </TabItem>
 
                 </TabControl>
             </Grid>

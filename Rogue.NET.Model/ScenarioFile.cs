@@ -25,8 +25,6 @@ namespace Rogue.NET.Model
     public class ScenarioFile
     {
         public const string CONFIG = "Config";
-        public const string SHOP_EQUIPMENT = "Shop Equipment";
-        public const string SHOP_CONSUMABLES = "Shop Consumables";
         public const string PLAYER = "Player";
         public const string SEED = "Seed";
         public const string CURRENT_LEVEL = "Current Level";
@@ -61,8 +59,6 @@ namespace Rogue.NET.Model
             MemoryStream dungeonFileStream = new MemoryStream();
 
             byte[] configuration = ResourceManager.SerializeToCompressedBuffer(dungeon.StoredConfig);
-            byte[] shopEquipment = ResourceManager.SerializeToCompressedBuffer(dungeon.ShopEquipment);
-            byte[] shopConsumables = ResourceManager.SerializeToCompressedBuffer(dungeon.ShopConsumables);
             byte[] player = ResourceManager.SerializeToCompressedBuffer(dungeon.Player1);
             byte[] seed = BitConverter.GetBytes(dungeon.Seed);
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
@@ -81,14 +77,6 @@ namespace Rogue.NET.Model
             dungeonFileStream.Write(configuration, 0, configuration.Length);
 
             offset += configuration.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(List<Equipment>), SHOP_EQUIPMENT, offset, shopEquipment.Length));
-            dungeonFileStream.Write(shopEquipment, 0, shopEquipment.Length);
-
-            offset += shopEquipment.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(List<Consumable>), SHOP_CONSUMABLES, offset, shopConsumables.Length));
-            dungeonFileStream.Write(shopConsumables, 0, shopConsumables.Length);
-
-            offset += shopConsumables.Length;
             _header.StaticObjects.Add(new IndexedObject(typeof(Player), PLAYER, offset, player.Length));
             dungeonFileStream.Write(player, 0, player.Length);
 
@@ -182,12 +170,6 @@ namespace Rogue.NET.Model
                 {
                     case CONFIG:
                         dungeon.StoredConfig = ResourceManager.DeserializeCompressedBuffer<ScenarioConfiguration>(buffer);
-                        break;
-                    case SHOP_EQUIPMENT:
-                        dungeon.ShopEquipment = ResourceManager.DeserializeCompressedBuffer<SerializableObservableCollection<Equipment>>(buffer); 
-                        break;
-                    case SHOP_CONSUMABLES:
-                        dungeon.ShopConsumables = ResourceManager.DeserializeCompressedBuffer<SerializableObservableCollection<Consumable>>(buffer);
                         break;
                     case PLAYER:
                         dungeon.Player1 = ResourceManager.DeserializeCompressedBuffer<Player>(buffer);
@@ -360,14 +342,6 @@ namespace Rogue.NET.Model
             //Add to allow other thread processing
             Thread.Sleep(10);
 
-            byte[] shopEquipment = ResourceManager.SerializeToCompressedBuffer(dungeon.ShopEquipment);
-            //Add to allow other thread processing
-            Thread.Sleep(10);
-
-            byte[] shopConsumables = ResourceManager.SerializeToCompressedBuffer(dungeon.ShopConsumables);
-            //Add to allow other thread processing
-            Thread.Sleep(10);
-
             byte[] player = ResourceManager.SerializeToCompressedBuffer(dungeon.Player1);
             //Add to allow other thread processing
             Thread.Sleep(10);
@@ -403,14 +377,6 @@ namespace Rogue.NET.Model
             Thread.Sleep(10);
 
             offset += configuration.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(List<Equipment>), SHOP_EQUIPMENT, offset, shopEquipment.Length));
-            dungeonFileStream.Write(shopEquipment, 0, shopEquipment.Length);
-
-            offset += shopEquipment.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(List<Consumable>), SHOP_CONSUMABLES, offset, shopConsumables.Length));
-            dungeonFileStream.Write(shopConsumables, 0, shopConsumables.Length);
-
-            offset += shopConsumables.Length;
             header.StaticObjects.Add(new IndexedObject(typeof(Player), PLAYER, offset, player.Length));
             dungeonFileStream.Write(player, 0, player.Length);
 

@@ -32,10 +32,6 @@
                 <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Height="24" Width="400"  Grid.Column="1" Grid.Row="2" />
             </Grid>
             <Grid Margin="10,5,10,0">
-                <TextBlock Grid.Row="3" Foreground="White" Text="Shop Value" Margin="10" VerticalAlignment="Center" />
-                <toolkit:IntegerUpDown HorizontalAlignment="Right" FormatString="N0" Value="{Binding ShopValue, Mode=TwoWay}" Height="24"  Width="400"  Grid.Column="1" Grid.Row="3" />
-            </Grid>
-            <Grid Margin="10,5,10,0">
                 <TextBlock Grid.Row="4" Foreground="White" Text="Use Count" Margin="10" VerticalAlignment="Center" />
                 <controls:Range HorizontalAlignment="Right" DataContext="{Binding UseCount, Mode=TwoWay}" Height="24" Width="400" Grid.Column="1" Grid.Row="4" />
             </Grid>

@@ -24,8 +24,6 @@ namespace Rogue.NET.Model.Logic
 
         protected SerializableObservableCollection<LevelData.DialogMessage> DialogMessages { get; set; }
         protected SerializableDictionary<string, ScenarioMetaData> Encyclopedia { get; set; }
-        protected SerializableObservableCollection<Consumable> ShopConsumables {get;set;}
-        protected SerializableObservableCollection<Equipment> ShopEquipment { get; set; }
         protected SerializableObservableCollection<Enemy> TargetedEnemies { get; set; }
         protected ScenarioConfiguration ScenarioConfig { get; set; }
         protected Random Random { get; set; }
@@ -45,8 +43,6 @@ namespace Rogue.NET.Model.Logic
             _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe((e) =>
             {
                 this.Encyclopedia = e.Data.Encyclopedia;
-                this.ShopConsumables = e.Data.ShopConsumables;
-                this.ShopEquipment = e.Data.ShopEquipment;
                 this.ScenarioConfig = e.Data.Config;
                 this.Random = new Random(e.Data.Seed);
                 this.Player = e.Data.Player;

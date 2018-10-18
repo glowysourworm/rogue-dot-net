@@ -20,10 +20,7 @@ namespace Rogue.NET.Common
         TwoHandedMeleeWeapon,
         RangeWeapon,
         Shield,
-        Orb,
-        CompassGadget,
-        EnemyScopeGadet,
-        EquipmentGadget
+        Orb
     }
     public enum ConsumableType
     {

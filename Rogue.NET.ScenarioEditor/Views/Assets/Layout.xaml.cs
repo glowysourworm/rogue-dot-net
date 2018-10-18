@@ -32,7 +32,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             {
                 case LayoutType.BigRoom:
                 case LayoutType.Normal:
-                case LayoutType.Shop:
                     {
                         this.HiddenDoorGB.Visibility = Visibility.Visible;
                         this.MazeGB.Visibility = Visibility.Collapsed;

@@ -348,12 +348,6 @@ namespace Rogue.NET.Model.Logic
             if (i == null)
                 i = this.Player.EquipmentInventory.FirstOrDefault(z => z.Id == id);
 
-            if (i == null)
-                i = this.ShopConsumables.FirstOrDefault(z => z.Id == id);
-
-            if (i == null)
-                i = this.ShopEquipment.FirstOrDefault(z => z.Id == id);
-
             if (i != null)
             {
                 this.Encyclopedia[i.RogueName].IsIdentified = true;
@@ -474,7 +468,6 @@ namespace Rogue.NET.Model.Logic
                     PublishScenarioMessage("Found " + name);
 
                     //Update level statistics
-                    this.Level.ItemScore += i.ShopValue;
                     if (!this.Level.ItemsFound.ContainsKey(i.RogueName))
                         this.Level.ItemsFound.Add(i.RogueName, 1);
                     else
@@ -506,10 +499,6 @@ namespace Rogue.NET.Model.Logic
                             case DoodadNormalType.SavePoint:
                                 if (c is Player)
                                     PublishScenarioMessage("Save Point");
-                                break;
-                            case DoodadNormalType.Shop:
-                                if (c is Player)
-                                    PublishScenarioMessage("Mysterious Shop.....");
                                 break;
                             case DoodadNormalType.StairsDown:
                                 if (c is Player)
@@ -827,12 +816,6 @@ namespace Rogue.NET.Model.Logic
             this.TargetedEnemies.Clear();
             PublishTargetEvent(null);
 
-            //Check for shop
-            Doodad shop = null;
-            this.Level.IsPlayerOnShop = (Helper.DoesCellContainDoodad(this.Player.Location, this.Level, out shop) && 
-                shop.Type == DoodadType.Normal && 
-                ((DoodadNormal)shop).NormalType == DoodadNormalType.Shop);
-
             //I'm Not DEEEAD!
             if (this.Player.Hunger >= 100 || this.Player.Hp <= 0.1)
                 PublishPlayerDiedEvent("Had a rough day");
@@ -911,98 +894,6 @@ namespace Rogue.NET.Model.Logic
             {
                 if (set.Emphasis > 0)
                     set.Emphasis--;
-            }
-        }
-        public void ToggleMarkForTrade(string id)
-        {
-            Item item = this.Player.ConsumableInventory.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                item.IsMarkedForTrade = !item.IsMarkedForTrade;
-                return;
-            }
-
-            item = this.Player.EquipmentInventory.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                item.IsMarkedForTrade = !item.IsMarkedForTrade;
-                return;
-            }
-
-            item = this.ShopConsumables.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-            {
-                item.IsMarkedForTrade = !item.IsMarkedForTrade;
-                return;
-            }
-
-            item = this.ShopEquipment.FirstOrDefault(i => i.Id == id);
-            if (item != null)
-                item.IsMarkedForTrade = !item.IsMarkedForTrade;
-        }
-        public void ClearMarkedForTrade()
-        {
-            foreach (Item item in this.Player.ConsumableInventory)
-                item.IsMarkedForTrade = false;
-
-            foreach (Item item in this.Player.EquipmentInventory)
-                item.IsMarkedForTrade = false;
-
-            foreach (Item item in this.ShopConsumables)
-                item.IsMarkedForTrade = false;
-
-            foreach (Item item in this.ShopEquipment)
-                item.IsMarkedForTrade = false;
-        }
-        public void Trade()
-        {
-            for (int i=this.ShopConsumables.Count - 1;i>=0;i--)
-            {
-                Consumable item = this.ShopConsumables[i];
-                if (item.IsMarkedForTrade)
-                {
-                    //Have to reset flag so it doesn't get traded back
-                    item.IsMarkedForTrade = false;
-                    this.Player.ConsumableInventory.Add(item as Consumable);
-
-                    this.ShopConsumables.RemoveAt(i);
-                    PublishScenarioMessage(this.Player.RogueName + " received a " +
-                        (this.Encyclopedia[item.RogueName].IsIdentified ? item.RogueName : "???"));
-                }
-            }
-            for (int i = this.ShopEquipment.Count - 1; i >= 0; i--)
-            {
-                Item item = this.ShopEquipment[i];
-                if (item.IsMarkedForTrade)
-                {
-                    //Have to reset flag so it doesn't get traded back
-                    item.IsMarkedForTrade = false;
-                    this.Player.EquipmentInventory.Add(item as Equipment);
-
-                    this.ShopEquipment.RemoveAt(i);
-                    PublishScenarioMessage(this.Player.RogueName + " received a " +
-                        (this.Encyclopedia[item.RogueName].IsIdentified ? item.RogueName : "???"));
-                }
-            }
-            for (int i = this.Player.ConsumableInventory.Count - 1; i >= 0; i--)
-            {
-                Consumable item = this.Player.ConsumableInventory[i];
-                if (item.IsMarkedForTrade)
-                {
-                    item.IsMarkedForTrade = false;
-                    this.ShopConsumables.Add(item);
-                    this.Player.ConsumableInventory.RemoveAt(i);
-                }
-            }
-            for (int i = this.Player.EquipmentInventory.Count - 1; i >= 0; i--)
-            {
-                Equipment item = this.Player.EquipmentInventory[i];
-                if (item.IsMarkedForTrade)
-                {
-                    item.IsMarkedForTrade = false;
-                    this.ShopEquipment.Add(item);
-                    this.Player.EquipmentInventory.RemoveAt(i);
-                }
             }
         }
         public void DebugSkillUp()
@@ -1131,9 +1022,6 @@ namespace Rogue.NET.Model.Logic
                             case DoodadNormalType.SavePoint:
                                 PublishSaveEvent();
                                 break;
-                            case DoodadNormalType.Shop:
-                                //OnSpecialDungeonEvent(this, new SpecialDungeonEventArgs(SpecialDungeonEvents.ShopEnter));
-                                break;
                             case DoodadNormalType.StairsDown:
                                 PublishLoadLevelRequest(this.Level.Number + 1, PlayerStartLocation.StairsUp);
                                 break;
@@ -1149,9 +1037,6 @@ namespace Rogue.NET.Model.Logic
         }
         private void ProcessMonsterGeneration()
         {
-            if (this.Level.Type == LayoutType.Shop)
-                return;
-
             if (this.ScenarioConfig.DungeonTemplate.MonsterGenerationBase > this.Random.NextDouble() && this.ScenarioConfig.EnemyTemplates.Count > 0)
             {
                 List<EnemyTemplate> list = new List<EnemyTemplate>();
@@ -1288,9 +1173,6 @@ namespace Rogue.NET.Model.Logic
             RevealMonsters();
             RevealContent();
             PublishScenarioMessage("Your spatial senses are heightened");
-
-            //Need to send an update for the affected cells
-            //OnDungeonTickEvent(this, new DungeonTickEventArgs(this.Level, this.Player, this.Encyclopedia, this.ShopConsumables, this.ShopEquipment, this.Level.Grid.GetCellsAsArray(), ""));
         }
         private void RevealStairs()
         {

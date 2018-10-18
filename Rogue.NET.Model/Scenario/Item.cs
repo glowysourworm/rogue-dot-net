@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.Xml.Schema;
-using System.Xml;
-using System.Windows;
-using System.ComponentModel;
 using Rogue.NET.Common;
 using Rogue.NET.Scenario.Model;
 using Rogue.NET.Common.Collections;
@@ -18,7 +12,6 @@ namespace Rogue.NET.Model.Scenario
     public class Item : ScenarioObject
     {
         bool _isIdentified;
-        bool _isMarkedForTrade;
 
         /// <summary>
         /// Weight (Haul) of item
@@ -35,24 +28,6 @@ namespace Rogue.NET.Model.Scenario
             {
                 _isIdentified = value;
                 OnPropertyChanged("IsIdentified");
-            }
-        }
-
-        /// <summary>
-        /// Value set in configuration for shop exchange 
-        /// </summary>
-        public int ShopValue { get; set; }
-
-        /// <summary>
-        /// Flags items that are marked for trade at the shop
-        /// </summary>
-        public bool IsMarkedForTrade
-        {
-            get { return _isMarkedForTrade; }
-            set
-            {
-                _isMarkedForTrade = value;
-                OnPropertyChanged("IsMarkedForTrade");
             }
         }
 
@@ -123,16 +98,6 @@ namespace Rogue.NET.Model.Scenario
         public string AmmoName { get; set; }
 
         public SerializableObservableCollection<AttackAttribute> AttackAttributes { get; set; }
-
-        public bool IsGadget
-        {
-            get
-            {
-                return this.Type == EquipmentType.CompassGadget ||
-                       this.Type == EquipmentType.EnemyScopeGadet ||
-                       this.Type == EquipmentType.EquipmentGadget;
-            }
-        }
 
         public Equipment() : base()
         {

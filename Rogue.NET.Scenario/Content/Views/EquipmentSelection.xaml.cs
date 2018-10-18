@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using Rogue.NET.Common;
 using Rogue.NET.Model;
 
@@ -36,15 +24,6 @@ namespace Rogue.NET.Scenario.Views
                     SetFromDataContext();
                 };
 
-                data.Player.MeleeAttackAttributes.CollectionAltered += (obj, ev) =>
-                {
-                    //var view = CollectionViewSource.GetDefaultView(this.AttackAttributesLB.ItemsSource);
-                    //if (view != null)
-                    //    view.Refresh();
-
-                    
-                };
-
                 SetFromDataContext();
             }
         }
@@ -66,9 +45,6 @@ namespace Rogue.NET.Scenario.Views
             this.RightRing1.Source = null;
             this.ShoulderImage.Source = null;
             this.BeltImage.Source = null;
-            this.EquipmentGadget.Source = null;
-            this.EnemyScopeGadget.Source = null;
-            this.CompassGadget.Source = null;
 
             if (data != null)
             {
@@ -122,15 +98,6 @@ namespace Rogue.NET.Scenario.Views
                             break;
                         case EquipmentType.Belt:
                             this.BeltImage.Source = eq.SymbolInfo.SymbolImageSource;
-                            break;
-                        case EquipmentType.CompassGadget:
-                            this.CompassGadget.Source = eq.SymbolInfo.SymbolImageSource;
-                            break;
-                        case EquipmentType.EnemyScopeGadet:
-                            this.EnemyScopeGadget.Source = eq.SymbolInfo.SymbolImageSource;
-                            break;
-                        case EquipmentType.EquipmentGadget:
-                            this.EquipmentGadget.Source = eq.SymbolInfo.SymbolImageSource;
                             break;
                     }
                 }

@@ -189,24 +189,6 @@ namespace Rogue.NET.Model.Logic
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.ToggleMarkForTrade:
-                    {
-                        _interactionEngine.ToggleMarkForTrade(e.ItemId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelAction.ClearTradeMarkedItems:
-                    {
-                        _interactionEngine.ClearMarkedForTrade();
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelAction.Trade:
-                    {
-                        _interactionEngine.Trade();
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
                 case LevelAction.CycleActiveSkill:
                     {
                         _interactionEngine.CycleActiveSkill();

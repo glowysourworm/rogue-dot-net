@@ -46,9 +46,6 @@ namespace Rogue.NET.Common
         EmphasizeSkillDown,
         ActivateSkill,
         DeactivateSkill,
-        ToggleMarkForTrade,
-        ClearTradeMarkedItems,
-        Trade,
         CycleActiveSkill,
         DebugNext,
         DebugExperience,
@@ -69,7 +66,6 @@ namespace Rogue.NET.Common
         Maze,
         Teleport,
         TeleportRandom,
-        Shop,
         Hall,
         BigRoom,
     }
@@ -86,7 +82,6 @@ namespace Rogue.NET.Common
         Teleport1,
         Teleport2,
         TeleportRandom,
-        Shop,
     }
     public enum DoodadPairType
     {

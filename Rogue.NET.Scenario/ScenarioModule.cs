@@ -56,7 +56,6 @@ namespace Rogue.NET.Scenario
             _unityContainer.RegisterInstance(typeof(GameView), new GameView(_regionManager, _unityContainer, _eventAggregator));
             //_unityContainer.RegisterInstance(typeof(LevelView), new LevelView());
             _unityContainer.RegisterInstance(typeof(EquipmentSelectionCtrl), new EquipmentSelectionCtrl());
-            _unityContainer.RegisterInstance(typeof(ShopCtrl), new ShopCtrl());
             _unityContainer.RegisterInstance(typeof(DungeonEncyclopedia), new DungeonEncyclopedia());
             _unityContainer.RegisterInstance(typeof(DeathDisplay), new DeathDisplay(_eventAggregator));
             _unityContainer.RegisterInstance(typeof(GameInfoView), new GameInfoView(_eventAggregator));
@@ -72,7 +71,6 @@ namespace Rogue.NET.Scenario
             //_regionManager.RegisterViewWithRegion("GameRegion", () => _unityContainer.Resolve<LevelView>());
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
             _regionManager.RegisterViewWithRegion("GameRegion", () => _unityContainer.Resolve<EquipmentSelectionCtrl>());
-            _regionManager.RegisterViewWithRegion("GameRegion", () => _unityContainer.Resolve<ShopCtrl>());
             _regionManager.RegisterViewWithRegion("GameRegion", () => _unityContainer.Resolve<DungeonEncyclopedia>());
             _regionManager.RegisterViewWithRegion("GameInfoRegion", () => _unityContainer.Resolve<GameInfoView>());
 

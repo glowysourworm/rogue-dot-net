@@ -19,8 +19,6 @@ namespace Rogue.NET.Model.Scenario
     public class ScenarioContainer
     {
         public List<Level> LoadedLevels { get; set; }
-        public SerializableObservableCollection<Equipment> ShopEquipment { get; set; }
-        public SerializableObservableCollection<Consumable> ShopConsumables { get; set; }
         public Player Player1 { get; set; }
         public int Seed { get; set; }
         public int CurrentLevel { get; set; }
@@ -39,8 +37,6 @@ namespace Rogue.NET.Model.Scenario
             this.Player1 = new Player();
             this.LoadedLevels = new List<Level>();
             this.CurrentLevel = 1;
-            this.ShopConsumables = new SerializableObservableCollection<Consumable>();
-            this.ShopEquipment = new SerializableObservableCollection<Equipment>();
             this.ItemEncyclopedia = new SerializableDictionary<string, ScenarioMetaData>();
             this.ObjectiveAcheived = false;
         }

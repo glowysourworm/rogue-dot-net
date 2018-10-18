@@ -18,9 +18,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rogue.NET.Scenario.Views.Gadgets
+namespace Rogue.NET.Scenario.Views
 {
-    public partial class CompassGadget : UserControl
+    public partial class CompassCtrl : UserControl
     {
         IEventAggregator _eventAggregator;
         bool _eventsHooked = false;
@@ -29,7 +29,7 @@ namespace Rogue.NET.Scenario.Views.Gadgets
         List<Line> _canvasLines = new List<Line>();
         int currentLevelNumber = -1;
 
-        public CompassGadget()
+        public CompassCtrl()
         {
             InitializeComponent();
         }

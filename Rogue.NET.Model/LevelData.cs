@@ -19,8 +19,6 @@ namespace Rogue.NET.Model
         public PlayerStartLocation StartLocation { get; set; }
         public ScenarioConfiguration Config { get; set; }
         public SerializableObservableCollection<DialogMessage> DialogMessages { get; set; }
-        public SerializableObservableCollection<Consumable> ShopConsumables { get; set; }
-        public SerializableObservableCollection<Equipment> ShopEquipment { get; set; }
         public SerializableDictionary<string, ScenarioMetaData> Encyclopedia { get; set; }
         public SerializableObservableCollection<Enemy> TargetedEnemies { get; set; }
         public string ObjectiveDescription { get; set; }

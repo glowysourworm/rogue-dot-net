@@ -82,31 +82,11 @@ namespace Rogue.NET.Model.Generation
 
             //Add entries for normal doodads
             d.ItemEncyclopedia.Add("Save Point", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.SavePoint), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Save Point", DoodadType.Normal.ToString(), "A tall odd shrine", "Contains strange markings related to reincarnation"));
-            d.ItemEncyclopedia.Add("Mysterious Shop...", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.Shop), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Mysterious Shop", DoodadType.Normal.ToString(), "A mysterious shop", "Who could possibly own a shop down here?!"));
             d.ItemEncyclopedia.Add("Stairs Down", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.StairsDown), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Stairs Down", DoodadType.Normal.ToString(), "Some stiars leading down", "These stairs lead to the next lower level of the dungeon"));
             d.ItemEncyclopedia.Add("Stairs Up", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.StairsUp), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Stairs Up", DoodadType.Normal.ToString(), "Some stairs leading up", "These stairs lead to the next upper level of the dungeon"));
             d.ItemEncyclopedia.Add("Teleport 1", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.Teleport1), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Teleporter A", DoodadType.Normal.ToString(), "A shrine dedicated to magical transport", "Contains strange markings related to magical transportation"));
             d.ItemEncyclopedia.Add("Teleport 2", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.Teleport2), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Teleporter B", DoodadType.Normal.ToString(), "A shrine dedicated to magical transport", "Contains strange markings related to magical transportation"));
             d.ItemEncyclopedia.Add("Random Teleporter", new ScenarioMetaData(TemplateGenerator.GenerateDefaultDoodadSymbol(DoodadNormalType.TeleportRandom), new AttackAttributeTemplate[] { }, DungeonMetaDataObjectTypes.Doodad, false, false, false, "Save Point", DoodadType.Normal.ToString(), "A tall odd shrine", "Contains strange markings related to magical transportation"));
-
-            //Create Shop Items
-            foreach (ProbabilityConsumableTemplate t in c.DungeonTemplate.ShopConsumables)
-            {
-                Consumable co = TemplateGenerator.GenerateProbabilityConsumable(t, ref r);
-                if (co != null)
-                {
-                    d.ShopConsumables.Add(co);
-                }
-            }
-            foreach (ProbabilityEquipmentTemplate t in c.DungeonTemplate.ShopEquipment)
-            {
-                Equipment e = TemplateGenerator.GenerateProbabilityEquipment(t, ref r);
-
-                if (e != null)
-                {
-                    d.ShopEquipment.Add(e);
-                }
-            }
 
             //Identify player skills / equipment / consumables
             foreach (SkillSet s in d.Player1.Skills)

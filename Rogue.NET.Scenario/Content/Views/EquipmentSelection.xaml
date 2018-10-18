@@ -143,18 +143,6 @@
                         </RadialGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="32,0,32,0" Grid.Row="5" Grid.ColumnSpan="10">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8" FontSize="16" Foreground="White" Text="Gadgets" TextWrapping="Wrap"/>
-                    <Border HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="CompassGadget" Margin="2" />
-                    </Border>
-                    <Border HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="EnemyScopeGadget" Margin="2" />
-                    </Border>
-                    <Border HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="EquipmentGadget" Margin="2" />
-                    </Border>
-                </StackPanel>
             </Grid>
 		</Border>
 		<Border x:Name="EquipmentListBorder" Grid.Column="1" BorderThickness="1" Background="Black" BorderBrush="White">

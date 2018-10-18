@@ -293,8 +293,6 @@ namespace Rogue.NET.Model
                     Level = nextLevel,
                     Player = _scenarioContainer.Player1,
                     Encyclopedia = _scenarioContainer.ItemEncyclopedia,
-                    ShopConsumables = _scenarioContainer.ShopConsumables,
-                    ShopEquipment = _scenarioContainer.ShopEquipment,
                     ObjectiveDescription = _scenarioContainer.StoredConfig.DungeonTemplate.ObjectiveDescription,
                     Config = _scenarioContainer.StoredConfig,
                     Seed = _scenarioContainer.Seed, 
@@ -341,7 +339,7 @@ namespace Rogue.NET.Model
             stats.Add("Items Found", _scenarioContainer.LoadedLevels.Sum(z => z.ItemsFound.Sum(y => y.Value)).ToString());
             stats.Add("Unique Items Found", _scenarioContainer.LoadedLevels.Sum(z => z.ItemsFound.Where(y => _scenarioContainer.ItemEncyclopedia[y.Key].IsUnique).Sum(x => x.Value)).ToString());
             stats.Add("Unique Monsters Found", _scenarioContainer.LoadedLevels.Sum(z => z.MonstersKilled.Where(y => _scenarioContainer.ItemEncyclopedia[y.Key].IsUnique).Sum(x => x.Value)).ToString());
-            stats.Add("Total Score", _scenarioContainer.LoadedLevels.Sum(z => z.ItemScore + z.MonsterScore).ToString());
+            stats.Add("Total Score", _scenarioContainer.LoadedLevels.Sum(z => z.MonsterScore).ToString());
 
             return stats;
         }

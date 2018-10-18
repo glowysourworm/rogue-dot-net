@@ -551,14 +551,9 @@ namespace Rogue.NET.Model
 
         public List<LayoutTemplate> LayoutTemplates { get; set; }
 
-        public List<ProbabilityEquipmentTemplate> ShopEquipment { get; set; }
-        public List<ProbabilityConsumableTemplate> ShopConsumables { get; set; }
-
         public DungeonTemplate()
         {
             this.LayoutTemplates = new List<LayoutTemplate>();
-            this.ShopConsumables = new List<ProbabilityConsumableTemplate>();
-            this.ShopEquipment = new List<ProbabilityEquipmentTemplate>();
 
             this.NumberOfLevels = 100;
             this.MonsterGenerationBase = 0.01;
@@ -877,7 +872,6 @@ namespace Rogue.NET.Model
         private SpellTemplate _attackSpell;
         private SpellTemplate _curseSpell;
         private ConsumableTemplate _ammoTemplate;
-        private int _shopValue;
         private double _weight;
         private bool _hasEquipSpell;
         private bool _hasAttackSpell;
@@ -979,18 +973,6 @@ namespace Rogue.NET.Model
                 }
             }
         }
-        public int ShopValue
-        {
-            get { return _shopValue; }
-            set
-            {
-                if (_shopValue != value)
-                {
-                    _shopValue = value;
-                    OnPropertyChanged("ShopValue");
-                }
-            }
-        }
         public bool HasEquipSpell
         {
             get { return _hasEquipSpell; }
@@ -1059,7 +1041,6 @@ namespace Rogue.NET.Model
         private ConsumableType _type;
         private ConsumableSubType _subType;
         private double _weight;
-        private int _shopValue;
         private Range<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasSpell;
@@ -1102,18 +1083,6 @@ namespace Rogue.NET.Model
                 {
                     _weight = value;
                     OnPropertyChanged("Weight");
-                }
-            }
-        }
-        public int ShopValue
-        {
-            get { return _shopValue; }
-            set
-            {
-                if (_shopValue != value)
-                {
-                    _shopValue = value;
-                    OnPropertyChanged("ShopValue");
                 }
             }
         }

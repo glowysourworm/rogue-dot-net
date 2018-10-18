@@ -72,8 +72,6 @@ namespace Rogue.NET.Model.Scenario
             {
                 case DoodadNormalType.SavePoint:
                     this.SymbolInfo = new SymbolDetails(1, 10, ImageResources.SavePoint); break;
-                case DoodadNormalType.Shop:
-                    this.SymbolInfo = new SymbolDetails(1, 10, ImageResources.Shop); break;
                 case DoodadNormalType.StairsDown:
                     this.SymbolInfo = new SymbolDetails(1, 10, ImageResources.StairsDown); break;
                 case DoodadNormalType.StairsUp:
@@ -99,8 +97,6 @@ namespace Rogue.NET.Model.Scenario
             {
                 case DoodadNormalType.SavePoint:
                     this.SymbolInfo = new SymbolDetails(scale, 10, ImageResources.SavePoint); break;
-                case DoodadNormalType.Shop:
-                    this.SymbolInfo = new SymbolDetails(scale, 10, ImageResources.Shop); break;
                 case DoodadNormalType.StairsDown:
                     this.SymbolInfo = new SymbolDetails(scale, 10, ImageResources.StairsDown); break;
                 case DoodadNormalType.StairsUp:

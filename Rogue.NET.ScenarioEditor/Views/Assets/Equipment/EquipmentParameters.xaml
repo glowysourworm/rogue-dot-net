@@ -32,10 +32,6 @@
                 <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
             </Grid>            
             <Grid>
-                <toolkit:IntegerUpDown Value="{Binding ShopValue, Mode=TwoWay}" HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="9" />
-                <TextBlock Grid.Row="8" Foreground="White" Text="Shop Value" Margin="10" VerticalAlignment="Center" />
-            </Grid>
-            <Grid>
                 <ComboBox x:Name="EquipSpellCB" DisplayMemberPath="Name" 
                           SelectedItem="{Binding EquipSpell, Mode=TwoWay}"
                           SelectedValue="{Binding EquipSpell.Name}"

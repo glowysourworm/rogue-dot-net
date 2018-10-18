@@ -105,9 +105,6 @@ namespace Rogue.NET.Model.Generation
                     GenerateItems();
                     GenerateDoodads();
                     break;
-                case LayoutType.Shop:
-                    level.AddDoodadNormal(new DoodadNormal(DoodadNormalType.Shop, "Mysterious Shop...", "", true));
-                    break;
                 case LayoutType.BigRoom:
                     GenerateEnemies();
                     GenerateItems();

@@ -540,8 +540,4 @@ namespace Rogue.NET.Common
         WellYellow,
         WellYellowCopy
     }
-
-    public enum SoundResources
-    {
-    }
 }

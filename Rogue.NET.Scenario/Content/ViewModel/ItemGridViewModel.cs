@@ -30,7 +30,6 @@ namespace Rogue.NET.Scenario.ViewModel
         public static readonly DependencyProperty DetailsEnableProperty = DependencyProperty.Register("DetailsEnable", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty ThrowEnableProperty = DependencyProperty.Register("ThrowEnable", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty EnchantEnableProperty = DependencyProperty.Register("EnchantEnable", typeof(bool), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty IsMarkedForTradeProperty = DependencyProperty.Register("IsMarkedForTrade", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty IsEquipedProperty = DependencyProperty.Register("IsEquiped", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty IsCursedProperty = DependencyProperty.Register("IsCursed", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty IsObjectiveProperty = DependencyProperty.Register("IsObjective", typeof(bool), typeof(ItemGridViewModel));
@@ -41,6 +40,8 @@ namespace Rogue.NET.Scenario.ViewModel
         public static readonly DependencyProperty WeightProperty = DependencyProperty.Register("Weight", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty QualityProperty = DependencyProperty.Register("Quality", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty TotalWeightProperty = DependencyProperty.Register("TotalWeight", typeof(string), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty AttackAttributesProperty = DependencyProperty.Register("AttackAttributes", typeof(SerializableObservableCollection<AttackAttribute>), typeof(ItemGridViewModel));
         #endregion
 
         #region Properties
@@ -57,87 +58,86 @@ namespace Rogue.NET.Scenario.ViewModel
             get { return (bool)GetValue(ShowButtonProperty); }
             set { SetValue(ShowButtonProperty, value); }
         }
-        public bool ConsumeEnable 
-        { 
-	        get {return (bool)GetValue(ConsumeEnableProperty);}
-	        set {SetValue(ConsumeEnableProperty, value);}
-        }
-        public bool IdentifyEnable 
-        { 
-	        get {return (bool)GetValue(IdentifyEnableProperty);}
-	        set {SetValue(IdentifyEnableProperty, value);}
-        }
-        public bool EquipEnable 
-        { 
-	        get {return (bool)GetValue(EquipEnableProperty);}
-	        set {SetValue(EquipEnableProperty, value);}
-        }
-        public bool DropEnable 
-        { 
-	        get {return (bool)GetValue(DropEnableProperty);}
-	        set {SetValue(DropEnableProperty, value);}
-        }
-        public bool UncurseEnable 
-        { 
-	        get {return (bool)GetValue(UncurseEnableProperty);}
-	        set {SetValue(UncurseEnableProperty, value);}
-        }
-        public bool SelectEnable 
-        { 
-	        get {return (bool)GetValue(SelectEnableProperty);}
-	        set {SetValue(SelectEnableProperty, value);}
-        }
-        public bool DetailsEnable 
-        { 
-	        get {return (bool)GetValue(DetailsEnableProperty);}
-	        set {SetValue(DetailsEnableProperty, value);}
-        }
-        public bool ThrowEnable 
-        { 
-	        get {return (bool)GetValue(ThrowEnableProperty);}
-	        set {SetValue(ThrowEnableProperty, value);}
-        }
-        public bool EnchantEnable 
-        { 
-	        get {return (bool)GetValue(EnchantEnableProperty);}
-	        set {SetValue(EnchantEnableProperty, value);}
-        }
-        public bool IsMarkedForTrade 
+        public bool ConsumeEnable
         {
-	        get {return (bool)GetValue(IsMarkedForTradeProperty);}
-	        set {SetValue(IsMarkedForTradeProperty, value);}
+            get { return (bool)GetValue(ConsumeEnableProperty); }
+            set { SetValue(ConsumeEnableProperty, value); }
         }
-        public bool IsEquiped 
+        public bool IdentifyEnable
         {
-	        get {return (bool)GetValue(IsEquipedProperty);}
-            set 
+            get { return (bool)GetValue(IdentifyEnableProperty); }
+            set { SetValue(IdentifyEnableProperty, value); }
+        }
+        public bool EquipEnable
+        {
+            get { return (bool)GetValue(EquipEnableProperty); }
+            set { SetValue(EquipEnableProperty, value); }
+        }
+        public bool DropEnable
+        {
+            get { return (bool)GetValue(DropEnableProperty); }
+            set { SetValue(DropEnableProperty, value); }
+        }
+        public bool UncurseEnable
+        {
+            get { return (bool)GetValue(UncurseEnableProperty); }
+            set { SetValue(UncurseEnableProperty, value); }
+        }
+        public bool SelectEnable
+        {
+            get { return (bool)GetValue(SelectEnableProperty); }
+            set { SetValue(SelectEnableProperty, value); }
+        }
+        public bool DetailsEnable
+        {
+            get { return (bool)GetValue(DetailsEnableProperty); }
+            set { SetValue(DetailsEnableProperty, value); }
+        }
+        public bool ThrowEnable
+        {
+            get { return (bool)GetValue(ThrowEnableProperty); }
+            set { SetValue(ThrowEnableProperty, value); }
+        }
+        public bool EnchantEnable
+        {
+            get { return (bool)GetValue(EnchantEnableProperty); }
+            set { SetValue(EnchantEnableProperty, value); }
+        }
+        public bool IsEquiped
+        {
+            get { return (bool)GetValue(IsEquipedProperty); }
+            set
             {
                 SetValue(IsEquipedProperty, value);
             }
         }
-        public bool IsCursed 
-        { 
-	        get {return (bool)GetValue(IsCursedProperty);}
-	        set {SetValue(IsCursedProperty, value);}
+        public bool IsCursed
+        {
+            get { return (bool)GetValue(IsCursedProperty); }
+            set { SetValue(IsCursedProperty, value); }
         }
-        public bool IsObjective 
-        { 
-	        get {return (bool)GetValue(IsObjectiveProperty);}
-	        set {SetValue(IsObjectiveProperty, value);}
+        public bool IsObjective
+        {
+            get { return (bool)GetValue(IsObjectiveProperty); }
+            set { SetValue(IsObjectiveProperty, value); }
         }
-        public bool IsUnique 
-        { 
-	        get {return (bool)GetValue(IsUniqueProperty);}
-	        set {SetValue(IsUniqueProperty, value);}
+        public bool IsUnique
+        {
+            get { return (bool)GetValue(IsUniqueProperty); }
+            set { SetValue(IsUniqueProperty, value); }
         }
-        public int Quantity 
-        { 
-	        get {return (int)GetValue(QuantityProperty);}
-	        set {SetValue(QuantityProperty, value);}
+        public int Quantity
+        {
+            get { return (int)GetValue(QuantityProperty); }
+            set { SetValue(QuantityProperty, value); }
         }
-        public int ShopValue { get; set; }
         public int Uses { get; set; }
         public string Type { get; set; }
+        public SerializableObservableCollection<AttackAttribute> AttackAttributes
+        {
+            get { return (SerializableObservableCollection<AttackAttribute>)GetValue(AttackAttributesProperty); }
+            set { SetValue(AttackAttributesProperty, value); }
+        }
         public EquipmentType EquipType
         {
             get { return (EquipmentType)GetValue(EquipTypeProperty); }
@@ -160,6 +160,11 @@ namespace Rogue.NET.Scenario.ViewModel
         { 
 	        get {return (string)GetValue(QualityProperty);}
 	        set {SetValue(QualityProperty, value);}
+        }
+        public string Description
+        {
+            get { return (string)GetValue(DescriptionProperty); }
+            set { SetValue(DescriptionProperty, value); }
         }
         public string RogueName
         {
@@ -220,6 +225,7 @@ namespace Rogue.NET.Scenario.ViewModel
                 this.Quantity = 1;
                 this.Weight = equipment.Weight.ToString("F2");
                 this.Type = equipment.Type.ToString();
+                this.AttackAttributes = equipment.AttackAttributes;
             }
             if (isConsumable)
             {
@@ -259,9 +265,6 @@ namespace Rogue.NET.Scenario.ViewModel
 
             this.Quality = quality;
             this.Class = classs;
-            this.IsMarkedForTrade = item.IsMarkedForTrade;
-
-            this.ShopValue = item.ShopValue;
 
             if (!metaData.IsIdentified)
             {
@@ -271,6 +274,7 @@ namespace Rogue.NET.Scenario.ViewModel
                     this.Quality = "?";
                     this.Class = "?";
                 }
+                this.Description = "";
             }
             else
             {
@@ -288,6 +292,8 @@ namespace Rogue.NET.Scenario.ViewModel
 
                 else
                     this.RogueName = item.RogueName;
+
+                this.Description = metaData.LongDescription;
             }
 
             // item display image

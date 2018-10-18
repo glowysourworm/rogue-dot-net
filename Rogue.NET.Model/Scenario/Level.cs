@@ -17,22 +17,10 @@ namespace Rogue.NET.Model.Scenario
     [Serializable]
     public class Level : FrameworkElement, INotifyPropertyChanged, ISerializable
     {
-        bool _isPlayerOnShop = false;
-
         public LevelGrid Grid { get; set; }
         public LayoutType Type { get; set; }
 
         public int Number { get; set; }
-        public bool IsPlayerOnShop
-        {
-            get { return _isPlayerOnShop; }
-            set
-            {
-                _isPlayerOnShop = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsPlayerOnShop"));
-            }
-        }
         public bool HasStairsUp { get; private set; }
         public bool HasStairsDown { get; private set; }
         public bool HasSavePoint { get; private set; }
@@ -53,7 +41,6 @@ namespace Rogue.NET.Model.Scenario
         //Statistics
         public int StepsTaken { get; set; }
         public int MonsterScore { get; set; }   //Monster Killed * Experience for that monster
-        public int ItemScore { get; set; }      //Item collected * Shop Value for that item
         public SerializableDictionary<string, int> MonstersKilled { get; set; }
         public SerializableDictionary<string, int> ItemsFound { get; set; }
 
@@ -115,7 +102,6 @@ namespace Rogue.NET.Model.Scenario
 
             this.StepsTaken = (int)info.GetValue("StepsTaken", typeof(int));
             this.MonsterScore = (int)info.GetValue("MonsterScore", typeof(int));
-            this.ItemScore = (int)info.GetValue("ItemScore", typeof(int));
             this.MonstersKilled = (SerializableDictionary<string, int>)info.GetValue("MonstersKilled", typeof(SerializableDictionary<string, int>));
             this.ItemsFound = (SerializableDictionary<string, int>)info.GetValue("ItemsFound", typeof(SerializableDictionary<string, int>));
         }
@@ -535,7 +521,6 @@ namespace Rogue.NET.Model.Scenario
 
             info.AddValue("StepsTaken", this.StepsTaken);
             info.AddValue("MonsterScore", this.MonsterScore);
-            info.AddValue("ItemScore", this.ItemScore);
             info.AddValue("MonstersKilled", this.MonstersKilled);
             info.AddValue("ItemsFound", this.ItemsFound);
         }

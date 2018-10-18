@@ -122,7 +122,6 @@ namespace Rogue.NET.Model.Generation
             switch (_template.Type)
             {
                 case LayoutType.Normal:
-                case LayoutType.Shop:
                     ConnectRooms(true);
                     //EdgeCells();
                     CreateRoomCells();

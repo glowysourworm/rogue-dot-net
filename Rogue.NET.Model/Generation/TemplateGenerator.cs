@@ -32,9 +32,6 @@ namespace Rogue.NET.Model.Generation
                 case DoodadNormalType.SavePoint:
                     return new SymbolDetails(1, 10, ImageResources.SavePoint);
 
-                case DoodadNormalType.Shop:
-                    return new SymbolDetails(1, 10, ImageResources.Shop);
-
                 case DoodadNormalType.StairsDown:
                     return new SymbolDetails(1, 10, ImageResources.StairsDown);
 
@@ -94,7 +91,6 @@ namespace Rogue.NET.Model.Generation
             e.AmmoName = t.AmmoTemplate == null ? "" : t.AmmoTemplate.Name;
             e.Weight = t.Weight;
             e.Quality = t.Quality.GetRandomValue(ref r);
-            e.ShopValue = t.ShopValue;
 
             foreach (AttackAttributeTemplate attrib in t.AttackAttributes)
                 e.AttackAttributes.Add(new AttackAttribute()
@@ -127,7 +123,6 @@ namespace Rogue.NET.Model.Generation
             c.Type = t.Type;
             c.SubType = t.SubType;
             c.Weight = t.Weight;
-            c.ShopValue = t.ShopValue;
             c.Uses = t.UseCount.GetRandomValue(ref r);
             t.HasBeenGenerated = true;
             return c;
