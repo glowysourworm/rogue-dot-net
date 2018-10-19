@@ -12,7 +12,6 @@ using System.Linq;
 using System.IO;
 using Rogue.NET.Common;
 using System.Runtime.Serialization;
-using Rogue.NET.Common.Model;
 
 namespace Rogue.NET.Model
 {

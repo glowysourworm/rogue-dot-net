@@ -1,11 +1,9 @@
 ﻿using Rogue.NET.Common;
 using Rogue.NET.Model.Scenario;
-using Rogue.NET.Common.Model;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model.Generation

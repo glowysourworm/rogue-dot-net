@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Rogue.NET.Common.Model
+// MUST LEAVE NAMESPACE Rogue.NET.Common for BinaryFormatter
+namespace Rogue.NET.Common
 {
     [Serializable]
     public class Range<T> : INotifyPropertyChanged where T : IComparable

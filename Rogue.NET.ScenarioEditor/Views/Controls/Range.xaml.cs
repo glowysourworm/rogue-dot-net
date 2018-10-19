@@ -1,6 +1,7 @@
-﻿using Rogue.NET.Common.Model;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+
+using Rogue.NET.Common;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
