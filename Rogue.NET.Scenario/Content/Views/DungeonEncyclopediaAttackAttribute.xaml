@@ -17,12 +17,39 @@
             </TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Attack, StringFormat=N0}" Visibility="{Binding Attack, Converter={StaticResource VisConv}}" VerticalAlignment="Center" FontSize="14" Foreground="Yellow" Margin="0" />
-            <TextBlock Text="A" VerticalAlignment="Center" Visibility="{Binding Attack, Converter={StaticResource VisConv}}" Foreground="Yellow" Margin="0,4,4,4" />
-            <TextBlock Text="{Binding Resistance, StringFormat=N0}" Visibility="{Binding Resistance, Converter={StaticResource VisConv}}" VerticalAlignment="Center" FontSize="14" Foreground="LightSteelBlue" Margin="0" />
-            <TextBlock Text="R" Foreground="LightSteelBlue" Visibility="{Binding Resistance, Converter={StaticResource VisConv}}" Margin="0,4,4,4" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Weakness, StringFormat=N0}" Visibility="{Binding Weakness, Converter={StaticResource VisConv}}" VerticalAlignment="Center" FontSize="14" Foreground="Red" Margin="0" />
-            <TextBlock Text="W" Foreground="Red" Margin="0,4,4,4" Visibility="{Binding Weakness, Converter={StaticResource VisConv}}" VerticalAlignment="Center" />            
+            <TextBlock Text="{Binding Attack, StringFormat=N0}" 
+                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       VerticalAlignment="Center" 
+                       FontSize="14" 
+                       Foreground="Yellow" 
+                       Margin="0" />
+            <TextBlock Text="A" 
+                       VerticalAlignment="Center" 
+                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Foreground="Yellow" 
+                       Margin="0,4,4,4" />
+            <TextBlock Text="{Binding Resistance, StringFormat=N0}" 
+                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       VerticalAlignment="Center" 
+                       FontSize="14" 
+                       Foreground="LightSteelBlue" 
+                       Margin="0" />
+            <TextBlock Text="R" 
+                       Foreground="LightSteelBlue" 
+                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Margin="0,4,4,4" 
+                       VerticalAlignment="Center" />
+            <TextBlock Text="{Binding Weakness, StringFormat=N0}" 
+                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       VerticalAlignment="Center" 
+                       FontSize="14" 
+                       Foreground="Red" 
+                       Margin="0" />
+            <TextBlock Text="W" 
+                       Foreground="Red" 
+                       Margin="0,4,4,4" 
+                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       VerticalAlignment="Center" />            
         </StackPanel>
     </Grid>
 </UserControl>

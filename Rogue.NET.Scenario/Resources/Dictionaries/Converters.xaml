@@ -6,5 +6,5 @@
              xmlns:model="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model">
     <model:AttackAttributeVisibilityConverter x:Key="AttackAttributeConverter" />
     <model:AttackAttributeNonzeroConverter x:Key="AttackAttributeListFilter" />
-    <common:ZeroToVisibilityConverter x:Key="VisConv" />
+    <common:AttackAttributeVisibilityConverter x:Key="AttackAttributeVisibilityConverter" />
 </ResourceDictionary>

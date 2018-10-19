@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections;
+using System.Globalization;
 
 namespace Rogue.NET.Common
 {
@@ -123,6 +124,20 @@ namespace Rogue.NET.Common
             return false;
         }
     }
+    public class VisibilityCountCollapseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var intValue = (int)value;
+
+            return intValue == 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("Cannot convert from visibility to Count");
+        }
+    }
+
     public class EmphasisColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -286,17 +301,22 @@ namespace Rogue.NET.Common
             throw new NotImplementedException();
         }
     }
-    public class ZeroToVisibilityConverter : IValueConverter
+    public class AttackAttributeVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
                 return Visibility.Collapsed;
 
-            if (value is double)
-                return (Visibility)(((double)value <= 0) ? Visibility.Collapsed : Visibility.Visible);
-            else
-                return (Visibility)(((int)value <= 0) ? Visibility.Collapsed : Visibility.Visible);
+            if (value is int)
+                return (int)value <= 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            var truncatedValue = Math.Floor((double)value);
+
+            if (truncatedValue <= 0)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -329,7 +349,7 @@ namespace Rogue.NET.Common
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values.Length != 4)
+            if (values.Length != 4 || values.All(x => x == DependencyProperty.UnsetValue))
                 return Brushes.White;
 
             bool equiped = (bool)values[0];
@@ -358,11 +378,41 @@ namespace Rogue.NET.Common
             throw new NotImplementedException();
         }
     }
+    public class PropertyGridToolTipForegroundConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values.Length != 4 || values.All(x => x == DependencyProperty.UnsetValue))
+                return Brushes.White;
+
+            bool equiped = (bool)values[0];
+            bool cursed = (bool)values[1];
+            bool objective = (bool)values[2];
+            bool unique = (bool)values[3];
+
+            if (cursed)
+                return equiped ? Brushes.Purple : Brushes.Red;
+
+            else if (objective)
+                return Brushes.Cyan;
+
+            else if (unique)
+                return Brushes.Goldenrod;
+
+            else
+                return Brushes.White;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class PropertyGridFontStyleConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values.Length != 4)
+            if (values.Length != 4 || values.All(x => x == DependencyProperty.UnsetValue))
                 return Brushes.White;
 
             bool equiped = (bool)values[0];

@@ -47,15 +47,50 @@
                         <Setter Property="ToolTip">
                             <Setter.Value>
                                 <ToolTip Background="Black"
-                                         Foreground="White"
-                                         BorderBrush="#0FFFFFFF"
-                                         BorderThickness="1">
-                                    <Border BorderBrush="#0FFFFFFF"
-                                            BorderThickness="1">
+                                         BorderThickness="1"
+                                         StaysOpen="True"
+                                         Width="350">
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip">
+                                            <Setter Property="Foreground">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource ForegroundTooltipConverter}">
+                                                        <Binding Path="IsEquiped" />
+                                                        <Binding Path="IsCursed" />
+                                                        <Binding Path="IsObjective" />
+                                                        <Binding Path="IsUnique" />
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="BorderBrush">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource ForegroundTooltipConverter}">
+                                                        <Binding Path="IsEquiped" />
+                                                        <Binding Path="IsCursed" />
+                                                        <Binding Path="IsObjective" />
+                                                        <Binding Path="IsUnique" />
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>                                            
+                                            <Setter Property="FontStyle">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource FontStyleConverter}">
+                                                        <Binding Path="IsEquiped" />
+                                                        <Binding Path="IsCursed" />
+                                                        <Binding Path="IsObjective" />
+                                                        <Binding Path="IsUnique" />
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ToolTip.Style>
+                                    <Border BorderBrush="#00000000"
+                                            BorderThickness="0"
+                                            Width="340">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -63,34 +98,62 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding RogueName}" Margin="4" />
-                                            <TextBlock Text="{Binding Type}" Margin="4"
+                                            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="4">
+                                                <Image Source="{Binding ImageSource}" Width="20" Height="30" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                <TextBlock Text="{Binding RogueName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                            </StackPanel>
+                                            <TextBlock x:Name="SpecialAttributeTB"
+                                                       Margin="4"
                                                        Grid.Column="1"
-                                                       HorizontalAlignment="Right" />
-                                            <TextBlock Text="Class" Grid.Row="1" />
-                                            <TextBlock Text="Quality" Grid.Row="2" />
-                                            <TextBlock Text="Weight" Grid.Row="3" />
-                                            <TextBlock Text="{Binding Class}" Grid.Row="1" HorizontalAlignment="Right" />
-                                            <TextBlock Text="{Binding Quality}" Grid.Row="2" HorizontalAlignment="Right" />
-                                            <TextBlock Text="{Binding Weight}" Grid.Row="3" HorizontalAlignment="Right" />
+                                                       FontSize="18"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsCursed}" Value="True">
+                                                                <Setter Property="Text" Value="Cursed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsObjective}" Value="True">
+                                                                <Setter Property="Text" Value="Objective" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsUnique}" Value="True">
+                                                                <Setter Property="Text" Value="Unique" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock Text="Class" Visibility="{Binding IsEquipment, Converter={StaticResource VisConv}}" Grid.Row="1" Margin="4" />
+                                            <TextBlock Text="Quality" Visibility="{Binding IsEquipment, Converter={StaticResource VisConv}}" Grid.Row="2" Margin="4" />
+                                            <TextBlock Text="Weight" Grid.Row="3" Margin="4" />
+                                            <TextBlock Text="{Binding Class}" Visibility="{Binding IsEquipment, Converter={StaticResource VisConv}}" Grid.Row="1" Margin="4" HorizontalAlignment="Right" />
+                                            <TextBlock Text="{Binding Quality}" Visibility="{Binding IsEquipment, Converter={StaticResource VisConv}}" Grid.Row="2" Margin="4" HorizontalAlignment="Right" />
+                                            <TextBlock Text="{Binding Weight}" Grid.Row="3" Margin="4" HorizontalAlignment="Right" />
                                             <ListBox Grid.Row="1"
                                                      Grid.RowSpan="3"
                                                      Grid.Column="1"
-                                                     Margin="4"
+                                                     Margin="4,0,0,0"
+                                                     Visibility="{Binding IsEquipment, Converter={StaticResource VisConv}}"
                                                      ItemsSource="{Binding AttackAttributes, NotifyOnSourceUpdated=True}" 
                                                      HorizontalContentAlignment="Stretch" 
+                                                     HorizontalAlignment="Stretch"
                                                      Style="{StaticResource DarkListBoxStyle}" 
                                                      ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}" 
                                                      Background="Black" 
                                                      BorderThickness="0">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
-                                                        <local:DungeonEncyclopediaAttackAttributeCtrl Visibility="{Binding Converter={StaticResource AttackAttributeConverter}}" />
+                                                        <local:DungeonEncyclopediaAttackAttributeCtrl />
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
-                                            <TextBlock Text="{Binding Description}" Grid.Row="5" />
+                                            <TextBlock Text="{Binding ShortDescription}" TextWrapping="Wrap" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" />
+                                            <Separator Margin="4" Padding="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Row="5" Grid.ColumnSpan="2" />
+                                            <TextBlock Text="{Binding LongDescription}" TextWrapping="Wrap" Grid.Row="6" Grid.ColumnSpan="2" Margin="4" />
                                         </Grid>
                                     </Border>
                                 </ToolTip>
@@ -100,8 +163,8 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridRow}">
                                     <Border x:Name="DGR_Border" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                SnapsToDevicePixels="True">
+                                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                            SnapsToDevicePixels="True">
                                         <SelectiveScrollingGrid>
                                             <SelectiveScrollingGrid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -149,7 +212,6 @@
             <RadioButton x:Name="Identify" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Identify.png" BorderBrush="Yellow" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Identify" Cursor="Hand" />
             <RadioButton x:Name="Uncurse" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Uncurse.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Uncurse" Cursor="Hand" />
             <RadioButton x:Name="Enchant" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Enchant.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant" Cursor="Hand" />
-            <RadioButton x:Name="Trade" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Trade.png" BorderBrush="Green" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" ToolTip="Show Equipment Details" HorizontalAlignment="Right" Cursor="Hand" />
             <RadioButton x:Name="Throw" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
             <RadioButton x:Name="Drop" Click="RadioButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
         </StackPanel>
@@ -187,7 +249,7 @@
                 <DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"  HeaderStyle="{StaticResource HeaderStyle}" />
                 <DataGridTextColumn x:Name="QuantityColumn" Header="#" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Quantity}" />
                 <DataGridTextColumn x:Name="ClassColumn" Width="Auto" Header="Class" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Class}" />
-                <DataGridTextColumn Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
+                <DataGridTextColumn x:Name="WeightColumn" Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
                 <DataGridTextColumn Header="" Width="0" SortDirection="Ascending" Visibility="Collapsed"  Binding="{Binding Type}" />
                 <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding RogueName}">
                     <DataGridTextColumn.CellStyle>
@@ -200,7 +262,6 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
-
                         </Style>
                     </DataGridTextColumn.CellStyle>
                     <DataGridTextColumn.HeaderStyle>

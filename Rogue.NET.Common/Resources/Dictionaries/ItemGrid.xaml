@@ -4,9 +4,11 @@
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
                     xmlns:local="clr-namespace:Rogue.NET.Common">
     <local:VisibilityCollapseConverter x:Key="VisConv" />
+    <local:VisibilityCountCollapseConverter x:Key="VisibilityCountConverter" />
     <local:VisibilityGridRowDetailsConverter x:Key="DetailsVisConv" />
     <local:SelectionColorConverter x:Key="SelectedColorConverter" />
     <local:PropertyGridForegroundConverter x:Key="ForegroundConverter" />
+    <local:PropertyGridToolTipForegroundConverter x:Key="ForegroundTooltipConverter" />
     <local:PropertyGridFontStyleConverter x:Key="FontStyleConverter" />
     <LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
         <GradientStop Color="white" Offset="0"/>
@@ -957,6 +959,24 @@
             </Grid.ColumnDefinitions>
             <Image Source="{Binding ImageSource}" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" />
         </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="AttackAttributesCellTemplate">
+        <ItemsControl ItemsSource="{Binding AttackAttributes, NotifyOnSourceUpdated=True}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Width="Auto"
+                        Height="Auto">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding SymbolInfo.SymbolImageSource}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </DataTemplate>
     <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
         <Setter Property="Foreground" Value="White" />

@@ -17,7 +17,16 @@ namespace Rogue.NET.Model.Scenario
     public abstract class ScenarioObject : NamedObject
     {
         #region SymbolInfo
-        public SymbolDetails SymbolInfo { get; set; }
+        private SymbolDetails _symbolInfo;
+        public SymbolDetails SymbolInfo
+        {
+            get { return _symbolInfo; }
+            set
+            {
+                _symbolInfo = value;
+                OnPropertyChanged("SymbolInfo");
+            }
+        }
         #endregion
 
         public CellPoint Location
@@ -105,6 +114,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = "Unnamed";
             this.SymbolInfo = new SymbolDetails(1, 10, ImageResources.AmuletBlack);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT;
@@ -120,6 +130,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(1, 10, ImageResources.AmuletBlack);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT;
@@ -135,6 +146,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(1, 10, icon);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT;
@@ -150,6 +162,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(scale, 10, icon);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT * scale;
@@ -165,6 +178,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(1, 10, symbol, color);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT;
@@ -180,6 +194,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(scale, 10, symbol, color);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT * scale;
@@ -195,6 +210,7 @@ namespace Rogue.NET.Model.Scenario
         {
             this.RogueName = name;
             this.SymbolInfo = new SymbolDetails(1, 10, mood, body, line, aura);
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
             this.Location = new CellPoint();
 
             this.Height = ScenarioConfiguration.CELLHEIGHT;
@@ -223,6 +239,8 @@ namespace Rogue.NET.Model.Scenario
             this.VerticalAlignment = System.Windows.VerticalAlignment.Top;
             this.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
             Canvas.SetZIndex(this, 10);
+
+            this.SymbolInfo.PropertyChanged += (sender, e) => { OnPropertyChanged("SymbolInfo"); };
 
             SetVisibility();
             InvalidateVisual();

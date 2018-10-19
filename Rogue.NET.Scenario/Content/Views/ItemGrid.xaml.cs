@@ -51,6 +51,7 @@ namespace Rogue.NET.Scenario.Views
                 switch (_mode)
                 {
                     case ItemGridModes.Consumable:
+                        // Radio Buttons
                         this.Consume.Visibility = System.Windows.Visibility.Visible;
                         this.Throw.Visibility = System.Windows.Visibility.Visible;
                         this.Drop.Visibility = System.Windows.Visibility.Visible;
@@ -58,9 +59,10 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
 
+                        // Columns
                         this.ClassColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case ItemGridModes.Equipment:
                         this.Consume.Visibility = System.Windows.Visibility.Collapsed;
@@ -70,7 +72,11 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Visible;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
+
+                        // Columns
+                        this.ClassColumn.Visibility = System.Windows.Visibility.Visible;
+                        this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case ItemGridModes.Inventory:
                         this.Consume.Visibility = System.Windows.Visibility.Collapsed;
@@ -80,8 +86,8 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
 
+                        // Columns
                         this.ClassColumn.Visibility = System.Windows.Visibility.Collapsed;
                         this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
@@ -93,10 +99,11 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Visible;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
 
+                        // Columns
                         this.ClassColumn.Visibility = System.Windows.Visibility.Collapsed;
                         this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case ItemGridModes.Uncurse:
                         this.Consume.Visibility = System.Windows.Visibility.Collapsed;
@@ -106,7 +113,11 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Visible;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
+
+                        // Columns
+                        this.ClassColumn.Visibility = System.Windows.Visibility.Visible;
+                        this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case ItemGridModes.Enchant:
                         this.Consume.Visibility = System.Windows.Visibility.Collapsed;
@@ -116,7 +127,11 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
+
+                        // Columns
+                        this.ClassColumn.Visibility = System.Windows.Visibility.Visible;
+                        this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case ItemGridModes.Imbue:
                         this.Consume.Visibility = System.Windows.Visibility.Collapsed;
@@ -126,7 +141,11 @@ namespace Rogue.NET.Scenario.Views
                         this.Uncurse.Visibility = System.Windows.Visibility.Collapsed;
                         this.Equip.Visibility = System.Windows.Visibility.Collapsed;
                         this.Identify.Visibility = System.Windows.Visibility.Collapsed;
-                        this.Trade.Visibility = System.Windows.Visibility.Collapsed;
+
+                        // Columns
+                        this.ClassColumn.Visibility = System.Windows.Visibility.Visible;
+                        this.QuantityColumn.Visibility = System.Windows.Visibility.Collapsed;
+                        this.WeightColumn.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                 }
             }
@@ -307,7 +326,6 @@ namespace Rogue.NET.Scenario.Views
                     item.ShowButton |= item.IdentifyEnable && this.Identify.IsChecked.Value;
                     item.ShowButton |= item.UncurseEnable && this.Uncurse.IsChecked.Value;
                     item.ShowButton |= item.EnchantEnable && this.Enchant.IsChecked.Value;
-                    item.ShowButton |= this.Trade.IsChecked.Value;
                     item.ShowButton |= item.ThrowEnable && this.Throw.IsChecked.Value;
                     item.ShowButton |= item.DropEnable && this.Drop.IsChecked.Value;
                 }

@@ -30,18 +30,22 @@ namespace Rogue.NET.Scenario.ViewModel
         public static readonly DependencyProperty DetailsEnableProperty = DependencyProperty.Register("DetailsEnable", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty ThrowEnableProperty = DependencyProperty.Register("ThrowEnable", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty EnchantEnableProperty = DependencyProperty.Register("EnchantEnable", typeof(bool), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty IsEquipedProperty = DependencyProperty.Register("IsEquiped", typeof(bool), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty IsCursedProperty = DependencyProperty.Register("IsCursed", typeof(bool), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty IsObjectiveProperty = DependencyProperty.Register("IsObjective", typeof(bool), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty IsUniqueProperty = DependencyProperty.Register("IsUnique", typeof(bool), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty IsEquipedProperty = DependencyProperty.Register("IsEquiped", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsCursedProperty = DependencyProperty.Register("IsCursed", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsObjectiveProperty = DependencyProperty.Register("IsObjective", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsUniqueProperty = DependencyProperty.Register("IsUnique", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty ShowButtonProperty = DependencyProperty.Register("ShowButton", typeof(bool), typeof(ItemGridViewModel));
         public static readonly DependencyProperty QuantityProperty = DependencyProperty.Register("Quantity", typeof(int), typeof(ItemGridViewModel));
         public static readonly DependencyProperty ClassProperty = DependencyProperty.Register("Class", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty WeightProperty = DependencyProperty.Register("Weight", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty QualityProperty = DependencyProperty.Register("Quality", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty TotalWeightProperty = DependencyProperty.Register("TotalWeight", typeof(string), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty ShortDescriptionProperty = DependencyProperty.Register("ShortDescription", typeof(string), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty LongDescriptionProperty = DependencyProperty.Register("LongDescription", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty AttackAttributesProperty = DependencyProperty.Register("AttackAttributes", typeof(SerializableObservableCollection<AttackAttribute>), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty IsEquipmentProperty = DependencyProperty.Register("IsEquipment", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
+        public static readonly DependencyProperty IsConsumableProperty = DependencyProperty.Register("IsConsumable", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
+
         #endregion
 
         #region Properties
@@ -161,10 +165,25 @@ namespace Rogue.NET.Scenario.ViewModel
 	        get {return (string)GetValue(QualityProperty);}
 	        set {SetValue(QualityProperty, value);}
         }
-        public string Description
+        public string ShortDescription
         {
-            get { return (string)GetValue(DescriptionProperty); }
-            set { SetValue(DescriptionProperty, value); }
+            get { return (string)GetValue(ShortDescriptionProperty); }
+            set { SetValue(ShortDescriptionProperty, value); }
+        }
+        public string LongDescription
+        {
+            get { return (string)GetValue(LongDescriptionProperty); }
+            set { SetValue(LongDescriptionProperty, value); }
+        }
+        public bool IsConsumable
+        {
+            get { return (bool)GetValue(IsConsumableProperty); }
+            set { SetValue(IsConsumableProperty, value); }
+        }
+        public bool IsEquipment
+        {
+            get { return (bool)GetValue(IsEquipmentProperty); }
+            set { SetValue(IsEquipmentProperty, value); }
         }
         public string RogueName
         {
@@ -179,6 +198,8 @@ namespace Rogue.NET.Scenario.ViewModel
         /// </summary>
         public ItemGridViewModel(Item item, SerializableDictionary<string, ScenarioMetaData> encyclopedia, SerializableObservableCollection<Consumable> consumableInventory)
         {
+            this.AttackAttributes = new SerializableObservableCollection<AttackAttribute>();
+
             UpdateItem(item, encyclopedia, consumableInventory);
         }
 
@@ -201,6 +222,9 @@ namespace Rogue.NET.Scenario.ViewModel
 
             string quality = "N/A";
             string classs = "N/A";
+
+            this.IsEquipment = isEquipment;
+            this.IsConsumable = isConsumable;
 
             if (isEquipment)
             {
@@ -225,7 +249,9 @@ namespace Rogue.NET.Scenario.ViewModel
                 this.Quantity = 1;
                 this.Weight = equipment.Weight.ToString("F2");
                 this.Type = equipment.Type.ToString();
-                this.AttackAttributes = equipment.AttackAttributes;
+                this.AttackAttributes.Clear();
+                this.AttackAttributes.AddRange(equipment.AttackAttributes
+                                                 .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0));
             }
             if (isConsumable)
             {
@@ -274,7 +300,8 @@ namespace Rogue.NET.Scenario.ViewModel
                     this.Quality = "?";
                     this.Class = "?";
                 }
-                this.Description = "";
+                this.ShortDescription = "";
+                this.LongDescription = "";
             }
             else
             {
@@ -293,7 +320,8 @@ namespace Rogue.NET.Scenario.ViewModel
                 else
                     this.RogueName = item.RogueName;
 
-                this.Description = metaData.LongDescription;
+                this.LongDescription = metaData.LongDescription;
+                this.ShortDescription = metaData.Description;
             }
 
             // item display image

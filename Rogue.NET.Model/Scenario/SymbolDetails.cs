@@ -178,6 +178,7 @@ namespace Rogue.NET.Model.Scenario
                     break;
             }
             InvalidateVisual();
+            OnPropertyChanged("SymbolImageSource");
         }
         public override string ToString()
         {
