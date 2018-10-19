@@ -239,8 +239,6 @@
     <Compile Include="Events\Splash\MessageBoxEvent.cs" />
     <Compile Include="Extensions\BlurTransition.cs" />
     <Compile Include="Extensions\UpdatingTextBox.cs" />
-    <Compile Include="FingerPrint.cs" />
-    <Compile Include="Helpers.cs" />
     <Compile Include="NotifyViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Constants.cs" />
