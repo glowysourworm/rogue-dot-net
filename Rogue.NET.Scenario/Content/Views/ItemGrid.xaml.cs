@@ -25,6 +25,7 @@ using Rogue.NET.Model;
 using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -340,7 +341,7 @@ namespace Rogue.NET.Scenario.Views
 
             _eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEvent()
             {
-                LevelCommand = new LevelCommandArgs(this.IntendedAction, Compass.Null, itemViewModel.Id)
+                LevelCommand = new LevelCommandEventArgs(this.IntendedAction, Compass.Null, itemViewModel.Id)
             });
 
             if (ActionSubmittedEvent != null)

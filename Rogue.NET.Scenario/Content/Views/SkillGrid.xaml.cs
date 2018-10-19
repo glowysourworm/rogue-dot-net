@@ -20,6 +20,7 @@ using Microsoft.Practices.Unity;
 using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -68,7 +69,7 @@ namespace Rogue.NET.Scenario.Views
                 {
                     _eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEvent()
                     {
-                        LevelCommand = new LevelCommandArgs(
+                        LevelCommand = new LevelCommandEventArgs(
                             radioButton.IsChecked.Value ? LevelAction.ActivateSkill  : LevelAction.DeactivateSkill, 
                             Compass.Null, 
                             skillSet.Id)

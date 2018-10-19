@@ -7,6 +7,7 @@ using System.Windows;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Common.Collections
 {
@@ -16,11 +17,6 @@ namespace Rogue.NET.Common.Collections
         Add,
         Remove,
         PropertyChanged
-    }
-    public class CollectionAlteredEventArgs : EventArgs
-    {
-        public object Item { get; set; }
-        public CollectionAction Action { get; set; }
     }
 
     [Serializable]

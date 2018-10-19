@@ -16,6 +16,7 @@ using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Events.Splash;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Model.Logic
 {

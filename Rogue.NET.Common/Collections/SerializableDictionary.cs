@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Collections;
 using System.Runtime.Serialization;
 
@@ -33,7 +32,7 @@ namespace Rogue.NET.Common.Collections
             _vals.Add(value);
 
             if (CollectionAltered != null)
-                CollectionAltered(this, new EventArgs());
+                CollectionAltered(this, new System.EventArgs());
         }
         public bool ContainsKey(K key)
         {
@@ -51,7 +50,7 @@ namespace Rogue.NET.Common.Collections
             _vals.RemoveAt(idx);
 
             if (CollectionAltered != null)
-                CollectionAltered(this, new EventArgs());
+                CollectionAltered(this, new System.EventArgs());
 
             return true;
         }
@@ -86,7 +85,7 @@ namespace Rogue.NET.Common.Collections
         {
             Add(item.Key, item.Value);
             if (CollectionAltered != null)
-                CollectionAltered(this, new EventArgs());
+                CollectionAltered(this, new System.EventArgs());
         }
 
         public void Clear()
@@ -94,7 +93,7 @@ namespace Rogue.NET.Common.Collections
             _keys.Clear();
             _vals.Clear();
             if (CollectionAltered != null)
-                CollectionAltered(this, new EventArgs());
+                CollectionAltered(this, new System.EventArgs());
         }
 
         public bool Contains(KeyValuePair<K, V> item)

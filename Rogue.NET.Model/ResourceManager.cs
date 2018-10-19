@@ -34,7 +34,7 @@ namespace Rogue.NET.Model
         public static ScenarioConfiguration GetEmbeddedScenarioConfiguration(ConfigResources res)
         {
             var name = res.ToString();
-            var assembly = Assembly.GetAssembly(typeof(DifficultyKey));
+            var assembly = Assembly.GetAssembly(typeof(Constants));
             var location = "Rogue.NET.Common.Resources.Configuration." + name.ToString() + "." + Constants.SCENARIO_CONFIG_EXTENSION;
             using (var stream = assembly.GetManifestResourceStream(location))
             {
@@ -76,7 +76,7 @@ namespace Rogue.NET.Model
                     img = ImageResources.WellYellow;
 
                 var path = "Rogue.NET.Common.Resources.Images.ScenarioObjects." + img.ToString() + ".png";
-                var a = Assembly.GetAssembly(typeof(DifficultyKey));
+                var a = Assembly.GetAssembly(typeof(Constants));
                 var s = a.GetManifestResourceStream(path);
                 var decoder = new PngBitmapDecoder(s, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
                 return decoder.Frames[0];
@@ -90,7 +90,7 @@ namespace Rogue.NET.Model
         public static BitmapSource GetScenarioObjectImage(ImageResources img, double scale)
         {
             var path = "Rogue.NET.Common.Resources.Images.ScenarioObjects." + img.ToString() + ".png";
-            var a = Assembly.GetAssembly(typeof(DifficultyKey));
+            var a = Assembly.GetAssembly(typeof(Constants));
             var s = a.GetManifestResourceStream(path);
             var decoder = new PngBitmapDecoder(s, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             var scaledBitmap = new TransformedBitmap(decoder.Frames[0], new ScaleTransform(scale, scale));
@@ -241,61 +241,6 @@ namespace Rogue.NET.Model
             {
                 MessageBox.Show(ex.ToString());
                 throw;
-            }
-        }
-
-        public static DifficultyKey OpenKeyFile()
-        {
-            string fullPath = Path.Combine(Environment.CurrentDirectory, DifficultyKey.KEY_FILE_NAME);
-            if (!File.Exists(fullPath))
-                return null;
-
-            try
-            {
-                using (FileStream stream = File.OpenRead(fullPath))
-                {
-                    BinaryFormatter serializer = new BinaryFormatter();
-                    DifficultyKey key = (DifficultyKey)serializer.Deserialize(stream);
-                    if (key.FingerPrint == FingerPrint.CreateComputerFingerPrint())
-                        return key;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return null;
-        }
-        public static bool SaveKeyFile(DifficultyKey key)
-        {
-            string fullPath = Path.Combine(Environment.CurrentDirectory, DifficultyKey.KEY_FILE_NAME);
-
-            try
-            {
-
-                //Move existing to tmp
-                if (File.Exists(fullPath))
-                {
-                    File.Copy(fullPath, fullPath + "_old");
-                    File.Delete(fullPath);
-                }
-                using (FileStream stream = File.OpenWrite(fullPath))
-                {
-                    BinaryFormatter serializer = new BinaryFormatter();
-                    serializer.Serialize(stream, key);
-                }
-
-                if (File.Exists(fullPath + "_old"))
-                    File.Delete(fullPath + "_old");
-
-                return true;
-            }
-            catch (Exception)
-            {
-                //Move tmp back on failure
-                if (File.Exists(fullPath + "_old"))
-                    File.Move(fullPath + "_old", fullPath);
-
-                return false;
             }
         }
 

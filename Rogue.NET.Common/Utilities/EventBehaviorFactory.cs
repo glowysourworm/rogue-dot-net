@@ -65,7 +65,7 @@ namespace Rogue.NET.Common.Utilities
             protected DependencyProperty _property;
             protected abstract void AdjustEventHandlers(DependencyObject sender, object oldValue, object newValue);
 
-            protected void HandleEvent(object sender, EventArgs e)
+            protected void HandleEvent(object sender, System.EventArgs e)
             {
                 DependencyObject dp = sender as DependencyObject;
                 if (dp == null)

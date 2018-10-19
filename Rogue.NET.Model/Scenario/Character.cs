@@ -14,6 +14,7 @@ using Rogue.NET.Model.Logic;
 using Rogue.NET.Common.Collections;
 using System.Runtime.Serialization;
 using System.Reflection;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Model.Scenario
 {

@@ -309,19 +309,6 @@ namespace Rogue.NET.Model
             }
         }
 
-        public void SaveKeyFile()
-        {
-            //Save datetime
-            _scenarioContainer.CompletedTime = DateTime.Now;
-
-            DifficultyKey existingKey = ResourceManager.OpenKeyFile();
-            if (existingKey == null)
-                existingKey = new DifficultyKey();
-
-
-            ResourceManager.SaveKeyFile(existingKey);
-        }
-
         public Dictionary<string, string> GetGameDisplayStats()
         {
             Dictionary<string, string> stats = new Dictionary<string, string>();

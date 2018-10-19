@@ -13,11 +13,5 @@ namespace Rogue.NET.Common
         public const string SCENARIO_EXTENSION = "rdn";
         public const string SCENARIO_CONFIG_EXTENSION = "rdns";
         public const string SCENARIOS_DIR = "..\\scenarios";
-
-        public static string GetKeyDisplayString(Key k)
-        {
-            //Maybe filter this later
-            return k.ToString();
-        }
     }
 }

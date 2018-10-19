@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Model.Logic
 {

@@ -14,6 +14,7 @@ using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Rogue.NET.Common.EventArgs;
 
 namespace Rogue.NET.Model.Logic
 {
@@ -32,7 +33,7 @@ namespace Rogue.NET.Model.Logic
             _movementEngine = unityContainer.Resolve<MovementLogic>();
             _interactionEngine = unityContainer.Resolve<InteractionLogic>();
         }
-        protected override void OnLevelCommand(LevelCommandArgs e)
+        protected override void OnLevelCommand(LevelCommandEventArgs e)
         {
             if (this.Player.States.Any(z => z != CharacterStateType.Normal))
             {

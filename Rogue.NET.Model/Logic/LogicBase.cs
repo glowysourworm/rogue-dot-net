@@ -3,6 +3,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 using Rogue.NET.Common;
 using Rogue.NET.Common.Collections;
+using Rogue.NET.Common.EventArgs;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Model.Events;
@@ -157,7 +158,7 @@ namespace Rogue.NET.Model.Logic
             });
         }
 
-        protected virtual void OnLevelCommand(LevelCommandArgs args)
+        protected virtual void OnLevelCommand(LevelCommandEventArgs args)
         {
 
         }

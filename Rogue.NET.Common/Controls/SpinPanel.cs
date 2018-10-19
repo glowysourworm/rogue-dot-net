@@ -294,7 +294,7 @@ namespace Rogue.NET.Common.Controls
                 if (ObjectSelected != null && this.IsSelectable && b != null)
                 {
                     if (b.IsCentered)
-                        ObjectSelected(sender, new EventArgs());
+                        ObjectSelected(sender, new System.EventArgs());
                 }
             }
         }
