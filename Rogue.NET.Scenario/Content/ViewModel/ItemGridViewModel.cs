@@ -42,6 +42,7 @@ namespace Rogue.NET.Scenario.ViewModel
         public static readonly DependencyProperty TotalWeightProperty = DependencyProperty.Register("TotalWeight", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty ShortDescriptionProperty = DependencyProperty.Register("ShortDescription", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty LongDescriptionProperty = DependencyProperty.Register("LongDescription", typeof(string), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty UsageDescriptionProperty = DependencyProperty.Register("UsageDescription", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty AttackAttributesProperty = DependencyProperty.Register("AttackAttributes", typeof(SerializableObservableCollection<AttackAttribute>), typeof(ItemGridViewModel));
         public static readonly DependencyProperty IsEquipmentProperty = DependencyProperty.Register("IsEquipment", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty IsConsumableProperty = DependencyProperty.Register("IsConsumable", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
@@ -175,6 +176,11 @@ namespace Rogue.NET.Scenario.ViewModel
             get { return (string)GetValue(LongDescriptionProperty); }
             set { SetValue(LongDescriptionProperty, value); }
         }
+        public string UsageDescription
+        {
+            get { return (string)GetValue(UsageDescriptionProperty); }
+            set { SetValue(UsageDescriptionProperty, value); }
+        }
         public bool IsConsumable
         {
             get { return (bool)GetValue(IsConsumableProperty); }
@@ -252,6 +258,8 @@ namespace Rogue.NET.Scenario.ViewModel
                 this.AttackAttributes.Clear();
                 this.AttackAttributes.AddRange(equipment.AttackAttributes
                                                  .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0));
+
+                this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
             }
             if (isConsumable)
             {
@@ -272,6 +280,8 @@ namespace Rogue.NET.Scenario.ViewModel
 
                 this.Type = consumable.SubType.ToString();
                 this.Uses = consumable.Uses;
+
+                this.UsageDescription = CreateConsumableUsageDescription(consumable.SubType, throwEnable, consumeEnable, this.Quantity, this.Uses);
             }
 
             //this.Rogue2DisplayName = obj.Rogue2Name;
@@ -326,6 +336,62 @@ namespace Rogue.NET.Scenario.ViewModel
 
             // item display image
             this.ImageSource = item.SymbolInfo.SymbolImageSource;
+        }
+        private string CreateEquipmentUsageDescription(EquipmentType type, bool isEquiped)
+        {
+            switch (type)
+            {
+                case EquipmentType.None:
+                    return "";
+                case EquipmentType.Armor:
+                    return isEquiped ? "Armor - Click button to the left to un-equip" : "Armor - Click button to the left to equip";
+                case EquipmentType.Shoulder:
+                    return isEquiped ? "Shoulder - Click button to the left to un-equip" : "Shoulder - Click button to the left to equip";
+                case EquipmentType.Belt:
+                    return isEquiped ? "Belt - Click button to the left to un-equip" : "Belt - Click button to the left to equip";
+                case EquipmentType.Helmet:
+                    return isEquiped ? "Helmet - Click button to the left to un-equip" : "Helmet - Click button to the left to equip";
+                case EquipmentType.Ring:
+                    return isEquiped ? "Ring - Click button to the left to un-equip" : "Ring - Click button to the left to equip";
+                case EquipmentType.Amulet:
+                    return isEquiped ? "Amulet - Click button to the left to un-equip" : "Amulet - Click button to the left to equip";
+                case EquipmentType.Boots:
+                    return isEquiped ? "Armor - Click button to the left to un-equip" : "Armor - Click button to the left to equip";
+                case EquipmentType.Gauntlets:
+                    return isEquiped ? "Gauntlets - Click button to the left to un-equip" : "Gauntlets - Click button to the left to equip";
+                case EquipmentType.OneHandedMeleeWeapon:
+                    return isEquiped ? "One Handed Weapon - Click button to the left to un-equip" : "One Handed Weapon - Click button to the left to equip";
+                case EquipmentType.TwoHandedMeleeWeapon:
+                    return isEquiped ? "Two Handed Weapon - Click button to the left to un-equip" : "Two Handed Weapon - Click button to the left to equip";
+                case EquipmentType.RangeWeapon:
+                    return isEquiped ? "Two Handed Range Weapon - Click button to the left to un-equip" : "Two Handed Range Weapon - Click button to the left to equip";
+                case EquipmentType.Shield:
+                    return isEquiped ? "Shield - Click button to the left to un-equip" : "Shield - Click button to the left to equip";
+                case EquipmentType.Orb:
+                    return isEquiped ? "Orb - Click button to the left to un-equip" : "Orb - Click button to the left to equip";
+                default:
+                    return "";
+            }
+        }
+        private string CreateConsumableUsageDescription(ConsumableSubType subType, bool throwEnable, bool consumeEnable, int quantity, int uses)
+        {
+            var result = subType.ToString() + " - ";
+
+            if (throwEnable)
+                result += "To Throw use \"T\" to target enemy and Click button to the left (IN THROW MODE)";
+
+            if (consumeEnable)
+            {
+                if (throwEnable)
+                    result += "\r\n";
+
+                result += "To Consume Click button on the left (IN CONSUME MODE)";
+            }
+
+            if (!consumeEnable && !throwEnable && subType == ConsumableSubType.Ammo)
+                result += "To Fire Range Weapon - First equip corresponding range weapon. Use \"T\" to target enemy and \"F\" to Fire";
+
+            return result;
         }
     }
 }
