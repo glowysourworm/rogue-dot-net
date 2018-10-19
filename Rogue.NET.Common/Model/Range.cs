@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Xml.Serialization;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Data;
-using System.Runtime.Serialization;
 using System.ComponentModel;
 
-namespace Rogue.NET.Common
+namespace Rogue.NET.Common.Model
 {
     [Serializable]
     public class Range<T> : INotifyPropertyChanged where T : IComparable
