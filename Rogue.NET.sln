@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{F865F9BC-6869-446E-A8C6-A2B76095226A}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Model", "Rogue.NET.Model\Rogue.NET.Model.csproj", "{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue.NET.Scenario\Rogue.NET.Scenario.csproj", "{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.ModelRefactored", "Rogue.NET.ModelRefactored\Rogue.NET.ModelRefactored.csproj", "{3930693C-C9D7-4DB5-A03D-A4E1E6088663}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,9 +94,24 @@ Global
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Release|x86.ActiveCfg = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Debug|x86.Build.0 = Debug|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|x86.ActiveCfg = Release|Any CPU
+		{3930693C-C9D7-4DB5-A03D-A4E1E6088663}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9AAB88A4-A649-4401-988C-B3E0EA12D13D}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

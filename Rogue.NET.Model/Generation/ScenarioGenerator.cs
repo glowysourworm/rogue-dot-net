@@ -4,6 +4,7 @@ using Rogue.NET.Model.Scenario;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model.Generation
