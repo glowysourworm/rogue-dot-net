@@ -3,14 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
-             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:commonconverters="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             xmlns:controls="clr-namespace:Rogue.NET.Common.Controls;assembly=Rogue.NET.Common"
+             xmlns:commonconverters="clr-namespace:Rogue.NET.Common.Converters;assembly=Rogue.NET.Common"
              xmlns:modelconverters="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model"
-             xmlns:extensions="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views" 
-             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
-             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              mc:Ignorable="d" 
              x:Class="Rogue.NET.Scenario.Views.DungeonEncyclopedia" d:DesignWidth="1241.5" d:DesignHeight="606.42">
 	<UserControl.Resources>
@@ -19,7 +15,7 @@
                 <ResourceDictionary>
                     <modelconverters:DungeonMetaDataTextConverter x:Key="TextConverter" />
                     <modelconverters:DungeonMetaDataToBrushConverter x:Key="BrushConverter" />
-                    <commonconverters:DualBoolVisibilityConverter x:Key="VisConv" />
+                    <commonconverters:DualBoolVisibilityCollapsedConverter x:Key="DualVisibilityConverter" />
                     <DataTemplate x:Key="AttackAttributeTemplate">
                         <local:DungeonEncyclopediaAttackAttributeCtrl Background="Black" />
                     </DataTemplate>
@@ -294,7 +290,7 @@
                         </Setter>
                     </Style>
                     <ItemsPanelTemplate x:Key="SpinItemsPanel">
-                        <extension:SpinPanel Padding="64,0,0,0"/>
+                        <controls:SpinPanel Padding="64,0,0,0"/>
                     </ItemsPanelTemplate>
                     <Style x:Key="ButtonFocusVisual3">
                         <Setter Property="Control.Template">
@@ -391,7 +387,7 @@
                         Style="{StaticResource EntryTextBlockStyleName}"/>
                     <TextBlock Text="(Unique)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource VisConv}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualVisibilityConverter}" ConverterParameter="SomeParameter">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsUnique" />
                             </MultiBinding>
@@ -399,7 +395,7 @@
                     </TextBlock>
                     <TextBlock Text="(Objective)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource VisConv}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualVisibilityConverter}" ConverterParameter="SomeParameter">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsObjective" />
                             </MultiBinding>
@@ -439,14 +435,14 @@
         </Border>
         <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
         	<Grid>
-                <extension:SpinPanel x:Name="TypePanel" ObjectCentered="TypePanel_ObjectCentered" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" Margin="0,50"/>
+                <controls:SpinPanel x:Name="TypePanel" ObjectCentered="TypePanel_ObjectCentered" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" Margin="0,50"/>
                 <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
                 <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>
         	</Grid>
         </Border>
         <Border Grid.Column="1"  Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10" >
         	<Grid>
-                <extension:SpinPanel x:Name="SubPanel" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" ObjectCentered="SubPanel_ObjectCentered" Margin="0,50" />
+                <controls:SpinPanel x:Name="SubPanel" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" ObjectCentered="SubPanel_ObjectCentered" Margin="0,50" />
                 <Button x:Name="EntryLeftButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/LeftArrow.png" Click="EntryLeftButton_Click" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8,0,0,8" Cursor="Hand"/>
                 <Button x:Name="EntryRightButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" Click="EntryRightButton_Click" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="0,0,8,8" Cursor="Hand"/>
         	</Grid>

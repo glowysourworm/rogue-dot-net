@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
              xmlns:commonviews="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+             xmlns:converters="clr-namespace:Rogue.NET.Common.Converters;assembly=Rogue.NET.Common"
+             xmlns:convertersSkillGrid="clr-namespace:Rogue.NET.Common.Converters.SkillGrid;assembly=Rogue.NET.Common"  
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
@@ -50,12 +52,9 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    <common:EmphasisColorConverter x:Key="EmphConv" />
-                    <common:RadioButtonConverter x:Key="BoolConv" />
-                    <common:SkillVisibilityConverter x:Key="LevelConv" />
-                    <common:LevelLearnedConverter x:Key="LevelLearnedConverter" />
-                    <common:InverseVisibilityConverter x:Key="InverseVisConv" />
-                    <common:SkillViewDesaturationConverter x:Key="SatConv" />
+                    <convertersSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="LevelLearnedConverter" />
+                    <converters:BoolInverseVisibilityHiddenConverter x:Key="InverseVisConv" />
+                    <converters:BoolIntConverter x:Key="SaturationConv" />
                     <commonviews:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
                     <DataTemplate x:Key="ImageCellTemplate">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -161,7 +160,7 @@
                                 <ControlTemplate TargetType="{x:Type DataGridRow}">
                                     <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" IsEnabled="{Binding IsLearned}">
                                         <Border.Effect>
-                                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource SatConv}}"/>
+                                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource SaturationConv}}"/>
                                         </Border.Effect>
                                         <SelectiveScrollingGrid>
                                             <SelectiveScrollingGrid.ColumnDefinitions>

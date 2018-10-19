@@ -2,14 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing" 
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
-                    xmlns:local="clr-namespace:Rogue.NET.Common">
-    <local:VisibilityCollapseConverter x:Key="VisConv" />
-    <local:VisibilityCountCollapseConverter x:Key="VisibilityCountConverter" />
-    <local:VisibilityGridRowDetailsConverter x:Key="DetailsVisConv" />
-    <local:SelectionColorConverter x:Key="SelectedColorConverter" />
-    <local:PropertyGridForegroundConverter x:Key="ForegroundConverter" />
-    <local:PropertyGridToolTipForegroundConverter x:Key="ForegroundTooltipConverter" />
-    <local:PropertyGridFontStyleConverter x:Key="FontStyleConverter" />
+                    xmlns:converters="clr-namespace:Rogue.NET.Common.Converters"
+                    xmlns:convertersItemGrid="clr-namespace:Rogue.NET.Common.Converters.ItemGrid">
+    <converters:BoolVisibilityCollapseConverter x:Key="VisConv" />
+    <convertersItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="DetailsVisConv" />
+    <convertersItemGrid:ItemGridSelectionColorConverter x:Key="SelectedColorConverter" />
+    <convertersItemGrid:ItemGridForegroundConverter x:Key="ForegroundConverter" />
+    <convertersItemGrid:ItemGridTooltipForegroundConverter x:Key="ForegroundTooltipConverter" />
+    <convertersItemGrid:ItemGridFontStyleConverter x:Key="FontStyleConverter" />
     <LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
         <GradientStop Color="white" Offset="0"/>
         <GradientStop Color="#B8E2F9" Offset="0.5"/>

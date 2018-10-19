@@ -193,7 +193,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\EditableTextBlock.cs" />
-    <Compile Include="Converters.cs" />
+    <Compile Include="Converters\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
+    <Compile Include="Converters\BoolIntConverter.cs" />
+    <Compile Include="Converters\BoolInverseVisibilityHiddenConverter.cs" />
+    <Compile Include="Converters\BoolVisibilityCollapseConverter.cs" />
+    <Compile Include="Converters\BoolVisibilityHiddenConverter.cs" />
+    <Compile Include="Converters\DualBoolVisibilityCollapsedConverter.cs" />
+    <Compile Include="Converters\ItemGrid\ItemGridFontStyleConverter.cs" />
+    <Compile Include="Converters\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
+    <Compile Include="Converters\ItemGrid\ItemGridForegroundConverter.cs" />
+    <Compile Include="Converters\ItemGrid\ItemGridSelectionColorConverter.cs" />
+    <Compile Include="Converters\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
+    <Compile Include="Converters\NonNullVisibilityConverter.cs" />
+    <Compile Include="Converters\ScenarioEditor\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Converters\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
     <Compile Include="DifficultyKey.cs" />
     <Compile Include="Enums\Animation.cs" />
     <Compile Include="Enums\Character.cs" />
@@ -245,7 +258,7 @@
     <Compile Include="Views\ProgressBar.xaml.cs">
       <DependentUpon>ProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\SpinPanel.cs" />
+    <Compile Include="Controls\SpinPanel.cs" />
     <Compile Include="ValidationRules.cs" />
     <Compile Include="Views\Smiley.xaml.cs">
       <DependentUpon>Smiley.xaml</DependentUpon>
@@ -982,6 +995,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

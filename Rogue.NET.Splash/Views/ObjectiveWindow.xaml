@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common" 
-             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             xmlns:controls="clr-namespace:Rogue.NET.Common.Controls;assembly=Rogue.NET.Common"
              x:Class="Rogue.NET.Splash.Views.ObjectiveWindow" 
              WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
              WindowStyle="None"
@@ -35,7 +34,7 @@
 					</LinearGradientBrush>
 				</Border.BorderBrush>
 
-                <extension:SpinPanel x:Name="ObjectivePanel" ObjectCentered="ObjectivePanel_ObjectCentered" Padding="24,12,12,12" FontSize="14"/>
+                <controls:SpinPanel x:Name="ObjectivePanel" ObjectCentered="ObjectivePanel_ObjectCentered" Padding="24,12,12,12" FontSize="14"/>
 			</Border>
 			<Border Margin="12" Grid.Row="1" BorderThickness="0.5" CornerRadius="4" Padding="8" >
 				<Border.BorderBrush>

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Rogue.NET.Common">
-    <local:VisibilityCollapseConverter x:Key="VisibilityCollapseConverter" />
-    <local:VisibilitySymbolEditorConverter x:Key="VisibilitySymbolEditorConverter" />
-    <local:StringColorConverter x:Key="StringColorConverter" />
+                    xmlns:converters="clr-namespace:Rogue.NET.Common.Converters"
+                    xmlns:convertersScenarioEditor="clr-namespace:Rogue.NET.Common.Converters.ScenarioEditor">
+    <converters:BoolVisibilityCollapseConverter x:Key="VisibilityCollapseConverter" />
+    <convertersScenarioEditor:SymbolEditorVisibilityConverter x:Key="VisibilitySymbolEditorConverter" />
 </ResourceDictionary>

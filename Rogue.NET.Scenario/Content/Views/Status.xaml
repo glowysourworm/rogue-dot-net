@@ -3,16 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
     xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-    xmlns:commonconverters="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+    xmlns:commonconverters="clr-namespace:Rogue.NET.Common.Converters;assembly=Rogue.NET.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
     x:Class="Rogue.NET.Scenario.Views.StatusCtrl"
     Background="Black"
     Height="Auto" mc:Ignorable="d" Width="250">
 	<UserControl.Resources>
-        <commonconverters:InverseVisibilityConverter x:Key="VisConv" />
-        <commonconverters:NonNullVisibilityConverter x:Key="NullIsConv" />
+        <commonconverters:BoolInverseVisibilityHiddenConverter x:Key="VisConv" />
+        <commonconverters:NonNullVisibilityConverter x:Key="NullVisConv" />
 		<Style x:Key="StatsListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
@@ -357,7 +356,7 @@
             <common:ProgressBar Grid.Row="5" BarColor1="Cyan" ValueMax="{Binding Player.ExperienceNext}" Value="{Binding Player.Experience}" Margin="8,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Height="16"  Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Player.Experience}"/>
             <common:ProgressBar Grid.Row="6" BarColor1="Goldenrod" ValueMax="{Binding Player.HaulMax}" Value="{Binding Player.Haul}" Margin="8,2,8,2" x:Name="HaulBar" VerticalAlignment="Stretch"  Height="16" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Player.Haul}"/>
             <Grid x:Name="ActiveSkillGrid" 
-                  Visibility="{Binding Player.ActiveSkill, Converter={StaticResource NullIsConv}}" 
+                  Visibility="{Binding Player.ActiveSkill, Converter={StaticResource NullVisConv}}" 
                   VerticalAlignment="Top"
                   Grid.Row="7" Margin="8,2">
                 <Grid.ColumnDefinitions>
