@@ -5,7 +5,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Engine.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Engine.Model.Generator
+namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(IContentGenerator))]
     public class ContentGenerator : IContentGenerator
@@ -41,7 +41,13 @@ namespace Rogue.NET.Engine.Model.Generator
             ScenarioConfigurationContainer configurationContainer, 
             bool survivorMode)
         {
-            return levels.Select((level, index) => GenerateLevelContent(level, configurationContainer, index + 1, survivorMode));
+            var levelNumber = 1;
+            var result = new List<Level>();
+
+            for (int i=0;i<levels.Count();i++)
+                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, levelNumber++, survivorMode));
+
+            return result;
         }
 
         private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, bool survivorMode)
@@ -285,7 +291,7 @@ namespace Rogue.NET.Engine.Model.Generator
             // Map Level Contents:  Set locations for each ScenarioObject. Removal of these can be
             // done based on the total length of the levelContents array - which will be altered during
             // the loop interally to the Level.
-            for (int i= levelContents.Length; i >= 0; i--)
+            for (int i= levelContents.Length - 1; i >= 0; i--)
             {
                 var location = GetRandomCell(freeCells);
 

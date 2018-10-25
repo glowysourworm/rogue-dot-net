@@ -146,7 +146,10 @@ namespace Rogue.NET.Core.Model.Scenario
 
             // Maintain collections
             _levelContent.Add(scenarioObject);
-            _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
+
+            // If object has an empty location it will be changed later on - which has an event hook below
+            if (scenarioObject.Location != CellPoint.Empty)
+                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
 
             scenarioObject.LocationChangedEvent += OnScenarioObjectLocationChanged;
 
@@ -178,7 +181,11 @@ namespace Rogue.NET.Core.Model.Scenario
 
             // Maintain private collections
             _levelContent.Remove(scenarioObject);
-            _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
+
+            // If the CellPoint is empty then the object is being removed before it's mapped (by the Generators). So,
+            // this is safe to do. The CellPoint should never be set to Empty by any of the in-game components (Logic)
+            if (scenarioObject.Location != CellPoint.Empty)
+                _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
 
             scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
 
@@ -221,8 +228,11 @@ namespace Rogue.NET.Core.Model.Scenario
         }
         private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
-            _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
+            if (e.OldLocation != CellPoint.Empty)
+                _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
+
+            if (e.NewLocation != CellPoint.Empty)
+                _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
         }
 
         #region IDisposable

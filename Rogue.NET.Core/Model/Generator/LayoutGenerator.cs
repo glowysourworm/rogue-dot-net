@@ -4,13 +4,13 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
-using Rogue.NET.Engine.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Engine.Model.Generator
+namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(ILayoutGenerator))]
     public class LayoutGenerator : ILayoutGenerator
@@ -268,14 +268,8 @@ namespace Rogue.NET.Engine.Model.Generator
                     grid.AddCell(new Cell(col--, row, Compass.Null));
             }
 
-            //TODO - finish creating doors
-            Cell c1 = new Cell(d1.Column, d1.Row, Compass.Null);
-            Cell c2 = new Cell(d2.Column, d2.Row, Compass.Null);
-
-
-
-            grid.AddCell(c1);
-            grid.AddCell(c2);
+            // Add the final cell to the hallway
+            grid.AddCell(new Cell(d2.Column, d2.Row, Compass.Null));
         }
 
         /// <summary>

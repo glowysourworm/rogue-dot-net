@@ -48,21 +48,23 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public ScenarioObject()
         {
             this.RogueName = "Unnamed";
+
+            this.Location = CellPoint.Empty;
         }
         public ScenarioObject(string name, ImageResources icon)
             : base(name, icon)
         {
-            this.Location = new CellPoint();
+            this.Location = CellPoint.Empty;
         }
         public ScenarioObject(string name, string symbol, string color)
             : base(name, symbol, color)
         {
-            this.Location = new CellPoint();
+            this.Location = CellPoint.Empty;
         }
         public ScenarioObject(string name, SmileyMoods mood, string body, string line, string aura)
             : base(name, mood, body, line, aura)
         {
-            this.Location = new CellPoint();
+            this.Location = CellPoint.Empty;
         }
 
         public override string ToString()

@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 
 using System.Linq;
 using System.Collections.Generic;

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Core", "Rogue.NET.Core\Rogue.NET.Core.csproj", "{3E574589-233F-4B39-B93C-445E6F44A736}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.UnitTest", "Rogue.NET.UnitTest\Rogue.NET.UnitTest.csproj", "{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,18 @@ Global
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E574589-233F-4B39-B93C-445E6F44A736}.Release|x86.Build.0 = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Debug|x86.Build.0 = Debug|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|x86.ActiveCfg = Release|Any CPU
+		{3EF24AE2-426B-4988-9F83-EEDF77F5B30D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

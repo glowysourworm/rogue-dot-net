@@ -2,7 +2,7 @@
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
 
-namespace Rogue.NET.Engine.Model.Generator.Interface
+namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IContentGenerator
     {

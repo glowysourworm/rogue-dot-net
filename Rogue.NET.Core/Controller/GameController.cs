@@ -1,7 +1,7 @@
-﻿using Rogue.NET.Engine.Controller.Interface;
+﻿using Rogue.NET.Core.Controller.Interface;
 using System.ComponentModel.Composition;
 
-namespace Rogue.NET.Engine.Controller
+namespace Rogue.NET.Core.Controller
 {
     [Export(typeof(IGameController))]
     public class GameController : IGameController

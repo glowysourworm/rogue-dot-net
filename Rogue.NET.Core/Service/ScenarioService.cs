@@ -4,7 +4,7 @@ using Rogue.NET.Core.Model.Common.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Engine.Service
+namespace Rogue.NET.Core.Service
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioService))]

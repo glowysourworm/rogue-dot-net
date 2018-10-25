@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 
-namespace Rogue.NET.Engine.Model.Generator.Interface
+namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IItemGenerator
     {

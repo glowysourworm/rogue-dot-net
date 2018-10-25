@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Linq;
 using System.Collections.Generic;

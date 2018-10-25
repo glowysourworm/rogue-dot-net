@@ -131,7 +131,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 throw new Exception("Trying to add cell to out of range slot");
 
             if (_grid[cell.Location.Column, cell.Location.Row] != null)
-                throw new Exception("Trying to add cell to occupied slot");
+                return;
 
             _grid[cell.Location.Column, cell.Location.Row] = cell;
 

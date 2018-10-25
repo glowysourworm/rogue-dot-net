@@ -6,7 +6,6 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Engine.Model.Generator.Interface;
 
 using System;
 using System.ComponentModel.Composition;
@@ -14,7 +13,7 @@ using System.Linq;
 
 using Prism.Events;
 
-namespace Rogue.NET.Engine.Model.Generator
+namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(IScenarioGenerator))]
     public class ScenarioGenerator : IScenarioGenerator
@@ -51,11 +50,9 @@ namespace Rogue.NET.Engine.Model.Generator
             scenario.Player1 = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate);
             scenario.Player1.AttributeEmphasis = AttributeEmphasis.Agility;
 
-            var layouts = _layoutGenerator.CreateDungeonLayouts(configuration);
+            var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
-            var contents = _contentGenerator.CreateContents(layouts, configuration, survivorMode);
-
-            scenario.LoadedLevels = layouts.ToList();
+            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, survivorMode).ToList();
 
             // TODO
             //PublishLoadingMessage("Initializing Scenario Meta Data", 99);

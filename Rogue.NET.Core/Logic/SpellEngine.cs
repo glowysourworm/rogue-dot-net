@@ -10,13 +10,13 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Engine.Game
+namespace Rogue.NET.Core.Game
 {
     [Export(typeof(ISpellEngine))]
     public class SpellEngine : ISpellEngine

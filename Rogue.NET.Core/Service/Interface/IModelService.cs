@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Engine.Service.Interface
+namespace Rogue.NET.Core.Service.Interface
 {
     /// <summary>
     /// This is the primary (singleton) model acccess component. It's purpose is to serve data

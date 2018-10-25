@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Engine.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -148,7 +148,11 @@ namespace Rogue.NET.Core.Model.Generator
                 if (_randomSequenceGenerator.Get() > consumableTemplate.GenerationProbability)
                     continue;
 
-                var consumable = _itemGenerator.GenerateConsumable((ConsumableTemplate)consumableTemplate.TheTemplate);
+                var template = (ConsumableTemplate)consumableTemplate.TheTemplate;
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
+                var consumable = _itemGenerator.GenerateConsumable(template);
 
                 enemy.Consumables.Add(consumable.Id, consumable);
             }
@@ -159,7 +163,12 @@ namespace Rogue.NET.Core.Model.Generator
                 if (_randomSequenceGenerator.Get() > equipmentTemplate.GenerationProbability)
                     continue;
 
-                var equipment = _itemGenerator.GenerateEquipment((EquipmentTemplate)equipmentTemplate.TheTemplate);
+                var template = (EquipmentTemplate)equipmentTemplate.TheTemplate;
+
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
+                var equipment = _itemGenerator.GenerateEquipment(template);
 
                 enemy.Equipment.Add(equipment.Id, equipment);
             }

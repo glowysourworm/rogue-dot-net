@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Engine.Service.Interface
+namespace Rogue.NET.Core.Service.Interface
 {
     /// <summary>
     /// Component has the responsibility of providing methods to interact with scenario model via 

@@ -8,7 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 
 using System;
 using System.ComponentModel.Composition;

@@ -1,11 +1,11 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Engine.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
 
 using System.ComponentModel.Composition;
 
-namespace Rogue.NET.Engine.Model.Generator
+namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(IBehaviorGenerator))]
     public class BehaviorGenerator : IBehaviorGenerator

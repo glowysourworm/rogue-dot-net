@@ -186,10 +186,12 @@
     <Compile Include="Model\Scenario\ScenarioMetaData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Interface\IModelService.cs" />
+    <Compile Include="Service\Interface\IScenarioResourceService.cs" />
     <Compile Include="Service\Interface\IScenarioMessageService.cs" />
     <Compile Include="Service\Interface\IScenarioService.cs" />
     <Compile Include="Service\Interface\ITextService.cs" />
     <Compile Include="Service\ModelService.cs" />
+    <Compile Include="Service\ScenarioResourceService.cs" />
     <Compile Include="Service\ScenarioMessageService.cs" />
     <Compile Include="Service\ScenarioService.cs" />
     <Compile Include="Service\TextService.cs" />
@@ -199,6 +201,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resource\Configuration\Fighter.rdns" />
+    <EmbeddedResource Include="Resource\Configuration\Paladin.rdns" />
+    <EmbeddedResource Include="Resource\Configuration\Sorcerer.rdns" />
+    <EmbeddedResource Include="Resource\Configuration\Witch.rdns" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

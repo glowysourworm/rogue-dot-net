@@ -1,12 +1,12 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Engine.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Engine.Model.Generator
+namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(IItemGenerator))]
     public class ItemGenerator : IItemGenerator

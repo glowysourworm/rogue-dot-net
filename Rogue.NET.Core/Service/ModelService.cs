@@ -3,7 +3,7 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Engine.Service.Interface;
+using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 
-namespace Rogue.NET.Engine.Service
+namespace Rogue.NET.Core.Service
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IModelService))]
