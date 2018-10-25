@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E574589-233F-4B39-B93C-445E6F44A736}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rogue.NET.Core</RootNamespace>
+    <AssemblyName>Rogue.NET.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ExpressMapper, Version=1.9.1.0, Culture=neutral, PublicKeyToken=ac363faa09311ba0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expressmapper.1.9.1\lib\net46\ExpressMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="Prism, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.6.3.0\lib\net45\Prism.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Mef.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Mef.6.3.0\lib\net45\Prism.Mef.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition.Registration" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Event\LocationChangedEventArgs.cs" />
+    <Compile Include="Event\SplashEventType.cs" />
+    <Compile Include="Logic\Content\AlterationProcessor.cs" />
+    <Compile Include="Logic\Content\CharacterProcessor.cs" />
+    <Compile Include="Logic\Content\EnemyProcessor.cs" />
+    <Compile Include="Logic\Content\InteractionProcessor.cs" />
+    <Compile Include="Logic\Content\Interface\IAlterationProcessor.cs" />
+    <Compile Include="Logic\Content\Interface\ICharacterProcessor.cs" />
+    <Compile Include="Logic\Content\Interface\IEnemyProcessor.cs" />
+    <Compile Include="Logic\Content\Interface\IInteractionProcessor.cs" />
+    <Compile Include="Logic\Content\Interface\IPlayerProcessor.cs" />
+    <Compile Include="Logic\Content\PlayerProcessor.cs" />
+    <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\Interface\IGameController.cs" />
+    <Compile Include="Logic\Algorithm\Interface\IPathFinder.cs" />
+    <Compile Include="Logic\Interface\IScenarioEngine.cs" />
+    <Compile Include="Logic\ScenarioEngine.cs" />
+    <Compile Include="Model\Common\AnimationReturnAction.cs" />
+    <Compile Include="Model\Common\Interface\ILevelCommand.cs" />
+    <Compile Include="Model\Common\LevelCommand.cs" />
+    <Compile Include="Model\Generator\AttackAttributeGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IAttackAttributeGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IScenarioMetaDataGenerator.cs" />
+    <Compile Include="Model\Generator\ScenarioMetaDataGenerator.cs" />
+    <Compile Include="Model\ModelConstants.cs" />
+    <Compile Include="Model\Enums\Animation.cs" />
+    <Compile Include="Model\Enums\Character.cs" />
+    <Compile Include="Model\Enums\Dungeon.cs" />
+    <Compile Include="Model\Enums\Game.cs" />
+    <Compile Include="Model\Enums\Inventory.cs" />
+    <Compile Include="Model\Enums\MetaData.cs" />
+    <Compile Include="Model\Enums\Resource.cs" />
+    <Compile Include="Model\Enums\Skill.cs" />
+    <Compile Include="Model\Generator\AlterationGenerator.cs" />
+    <Compile Include="Model\Generator\CharacterGenerator.cs" />
+    <Compile Include="Model\Generator\DoodadGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IAlterationGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\ICharacterGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IDoodadGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IRandomSequenceGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\ISkillSetGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\ISpellGenerator.cs" />
+    <Compile Include="Model\Generator\RandomSequenceGenerator.cs" />
+    <Compile Include="Logic\Algorithm\SimplePathFinder.cs" />
+    <Compile Include="Logic\ContentEngine.cs" />
+    <Compile Include="Logic\Interface\IContentEngine.cs" />
+    <Compile Include="Logic\Interface\ILayoutEngine.cs" />
+    <Compile Include="Logic\Algorithm\Interface\IRayTracer.cs" />
+    <Compile Include="Logic\Interface\ISpellEngine.cs" />
+    <Compile Include="Logic\LayoutEngine.cs" />
+    <Compile Include="Logic\Algorithm\SimpleRayTracer.cs" />
+    <Compile Include="Logic\SpellEngine.cs" />
+    <Compile Include="Model\Generator\BehaviorGenerator.cs" />
+    <Compile Include="Model\Generator\ContentGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IBehaviorGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IContentGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IItemGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\ILayoutGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IScenarioGenerator.cs" />
+    <Compile Include="Model\Generator\ItemGenerator.cs" />
+    <Compile Include="Model\Generator\LayoutGenerator.cs" />
+    <Compile Include="Model\Generator\ScenarioGenerator.cs" />
+    <Compile Include="Model\Generator\SkillSetGenerator.cs" />
+    <Compile Include="Model\Generator\SpellGenerator.cs" />
+    <Compile Include="Model\Range.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Abstract\DungeonObjectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolDetailsTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Abstract\Template.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCostTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\SpellTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Animation\AnimationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Animation\BrushTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Animation\GradientStopTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Animation\PenTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\AttackAttributeTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\BehaviorDetailsTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\BehaviorTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\CharacterTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\ConsumableTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\DoodadTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\EnemyTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\EquipmentTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\PlayerTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\ProbabilityConsumableTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\ProbabilityEquipmentTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Layout\DungeonTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Layout\LayoutTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\ScenarioConfigurationContainer.cs" />
+    <Compile Include="Model\Scenario\Alteration\AlterationContainer.cs" />
+    <Compile Include="Model\Scenario\Alteration\AlterationCost.cs" />
+    <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\AttackAttribute.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior.cs" />
+    <Compile Include="Model\Scenario\Character\BehaviorDetails.cs" />
+    <Compile Include="Model\Scenario\Character\Character.cs" />
+    <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
+    <Compile Include="Model\Scenario\Character\Enemy.cs" />
+    <Compile Include="Model\Scenario\Character\Player.cs" />
+    <Compile Include="Model\Scenario\Content\Doodad\DoodadBase.cs" />
+    <Compile Include="Model\Scenario\Content\Doodad\DoodadMagic.cs" />
+    <Compile Include="Model\Scenario\Content\Doodad\DoodadNormal.cs" />
+    <Compile Include="Model\Scenario\Content\Item\Consumable.cs" />
+    <Compile Include="Model\Scenario\Content\Item\Equipment.cs" />
+    <Compile Include="Model\Scenario\Content\Item\ItemBase.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Cell.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\CellPoint.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\CellRectangle.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\LevelGrid.cs" />
+    <Compile Include="Model\Scenario\Content\Level.cs" />
+    <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
+    <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
+    <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
+    <Compile Include="Model\Scenario\Content\Skill\Spell.cs" />
+    <Compile Include="Model\Scenario\Dynamic\PlayerAlteration.cs" />
+    <Compile Include="Model\Scenario\RogueBase.cs" />
+    <Compile Include="Model\Scenario\ScenarioContainer.cs" />
+    <Compile Include="Model\Scenario\ScenarioMetaData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\Interface\IModelService.cs" />
+    <Compile Include="Service\Interface\IScenarioMessageService.cs" />
+    <Compile Include="Service\Interface\IScenarioService.cs" />
+    <Compile Include="Service\Interface\ITextService.cs" />
+    <Compile Include="Service\ModelService.cs" />
+    <Compile Include="Service\ScenarioMessageService.cs" />
+    <Compile Include="Service\ScenarioService.cs" />
+    <Compile Include="Service\TextService.cs" />
+    <Compile Include="Utility\ColorConverter.cs" />
+    <Compile Include="Utility\MapperInit.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
