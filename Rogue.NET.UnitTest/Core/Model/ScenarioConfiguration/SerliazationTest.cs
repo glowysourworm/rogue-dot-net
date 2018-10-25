@@ -122,7 +122,6 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 
             Assert.IsNotNull(scenario);
             Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);
-            Assert.IsTrue(scenario.Player1.RogueName == configuration.PlayerTemplate.Name);
         }
     }
 }
