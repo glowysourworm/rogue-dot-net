@@ -92,7 +92,7 @@
     <Compile Include="Model\ModelConstants.cs" />
     <Compile Include="Model\Enums\Animation.cs" />
     <Compile Include="Model\Enums\Character.cs" />
-    <Compile Include="Model\Enums\Dungeon.cs" />
+    <Compile Include="Model\Enums\Level.cs" />
     <Compile Include="Model\Enums\Game.cs" />
     <Compile Include="Model\Enums\Inventory.cs" />
     <Compile Include="Model\Enums\MetaData.cs" />

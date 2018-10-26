@@ -107,6 +107,9 @@ namespace Rogue.NET.Core.Model.Generator
                 if (!doodadTemplate.Level.Contains(levelNumber))
                     continue;
 
+                if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
+                    continue;
+
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(doodadTemplate.GenerationRate);
 
                 // If objective item (and hasn't been generated) - create at least one
@@ -121,6 +124,9 @@ namespace Rogue.NET.Core.Model.Generator
             foreach (var enemyTemplate in configurationContainer.EnemyTemplates)
             {
                 if (!enemyTemplate.Level.Contains(levelNumber))
+                    continue;
+
+                if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                     continue;
 
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
@@ -139,6 +145,9 @@ namespace Rogue.NET.Core.Model.Generator
                 if (!template.Level.Contains(levelNumber))
                     continue;
 
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
                 for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
@@ -150,6 +159,9 @@ namespace Rogue.NET.Core.Model.Generator
             // Consumables for the level
             foreach (var template in configurationContainer.ConsumableTemplates)
             {
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
                 if (template.Level.Contains(levelNumber))
                 {
                     int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
@@ -232,6 +244,9 @@ namespace Rogue.NET.Core.Model.Generator
                 if (!template.Level.Contains(levelNumber))
                     continue;
 
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
                 for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
@@ -250,6 +265,9 @@ namespace Rogue.NET.Core.Model.Generator
             // Party room consumables
             foreach (var template in configurationContainer.ConsumableTemplates)
             {
+                if (template.IsUnique && template.HasBeenGenerated)
+                    continue;
+
                 if (template.Level.Contains(levelNumber))
                 {
                     int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
@@ -270,6 +288,9 @@ namespace Rogue.NET.Core.Model.Generator
             // Party room enemies
             foreach (var enemyTemplate in configurationContainer.EnemyTemplates.Where(z => z.Level.Contains(levelNumber)))
             {
+                if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
+                    continue;
+
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
 
                 for (int i = 0; i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated && i == 0); i++)

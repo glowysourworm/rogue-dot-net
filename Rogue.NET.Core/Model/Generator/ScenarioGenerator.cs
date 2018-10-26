@@ -41,10 +41,9 @@ namespace Rogue.NET.Core.Model.Generator
             _textService = textService;
         }
 
-        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, int seed, bool survivorMode)
+        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, bool survivorMode)
         {
             ScenarioContainer scenario = new ScenarioContainer();
-            Random r = new Random(seed);
 
             //Generate Dungeon
             scenario.Player1 = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate);
@@ -151,7 +150,7 @@ namespace Rogue.NET.Core.Model.Generator
                         GenerationProbability = 1
                     });
 
-            return CreateScenario(configuration, 1234, false);
+            return CreateScenario(configuration, false);
         }
     }
 }

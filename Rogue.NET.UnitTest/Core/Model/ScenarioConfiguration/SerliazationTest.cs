@@ -10,9 +10,11 @@ using Moq;
 using Prism.Events;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System.Linq;
+
 using OldScenarioConfiguration = Rogue.NET.Model.ScenarioConfiguration;
 using NewScenarioConfiguration = Rogue.NET.Core.Model.ScenarioConfiguration.ScenarioConfigurationContainer;
-
+using System.Threading.Tasks;
 
 namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 {
@@ -20,59 +22,11 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
     public class SerliazationTest
     {
         IScenarioResourceService _scenarioResourceService;
-        IScenarioGenerator _scenarioGenerator;
-        ILayoutGenerator _layoutGenerator;
-        ISpellGenerator _spellGenerator;
-        IContentGenerator _contentGenerator;
-        ICharacterGenerator _characterGenerator;
-        ISkillSetGenerator _skillSetGenerator;
-        IBehaviorGenerator _behaviorGenerator;
-        IItemGenerator _itemGenerator;
-        IDoodadGenerator _doodadGenerator;
-        IAttackAttributeGenerator _attackAttributeGenerator;
-        IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
-        ITextService _textService;
-        IRandomSequenceGenerator _randomSequenceGenerator;
-
-        Mock<IEventAggregator> _eventAggregatorMock;
 
         [TestInitialize]
         public void Initialize()
         {
-            _eventAggregatorMock = new Mock<IEventAggregator>();
             _scenarioResourceService = new ScenarioResourceService();
-            _randomSequenceGenerator = new RandomSequenceGenerator(1234);
-            _layoutGenerator = new LayoutGenerator(_randomSequenceGenerator);
-            _attackAttributeGenerator = new AttackAttributeGenerator(_randomSequenceGenerator);
-            _spellGenerator = new SpellGenerator();
-            _skillSetGenerator = new SkillSetGenerator(_spellGenerator);
-            _behaviorGenerator = new BehaviorGenerator(_spellGenerator);
-            _scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
-            _itemGenerator = new ItemGenerator(
-                _randomSequenceGenerator,
-                _attackAttributeGenerator,
-                _spellGenerator,
-                _skillSetGenerator);
-            _characterGenerator = new CharacterGenerator(
-                _randomSequenceGenerator,
-                _attackAttributeGenerator,
-                _skillSetGenerator,
-                _behaviorGenerator,
-                _itemGenerator);
-            _doodadGenerator = new DoodadGenerator(_spellGenerator);
-            _contentGenerator = new ContentGenerator(
-                _randomSequenceGenerator,
-                _characterGenerator,
-                _doodadGenerator,
-                _itemGenerator);
-            _textService = new TextService();
-            _scenarioGenerator = new Rogue.NET.Core.Model.Generator.ScenarioGenerator(
-                _eventAggregatorMock.Object,
-                _layoutGenerator,
-                _contentGenerator,
-                _characterGenerator,
-                _scenarioMetaDataGenerator,
-                _textService);
 
             // Mapper configuration to map Rogue.NET.Model -> Rogue.NET.Core
             Mapper.RegisterCustom<Rogue.NET.Model.ProbabilityEquipmentTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.ProbabilityEquipmentTemplate>((src) =>
@@ -96,6 +50,48 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                     TheTemplate = Mapper.Map<Rogue.NET.Model.ConsumableTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.ConsumableTemplate>((ConsumableTemplate)src.TheTemplate)
                 };
             });
+
+            Mapper.Compile();
+        }
+
+        private IScenarioGenerator CreateScenarioGenerator(int seed)
+        {
+            var eventAggregatorMock = new Mock<IEventAggregator>();
+            var scenarioResourceService = new ScenarioResourceService();
+            var randomSequenceGenerator = new RandomSequenceGenerator(seed);
+            var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
+            var attackAttributeGenerator = new AttackAttributeGenerator(randomSequenceGenerator);
+            var spellGenerator = new SpellGenerator();
+            var skillSetGenerator = new SkillSetGenerator(spellGenerator);
+            var behaviorGenerator = new BehaviorGenerator(spellGenerator);
+            var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
+            var itemGenerator = new ItemGenerator(
+                randomSequenceGenerator,
+                attackAttributeGenerator,
+                spellGenerator,
+                skillSetGenerator);
+            var characterGenerator = new CharacterGenerator(
+                randomSequenceGenerator,
+                attackAttributeGenerator,
+                skillSetGenerator,
+                behaviorGenerator,
+                itemGenerator);
+            var doodadGenerator = new DoodadGenerator(spellGenerator);
+            var contentGenerator = new ContentGenerator(
+                randomSequenceGenerator,
+                characterGenerator,
+                doodadGenerator,
+                itemGenerator);
+            var textService = new TextService();
+            var scenarioGenerator = new Rogue.NET.Core.Model.Generator.ScenarioGenerator(
+                eventAggregatorMock.Object,
+                layoutGenerator,
+                contentGenerator,
+                characterGenerator,
+                scenarioMetaDataGenerator,
+                textService);
+
+            return scenarioGenerator;
         }
 
         [TestMethod]
@@ -118,10 +114,27 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 
             Assert.IsNotNull(configuration);
 
-            var scenario = _scenarioGenerator.CreateScenario(configuration, 1234, false);
+            var scenario = CreateScenarioGenerator(1234).CreateScenario(configuration, false);
 
             Assert.IsNotNull(scenario);
             Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);
+        }
+        [TestMethod]
+        public void Create10000ScenarioFromConfiguration()
+        {
+            var configuration = _scenarioResourceService.GetEmbeddedScenarioConfiguration(Rogue.NET.Core.Model.Enums.ConfigResources.Fighter);
+
+            Assert.IsNotNull(configuration);
+
+            Parallel.ForEach<int>(Enumerable.Range(1, 100), (seed) =>
+            {
+                var scenarioGenerator = CreateScenarioGenerator(seed);
+
+                var scenario = scenarioGenerator.CreateScenario(configuration, false);
+
+                Assert.IsNotNull(scenario);
+                Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);
+            });
         }
     }
 }

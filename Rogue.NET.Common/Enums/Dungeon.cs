@@ -62,12 +62,13 @@ namespace Rogue.NET.Common
     }
     public enum LayoutType : int
     {
-        Normal,
-        Maze,
-        Teleport,
-        TeleportRandom,
-        Hall,
-        BigRoom,
+        Normal = 0,
+        Maze = 1,
+        Teleport = 2,
+        TeleportRandom = 3,
+        Shop = 4,
+        Hall = 5,
+        BigRoom = 6,
     }
     public enum DoodadType
     {

@@ -8,6 +8,11 @@ namespace Rogue.NET.Core.Model.Generator.Interface
     public interface IRandomSequenceGenerator
     {
         /// <summary>
+        /// Creates new sequence with specified seed
+        /// </summary>
+        void Reseed(int seed);
+
+        /// <summary>
         /// Generates a U[0,1] random number
         /// </summary>
         double Get();

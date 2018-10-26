@@ -69,12 +69,13 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum LayoutType : int
     {
-        Normal,
-        Maze,
-        Teleport,
-        TeleportRandom,
-        Hall,
-        BigRoom,
+        Normal = 0,
+        Maze = 1,
+        Teleport = 2,
+        TeleportRandom = 3,
+        // (DON'T RENUMBER) Shop was removed - had to number these to support saved configuration
+        Hall = 5,
+        BigRoom = 6,
     }
     public enum DoodadType
     {

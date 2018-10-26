@@ -8,9 +8,14 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(IRandomSequenceGenerator))]
     public class RandomSequenceGenerator : IRandomSequenceGenerator
     {
-        private readonly Random _random;
+        private Random _random;
 
         public RandomSequenceGenerator(int seed)
+        {
+            _random = new Random(seed);
+        }
+
+        public void Reseed(int seed)
         {
             _random = new Random(seed);
         }
