@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Common;
-using Rogue.NET.Core.Service.Interface;
+﻿using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -21,11 +20,6 @@ namespace Rogue.NET.Core.Service
         }
 
         public void Publish(string message, params string[] format)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PublishAnimation(string spellId, string sourceCharacterId, IEnumerable<string> targetCharacterIds, AnimationReturnAction returnAction)
         {
             throw new NotImplementedException();
         }

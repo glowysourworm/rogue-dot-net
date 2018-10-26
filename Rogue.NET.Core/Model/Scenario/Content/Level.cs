@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Event;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -10,6 +9,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Dynamic;
+using Rogue.NET.Core.Model.Event;
 
 namespace Rogue.NET.Core.Model.Scenario
 {

@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Event;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Event;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 using System;

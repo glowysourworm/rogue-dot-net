@@ -1,10 +1,4 @@
-﻿using Rogue.NET.Core.Model.Common;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Service.Interface
 {
@@ -26,7 +20,5 @@ namespace Rogue.NET.Core.Service.Interface
         void Publish(string message, params string[] format);
 
         void PublishPlayerAdvancement(string header, IEnumerable<string> messages);
-
-        void PublishAnimation(string spellId, string sourceCharacterId, IEnumerable<string> targetCharacterIds, AnimationReturnAction returnAction);
     }
 }

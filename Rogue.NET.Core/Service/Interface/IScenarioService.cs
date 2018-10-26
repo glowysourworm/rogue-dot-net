@@ -1,11 +1,4 @@
-﻿using Rogue.NET.Core.Event;
-using Rogue.NET.Core.Model.Common.Interface;
-using Rogue.NET.Core.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Logic.Processing.Interface;
 
 namespace Rogue.NET.Core.Service.Interface
 {
@@ -16,6 +9,12 @@ namespace Rogue.NET.Core.Service.Interface
     public interface IScenarioService
     {
         /// <summary>
+        /// Tells IScenarioService to process it's data until finished (returns false).
+        /// </summary>
+        /// <returns>true if more to process</returns>
+        bool Process();
+
+        /// <summary>
         /// Issues primary player command 
         /// </summary>
         /// <param name="action">Intended action</param>
@@ -23,8 +22,15 @@ namespace Rogue.NET.Core.Service.Interface
         /// <param name="id">involved RogueBase.Id for action</param>
         void IssueCommand(ILevelCommand levelCommand);
 
-        void QueueLevelLoadRequest(int levelNumber, PlayerStartLocation startLocation);
+        /// <summary>
+        /// Gets the next level update from the service
+        /// </summary>
+        ILevelUpdate GetLevelUpdate();
 
-        void QueueSplashScreenEvent(SplashEventType type);
+        /// <summary>
+        /// Gets the next animation update from the service. These are processed first
+        /// </summary>
+        /// <returns></returns>
+        IAnimationEvent GetAnimation();
     }
 }

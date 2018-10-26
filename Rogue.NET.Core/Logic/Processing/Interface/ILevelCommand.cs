@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Core.Model.Common.Interface
+namespace Rogue.NET.Core.Logic.Processing.Interface
 {
     public interface ILevelCommand
     {

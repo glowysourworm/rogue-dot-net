@@ -1,15 +1,24 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using System;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
     public interface IScenarioEngine
     {
+        event EventHandler<string> PlayerDeathEvent;
+
         /// <summary>
         /// Processes automatic player action
         /// </summary>
         /// <returns>Continuation action - "DoNothing" means no altered state was processed.</returns>
         LevelContinuationAction ProcessAlteredPlayerState();
+
+        /// <summary>
+        /// Calculates new visibility for Level surrounding Player; applys end-of-turn for Player and 
+        /// for the Level (Generate new monster, etc...)
+        /// </summary>
+        void ProcessEndOfTurn(bool regenerate);
 
         ScenarioObject Move(Compass direction);
         ScenarioObject MoveRandom();

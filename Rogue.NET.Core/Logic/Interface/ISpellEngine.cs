@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Logic.Event;
+using System;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
@@ -12,5 +9,8 @@ namespace Rogue.NET.Core.Logic.Interface
     /// </summary>
     public interface ISpellEngine
     {
+        event EventHandler<LevelChangeEventArgs> LevelChangeEvent;
+        event EventHandler<SplashEventType> SplashEvent;
+        event EventHandler<AnimationEventArgs> AnimationEvent;
     }
 }

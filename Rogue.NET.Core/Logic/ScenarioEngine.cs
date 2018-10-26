@@ -14,6 +14,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 
 namespace Rogue.NET.Core.Logic
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioEngine))]
     public class ScenarioEngine : IScenarioEngine
     {
@@ -26,6 +27,8 @@ namespace Rogue.NET.Core.Logic
         readonly IPlayerProcessor _playerProcessor;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+
+        public event EventHandler<string> PlayerDeathEvent;
 
         [ImportingConstructor]
         public ScenarioEngine(
@@ -115,14 +118,12 @@ namespace Rogue.NET.Core.Logic
         }
 
         /// <summary>
-        /// Primary End-Of-Turn for processing reaction of enemies and level changes after player 
-        /// performs any action. All removal of dead enemies happens here. (BRING OUT UR DEAD!)
+        /// Runs Ray-Tracing for end-of-turn; Applies Player end-of-turn, advancement, and death; and
+        /// applies Level end-of-turn (create new monsters). Updates IModelService { visible locations, visible contents, end targeting }
         /// </summary>
         /// <param name="regenerate">Set to false to prevent Player regeneration</param>
-        /// <param name="enemyReactions">Set to true to process enemy reactions</param>
-        public void ProcessTurn(bool regenerate, bool enemyReactions)
+        public void ProcessEndOfTurn(bool regenerate)
         {
-            var visibleLocations = _modelService.GetVisibleLocations();
             var level = _modelService.CurrentLevel;
             var player = _modelService.Player;
 
@@ -133,41 +134,20 @@ namespace Rogue.NET.Core.Logic
             // the Level Grid.
             _modelService.UpdateVisibleLocations();
 
-            // TODO
-            //Collect auras that affect player
-            //var passiveEnemyAuraEffects = new List<AlterationEffect>();
-
-            // Enemy Reactions: 0) Check whether enemy is still alive 
-            //                  1) Process Enemy Reaction (Applies End-Of-Turn)
-            //                  2) Check for Enemy Death
-            for (int i = level.Enemies.Count() - 1; i >= 0 && enemyReactions; i--)
-            {
-                var enemy = level.Enemies.ElementAt(i);
-
-                if (enemy.Hp <= 0)
-                    _contentEngine.EnemyDeath(enemy);
-                else 
-                    _contentEngine.ProcessEnemyReaction(enemy);
-
-                if (enemy.Hp <= 0)
-                    _contentEngine.EnemyDeath(enemy);
-            }
-
             // Player: End-Of-Turn
             _playerProcessor.ApplyEndOfTurn(player, regenerate);
 
             //I'm Not DEEEAD! (TODO: Publish event for player death)
             if (player.Hunger >= 100 || player.Hp <= 0.1)
-                _scenarioMessageService.Publish("Had a rough day");
+                PlayerDeathEvent(this, "Had a rough day");
 
             // Apply End-Of-Turn for the Level content
             _contentEngine.ApplyEndOfTurn();
 
-
             // Update Model Content: 0) End Targeting
             //                       1) Update visible contents
             //                       2) Calculate model delta to prepare for UI
-            _modelService.SetTargetedEnemy(null);
+            _modelService.ClearTargetedEnemies();
             _modelService.UpdateContents();
 
             // Allow passing of messages back to the UI

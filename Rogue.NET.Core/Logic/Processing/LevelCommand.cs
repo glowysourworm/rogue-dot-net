@@ -1,13 +1,8 @@
-﻿using Rogue.NET.Core.Model.Common.Interface;
+﻿using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Rogue.NET.Core.Model.Common
+namespace Rogue.NET.Core.Logic.Processing
 {
     [Export(typeof(ILevelCommand))]
     public class LevelCommand : ILevelCommand

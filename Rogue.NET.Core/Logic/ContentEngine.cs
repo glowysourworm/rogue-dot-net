@@ -16,6 +16,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Game
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IContentEngine))]
     public class ContentEngine : IContentEngine
     {
@@ -30,6 +31,8 @@ namespace Rogue.NET.Core.Game
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ICharacterGenerator _characterGenerator;
+
+        public event EventHandler<Enemy> EnemyReactionEvent;
 
         [ImportingConstructor]
         public ContentEngine(
@@ -55,6 +58,7 @@ namespace Rogue.NET.Core.Game
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _characterGenerator = characterGenerator;
         }
 
         #region (public) Methods
@@ -228,6 +232,26 @@ namespace Rogue.NET.Core.Game
 
             //Set enemy identified
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
+        }
+        public void CalculateEnemyReactions()
+        {
+            var level = _modelService.CurrentLevel;
+
+            // Enemy Reactions: 0) Check whether enemy is still alive 
+            //                  1) Process Enemy Reaction (Applies End-Of-Turn)
+            //                  2) Check for Enemy Death
+            for (int i = level.Enemies.Count() - 1; i >= 0; i--)
+            {
+                var enemy = level.Enemies.ElementAt(i);
+
+                if (enemy.Hp <= 0)
+                    EnemyDeath(enemy);
+                else
+                    EnemyReactionEvent(this, enemy);
+
+                if (enemy.Hp <= 0)
+                    EnemyDeath(enemy);
+            }
         }
         public void ProcessEnemyReaction(Enemy enemy)
         {
@@ -471,21 +495,18 @@ namespace Rogue.NET.Core.Game
 
             for (int j = 0; j < turns; j++)
             {
-                // TODO
-
                 //Check altered states
-                //if (e.States.Any(z => z != CharacterStateType.Normal))
-                //{
-                //    //Sleeping
-                //    if (e.States.Any(z => z == CharacterStateType.Sleeping))
-                //        continue;
+                var alteredStates = enemy.Alteration.GetStates();
 
-                //    //Paralyzed
-                //    else if (e.States.Any(z => z == CharacterStateType.Paralyzed))
-                //        continue;
+                //Sleeping
+                if (alteredStates.Any(z => z == CharacterStateType.Sleeping))
+                    continue;
 
-                //    //Confused - check during calculate character move
-                //}
+                //Paralyzed
+                else if (alteredStates.Any(z => z == CharacterStateType.Paralyzed))
+                    continue;
+
+                //Confused - check during calculate character move
 
                 var actionTaken = false;
 

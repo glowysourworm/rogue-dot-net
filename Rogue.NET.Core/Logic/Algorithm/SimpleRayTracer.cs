@@ -173,11 +173,17 @@ namespace Rogue.NET.Core.Logic.Algorithm
 
             return result.Values.Select(x => x.Location);
         }
-        private PointF TransformToPhysicalLayout(CellPoint p)
+        public PointF TransformToPhysicalLayout(CellPoint p)
         {
             float x = (float)(ModelConstants.CELLWIDTH * p.Column);
             float y = (float)(ModelConstants.CELLHEIGHT * p.Row);
             return new PointF(x, y);
+        }
+        public System.Windows.Point Transform(CellPoint p)
+        {
+            var x = (ModelConstants.CELLWIDTH * p.Column);
+            var y = (ModelConstants.CELLHEIGHT * p.Row);
+            return new System.Windows.Point(x, y);
         }
     }
 }

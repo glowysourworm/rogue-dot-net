@@ -1,7 +1,6 @@
-﻿using Rogue.NET.Core.Event;
-using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Event;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Model.Common;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
@@ -10,7 +9,6 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -18,6 +16,7 @@ using System.Linq;
 
 namespace Rogue.NET.Core.Game
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISpellEngine))]
     public class SpellEngine : ISpellEngine
     {
@@ -27,10 +26,13 @@ namespace Rogue.NET.Core.Game
         readonly IPlayerProcessor _playerProcessor;
         readonly IInteractionProcessor _interactionProcessor;
         readonly IAlterationGenerator _alterationGenerator;
-        readonly IScenarioService _scenarioService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly ICharacterGenerator _characterGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+
+        public event EventHandler<LevelChangeEventArgs> LevelChangeEvent;
+        public event EventHandler<SplashEventType> SplashEvent;
+        public event EventHandler<AnimationEventArgs> AnimationEvent;
 
         [ImportingConstructor]
         public SpellEngine(
@@ -40,7 +42,6 @@ namespace Rogue.NET.Core.Game
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
             IAlterationGenerator alterationGenerator,
-            IScenarioService scenarioService,
             IScenarioMessageService scenarioMessageService,
             ICharacterGenerator characterGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
@@ -51,13 +52,12 @@ namespace Rogue.NET.Core.Game
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
             _alterationGenerator = alterationGenerator;
-            _scenarioService = scenarioService;
             _scenarioMessageService = scenarioMessageService;
             _characterGenerator = characterGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        private LevelContinuationAction InvokePlayerMagicSpell(Spell spell)
+        public LevelContinuationAction InvokePlayerMagicSpell(Spell spell)
         {
             // Cost will be applied on turn - after animations are processed
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, spell.Cost))
@@ -66,11 +66,12 @@ namespace Rogue.NET.Core.Game
             //Run animations before applying effects
             if (spell.Animations.Count > 0)
             {
-                _scenarioMessageService.PublishAnimation(
-                    spell.Id,
-                    _modelService.Player.Id,
-                    _modelService.GetTargetedEnemies().Select(x => x.Id),
-                    AnimationReturnAction.ProcessPlayerSpell);
+                AnimationEvent(this, new AnimationEventArgs()
+                {
+                    Animations = spell.Animations,
+                    SourceLocation = _modelService.Player.Location,
+                    TargetLocations = _modelService.GetTargetedEnemies().Select(x => x.Location)
+                });
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -92,22 +93,19 @@ namespace Rogue.NET.Core.Game
             //Run animations before applying effects
             if (spell.Animations.Count > 0)
             {
-                _scenarioMessageService.PublishAnimation(
-                    spell.Id,
-                    _modelService.Player.Id,
-                    _modelService.GetTargetedEnemies().Select(x => x.Id),
-                    AnimationReturnAction.ProcessEnemySpell);
+                AnimationEvent(this, new AnimationEventArgs()
+                {
+                    Animations = spell.Animations,
+                    SourceLocation = enemy.Location,
+                    TargetLocations = new CellPoint[] { _modelService.Player.Location }
+                });
 
                 return LevelContinuationAction.DoNothing;
             }
             //No animations - just apply effects
             else
             {
-                _scenarioMessageService.PublishAnimation(
-                    spell.Id,
-                    enemy.Id,
-                    new string[] { _modelService.Player.Id },
-                    AnimationReturnAction.ProcessEnemySpell);
+                OnEnemyMagicSpell(enemy, spell);
 
                 return LevelContinuationAction.ProcessTurn;
             }
@@ -284,7 +282,11 @@ namespace Rogue.NET.Core.Game
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Min(randomLevel, numberOfLevels);
 
-                        _scenarioService.QueueLevelLoadRequest(level, PlayerStartLocation.Random);
+                        LevelChangeEvent(this, new LevelChangeEventArgs()
+                        {
+                            LevelNumber = level,
+                            StartLocation = PlayerStartLocation.Random
+                        });
                     }
                     break;
                 case AlterationMagicEffectType.ChangeLevelRandomUp:
@@ -295,17 +297,21 @@ namespace Rogue.NET.Core.Game
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Max(randomLevel, 1);
 
-                        _scenarioService.QueueLevelLoadRequest(level, PlayerStartLocation.Random);
+                        LevelChangeEvent(this, new LevelChangeEventArgs()
+                        {
+                            LevelNumber = level,
+                            StartLocation = PlayerStartLocation.Random
+                        });
                     }
                     break;
                 case AlterationMagicEffectType.EnchantArmor:
-                    _scenarioService.QueueSplashScreenEvent(SplashEventType.EnchantArmor);
+                    SplashEvent(this, SplashEventType.EnchantArmor);
                     break;
                 case AlterationMagicEffectType.EnchantWeapon:
-                    _scenarioService.QueueSplashScreenEvent(SplashEventType.EnchantWeapon);
+                    SplashEvent(this, SplashEventType.EnchantWeapon);
                     break;
                 case AlterationMagicEffectType.Identify:
-                    _scenarioService.QueueSplashScreenEvent(SplashEventType.Identify);
+                    SplashEvent(this, SplashEventType.Identify);
                     break;
                 case AlterationMagicEffectType.RevealFood:
                     RevealFood();
@@ -323,7 +329,7 @@ namespace Rogue.NET.Core.Game
                     RevealSavePoint();
                     break;
                 case AlterationMagicEffectType.Uncurse:
-                    _scenarioService.QueueSplashScreenEvent(SplashEventType.Uncurse);
+                    SplashEvent(this, SplashEventType.Uncurse);
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                     CreateMonster(alteration.CreateMonsterEnemy);
@@ -335,7 +341,7 @@ namespace Rogue.NET.Core.Game
             switch (alteration.AttackAttributeType)
             {
                 case AlterationAttackAttributeType.Imbue:
-                    _scenarioService.QueueSplashScreenEvent(SplashEventType.Imbue);
+                    SplashEvent(this, SplashEventType.Imbue);
                     break;
                 case AlterationAttackAttributeType.Passive:
                     _modelService.Player.Alteration.AttackAttributePassiveEffects.Add(alteration.Effect);

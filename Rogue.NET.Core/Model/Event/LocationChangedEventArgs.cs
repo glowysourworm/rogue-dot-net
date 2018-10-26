@@ -2,7 +2,7 @@
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 
-namespace Rogue.NET.Core.Event
+namespace Rogue.NET.Core.Model.Event
 {
     public class LocationChangedEventArgs : EventArgs
     {
