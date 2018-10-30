@@ -1,19 +1,8 @@
-﻿using Rogue.NET.Model;
-using System;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
@@ -29,7 +18,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             foreach (var item in this.SourceLB.SelectedItems)
             {
                 // Create new instance
-                var copy = ResourceManager.CreateDeepCopy(item);
+                var copy = item.Copy();
                 (this.DestinationLB.ItemsSource as IList).Add(copy);
             }
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,6 @@ using System.Windows.Media.Animation;
 
 namespace Rogue.NET.Scenario.Views
 {
-    /// <summary>
-    /// Interaction logic for PlayerSubpanel.xaml
-    /// </summary>
     public partial class PlayerSubpanel : UserControl
     {
         readonly List<FrameworkElement> _ctrlList;

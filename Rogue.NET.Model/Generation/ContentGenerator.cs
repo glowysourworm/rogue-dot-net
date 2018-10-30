@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Resources;
-using System.Drawing;
-using Rogue.NET.Scenario.Model;
-using Rogue.NET.Scenario;
 using Rogue.NET.Common;
-using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Model.Scenario;
-using Microsoft.Practices.Prism.PubSubEvents;
+using System.ComponentModel.Composition;
+using Prism.Events;
 
 namespace Rogue.NET.Model.Generation
 {
+    [Export]
     public class ScenarioContentGenerator : GeneratorBase
     {
         Level[] _levels = null;

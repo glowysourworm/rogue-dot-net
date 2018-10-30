@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 
 using Rogue.NET.Common;
+using Rogue.NET.Common.ViewModel;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {

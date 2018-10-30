@@ -1,24 +1,17 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
+﻿using Prism.Events;
 using Rogue.NET.Common;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Model.Generation;
-using Rogue.NET.Model.Logic;
-using Rogue.NET.Model.Physics;
 using Rogue.NET.Model.Scenario;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Xml;
 
 namespace Rogue.NET.Model
 {
@@ -39,10 +32,10 @@ namespace Rogue.NET.Model
         Dictionary<string, string> GetGameDisplayStats();
     }
 
+    [Export]
     public class ModelController : IModelController
     {
         readonly IResourceService _resourceService;
-        readonly IUnityContainer _unityContainer;
         readonly IEventAggregator _eventAggregator;
         readonly IDungeonGenerator _dungeonGenerator;
 
@@ -60,12 +53,10 @@ namespace Rogue.NET.Model
 
         public ModelController(
             IResourceService resourceService,
-            IUnityContainer unityContainer,
             IEventAggregator eventAggregator,
             IDungeonGenerator dungeonGenerator)
         {
             _resourceService = resourceService;
-            _unityContainer = unityContainer;
             _eventAggregator = eventAggregator;
             _dungeonGenerator = dungeonGenerator;
 
@@ -82,10 +73,7 @@ namespace Rogue.NET.Model
             }
             catch (Exception)
             {
-                _eventAggregator.GetEvent<MessageBoxEvent>().Publish(new MessageBoxEvent()
-                {
-                    Message = "Error creating save directory - will not be able to save game progress"
-                });
+                _eventAggregator.GetEvent<MessageBoxEvent>().Publish("Error creating save directory - will not be able to save game progress");
             }
 
             _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
@@ -97,7 +85,7 @@ namespace Rogue.NET.Model
 
             _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
                 {
                     SplashAction = SplashAction.Show,
                     SplashType = SplashEventType.Open
@@ -105,16 +93,16 @@ namespace Rogue.NET.Model
 
                 Open(Constants.SAVED_GAMES_DIR + "\\" + e.ScenarioName + "." + Constants.SCENARIO_EXTENSION);
 
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
                 {
                     SplashAction = SplashAction.Hide,
                     SplashType = SplashEventType.Open
                 });
             });
 
-            _eventAggregator.GetEvent<SaveScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<SaveScenarioEvent>().Subscribe(() =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
                 {
                     SplashAction = SplashAction.Show,
                     SplashType = SplashEventType.Save
@@ -122,13 +110,13 @@ namespace Rogue.NET.Model
 
                 Save();
 
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
                 {
                     SplashAction = SplashAction.Hide,
                     SplashType = SplashEventType.Save
                 });
 
-                _eventAggregator.GetEvent<ScenarioSavedEvent>().Publish(new ScenarioSavedEvent());
+                _eventAggregator.GetEvent<ScenarioSavedEvent>().Publish();
             });
 
             _eventAggregator.GetEvent<LoadLevelEvent>().Subscribe((e) =>
@@ -136,7 +124,7 @@ namespace Rogue.NET.Model
                 LoadLevel(e.LevelNumber, e.StartLocation);
             });
 
-            _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
             {
                 //Unpack snapshot from file
                 _scenarioContainer = _scenarioFile.Unpack();
@@ -157,11 +145,11 @@ namespace Rogue.NET.Model
                     if (File.Exists(path))
                         File.Delete(path);
 
-                    _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish(new ScenarioDeletedEvent());
+                    _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();
                 }
             });
 
-            _eventAggregator.GetEvent<ScenarioTickEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ScenarioTickEvent>().Subscribe(() =>
             {
                 _scenarioContainer.TotalTicks++;
                 UpdateScenarioInfo();
@@ -170,7 +158,7 @@ namespace Rogue.NET.Model
 
         public void New(ScenarioConfiguration c, string characterName, int seed, bool survivorMode)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.NewScenario
@@ -178,12 +166,11 @@ namespace Rogue.NET.Model
 
             if (_scenarioContainer != null)
             {
-                _unityContainer.Teardown(_scenarioContainer);
                 _scenarioContainer = null;
             }
 
             // send character color and initialize display message
-            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEvent()
+            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
                 Message = "Creating " + c.DungeonTemplate.Name + " Scenario...",
                 Progress = 10,
@@ -202,7 +189,7 @@ namespace Rogue.NET.Model
             _scenarioContainer.SurvivorMode = survivorMode;
             _scenarioContainer.StartTime = DateTime.Now;
 
-            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEvent()
+            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
                 Message = "Compressing Scenario in Memory...",
                 Progress = 90
@@ -211,7 +198,7 @@ namespace Rogue.NET.Model
             //Compress to dungeon file
             _scenarioFile = ScenarioFile.Create(_scenarioContainer);
 
-            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEvent()
+            _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
                 Message = "Loading First Level...",
                 Progress = 95
@@ -222,7 +209,7 @@ namespace Rogue.NET.Model
 
             LoadFirstLevel();
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.NewScenario
@@ -234,7 +221,6 @@ namespace Rogue.NET.Model
         {
             if (_scenarioContainer != null)
             {
-                _unityContainer.Teardown(_scenarioContainer);
                 _scenarioContainer = null;
             }
 
@@ -284,26 +270,25 @@ namespace Rogue.NET.Model
                     _scenarioContainer.LoadedLevels.Add(nextLevel);
                 }
 
-                if (_unityContainer.IsRegistered<LevelData>())
-                    _unityContainer.Teardown(_unityContainer.Resolve<LevelData>());
+                //if (_unityContainer.IsRegistered<LevelData>())
+                //    _unityContainer.Teardown(_unityContainer.Resolve<LevelData>());
 
                 // Register instance of level data object in the container
-                _unityContainer.RegisterInstance<LevelData>(new LevelData()
-                {
-                    Level = nextLevel,
-                    Player = _scenarioContainer.Player1,
-                    Encyclopedia = _scenarioContainer.ItemEncyclopedia,
-                    ObjectiveDescription = _scenarioContainer.StoredConfig.DungeonTemplate.ObjectiveDescription,
-                    Config = _scenarioContainer.StoredConfig,
-                    Seed = _scenarioContainer.Seed, 
-                    StartLocation = location
-                }, new ContainerControlledLifetimeManager());
+                //_unityContainer.RegisterInstance<LevelData>(new LevelData()
+                //{
+                //    Level = nextLevel,
+                //    Player = _scenarioContainer.Player1,
+                //    Encyclopedia = _scenarioContainer.ItemEncyclopedia,
+                //    ObjectiveDescription = _scenarioContainer.StoredConfig.DungeonTemplate.ObjectiveDescription,
+                //    Config = _scenarioContainer.StoredConfig,
+                //    Seed = _scenarioContainer.Seed, 
+                //    StartLocation = location
+                //}, new ContainerControlledLifetimeManager());
 
                 // Publish event containing level - subscribers operate on level as necessary
-                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish(new LevelLoadedEvent()
-                {
-                    Data = _unityContainer.Resolve<LevelData>()
-                });
+
+                // TODO - NEED TO PUBLISH LEVEL DATA
+                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish(null);
 
                 UpdateScenarioInfo();
             }
@@ -336,7 +321,7 @@ namespace Rogue.NET.Model
         /// </summary>
         public void UpdateScenarioInfo()
         {
-            _eventAggregator.GetEvent<ScenarioInfoUpdatedEvent>().Publish(new ScenarioInfoUpdatedEvent()
+            _eventAggregator.GetEvent<ScenarioInfoUpdatedEvent>().Publish(new ScenarioInfoUpdatedEventArgs()
             {
                 Ticks = _scenarioContainer.TotalTicks,
                 CurrentLevel = _scenarioContainer.CurrentLevel,

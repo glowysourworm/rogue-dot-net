@@ -10,11 +10,10 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Service.Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Core.Game
+namespace Rogue.NET.Core.Logic
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(ISpellEngine))]

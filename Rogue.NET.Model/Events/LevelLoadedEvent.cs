@@ -1,17 +1,8 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Rogue.NET.Common;
-using Rogue.NET.Common.Collections;
-using Rogue.NET.Model.Scenario;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Events;
 
 namespace Rogue.NET.Model.Events
 {
-    public class LevelLoadedEvent : CompositePresentationEvent<LevelLoadedEvent>
+    public class LevelLoadedEvent : PubSubEvent<LevelData>
     {
-        public LevelData Data { get; set; }
     }
 }

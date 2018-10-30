@@ -5,7 +5,6 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Service.Interface;
 
 using System.Linq;
 using System.ComponentModel.Composition;

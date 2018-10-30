@@ -1,28 +1,14 @@
-﻿
-
-using Rogue.NET.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
-    /// <summary>
-    /// Interaction logic for SkillSet.xaml
-    /// </summary>
     public partial class SkillSet : UserControl
     {
         public SkillSet()
@@ -51,7 +37,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         /// <summary>
         /// Use to set skill collections
         /// </summary>
-        public void SetConfigurationData(ScenarioConfiguration configuration)
+        public void SetConfigurationData(ScenarioConfigurationContainer configuration)
         {
             this.SkillSetBuilder.SourceLB.ItemsSource = new ObservableCollection<SpellTemplate>(configuration.MagicSpells);
             this.SkillSetBuilder.SourceLB.DisplayMemberPath = "Name";
@@ -61,7 +47,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         {
             var window = new Window();
             var model = this.DataContext as SkillSetTemplate;
-            var copy = (SymbolDetailsTemplate)ResourceManager.CreateDeepCopy(model.SymbolDetails);
+            var copy = (SymbolDetailsTemplate)model.SymbolDetails.Copy();
 
             window.Content = new SymbolEditor();
             var ctrl = window.Content as SymbolEditor;

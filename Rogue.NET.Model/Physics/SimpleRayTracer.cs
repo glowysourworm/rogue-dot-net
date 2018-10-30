@@ -4,6 +4,7 @@ using Rogue.NET.Model.Scenario;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Rogue.NET.Model.Physics
     {
         IEnumerable<Cell> GetLogicallyVisibleCells(LevelGrid grid, CellPoint cell, int lightRadius);
     }
+    [Export(typeof(IRayTracer))]
     public class SimpleRayTracer : IRayTracer
     {
         #region Visible Cells Calculation

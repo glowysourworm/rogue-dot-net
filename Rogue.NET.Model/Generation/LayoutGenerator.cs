@@ -1,17 +1,14 @@
-﻿using Microsoft.Practices.Prism.Events;
+﻿using Prism.Events;
 using Rogue.NET.Common;
-using Rogue.NET.Scenario;
-using Rogue.NET.Scenario.Model;
 using Rogue.NET.Model;
 using Rogue.NET.Model.Scenario;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Practices.Prism.PubSubEvents;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Model.Generation
 {
+    [Export]
     public class ScenarioLayoutGenerator : GeneratorBase
     {
         public ScenarioLayoutGenerator(IEventAggregator eventAggregator) : base(eventAggregator)

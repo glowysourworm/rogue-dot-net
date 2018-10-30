@@ -1,10 +1,5 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Events;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -23,6 +18,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         ScenarioAssetGroupViewModel BrushGroup { get; set; }
         ScenarioAssetGroupViewModel PenGroup { get; set; }
     }
+    [Export(typeof(IScenarioAssetBrowserViewModel))]
     public class ScenarioAssetBrowserViewModel : IScenarioAssetBrowserViewModel
     {
         readonly IEventAggregator _eventAggregator;
@@ -41,6 +37,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ScenarioAssetGroupViewModel BrushGroup { get; set; }
         public ScenarioAssetGroupViewModel PenGroup { get; set; }
 
+        [ImportingConstructor]
         public ScenarioAssetBrowserViewModel(
             IEventAggregator eventAggregator,
             IScenarioEditorController controller)

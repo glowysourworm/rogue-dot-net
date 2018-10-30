@@ -3,30 +3,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              mc:Ignorable="d" Background="Black"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <StackPanel x:Name="RadioStack">
-            <RadioButton Margin="10" Tag="{x:Static common:AlterationMagicEffectType.RevealItems}" Foreground="White" Background="Black">
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealItems}" Foreground="White" Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Items" />
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton Margin="10" Tag="{x:Static common:AlterationMagicEffectType.RevealMonsters}" Foreground="White" Background="Black">
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealMonsters}" Foreground="White" Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Monsters" />
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton Margin="10" Tag="{x:Static common:AlterationMagicEffectType.RevealFood}"  Foreground="White" Background="Black">
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealFood}"  Foreground="White" Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Food" />
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton Margin="10"  Tag="{x:Static common:AlterationMagicEffectType.RevealSavePoint}" Foreground="White" Background="Black">
+            <RadioButton Margin="10"  Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealSavePoint}" Foreground="White" Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Save Point" />

@@ -1,11 +1,11 @@
-﻿using Rogue.NET.Common;
+﻿using Prism.Events;
+using Rogue.NET.Common;
 using Rogue.NET.Model.Scenario;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
-
-using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model.Generation
 {
@@ -14,11 +14,13 @@ namespace Rogue.NET.Model.Generation
         ScenarioContainer CreateScenario(ScenarioConfiguration config, int seed, bool survivorMode);
         ScenarioContainer CreateDebugScenario(ScenarioConfiguration config);
     }
+    [Export(typeof(IDungeonGenerator))]
     public class ScenarioGenerator : GeneratorBase, IDungeonGenerator
     {
         readonly ScenarioLayoutGenerator _layoutGenerator;
         readonly ScenarioContentGenerator _contentGenerator;
 
+        [ImportingConstructor]
         public ScenarioGenerator(
             IEventAggregator eventAggregator,
             ScenarioLayoutGenerator layoutGenerator,

@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Timers;
 using System.Windows.Media.Animation;
-using Rogue.NET.Common;
-using Microsoft.Practices.Prism.Regions;
-using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Scenario.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+using Prism.Events;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Intro.Views
 {
@@ -139,7 +129,7 @@ namespace Rogue.NET.Intro.Views
                 _currentStoryboard = null;
             }
 
-            _eventAggregator.GetEvent<IntroFinishedEvent>().Publish(new IntroFinishedEvent());
+            _eventAggregator.GetEvent<IntroFinishedEvent>().Publish();
         }
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {

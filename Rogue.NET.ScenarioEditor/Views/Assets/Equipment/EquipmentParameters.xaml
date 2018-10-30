@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
              mc:Ignorable="d" Background="Black" FontSize="14"
@@ -17,7 +17,7 @@
         <StackPanel>
             <Grid>
                 <TextBlock Foreground="White" Text="Type" Margin="10" VerticalAlignment="Center" />
-                <views:EnumComboBox HorizontalAlignment="Right" MinWidth="400" Height="24" EnumType="{x:Type common:EquipmentType}" EnumValue="{Binding Type, Mode=TwoWay}" />
+                <views:EnumComboBox HorizontalAlignment="Right" MinWidth="400" Height="24" EnumType="{x:Type coreModelEnums:EquipmentType}" EnumValue="{Binding Type, Mode=TwoWay}" />
             </Grid>
             <Grid>
                 <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" Height="24" Grid.Column="1" Grid.Row="5" />

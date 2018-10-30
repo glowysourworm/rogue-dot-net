@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.Consumable
 {
-    /// <summary>
-    /// Interaction logic for ConsumableWizard.xaml
-    /// </summary>
     public partial class ConsumableWizard : UserControl
     {
         public ConsumableWizard()

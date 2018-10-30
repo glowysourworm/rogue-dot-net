@@ -3,17 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"  
-             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:prism="http://www.codeplex.com/prism"
              mc:Ignorable="d" Background="Black"
              d:DesignWidth="550">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/Converters.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -62,9 +62,9 @@
             </Grid>            
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Type" />
-                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}"  EnumType="{x:Type common:SymbolTypes}" Width="200" HorizontalAlignment="Right" Height="24" />
+                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}"  EnumType="{x:Type coreModelEnums:SymbolTypes}" Width="200" HorizontalAlignment="Right" Height="24" />
             </Grid>
-            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Smiley}}"  Margin="10" Header="Smiley Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Smiley}}"  Margin="10" Header="Smiley Parameters">
                 <StackPanel>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Body Color" />
@@ -80,11 +80,11 @@
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Mood" />
-                        <views:EnumComboBox EnumType="{x:Type common:SmileyMoods}"  EnumValue="{Binding SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyMoods}"  EnumValue="{Binding SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>                    
                 </StackPanel>
             </GroupBox>
-            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Character}}" Margin="10" Header="UTF-8 Character Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Character}}" Margin="10" Header="UTF-8 Character Parameters">
                 <StackPanel>
                     <Grid Margin="10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -100,10 +100,10 @@
                     </Grid>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Visibility="{Binding Type, Converter={StaticResource VisibilitySymbolEditorConverter}, ConverterParameter={x:Static common:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
                 <Grid Margin="10">
                     <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Image" />
-                    <controls:ImageEnumComboBox Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  Value="{Binding Icon, Mode=TwoWay}" />
+                    <ContentControl prism:RegionManager.RegionName="SymbolEditorImageEnumComboBoxRegion" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch" />
                 </Grid>
             </GroupBox>
             <Grid x:Name="ButtonGrid" Visibility="Collapsed">

@@ -8,13 +8,12 @@ using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Service.Interface;
 
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 
-namespace Rogue.NET.Core.Game
+namespace Rogue.NET.Core.Logic
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IContentEngine))]

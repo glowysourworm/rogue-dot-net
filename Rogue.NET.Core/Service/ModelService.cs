@@ -4,7 +4,6 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;

@@ -1,26 +1,12 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Outro.Views
 {
-    /// <summary>
-    /// Interaction logic for DeathDisplay.xaml
-    /// </summary>
+    [Export]
     public partial class DeathDisplay : UserControl
     {
         readonly IEventAggregator _eventAggregator;
@@ -33,11 +19,11 @@ namespace Rogue.NET.Scenario.Outro.Views
         }
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<ContinueScenarioEvent>().Publish(new ContinueScenarioEvent());
+            _eventAggregator.GetEvent<ContinueScenarioEvent>().Publish();
         }
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<ExitScenarioEvent>().Publish(new ExitScenarioEvent());
+            _eventAggregator.GetEvent<ExitScenarioEvent>().Publish();
         }
     }
 }

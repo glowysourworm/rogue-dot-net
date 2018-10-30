@@ -1,16 +1,9 @@
-﻿using Microsoft.Practices.Prism.Events;
+﻿using Prism.Events;
 using Rogue.NET.Common;
 using Rogue.NET.Common.Events.Splash;
-using Rogue.NET.Scenario;
-using Rogue.NET.Model;
-using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Rogue.NET.Model
 {
@@ -19,6 +12,7 @@ namespace Rogue.NET.Model
         IEnumerable<ScenarioConfiguration> GetScenarioConfigurations();
         IDictionary<string, ScenarioFileHeader> GetScenarioHeaders();
     }
+    [Export(typeof(IResourceService))]
     public class ResourceService : IResourceService
     {
         readonly IEventAggregator _eventAggregator;
@@ -28,25 +22,25 @@ namespace Rogue.NET.Model
         {
             _eventAggregator = eventAggregator;
             var easy = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
-            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEvent()
+            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {
                 Message = "Loading Fighter Scenario Configuration...",
                 Progress = 22
             });
             var normal = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Paladin);
-            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEvent()
+            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {
                 Message = "Loading Paladin Scenario Configuration...",
                 Progress = 24
             });
             var hard = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Witch);
-            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEvent()
+            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {
                 Message = "Loading Witch Scenario Configuration...",
                 Progress = 26
             });
             var brutal = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Sorcerer);
-            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEvent()
+            _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {
                 Message = "Loading Sorcerer Scenario Configuration...",
                 Progress = 28

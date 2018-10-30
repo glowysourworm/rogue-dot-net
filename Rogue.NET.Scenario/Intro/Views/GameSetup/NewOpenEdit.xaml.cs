@@ -1,24 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Scenario.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Effects;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
@@ -30,7 +17,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
         {
             InitializeComponent();
         }
-        [InjectionConstructor]
+        [ImportingConstructor]
         public NewOpenEdit(IEventAggregator eventAggregator)
         {
             InitializeComponent();
@@ -100,25 +87,25 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             /* Click Events */
             this.NewStack.MouseDown += (obj, e) =>
             {
-                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinished()
+                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
                 {
                     NextDisplayType = typeof(ChooseScenario)
                 });
             };
             this.OpenStack.MouseDown += (obj, e) =>
             {
-                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinished()
+                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
                 {
                     NextDisplayType = typeof(ChooseSavedGame)
                 });
             };
             this.EditStack.MouseDown += (obj, e) =>
             {
-                _eventAggregator.GetEvent<EditScenarioEvent>().Publish(new EditScenarioEvent());
+                _eventAggregator.GetEvent<EditScenarioEvent>().Publish();
             };
             this.ExitStack.MouseDown += (obj, e) =>
             {
-                _eventAggregator.GetEvent<ExitEvent>().Publish(new ExitEvent());
+                _eventAggregator.GetEvent<ExitEvent>().Publish();
             };
         }
 

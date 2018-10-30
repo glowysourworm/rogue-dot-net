@@ -1,23 +1,12 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Intro.Views
 {
@@ -27,6 +16,7 @@ namespace Rogue.NET.Intro.Views
 
         bool _new = true;
 
+        [ImportingConstructor]
         public GameSetupView(
             IEventAggregator eventAggregator,
             GameSetupViewModel viewModel)
@@ -44,7 +34,7 @@ namespace Rogue.NET.Intro.Views
             var viewModel = this.DataContext as GameSetupViewModel;
             if (_new)
             {
-                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new NewScenarioEvent()
+                _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new NewScenarioEventArgs()
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.ScenarioName,
@@ -54,7 +44,7 @@ namespace Rogue.NET.Intro.Views
             }
             else
             {
-                _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEvent()
+                _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEventArgs()
                 {
                     ScenarioName = viewModel.ScenarioName
                 });
@@ -86,7 +76,7 @@ namespace Rogue.NET.Intro.Views
             base.OnPreviewKeyDown(e);
             if (e.Key == Key.Escape)
             {
-                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinished()
+                _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
                 {
                     NextDisplayType = typeof(NewOpenEdit)
                 });

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Rogue.NET.Core.Model.Enums
+﻿namespace Rogue.NET.Core.Model.Enums
 {
     /// <summary>
     /// Specify effects that require code support after

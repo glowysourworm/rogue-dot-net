@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
-             xmlns:extension="clr-namespace:Rogue.NET.Common.Extensions;assembly=Rogue.NET.Common"
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              mc:Ignorable="d" ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -54,7 +54,7 @@
                 <StackPanel>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Type" />
-                        <views:EnumComboBox EnumValue="{Binding Cost.Type, Mode=TwoWay}" EnumType="{x:Type common:AlterationCostType}" HorizontalAlignment="Right" Width="150" />
+                        <views:EnumComboBox EnumValue="{Binding Cost.Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:AlterationCostType}" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Strength" />

@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Character;
+﻿using Rogue.NET.Core.Model.Scenario.Character;
 
 namespace Rogue.NET.Core.Logic.Content.Interface
 {

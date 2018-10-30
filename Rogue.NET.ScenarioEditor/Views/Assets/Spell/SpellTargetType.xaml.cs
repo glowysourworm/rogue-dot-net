@@ -1,20 +1,10 @@
-﻿using Rogue.NET.Model;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
 {
@@ -39,17 +29,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
             var template = model as SpellTemplate;
             switch (template.Type)
             {
-                case Common.AlterationType.AttackAttribute:
+                case AlterationType.AttackAttribute:
                     {
                         // set visibility of all targets
                         this.AllTargetsRB.Visibility = System.Windows.Visibility.Collapsed;
 
                         switch (template.AttackAttributeType)
                         {
-                            case Common.AlterationAttackAttributeType.Imbue:
-                            case Common.AlterationAttackAttributeType.Passive:
-                            case Common.AlterationAttackAttributeType.TemporaryFriendlySource:
-                            case Common.AlterationAttackAttributeType.TemporaryMalignSource:
+                            case AlterationAttackAttributeType.Imbue:
+                            case AlterationAttackAttributeType.Passive:
+                            case AlterationAttackAttributeType.TemporaryFriendlySource:
+                            case AlterationAttackAttributeType.TemporaryMalignSource:
                                 this.SourceRB.IsChecked = true;
                                 break;
                             default:
@@ -58,29 +48,29 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
                         }
                     }
                     break;
-                case Common.AlterationType.OtherMagicEffect:
-                case Common.AlterationType.PassiveAura:
+                case AlterationType.OtherMagicEffect:
+                case AlterationType.PassiveAura:
                     this.AllTargetsRB.Visibility = System.Windows.Visibility.Collapsed;
                     break;
                 default:
                     break;
-                case Common.AlterationType.PassiveSource:
+                case AlterationType.PassiveSource:
                     this.SourceRB.IsChecked = true;
                     this.AllTargetsRB.Visibility = System.Windows.Visibility.Collapsed;
                     break;
-                case Common.AlterationType.PermanentSource:
-                case Common.AlterationType.TeleportSelf:
-                case Common.AlterationType.TemporarySource:
+                case AlterationType.PermanentSource:
+                case AlterationType.TeleportSelf:
+                case AlterationType.TemporarySource:
                     this.SourceRB.IsChecked = true;
                     break;
-                case Common.AlterationType.PermanentAllTargets:
-                case Common.AlterationType.TeleportAllTargets:
-                case Common.AlterationType.TemporaryAllTargets:
+                case AlterationType.PermanentAllTargets:
+                case AlterationType.TeleportAllTargets:
+                case AlterationType.TemporaryAllTargets:
                     this.AllTargetsRB.IsChecked = true;
                     break;
-                case Common.AlterationType.PermanentTarget:
-                case Common.AlterationType.TeleportTarget:
-                case Common.AlterationType.TemporaryTarget:
+                case AlterationType.PermanentTarget:
+                case AlterationType.TeleportTarget:
+                case AlterationType.TemporaryTarget:
                     this.TargetRB.IsChecked = true;
                     break;
             }
@@ -93,32 +83,32 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
             var template = this.DataContext as SpellTemplate;
             switch (template.Type)
             {
-                case Common.AlterationType.AttackAttribute:
+                case AlterationType.AttackAttribute:
                     {
                         switch (template.AttackAttributeType)
                         {
                             default:
                                 break;
-                            case Common.AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                                template.AttackAttributeType = Common.AlterationAttackAttributeType.TemporaryFriendlySource;
+                            case AlterationAttackAttributeType.TemporaryFriendlyTarget:
+                                template.AttackAttributeType = AlterationAttackAttributeType.TemporaryFriendlySource;
                                 break;
-                            case Common.AlterationAttackAttributeType.TemporaryMalignTarget:
-                                template.AttackAttributeType = Common.AlterationAttackAttributeType.TemporaryMalignSource;
+                            case AlterationAttackAttributeType.TemporaryMalignTarget:
+                                template.AttackAttributeType = AlterationAttackAttributeType.TemporaryMalignSource;
                                 break;
                         }
                     }
                     break;
-                case Common.AlterationType.PermanentAllTargets:
-                case Common.AlterationType.PermanentTarget:
-                    template.Type = Common.AlterationType.PermanentSource;
+                case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentTarget:
+                    template.Type = AlterationType.PermanentSource;
                     break;
-                case Common.AlterationType.TeleportAllTargets:
-                case Common.AlterationType.TeleportTarget:
-                    template.Type = Common.AlterationType.TeleportSelf;
+                case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportTarget:
+                    template.Type = AlterationType.TeleportSelf;
                     break;
-                case Common.AlterationType.TemporaryAllTargets:
-                case Common.AlterationType.TemporaryTarget:
-                    template.Type = Common.AlterationType.TemporarySource;
+                case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryTarget:
+                    template.Type = AlterationType.TemporarySource;
                     break;
                 default: break;
             }
@@ -128,32 +118,32 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
             var template = this.DataContext as SpellTemplate;
             switch (template.Type)
             {
-                case Common.AlterationType.AttackAttribute:
+                case AlterationType.AttackAttribute:
                     {
                         switch (template.AttackAttributeType)
                         {
-                            case Common.AlterationAttackAttributeType.TemporaryFriendlySource:
-                                template.AttackAttributeType = Common.AlterationAttackAttributeType.TemporaryFriendlyTarget;
+                            case AlterationAttackAttributeType.TemporaryFriendlySource:
+                                template.AttackAttributeType = AlterationAttackAttributeType.TemporaryFriendlyTarget;
                                 break;
-                            case Common.AlterationAttackAttributeType.TemporaryMalignSource:
-                                template.AttackAttributeType = Common.AlterationAttackAttributeType.TemporaryMalignTarget;
+                            case AlterationAttackAttributeType.TemporaryMalignSource:
+                                template.AttackAttributeType = AlterationAttackAttributeType.TemporaryMalignTarget;
                                 break;
                             default:
                                 break;
                         }
                     }
                     break;
-                case Common.AlterationType.PermanentSource:
-                case Common.AlterationType.PermanentAllTargets:
-                    template.Type = Common.AlterationType.PermanentTarget;
+                case AlterationType.PermanentSource:
+                case AlterationType.PermanentAllTargets:
+                    template.Type = AlterationType.PermanentTarget;
                     break;
-                case Common.AlterationType.TeleportSelf:
-                case Common.AlterationType.TeleportAllTargets:
-                    template.Type = Common.AlterationType.TeleportTarget;
+                case AlterationType.TeleportSelf:
+                case AlterationType.TeleportAllTargets:
+                    template.Type = AlterationType.TeleportTarget;
                     break;
-                case Common.AlterationType.TemporarySource:
-                case Common.AlterationType.TemporaryAllTargets:
-                    template.Type = Common.AlterationType.TemporaryTarget;
+                case AlterationType.TemporarySource:
+                case AlterationType.TemporaryAllTargets:
+                    template.Type = AlterationType.TemporaryTarget;
                     break;
             }
         }
@@ -164,17 +154,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Spell
             {
                 default:
                     break;
-                case Common.AlterationType.PermanentSource:
-                case Common.AlterationType.PermanentTarget:
-                    template.Type = Common.AlterationType.PermanentSource;
+                case AlterationType.PermanentSource:
+                case AlterationType.PermanentTarget:
+                    template.Type = AlterationType.PermanentSource;
                     break;                
-                case Common.AlterationType.TeleportTarget:
-                case Common.AlterationType.TeleportSelf:
-                    template.Type = Common.AlterationType.TeleportSelf;
+                case AlterationType.TeleportTarget:
+                case AlterationType.TeleportSelf:
+                    template.Type = AlterationType.TeleportSelf;
                     break;
-                case Common.AlterationType.TemporaryTarget:
-                case Common.AlterationType.TemporarySource:
-                    template.Type = Common.AlterationType.TemporarySource;
+                case AlterationType.TemporaryTarget:
+                case AlterationType.TemporarySource:
+                    template.Type = AlterationType.TemporarySource;
                     break;
             }
         }

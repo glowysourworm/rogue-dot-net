@@ -1,11 +1,9 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Rogue.NET.Common;
-using Rogue.NET.Common.Collections;
-using Rogue.NET.Model.Scenario;
-using Rogue.NET.Scenario.Views;
-using System;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -43,7 +41,7 @@ namespace Rogue.NET.Scenario.ViewModel
         public static readonly DependencyProperty ShortDescriptionProperty = DependencyProperty.Register("ShortDescription", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty LongDescriptionProperty = DependencyProperty.Register("LongDescription", typeof(string), typeof(ItemGridViewModel));
         public static readonly DependencyProperty UsageDescriptionProperty = DependencyProperty.Register("UsageDescription", typeof(string), typeof(ItemGridViewModel));
-        public static readonly DependencyProperty AttackAttributesProperty = DependencyProperty.Register("AttackAttributes", typeof(SerializableObservableCollection<AttackAttribute>), typeof(ItemGridViewModel));
+        public static readonly DependencyProperty AttackAttributesProperty = DependencyProperty.Register("AttackAttributes", typeof(ObservableCollection<AttackAttribute>), typeof(ItemGridViewModel));
         public static readonly DependencyProperty IsEquipmentProperty = DependencyProperty.Register("IsEquipment", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
         public static readonly DependencyProperty IsConsumableProperty = DependencyProperty.Register("IsConsumable", typeof(bool), typeof(ItemGridViewModel), new PropertyMetadata(false));
 
@@ -138,9 +136,9 @@ namespace Rogue.NET.Scenario.ViewModel
         }
         public int Uses { get; set; }
         public string Type { get; set; }
-        public SerializableObservableCollection<AttackAttribute> AttackAttributes
+        public ObservableCollection<AttackAttribute> AttackAttributes
         {
-            get { return (SerializableObservableCollection<AttackAttribute>)GetValue(AttackAttributesProperty); }
+            get { return (ObservableCollection<AttackAttribute>)GetValue(AttackAttributesProperty); }
             set { SetValue(AttackAttributesProperty, value); }
         }
         public EquipmentType EquipType
@@ -202,14 +200,14 @@ namespace Rogue.NET.Scenario.ViewModel
         /// <summary>
         /// consumable inventory may be null
         /// </summary>
-        public ItemGridViewModel(Item item, SerializableDictionary<string, ScenarioMetaData> encyclopedia, SerializableObservableCollection<Consumable> consumableInventory)
+        public ItemGridViewModel(ItemBase item, Dictionary<string, ScenarioMetaData> encyclopedia, ObservableCollection<Consumable> consumableInventory)
         {
-            this.AttackAttributes = new SerializableObservableCollection<AttackAttribute>();
+            this.AttackAttributes = new ObservableCollection<AttackAttribute>();
 
             UpdateItem(item, encyclopedia, consumableInventory);
         }
 
-        public void UpdateItem(Item item, SerializableDictionary<string, ScenarioMetaData> encyclopedia, IEnumerable<Consumable> consumableInventory)
+        public void UpdateItem(ItemBase item, Dictionary<string, ScenarioMetaData> encyclopedia, IEnumerable<Consumable> consumableInventory)
         {
             var metaData = encyclopedia[item.RogueName];
 
@@ -243,7 +241,7 @@ namespace Rogue.NET.Scenario.ViewModel
 
                 enchantEnable = equipment.Type == EquipmentType.Belt || equipment.Type == EquipmentType.Shoulder || equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.TwoHandedMeleeWeapon;
                 uncurseEnable = equipment.IsCursed;
-                isEquiped = equipment.IsEquiped;
+                isEquiped = equipment.IsEquipped;
                 isCursed = equipment.IsCursed && metaData.IsCurseIdentified;
                 quality = shouldShowClass ? equipment.Quality.ToString("F2") : "N/A";
                 classs = shouldShowClass ? equipment.Class.ToString("F0") : "N/A";
@@ -317,7 +315,7 @@ namespace Rogue.NET.Scenario.ViewModel
             {
                 if (isConsumable && (item as Consumable).Type == ConsumableType.MultipleUses && consumableInventory != null)
                 {
-                    IEnumerable<Consumable> consumables = consumableInventory.Where(z => z.Name == item.RogueName).Cast<Consumable>();
+                    IEnumerable<Consumable> consumables = consumableInventory.Where(z => z.RogueName == item.RogueName).Cast<Consumable>();
                     this.RogueName = item.RogueName + " (" + consumables.Sum(z => z.Uses).ToString("N0") + ")";
                 }
 
@@ -334,8 +332,8 @@ namespace Rogue.NET.Scenario.ViewModel
                 this.ShortDescription = metaData.Description;
             }
 
-            // item display image
-            this.ImageSource = item.SymbolInfo.SymbolImageSource;
+            // item display image TODO
+            // this.ImageSource = item.SymbolInfo.SymbolImageSource;
         }
         private string CreateEquipmentUsageDescription(EquipmentType type, bool isEquiped)
         {

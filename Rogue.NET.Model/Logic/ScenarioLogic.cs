@@ -15,6 +15,8 @@ using Rogue.NET.Common.Events.Scenario;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Rogue.NET.Common.EventArgs;
+using System.ComponentModel.Composition;
+using Prism.Events;
 
 namespace Rogue.NET.Model.Logic
 {
@@ -23,15 +25,20 @@ namespace Rogue.NET.Model.Logic
     /// Level data. Enum sent back determines further action by Level Module. String
     /// Sent back is forwarded to dialog.
     /// </summary>
+    [Export]
     public class ScenarioLogic : LogicBase
     {
-        private MovementLogic _movementEngine = null;
-        private InteractionLogic _interactionEngine = null;
+        readonly MovementLogic _movementEngine = null;
+        readonly InteractionLogic _interactionEngine = null;
 
-        public ScenarioLogic(IUnityContainer unityContainer, IEventAggregator eventAggregator) : base(eventAggregator, unityContainer)
+        [ImportingConstructor]
+        public ScenarioLogic(
+            IEventAggregator eventAggregator, 
+            MovementLogic movementLogic, 
+            InteractionLogic interactionLogic) : base(eventAggregator)
         {
-            _movementEngine = unityContainer.Resolve<MovementLogic>();
-            _interactionEngine = unityContainer.Resolve<InteractionLogic>();
+            _movementEngine = movementLogic;
+            _interactionEngine = interactionLogic;
         }
         protected override void OnLevelCommand(LevelCommandEventArgs e)
         {

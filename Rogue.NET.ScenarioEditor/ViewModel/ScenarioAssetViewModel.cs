@@ -1,11 +1,6 @@
-﻿using Microsoft.Practices.Prism.Commands;
-using Rogue.NET.Model;
-using System;
-using System.Collections.Generic;
+﻿using Prism.Commands;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel

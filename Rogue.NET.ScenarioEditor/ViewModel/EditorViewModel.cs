@@ -1,15 +1,9 @@
-﻿using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common;
-using Rogue.NET.Common.Events.Scenario;
+﻿using Prism.Commands;
+using Prism.Events;
 using Rogue.NET.Common.Events.ScenarioEditor;
+using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
@@ -25,6 +19,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         ICommand NewCommand { get; }
         ICommand ScoreCommand { get; }
     }
+    [Export(typeof(IEditorViewModel))]
     public class EditorViewModel : NotifyViewModel, IEditorViewModel
     {
         readonly IEventAggregator _eventAggregator;
@@ -47,7 +42,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 return new DelegateCommand(() =>
                 {
-                    _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Publish(new ExitScenarioEditorEvent());
+                    _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Publish();
                 });
             }
         }
@@ -58,7 +53,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 return new DelegateCommand<string>((name) =>
                 {
-                    _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(new LoadBuiltInScenarioEvent() { ScenarioName = name });
+                    _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(new LoadBuiltInScenarioEventArgs() { ScenarioName = name });
                 });
             }
         }
@@ -69,7 +64,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 return new DelegateCommand(() =>
                 {
-                    _eventAggregator.GetEvent<NewScenarioConfigEvent>().Publish(new NewScenarioConfigEvent());
+                    _eventAggregator.GetEvent<NewScenarioConfigEvent>().Publish();
                 });
             }
         }
@@ -80,7 +75,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 return new DelegateCommand(() =>
                 {
-                    _eventAggregator.GetEvent<ScoreScenarioEvent>().Publish(new ScoreScenarioEvent());
+                    _eventAggregator.GetEvent<ScoreScenarioEvent>().Publish();
                 });
             }
         }
@@ -92,14 +87,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 return new DelegateCommand<string>((name) =>
                 {
                     _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().
-                        Publish(new Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent()
+                        Publish(new Rogue.NET.ScenarioEditor.Events.SaveScenarioEventArgs()
                         {
                             ScenarioName = name
                         });
                 });
             }
         }
-
+        [ImportingConstructor]
         public EditorViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -114,7 +109,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             // Listen to scenario config loaded event
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
             {
-                this.ScenarioName = e.Payload.DungeonTemplate.Name;
+                this.ScenarioName = e.DungeonTemplate.Name;
             });
         }
     }

@@ -1,12 +1,7 @@
-﻿using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Commands;
+using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
@@ -15,10 +10,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     {
         ICommand LoadConstructionCommand { get; }
     }
+    [Export(typeof(IScenarioConstructionViewModel))]
     public class ScenarioConstructionViewModel : IScenarioConstructionViewModel
     {
         readonly IEventAggregator _eventAggregator;
 
+        [ImportingConstructor]
         public ScenarioConstructionViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -30,7 +27,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 return new DelegateCommand<string>((construction) =>
                 {
-                    _eventAggregator.GetEvent<LoadConstructionEvent>().Publish(new LoadConstructionEvent()
+                    _eventAggregator.GetEvent<LoadConstructionEvent>().Publish(new LoadConstructionEventArgs()
                     {
                         ConstructionName = construction
                     });

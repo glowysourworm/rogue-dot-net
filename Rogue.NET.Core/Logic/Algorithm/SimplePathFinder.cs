@@ -1,11 +1,11 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Logic.Interface;
 
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Rogue.NET.Core.Logic.Interface;
 
 namespace Rogue.NET.Core.Logic.Algorithm
 {

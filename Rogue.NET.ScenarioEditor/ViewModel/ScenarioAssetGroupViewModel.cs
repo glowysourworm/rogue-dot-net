@@ -1,14 +1,8 @@
-﻿using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common.Events.ScenarioEditor;
+﻿using Prism.Commands;
+using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
@@ -19,6 +13,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         void RemoveAsset(IScenarioAssetViewModel asset);
     }
+    [Export(typeof(IScenarioAssetGroupViewModel))]
     public class ScenarioAssetGroupViewModel : IScenarioAssetGroupViewModel
     {
         readonly IScenarioEditorController _controller;
@@ -42,6 +37,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             }
         }
 
+        [ImportingConstructor]
         public ScenarioAssetGroupViewModel(IEventAggregator eventAggregator, IScenarioEditorController controller)
         {
             _eventAggregator = eventAggregator;
@@ -55,47 +51,47 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 switch (this.AssetType)
                 {
                     case "Layout":
-                        foreach (var v in e.Payload.DungeonTemplate.LayoutTemplates)
+                        foreach (var v in e.DungeonTemplate.LayoutTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
                     case "CreatureClass":
-                        foreach (var v in e.Payload.CharacterClasses)
+                        foreach (var v in e.CharacterClasses)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
                     case "AttackAttribute":
-                        foreach (var v in e.Payload.AttackAttributes)
+                        foreach (var v in e.AttackAttributes)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Enemy":
-                        foreach (var v in e.Payload.EnemyTemplates)
+                        foreach (var v in e.EnemyTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Equipment":
-                        foreach (var v in e.Payload.EquipmentTemplates)
+                        foreach (var v in e.EquipmentTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Consumable":
-                        foreach (var v in e.Payload.ConsumableTemplates)
+                        foreach (var v in e.ConsumableTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Doodad":
-                        foreach (var v in e.Payload.DoodadTemplates)
+                        foreach (var v in e.DoodadTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Spell":
-                        foreach (var v in e.Payload.MagicSpells)
+                        foreach (var v in e.MagicSpells)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
                     case "SkillSet":
-                        foreach (var v in e.Payload.SkillTemplates)
+                        foreach (var v in e.SkillTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
                         break;
                     case "Animation":
-                        foreach (var v in e.Payload.AnimationTemplates)
+                        foreach (var v in e.AnimationTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
                     case "Brush":
-                        foreach (var v in e.Payload.BrushTemplates)
+                        foreach (var v in e.BrushTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
                 }

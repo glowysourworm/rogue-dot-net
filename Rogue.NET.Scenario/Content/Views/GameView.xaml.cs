@@ -1,31 +1,27 @@
-﻿using System;
-using System.Linq;
+﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Practices.Unity;
-using Microsoft.Practices.Prism.Regions;
-using Rogue.NET.Model;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common.Views;
+using Prism.Events;
+using Prism.Regions;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class GameView : UserControl
     {
         readonly IRegionManager _regionManager;
-        readonly IUnityContainer _unityContainer;
         readonly IEventAggregator _eventAggregator;
 
         bool _initialized = false;
 
-        public GameView(IRegionManager regionManager, IUnityContainer unityContainer, IEventAggregator eventAggregator)
+        [ImportingConstructor]
+        public GameView(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _regionManager = regionManager;
-            _unityContainer = unityContainer;
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
@@ -53,28 +49,29 @@ namespace Rogue.NET.Scenario.Views
 
         private void GameViewButton_Click(object sender, RoutedEventArgs e)
         {
-            var levelData = this.DataContext as LevelData;
-            var type = (sender as DisappearingButton).Tag as Type;
+            // TODO
+            //var levelData = this.DataContext as LevelData;
+            //var type = (sender as DisappearingButton).Tag as Type;
 
-            var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
-            var view = (object)_unityContainer.Resolve(type);
+            //var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
+            //var view = (object)_unityContainer.Resolve(type);
 
-            // can use Add repeatedly due to the border region adapter
-            _regionManager.Regions["GameRegion"].Deactivate(active);
-            _regionManager.Regions["GameRegion"].Activate(view);
+            //// can use Add repeatedly due to the border region adapter
+            //_regionManager.Regions["GameRegion"].Deactivate(active);
+            //_regionManager.Regions["GameRegion"].Activate(view);
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to exit?", "Exit current scenario?", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
             {
-                _eventAggregator.GetEvent<ExitScenarioEvent>().Publish(new ExitScenarioEvent());
+                _eventAggregator.GetEvent<ExitScenarioEvent>().Publish();
             }
         }
 
         private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Objective
@@ -83,7 +80,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Help
@@ -92,7 +89,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                  SplashAction = SplashAction.Show,
                  SplashType = SplashEventType.CommandPreferences
@@ -101,7 +98,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEvent()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Dialog

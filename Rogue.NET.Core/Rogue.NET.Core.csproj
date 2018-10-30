@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rogue.NET.Core</RootNamespace>
     <AssemblyName>Rogue.NET.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +53,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.Composition.Registration" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -67,6 +69,64 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
+    <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
+    <Compile Include="Converter\BoolIntConverter.cs" />
+    <Compile Include="Converter\BoolInverseVisibilityHiddenConverter.cs" />
+    <Compile Include="Converter\BoolVisibilityCollapseConverter.cs" />
+    <Compile Include="Converter\BoolVisibilityHiddenConverter.cs" />
+    <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
+    <Compile Include="Converter\NonNullVisibilityConverter.cs" />
+    <Compile Include="Converter\ScenarioEditor\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />
+    <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
+    <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
+    <Compile Include="Converter\SymbolDetailsTemplate\SymbolDetailsTemplateAuraToColorConverter.cs" />
+    <Compile Include="Event\ExitEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Command\LevelCommandEventArgs.cs" />
+    <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
+    <Compile Include="Event\Scenario\Level\Event\Player\PlayerAdvancementEventArgs.cs" />
+    <Compile Include="Event\ScenarioEditor\ExitScenarioEditorEvent.cs" />
+    <Compile Include="Event\Scenario\Event\CommandPreferencesChangedEvent.cs" />
+    <Compile Include="Event\Scenario\Command\ContinueScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\DeleteScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\EditScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\ExitScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\LoadLevelEvent.cs" />
+    <Compile Include="Event\Scenario\Command\NewScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\OpenScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\SaveScenarioEvent.cs" />
+    <Compile Include="Event\Scenario\Command\ScenarioDeletedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Command\ScenarioSavedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Command\UserCommandEvent.cs" />
+    <Compile Include="Event\Splash\CreatingScenarioEvent.cs" />
+    <Compile Include="Event\Splash\MessageBoxEvent.cs" />
+    <Compile Include="Event\Splash\SplashEvent.cs" />
+    <Compile Include="Event\Splash\SplashUpdateEvent.cs" />
+    <Compile Include="Graveyard\DataHelper.cs" />
+    <Compile Include="Event\Scenario\Event\AddScenarioObjectEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Command\AnimationCompletedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\AnimationStartEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\EnemyTargetedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\LevelInitializedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\LevelLoadedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\Player\PlayerDiedEvent.cs" />
+    <Compile Include="Event\Scenario\Event\RemoveScenarioObjectEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\ScenarioInfoUpdatedEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\ScenarioTickEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\UpdateScenarioObjectEvent.cs" />
+    <Compile Include="Graveyard\LevelData.cs" />
+    <Compile Include="Graveyard\ModelController.cs" />
+    <Compile Include="CoreModule.cs" />
+    <Compile Include="Graveyard\ResourceManager.cs" />
+    <Compile Include="IO\ScenarioFile.cs" />
+    <Compile Include="IO\Serializer.cs" />
     <Compile Include="Logic\Processing\AnimationEvent.cs" />
     <Compile Include="Logic\Processing\Interface\IAnimationEvent.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelProcessingAction.cs" />
@@ -99,8 +159,6 @@
     <Compile Include="Logic\Content\Interface\IInteractionProcessor.cs" />
     <Compile Include="Logic\Content\Interface\IPlayerProcessor.cs" />
     <Compile Include="Logic\Content\PlayerProcessor.cs" />
-    <Compile Include="Controller\GameController.cs" />
-    <Compile Include="Controller\Interface\IGameController.cs" />
     <Compile Include="Logic\Algorithm\Interface\IPathFinder.cs" />
     <Compile Include="Logic\Interface\IScenarioEngine.cs" />
     <Compile Include="Logic\ScenarioEngine.cs" />
@@ -218,14 +276,33 @@
     <Compile Include="Service\TextService.cs" />
     <Compile Include="Utility\ColorConverter.cs" />
     <Compile Include="Utility\MapperInit.cs" />
+    <Compile Include="View\Smiley.xaml.cs">
+      <DependentUpon>Smiley.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resource\Configuration\Fighter.rdns" />
-    <EmbeddedResource Include="Resource\Configuration\Paladin.rdns" />
-    <EmbeddedResource Include="Resource\Configuration\Sorcerer.rdns" />
-    <EmbeddedResource Include="Resource\Configuration\Witch.rdns" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
+      <Project>{6353F2F1-D936-4F9C-9898-074DC4480D71}</Project>
+      <Name>Rogue.NET.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resource\Converter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resource\ShinySmileyButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Smiley.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,17 +1,12 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Events;
 using Rogue.NET.Common;
 using Rogue.NET.Common.Events.Splash;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows.Media;
 
 namespace Rogue.NET.Splash.ViewModel
 {
+    [Export(typeof(CreatingScenarioViewModel))]
     public class CreatingScenarioViewModel : NotifyViewModel
     {
         Color _bodyColor = Colors.Yellow;
@@ -58,6 +53,7 @@ namespace Rogue.NET.Splash.ViewModel
             }
         }
 
+        [ImportingConstructor]
         public CreatingScenarioViewModel(IEventAggregator eventAggregator)
         {
             eventAggregator.GetEvent<CreatingScenarioEvent>().Subscribe((e) =>

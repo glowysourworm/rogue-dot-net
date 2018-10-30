@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="Rogue.NET.View.HelpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:local="clr-namespace:Rogue.NET.View">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <local:KeyConverter x:Key="KeyConv" />
+                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyTextButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border BorderBrush="White" Background="Black" BorderThickness="3" CornerRadius="10">
+		<Grid Margin="8">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="0.222*"/>
+				<ColumnDefinition Width="0.135*"/>
+				<ColumnDefinition Width="0.302*"/>
+				<ColumnDefinition Width="0.341*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+                <RowDefinition Height="0"/>
+				<RowDefinition Height="48"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" Margin="8,0" Foreground="#FFFFEA88" Text="Sequence" FontSize="18.667"/>
+            <TextBlock TextWrapping="Wrap" Text="Function" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Margin="8,0" Foreground="#FFC4EDFF" FontSize="18.667"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Margin="8,0" Foreground="#FFFFEA88" FontSize="18.667" Text="Key"/>
+			<TextBlock TextWrapping="Wrap" Text="North" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="North East" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="East" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="5" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="South East" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="South" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="7" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="South West" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="West" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="8" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="9" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="North West" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="{Binding North, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding NorthEast, Converter={StaticResource KeyConv}}" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding East, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding SouthEast, Converter={StaticResource KeyConv}}" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding South, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding SouthWest, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding West, Converter={StaticResource KeyConv}}" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding NorthWest, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="2" Grid.Row="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Attack" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="Open Door" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="2" Grid.Row="4" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Use Dungeon Object" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="Target Enemy" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="5" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="Use Active Skill" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="7" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Search" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="Shift Screen" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="8" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="CTRL + [Arrow Pad]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3" Grid.Row="8" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="SHIFT + [Direction]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3" Grid.Column="4" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Grid.Row="4" Grid.Column="3" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Doodad, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="3" Grid.Row="7" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Search, Converter={StaticResource KeyConv}}" FontSize="16"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding Skill, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3" Grid.Row="6" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Target, Converter={StaticResource KeyConv}}" FontSize="16"/>
+			<TextBlock TextWrapping="Wrap" Text="Direction" HorizontalAlignment="Right" Grid.Row="1" VerticalAlignment="Center" Margin="8,0" Foreground="#FFC4EDFF" FontSize="18.667"/>
+			<TextBlock TextWrapping="Wrap" Text="CTRL + [Direction]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
+            <Button x:Name="BackButton" Cursor="Hand" Width="70" Style="{DynamicResource ShinyTextButtonStyle}" Grid.Row="10" Click="BackButton_Click" Height="32" Content="Back" Grid.Column="3" Background="Black" Tag="OK" Foreground="White" HorizontalAlignment="Right" Margin="8" />
+		</Grid>
+	</Border>
+</UserControl>

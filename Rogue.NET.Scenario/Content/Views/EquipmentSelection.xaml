@@ -5,8 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-    xmlns:model="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model"
-    xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
+    xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
     xmlns:prism="http://www.codeplex.com/prism"
 	x:Class="Rogue.NET.Scenario.Views.EquipmentSelectionCtrl"
 	x:Name="UserControl" d:DesignHeight="598.5" d:DesignWidth="1036.33">
@@ -17,7 +16,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/DarkListBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Converters.xaml" />
                 <ResourceDictionary>
-                    <model:AttackAttributeVisibilityConverter x:Key="AttackAttributeMultiConverter" />
                     <DataTemplate x:Key="AttackAttribCtrl" >
                         <local:DungeonEncyclopediaAttackAttributeCtrl Visibility="{Binding Converter={StaticResource AttackAttributeConverter}}">
                         </local:DungeonEncyclopediaAttackAttributeCtrl>
@@ -66,7 +64,7 @@
 							<Image x:Name="OrbImage" Margin="2" />
 						</Border>
 					</StackPanel>
-                    <common:Smiley x:Name="Smiley" Height="150" 
+                    <view:Smiley x:Name="Smiley" Height="150" 
                                              SmileyColor="{Binding Player.SymbolInfo.SmileyBodyColor}" 
                                              SmileyLineColor="{Binding Player.SymbolInfo.SmileyLineColor}"
                                              SmileyMood="{Binding Player.SymbolInfo.SmileyMood}"

@@ -1,22 +1,19 @@
-﻿<UserControl
+﻿<UserControl x:Class="Rogue.NET.Scenario.Views.SkillGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
-             xmlns:commonviews="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:converters="clr-namespace:Rogue.NET.Common.Converters;assembly=Rogue.NET.Common"
-             xmlns:convertersSkillGrid="clr-namespace:Rogue.NET.Common.Converters.SkillGrid;assembly=Rogue.NET.Common"  
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
+             xmlns:commonviews="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
-             x:Class="Rogue.NET.Scenario.Views.SkillGrid" Margin="8">
+             Margin="8">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ItemGrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary>
                     <Style x:Key="ButtonFocusVisual">
                         <Setter Property="Control.Template">
@@ -52,10 +49,7 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    <convertersSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="LevelLearnedConverter" />
-                    <converters:BoolInverseVisibilityHiddenConverter x:Key="InverseVisConv" />
-                    <converters:BoolIntConverter x:Key="SaturationConv" />
-                    <commonviews:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
+                    <coreView:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
                     <DataTemplate x:Key="ImageCellTemplate">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Image Source="{Binding SymbolInfo.SymbolImageSource}" VerticalAlignment="Center" />
@@ -141,13 +135,13 @@
                         </Setter>
                         <Setter Property="ToolTip">
                             <Setter.Value>
-                                <ToolTip Visibility="{Binding IsLearned, Converter={StaticResource InverseVisConv}}">
+                                <ToolTip Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityHiddenConverter}}">
                                     <ToolTip.Template>
                                         <ControlTemplate>
                                             <Border Background="Black" BorderBrush="Beige" CornerRadius="4" BorderThickness="0.5">
                                                 <StackPanel Margin="8" Orientation="Horizontal">
                                                     <ContentPresenter Margin="4" Content="{StaticResource PurpleSmiley}" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                                    <TextBlock Margin="4" Text="{Binding LevelLearned, Converter={StaticResource LevelLearnedConverter}}" VerticalAlignment="Center" Background="Black" Foreground="Beige" />
+                                                    <TextBlock Margin="4" Text="{Binding LevelLearned, Converter={StaticResource SkillGridLevelLearnedTooltipConverter}}" VerticalAlignment="Center" Background="Black" Foreground="Beige" />
                                                 </StackPanel>
                                             </Border>
                                         </ControlTemplate>
@@ -160,7 +154,7 @@
                                 <ControlTemplate TargetType="{x:Type DataGridRow}">
                                     <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" IsEnabled="{Binding IsLearned}">
                                         <Border.Effect>
-                                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource SaturationConv}}"/>
+                                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource BoolIntConverter}}"/>
                                         </Border.Effect>
                                         <SelectiveScrollingGrid>
                                             <SelectiveScrollingGrid.ColumnDefinitions>

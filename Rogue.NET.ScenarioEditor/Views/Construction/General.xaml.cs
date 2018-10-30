@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Model;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,14 +8,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
 {
     public partial class General : UserControl
     {
-        ScenarioConfiguration _config;
+        ScenarioConfigurationContainer _config;
 
         public General()
         {
             InitializeComponent();
         }
 
-        public void SetConfigurationParameters(ScenarioConfiguration config)
+        public void SetConfigurationParameters(ScenarioConfigurationContainer config)
         {
             _config = config;
 
@@ -23,14 +25,15 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             var name = this.AttributeTB.Text;
-            var symbol = this.AttributeSymbolCB.Value;
+            // TODO
+            //var symbol = this.AttributeSymbolCB.Value;
             _config.AttackAttributes.Add(new DungeonObjectTemplate()
             {
                 Name = name,
                 SymbolDetails = new SymbolDetailsTemplate()
                 {
-                    Type = Common.SymbolTypes.Image,
-                    Icon = symbol
+                    Type = SymbolTypes.Image,
+                    //Icon = symbol  TODO
                 }
             });
 

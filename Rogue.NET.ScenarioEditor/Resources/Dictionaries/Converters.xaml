@@ -1,7 +1,0 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:model="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model">
-    <model:SymbolDetailsConverter x:Key="SymbolDetailsConverter" />
-    <model:SymbolDetailsAuraConverter x:Key="SymbolDetailsAuraConverter" />
-    <model:SymbolDetailsMultiConverter x:Key="SymbolDetailsMultiConverter" />
-</ResourceDictionary>

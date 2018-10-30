@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections;
-using Rogue.NET.Common;
-using Rogue.NET.Scenario;
-using Rogue.NET.Model;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
     public partial class ImageEnumComboBox : UserControl
     {
+        readonly IScenarioResourceService _scenarioResourceService;
+
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register("Value", typeof(ImageResources), typeof(ImageEnumComboBox), 
             new PropertyMetadata(OnValueChanged));
@@ -41,8 +34,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 this.ImgRes = res;
             }
         }
-        public ImageEnumComboBox()
+        public ImageEnumComboBox(IScenarioResourceService scenarioResourceService)
         {
+            _scenarioResourceService = scenarioResourceService;
+
             InitializeComponent();
             LoadComboBox();
         }
@@ -52,7 +47,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             List<ImageItem> list = new List<ImageItem>();
             foreach (ImageResources r in resources)
             {
-                ImageItem item = new ImageItem(ResourceManager.GetScenarioObjectImage(r), r.ToString(), r);
+                ImageItem item = new ImageItem((BitmapSource)_scenarioResourceService.GetImage(r), r.ToString(), r);
                 list.Add(item);
             }
             this.TheComboBox.ItemsSource = list;

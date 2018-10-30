@@ -1,31 +1,25 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events.Splash;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel.Composition;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
 namespace Rogue.NET.Splash
 {
+    [Export]
     public class SplashThread<T> : IDisposable where T : Window
     {
         readonly IEventAggregator _eventAggregator;
-        readonly IUnityContainer _unityContainer;
 
         Thread _thread;
 
+        [ImportingConstructor]
         public SplashThread(
-            IEventAggregator eventAggregator,
-            IUnityContainer unityContainer)
+            IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            _unityContainer = unityContainer;
         }
         public void Start()
         {

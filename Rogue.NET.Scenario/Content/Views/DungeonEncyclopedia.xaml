@@ -3,19 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Rogue.NET.Common.Controls;assembly=Rogue.NET.Common"
-             xmlns:commonconverters="clr-namespace:Rogue.NET.Common.Converters;assembly=Rogue.NET.Common"
-             xmlns:modelconverters="clr-namespace:Rogue.NET.Model;assembly=Rogue.NET.Model"
+             xmlns:controls="clr-namespace:Rogue.NET.Common.Control;assembly=Rogue.NET.Common"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views" 
              mc:Ignorable="d" 
              x:Class="Rogue.NET.Scenario.Views.DungeonEncyclopedia" d:DesignWidth="1241.5" d:DesignHeight="606.42">
 	<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary>
-                    <modelconverters:DungeonMetaDataTextConverter x:Key="TextConverter" />
-                    <modelconverters:DungeonMetaDataToBrushConverter x:Key="BrushConverter" />
-                    <commonconverters:DualBoolVisibilityCollapsedConverter x:Key="DualVisibilityConverter" />
                     <DataTemplate x:Key="AttackAttributeTemplate">
                         <local:DungeonEncyclopediaAttackAttributeCtrl Background="Black" />
                     </DataTemplate>
@@ -387,7 +383,7 @@
                         Style="{StaticResource EntryTextBlockStyleName}"/>
                     <TextBlock Text="(Unique)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource DualVisibilityConverter}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}" ConverterParameter="SomeParameter">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsUnique" />
                             </MultiBinding>
@@ -395,7 +391,7 @@
                     </TextBlock>
                     <TextBlock Text="(Objective)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource DualVisibilityConverter}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}" ConverterParameter="SomeParameter">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsObjective" />
                             </MultiBinding>

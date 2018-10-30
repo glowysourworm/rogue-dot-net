@@ -1,0 +1,34 @@
+﻿<UserControl      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:scenario="clr-namespace:Rogue.NET.Scenario.Views;assembly=Rogue.NET.Scenario"
+             xmlns:prism="http://www.codeplex.com/prism"
+             x:Class="Rogue.NET.View.IdentifyView" 
+             Width="500" Height="300" Background="Transparent" Opacity="1">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyTextButton.xaml" />
+    </UserControl.Resources>
+    <Border BorderBrush="White" Background="Black" BorderThickness="2" CornerRadius="8">
+        <Grid>
+        	<Grid.RowDefinitions>
+        		<RowDefinition/>
+        		<RowDefinition Height="Auto"/>
+        	</Grid.RowDefinitions>
+            <ContentControl x:Name="ItemGridControl" Margin="10" prism:RegionManager.RegionName="IdentifyItemGridRegion" />
+            <Button x:Name="BackButton" 
+                    HorizontalContentAlignment="Center" 
+                    VerticalContentAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Width="24" 
+                    Height="24"
+                    Margin="10" 
+                    Grid.Row="1" 
+                    FontFamily="{StaticResource FontAwesome}"
+                    Tag="&#xf054;"
+                     BorderBrush="White" Foreground="White" Background="Black"
+                    Style="{DynamicResource ShinyTextButtonStyle}" 
+                    />
+        </Grid>
+    </Border>
+</UserControl>

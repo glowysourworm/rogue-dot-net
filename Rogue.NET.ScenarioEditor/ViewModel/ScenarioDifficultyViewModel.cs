@@ -1,11 +1,6 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -13,6 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     {
 
     }
+    [Export(typeof(IScenarioDifficultyViewModel))]
     public class ScenarioDifficultyViewModel : IScenarioDifficultyViewModel
     {
         readonly IEventAggregator _eventAggregator;

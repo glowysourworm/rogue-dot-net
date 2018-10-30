@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Core.Model.Generator.Interface;
 
 using System.ComponentModel.Composition;
 

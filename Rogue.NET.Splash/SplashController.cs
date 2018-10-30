@@ -1,35 +1,22 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
+﻿using Prism;
+using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Model;
-using Rogue.NET.Splash.ViewModel;
 using Rogue.NET.Splash.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace Rogue.NET.Splash
 {
     public class SplashController
     {
         readonly IEventAggregator _eventAggregator;
-        readonly IUnityContainer _unityContainer;
 
         public SplashController(
-            IUnityContainer unityContainer, 
             IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            _unityContainer = unityContainer;
 
             Initialize();
         }

@@ -1,15 +1,13 @@
-﻿using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Model;
-using System.Windows;
+﻿using Prism.Events;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Views
 {
-    /// <summary>
-    /// Interaction logic for LevelView.xaml
-    /// </summary>
+    [Export]
     public partial class LevelView : UserControl
     {
+        [ImportingConstructor]
         public LevelView(IEventAggregator eventAggregator)
         {
             InitializeComponent();

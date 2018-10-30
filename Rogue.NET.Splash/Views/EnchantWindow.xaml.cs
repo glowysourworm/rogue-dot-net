@@ -1,23 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
-using Rogue.NET.Common;
+﻿using Prism.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Splash.Views
 {
+    [Export]
     public partial class EnchantWindow : Window
     {
         public EnchantWindow()
@@ -27,12 +15,10 @@ namespace Rogue.NET.Splash.Views
             this.Loaded += new RoutedEventHandler(EnchantWindow_Loaded);
         }
 
-        [InjectionConstructor]
+        [ImportingConstructor]
         public EnchantWindow(IEventAggregator eventAggregator)
         {
             InitializeComponent();
-
-            this.ItemGrid.EventAggregator = eventAggregator;
 
             this.Loaded += EnchantWindow_Loaded;
         }

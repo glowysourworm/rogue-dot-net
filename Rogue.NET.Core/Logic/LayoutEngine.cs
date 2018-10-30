@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Interface;
 
-namespace Rogue.NET.Core.Game
+namespace Rogue.NET.Core.Logic
 {
     [Export(typeof(ILayoutEngine))]
     public class LayoutEngine : ILayoutEngine

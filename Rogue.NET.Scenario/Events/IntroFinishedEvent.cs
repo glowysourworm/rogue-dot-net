@@ -1,13 +1,8 @@
-﻿using Microsoft.Practices.Prism.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Events;
 
 namespace Rogue.NET.Scenario.Events
 {
-    public class IntroFinishedEvent : CompositePresentationEvent<IntroFinishedEvent>
+    public class IntroFinishedEvent : PubSubEvent
     {
     }
 }

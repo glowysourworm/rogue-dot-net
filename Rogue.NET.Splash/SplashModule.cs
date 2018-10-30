@@ -1,25 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.Modularity;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Prism.Regions;
-using Microsoft.Practices.Unity;
-using Rogue.NET.Common.Events.Splash;
-using Rogue.NET.Scenario.Views;
+﻿using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Splash.ViewModel;
 using Rogue.NET.Splash.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace Rogue.NET.Splash
 {
     public class SplashModule : IModule
     {
-        readonly IUnityContainer _unityContainer;
         readonly IEventAggregator _eventAggregator;
         readonly IRegionManager _regionManager;
 
@@ -35,9 +21,6 @@ namespace Rogue.NET.Splash
 
         public void Initialize()
         {
-            _unityContainer.RegisterType<SplashViewModel, SplashViewModel>(new ContainerControlledLifetimeManager());
-            _unityContainer.RegisterType<CreatingScenarioViewModel, CreatingScenarioViewModel>(new ContainerControlledLifetimeManager());
-
             _unityContainer.RegisterType<SplashWindow, SplashWindow>(new ContainerControlledLifetimeManager());
             _unityContainer.RegisterType<CreatingScenarioWindow, CreatingScenarioWindow>(new PerThreadLifetimeManager());
 

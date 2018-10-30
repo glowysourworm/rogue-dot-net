@@ -1,15 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
+﻿using Prism.Events;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Events
 {
-    public class ScenarioLoadedEvent : CompositePresentationEvent<ScenarioLoadedEvent>
+
+    public class ScenarioLoadedEvent : PubSubEvent<ScenarioConfigurationContainer>
     {
-        public ScenarioConfiguration Payload { get; set; }
     }
 }

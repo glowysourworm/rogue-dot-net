@@ -1,27 +1,20 @@
-﻿using Rogue.NET.Common;
-using Rogue.NET.Common.Collections;
-using Rogue.NET.Scenario.Model;
-using Rogue.NET.Model.Scenario;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Rogue.NET.Model;
+using System.ComponentModel.Composition;
+using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Graveyard;
+using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class DungeonEncyclopedia : UserControl
     {
-        SerializableDictionary<string, ScenarioMetaData> _encyclopedia = null;
+        Dictionary<string, ScenarioMetaData> _encyclopedia = null;
 
         public DungeonEncyclopedia()
         {
@@ -33,128 +26,128 @@ namespace Rogue.NET.Scenario.Views
 
         private void DungeonEncyclopediaCtrl_Loaded(object sender, RoutedEventArgs e)
         {
-            var potionItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Potion, "NotNamed", ImageResources.PotionGreen, 3);
-            potionItem.Tag = ConsumableSubType.Potion;
-            potionItem.IsPhysicallyVisible = true;
+            //var potionItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Potion, "NotNamed", ImageResources.PotionGreen, 3);
+            //potionItem.Tag = ConsumableSubType.Potion;
+            //potionItem.IsPhysicallyVisible = true;
 
-            var scrollItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Scroll, "NotNamed", ImageResources.ScrollFuschia, 3);
-            scrollItem.Tag = ConsumableSubType.Scroll;
-            scrollItem.IsPhysicallyVisible = true;
+            //var scrollItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Scroll, "NotNamed", ImageResources.ScrollFuschia, 3);
+            //scrollItem.Tag = ConsumableSubType.Scroll;
+            //scrollItem.IsPhysicallyVisible = true;
 
-            var foodItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Food, "NotNamed", ImageResources.FoodRed, 3);
-            foodItem.Tag = ConsumableSubType.Food;
-            foodItem.IsPhysicallyVisible = true;
+            //var foodItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Food, "NotNamed", ImageResources.FoodRed, 3);
+            //foodItem.Tag = ConsumableSubType.Food;
+            //foodItem.IsPhysicallyVisible = true;
 
-            var manualItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Manual, "NotNamed", ImageResources.ManualPurple, 3);
-            manualItem.Tag = ConsumableSubType.Manual;
-            manualItem.IsPhysicallyVisible = true;
+            //var manualItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Manual, "NotNamed", ImageResources.ManualPurple, 3);
+            //manualItem.Tag = ConsumableSubType.Manual;
+            //manualItem.IsPhysicallyVisible = true;
 
-            var wandItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Wand, "NotNamed", ImageResources.WandRed, 3);
-            wandItem.Tag = ConsumableSubType.Wand;
-            wandItem.IsPhysicallyVisible = true;
+            //var wandItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Wand, "NotNamed", ImageResources.WandRed, 3);
+            //wandItem.Tag = ConsumableSubType.Wand;
+            //wandItem.IsPhysicallyVisible = true;
 
-            var ammoItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Ammo, "NotNamed", ImageResources.RockBlack, 3);
-            ammoItem.Tag = ConsumableSubType.Ammo;
-            ammoItem.IsPhysicallyVisible = true;
+            //var ammoItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Ammo, "NotNamed", ImageResources.RockBlack, 3);
+            //ammoItem.Tag = ConsumableSubType.Ammo;
+            //ammoItem.IsPhysicallyVisible = true;
 
-            var miscItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Misc, "NotNamed", ImageResources.MirrorGreen, 3);
-            miscItem.Tag = ConsumableSubType.Misc;
-            miscItem.IsPhysicallyVisible = true;
+            //var miscItem = new Consumable(ConsumableType.OneUse, ConsumableSubType.Misc, "NotNamed", ImageResources.MirrorGreen, 3);
+            //miscItem.Tag = ConsumableSubType.Misc;
+            //miscItem.IsPhysicallyVisible = true;
 
-            var oneHandedItem = new Equipment(EquipmentType.OneHandedMeleeWeapon, "NotNamed", ImageResources.SwordBlack, 3);
-            oneHandedItem.Tag = EquipmentType.OneHandedMeleeWeapon;
-            oneHandedItem.IsPhysicallyVisible = true;
+            //var oneHandedItem = new Equipment(EquipmentType.OneHandedMeleeWeapon, "NotNamed", ImageResources.SwordBlack, 3);
+            //oneHandedItem.Tag = EquipmentType.OneHandedMeleeWeapon;
+            //oneHandedItem.IsPhysicallyVisible = true;
 
-            var twoHandedImageItem = new Equipment(EquipmentType.TwoHandedMeleeWeapon, "NotNamed", ImageResources.SwordOrange, 3);
-            twoHandedImageItem.Tag = EquipmentType.TwoHandedMeleeWeapon;
-            twoHandedImageItem.IsPhysicallyVisible = true;
+            //var twoHandedImageItem = new Equipment(EquipmentType.TwoHandedMeleeWeapon, "NotNamed", ImageResources.SwordOrange, 3);
+            //twoHandedImageItem.Tag = EquipmentType.TwoHandedMeleeWeapon;
+            //twoHandedImageItem.IsPhysicallyVisible = true;
 
-            var armorItem = new Equipment(EquipmentType.Armor, "NotNamed", ImageResources.ArmorBlack, 3);
-            armorItem.Tag = EquipmentType.Armor;
-            armorItem.IsPhysicallyVisible = true;
+            //var armorItem = new Equipment(EquipmentType.Armor, "NotNamed", ImageResources.ArmorBlack, 3);
+            //armorItem.Tag = EquipmentType.Armor;
+            //armorItem.IsPhysicallyVisible = true;
 
-            var shieldItem = new Equipment(EquipmentType.Shield, "NotNamed", ImageResources.ShieldBlack, 3);
-            shieldItem.Tag = EquipmentType.Shield;
-            shieldItem.IsPhysicallyVisible = true;
+            //var shieldItem = new Equipment(EquipmentType.Shield, "NotNamed", ImageResources.ShieldBlack, 3);
+            //shieldItem.Tag = EquipmentType.Shield;
+            //shieldItem.IsPhysicallyVisible = true;
 
-            var helmetItem = new Equipment(EquipmentType.Helmet, "NotNamed", ImageResources.HelmetBlack, 3);
-            helmetItem.Tag = EquipmentType.Helmet;
-            helmetItem.IsPhysicallyVisible = true;
+            //var helmetItem = new Equipment(EquipmentType.Helmet, "NotNamed", ImageResources.HelmetBlack, 3);
+            //helmetItem.Tag = EquipmentType.Helmet;
+            //helmetItem.IsPhysicallyVisible = true;
 
-            var gauntletItem = new Equipment(EquipmentType.Gauntlets, "NotNamed", ImageResources.GauntletsBlack, 3);
-            gauntletItem.Tag = EquipmentType.Gauntlets;
-            gauntletItem.IsPhysicallyVisible = true;
+            //var gauntletItem = new Equipment(EquipmentType.Gauntlets, "NotNamed", ImageResources.GauntletsBlack, 3);
+            //gauntletItem.Tag = EquipmentType.Gauntlets;
+            //gauntletItem.IsPhysicallyVisible = true;
 
-            var beltItem = new Equipment(EquipmentType.Belt, "NotNamed", ImageResources.BeltBlack, 3);
-            beltItem.Tag = EquipmentType.Belt;
-            beltItem.IsPhysicallyVisible = true;
+            //var beltItem = new Equipment(EquipmentType.Belt, "NotNamed", ImageResources.BeltBlack, 3);
+            //beltItem.Tag = EquipmentType.Belt;
+            //beltItem.IsPhysicallyVisible = true;
 
-            var shoulderItem = new Equipment(EquipmentType.Shoulder, "NotNamed", ImageResources.ShoulderBlack, 3);
-            shoulderItem.Tag = EquipmentType.Shoulder;
-            shoulderItem.IsPhysicallyVisible = true;
+            //var shoulderItem = new Equipment(EquipmentType.Shoulder, "NotNamed", ImageResources.ShoulderBlack, 3);
+            //shoulderItem.Tag = EquipmentType.Shoulder;
+            //shoulderItem.IsPhysicallyVisible = true;
 
-            var bootsItem = new Equipment(EquipmentType.Boots, "NotNamed", ImageResources.BootsBlack, 3);
-            bootsItem.Tag = EquipmentType.Boots;
-            bootsItem.IsPhysicallyVisible = true;
+            //var bootsItem = new Equipment(EquipmentType.Boots, "NotNamed", ImageResources.BootsBlack, 3);
+            //bootsItem.Tag = EquipmentType.Boots;
+            //bootsItem.IsPhysicallyVisible = true;
 
-            var amuletItem = new Equipment(EquipmentType.Amulet, "NotNamed", ImageResources.AmuletBlue, 3);
-            amuletItem.Tag = EquipmentType.Amulet;
-            amuletItem.IsPhysicallyVisible = true;
+            //var amuletItem = new Equipment(EquipmentType.Amulet, "NotNamed", ImageResources.AmuletBlue, 3);
+            //amuletItem.Tag = EquipmentType.Amulet;
+            //amuletItem.IsPhysicallyVisible = true;
 
-            var orbItem = new Equipment(EquipmentType.Orb, "NotNamed", ImageResources.OrbBlue, 3);
-            orbItem.Tag = EquipmentType.Orb;
-            orbItem.IsPhysicallyVisible = true;
+            //var orbItem = new Equipment(EquipmentType.Orb, "NotNamed", ImageResources.OrbBlue, 3);
+            //orbItem.Tag = EquipmentType.Orb;
+            //orbItem.IsPhysicallyVisible = true;
 
-            var ringItem = new Equipment(EquipmentType.Ring, "NotNamed", ImageResources.RingGreen, 3);
-            ringItem.Tag = EquipmentType.Ring;
-            ringItem.IsPhysicallyVisible = true;
+            //var ringItem = new Equipment(EquipmentType.Ring, "NotNamed", ImageResources.RingGreen, 3);
+            //ringItem.Tag = EquipmentType.Ring;
+            //ringItem.IsPhysicallyVisible = true;
 
-            var normalDoodadItem = new DoodadNormal(DoodadNormalType.SavePoint, "NotNamed", "", true, 3);
-            normalDoodadItem.Tag = DoodadType.Normal;
-            normalDoodadItem.IsPhysicallyVisible = true;
+            //var normalDoodadItem = new DoodadNormal(DoodadNormalType.SavePoint, "NotNamed", "", true, 3);
+            //normalDoodadItem.Tag = DoodadType.Normal;
+            //normalDoodadItem.IsPhysicallyVisible = true;
 
-            var magicDoodadItem = new DoodadMagic("NotNamed", null, null, false, false, ImageResources.WellRed, 3);
-            magicDoodadItem.Tag = DoodadType.Magic;
-            magicDoodadItem.IsPhysicallyVisible = true;
+            //var magicDoodadItem = new DoodadMagic("NotNamed", null, null, false, false, ImageResources.WellRed, 3);
+            //magicDoodadItem.Tag = DoodadType.Magic;
+            //magicDoodadItem.IsPhysicallyVisible = true;
 
-            var enemyItem = new Enemy("T", "NotNamed", 3);
-            enemyItem.Tag = "Enemy";
-            enemyItem.IsPhysicallyVisible = true;
+            //var enemyItem = new Enemy("T", "NotNamed", 3);
+            //enemyItem.Tag = "Enemy";
+            //enemyItem.IsPhysicallyVisible = true;
 
-            var skillItem = new SkillSet("NotNamed", ImageResources.Skill1, 3);
-            skillItem.Tag = "Skill";
-            skillItem.IsPhysicallyVisible = true;
+            //var skillItem = new SkillSet("NotNamed", ImageResources.Skill1, 3);
+            //skillItem.Tag = "Skill";
+            //skillItem.IsPhysicallyVisible = true;
 
-            this.TypePanel.ClearElements();
+            //this.TypePanel.ClearElements();
 
-            this.TypePanel.Children.Add(potionItem);
-            this.TypePanel.Children.Add(scrollItem);
-            this.TypePanel.Children.Add(foodItem);
-            this.TypePanel.Children.Add(wandItem);
-            this.TypePanel.Children.Add(ammoItem);
-            this.TypePanel.Children.Add(manualItem);
-            this.TypePanel.Children.Add(miscItem);
-            this.TypePanel.Children.Add(oneHandedItem);
-            this.TypePanel.Children.Add(twoHandedImageItem);
-            this.TypePanel.Children.Add(armorItem);
-            this.TypePanel.Children.Add(shieldItem);
-            this.TypePanel.Children.Add(helmetItem);
-            this.TypePanel.Children.Add(beltItem);
-            this.TypePanel.Children.Add(shoulderItem);
-            this.TypePanel.Children.Add(gauntletItem);
-            this.TypePanel.Children.Add(bootsItem);
-            this.TypePanel.Children.Add(amuletItem);
-            this.TypePanel.Children.Add(orbItem);
-            this.TypePanel.Children.Add(ringItem);
-            this.TypePanel.Children.Add(normalDoodadItem);
-            this.TypePanel.Children.Add(magicDoodadItem);
-            this.TypePanel.Children.Add(enemyItem);
-            this.TypePanel.Children.Add(skillItem);
+            //this.TypePanel.Children.Add(potionItem);
+            //this.TypePanel.Children.Add(scrollItem);
+            //this.TypePanel.Children.Add(foodItem);
+            //this.TypePanel.Children.Add(wandItem);
+            //this.TypePanel.Children.Add(ammoItem);
+            //this.TypePanel.Children.Add(manualItem);
+            //this.TypePanel.Children.Add(miscItem);
+            //this.TypePanel.Children.Add(oneHandedItem);
+            //this.TypePanel.Children.Add(twoHandedImageItem);
+            //this.TypePanel.Children.Add(armorItem);
+            //this.TypePanel.Children.Add(shieldItem);
+            //this.TypePanel.Children.Add(helmetItem);
+            //this.TypePanel.Children.Add(beltItem);
+            //this.TypePanel.Children.Add(shoulderItem);
+            //this.TypePanel.Children.Add(gauntletItem);
+            //this.TypePanel.Children.Add(bootsItem);
+            //this.TypePanel.Children.Add(amuletItem);
+            //this.TypePanel.Children.Add(orbItem);
+            //this.TypePanel.Children.Add(ringItem);
+            //this.TypePanel.Children.Add(normalDoodadItem);
+            //this.TypePanel.Children.Add(magicDoodadItem);
+            //this.TypePanel.Children.Add(enemyItem);
+            //this.TypePanel.Children.Add(skillItem);
 
-            this.TypePanel.InitializeElements();
+            //this.TypePanel.InitializeElements();
 
-            this.TypePanel.InvalidateVisual();
-            InvalidateVisual();
+            //this.TypePanel.InvalidateVisual();
+            //InvalidateVisual();
         }
         private void DungeonEncyclopediaCtrl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -324,36 +317,36 @@ namespace Rogue.NET.Scenario.Views
         }
         private void SetSubPanel(string type)
         {
-            var data = this.DataContext as LevelData;
-            if (data == null)
-                return;
+            //var data = this.DataContext as LevelData;
+            //if (data == null)
+            //    return;
 
-            this.SubPanel.ClearElements();
-            foreach (KeyValuePair<string, ScenarioMetaData> kvp in data.Encyclopedia)
-            {
-                kvp.Value.Tag = kvp.Key;
+            //this.SubPanel.ClearElements();
+            //foreach (KeyValuePair<string, ScenarioMetaData> kvp in data.Encyclopedia)
+            //{
+            //    kvp.Value.Tag = kvp.Key;
 
-                if (kvp.Value.Type == type)
-                    this.SubPanel.Children.Add(kvp.Value);
+            //    if (kvp.Value.Type == type)
+            //        this.SubPanel.Children.Add(kvp.Value);
 
-                else if (type == "Objective" && kvp.Value.IsObjective)
-                    this.SubPanel.Children.Add(kvp.Value);
-            }
-            this.SubPanel.InitializeElements();
+            //    else if (type == "Objective" && kvp.Value.IsObjective)
+            //        this.SubPanel.Children.Add(kvp.Value);
+            //}
+            //this.SubPanel.InitializeElements();
 
-            // Attempt to invoke dispatcher to seek nearest after animations initialized
-            // ...Need to figure out how to make "InitializeElements()" complete all the 
-            // required tasks to leave the panel in a truly initialized state on this call
-            // stack.. though may not be possible.
-            //
-            // NOTE*** ApplicationIdle priority required to avoid exceptions with animation clock
-            //         initialization. Should probably be moved inside spin panel initialization
-            this.SubPanel.Visibility = Visibility.Hidden;
-            this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ApplicationIdle, 
-                                        new Action(() => {
-                                            this.SubPanel.SeekToNearest();
-                                            this.SubPanel.Visibility = Visibility.Visible;
-                                        }));
+            //// Attempt to invoke dispatcher to seek nearest after animations initialized
+            //// ...Need to figure out how to make "InitializeElements()" complete all the 
+            //// required tasks to leave the panel in a truly initialized state on this call
+            //// stack.. though may not be possible.
+            ////
+            //// NOTE*** ApplicationIdle priority required to avoid exceptions with animation clock
+            ////         initialization. Should probably be moved inside spin panel initialization
+            //this.SubPanel.Visibility = Visibility.Hidden;
+            //this.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ApplicationIdle, 
+            //                            new Action(() => {
+            //                                this.SubPanel.SeekToNearest();
+            //                                this.SubPanel.Visibility = Visibility.Visible;
+            //                            }));
         }
         private void SubPanel_ObjectCentered(object sender, EventArgs e)
         {
@@ -377,20 +370,20 @@ namespace Rogue.NET.Scenario.Views
         }
         private void TypePanel_ObjectCentered(object sender, EventArgs e)
         {
-            ScenarioObject view = sender as ScenarioObject;
-            SetSubPanel(view.Tag.ToString());
+            var view = sender as ScenarioObject;
+            //SetSubPanel(view.Tag.ToString());
 
-            if (view != null)
-            {
-                this.EntryDescriptionTB.Text = GetEntryTypeDescription(view.Tag.ToString());
-                this.EntryTypeTB.Text = GetEntryTypeName(view.Tag.ToString());
-                this.TypePanel.CenterText = GetEntryTypeName(view.Tag.ToString());
+            //if (view != null)
+            //{
+            //    this.EntryDescriptionTB.Text = GetEntryTypeDescription(view.Tag.ToString());
+            //    this.EntryTypeTB.Text = GetEntryTypeName(view.Tag.ToString());
+            //    this.TypePanel.CenterText = GetEntryTypeName(view.Tag.ToString());
 
-                int ct = _encyclopedia.Count(z => z.Value.Type == view.Tag.ToString());
-                int ctIdentified = _encyclopedia.Count(z => z.Value.Type == view.Tag.ToString() && z.Value.IsIdentified);
+            //    int ct = _encyclopedia.Count(z => z.Value.Type == view.Tag.ToString());
+            //    int ctIdentified = _encyclopedia.Count(z => z.Value.Type == view.Tag.ToString() && z.Value.IsIdentified);
 
-                this.PercentTB.Text = (ct == 0) ? "0%" : (100*(ctIdentified / (double)ct)).ToString("N0") + "%";
-            }
+            //    this.PercentTB.Text = (ct == 0) ? "0%" : (100*(ctIdentified / (double)ct)).ToString("N0") + "%";
+            //}
         }
         private void EntryLeftButton_Click(object sender, RoutedEventArgs e)
         {

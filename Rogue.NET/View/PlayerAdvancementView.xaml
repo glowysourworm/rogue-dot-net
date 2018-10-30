@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Rogue.NET.View.PlayerAdvancementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" MinHeight="200" MinWidth="300">
+    <Border BorderBrush="#FFFFF5D1" BorderThickness="1" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" MinHeight="42"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock TextWrapping="Wrap" Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12" FontSize="21.333" Foreground="#FFFFD08A"/>
+            <Border Margin="12" Grid.Row="1" BorderThickness="0.5" CornerRadius="4" Padding="8" >
+                <Border.BorderBrush>
+                    <LinearGradientBrush EndPoint="1,0.514" StartPoint="0.005,0.494">
+                        <GradientStop Color="#FFE0DEFF" Offset="0"/>
+                        <GradientStop Color="#FFD6D3FF" Offset="1"/>
+                        <GradientStop Color="#00878787" Offset="0.528"/>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+                <ListBox
+                    ItemsSource="{Binding MessageLines}" 
+                    BorderBrush="Transparent"
+                    Background="Black"
+                    FontSize="16" 
+                    Foreground="#FFFFF3D2">
+                </ListBox>
+            </Border>
+            <Button x:Name="BackButton" Grid.Row="2" Click="BackButton_Click" Content="Back" HorizontalAlignment="Right" Margin="0,4,8,8" Style="{DynamicResource BackButtonStyle}" Foreground="#FFF9FF90" Height="28" Width="28"/>
+        </Grid>
+    </Border>
+</UserControl>

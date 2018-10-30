@@ -1,17 +1,11 @@
-﻿using Microsoft.Practices.Prism.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Events;
 
 namespace Rogue.NET.Model.Events
 {
     /// <summary>
     /// Occurs after player is placed
     /// </summary>
-    public class LevelInitializedEvent : CompositePresentationEvent<LevelInitializedEvent>
+    public class LevelInitializedEvent : PubSubEvent<LevelData>
     {
-        public LevelData Data { get; set; }
     }
 }

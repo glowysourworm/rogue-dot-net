@@ -1,15 +1,14 @@
-﻿using Microsoft.Practices.Prism.Events;
+﻿using Prism.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Events
 {
-    public class GameSetupDisplayFinished : CompositePresentationEvent<GameSetupDisplayFinished>
+    public class GameSetupDisplayFinishedEventArgs : System.EventArgs
     {
         public Type NextDisplayType { get; set; }
+    }
 
+    public class GameSetupDisplayFinished : PubSubEvent<GameSetupDisplayFinishedEventArgs>
+    {
     }
 }

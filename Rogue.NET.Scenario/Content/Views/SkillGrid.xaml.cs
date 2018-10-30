@@ -1,26 +1,10 @@
-﻿using Rogue.NET.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Dotway.WPF.Effects;
-using Rogue.NET.Model.Scenario;
-using Rogue.NET.Model;
-using System.Windows.Media.Effects;
-using Microsoft.Practices.Unity;
-using Microsoft.Practices.Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
-using Microsoft.Practices.Prism.PubSubEvents;
 using Rogue.NET.Common.EventArgs;
+using Prism.Events;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -67,13 +51,13 @@ namespace Rogue.NET.Scenario.Views
 
                 if (radioButton.Tag.ToString() == skillSet.RogueName)
                 {
-                    _eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEvent()
-                    {
-                        LevelCommand = new LevelCommandEventArgs(
-                            radioButton.IsChecked.Value ? LevelAction.ActivateSkill  : LevelAction.DeactivateSkill, 
-                            Compass.Null, 
-                            skillSet.Id)
-                    });
+                    _eventAggregator.GetEvent<UserCommandEvent>().Publish(
+                        new LevelCommandEventArgs(
+                                radioButton.IsChecked.Value ? 
+                                    LevelAction.ActivateSkill : 
+                                    LevelAction.DeactivateSkill,
+                            Compass.Null,
+                            skillSet.Id));
                     break;
                 }
             }

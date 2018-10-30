@@ -1,6 +1,4 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Microsoft.Practices.Unity;
+﻿using Prism.Events;
 using Rogue.NET.Common;
 using Rogue.NET.Common.Collections;
 using Rogue.NET.Common.EventArgs;
@@ -8,20 +6,14 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Model.Scenario;
-using Rogue.NET.Scenario.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Model.Logic
 {
     public class LogicBase
     {
         readonly IEventAggregator _eventAggregator;
-        readonly IUnityContainer _unityContainer;
 
         protected SerializableObservableCollection<LevelData.DialogMessage> DialogMessages { get; set; }
         protected SerializableDictionary<string, ScenarioMetaData> Encyclopedia { get; set; }
@@ -31,10 +23,9 @@ namespace Rogue.NET.Model.Logic
         protected Player Player { get; set; }
         protected Level Level { get; set; }
 
-        public LogicBase(IEventAggregator eventAggregator, IUnityContainer unityContainer)
+        public LogicBase(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
-            _unityContainer = unityContainer;
 
             Initialize();
         }
@@ -43,15 +34,15 @@ namespace Rogue.NET.Model.Logic
         {
             _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe((e) =>
             {
-                this.Encyclopedia = e.Data.Encyclopedia;
-                this.ScenarioConfig = e.Data.Config;
-                this.Random = new Random(e.Data.Seed);
-                this.Player = e.Data.Player;
-                this.Level = e.Data.Level;
-                this.DialogMessages = e.Data.DialogMessages;
-                this.TargetedEnemies = e.Data.TargetedEnemies;
+                this.Encyclopedia = e.Encyclopedia;
+                this.ScenarioConfig = e.Config;
+                this.Random = new Random(e.Seed);
+                this.Player = e.Player;
+                this.Level = e.Level;
+                this.DialogMessages = e.DialogMessages;
+                this.TargetedEnemies = e.TargetedEnemies;
 
-                OnLevelLoaded(e.Data.StartLocation);
+                OnLevelLoaded(e.StartLocation);
             });
 
 
@@ -61,7 +52,7 @@ namespace Rogue.NET.Model.Logic
                 if (this.Level == null)
                     return;
 
-                OnLevelCommand(e.LevelCommand);
+                OnLevelCommand(e);
             });
 
             _eventAggregator.GetEvent<AnimationCompletedEvent>().Subscribe((e) =>
@@ -167,7 +158,7 @@ namespace Rogue.NET.Model.Logic
         {
         }
 
-        protected virtual void OnAnimationCompleted(AnimationCompletedEvent e)
+        protected virtual void OnAnimationCompleted(AnimationCompletedEventArgs e)
         {
         }
     }

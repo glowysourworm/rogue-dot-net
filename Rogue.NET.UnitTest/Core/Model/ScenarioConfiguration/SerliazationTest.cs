@@ -1,9 +1,8 @@
-﻿using Rogue.NET.Common;
-using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Generator;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Service;
-using Rogue.NET.Model;
+using Rogue.NET.Core.Model.Enums;
 
 using ExpressMapper;
 using Moq;
@@ -11,9 +10,6 @@ using Prism.Events;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
-
-using OldScenarioConfiguration = Rogue.NET.Model.ScenarioConfiguration;
-using NewScenarioConfiguration = Rogue.NET.Core.Model.ScenarioConfiguration.ScenarioConfigurationContainer;
 using System.Threading.Tasks;
 
 namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
@@ -23,41 +19,21 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
     {
         IScenarioResourceService _scenarioResourceService;
 
+        Mock<IEventAggregator> _eventAggregatorMock;
+
         [TestInitialize]
         public void Initialize()
         {
-            _scenarioResourceService = new ScenarioResourceService();
-
-            // Mapper configuration to map Rogue.NET.Model -> Rogue.NET.Core
-            Mapper.RegisterCustom<Rogue.NET.Model.ProbabilityEquipmentTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.ProbabilityEquipmentTemplate>((src) =>
-            {
-                return new NET.Core.Model.ScenarioConfiguration.Content.ProbabilityEquipmentTemplate()
-                {
-                    EquipOnStartup = src.EquipOnStartup,
-                    GenerationProbability = src.GenerationProbability,
-                    Guid = src.Guid,
-                    Name = src.Name,
-                    TheTemplate = Mapper.Map<Rogue.NET.Model.EquipmentTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.EquipmentTemplate>((EquipmentTemplate)src.TheTemplate)                    
-                };
-            });
-            Mapper.RegisterCustom<Rogue.NET.Model.ProbabilityConsumableTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.ProbabilityConsumableTemplate>((src) =>
-            {
-                return new NET.Core.Model.ScenarioConfiguration.Content.ProbabilityConsumableTemplate()
-                {
-                    GenerationProbability = src.GenerationProbability,
-                    Guid = src.Guid,
-                    Name = src.Name,
-                    TheTemplate = Mapper.Map<Rogue.NET.Model.ConsumableTemplate, Rogue.NET.Core.Model.ScenarioConfiguration.Content.ConsumableTemplate>((ConsumableTemplate)src.TheTemplate)
-                };
-            });
+            _eventAggregatorMock = new Mock<IEventAggregator>();
+            _scenarioResourceService = new ScenarioResourceService(_eventAggregatorMock.Object);
 
             Mapper.Compile();
         }
 
         private IScenarioGenerator CreateScenarioGenerator(int seed)
         {
-            var eventAggregatorMock = new Mock<IEventAggregator>();
-            var scenarioResourceService = new ScenarioResourceService();
+
+            var scenarioResourceService = new ScenarioResourceService(_eventAggregatorMock.Object);
             var randomSequenceGenerator = new RandomSequenceGenerator(seed);
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
             var attackAttributeGenerator = new AttackAttributeGenerator(randomSequenceGenerator);
@@ -84,7 +60,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 itemGenerator);
             var textService = new TextService();
             var scenarioGenerator = new Rogue.NET.Core.Model.Generator.ScenarioGenerator(
-                eventAggregatorMock.Object,
+                _eventAggregatorMock.Object,
                 layoutGenerator,
                 contentGenerator,
                 characterGenerator,
@@ -95,16 +71,11 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         }
 
         [TestMethod]
-        public void DeserializeAndMapConfiguration()
+        public void DeserializeConfiguration()
         {
-            var configurationFromModel = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
+            var configurationFromModel = _scenarioResourceService.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
 
-            var newScenarioConfiguration = Mapper.Map<OldScenarioConfiguration, NewScenarioConfiguration>(configurationFromModel);
-
-            Assert.IsNotNull(newScenarioConfiguration);
-
-            // TODO - Make this relative...
-            _scenarioResourceService.SaveConfig(@"C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Core\Resource\Configuration\Fighter.rdns", newScenarioConfiguration);
+            Assert.IsNotNull(configurationFromModel);
         }
 
         [TestMethod]

@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows;
-using System.Windows.Data;
-using System.Reflection;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Linq;
-using System.Collections;
-using System.Threading;
-using System.ComponentModel;
-using Rogue.NET.Common;
-using Rogue.NET.Model.Media;
-using Rogue.NET.Model;
-using Rogue.NET.Model.Scenario;
-using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Unity;
-using Rogue.NET.Common.Views;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+using Prism.Events;
+using Rogue.NET.Core.Media;
+using Rogue.NET.Core.Graveyard;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -70,25 +59,25 @@ namespace Rogue.NET.Scenario.Views
                 xform.Children.Add(_scaleXform);
                 xform.Children.Add(_translateXform);
 
-                model.Level.RenderTransform = xform;
-                model.Player.RenderTransform = xform;
+                //model.Level.RenderTransform = xform;
+                //model.Player.RenderTransform = xform;
 
-                this.Children.Add(model.Level);
-                this.Children.Add(model.Player);
+                //this.Children.Add(model.Level);
+                //this.Children.Add(model.Player);
 
-                model.Player.PropertyChanged += (obj, ev) =>
-                {
-                    if (ev.PropertyName == "Location")
-                        OnPlayerLocationChanged();
-                };
+                //model.Player.PropertyChanged += (obj, ev) =>
+                //{
+                //    if (ev.PropertyName == "Location")
+                //        OnPlayerLocationChanged();
+                //};
 
-                model.TargetedEnemies.CollectionChanged += (obj, ev) =>
-                {
-                    var offset = xform.Transform(new Point(0, 0));
-                    var offsetVector = new Vector(offset.X, offset.Y);
-                    var points = model.TargetedEnemies.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray();
-                    PlayTargetAnimation(points);
-                };
+                //model.TargetedEnemies.CollectionChanged += (obj, ev) =>
+                //{
+                //    var offset = xform.Transform(new Point(0, 0));
+                //    var offsetVector = new Vector(offset.X, offset.Y);
+                //    var points = model.TargetedEnemies.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray();
+                //    PlayTargetAnimation(points);
+                //};
 
                 CenterOnPlayer();
                 InvalidateVisual();
@@ -166,17 +155,17 @@ namespace Rogue.NET.Scenario.Views
             Point midpt = new Point(r.Width / 2, r.Height / 2);
 
             var data  = this.DataContext as LevelData;
-            var origin = data.Player.RenderTransform.Transform(new Point(0, 0));
+            //var origin = data.Player.RenderTransform.Transform(new Point(0, 0));
 
-            _translateXform.X += midpt.X - (data.Player.Margin.Left + origin.X);
-            _translateXform.Y += midpt.Y - (data.Player.Margin.Top + origin.Y);
+            //_translateXform.X += midpt.X - (data.Player.Margin.Left + origin.X);
+            //_translateXform.Y += midpt.Y - (data.Player.Margin.Top + origin.Y);
         }
 
         private Point GetPlayerLocation()
         {
-            var data = this.DataContext as LevelData;
-            if (data != null)
-                return Point.Add(data.Player.RenderTransform.Transform(new Point(0, 0)), new Vector(data.Player.Margin.Left, data.Player.Margin.Top));
+            //var data = this.DataContext as LevelData;
+            //if (data != null)
+            //    return Point.Add(data.Player.RenderTransform.Transform(new Point(0, 0)), new Vector(data.Player.Margin.Left, data.Player.Margin.Top));
 
             return new Point(0,0);
         }
@@ -252,96 +241,6 @@ namespace Rogue.NET.Scenario.Views
             //}
         }
 
-        #region Roaming Light Source
-        CellPoint _roamingLightSourcePoint = null;
-        AnimationGroup _roamingLightSource = null;
-        public void InitializeRoamingLightSource()
-        {
-            //Level lvl = this.DataContext as Level;
-            //if (lvl == null)
-            //    return;
-
-            //if (_roamingLightSourcePoint == null)
-            //    _roamingLightSourcePoint = new CellPoint(lvl.Player1.Location);
-
-            //Point p = _layoutXform.Transform(Rogue2GlobalHelper.Cell2UI(_roamingLightSourcePoint.Column, _roamingLightSourcePoint.Row));
-            //p.X += Config.CELLWIDTH_CONST / 2;
-            //p.Y += Config.CELLHEIGHT_CONST / 2;
-
-            ////Fuzzy Aura Brush
-            //RadialGradientBrush r = new RadialGradientBrush();
-            //r.GradientOrigin = new Point(0.5, 0.5);
-            //r.GradientStops = new GradientStopCollection(new GradientStop[]{
-            //new GradientStop(lvl.Player1.SmileyBodyColor, 0),
-            //new GradientStop(Colors.Transparent, 0.8)});
-
-            //_roamingLightSource = Rogue2AnimationGenerator.CreateAuraModulation(
-            //    p, Brushes.White, r, 0.3, 1, 0.5, new Size(8, 8), new Size(7, 7), 1500, int.MaxValue, true);
-
-            //StartTimedGraphicalEvent(_roamingLightSource);
-        }
-        public void MoveRoamingLightSource(Compass c)
-        {
-            //Level lvl = this.DataContext as Level;
-            //if (lvl == null)
-            //    return;
-
-            //CellPoint next = CharacterMovementEngine.AdvanceToCell(_roamingLightSourcePoint, c);
-            //if (!CharacterMovementEngine.IsPathToAdjacentCellBlocked(_roamingLightSourcePoint, next, _lvl, true, false))
-            //{
-            //    //Advance light source
-            //    _roamingLightSourcePoint = next;
-
-            //    //Process Visibility
-            //    List<Cell> list1 = CharacterMovementEngine.GetLogicallyVisibleCells(lvl.Layout, _roamingLightSourcePoint, lvl.Player1.LightRadius);
-            //    List<Cell> list2 = CharacterMovementEngine.GetLogicallyVisibleCells(lvl.Layout, lvl.Player1.Location, lvl.Player1.LightRadius);
-            //    Cell[] list = list1.Union(list2).ToArray();
-            //    //Contents Visibility
-            //    lvl.Content.ProcessVisibility(list);
-
-            //    //Layout Visibility
-            //    foreach (Cell ce in lvl.Layout.Grid.GetVisibleCells())
-            //        ce.IsPhysicallyVisible = false;
-
-            //    foreach (Cell ce in list)
-            //    {
-            //        //SHOULDN'T BE NULL!!
-            //        if (ce == null)
-            //            continue;
-
-            //        ce.IsPhysicallyVisible = true;
-            //        ce.IsExplored = true;
-
-            //        //No longer have to highlight revealed cells
-            //        ce.IsRevealed = false;
-            //    }
-
-            //    OnPlayerLocationChanged(next);
-
-            //    //Move Animated Bubble
-            //    DestroyRoamingLightSource();
-            //    InitializeRoamingLightSource();
-            //}
-        }
-        private void DestroyRoamingLightSource()
-        {
-            if (_roamingLightSource != null)
-            {
-                Graphic[] graphics = _roamingLightSource.GetGraphics();
-                foreach (Graphic g in graphics)
-                    this.Children.Remove(g);
-                _roamingLightSource.Stop();
-                _roamingLightSource.CleanUp();
-                _roamingLightSource = null;
-            }
-        }
-        public void EndRoamingLightSourceMode()
-        {
-            DestroyRoamingLightSource();
-            _roamingLightSourcePoint = null;
-        }
-        #endregion
-
         #region Animations
         public void PlayTargetAnimation(Point[] pts)
         {
@@ -361,14 +260,14 @@ namespace Rogue.NET.Scenario.Views
                 Point se = new Point(r.BottomRight.X + len, r.BottomRight.Y + len);
                 Point sw = new Point(r.BottomLeft.X - len, r.BottomLeft.Y + len);
 
-                Animation a1 = AnimationGenerator.GenerateProjectilePath(new Point[] { nw, r.TopLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                Animation a2 = AnimationGenerator.GenerateProjectilePath(new Point[] { ne, r.TopRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                Animation a3 = AnimationGenerator.GenerateProjectilePath(new Point[] { se, r.BottomRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                Animation a4 = AnimationGenerator.GenerateProjectilePath(new Point[] { sw, r.BottomLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                Animation a5 = AnimationGenerator.GenerateTimedFigure(new RectangleGeometry(r), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
-                AnimationGroup group = new AnimationGroup(new Animation[] { a1, a2, a3, a4, a5 });
-                _targetAnimationGroupList.Add(group);
-                StartTimedGraphicalEvent(group);
+                //Animation a1 = AnimationGenerator.GenerateProjectilePath(new Point[] { nw, r.TopLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+                //Animation a2 = AnimationGenerator.GenerateProjectilePath(new Point[] { ne, r.TopRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+                //Animation a3 = AnimationGenerator.GenerateProjectilePath(new Point[] { se, r.BottomRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+                //Animation a4 = AnimationGenerator.GenerateProjectilePath(new Point[] { sw, r.BottomLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+                //Animation a5 = AnimationGenerator.GenerateTimedFigure(new RectangleGeometry(r), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
+                //AnimationGroup group = new AnimationGroup(new Animation[] { a1, a2, a3, a4, a5 });
+                //_targetAnimationGroupList.Add(group);
+                //StartTimedGraphicalEvent(group);
             }
         }
         public void StopTargetAnimation()
@@ -388,29 +287,29 @@ namespace Rogue.NET.Scenario.Views
         }
 
         List<ITimedGraphic> _animationList = new List<ITimedGraphic>();
-        AnimationStartEvent _animationData = null;
+        AnimationStartEventArgs _animationData = null;
 
         /// <summary>
         /// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
         /// last one as a handle
         /// </summary>
-        public ITimedGraphic PlayAnimationSeries(AnimationStartEvent e)
+        public ITimedGraphic PlayAnimationSeries(AnimationStartEventArgs e)
         {
             _animationData = e;
 
-            var levelData = this.DataContext as LevelData;
-            var xform = levelData.Player.RenderTransform;
-            var offset = xform.Transform(new Point(0,0));
-            var offsetVector = new Vector(offset.X + ScenarioConfiguration.CELLWIDTH / 2, offset.Y + ScenarioConfiguration.CELLHEIGHT / 2);
+            //var levelData = this.DataContext as LevelData;
+            //var xform = levelData.Player.RenderTransform;
+            //var offset = xform.Transform(new Point(0,0));
+            //var offsetVector = new Vector(offset.X + ModelConstants.CELLWIDTH / 2, offset.Y + ModelConstants.CELLHEIGHT / 2);
 
-            //Create animations
-            foreach (AnimationTemplate t in e.Animations)
-                _animationList.Add(
-                    AnimationGenerator.CreateAnimation(
-                    t, 
-                    new Rect(this.RenderSize), 
-                    Point.Add(new Point(e.Source.Margin.Left, e.Source.Margin.Top), offsetVector),
-                    e.Targets.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray()));
+            ////Create animations
+            //foreach (AnimationTemplate t in e.Animations)
+            //    _animationList.Add(
+            //        AnimationGenerator.CreateAnimation(
+            //        t, 
+            //        new Rect(this.RenderSize), 
+            //        Point.Add(new Point(e.Source.Margin.Left, e.Source.Margin.Top), offsetVector),
+            //        e.Targets.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray()));
 
             //Start the first and return a handle to the last one
             ITimedGraphic g = _animationList[_animationList.Count - 1];
@@ -421,7 +320,7 @@ namespace Rogue.NET.Scenario.Views
         {
             if (_animationList.Count <= 0)
             {
-                _eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(new AnimationCompletedEvent()
+                _eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(new AnimationCompletedEventArgs()
                 {
                     Alteration = _animationData.Alteration,
                     ReturnAction = _animationData.ReturnAction,

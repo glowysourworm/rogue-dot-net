@@ -1,14 +1,22 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
-using Rogue.NET.Common;
-using Rogue.NET.Model;
+using Rogue.NET.Core.Graveyard;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Service.Interface;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
 	public partial class EquipmentSelectionCtrl : UserControl
 	{
-		public EquipmentSelectionCtrl()
+        readonly IScenarioResourceService _resourceService;
+
+        [ImportingConstructor]
+		public EquipmentSelectionCtrl(IScenarioResourceService resourceService)
 		{
+            _resourceService = resourceService;
+
 			this.InitializeComponent();
 
             this.DataContextChanged += new DependencyPropertyChangedEventHandler(EquipmentSelectionCtrl_DataContextChanged);
@@ -16,16 +24,16 @@ namespace Rogue.NET.Scenario.Views
 
         private void EquipmentSelectionCtrl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var data = e.NewValue as LevelData;
-            if (data != null)
-            {
-                data.Player.EquipmentInventory.CollectionAltered += (obj, ev) =>
-                {
-                    SetFromDataContext();
-                };
+            //var data = e.NewValue as LevelData;
+            //if (data != null)
+            //{
+            //    data.Player.Equipment += (obj, ev) =>
+            //    {
+            //        SetFromDataContext();
+            //    };
 
-                SetFromDataContext();
-            }
+            //    SetFromDataContext();
+            //}
         }
         private void SetFromDataContext()
         {
@@ -48,56 +56,56 @@ namespace Rogue.NET.Scenario.Views
 
             if (data != null)
             {
-                foreach (var eq in data.Player.EquipmentInventory)
+                foreach (var eq in data.Player.Equipment.Values)
                 {
-                    if (!eq.IsEquiped)
+                    if (!eq.IsEquipped)
                         continue;
 
                     switch (eq.Type)
                     {
                         case EquipmentType.Amulet:
-                            this.AmuletImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.AmuletImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Armor:
-                            this.BodyImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.BodyImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Boots:
-                            this.FeetImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.FeetImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Gauntlets:
-                            this.RightHandImageGlove.Source = eq.SymbolInfo.SymbolImageSource;
-                            this.LeftHandImageGlove.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.RightHandImageGlove.Source = _resourceService.GetImageSource(eq);
+                            this.LeftHandImageGlove.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Helmet:
-                            this.HeadImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.HeadImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.OneHandedMeleeWeapon:
                         case EquipmentType.Shield:
                             if (this.RightHandImageWeapon.Source == null)
-                                this.RightHandImageWeapon.Source = eq.SymbolInfo.SymbolImageSource;
+                                this.RightHandImageWeapon.Source = _resourceService.GetImageSource(eq);
                             else if (this.LeftHandImageWeapon.Source == null)
-                                this.LeftHandImageWeapon.Source = eq.SymbolInfo.SymbolImageSource;
+                                this.LeftHandImageWeapon.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Orb:
-                            this.OrbImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.OrbImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Ring:
                             if (this.LeftRing1.Source == null)
-                                this.LeftRing1.Source = eq.SymbolInfo.SymbolImageSource;
+                                this.LeftRing1.Source = _resourceService.GetImageSource(eq);
 
                             else if (this.RightRing1.Source == null)
-                                this.RightRing1.Source = eq.SymbolInfo.SymbolImageSource;
+                                this.RightRing1.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.TwoHandedMeleeWeapon:
                         case EquipmentType.RangeWeapon:
-                            this.RightHandImageWeapon.Source = eq.SymbolInfo.SymbolImageSource;
-                            this.LeftHandImageWeapon.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.RightHandImageWeapon.Source = _resourceService.GetImageSource(eq);
+                            this.LeftHandImageWeapon.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Shoulder:
-                            this.ShoulderImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.ShoulderImage.Source = _resourceService.GetImageSource(eq);
                             break;
                         case EquipmentType.Belt:
-                            this.BeltImage.Source = eq.SymbolInfo.SymbolImageSource;
+                            this.BeltImage.Source = _resourceService.GetImageSource(eq);
                             break;
                     }
                 }

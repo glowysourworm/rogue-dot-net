@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:views="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:common="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" FontSize="14">
     <UserControl.Resources>
@@ -19,11 +19,11 @@
                         <StackPanel>
                             <Grid>
                                 <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
-                                <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.MovementType, Mode=TwoWay}" EnumType="{x:Type common:CharacterMovementType}" />
+                                <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.MovementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
                             </Grid>
                             <Grid>
                                 <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
-                                <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Mode=TwoWay}" EnumType="{x:Type common:CharacterAttackType}" />
+                                <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
                             </Grid>
                             <Grid>
                                 <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
@@ -55,11 +55,11 @@
                         <StackPanel>
                         <Grid>
                             <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.MovementType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumType="{x:Type common:CharacterMovementType}" />
+                                <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.MovementType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
-                                <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumType="{x:Type common:CharacterAttackType}" />
+                                <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
@@ -90,7 +90,7 @@
                     <StackPanel>
                         <Grid Margin="10,10,10,0">
                             <TextBlock Foreground="White" Text="Secondary Behavior Invoke Reason" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type common:SecondaryBehaviorInvokeReason}" />
+                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
                         </Grid>
                         <Grid Margin="10,0,10,0">
                             <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />

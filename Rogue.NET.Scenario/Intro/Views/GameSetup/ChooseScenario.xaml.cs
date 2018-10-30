@@ -1,23 +1,9 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common;
-using Rogue.NET.Common.Extensions;
+﻿using Prism.Events;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
@@ -53,7 +39,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             viewModel.SmileyColor = item.SmileyColor;
             viewModel.SmileyLineColor = item.SmileyLineColor;
 
-            _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinished()
+            _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
             {
                 NextDisplayType = typeof(ChooseParameters)
             });

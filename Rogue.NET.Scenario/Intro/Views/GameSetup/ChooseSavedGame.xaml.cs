@@ -1,31 +1,17 @@
-﻿using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Prism.Events;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
-    /// <summary>
-    /// Interaction logic for ChooseSavedGame.xaml
-    /// </summary>
     public partial class ChooseSavedGame : UserControl
     {
         readonly IEventAggregator _eventAggragator;
 
+        [ImportingConstructor]
         public ChooseSavedGame(IEventAggregator eventAggregator)
         {
             InitializeComponent();
@@ -41,7 +27,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggragator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinished()
+            _eventAggragator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
             {
                 NextDisplayType = typeof(NewOpenEdit)
             });

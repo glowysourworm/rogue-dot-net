@@ -15,10 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Common", "Rogue.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.ScenarioEditor", "Rogue.NET.ScenarioEditor\Rogue.NET.ScenarioEditor.csproj", "{6696051A-37BB-4F3E-9E0B-62B83F298EE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Splash", "Rogue.NET.Splash\Rogue.NET.Splash.csproj", "{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Model", "Rogue.NET.Model\Rogue.NET.Model.csproj", "{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Scenario", "Rogue.NET.Scenario\Rogue.NET.Scenario.csproj", "{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue.NET.Core", "Rogue.NET.Core\Rogue.NET.Core.csproj", "{3E574589-233F-4B39-B93C-445E6F44A736}"
@@ -66,26 +62,6 @@ Global
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6696051A-37BB-4F3E-9E0B-62B83F298EE7}.Release|x86.ActiveCfg = Release|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C11BA6DA-C3CC-4701-909C-A15EECF51AFA}.Release|x86.ActiveCfg = Release|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{FFE92CF3-BE4B-463E-A4AB-C5DF1EC39304}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -125,6 +101,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
 		SolutionGuid = {9AAB88A4-A649-4401-988C-B3E0EA12D13D}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution

@@ -1,21 +1,11 @@
-﻿using Rogue.NET.Model;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.Enemy
 {
@@ -40,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Enemy
             this.DataContext = model;
 
             var enemy = model as EnemyTemplate;
-            var config = containerViewModel.SecondaryPayload as ScenarioConfiguration;
+            var config = containerViewModel.SecondaryPayload as ScenarioConfigurationContainer;
             if (config != null && enemy != null)
             {
                 this.ConsumablesLB.SourceLB.ItemsSource = config.ConsumableTemplates.Select(x => new ProbabilityConsumableTemplate() { Name = x.Name, TheTemplate = x });

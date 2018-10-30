@@ -1,20 +1,11 @@
-﻿using Rogue.NET.Model;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+using ConsumableSubTypeEnum = Rogue.NET.Core.Model.Enums.ConsumableSubType;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.Consumable
 {
@@ -45,25 +36,25 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Consumable
 
             switch (consumable.SubType)
             {
-                case Common.ConsumableSubType.Ammo:
+                case ConsumableSubTypeEnum.Ammo:
                     this.AmmoRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Food:
+                case ConsumableSubTypeEnum.Food:
                     this.FoodRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Manual:
+                case ConsumableSubTypeEnum.Manual:
                     this.ManualRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Misc:
+                case ConsumableSubTypeEnum.Misc:
                     this.MiscRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Potion:
+                case ConsumableSubTypeEnum.Potion:
                     this.PotionRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Scroll:
+                case ConsumableSubTypeEnum.Scroll:
                     this.ScrollRB.IsChecked = true;
                     break;
-                case Common.ConsumableSubType.Wand:
+                case ConsumableSubTypeEnum.Wand:
                     this.WandRB.IsChecked = true;
                     break;
             }
@@ -73,7 +64,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.Consumable
         {
             var model = this.DataContext as ConsumableTemplate;
             var radioButton = sender as RadioButton;
-            model.SubType = (Common.ConsumableSubType)radioButton.Tag;
+            model.SubType = (ConsumableSubTypeEnum)radioButton.Tag;
         }
     }
 }

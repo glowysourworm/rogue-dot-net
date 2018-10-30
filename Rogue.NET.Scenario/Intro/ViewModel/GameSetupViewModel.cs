@@ -1,26 +1,21 @@
-﻿using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Events;
-using Microsoft.Practices.Prism.PubSubEvents;
-using Rogue.NET.Common;
+﻿using Prism.Commands;
+using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
-using Rogue.NET.Model;
-using Rogue.NET.Model.Generation;
-using System;
-using System.Collections.Generic;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Service.Interface;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Rogue.NET.Intro.ViewModel
 {
+    [Export]
     public class GameSetupViewModel : INotifyPropertyChanged
     {
-        readonly IResourceService _resourceService;
+        readonly IScenarioResourceService _resourceService;
         readonly IEventAggregator _eventAggregator;
 
         #region Nested Classes
@@ -42,7 +37,7 @@ namespace Rogue.NET.Intro.ViewModel
                 {
                     return new DelegateCommand(() =>
                     {
-                        _eventAggregator.GetEvent<DeleteScenarioEvent>().Publish(new DeleteScenarioEvent()
+                        _eventAggregator.GetEvent<DeleteScenarioEvent>().Publish(new DeleteScenarioEventArgs()
                         {
                             ScenarioName = this.Name
                         });
@@ -55,7 +50,7 @@ namespace Rogue.NET.Intro.ViewModel
                 {
                     return new DelegateCommand(() =>
                     {
-                        _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEvent()
+                        _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEventArgs()
                         {
                             ScenarioName = this.Name
                         });
@@ -169,7 +164,8 @@ namespace Rogue.NET.Intro.ViewModel
         }
         #endregion
 
-        public GameSetupViewModel(IResourceService resourceService, IEventAggregator eventAggregator)
+        [ImportingConstructor]
+        public GameSetupViewModel(IScenarioResourceService resourceService, IEventAggregator eventAggregator)
         {
             _resourceService = resourceService;
             _eventAggregator = eventAggregator;
@@ -181,11 +177,11 @@ namespace Rogue.NET.Intro.ViewModel
                 this.LoadingProgress = e.Progress;
             });
 
-            _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe(() =>
             {
                 Reinitialize();
             });
-            _eventAggregator.GetEvent<ScenarioSavedEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ScenarioSavedEvent>().Subscribe(() =>
             {
                 Reinitialize();
             });
@@ -212,12 +208,11 @@ namespace Rogue.NET.Intro.ViewModel
 
             foreach (var config in _resourceService.GetScenarioConfigurations())
             {
-                var smiley = TemplateGenerator.GenerateSymbol(config.PlayerTemplate.SymbolDetails);
                 this.Configs.Add(new ScenarioSelectionViewModel(_eventAggregator)
                 {
                     Name = config.DungeonTemplate.Name,
-                    SmileyColor = (Color)ColorConverter.ConvertFromString(smiley.SmileyBodyColor),
-                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(smiley.SmileyLineColor),
+                    SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyBodyColor),
+                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
                     NumberOfLevels = config.DungeonTemplate.NumberOfLevels
                 });

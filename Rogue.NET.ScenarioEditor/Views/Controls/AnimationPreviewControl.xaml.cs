@@ -1,30 +1,25 @@
-﻿using Rogue.NET.Scenario;
-using Rogue.NET.Model;
-using Rogue.NET.Model.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Rogue.NET.Core.Media;
+using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
     public partial class AnimationPreviewControl : UserControl
     {
+        readonly IAnimationGenerator _animationGenerator;
+
         ITimedGraphic _animation = null;
 
         bool _updating = false;
 
-        public AnimationPreviewControl()
+        [ImportingConstructor]
+        public AnimationPreviewControl(IAnimationGenerator animationGenerator)
         {
+            _animationGenerator = animationGenerator;
+
             InitializeComponent();
         }
         private void PlayAnimation()
@@ -80,8 +75,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             en2.Y += 8;
             en3.X += 5;
             en3.Y += 8;
-            ITimedGraphic g = AnimationGenerator.CreateAnimation(tmp, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
-            return g;
+            return _animationGenerator.CreateAnimation(tmp, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)

@@ -4,9 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common"
-             xmlns:enums="clr-namespace:Rogue.NET.Common;assembly=Rogue.NET.Common"
-             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor"  
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              x:Class="Rogue.NET.ScenarioEditor.Views.Controls.AnimationPreviewControl" 
              Width="303">
     <UserControl.Resources>
@@ -89,7 +87,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Canvas x:Name="TheCanvas">
-                <common:Smiley x:Name="TheSmiley" Width="10" Height="15" Canvas.Left="60" Canvas.Top="96.833" SmileyColor="#FFE4FF00" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" d:LayoutOverrides="VerticalAlignment, VerticalMargin"/>
+                <coreView:Smiley x:Name="TheSmiley" Width="10" Height="15" Canvas.Left="60" Canvas.Top="96.833" SmileyColor="#FFE4FF00" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" />
                 <TextBlock x:Name="TheEnemy"  Canvas.Left="180" Canvas.Top="56" Foreground="White" Text="T" TextWrapping="Wrap"/>
                 <TextBlock x:Name="TheSecondEnemy"  Canvas.Left="206.666" Canvas.Top="96.833" Foreground="White" Text="G" TextWrapping="Wrap"/>
                 <TextBlock x:Name="TheThirdEnemy"  Canvas.Left="180" Canvas.Top="136" Foreground="White" Text="S" TextWrapping="Wrap"/>

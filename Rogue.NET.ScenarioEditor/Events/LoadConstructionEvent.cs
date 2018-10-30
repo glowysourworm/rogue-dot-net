@@ -1,14 +1,13 @@
-﻿using Microsoft.Practices.Prism.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Prism.Events;
 
 namespace Rogue.NET.ScenarioEditor.Events
 {
-    public class LoadConstructionEvent : CompositePresentationEvent<LoadConstructionEvent>
+    public class LoadConstructionEventArgs : System.EventArgs
     {
         public string ConstructionName { get; set; }
+    }
+    public class LoadConstructionEvent : PubSubEvent<LoadConstructionEventArgs>
+    {
+        
     }
 }
