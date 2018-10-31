@@ -10,9 +10,10 @@ namespace Rogue.NET.Core.Model.Generator
     {
         private Random _random;
 
-        public RandomSequenceGenerator(int seed)
+        [ImportingConstructor]
+        public RandomSequenceGenerator()
         {
-            _random = new Random(seed);
+            _random = new Random(1);
         }
 
         public void Reseed(int seed)

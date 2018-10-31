@@ -307,7 +307,7 @@
                         </Setter>
                     </Style>
                 </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -432,15 +432,15 @@
         <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
         	<Grid>
                 <controls:SpinPanel x:Name="TypePanel" ObjectCentered="TypePanel_ObjectCentered" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" Margin="0,50"/>
-                <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
-                <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>
+                <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
+                <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>
         	</Grid>
         </Border>
         <Border Grid.Column="1"  Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10" >
         	<Grid>
                 <controls:SpinPanel x:Name="SubPanel" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" ObjectCentered="SubPanel_ObjectCentered" Margin="0,50" />
-                <Button x:Name="EntryLeftButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/LeftArrow.png" Click="EntryLeftButton_Click" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8,0,0,8" Cursor="Hand"/>
-                <Button x:Name="EntryRightButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/RightArrow.png" Click="EntryRightButton_Click" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="0,0,8,8" Cursor="Hand"/>
+                <Button x:Name="EntryLeftButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" Click="EntryLeftButton_Click" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8,0,0,8" Cursor="Hand"/>
+                <Button x:Name="EntryRightButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" Click="EntryRightButton_Click" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="0,0,8,8" Cursor="Hand"/>
         	</Grid>
         </Border>
     </Grid>

@@ -1,11 +1,13 @@
 ﻿using BrushEditor;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [Export]
     public partial class Brush : UserControl
     {
         public Brush()

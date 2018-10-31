@@ -4,7 +4,7 @@
              xmlns:wpftoolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              Background="Black">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </UserControl.Resources>
     <Grid>
             <Grid Margin="10">

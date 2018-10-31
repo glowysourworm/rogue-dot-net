@@ -8,7 +8,7 @@
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" FontSize="14">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" >
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
         </ResourceDictionary>
     </UserControl.Resources>    
     <Grid>

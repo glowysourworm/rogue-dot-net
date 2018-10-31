@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Interface;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Input;

@@ -4,11 +4,13 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [Export]
     public partial class SkillSet : UserControl
     {
         public SkillSet()

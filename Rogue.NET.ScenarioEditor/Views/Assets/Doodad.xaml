@@ -8,9 +8,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/Converters.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="TextBox">
                         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -30,14 +29,14 @@
             <Border BorderBrush="#888" BorderThickness="0,0,0,1">
                 <TextBlock Foreground="White" FontSize="18" Margin="10" Text="Dungeon Object Editor" />
             </Border>
-            <Grid DataContext="{Binding SymbolDetails}" Margin="10">
+            <!-- TODOGrid DataContext="{Binding SymbolDetails}" Margin="10">
                 <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
                 <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
                     <Border.Background>
                         <RadialGradientBrush>
                             <GradientStop Offset="0">
                                 <GradientStop.Color>
-                                    <MultiBinding Converter="{StaticResource SymbolDetailsAuraConverter}">
+                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
                                         <Binding Path="CharacterColor" />
                                         <Binding Path="CharacterSymbol" />
                                         <Binding Path="Icon" />
@@ -69,7 +68,7 @@
                         </Image.Source>
                     </Image>
                 </Border>
-            </Grid>
+            </-->
             <Grid Margin="10">
                 <TextBlock Text="Short Description" />
                 <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="250" />

@@ -11,6 +11,7 @@ namespace Rogue.NET.Scenario.Outro.Views
     {
         readonly IEventAggregator _eventAggregator;
 
+        [ImportingConstructor]
         public DeathDisplay(IEventAggregator eventAggregator)
         {
             InitializeComponent();

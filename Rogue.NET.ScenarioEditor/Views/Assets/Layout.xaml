@@ -9,7 +9,7 @@
              mc:Ignorable="d" Background="Black"             
              FontSize="14"  d:DesignWidth="550">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid>

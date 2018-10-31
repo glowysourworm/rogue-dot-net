@@ -8,12 +8,11 @@ using System.Windows.Media.Animation;
 using Rogue.NET.Scenario.Events;
 using Prism.Events;
 using Rogue.NET.Core.Model.Enums;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Intro.Views
 {
-    /// <summary>
-    /// Interaction logic for IntroDisplay.xaml
-    /// </summary>
+    [Export]
     public partial class IntroView : UserControl
     {
         readonly IEventAggregator _eventAggregator;
@@ -23,6 +22,7 @@ namespace Rogue.NET.Intro.Views
         bool _finished = false;
         int _ctr = 0;
 
+        [ImportingConstructor]
         public IntroView(IEventAggregator eventAggregator)
         {
             InitializeComponent();
@@ -118,9 +118,12 @@ namespace Rogue.NET.Intro.Views
         }
         private void SetFinished()
         {
-            _timer.Stop();
-            _timer.Dispose();
-            _timer = null;
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _timer.Dispose();
+                _timer = null;
+            }
 
             if (_currentStoryboard != null)
             {

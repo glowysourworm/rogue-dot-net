@@ -7,7 +7,7 @@
              mc:Ignorable="d" Background="Black"
              d:DesignWidth="550">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,7 +21,7 @@
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Image Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsConverter}}" Margin="10" />
+            <!-- TODO Image Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsConverter}}" Margin="10" /-->
             <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="14" />
         </StackPanel>
         <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />

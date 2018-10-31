@@ -1,11 +1,13 @@
 ﻿using Rogue.NET.Common.View;
 using Rogue.NET.Core.Model.Enums;
 using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [Export]
     public partial class Layout : UserControl
     {
         public Layout()

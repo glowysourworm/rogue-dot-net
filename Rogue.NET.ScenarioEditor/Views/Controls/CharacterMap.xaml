@@ -13,7 +13,7 @@
                     <local:DoubleToHexConverter x:Key="DoubleToHexConverter" />
                     <local:DoubleToStringConverter x:Key="DoubleToStringConverter" />
                 </ResourceDictionary>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

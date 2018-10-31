@@ -5,7 +5,7 @@
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </UserControl.Resources>
     <Grid Margin="80" Width="800" Height="300" VerticalAlignment="Top" HorizontalAlignment="Center">
         <Grid.RowDefinitions>

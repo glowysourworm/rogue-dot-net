@@ -4,9 +4,11 @@ using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.Common.Extension;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
+    [Export]
     public partial class Doodad : UserControl
     {
         public Doodad()

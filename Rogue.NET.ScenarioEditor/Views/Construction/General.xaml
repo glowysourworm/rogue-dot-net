@@ -11,8 +11,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -56,7 +56,7 @@
                                 <StackPanel x:Name="NewAttributeStack" Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Margin="8" VerticalAlignment="Top" Text="New Attribute: " Foreground="White" />
                                     <extension:UpdatingTextBox x:Name="AttributeTB" Text="{Binding Name, Mode=TwoWay}" VerticalAlignment="Top" Margin="8" Width="100" />
-                                    <ContentPresenter prism:RegionManager.RegionName="AttributeSymbolImageEnumComboBoxRegion"  VerticalAlignment="Top" Margin="8" Width="140" />
+                                    <ContentControl prism:RegionManager.RegionName="AttributeSymbolImageEnumComboBoxRegion"  VerticalAlignment="Top" Margin="8" Width="140" />
                                     <Button x:Name="AddButton" ToolTip="Add" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                     <Button x:Name="RemoveButton" ToolTip="Remove" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                 </StackPanel>
@@ -66,7 +66,7 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Background="Transparent">
-                                                <Image HorizontalAlignment="Left">
+                                                <!-- TODO Image HorizontalAlignment="Left">
                                                     <Image.Source>
                                                         <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
                                                             <Binding Path="SymbolDetails.CharacterColor" />
@@ -79,7 +79,7 @@
                                                             <Binding Path="SymbolDetails.Type" />
                                                         </MultiBinding>
                                                     </Image.Source>
-                                                </Image>
+                                                </-->
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="36,0,0,0" />
                                             </Grid>
                                         </DataTemplate>

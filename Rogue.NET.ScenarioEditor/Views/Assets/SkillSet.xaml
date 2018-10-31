@@ -10,9 +10,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/Converters.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="TextBox">
                         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -39,7 +38,7 @@
                         <RadialGradientBrush>
                             <GradientStop Offset="0">
                                 <GradientStop.Color>
-                                    <MultiBinding Converter="{StaticResource SymbolDetailsAuraConverter}">
+                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
                                         <Binding Path="CharacterColor" />
                                         <Binding Path="CharacterSymbol" />
                                         <Binding Path="Icon" />
@@ -54,7 +53,7 @@
                             <GradientStop Color="Transparent" Offset="1" />
                         </RadialGradientBrush>
                     </Border.Background>
-                    <Image VerticalAlignment="Center" 
+                    <!-- TODO Image VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
                            Stretch="None">
                         <Image.Source>
@@ -69,7 +68,7 @@
                                 <Binding Path="Type" />
                             </MultiBinding>
                         </Image.Source>
-                    </Image>
+                    </-->
                 </Border>
             </Grid>
                 <Grid Margin="10">

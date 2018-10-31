@@ -18,16 +18,16 @@ namespace Rogue.NET
             //AppDomain.CurrentDomain.UnhandledException += (obj, ev) => { Taskbar.Show(); MessageBox.Show(ev.ExceptionObject.ToString()); };
             //AppDomain.CurrentDomain.ProcessExit += (obj, ev) => { Taskbar.Show(); };
 
-            var fontFamilyCentaur = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resources/Fonts/CENTAUR.TTF#Centaur"), "Centaur");
-            var fontFamilyILShakeFest = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resources/Fonts/ILShakeFest.ttf#ILShakeFest"), "ILShakeFest");
-            var fontFamilyFontAwesome = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resources/Fonts/fontawesome-webfont.ttf#FontAwesome"), "FontAwesome");
+            var fontFamilyCentaur = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/CENTAUR.TTF#Centaur"), "Centaur");
+            var fontFamilyILShakeFest = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/ILShakeFest.ttf#ILShakeFest"), "ILShakeFest");
+            var fontFamilyFontAwesome = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/fontawesome-webfont.ttf#FontAwesome"), "FontAwesome");
 
             var themeExpressionDark = new ResourceDictionary();
             themeExpressionDark.Source = new Uri("pack://application:,,,/Rogue.NET;Component/Themes/ExpressionDark.xaml");
 
             this.Resources.Add("CentaurFont", fontFamilyCentaur);
-            this.Resources.Add("ILShakeFestFont", fontFamilyILShakeFest);
-            this.Resources.Add("FontAwesomeFont", fontFamilyFontAwesome);
+            this.Resources.Add("ILShakeFest", fontFamilyILShakeFest);
+            this.Resources.Add("FontAwesome", fontFamilyFontAwesome);
 
             this.Resources.MergedDictionaries.Add(themeExpressionDark);
 

@@ -1,11 +1,13 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Construction
 {
+    [Export]
     public partial class General : UserControl
     {
         ScenarioConfigurationContainer _config;

@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:CommonControls="clr-namespace:Rogue.NET.Common.Control;assembly=Rogue.NET.Common">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
     <Style x:Key="AssetBrowserStyle" TargetType="TreeView">

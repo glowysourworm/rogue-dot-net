@@ -51,6 +51,13 @@ namespace Rogue.NET.PrismExtension
         {
             base.InitializeModules();
 
+            RegisterRegionViews();
+
+            // Request Navigate
+            var regionManager = this.Container.GetExport<IRegionManager>().Value;
+
+            regionManager.RequestNavigate("MainRegion", "IntroView");
+
             //// initialize startup display
             //_eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             //{
@@ -122,12 +129,12 @@ namespace Rogue.NET.PrismExtension
             regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
             regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
             regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
-            regionManager.RegisterViewWithRegion("MainRegion", () => this.Container.GetExport<DeathDisplay>().Value);
-            regionManager.RegisterViewWithRegion("MainRegion", () => this.Container.GetExport<GameView>().Value);
-            regionManager.RegisterViewWithRegion("GameRegion", () => this.Container.GetExport<LevelView>().Value);
-            regionManager.RegisterViewWithRegion("GameRegion", () => this.Container.GetExport<EquipmentSelectionCtrl>().Value);
-            regionManager.RegisterViewWithRegion("GameRegion", () => this.Container.GetExport<DungeonEncyclopedia>().Value);
-            regionManager.RegisterViewWithRegion("GameInfoRegion", () => this.Container.GetExport<GameInfoView>().Value);
+            regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
+            regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
+            regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
+            regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
+            regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
+            regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
 
             regionManager.RegisterViewWithRegion("PlayerSubpanelEquipmentRegion", () =>
             {

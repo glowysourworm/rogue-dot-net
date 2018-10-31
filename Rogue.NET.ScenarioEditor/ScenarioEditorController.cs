@@ -12,6 +12,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Construction;
@@ -24,23 +25,6 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor
 {
-    public interface IScenarioEditorController
-    {
-        ScenarioConfigurationContainer New();
-        ScenarioConfigurationContainer Open(string name, bool builtIn);
-        void Save();
-        void Validate();
-        void Score();
-        void Upload();
-        void Download();
-
-        string AddAsset(string assetType);
-        void RemoveAsset(string assetType, string assetName);
-        void LoadAsset(string assetType, string assetName);
-        bool UpdateAssetName(string oldName, string newName, string type);
-
-        void LoadConstruction(string constructionName);
-    }
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioEditorController))]
     public class ScenarioEditorController : IScenarioEditorController
@@ -55,6 +39,7 @@ namespace Rogue.NET.ScenarioEditor
 
         ScenarioConfigurationContainer _config;
 
+        [ImportingConstructor]
         public ScenarioEditorController(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,

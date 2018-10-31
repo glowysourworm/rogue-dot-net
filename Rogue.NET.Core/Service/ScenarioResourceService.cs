@@ -22,7 +22,7 @@ using System.Windows.Media.Imaging;
 namespace Rogue.NET.Core.Service
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(IResourceService))]
+    [Export(typeof(IScenarioResourceService))]
     public class ScenarioResourceService : IScenarioResourceService
     {
         const string SAVED_GAMES_DIR = "..\\save";
@@ -32,10 +32,11 @@ namespace Rogue.NET.Core.Service
         const string SCENARIOS_DIR = "..\\scenarios";
         const int DPI = 96;
 
-        readonly IEnumerable<ScenarioConfigurationContainer> _scenarioConfigurations;
+        IEnumerable<ScenarioConfigurationContainer> _scenarioConfigurations;
 
         Dictionary<SymbolTypes, Dictionary<string, BitmapSource>> _imageCache;
 
+        [ImportingConstructor]
         public ScenarioResourceService(IEventAggregator eventAggregator)
         {
             //var easy = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
@@ -69,19 +70,20 @@ namespace Rogue.NET.Core.Service
             if (!Directory.Exists(SCENARIOS_DIR))
                 Directory.CreateDirectory(SCENARIOS_DIR);
 
+            _scenarioConfigurations = new List<ScenarioConfigurationContainer>()
+            {
+                GetEmbeddedScenarioConfiguration(ConfigResources.Fighter),
+                GetEmbeddedScenarioConfiguration(ConfigResources.Paladin),
+                GetEmbeddedScenarioConfiguration(ConfigResources.Witch),
+                GetEmbeddedScenarioConfiguration(ConfigResources.Sorcerer),
+            };
+
             _imageCache = new Dictionary<SymbolTypes, Dictionary<string, BitmapSource>>()
             {
                 { SymbolTypes.Character, new Dictionary<string, BitmapSource>() },
                 { SymbolTypes.Image, new Dictionary<string, BitmapSource>() },
                 { SymbolTypes.Smiley, new Dictionary<string, BitmapSource>() }
             };
-
-            //_scenarioConfigurations = new List<ScenarioConfigurationContainer>(new ScenarioConfigurationContainer[]{
-            //    easy,
-            //    normal,
-            //    hard,
-            //    brutal
-            //});
         }
 
         public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()
@@ -107,8 +109,8 @@ namespace Rogue.NET.Core.Service
         public ScenarioConfigurationContainer GetEmbeddedScenarioConfiguration(ConfigResources configResource)
         {
             var name = configResource.ToString();
-            var assembly = Assembly.GetAssembly(typeof(ScenarioResourceService));
-            var location = "Rogue.NET.Core.Resource.Configuration." + name.ToString() + "." + SCENARIO_CONFIG_EXTENSION;
+            var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
+            var location = "Rogue.NET.Common.Resource.Configuration." + name.ToString() + "." + SCENARIO_CONFIG_EXTENSION;
             using (var stream = assembly.GetManifestResourceStream(location))
             {
                 var memoryStream = new MemoryStream();

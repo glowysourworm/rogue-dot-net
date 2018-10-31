@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Interface;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel

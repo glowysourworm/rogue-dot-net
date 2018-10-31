@@ -1,10 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel.Composition;
+using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Construction
 {
-    /// <summary>
-    /// Interaction logic for ItemPlacement.xaml
-    /// </summary>
+    [Export]
     public partial class ItemPlacement : UserControl
     {
         public ItemPlacement()

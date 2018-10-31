@@ -34,7 +34,8 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         {
 
             var scenarioResourceService = new ScenarioResourceService(_eventAggregatorMock.Object);
-            var randomSequenceGenerator = new RandomSequenceGenerator(seed);
+            var randomSequenceGenerator = new RandomSequenceGenerator();
+            randomSequenceGenerator.Reseed(seed);
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
             var attackAttributeGenerator = new AttackAttributeGenerator(randomSequenceGenerator);
             var spellGenerator = new SpellGenerator();

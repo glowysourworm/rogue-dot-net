@@ -7,7 +7,7 @@
              Background="Black"
              mc:Ignorable="d" d:DesignWidth="342">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ButtonSpinner.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </UserControl.Resources>
     <Grid>
             <Grid Margin="10">

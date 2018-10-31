@@ -755,7 +755,7 @@
                             <!--Rectangle.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resources/Images/Scroll.png" />
+                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resource/Images/Scroll.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill-->
@@ -833,7 +833,7 @@
                             <!--Rectangle.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resources/Images/ScenarioObjects/StairsUp.png" />
+                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resource/Images/ScenarioObjects/StairsUp.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill-->
@@ -919,7 +919,7 @@
                             <!--Rectangle.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resources/Images/Encyclopedia.png" />
+                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resource/Images/Encyclopedia.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill-->
@@ -1013,7 +1013,7 @@
                             <!--Rectangle.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="/Rogue.NET.Common;component/Resources/Images/ScenarioObjects/PotionFuschia.png" />
+                                        <BitmapImage UriSource="/Rogue.NET.Common;component/Resource/Images/ScenarioObjects/PotionFuschia.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill-->
@@ -1107,7 +1107,7 @@
                             <!--Rectangle.Fill>
                                 <ImageBrush Stretch="Uniform">
                                     <ImageBrush.ImageSource>
-                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resources/Images/ScenarioObjects/ArmorWhite.png" />
+                                        <BitmapImage UriSource="/Rogue.NET.Common;Component/Resource/Images/ScenarioObjects/ArmorWhite.png" />
                                     </ImageBrush.ImageSource>
                                 </ImageBrush>
                             </Rectangle.Fill-->

@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.Interface;
 using System.ComponentModel;
 using System.Windows.Input;
 

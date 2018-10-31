@@ -193,6 +193,7 @@
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />
     <Compile Include="Events\ScoreScenarioEvent.cs" />
+    <Compile Include="Interface\IScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />

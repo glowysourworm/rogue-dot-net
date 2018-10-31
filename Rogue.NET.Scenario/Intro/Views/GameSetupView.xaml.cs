@@ -10,6 +10,7 @@ using System.Windows.Input;
 
 namespace Rogue.NET.Intro.Views
 {
+    [Export]
     public partial class GameSetupView : UserControl
     {
         readonly IEventAggregator _eventAggregator;

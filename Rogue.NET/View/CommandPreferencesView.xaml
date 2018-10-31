@@ -8,8 +8,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/DarkListBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary>
                     <DataTemplate DataType="ListBoxItem" x:Key="ListBoxTitleItemTemplate">
                         <Grid Margin="2">

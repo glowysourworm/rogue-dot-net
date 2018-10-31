@@ -6,7 +6,7 @@
              mc:Ignorable="d" Background="Black"
              d:DesignWidth="550">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>

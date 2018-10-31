@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              Foreground="#FFFFEB8E">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Dictionaries/ShinyTextButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
     </UserControl.Resources>
     <Border BorderBrush="#FFFFF5D1" BorderThickness="1" Background="Black" CornerRadius="10">
 		<Grid>
