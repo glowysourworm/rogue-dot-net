@@ -95,10 +95,10 @@ namespace Rogue.NET.Core.Logic
         public ScenarioObject Move(Compass direction)
         {
             //Desired Location
-            var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.Player.Location, direction);
+            var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, _modelService.Player.Location, direction);
 
             //Look for road blocks - move player
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Player.Location, desiredLocation))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, _modelService.Player.Location, desiredLocation))
                 _modelService.Player.Location = desiredLocation;
 
             //Increment counter
@@ -110,7 +110,7 @@ namespace Rogue.NET.Core.Logic
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Player.Location, true);
+            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player.Location, true);
 
             // Get direction for random move -> Move()
             return Move(_layoutEngine.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation));
@@ -187,10 +187,10 @@ namespace Rogue.NET.Core.Logic
 
             // Get points involved with the attack
             var location = _modelService.Player.Location;
-            var attackLocation = _layoutEngine.GetPointInDirection(location, direction);
+            var attackLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, location, direction);
 
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(location, attackLocation);
+            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, attackLocation);
 
             // Get target for attack
             var enemy = _modelService.CurrentLevel.Enemies.FirstOrDefault(x => x.Location == attackLocation);

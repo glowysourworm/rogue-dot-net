@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     /// Complete list of active character alterations - costs and effects. This is serialized along with the model
     /// to maintain dynamic (game-time) state.
     /// </summary>
+    [Serializable]
     public class CharacterAlteration
     {
         /// <summary>

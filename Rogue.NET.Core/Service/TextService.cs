@@ -8,6 +8,9 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(ITextService))]
     public class TextService : ITextService
     {
+        public TextService()
+        { }
+
         public string CamelCaseToTitleCase(string str)
         {
             return Regex.Replace(str, "(\\B[A-Z])", " $1");

@@ -12,6 +12,12 @@ namespace Rogue.NET.Core.Service.Interface
     /// </summary>
     public interface IModelService
     {
+        void Load(
+                Player player,
+                Level level,
+                IDictionary<string, ScenarioMetaData> encyclopedia,
+                ScenarioConfigurationContainer configuration);
+
         /// <summary>
         /// Currently loaded Scenario Level
         /// </summary>

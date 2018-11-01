@@ -12,6 +12,8 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(IScenarioMetaDataGenerator))]
     public class ScenarioMetaDataGenerator : IScenarioMetaDataGenerator
     {
+        public ScenarioMetaDataGenerator() { }
+
         public ScenarioMetaData CreateScenarioMetaData(ConsumableTemplate template)
         {
             return new ScenarioMetaData()

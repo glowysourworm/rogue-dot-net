@@ -27,6 +27,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
         [ImportingConstructor]
         public SimplePathFinder(IModelService modelService, ILayoutEngine layoutEngine)
         {
+            _modelService = modelService;
             _layoutEngine = layoutEngine;
         }
 
@@ -76,8 +77,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
             var grid = _modelService.CurrentLevel.Grid;
 
             // Gets a set of adjacent locations that aren't blocked
-            var adjacentPathLocations = _layoutEngine.GetAdjacentLocations(location)
-                                                     .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(location, x) &&
+            var adjacentPathLocations = _layoutEngine.GetAdjacentLocations(_modelService.CurrentLevel.Grid, location)
+                                                     .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, x) &&
                                                                  !(_layoutEngine.EuclideanDistance(x, end) > maxSeparation))
                                                      .ToList();
 

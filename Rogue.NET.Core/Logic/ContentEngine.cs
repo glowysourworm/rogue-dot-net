@@ -74,7 +74,7 @@ namespace Rogue.NET.Core.Logic
                         _modelService.Player.Location = _modelService.CurrentLevel.StairsUp.Location;
                     break;
                 case PlayerStartLocation.Random:
-                    _modelService.Player.Location = _layoutEngine.GetRandomLocation(true);
+                    _modelService.Player.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
                     break;
             }
         }
@@ -139,7 +139,7 @@ namespace Rogue.NET.Core.Logic
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Player.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -302,7 +302,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case DoodadNormalType.TeleportRandom:
                     {
-                        character.Location = _layoutEngine.GetRandomLocation(true);
+                        character.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
                     }
@@ -464,7 +464,7 @@ namespace Rogue.NET.Core.Logic
         }
         private void DropEnemyItem(Enemy enemy, ItemBase item)
         {
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(enemy.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, enemy.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -513,13 +513,13 @@ namespace Rogue.NET.Core.Logic
                 {
                     case CharacterAttackType.Melee:
                         {
-                            var adjacentCells = _layoutEngine.GetAdjacentLocations(enemy.Location);
+                            var adjacentCells = _layoutEngine.GetAdjacentLocations(_modelService.CurrentLevel.Grid, enemy.Location);
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
                             if (attackLocation != null) // TODO && 
                                                         //!e.States.Any(z => z == CharacterStateType.Confused))
                             {
-                                if (!_layoutEngine.IsPathToAdjacentCellBlocked(enemy.Location, attackLocation))
+                                if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, attackLocation))
                                 {
                                     OnEnemyMeleeAttack(enemy);
                                     actionTaken = true;
@@ -558,7 +558,7 @@ namespace Rogue.NET.Core.Logic
         private void OnEnemyMeleeAttack(Enemy e)
         {
             var player = _modelService.Player;
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(e.Location, player.Location))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, e.Location, player.Location))
             {
                 var hit = _interactionProcessor.CalculateEnemyHit(player, e);
                 var dodge = _randomSequenceGenerator.Get() <= _characterProcessor.GetDodge(player);
@@ -593,18 +593,18 @@ namespace Rogue.NET.Core.Logic
             switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocation(enemy.Location, true);
+                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, enemy.Location, true);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .First();
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .Last();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(enemy.Location)
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
                                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                                         .First();
 
@@ -627,7 +627,7 @@ namespace Rogue.NET.Core.Logic
             var openingPosition = CellPoint.Empty;
             var openingDirection = Compass.Null;
 
-            var throughDoor = _layoutEngine.IsCellThroughDoor(enemy.Location, moveLocation, out openingPosition, out openingDirection);
+            var throughDoor = _layoutEngine.IsCellThroughDoor(_modelService.CurrentLevel.Grid, enemy.Location, moveLocation, out openingPosition, out openingDirection);
 
             // Behavior allows opening of doors
             if (enemy.BehaviorDetails.CurrentBehavior.CanOpenDoors && throughDoor)
@@ -636,16 +636,16 @@ namespace Rogue.NET.Core.Logic
 
                 // If not in a cardinally adjacent position then move into that position before opening.
                 if (enemy.Location == openingPosition)
-                    _layoutEngine.ToggleDoor(openingDirection, enemy.Location);
+                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, openingDirection, enemy.Location);
 
                 else
                 {
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(enemy.Location, openingPosition))
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition))
                         enemy.Location = openingPosition;
                 }
             }
             else if (!throughDoor && 
-                     !_layoutEngine.IsPathToAdjacentCellBlocked(enemy.Location, moveLocation))
+                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, moveLocation))
                 enemy.Location = moveLocation;
 
             // Check for items
@@ -688,7 +688,7 @@ namespace Rogue.NET.Core.Logic
             var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
-            enemy.Location = _layoutEngine.GetRandomLocation(true);
+            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
 
             // Add content to level
             _modelService.CurrentLevel.AddContent(enemy);

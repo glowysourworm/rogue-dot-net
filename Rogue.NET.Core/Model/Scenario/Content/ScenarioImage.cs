@@ -1,7 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content
 {
+    [Serializable]
     public class ScenarioImage : RogueBase
     {
         public SymbolTypes SymbolType { get; set; }

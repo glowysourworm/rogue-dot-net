@@ -43,13 +43,15 @@ namespace Rogue.NET.Scenario.Views
             // subscribe to events
             _eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
             {
-                var data = this.DataContext as LevelData;
-                if (data != null)
-                    Update(data);
+                // TODO
+                //var data = this.DataContext as LevelData;
+                //if (data != null)
+                //    Update();
             });
         }
 
-        private void Update(LevelData data)
+        // TODO
+        private void Update()
         {
             //if (data.Level.Number != currentLevelNumber)
             //    DrawLevelLines(data.Level);

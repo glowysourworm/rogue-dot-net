@@ -64,6 +64,8 @@ namespace Rogue.NET.Splash
                 Background = Brushes.Transparent,
                 BorderBrush = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
+                Margin = new Thickness(0),
+                FontFamily = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/CENTAUR.TTF#Centaur"), "Centaur"),
                 Topmost = true
             };
 

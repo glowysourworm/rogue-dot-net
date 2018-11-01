@@ -66,6 +66,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 contentGenerator,
                 characterGenerator,
                 scenarioMetaDataGenerator,
+                randomSequenceGenerator,
                 textService);
 
             return scenarioGenerator;
@@ -86,7 +87,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 
             Assert.IsNotNull(configuration);
 
-            var scenario = CreateScenarioGenerator(1234).CreateScenario(configuration, false);
+            var scenario = CreateScenarioGenerator(1234).CreateScenario(configuration, 1234, false);
 
             Assert.IsNotNull(scenario);
             Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);
@@ -102,7 +103,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             {
                 var scenarioGenerator = CreateScenarioGenerator(seed);
 
-                var scenario = scenarioGenerator.CreateScenario(configuration, false);
+                var scenario = scenarioGenerator.CreateScenario(configuration, seed, false);
 
                 Assert.IsNotNull(scenario);
                 Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);

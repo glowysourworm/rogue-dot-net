@@ -2,6 +2,8 @@
 using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 using System.Collections.ObjectModel;
@@ -13,7 +15,7 @@ using System.Windows.Media;
 namespace Rogue.NET.Intro.ViewModel
 {
     [Export]
-    public class GameSetupViewModel : INotifyPropertyChanged
+    public class GameSetupViewModel : NotifyViewModel
     {
         readonly IScenarioResourceService _resourceService;
         readonly IEventAggregator _eventAggregator;
@@ -170,18 +172,15 @@ namespace Rogue.NET.Intro.ViewModel
             _resourceService = resourceService;
             _eventAggregator = eventAggregator;
 
-            // subscribe to opening / loading events
-            _eventAggregator.GetEvent<SplashUpdateEvent>().Subscribe(e =>
-            {
-                this.LoadingMessage = e.Message;
-                this.LoadingProgress = e.Progress;
-            });
-
             _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe(() =>
             {
                 Reinitialize();
             });
             _eventAggregator.GetEvent<ScenarioSavedEvent>().Subscribe(() =>
+            {
+                Reinitialize();
+            });
+            _eventAggregator.GetEvent<ResourcesInitializedEvent>().Subscribe(() =>
             {
                 Reinitialize();
             });
@@ -217,13 +216,6 @@ namespace Rogue.NET.Intro.ViewModel
                     NumberOfLevels = config.DungeonTemplate.NumberOfLevels
                 });
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
     }
 }

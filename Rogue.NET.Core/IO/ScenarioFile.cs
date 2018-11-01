@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.IO
 {
@@ -22,6 +23,8 @@ namespace Rogue.NET.Core.IO
     {
         public const string CONFIG = "Config";
         public const string PLAYER = "Player";
+        public const string SAVELOCATION = "Save Location";
+        public const string SAVELEVEL = "Save Level";
         public const string SEED = "Seed";
         public const string CURRENT_LEVEL = "Current Level";
         public const string SURVIVOR_MODE = "Survivor Mode";
@@ -56,6 +59,8 @@ namespace Rogue.NET.Core.IO
 
             byte[] configuration = BinarySerializer.SerializeAndCompress(dungeon.StoredConfig);
             byte[] player = BinarySerializer.SerializeAndCompress(dungeon.Player1);
+            byte[] saveLocation = BinarySerializer.SerializeAndCompress(dungeon.SaveLocation);
+            byte[] saveLevel = BinarySerializer.SerializeAndCompress(dungeon.SaveLevel);
             byte[] seed = BitConverter.GetBytes(dungeon.Seed);
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
@@ -77,6 +82,14 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(player, 0, player.Length);
 
             offset += player.Length;
+            _header.StaticObjects.Add(new IndexedObject(typeof(Player), SAVELOCATION, offset, saveLocation.Length));
+            dungeonFileStream.Write(saveLocation, 0, saveLocation.Length);
+
+            offset += saveLocation.Length;
+            _header.StaticObjects.Add(new IndexedObject(typeof(Player), SAVELEVEL, offset, saveLevel.Length));
+            dungeonFileStream.Write(saveLevel, 0, saveLevel.Length);
+
+            offset += saveLevel.Length;
             _header.StaticObjects.Add(new IndexedObject(typeof(int), SEED, offset, seed.Length));
             dungeonFileStream.Write(seed, 0, seed.Length);
 
@@ -170,6 +183,12 @@ namespace Rogue.NET.Core.IO
                     case PLAYER:
                         dungeon.Player1 = BinarySerializer.DeserializeAndDecompress<Player>(buffer);
                         break;
+                    case SAVELOCATION:
+                        dungeon.SaveLocation = BinarySerializer.DeserializeAndDecompress<PlayerStartLocation>(buffer);
+                        break;
+                    case SAVELEVEL:
+                        dungeon.SaveLevel = BinarySerializer.DeserializeAndDecompress<int>(buffer);
+                        break;
                     case SEED:
                         dungeon.Seed = BitConverter.ToInt32(buffer, 0);
                         break;
@@ -218,106 +237,85 @@ namespace Rogue.NET.Core.IO
         /// <summary>
         /// Saves contents of existing dungeon file to disk
         /// </summary>
-        public bool Save(string file)
+        public byte[] Save()
         {
-            try
-            {
-                MemoryStream headerStream = new MemoryStream();
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(headerStream, _header);
+            MemoryStream headerStream = new MemoryStream();
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(headerStream, _header);
 
-                byte[] headerBuffer = headerStream.GetBuffer();
-                byte[] headerLengthBuffer = BitConverter.GetBytes(headerBuffer.Length);
+            byte[] headerBuffer = headerStream.GetBuffer();
+            byte[] headerLengthBuffer = BitConverter.GetBytes(headerBuffer.Length);
 
-                using (FileStream fileStream = File.OpenWrite(file))
-                {
-                    fileStream.Write(headerLengthBuffer, 0, headerLengthBuffer.Length);
-                    fileStream.Write(headerBuffer, 0, headerBuffer.Length);
-                    fileStream.Write(_dungeonBuffer, 0, _dungeonBuffer.Length);
-                }
-                return true;
-            }
-            catch (Exception e)
+            using (var stream = new MemoryStream())
             {
-                MessageBox.Show("Error saving game progress" + e.Message);
-                return false;
+                stream.Write(headerLengthBuffer, 0, headerLengthBuffer.Length);
+                stream.Write(headerBuffer, 0, headerBuffer.Length);
+                stream.Write(_dungeonBuffer, 0, _dungeonBuffer.Length);
+
+                return stream.GetBuffer();
             }
         }
 
         /// <summary>
         /// Opens the dungeon file with all contents packed - header is available for unpacking
         /// </summary>
-        public static ScenarioFile Open(string file)
+        public static ScenarioFile Open(byte[] buffer)
         {
-            try
+            byte[] headerBuffer = null;
+            byte[] dungeonBuffer = null;
+
+            //First 32-bits of file is the length of the header
+            byte[] headerLengthBuffer = new byte[4];
+
+            using (MemoryStream stream = new MemoryStream(buffer))
             {
-                byte[] headerBuffer = null;
-                byte[] dungeonBuffer = null;
+                //Get length of header
+                stream.Read(headerLengthBuffer, 0, 4);
+                int headerLength = BitConverter.ToInt32(headerLengthBuffer, 0);
 
-                //First 32-bits of file is the length of the header
-                byte[] headerLengthBuffer = new byte[4];
+                //Read file header
+                headerBuffer = new byte[headerLength];
+                stream.Read(headerBuffer, 0, headerLength);
 
-                using (FileStream fileStream = File.OpenRead(file))
-                {
-                    //Get length of header
-                    fileStream.Read(headerLengthBuffer, 0, 4);
-                    int headerLength = BitConverter.ToInt32(headerLengthBuffer, 0);
+                //create dungeon buffer
+                dungeonBuffer = new byte[stream.Length - headerBuffer.Length - 4];
 
-                    //Read file header
-                    headerBuffer = new byte[headerLength];
-                    fileStream.Read(headerBuffer, 0, headerLength);
-
-                    //create dungeon buffer
-                    dungeonBuffer = new byte[fileStream.Length - headerBuffer.Length - 4];
-
-                    //Read the rest of the contents into memory
-                    fileStream.Read(dungeonBuffer, 0, (int)(fileStream.Length - headerBuffer.Length - 4));
-                }
-
-                MemoryStream headerStream = new MemoryStream(headerBuffer);
-                BinaryFormatter formatter = new BinaryFormatter();
-                ScenarioFileHeader header = (ScenarioFileHeader)formatter.Deserialize(headerStream);
-
-                return new ScenarioFile(header, dungeonBuffer);
+                //Read the rest of the contents into memory
+                stream.Read(dungeonBuffer, 0, (int)(stream.Length - headerBuffer.Length - 4));
             }
-            catch (Exception)
-            {
-                return null;
-            }
+
+            MemoryStream headerStream = new MemoryStream(headerBuffer);
+            BinaryFormatter formatter = new BinaryFormatter();
+            ScenarioFileHeader header = (ScenarioFileHeader)formatter.Deserialize(headerStream);
+
+            return new ScenarioFile(header, dungeonBuffer);
         }
 
         /// <summary>
         /// Opens just header section of file and returns
         /// </summary>
-        public static ScenarioFileHeader OpenHeader(string file)
+        public static ScenarioFileHeader OpenHeader(byte[] buffer)
         {
-            try
+            byte[] headerBuffer = null;
+
+            //First 32-bits of file is the length of the header
+            byte[] headerLengthBuffer = new byte[4];
+
+            using (var stream = new MemoryStream(buffer))
             {
-                byte[] headerBuffer = null;
+                //Get length of header
+                stream.Read(headerLengthBuffer, 0, 4);
+                int headerLength = BitConverter.ToInt32(headerLengthBuffer, 0);
 
-                //First 32-bits of file is the length of the header
-                byte[] headerLengthBuffer = new byte[4];
-
-                using (FileStream fileStream = File.OpenRead(file))
-                {
-                    //Get length of header
-                    fileStream.Read(headerLengthBuffer, 0, 4);
-                    int headerLength = BitConverter.ToInt32(headerLengthBuffer, 0);
-
-                    //Read file header
-                    headerBuffer = new byte[headerLength];
-                    fileStream.Read(headerBuffer, 0, headerLength);
-                }
-
-                MemoryStream headerStream = new MemoryStream(headerBuffer);
-                BinaryFormatter formatter = new BinaryFormatter();
-                ScenarioFileHeader header = (ScenarioFileHeader)formatter.Deserialize(headerStream);
-                return header;
+                //Read file header
+                headerBuffer = new byte[headerLength];
+                stream.Read(headerBuffer, 0, headerLength);
             }
-            catch (Exception)
-            {
-                return null;
-            }
+
+            MemoryStream headerStream = new MemoryStream(headerBuffer);
+            BinaryFormatter formatter = new BinaryFormatter();
+            ScenarioFileHeader header = (ScenarioFileHeader)formatter.Deserialize(headerStream);
+            return header;
         }
 
         /// <summary>
@@ -342,6 +340,8 @@ namespace Rogue.NET.Core.IO
             //Add to allow other thread processing
             Thread.Sleep(10);
 
+            byte[] saveLocation = BinarySerializer.SerializeAndCompress(dungeon.SaveLocation);
+            byte[] saveLevel = BinarySerializer.SerializeAndCompress(dungeon.SaveLevel);
             byte[] seed = BitConverter.GetBytes(dungeon.Seed);
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
@@ -377,6 +377,14 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(player, 0, player.Length);
 
             offset += player.Length;
+            header.StaticObjects.Add(new IndexedObject(typeof(PlayerStartLocation), SAVELOCATION, offset, saveLocation.Length));
+            dungeonFileStream.Write(saveLocation, 0, saveLocation.Length);
+
+            offset += saveLocation.Length;
+            header.StaticObjects.Add(new IndexedObject(typeof(int), SAVELEVEL, offset, saveLevel.Length));
+            dungeonFileStream.Write(saveLevel, 0, saveLevel.Length);
+
+            offset += saveLevel.Length;
             header.StaticObjects.Add(new IndexedObject(typeof(int), SEED, offset, seed.Length));
             dungeonFileStream.Write(seed, 0, seed.Length);
 

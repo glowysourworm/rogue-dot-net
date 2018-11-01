@@ -29,25 +29,26 @@ namespace Rogue.NET.View
 
         void ObjectiveWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var levelData = this.DataContext as LevelData;
-            if (levelData != null)
-            {
-                //Add objectives to panel
-                this.ObjectivePanel.ClearElements();
-                IEnumerable<ScenarioMetaData> objectives = levelData.Encyclopedia.Values.Where(z => z.IsObjective);
-                foreach (var meta in objectives)
-                {
-                    Image img = new Image();
-                    img.Name = meta.RogueName;
-                    // TODO
-                    //img.Source = meta.SymbolInfo.SymbolImageSource;
-                    img.Width = 20;
-                    img.Height = 30;
-                    this.ObjectivePanel.Children.Add(img);
-                }
+            // TODO
+            //var levelData = this.DataContext as LevelData;
+            //if (levelData != null)
+            //{
+            //    //Add objectives to panel
+            //    this.ObjectivePanel.ClearElements();
+            //    IEnumerable<ScenarioMetaData> objectives = levelData.Encyclopedia.Values.Where(z => z.IsObjective);
+            //    foreach (var meta in objectives)
+            //    {
+            //        Image img = new Image();
+            //        img.Name = meta.RogueName;
+            //        // TODO
+            //        //img.Source = meta.SymbolInfo.SymbolImageSource;
+            //        img.Width = 20;
+            //        img.Height = 30;
+            //        this.ObjectivePanel.Children.Add(img);
+            //    }
 
-                this.ObjectivePanel.InitializeElements();
-            }
+            //    this.ObjectivePanel.InitializeElements();
+            //}
         }
         private void ObjectivePanel_ObjectCentered(object sender, EventArgs e)
         {

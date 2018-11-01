@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Character;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Dynamic;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System;
@@ -10,7 +11,9 @@ namespace Rogue.NET.Core.Model.Scenario
     {
         public List<Level> LoadedLevels { get; set; }
         public Player Player1 { get; set; }
+        public PlayerStartLocation SaveLocation { get; set; }
         public int Seed { get; set; }
+        public int SaveLevel { get; set; }
         public int CurrentLevel { get; set; }
         public int TotalTicks { get; set; }
         public bool SurvivorMode { get; set; }
@@ -30,6 +33,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.CurrentLevel = 1;
             this.ScenarioEncyclopedia = new Dictionary<string, ScenarioMetaData>();
             this.ObjectiveAcheived = false;
+            this.SaveLocation = PlayerStartLocation.StairsUp;
         }
     }
 }

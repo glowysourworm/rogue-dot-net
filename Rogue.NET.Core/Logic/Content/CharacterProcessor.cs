@@ -2,12 +2,16 @@
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Character;
 using System;
+using System.ComponentModel.Composition;
 using System.Linq;
 
 namespace Rogue.NET.Core.Logic.Content
 {
+    [Export(typeof(ICharacterProcessor))]
     public class CharacterProcessor : ICharacterProcessor
     {
+        public CharacterProcessor() { }
+
         public double GetMagicBlockBase(Character character)
         {
             return character.IntelligenceBase / 100;

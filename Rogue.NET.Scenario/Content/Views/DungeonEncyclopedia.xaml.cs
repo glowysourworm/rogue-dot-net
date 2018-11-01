@@ -151,9 +151,10 @@ namespace Rogue.NET.Scenario.Views
         }
         private void DungeonEncyclopediaCtrl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var data = e.NewValue as LevelData;
-            if (data != null)
-                _encyclopedia = data.Encyclopedia;
+            // TODO
+            //var data = e.NewValue as LevelData;
+            //if (data != null)
+            //    _encyclopedia = data.Encyclopedia;
         }
         private string GetEntryTypeDescription(string type)
         {
@@ -350,23 +351,24 @@ namespace Rogue.NET.Scenario.Views
         }
         private void SubPanel_ObjectCentered(object sender, EventArgs e)
         {
-            var data = this.DataContext as LevelData;
-            if (data == null)
-                return;
+            // TODO
+            //var data = this.DataContext as LevelData;
+            //if (data == null)
+            //    return;
 
-            if (data != null)
-            {
-                var m = data.Encyclopedia[((FrameworkElement)sender).Tag.ToString()];
-                this.SubPanel.CenterText = m.IsIdentified ? m.RogueName : "???";
-                this.SubPanel.Foreground = m.IsUnique ? (m.IsObjective ? Brushes.Cyan : Brushes.Goldenrod) : Brushes.White;
-                if (m.IsObjective)
-                    this.SubPanel.Foreground = Brushes.Cyan;
+            //if (data != null)
+            //{
+            //    var m = data.Encyclopedia[((FrameworkElement)sender).Tag.ToString()];
+            //    this.SubPanel.CenterText = m.IsIdentified ? m.RogueName : "???";
+            //    this.SubPanel.Foreground = m.IsUnique ? (m.IsObjective ? Brushes.Cyan : Brushes.Goldenrod) : Brushes.White;
+            //    if (m.IsObjective)
+            //        this.SubPanel.Foreground = Brushes.Cyan;
 
-                if (!m.IsIdentified)
-                    this.SubPanel.Foreground = Brushes.White;
+            //    if (!m.IsIdentified)
+            //        this.SubPanel.Foreground = Brushes.White;
 
-                this.EntryBorder.DataContext = m;
-            }
+            //    this.EntryBorder.DataContext = m;
+            //}
         }
         private void TypePanel_ObjectCentered(object sender, EventArgs e)
         {

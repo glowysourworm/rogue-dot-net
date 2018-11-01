@@ -63,7 +63,7 @@ namespace Rogue.NET.View
             {
                 this.BlockUserInputs = false;
             });
-            _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe((levelData) =>
+            _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 this.BlockUserInputs = false;
             });

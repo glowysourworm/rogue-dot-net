@@ -3,7 +3,7 @@ using Rogue.NET.Core.Graveyard;
 
 namespace Rogue.NET.Model.Events
 {
-    public class LevelLoadedEvent : PubSubEvent<LevelData>
+    public class LevelLoadedEvent : PubSubEvent
     {
     }
 }

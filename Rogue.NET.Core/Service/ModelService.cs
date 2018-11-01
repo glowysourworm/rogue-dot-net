@@ -12,6 +12,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.IO;
 
 namespace Rogue.NET.Core.Service
 {
@@ -22,6 +23,9 @@ namespace Rogue.NET.Core.Service
         readonly ILayoutEngine _layoutEngine;
         readonly IRayTracer _rayTracer;
         readonly ICharacterProcessor _characterProcessor;
+
+        // PRIMARY SCENARIO STATE
+        ScenarioContainer _scenarioContainer;
 
         // Visible location collection calculated each time the player moves
         IEnumerable<CellPoint> _visibleLocations;
@@ -42,6 +46,18 @@ namespace Rogue.NET.Core.Service
             _visibleLocations = new List<CellPoint>();
             _effectedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
+        }
+
+        public void Load(
+            Player player, 
+            Level level, 
+            IDictionary<string, ScenarioMetaData> encyclopedia, 
+            ScenarioConfigurationContainer configuration)
+        {
+            this.CurrentLevel = level;
+            this.Player = player;
+            this.ScenarioEncyclopedia = encyclopedia;
+            this.ScenarioConfiguration = configuration;
         }
 
         public Level CurrentLevel { get; private set; }
@@ -107,7 +123,7 @@ namespace Rogue.NET.Core.Service
 
             // If blind - no visible locations
             var visibleLocations = this.Player.Alteration.GetStates().Any(z => z == CharacterStateType.Blind) ?
-                                   _layoutEngine.GetAdjacentLocations(this.Player.Location) : 
+                                   _layoutEngine.GetAdjacentLocations(this.CurrentLevel.Grid, this.Player.Location) : 
                                    _rayTracer.GetVisibleLocations(this.CurrentLevel.Grid, this.Player.Location, (int)lightRadius);
 
             // Reset flag for currently visible locations

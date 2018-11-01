@@ -174,10 +174,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PrismExtension\AggregateModuleCatalog.cs" />
     <Compile Include="PrismExtension\RogueBootstrapper.cs" />
     <Compile Include="PrismExtension\BorderRegionAdapter.cs" />
-    <Compile Include="PrismExtension\RogueMefBootstrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RogueApplication.cs" />
     <Compile Include="RogueModule.cs" />

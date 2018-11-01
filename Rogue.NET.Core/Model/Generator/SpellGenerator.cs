@@ -9,6 +9,8 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(ISpellGenerator))]
     public class SpellGenerator : ISpellGenerator
     {
+        public SpellGenerator() { }
+
         public Spell GenerateSpell(SpellTemplate spellTemplate)
         {
             Spell spell = new Spell();

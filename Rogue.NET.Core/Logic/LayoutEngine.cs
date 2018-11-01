@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Interface;
+using Rogue.NET.Core.Model.Scenario;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -14,21 +15,16 @@ namespace Rogue.NET.Core.Logic
     public class LayoutEngine : ILayoutEngine
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IModelService _modelService;
 
         [ImportingConstructor]
-        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, IModelService modelService)
+        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
-            _modelService = modelService;
         }
 
         #region (public) Player Action Methods
-        public void Search()
+        public void Search(LevelGrid grid, CellPoint location)
         {
-            var grid = _modelService.CurrentLevel.Grid;
-            var location = _modelService.Player.Location;
-
             Cell c = grid.GetCell(location);
             Cell n = grid[location.Column, location.Row - 1];
             Cell s = grid[location.Column, location.Row + 1];
@@ -93,16 +89,16 @@ namespace Rogue.NET.Core.Logic
                 sw.EastDoorSearchCounter--;
             }
         }
-        public void ToggleDoor(Compass direction, CellPoint characterLocation)
+        public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
         {
-            var nextPoint = GetPointInDirection(characterLocation, direction);
+            var nextPoint = GetPointInDirection(grid, characterLocation, direction);
             var openingPosition = CellPoint.Empty;
             var openingDirection = Compass.Null;
 
-            if (IsCellThroughDoor(characterLocation, nextPoint, out openingPosition, out openingDirection))
+            if (IsCellThroughDoor(grid, characterLocation, nextPoint, out openingPosition, out openingDirection))
             {
-                var characterCell = _modelService.CurrentLevel.Grid.GetCell(characterLocation);
-                var openingPositionCell = _modelService.CurrentLevel.Grid.GetCell(openingPosition);
+                var characterCell = grid.GetCell(characterLocation);
+                var openingPositionCell = grid.GetCell(openingPosition);
 
                 characterCell.ToggleDoor(direction);
                 openingPositionCell.ToggleDoor(GetOppositeDirection(direction));
@@ -111,15 +107,13 @@ namespace Rogue.NET.Core.Logic
         #endregion
 
         #region (public) Query Methods
-        public bool IsCellThroughDoor(CellPoint point1, CellPoint point2, out CellPoint openingPosition, out Compass openingDirection)
+        public bool IsCellThroughDoor(LevelGrid grid, CellPoint point1, CellPoint point2, out CellPoint openingPosition, out Compass openingDirection)
         {
-            var level = _modelService.CurrentLevel;
-
             openingPosition = CellPoint.Empty;
             openingDirection = Compass.Null;
 
-            Cell c1 = level.Grid.GetCell(point1);
-            Cell c2 = level.Grid.GetCell(point2);
+            Cell c1 = grid.GetCell(point1);
+            Cell c2 = grid.GetCell(point2);
             if (c1 == null || c2 == null)
                 return false;
 
@@ -144,8 +138,8 @@ namespace Rogue.NET.Core.Logic
                     return ((c1.Doors & Compass.W) != 0) && ((c2.Doors & Compass.E) != 0);
                 case Compass.NE:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
+                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -179,8 +173,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.NW:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
+                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -214,8 +208,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.SE:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
+                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -249,8 +243,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.SW:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
+                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -285,12 +279,10 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsCellThroughWall(CellPoint point1, CellPoint point2)
+        public bool IsCellThroughWall(LevelGrid grid, CellPoint point1, CellPoint point2)
         {
-            var level = _modelService.CurrentLevel;
-
-            Cell cell1 = level.Grid.GetCell(point1);
-            Cell cell2 = level.Grid.GetCell(point2);
+            Cell cell1 = grid.GetCell(point1);
+            Cell cell2 = grid.GetCell(point2);
 
             if (cell1 == null || cell2 == null)
                 return false;
@@ -308,8 +300,8 @@ namespace Rogue.NET.Core.Logic
                     return ((cell1.Walls & Compass.W) != 0) && ((cell2.Walls & Compass.E) != 0);
                 case Compass.NE:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
+                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -329,8 +321,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.NW:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
+                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -350,8 +342,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.SE:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
+                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -371,8 +363,8 @@ namespace Rogue.NET.Core.Logic
                     }
                 case Compass.SW:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
+                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
+                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -393,9 +385,8 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsPathToAdjacentCellBlocked(CellPoint point1, CellPoint point2)
+        public bool IsPathToAdjacentCellBlocked(Level level, CellPoint point1, CellPoint point2)
         {
-            var level = _modelService.CurrentLevel;
             var cell1 = level.Grid.GetCell(point1);
             var cell2 = level.Grid.GetCell(point2);
 
@@ -545,10 +536,8 @@ namespace Rogue.NET.Core.Logic
         #endregion
 
         #region (public) Get Methods
-        public CellPoint GetPointInDirection(CellPoint cellPoint, Compass direction)
+        public CellPoint GetPointInDirection(LevelGrid grid, CellPoint cellPoint, Compass direction)
         {
-            var grid = _modelService.CurrentLevel.Grid;
-
             switch (direction)
             {
                 case Compass.N: return grid[cellPoint.Column, cellPoint.Row - 1]?.Location ?? CellPoint.Empty;
@@ -563,15 +552,15 @@ namespace Rogue.NET.Core.Logic
                     throw new Exception("Unhandled Compass type");
             }
         }
-        public CellPoint GetRandomLocation(bool excludeOccupiedCells)
+        public CellPoint GetRandomLocation(Level level, bool excludeOccupiedCells)
         {
             // Get cell array from the grid
-            var cells = _modelService.CurrentLevel.Grid.GetCells();
+            var cells = level.Grid.GetCells();
 
             // Slower operation
             if (excludeOccupiedCells)
             {
-                var occupiedLocations = _modelService.CurrentLevel.GetContents().Select(x => x.Location);
+                var occupiedLocations = level.GetContents().Select(x => x.Location);
 
                 var freeCells = cells.Where(x => !occupiedLocations.Contains(x.Location));
 
@@ -584,31 +573,29 @@ namespace Rogue.NET.Core.Logic
                 return cells[_randomSequenceGenerator.Get(0, cells.Length)].Location;
             }
         }
-        public CellPoint GetRandomAdjacentLocation(CellPoint location, bool excludeOccupiedCells)
+        public CellPoint GetRandomAdjacentLocation(Level level, CellPoint location, bool excludeOccupiedCells)
         {
-            var adjacentLocations = GetAdjacentLocations(location).
-                                    Where(x => (excludeOccupiedCells && _modelService.CurrentLevel.IsCellOccupied(x)));
+            var adjacentLocations = GetAdjacentLocations(level.Grid, location).
+                                    Where(x => (excludeOccupiedCells && level.IsCellOccupied(x)));
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
                                            : CellPoint.Empty;
 
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocations(CellPoint location)
+        public IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, CellPoint location)
         {
-            var adjacentLocations = GetAdjacentLocations(location);
+            var adjacentLocations = GetAdjacentLocations(level.Grid, location);
 
-            return adjacentLocations.Where(x => x != null && !_modelService.CurrentLevel.IsCellOccupied(x));
+            return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x));
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(CellPoint location)
+        public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, CellPoint location)
         {
-            var adjacentLocations = GetAdjacentLocations(location);
+            var adjacentLocations = GetAdjacentLocations(level.Grid, location);
 
-            return adjacentLocations.Where(x => x != null && !_modelService.CurrentLevel.IsCellOccupiedByEnemy(x));
+            return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x));
         }
-        public IEnumerable<CellPoint> GetAdjacentLocations(CellPoint location)
+        public IEnumerable<CellPoint> GetAdjacentLocations(LevelGrid grid, CellPoint location)
         {
-            var grid = _modelService.CurrentLevel.Grid;
-
             var n = grid[location.Column, location.Row - 1]?.Location ?? null;
             var s = grid[location.Column, location.Row + 1]?.Location ?? null;
             var e = grid[location.Column + 1, location.Row]?.Location ?? null;

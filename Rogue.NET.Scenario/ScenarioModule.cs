@@ -38,10 +38,8 @@ namespace Rogue.NET.Scenario
                 Message = "Loading Scenario Module...",
                 Progress = 50
             });
-            _eventAggregator.GetEvent<LevelInitializedEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<LevelInitializedEvent>().Subscribe(() =>
             {
-                var view = _regionManager.Regions["GameView"].Context = e;
-
                 _regionManager.RequestNavigate("MainRegion", "GameView");
                 _regionManager.RequestNavigate("GameRegion", "LevelView");
                 _regionManager.RequestNavigate("GameInfoRegion", "GameInfoView");

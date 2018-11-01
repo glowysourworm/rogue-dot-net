@@ -2,6 +2,8 @@
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Controller.Interface;
+using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Service.Interface;
 using System.ComponentModel.Composition;
 
@@ -12,16 +14,24 @@ namespace Rogue.NET.Core
     {
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioResourceService _scenarioResourceService;
+        readonly IModelController _modelController;
 
+        // TODO: MAKE THIS EXPLICIT IN THE BOOTSTRAPPER
         [ImportingConstructor]
-        public CoreModule(IEventAggregator eventAggregator, IScenarioResourceService scenarioResourceService)
+        public CoreModule(
+            IEventAggregator eventAggregator, 
+            IScenarioResourceService scenarioResourceService,
+            IModelController modelController)
         {
             _eventAggregator = eventAggregator;
             _scenarioResourceService = scenarioResourceService;
+            _modelController = modelController;
         }
 
         public void Initialize()
         {
+            _modelController.Initialize();
+
             // Show the Splash Sceen
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
             {
@@ -67,6 +77,9 @@ namespace Rogue.NET.Core
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Splash
             });
+
+            // Notify listeners
+            _eventAggregator.GetEvent<ResourcesInitializedEvent>().Publish();
         }
     }
 }

@@ -440,7 +440,7 @@ namespace Rogue.NET.Core.Logic
 
         private void TeleportRandom(Character character)
         {
-            character.Location = _layoutEngine.GetRandomLocation(true);
+            character.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
 
             if (character is Player)
                 _scenarioMessageService.Publish("You were teleported!");
@@ -514,7 +514,7 @@ namespace Rogue.NET.Core.Logic
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {
-            var location = _layoutEngine.GetRandomAdjacentLocation(enemy.Location, true);
+            var location = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, enemy.Location, true);
             if (location == CellPoint.Empty)
                 return;
 
@@ -538,7 +538,7 @@ namespace Rogue.NET.Core.Logic
                 _scenarioMessageService.Publish("You hear growling in the distance");
 
                 var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
-                enemy.Location = _layoutEngine.GetRandomLocation(true);
+                enemy.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
 
                 _modelService.CurrentLevel.AddContent(enemy);
             }

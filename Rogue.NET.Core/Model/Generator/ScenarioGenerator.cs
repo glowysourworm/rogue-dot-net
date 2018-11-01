@@ -23,14 +23,17 @@ namespace Rogue.NET.Core.Model.Generator
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ITextService _textService;
 
+        [ImportingConstructor]
         public ScenarioGenerator(
             IEventAggregator eventAggregator,
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
+            IRandomSequenceGenerator randomSequenceGenerator,
             ITextService textService)
         {
             _eventAggregator = eventAggregator;
@@ -38,10 +41,11 @@ namespace Rogue.NET.Core.Model.Generator
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
+            _randomSequenceGenerator = randomSequenceGenerator;
             _textService = textService;
         }
 
-        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, bool survivorMode)
+        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, int seed, bool survivorMode)
         {
             ScenarioContainer scenario = new ScenarioContainer();
 
@@ -150,7 +154,7 @@ namespace Rogue.NET.Core.Model.Generator
                         GenerationProbability = 1
                     });
 
-            return CreateScenario(configuration, false);
+            return CreateScenario(configuration, 1234, false);
         }
     }
 }

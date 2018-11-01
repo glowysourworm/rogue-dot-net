@@ -139,7 +139,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelAction.Close:
                     {
-                        _layoutEngine.ToggleDoor(command.Direction, player.Location);
+                        _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
@@ -155,13 +155,13 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelAction.Open:
                     {
-                        _layoutEngine.ToggleDoor(command.Direction, player.Location);
+                        _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
                 case LevelAction.Search:
                     {
-                        _layoutEngine.Search();
+                        _layoutEngine.Search(_modelService.CurrentLevel.Grid, _modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;

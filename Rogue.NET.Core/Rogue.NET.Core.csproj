@@ -70,6 +70,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\Interface\IModelController.cs" />
+    <Compile Include="Controller\ModelController.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
     <Compile Include="Converter\BoolIntConverter.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplate\SymbolDetailsTemplateAuraToColorConverter.cs" />
+    <Compile Include="Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Event\ExitEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\LevelCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
@@ -122,12 +125,10 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioTickEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\UpdateScenarioObjectEvent.cs" />
-    <Compile Include="Graveyard\LevelData.cs" />
-    <Compile Include="Graveyard\ModelController.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Graveyard\ResourceManager.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
-    <Compile Include="IO\Serializer.cs" />
+    <Compile Include="IO\BinarySerializer.cs" />
     <Compile Include="Logic\Processing\AnimationEvent.cs" />
     <Compile Include="Logic\Processing\Interface\IAnimationEvent.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelProcessingAction.cs" />

@@ -155,9 +155,10 @@ namespace Rogue.NET.Scenario.Views
         }
         private void ItemGrid_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var levelData = this.DataContext as LevelData;
-            if (levelData == null)
-                return;
+            // TODO
+            //var levelData = this.DataContext as LevelData;
+            //if (levelData == null)
+            //    return;
 
             //levelData.Player.ConsumableInventory.CollectionAltered -= UpdateItemGrid;
             //levelData.Player.EquipmentInventory.CollectionAltered -= UpdateItemGrid;

@@ -71,7 +71,7 @@ namespace Rogue.NET.Core.Service
             var scenarioHeaders = new Dictionary<string, ScenarioFileHeader>();
             foreach (var file in scenarioFiles)
             {
-                var header = ScenarioFile.OpenHeader(file);
+                var header = ScenarioFile.OpenHeader(File.ReadAllBytes(file));
                 var name = Path.GetFileNameWithoutExtension(file);
                 if (header != null)
                     scenarioHeaders.Add(name, header);

@@ -13,6 +13,9 @@ namespace Rogue.NET.Core.Logic.Algorithm
     [Export(typeof(IRayTracer))]
     public class SimpleRayTracer : IRayTracer
     {
+        [ImportingConstructor]
+        public SimpleRayTracer() { }
+
         public IEnumerable<CellPoint> GetVisibleLocations(LevelGrid grid, CellPoint location, int maxCellRadius)
         {
             var result = new Dictionary<int, Cell>();

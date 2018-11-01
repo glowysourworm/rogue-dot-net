@@ -39,49 +39,51 @@ namespace Rogue.NET.Scenario.Views
         }
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            var view = this.DataContext as LevelData;
-            if (view != null)
-            {
-                CenterOnPlayer();
-            }
+            // TODO
+            //var view = this.DataContext as LevelData;
+            //if (view != null)
+            //{
+            //    CenterOnPlayer();
+            //}
         }
         private void LevelCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue == null)
                 return;
 
-            var model = e.NewValue as LevelData;
-            if (model != null)
-            {
-                this.Children.Clear();
+            // TODO
+            //var model = e.NewValue as LevelData;
+            //if (model != null)
+            //{
+            //    this.Children.Clear();
 
-                var xform = new TransformGroup();
-                xform.Children.Add(_scaleXform);
-                xform.Children.Add(_translateXform);
+            //    var xform = new TransformGroup();
+            //    xform.Children.Add(_scaleXform);
+            //    xform.Children.Add(_translateXform);
 
-                //model.Level.RenderTransform = xform;
-                //model.Player.RenderTransform = xform;
+            //    //model.Level.RenderTransform = xform;
+            //    //model.Player.RenderTransform = xform;
 
-                //this.Children.Add(model.Level);
-                //this.Children.Add(model.Player);
+            //    //this.Children.Add(model.Level);
+            //    //this.Children.Add(model.Player);
 
-                //model.Player.PropertyChanged += (obj, ev) =>
-                //{
-                //    if (ev.PropertyName == "Location")
-                //        OnPlayerLocationChanged();
-                //};
+            //    //model.Player.PropertyChanged += (obj, ev) =>
+            //    //{
+            //    //    if (ev.PropertyName == "Location")
+            //    //        OnPlayerLocationChanged();
+            //    //};
 
-                //model.TargetedEnemies.CollectionChanged += (obj, ev) =>
-                //{
-                //    var offset = xform.Transform(new Point(0, 0));
-                //    var offsetVector = new Vector(offset.X, offset.Y);
-                //    var points = model.TargetedEnemies.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray();
-                //    PlayTargetAnimation(points);
-                //};
+            //    //model.TargetedEnemies.CollectionChanged += (obj, ev) =>
+            //    //{
+            //    //    var offset = xform.Transform(new Point(0, 0));
+            //    //    var offsetVector = new Vector(offset.X, offset.Y);
+            //    //    var points = model.TargetedEnemies.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray();
+            //    //    PlayTargetAnimation(points);
+            //    //};
 
-                CenterOnPlayer();
-                InvalidateVisual();
-            }
+            //    CenterOnPlayer();
+            //    InvalidateVisual();
+            //}
         }
 
         public void InitializeEvents(IEventAggregator eventAggregator)
@@ -154,7 +156,8 @@ namespace Rogue.NET.Scenario.Views
             Rect r = new Rect(this.RenderSize);
             Point midpt = new Point(r.Width / 2, r.Height / 2);
 
-            var data  = this.DataContext as LevelData;
+            // TODO
+            // var data  = this.DataContext as LevelData;
             //var origin = data.Player.RenderTransform.Transform(new Point(0, 0));
 
             //_translateXform.X += midpt.X - (data.Player.Margin.Left + origin.X);
