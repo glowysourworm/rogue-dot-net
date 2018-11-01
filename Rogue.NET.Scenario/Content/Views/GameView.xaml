@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+    xmlns:commonUtility="clr-namespace:Rogue.NET.Common.Utility;assembly=Rogue.NET.Common"
     Height="Auto" 
     Width="Auto" 
     xmlns:prism="http://www.codeplex.com/prism"
@@ -35,7 +36,7 @@
                 <Grid>
                     <TextBlock Text="Rogue.NET" Foreground="White" FontSize="32" HorizontalAlignment="Left" Margin="8" />
                     <StackPanel Orientation="Horizontal" Margin="0,0,14,0" HorizontalAlignment="Right">
-                        <TextBlock Text="© 2018 - Rogue.NET Project"  Margin="8" Grid.Column="3" Grid.Row="2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock Text="{x:Static commonUtility:ConstantStrings.Copyright}"  Margin="8" Grid.Column="3" Grid.Row="2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
                         <Button x:Name="PreferncesButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Write.png" Background="Black" BorderBrush="White" HorizontalAlignment="Center" Click="PreferencesButton_Click" Margin="2" Style="{DynamicResource ShinyButtonStyle}" Width="32" Cursor="Hand" ToolTip="Command Preferences" Height="32" />
                         <Button x:Name="HelpButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" Background="Black" BorderBrush="White" HorizontalAlignment="Center" Click="HelpButton_Click" Width="32" Style="{DynamicResource ShinyButtonStyle}" Height="32" Margin="2" Cursor="Hand" ToolTip="Help"/>
                         <Button x:Name="ObjectiveButton"  HorizontalAlignment="Center" Background="Black" BorderBrush="White" Foreground="Yellow" Click="ObjectiveButton_Click" Content="Button" Width="32" Style="{DynamicResource ShinySmileyButtonStyle}" Height="32" Margin="2" ToolTip="Objectives" Cursor="Hand"/>
