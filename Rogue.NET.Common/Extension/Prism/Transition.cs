@@ -4,11 +4,11 @@ namespace Rogue.NET.Common.Extension.Prism
 {
     public abstract class Transition
     {
-        protected virtual void BeginTransition(TransitionPresenter transitionElement, ContentPresenter oldContent, ContentPresenter newContent)
+        public virtual void BeginTransition(TransitionPresenter transitionElement, UserControl oldContent, UserControl newContent)
         {
 
         }
-        protected virtual void EndTransition(TransitionPresenter transitionElement, ContentPresenter oldContent, ContentPresenter newContent)
+        public virtual void EndTransition(TransitionPresenter transitionElement, UserControl oldContent, UserControl newContent)
         {
 
         }

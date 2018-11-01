@@ -19,7 +19,7 @@ namespace Rogue.NET.Common.Extension.Prism
             this.Time = new Duration(new TimeSpan(0, 0, 0, 0, 300));
         }
 
-        protected override void BeginTransition(TransitionPresenter transitionElement, ContentPresenter oldContent, ContentPresenter newContent)
+        public override void BeginTransition(TransitionPresenter transitionElement, UserControl oldContent, UserControl newContent)
         {
             var blurEffect = new BlurEffect();
             var doubleAnimation = new DoubleAnimation(this.FromRadius, this.ToRadius, this.Time);
@@ -33,6 +33,10 @@ namespace Rogue.NET.Common.Extension.Prism
 
             oldContent.Effect = blurEffect;
             blurEffect.BeginAnimation(BlurEffect.RadiusProperty, doubleAnimation);
+        }
+        public override void EndTransition(TransitionPresenter transitionElement, UserControl oldContent, UserControl newContent)
+        {
+            transitionElement.Content = newContent;
         }
     }
 }

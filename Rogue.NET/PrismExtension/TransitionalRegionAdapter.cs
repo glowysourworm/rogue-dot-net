@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using Prism.Regions;
 using System.ComponentModel.Composition;
 using Rogue.NET.Common.Extension.Prism;
+using System.Windows.Controls;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -28,7 +29,7 @@ namespace Rogue.NET.PrismExtension
 
             region.ActiveViews.CollectionChanged += delegate
             {
-                regionTarget.Content = region.ActiveViews.FirstOrDefault();
+                regionTarget.TransitionTo(region.ActiveViews.FirstOrDefault() as UserControl);
             };
 
             region.Views.CollectionChanged +=
