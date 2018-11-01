@@ -182,7 +182,6 @@
     <Compile Include="Intro\Views\GameSetup\NewOpenEdit.xaml.cs">
       <DependentUpon>NewOpenEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ScenarioController.cs" />
     <Compile Include="ScenarioModule.cs" />
     <Compile Include="Intro\ViewModel\GameSetupViewModel.cs" />
     <Compile Include="Intro\Views\GameSetupView.xaml.cs">

@@ -2,15 +2,18 @@
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using System;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [Export]
     public partial class ChooseScenario : UserControl
     {
         readonly IEventAggregator _eventAggregator;
 
+        [ImportingConstructor]
         public ChooseScenario(IEventAggregator eventAggregator)
         {
             InitializeComponent();

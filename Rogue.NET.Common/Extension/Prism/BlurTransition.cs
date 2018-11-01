@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 
-namespace Rogue.NET.PrismExtension
+namespace Rogue.NET.Common.Extension.Prism
 {
     public class BlurTransition : Transition
     {

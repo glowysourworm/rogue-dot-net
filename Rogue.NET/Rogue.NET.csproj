@@ -175,12 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PrismExtension\AggregateModuleCatalog.cs" />
-    <Compile Include="PrismExtension\BlurTransition.cs" />
     <Compile Include="PrismExtension\RogueBootstrapper.cs" />
     <Compile Include="PrismExtension\BorderRegionAdapter.cs" />
     <Compile Include="PrismExtension\RogueMefBootstrapper.cs" />
-    <Compile Include="PrismExtension\Transition.cs" />
-    <Compile Include="PrismExtension\TransitionPresenter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RogueApplication.cs" />
     <Compile Include="RogueModule.cs" />

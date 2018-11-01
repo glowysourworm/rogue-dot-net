@@ -7,6 +7,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [Export]
     public partial class ChooseSavedGame : UserControl
     {
         readonly IEventAggregator _eventAggragator;

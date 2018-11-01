@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Rogue.NET.PrismExtension
+namespace Rogue.NET.Common.Extension.Prism
 {
     public abstract class Transition
     {
@@ -12,6 +12,5 @@ namespace Rogue.NET.PrismExtension
         {
 
         }
-
     }
 }

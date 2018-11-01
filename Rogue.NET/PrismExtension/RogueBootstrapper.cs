@@ -29,6 +29,7 @@ using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Assets.Spell;
 using Rogue.NET.ScenarioEditor.Views.Construction;
+using Rogue.NET.Common.Extension.Prism;
 
 namespace Rogue.NET.PrismExtension
 {

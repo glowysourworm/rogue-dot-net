@@ -2,9 +2,13 @@
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
+using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Intro.Views;
+using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.Views;
+using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Views;
@@ -33,6 +37,45 @@ namespace Rogue.NET.Scenario
             {
                 Message = "Loading Scenario Module...",
                 Progress = 50
+            });
+            _eventAggregator.GetEvent<LevelInitializedEvent>().Subscribe((e) =>
+            {
+                var view = _regionManager.Regions["GameView"].Context = e;
+
+                _regionManager.RequestNavigate("MainRegion", "GameView");
+                _regionManager.RequestNavigate("GameRegion", "LevelView");
+                _regionManager.RequestNavigate("GameInfoRegion", "GameInfoView");
+
+            }, true);
+
+            _eventAggregator.GetEvent<PlayerDiedEvent>().Subscribe((e) =>
+            {
+                _regionManager.Regions["DeathDisplay"].Context = e;
+
+                _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
+            }, true);
+
+            _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
+                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+            });
+
+            _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
+                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+            });
+
+            _eventAggregator.GetEvent<IntroFinishedEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
+                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+            });
+
+            _eventAggregator.GetEvent<GameSetupDisplayFinished>().Subscribe((e) =>
+            {
+                _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
             });
         }
         //public void OnInitialized(IContainerProvider containerProvider)

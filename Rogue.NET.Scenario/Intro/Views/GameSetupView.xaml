@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:prismExtension="clr-namespace:Rogue.NET.Common.Extension.Prism;assembly=Rogue.NET.Common"
              mc:Ignorable="d" 
              Background="Black"
              d:DesignHeight="600" d:DesignWidth="1200">
@@ -24,16 +26,16 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="Rogue.NET" Foreground="White" FontSize="36" Margin="10" />
-        <TextBlock Text="© 2016 - Rogue.NET Project"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
+        <TextBlock Text="© 2018 - Rogue.NET Project"  Margin="10" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
-        <!-- TODO pixelab:TransitionPresenter Grid.Row="1" 
+        <prismExtension:TransitionPresenter Grid.Row="1" 
                                      HorizontalAlignment="Stretch"
                                      VerticalAlignment="Stretch"
                                      prism:RegionManager.RegionName="GameSetupRegion" >
-            <pixelab:TransitionPresenter.Transition>
-                <commonExt:BlurTransition FromRadius="0" ToRadius="50" />
-            </pixelab:TransitionPresenter.Transition>
-        </-->
+            <prismExtension:TransitionPresenter.Transition>
+                <prismExtension:BlurTransition FromRadius="0" ToRadius="50" />
+            </prismExtension:TransitionPresenter.Transition>
+        </prismExtension:TransitionPresenter>
         <Grid Grid.Row="2" Margin="10">
             <Grid.Resources>
                 <Style TargetType="Button">

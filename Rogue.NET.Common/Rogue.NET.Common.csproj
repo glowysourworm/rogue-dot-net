@@ -159,6 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\EditableTextBlock.cs" />
+    <Compile Include="Extension\Prism\BlurTransition.cs" />
+    <Compile Include="Extension\Prism\Transition.cs" />
+    <Compile Include="Extension\Prism\TransitionPresenter.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
     <Compile Include="Extension\CopyExtension.cs" />
     <Compile Include="ViewModel\NotifyViewModel.cs" />

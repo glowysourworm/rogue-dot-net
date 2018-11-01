@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Specialized;
 using Prism.Regions;
 using System.ComponentModel.Composition;
+using Rogue.NET.Common.Extension.Prism;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -23,9 +24,7 @@ namespace Rogue.NET.PrismExtension
             var contentIsSet = regionTarget.Content != null;
 
             if (contentIsSet)
-            {
                 throw new InvalidOperationException("ContentControlHasContentException");
-            }
 
             region.ActiveViews.CollectionChanged += delegate
             {
