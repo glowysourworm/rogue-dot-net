@@ -181,6 +181,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="RogueApplication.cs" />
     <Compile Include="RogueModule.cs" />
+    <Compile Include="Splash\SplashThread.cs" />
     <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
     <Compile Include="ViewModel\SplashViewModel.cs" />
     <Compile Include="View\CommandPreferencesView.xaml.cs">

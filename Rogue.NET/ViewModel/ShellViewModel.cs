@@ -1,8 +1,6 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common;
-using Rogue.NET.Common.Events.Splash;
+using Prism.Regions;
 using Rogue.NET.Common.ViewModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ViewModel
@@ -10,27 +8,14 @@ namespace Rogue.NET.ViewModel
     [Export]
     public class ShellViewModel : NotifyViewModel
     {
-        bool _isPopupOpen;
-
-        public bool IsPopupOpen
-        {
-            get { return _isPopupOpen; }
-            set
-            {
-                _isPopupOpen = value;
-                OnPropertyChanged("IsPopupOpen");
-            }
-        }
+        readonly IRegionManager _regionManager;
 
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator)
+        public ShellViewModel(IEventAggregator eventAggregator, IRegionManager regionManager)
         {
             // TODO - listen for ItemGrid event to close window
 
-            eventAggregator.GetEvent<SplashEvent>().Subscribe((e) =>
-            {
-                this.IsPopupOpen = e.SplashAction == SplashAction.Show;
-            });
+            _regionManager = regionManager;
         }
     }
 }

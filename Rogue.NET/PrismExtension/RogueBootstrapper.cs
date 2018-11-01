@@ -40,33 +40,19 @@ namespace Rogue.NET.PrismExtension
             return ServiceLocator.Current.GetInstance<Shell>();
         }
 
-        protected override void InitializeShell()
+        protected override void InitializeModules()
         {
-            base.InitializeShell();
+            RegisterRegionViews();
+
+            base.InitializeModules();
 
             Application.Current.MainWindow = this.Shell as Shell;
             Application.Current.MainWindow.Show();
-        }
-
-        protected override void InitializeModules()
-        {
-            base.InitializeModules();
-
-            RegisterRegionViews();
 
             // Request Navigate
             var regionManager = this.Container.GetExport<IRegionManager>().Value;
 
             regionManager.RequestNavigate("MainRegion", "IntroView");
-
-            //// initialize startup display
-            //_eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
-            //{
-            //    SplashAction = SplashAction.Hide,
-            //    SplashType = SplashEventType.Splash
-            //});
-            //_regionManager.RequestNavigate("MainRegion", "IntroView");
-            //Application.Current.MainWindow.Show();
         }
 
         protected override AggregateCatalog CreateAggregateCatalog()
@@ -99,6 +85,8 @@ namespace Rogue.NET.PrismExtension
             // Put this here because was having some MAJOR issues getting MEF to work
             // with the version 7 PrismLibrary abstractions to inject IContainerProvider into
             // the IModule instances. So, I moved them all here to use this.Container
+
+            // Item Grid Regions
             regionManager.RegisterViewWithRegion("UncurseItemGridRegion", () =>
             {
                 var itemGrid = this.Container.GetExport<ItemGrid>().Value;

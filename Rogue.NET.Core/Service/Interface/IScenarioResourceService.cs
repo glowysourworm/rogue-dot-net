@@ -9,6 +9,11 @@ namespace Rogue.NET.Core.Service.Interface
 {
     public interface IScenarioResourceService
     {
+        /// <summary>
+        /// Tells service to load and cache specified configuration.
+        /// </summary>
+        void LoadScenarioConfiguration(ConfigResources configResource);
+
         IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations();
 
         IDictionary<string, ScenarioFileHeader> GetScenarioHeaders();

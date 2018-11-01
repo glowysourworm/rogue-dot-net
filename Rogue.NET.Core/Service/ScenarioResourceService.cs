@@ -32,51 +32,20 @@ namespace Rogue.NET.Core.Service
         const string SCENARIOS_DIR = "..\\scenarios";
         const int DPI = 96;
 
-        IEnumerable<ScenarioConfigurationContainer> _scenarioConfigurations;
+        IList<ScenarioConfigurationContainer> _scenarioConfigurations;
 
         Dictionary<SymbolTypes, Dictionary<string, BitmapSource>> _imageCache;
 
         [ImportingConstructor]
         public ScenarioResourceService(IEventAggregator eventAggregator)
         {
-            //var easy = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
-            //_eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            //{
-            //    Message = "Loading Fighter Scenario Configuration...",
-            //    Progress = 22
-            //});
-            //var normal = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Paladin);
-            //_eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            //{
-            //    Message = "Loading Paladin Scenario Configuration...",
-            //    Progress = 24
-            //});
-            //var hard = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Witch);
-            //_eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            //{
-            //    Message = "Loading Witch Scenario Configuration...",
-            //    Progress = 26
-            //});
-            //var brutal = ResourceManager.GetEmbeddedScenarioConfiguration(ConfigResources.Sorcerer);
-            //_eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            //{
-            //    Message = "Loading Sorcerer Scenario Configuration...",
-            //    Progress = 28
-            //});
-
             if (!Directory.Exists(SAVED_GAMES_DIR))
                 Directory.CreateDirectory(SAVED_GAMES_DIR);
 
             if (!Directory.Exists(SCENARIOS_DIR))
                 Directory.CreateDirectory(SCENARIOS_DIR);
 
-            _scenarioConfigurations = new List<ScenarioConfigurationContainer>()
-            {
-                GetEmbeddedScenarioConfiguration(ConfigResources.Fighter),
-                GetEmbeddedScenarioConfiguration(ConfigResources.Paladin),
-                GetEmbeddedScenarioConfiguration(ConfigResources.Witch),
-                GetEmbeddedScenarioConfiguration(ConfigResources.Sorcerer),
-            };
+            _scenarioConfigurations = new List<ScenarioConfigurationContainer>();
 
             _imageCache = new Dictionary<SymbolTypes, Dictionary<string, BitmapSource>>()
             {
@@ -84,6 +53,11 @@ namespace Rogue.NET.Core.Service
                 { SymbolTypes.Image, new Dictionary<string, BitmapSource>() },
                 { SymbolTypes.Smiley, new Dictionary<string, BitmapSource>() }
             };
+        }
+
+        public void LoadScenarioConfiguration(ConfigResources configResource)
+        {
+            _scenarioConfigurations.Add(GetEmbeddedScenarioConfiguration(configResource));
         }
 
         public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()

@@ -49,9 +49,6 @@
             </Button>
         </Grid>
         <ContentControl x:Name="MainRegion" Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
-        <Popup IsOpen="{Binding IsPopupOpen}" Placement="Center">
-            <ContentControl x:Name="PopupRegion" prism:RegionManager.RegionName="PopupRegion" />
-        </Popup>
     </Grid>
 </Window>
 

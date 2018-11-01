@@ -4,6 +4,7 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Service.Interface;
+using Rogue.NET.ViewModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
@@ -19,10 +20,12 @@ namespace Rogue.NET.View
         public bool BlockUserInputs { get; private set; }
 
         [ImportingConstructor]
-        public Shell(IEventAggregator eventAggregator, IKeyResolver keyResolver)
+        public Shell(ShellViewModel viewModel, IEventAggregator eventAggregator, IKeyResolver keyResolver)
         {
             _eventAggregator = eventAggregator;
             _keyResolver = keyResolver;
+
+            this.DataContext = viewModel;
 
             InitializeComponent();
             InitializeEvents();

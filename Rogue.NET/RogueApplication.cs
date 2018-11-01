@@ -40,57 +40,5 @@ namespace Rogue.NET
 
             base.OnExit(e);
         }
-
-        //protected override IContainerExtension CreateContainerExtension()
-        //{
-        //    return null;
-        //}
-
-        //protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        //{
-        //    containerRegistry.Register<Shell>();
-        //}
-
-        //protected override Window CreateShell()
-        //{
-        //    return this.Container.Resolve<Shell>();
-        //}
-
-        //protected override void InitializeModules()
-        //{
-        //    base.InitializeModules();
-
-        //    // initialize startup display
-        //    //_eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
-        //    //{
-        //    //    SplashAction = SplashAction.Hide,
-        //    //    SplashType = SplashEventType.Splash
-        //    //});
-        //    //_regionManager.RequestNavigate("MainRegion", "IntroView");
-        //    //Application.Current.MainWindow.Show();
-        //}
-
-        //protected override AggregateCatalog CreateAggregateCatalog()
-        //{
-        //    var catalogs = new AssemblyCatalog[]
-        //    {
-        //        new AssemblyCatalog(Assembly.GetAssembly(typeof(RogueModule))),
-        //        new AssemblyCatalog(Assembly.GetAssembly(typeof(ScenarioEditorModule))),
-        //        new AssemblyCatalog(Assembly.GetAssembly(typeof(ScenarioModule))),
-        //        new AssemblyCatalog(Assembly.GetAssembly(typeof(CoreModule))),
-        //        new AssemblyCatalog(Assembly.GetAssembly(typeof(NotifyViewModel))) // Common
-        //    };
-        //    return new AggregateCatalog(catalogs);
-        //}
-
-        //protected override RegionAdapterMappings ConfigureRegionAdapterMappings()
-        //{
-        //    var mappings = base.ConfigureRegionAdapterMappings();
-
-        //    mappings.RegisterMapping(typeof(Border), this.Container.GetExportedValue<BorderRegionAdapter>());
-        //    mappings.RegisterMapping(typeof(TransitionPresenter), this.Container.GetExportedValue<TransitionPresenterRegionAdapater>());
-
-        //    return mappings;
-        //}
     }
 }
