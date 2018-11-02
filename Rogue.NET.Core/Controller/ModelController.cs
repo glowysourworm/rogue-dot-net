@@ -235,7 +235,11 @@ namespace Rogue.NET.Core.Controller
 
         public void LoadCurrentLevel()
         {
-            LoadLevel(_scenarioContainer.SaveLevel, _scenarioContainer.SaveLocation);
+            if (_scenarioContainer.SaveLevel >= _scenarioContainer.CurrentLevel)
+                LoadLevel(_scenarioContainer.SaveLevel, _scenarioContainer.SaveLocation);
+
+            else
+                LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.StairsUp);
         }
         private void LoadLevel(int levelNumber, PlayerStartLocation location)
         {
@@ -251,25 +255,15 @@ namespace Rogue.NET.Core.Controller
                     _scenarioContainer.LoadedLevels.Add(nextLevel);
                 }
 
-                //if (_unityContainer.IsRegistered<LevelData>())
-                //    _unityContainer.Teardown(_unityContainer.Resolve<LevelData>());
-
                 // Register instance of level data object in the container
-                //_unityContainer.RegisterInstance<LevelData>(new LevelData()
-                //{
-                //    Level = nextLevel,
-                //    Player = _scenarioContainer.Player1,
-                //    Encyclopedia = _scenarioContainer.ItemEncyclopedia,
-                //    ObjectiveDescription = _scenarioContainer.StoredConfig.DungeonTemplate.ObjectiveDescription,
-                //    Config = _scenarioContainer.StoredConfig,
-                //    Seed = _scenarioContainer.Seed, 
-                //    StartLocation = location
-                //}, new ContainerControlledLifetimeManager());
+                _modelService.Load(
+                    _scenarioContainer.Player1,
+                    nextLevel, 
+                    _scenarioContainer.ScenarioEncyclopedia, 
+                    _scenarioContainer.StoredConfig);
 
-                // Publish event containing level - subscribers operate on level as necessary
-
-                // TODO - NEED TO PUBLISH LEVEL DATA
-                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
+                // Notify Listeners
+               _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
 
                 UpdateScenarioInfo();
             }

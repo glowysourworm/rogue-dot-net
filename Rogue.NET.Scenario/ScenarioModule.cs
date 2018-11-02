@@ -43,7 +43,6 @@ namespace Rogue.NET.Scenario
                 _regionManager.RequestNavigate("MainRegion", "GameView");
                 _regionManager.RequestNavigate("GameRegion", "LevelView");
                 _regionManager.RequestNavigate("GameInfoRegion", "GameInfoView");
-
             }, true);
 
             _eventAggregator.GetEvent<PlayerDiedEvent>().Subscribe((e) =>

@@ -11,14 +11,13 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
     [Export]
     public partial class LevelCanvas : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
-
         List<AnimationGroup> _targetAnimationGroupList = new List<AnimationGroup>();
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
@@ -29,19 +28,14 @@ namespace Rogue.NET.Scenario.Content.Views
         const int SCREEN_BUFFER = 120;
 
         [ImportingConstructor]
-        public LevelCanvas(IEventAggregator eventAggregator)
+        public LevelCanvas(LevelCanvasViewModel viewModel)
         {
-            _eventAggregator = eventAggregator;
+            this.DataContext = viewModel;
 
             InitializeComponent();
 
             // allows capturing of mouse events
             this.Background = Brushes.Transparent;
-
-            this.DataContextChanged += new DependencyPropertyChangedEventHandler(LevelCanvas_DataContextChanged);
-            this.Loaded += new RoutedEventHandler(LevelCanvas_Loaded);
-
-            Initialize();
         }
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
         {
@@ -245,121 +239,121 @@ namespace Rogue.NET.Scenario.Content.Views
         }
 
         #region Animations
-        public void PlayTargetAnimation(Point[] pts)
-        {
-            if (_targetAnimationGroupList.Count != 0)
-                StopTargetAnimation();
+        //public void PlayTargetAnimation(Point[] pts)
+        //{
+        //    if (_targetAnimationGroupList.Count != 0)
+        //        StopTargetAnimation();
 
-            for (int i = 0; i < pts.Length;i++)
-            {
-                Point p = pts[i];
-                int len = 20;
-                Rect r = new Rect(p, new Size(10, 15));
-                Size s2 = new Size(1, 8);
-                Size s = new Size(1, 1);
+        //    for (int i = 0; i < pts.Length;i++)
+        //    {
+        //        Point p = pts[i];
+        //        int len = 20;
+        //        Rect r = new Rect(p, new Size(10, 15));
+        //        Size s2 = new Size(1, 8);
+        //        Size s = new Size(1, 1);
 
-                Point nw = new Point(p.X - len, p.Y - len);
-                Point ne = new Point(r.TopRight.X + len, r.TopRight.Y - len);
-                Point se = new Point(r.BottomRight.X + len, r.BottomRight.Y + len);
-                Point sw = new Point(r.BottomLeft.X - len, r.BottomLeft.Y + len);
+        //        Point nw = new Point(p.X - len, p.Y - len);
+        //        Point ne = new Point(r.TopRight.X + len, r.TopRight.Y - len);
+        //        Point se = new Point(r.BottomRight.X + len, r.BottomRight.Y + len);
+        //        Point sw = new Point(r.BottomLeft.X - len, r.BottomLeft.Y + len);
 
-                //Animation a1 = AnimationGenerator.GenerateProjectilePath(new Point[] { nw, r.TopLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                //Animation a2 = AnimationGenerator.GenerateProjectilePath(new Point[] { ne, r.TopRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                //Animation a3 = AnimationGenerator.GenerateProjectilePath(new Point[] { se, r.BottomRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                //Animation a4 = AnimationGenerator.GenerateProjectilePath(new Point[] { sw, r.BottomLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                //Animation a5 = AnimationGenerator.GenerateTimedFigure(new RectangleGeometry(r), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
-                //AnimationGroup group = new AnimationGroup(new Animation[] { a1, a2, a3, a4, a5 });
-                //_targetAnimationGroupList.Add(group);
-                //StartTimedGraphicalEvent(group);
-            }
-        }
-        public void StopTargetAnimation()
-        {
-            if (_targetAnimationGroupList.Count != 0)
-            {
-                foreach (AnimationGroup group in _targetAnimationGroupList)
-                {
-                    Graphic[] graphics = group.GetGraphics();
-                    foreach (Graphic g in graphics)
-                        this.TheLevelCanvas.Children.Remove(g);
-                    group.Stop();
-                    group.CleanUp();
-                }
-                _targetAnimationGroupList.Clear();
-            }
-        }
+        //        //Animation a1 = AnimationGenerator.GenerateProjectilePath(new Point[] { nw, r.TopLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+        //        //Animation a2 = AnimationGenerator.GenerateProjectilePath(new Point[] { ne, r.TopRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+        //        //Animation a3 = AnimationGenerator.GenerateProjectilePath(new Point[] { se, r.BottomRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+        //        //Animation a4 = AnimationGenerator.GenerateProjectilePath(new Point[] { sw, r.BottomLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+        //        //Animation a5 = AnimationGenerator.GenerateTimedFigure(new RectangleGeometry(r), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
+        //        //AnimationGroup group = new AnimationGroup(new Animation[] { a1, a2, a3, a4, a5 });
+        //        //_targetAnimationGroupList.Add(group);
+        //        //StartTimedGraphicalEvent(group);
+        //    }
+        //}
+        //public void StopTargetAnimation()
+        //{
+        //    if (_targetAnimationGroupList.Count != 0)
+        //    {
+        //        foreach (AnimationGroup group in _targetAnimationGroupList)
+        //        {
+        //            Graphic[] graphics = group.GetGraphics();
+        //            foreach (Graphic g in graphics)
+        //                this.TheLevelCanvas.Children.Remove(g);
+        //            group.Stop();
+        //            group.CleanUp();
+        //        }
+        //        _targetAnimationGroupList.Clear();
+        //    }
+        //}
 
-        List<ITimedGraphic> _animationList = new List<ITimedGraphic>();
-        AnimationStartEventArgs _animationData = null;
+        //List<ITimedGraphic> _animationList = new List<ITimedGraphic>();
+        //AnimationStartEventArgs _animationData = null;
 
-        /// <summary>
-        /// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
-        /// last one as a handle
-        /// </summary>
-        public ITimedGraphic PlayAnimationSeries(AnimationStartEventArgs e)
-        {
-            _animationData = e;
+        ///// <summary>
+        ///// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
+        ///// last one as a handle
+        ///// </summary>
+        //public ITimedGraphic PlayAnimationSeries(AnimationStartEventArgs e)
+        //{
+        //    _animationData = e;
 
-            //var levelData = this.DataContext as LevelData;
-            //var xform = levelData.Player.RenderTransform;
-            //var offset = xform.Transform(new Point(0,0));
-            //var offsetVector = new Vector(offset.X + ModelConstants.CELLWIDTH / 2, offset.Y + ModelConstants.CELLHEIGHT / 2);
+        //    //var levelData = this.DataContext as LevelData;
+        //    //var xform = levelData.Player.RenderTransform;
+        //    //var offset = xform.Transform(new Point(0,0));
+        //    //var offsetVector = new Vector(offset.X + ModelConstants.CELLWIDTH / 2, offset.Y + ModelConstants.CELLHEIGHT / 2);
 
-            ////Create animations
-            //foreach (AnimationTemplate t in e.Animations)
-            //    _animationList.Add(
-            //        AnimationGenerator.CreateAnimation(
-            //        t, 
-            //        new Rect(this.RenderSize), 
-            //        Point.Add(new Point(e.Source.Margin.Left, e.Source.Margin.Top), offsetVector),
-            //        e.Targets.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray()));
+        //    ////Create animations
+        //    //foreach (AnimationTemplate t in e.Animations)
+        //    //    _animationList.Add(
+        //    //        AnimationGenerator.CreateAnimation(
+        //    //        t, 
+        //    //        new Rect(this.RenderSize), 
+        //    //        Point.Add(new Point(e.Source.Margin.Left, e.Source.Margin.Top), offsetVector),
+        //    //        e.Targets.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray()));
 
-            //Start the first and return a handle to the last one
-            ITimedGraphic g = _animationList[_animationList.Count - 1];
-            StartNextAnimation();
-            return g;
-        }
-        private void StartNextAnimation()
-        {
-            if (_animationList.Count <= 0)
-            {
-                _eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(new AnimationCompletedEventArgs()
-                {
-                    Alteration = _animationData.Alteration,
-                    ReturnAction = _animationData.ReturnAction,
-                    Source = _animationData.Source,
-                    Targets = _animationData.Targets
-                });
-                return;
-            }
+        //    //Start the first and return a handle to the last one
+        //    ITimedGraphic g = _animationList[_animationList.Count - 1];
+        //    StartNextAnimation();
+        //    return g;
+        //}
+        //private void StartNextAnimation()
+        //{
+        //    if (_animationList.Count <= 0)
+        //    {
+        //        _eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(new AnimationCompletedEventArgs()
+        //        {
+        //            Alteration = _animationData.Alteration,
+        //            ReturnAction = _animationData.ReturnAction,
+        //            Source = _animationData.Source,
+        //            Targets = _animationData.Targets
+        //        });
+        //        return;
+        //    }
 
-            ITimedGraphic t = _animationList[0];
-            _animationList.RemoveAt(0);
-            StartTimedGraphicalEvent(t);
-        }
-        private void StartTimedGraphicalEvent(ITimedGraphic e)
-        {
-            Graphic[] graphics = e.GetGraphics();
-            foreach (Graphic g in graphics)
-            {
-                Canvas.SetZIndex(g, 100);
-                this.TheLevelCanvas.Children.Add(g);
-            }
-            e.TimeElapsed += new TimerElapsedHandler(OnTimedEventElapsed);
-            e.Start();
-            UpdateLayout();
-        }
-        private void OnTimedEventElapsed(ITimedGraphic sender)
-        {
-            Graphic[] graphics = sender.GetGraphics();
-            foreach (Graphic g in graphics)
-                this.TheLevelCanvas.Children.Remove(g);
-            sender.TimeElapsed -= new TimerElapsedHandler(OnTimedEventElapsed);
-            sender.CleanUp();
+        //    ITimedGraphic t = _animationList[0];
+        //    _animationList.RemoveAt(0);
+        //    StartTimedGraphicalEvent(t);
+        //}
+        //private void StartTimedGraphicalEvent(ITimedGraphic e)
+        //{
+        //    Graphic[] graphics = e.GetGraphics();
+        //    foreach (Graphic g in graphics)
+        //    {
+        //        Canvas.SetZIndex(g, 100);
+        //        this.TheLevelCanvas.Children.Add(g);
+        //    }
+        //    e.TimeElapsed += new TimerElapsedHandler(OnTimedEventElapsed);
+        //    e.Start();
+        //    UpdateLayout();
+        //}
+        //private void OnTimedEventElapsed(ITimedGraphic sender)
+        //{
+        //    Graphic[] graphics = sender.GetGraphics();
+        //    foreach (Graphic g in graphics)
+        //        this.TheLevelCanvas.Children.Remove(g);
+        //    sender.TimeElapsed -= new TimerElapsedHandler(OnTimedEventElapsed);
+        //    sender.CleanUp();
 
-            //Will play next animation if any left on the list
-            StartNextAnimation();
-        }
+        //    //Will play next animation if any left on the list
+        //    StartNextAnimation();
+        //}
         #endregion
     }
 }

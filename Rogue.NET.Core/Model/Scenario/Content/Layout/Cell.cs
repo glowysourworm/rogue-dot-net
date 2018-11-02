@@ -15,6 +15,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public Compass Walls { get; set; }
         public Compass Doors { get; set; }
+        public Compass VisibleDoors
+        {
+            get
+            {
+                var result = Compass.Null;
+                if (this.NorthDoorSearchCounter <= 0 && ((this.Doors & Compass.N) != 0))
+                    result &= Compass.N;
+
+                if (this.SouthDoorSearchCounter <= 0 && ((this.Doors & Compass.S) != 0))
+                    result &= Compass.S;
+
+                if (this.EastDoorSearchCounter <= 0 && ((this.Doors & Compass.E) != 0))
+                    result &= Compass.E;
+
+                if (this.WestDoorSearchCounter <= 0 && ((this.Doors & Compass.W) != 0))
+                    result &= Compass.W;
+
+                return result;
+            }
+        }
         public CellPoint Location { get; set; }
 
         public void ToggleDoor(Compass direction)

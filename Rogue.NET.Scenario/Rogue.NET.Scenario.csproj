@@ -156,6 +156,7 @@
   <ItemGroup>
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGridViewModel.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
     <Compile Include="Content\Views\GameInfoView.xaml.cs">
       <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
@@ -198,7 +199,9 @@
     <Compile Include="Outro\Views\Outro.xaml.cs">
       <DependentUpon>Outro.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\LevelCanvas.cs" />
+    <Compile Include="Content\Views\LevelCanvas.xaml.cs">
+      <DependendUpon>LevelCanvas.xaml</DependendUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml.cs">
       <DependentUpon>DungeonEncyclopediaAttackAttribute.xaml</DependentUpon>

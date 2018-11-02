@@ -20,9 +20,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         private Cell[] _cellArray;
         private CellRectangle[] _roomArray;
 
-        public LevelGrid()
-        {
-        }
         public LevelGrid(int width, int height, int roomWidth, int roomHeight)
         {
             _grid = new Cell[width, height];
@@ -47,6 +44,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _roomGrid = new CellRectangle[roomWidth, roomHeight];
             _cells = new List<Cell>();
             _doors = new List<Cell>();
+            _rooms = new List<CellRectangle>();
 
             // Populate cell grid
             for (int i=0;i<count;i++)
@@ -71,7 +69,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                     // New Room
                     if (!_rooms.Any(x => x.Equals(room)))
                     {
-                        _roomGrid[room.Location.Column, room.Location.Row] = room;
+                        _roomGrid[i, j] = room;
                         _rooms.Add(room);
                     }
 

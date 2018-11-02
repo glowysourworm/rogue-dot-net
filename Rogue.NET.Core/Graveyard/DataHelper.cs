@@ -6,6 +6,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Core.Graveyard
 {
@@ -16,11 +17,11 @@ namespace Rogue.NET.Core.Graveyard
         {
             return new Point(x * ModelConstants.CELLWIDTH, y * ModelConstants.CELLHEIGHT);
         }
-        public static Point Cell2UI(Point p)
+        public static Point Cell2UI(CellPoint p)
         {
-            return new Point(p.X * ModelConstants.CELLWIDTH, p.Y * ModelConstants.CELLHEIGHT);
+            return new Point(p.Column * ModelConstants.CELLWIDTH, p.Row * ModelConstants.CELLHEIGHT);
         }
-        public static Rect Cell2UIRect(Point p, bool addCellOffset)
+        public static Rect Cell2UIRect(CellPoint p, bool addCellOffset)
         {
             if (!addCellOffset)
                 return new Rect(Cell2UI(p), new Size(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT));
@@ -32,11 +33,11 @@ namespace Rogue.NET.Core.Graveyard
                 return new Rect(pt, new Size(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT));
             }
         }
-        public static Rect Cell2UIRect(Rect r)
+        public static Rect Cell2UIRect(CellRectangle r)
         {
-            Point p = Cell2UI((int)r.Location.X, (int)r.Location.Y);
-            int w = (int)r.Width * ModelConstants.CELLWIDTH;
-            int h = (int)r.Height * ModelConstants.CELLHEIGHT;
+            Point p = Cell2UI((int)r.Location.Column, (int)r.Location.Row);
+            int w = (int)r.CellWidth * ModelConstants.CELLWIDTH;
+            int h = (int)r.CellHeight * ModelConstants.CELLHEIGHT;
             return new Rect(p, new Size(w, h));
         }
 
@@ -50,7 +51,7 @@ namespace Rogue.NET.Core.Graveyard
         /// <param name="e_search">east search counter</param>
         /// <param name="w_search">west search counter</param>
         /// <returns></returns>
-        public static PathFigure CreateWallsPathFigure(Point p,
+        public static PathFigure CreateWallsPathFigure(CellPoint p,
             Compass visibleDoors,
             Compass walls)
         {
@@ -76,7 +77,7 @@ namespace Rogue.NET.Core.Graveyard
         /// <param name="e_search">east search counter</param>
         /// <param name="w_search">west search counter</param>
         /// <returns></returns>
-        public static PathFigure CreateDoorsPathFigure(Point p,
+        public static PathFigure CreateDoorsPathFigure(CellPoint p,
             Compass visibleDoors)
         {
             Rect r = Cell2UIRect(p, false);
