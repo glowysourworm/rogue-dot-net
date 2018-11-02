@@ -11,12 +11,6 @@ namespace Rogue.NET.Scenario.Views
         public LevelView(IEventAggregator eventAggregator)
         {
             InitializeComponent();
-
-            this.Loaded += (obj, e) =>
-            {
-                this.TheLevelCanvas.InitializeEvents(eventAggregator);
-                this.SubPanel.InitializeEvents(eventAggregator);
-            };
         }
    }
 }

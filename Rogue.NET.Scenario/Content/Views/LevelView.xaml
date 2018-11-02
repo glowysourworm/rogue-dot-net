@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Views.LevelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://www.codeplex.com/prism"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
@@ -15,10 +16,10 @@
         <local:StatusCtrl VerticalAlignment="Top" />
 
         <Border ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="0.75, 0.75, 0.75, 0.75">
-            <local:LevelCanvas x:Name="TheLevelCanvas" />
+            <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion" />
         </Border>
 
-        <local:PlayerSubpanel x:Name="SubPanel" Grid.Column="2" VerticalAlignment="Stretch"/>
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelRegion"  Grid.Column="2" VerticalAlignment="Stretch" />
 
     </Grid>
 </UserControl>

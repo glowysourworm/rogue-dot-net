@@ -30,8 +30,6 @@ using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Assets.Spell;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.Common.Extension.Prism;
-using Rogue.NET.Core.Controller.Interface;
-using Rogue.NET.Core.Model.Generator.Interface;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -126,6 +124,8 @@ namespace Rogue.NET.PrismExtension
             regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
             regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
             regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
+            regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
+            regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));
 
             regionManager.RegisterViewWithRegion("PlayerSubpanelEquipmentRegion", () =>
             {

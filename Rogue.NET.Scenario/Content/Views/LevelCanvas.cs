@@ -3,22 +3,21 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using System.Windows.Input;
-using System.Linq;
+using System.ComponentModel.Composition;
+
+using Prism.Events;
+
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
-using Prism.Events;
 using Rogue.NET.Core.Media;
-using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using Rogue.NET.Core.Model;
 
-namespace Rogue.NET.Scenario.Views
+namespace Rogue.NET.Scenario.Content.Views
 {
-    public class LevelCanvas : Canvas
+    [Export]
+    public partial class LevelCanvas : UserControl
     {
-        IEventAggregator _eventAggregator;
-        bool _eventsHooked;
+        readonly IEventAggregator _eventAggregator;
 
         List<AnimationGroup> _targetAnimationGroupList = new List<AnimationGroup>();
         TranslateTransform _translateXform = new TranslateTransform(0,0);
@@ -29,13 +28,20 @@ namespace Rogue.NET.Scenario.Views
 
         const int SCREEN_BUFFER = 120;
 
-        public LevelCanvas()
+        [ImportingConstructor]
+        public LevelCanvas(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
+            InitializeComponent();
+
             // allows capturing of mouse events
             this.Background = Brushes.Transparent;
 
             this.DataContextChanged += new DependencyPropertyChangedEventHandler(LevelCanvas_DataContextChanged);
             this.Loaded += new RoutedEventHandler(LevelCanvas_Loaded);
+
+            Initialize();
         }
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
         {
@@ -86,31 +92,25 @@ namespace Rogue.NET.Scenario.Views
             //}
         }
 
-        public void InitializeEvents(IEventAggregator eventAggregator)
+        private void Initialize()
         {
-            if (_eventsHooked)
-                return;
+            //// subscribe to events
+            //_eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
+            //{
+            //    // recenter display if player is off screen
+            //    Point p = GetPlayerLocation();
+            //    Rect r = new Rect(this.RenderSize);
 
-            _eventsHooked = true;
-            _eventAggregator = eventAggregator;
+            //    if (!r.Contains(p) && !(p.X == 0 && p.Y == 0))
+            //        CenterOnPlayer();
 
-            // subscribe to events
-            eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
-            {
-                // recenter display if player is off screen
-                Point p = GetPlayerLocation();
-                Rect r = new Rect(this.RenderSize);
+            //    StopTargetAnimation();
+            //});
 
-                if (!r.Contains(p) && !(p.X == 0 && p.Y == 0))
-                    CenterOnPlayer();
-
-                StopTargetAnimation();
-            });
-
-            eventAggregator.GetEvent<AnimationStartEvent>().Subscribe((e) =>
-            {
-                PlayAnimationSeries(e);
-            });
+            //_eventAggregator.GetEvent<AnimationStartEvent>().Subscribe((e) =>
+            //{
+            //    PlayAnimationSeries(e);
+            //});
         }
 
         public void OnPlayerLocationChanged()
@@ -173,59 +173,59 @@ namespace Rogue.NET.Scenario.Views
             return new Point(0,0);
         }
 
-        private void MouseMove(MouseEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-                this.Cursor = Cursors.ScrollAll;
+        //private void MouseMove(MouseEventArgs e)
+        //{
+        //    if (Keyboard.Modifiers == ModifierKeys.Control)
+        //        this.Cursor = Cursors.ScrollAll;
 
-            else
-                this.Cursor = Cursors.Arrow;
+        //    else
+        //        this.Cursor = Cursors.Arrow;
 
-            if (_mouseDownWithControl)
-            {
-                _translateXform.X += (int)(Mouse.GetPosition(this).X - _mouseDownWithControlPoint.X);
-                _translateXform.Y += (int)(Mouse.GetPosition(this).Y - _mouseDownWithControlPoint.Y);
-                _mouseDownWithControlPoint = Mouse.GetPosition(this);
-            }
-        }
-        private void MouseDown(MouseEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.LeftButton == MouseButtonState.Pressed)
-            {
-                _mouseDownWithControl = true;
-                _mouseDownWithControlPoint = Mouse.GetPosition(this);
-            }
-        }
-        private void MouseUp(MouseEventArgs e)
-        {
-            _mouseDownWithControl = false;
-        }
-        private void MouseLeave(MouseEventArgs e)
-        {
-            this.Cursor = Cursors.Arrow;
-            _mouseDownWithControl = false;
-        }
+        //    if (_mouseDownWithControl)
+        //    {
+        //        _translateXform.X += (int)(Mouse.GetPosition(this).X - _mouseDownWithControlPoint.X);
+        //        _translateXform.Y += (int)(Mouse.GetPosition(this).Y - _mouseDownWithControlPoint.Y);
+        //        _mouseDownWithControlPoint = Mouse.GetPosition(this);
+        //    }
+        //}
+        //private void MouseDown(MouseEventArgs e)
+        //{
+        //    if (Keyboard.Modifiers == ModifierKeys.Control && e.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        _mouseDownWithControl = true;
+        //        _mouseDownWithControlPoint = Mouse.GetPosition(this);
+        //    }
+        //}
+        //private void MouseUp(MouseEventArgs e)
+        //{
+        //    _mouseDownWithControl = false;
+        //}
+        //private void MouseLeave(MouseEventArgs e)
+        //{
+        //    this.Cursor = Cursors.Arrow;
+        //    _mouseDownWithControl = false;
+        //}
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            MouseMove(e);
-        }
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseLeftButtonDown(e);
-            MouseDown(e);
-        }
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            MouseLeave(e);
-        }
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseLeftButtonUp(e);
-            MouseUp(e);
-        }
+        //protected override void OnMouseMove(MouseEventArgs e)
+        //{
+        //    base.OnMouseMove(e);
+        //    MouseMove(e);
+        //}
+        //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseLeftButtonDown(e);
+        //    MouseDown(e);
+        //}
+        //protected override void OnMouseLeave(MouseEventArgs e)
+        //{
+        //    base.OnMouseLeave(e);
+        //    MouseLeave(e);
+        //}
+        //protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        //{
+        //    base.OnPreviewMouseLeftButtonUp(e);
+        //    MouseUp(e);
+        //}
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
@@ -281,7 +281,7 @@ namespace Rogue.NET.Scenario.Views
                 {
                     Graphic[] graphics = group.GetGraphics();
                     foreach (Graphic g in graphics)
-                        this.Children.Remove(g);
+                        this.TheLevelCanvas.Children.Remove(g);
                     group.Stop();
                     group.CleanUp();
                 }
@@ -343,7 +343,7 @@ namespace Rogue.NET.Scenario.Views
             foreach (Graphic g in graphics)
             {
                 Canvas.SetZIndex(g, 100);
-                this.Children.Add(g);
+                this.TheLevelCanvas.Children.Add(g);
             }
             e.TimeElapsed += new TimerElapsedHandler(OnTimedEventElapsed);
             e.Start();
@@ -353,7 +353,7 @@ namespace Rogue.NET.Scenario.Views
         {
             Graphic[] graphics = sender.GetGraphics();
             foreach (Graphic g in graphics)
-                this.Children.Remove(g);
+                this.TheLevelCanvas.Children.Remove(g);
             sender.TimeElapsed -= new TimerElapsedHandler(OnTimedEventElapsed);
             sender.CleanUp();
 

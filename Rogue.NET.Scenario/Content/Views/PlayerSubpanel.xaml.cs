@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,13 +10,18 @@ using System.Windows.Media.Animation;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class PlayerSubpanel : UserControl
     {
+        readonly IEventAggregator _eventAggregator;
         readonly List<FrameworkElement> _ctrlList;
         readonly List<RadioButton> _radioList;
 
-        public PlayerSubpanel()
+        [ImportingConstructor]
+        public PlayerSubpanel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
             InitializeComponent();
 
             _ctrlList = new List<FrameworkElement>(new FrameworkElement[]{
@@ -36,11 +42,6 @@ namespace Rogue.NET.Scenario.Views
 
             _radioList[0].IsChecked = true;
             this.TitleTB.Text = _radioList[0].Tag.ToString();
-        }
-
-        public void InitializeEvents(IEventAggregator eventAggregator)
-        {
-            this.SkillCtrl.InitializeEvents(eventAggregator);
         }
 
         /// <summary>
