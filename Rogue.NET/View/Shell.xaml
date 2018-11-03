@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://www.codeplex.com/prism"
         Background="Black"
-        FontFamily="{StaticResource CentaurFont}"
         WindowState="Maximized"
         WindowStyle="None"        
+        FontFamily="{StaticResource CentaurFont}"
+        Icon="../shopsmiley.ico"
         Title="Rogue.NET">
     <Window.Resources>
         <ResourceDictionary>
@@ -18,7 +19,7 @@
                                 <ControlTemplate>
                                     <Grid>
                                         <Rectangle Stroke="White" StrokeThickness="1" Fill="Black" />
-                                        <Image Margin="0" Source="pack://application:,,,/Rogue.NET.Common;component/Resources/Images/FullScreen.png" />
+                                        <Image Margin="0" Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/FullScreen.png" />
                                     </Grid>
                                 </ControlTemplate>
                             </Setter.Value>

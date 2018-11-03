@@ -4,19 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CDBDBEA3-5D5B-449C-8127-6C0B77BFB416}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{A9E4FAA2-6A2C-4CAA-9E86-17B6DD6C3C86}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rogue.NET</RootNamespace>
-    <AssemblyName>Rogue.NET</AssemblyName>
+    <RootNamespace>Rogue.NET.Scenario</RootNamespace>
+    <AssemblyName>Rogue.NET.Scenario</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -37,94 +33,98 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PrismExtension\AggregateModuleCatalog.cs" />
-    <Compile Include="PrismExtension\RogueBootstrapper.cs" />
-    <Compile Include="PrismExtension\BorderRegionAdapter.cs" />
-    <Compile Include="PrismExtension\RogueMefBootstrapper.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="RogueApplication.cs" />
-    <Compile Include="RogueModule.cs" />
-    <Compile Include="Splash\SplashThread.cs" />
-    <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
-    <Compile Include="ViewModel\SplashViewModel.cs" />
-    <Compile Include="View\CommandPreferencesView.xaml.cs">
-      <DependentUpon>CommandPreferencesView.xaml</DependentUpon>
+    <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
+    <Compile Include="Content\ViewModel\ItemGridViewModel.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
+    <Compile Include="Content\Views\GameInfoView.xaml.cs">
+      <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CreatingScenarioView.xaml.cs">
-      <DependentUpon>CreatingScenarioView.xaml</DependentUpon>
+    <Compile Include="Content\Views\ItemGrid.xaml.cs">
+      <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DialogView.xaml.cs">
-      <DependentUpon>DialogView.xaml</DependentUpon>
+    <Compile Include="Content\Views\LevelView.xaml.cs">
+      <DependentUpon>LevelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\EnchantView.xaml.cs">
-      <DependentUpon>EnchantView.xaml</DependentUpon>
+    <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
+      <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\HelpView.xaml.cs">
-      <DependentUpon>HelpView.xaml</DependentUpon>
+    <Compile Include="Events\GameSetupDisplayFinished.cs" />
+    <Compile Include="Events\IntroFinishedEvent.cs" />
+    <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
+      <DependentUpon>ChooseParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\IdentifyView.xaml.cs">
-      <DependentUpon>IdentifyView.xaml</DependentUpon>
+    <Compile Include="Intro\Views\GameSetup\ChooseSavedGame.xaml.cs">
+      <DependentUpon>ChooseSavedGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImbueView.xaml.cs">
-      <DependentUpon>ImbueView.xaml</DependentUpon>
+    <Compile Include="Intro\Views\GameSetup\ChooseScenario.xaml.cs">
+      <DependentUpon>ChooseScenario.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ObjectiveView.xaml.cs">
-      <DependentUpon>ObjectiveView.xaml</DependentUpon>
+    <Compile Include="Intro\Views\GameSetup\NewOpenEdit.xaml.cs">
+      <DependentUpon>NewOpenEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OpenScenarioView.xaml.cs">
-      <DependentUpon>OpenScenarioView.xaml</DependentUpon>
+    <Compile Include="ScenarioModule.cs" />
+    <Compile Include="Intro\ViewModel\GameSetupViewModel.cs" />
+    <Compile Include="Intro\Views\GameSetupView.xaml.cs">
+      <DependentUpon>GameSetupView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PlayerAdvancementView.xaml.cs">
-      <DependentUpon>PlayerAdvancementView.xaml</DependentUpon>
+    <Compile Include="Intro\Views\IntroView.xaml.cs">
+      <DependentUpon>IntroView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SaveView.xaml.cs">
-      <DependentUpon>SaveView.xaml</DependentUpon>
+    <Compile Include="Service\Interface\IKeyResolver.cs" />
+    <Compile Include="Service\KeyResolver.cs" />
+    <Compile Include="Outro\Views\Death.xaml.cs">
+      <DependentUpon>Death.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Shell.xaml.cs">
-      <DependentUpon>Shell.xaml</DependentUpon>
+    <Compile Include="Outro\Views\Outro.xaml.cs">
+      <DependentUpon>Outro.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ShellViewModel.cs" />
-    <Compile Include="PrismExtension\TransitionalRegionAdapter.cs" />
-    <Compile Include="View\SplashView.xaml.cs">
-      <DependentUpon>SplashView.xaml</DependentUpon>
+    <Compile Include="Content\Views\LevelCanvas.xaml.cs">
+      <DependendUpon>LevelCanvas.xaml</DependendUpon>
     </Compile>
-    <Compile Include="View\UncurseView.xaml.cs">
-      <DependentUpon>UncurseView.xaml</DependentUpon>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml.cs">
+      <DependentUpon>DungeonEncyclopediaAttackAttribute.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\DungeonEncyclopedia.xaml.cs">
+      <DependentUpon>DungeonEncyclopedia.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\CompassCtrl.xaml.cs">
+      <DependentUpon>CompassCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Emphasis.xaml.cs">
+      <DependentUpon>Emphasis.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\EquipmentSelection.xaml.cs">
+      <DependentUpon>EquipmentSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\GameView.xaml.cs">
+      <DependentUpon>GameView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\SkillGrid.xaml.cs">
+      <DependentUpon>SkillGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Stats.xaml.cs">
+      <DependentUpon>Stats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Status.xaml.cs">
+      <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Content Include="Project Documents\fighter-scenario-config-backup.xml" />
-    <None Include="packages.config" />
-    <None Include="Project Documents\bugs-enhancements-backlog.xlsx" />
-    <None Include="Project Documents\license.lic" />
-    <None Include="Project Documents\scenario-editor.docx" />
-    <None Include="Project Documents\scenario-editor-wireframe.xlsx" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-    <None Include="Project Documents\fighter-scenario.xlsx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -134,21 +134,18 @@
     <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
       <Project>{6353f2f1-d936-4f9c-9898-074dc4480d71}</Project>
       <Name>Rogue.NET.Common</Name>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rogue.NET.Core\Rogue.NET.Core.csproj">
       <Project>{3e574589-233f-4b39-b93c-445e6f44a736}</Project>
       <Name>Rogue.NET.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rogue.NET.ScenarioEditor\Rogue.NET.ScenarioEditor.csproj">
-      <Project>{6696051a-37bb-4f3e-9e0b-62b83f298ee7}</Project>
-      <Name>Rogue.NET.ScenarioEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rogue.NET.Scenario\Rogue.NET.Scenario.csproj">
-      <Project>{a9e4faa2-6a2c-4caa-9e86-17b6dd6c3c86}</Project>
-      <Name>Rogue.NET.Scenario</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -161,7 +158,6 @@
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Dependencies\Dotway.WPF.Effects.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll" />
-    <ReferencePath Include="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\PublicAssemblies\Microsoft.Windows.Design.Extensibility.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.Aero.dll" />
@@ -171,26 +167,22 @@
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Common\bin\Debug\Rogue.NET.Common.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Core\bin\Debug\Rogue.NET.Core.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\bin\Debug\Rogue.NET.Scenario.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\bin\Debug\Rogue.NET.ScenarioEditor.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.Composition.dll" />
-    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.Composition.Registration.dll" />
-    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.DataAnnotations.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ObjectModel.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.DataVisualization.3.5.50211.1\lib\System.Windows.Controls.DataVisualization.Toolkit.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Layout.Toolkit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Forms.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
-    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\WPFToolkit.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Wpg.1.0.20150225.1\lib\Net\WPG.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.Aero.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
     <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
@@ -263,7 +255,6 @@
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebHeaderCollection.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebSockets.Client.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebSockets.dll" />
-    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ObjectModel.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Emit.dll" />
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Emit.ILGeneration.dll" />
@@ -316,21 +307,28 @@
     <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XPath.XDocument.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\CommandPreferencesView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\CreatingScenarioView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\DialogView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\EnchantView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\HelpView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\IdentifyView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\ImbueView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\ObjectiveView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\OpenScenarioView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\PlayerAdvancementView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\SaveView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\Shell.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\SplashView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\View\UncurseView.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\Rogue.NET_Content.g.cs" />
-    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\GameInfoView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\ItemGrid.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\LevelCanvas.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\LevelView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\PlayerSubpanel.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\GameSetupView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\GameSetup\ChooseParameters.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\GameSetup\ChooseSavedGame.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\GameSetup\ChooseScenario.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\GameSetup\NewOpenEdit.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Intro\Views\IntroView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Outro\Views\Death.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Outro\Views\Outro.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\DungeonEncyclopediaAttackAttribute.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\DungeonEncyclopedia.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\CompassCtrl.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\Emphasis.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\EquipmentSelection.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\GameView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\SkillGrid.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\Stats.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\Content\Views\Status.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Scenario\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
   </ItemGroup>
 </Project>

@@ -30,6 +30,7 @@ using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.Views.Assets.Spell;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.Common.Extension.Prism;
+using System.Windows.Media;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -47,6 +48,7 @@ namespace Rogue.NET.PrismExtension
             base.InitializeModules();
 
             Application.Current.MainWindow = this.Shell as Shell;
+            //Application.Current.MainWindow.FontFamily = (FontFamily)Application.Current.Resources["CentaurFont"];
             Application.Current.MainWindow.Show();
 
             // Request Navigate
@@ -245,7 +247,7 @@ namespace Rogue.NET.PrismExtension
             regionManager.RegisterViewWithRegion("DesignRegion", typeof(Layout));
             regionManager.RegisterViewWithRegion("DesignRegion", typeof(Doodad));
             regionManager.RegisterViewWithRegion("DesignRegion", typeof(SkillSet));
-            regionManager.RegisterViewWithRegion("DesignRegion", typeof(Brush));
+            regionManager.RegisterViewWithRegion("DesignRegion", typeof(Rogue.NET.ScenarioEditor.Views.Assets.Brush));
 
             // Design Region - Construction Views
             regionManager.RegisterViewWithRegion("DesignRegion", typeof(General));

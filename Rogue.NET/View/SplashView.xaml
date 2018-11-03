@@ -4,7 +4,6 @@
              xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common" 
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              Background="Transparent" 
-             FontFamily="{StaticResource CentaurFont}"
              Height="220" Width="300" >
     <Border Background="Black" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
         <Grid Background="Transparent">

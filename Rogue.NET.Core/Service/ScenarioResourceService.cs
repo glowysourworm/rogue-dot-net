@@ -223,6 +223,8 @@ namespace Rogue.NET.Core.Service
             text.Text = symbol;
             text.FontSize = 12;
             text.FontFamily = Application.Current.MainWindow.FontFamily;
+            text.TextAlignment = TextAlignment.Center;
+            text.Margin = new Thickness(0, 2, 0, 0);
             text.Height = ModelConstants.CELLHEIGHT;
             text.Width = ModelConstants.CELLWIDTH;
             text.Measure(new Size(text.Width, text.Height));

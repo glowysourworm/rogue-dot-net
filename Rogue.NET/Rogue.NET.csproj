@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>shopsmiley.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
@@ -177,7 +180,9 @@
     <Compile Include="PrismExtension\RogueBootstrapper.cs" />
     <Compile Include="PrismExtension\BorderRegionAdapter.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RogueApplication.cs" />
+    <Compile Include="RogueApplication.xaml.cs">
+      <DependentUpon>RogueApplication.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RogueModule.cs" />
     <Compile Include="Splash\SplashThread.cs" />
     <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
@@ -226,6 +231,10 @@
     <Compile Include="View\UncurseView.xaml.cs">
       <DependentUpon>UncurseView.xaml</DependentUpon>
     </Compile>
+    <Page Include="RogueApplication.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\CommandPreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -325,6 +334,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="shopsmiley.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
