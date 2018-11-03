@@ -70,8 +70,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\Interface\IModelController.cs" />
-    <Compile Include="Controller\ModelController.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
     <Compile Include="Converter\BoolIntConverter.cs" />
@@ -94,6 +92,7 @@
     <Compile Include="Event\ExitEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\LevelCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
+    <Compile Include="Event\Scenario\Level\Event\LevelUpdateEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\Player\PlayerAdvancementEventArgs.cs" />
     <Compile Include="Event\ScenarioEditor\ExitScenarioEditorEvent.cs" />
     <Compile Include="Event\Scenario\Event\CommandPreferencesChangedEvent.cs" />

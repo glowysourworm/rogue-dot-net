@@ -1,7 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
-using Rogue.NET.Core.Controller.Interface;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
@@ -10,16 +9,14 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Controller.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
-namespace Rogue.NET.Core.Controller
+namespace Rogue.NET.Scenario.Controller
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IModelController))]
@@ -223,7 +220,7 @@ namespace Rogue.NET.Core.Controller
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
 
-            LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.AtCurrent);
+            LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.SavePoint);
         }
         public void Save()
         {
@@ -258,6 +255,7 @@ namespace Rogue.NET.Core.Controller
                 // Register instance of level data object in the container
                 _modelService.Load(
                     _scenarioContainer.Player1,
+                    location,
                     nextLevel, 
                     _scenarioContainer.ScenarioEncyclopedia, 
                     _scenarioContainer.StoredConfig);

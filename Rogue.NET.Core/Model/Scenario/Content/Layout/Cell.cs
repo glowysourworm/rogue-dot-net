@@ -21,16 +21,36 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             {
                 var result = Compass.Null;
                 if (this.NorthDoorSearchCounter <= 0 && ((this.Doors & Compass.N) != 0))
-                    result &= Compass.N;
+                    result |= Compass.N;
 
                 if (this.SouthDoorSearchCounter <= 0 && ((this.Doors & Compass.S) != 0))
-                    result &= Compass.S;
+                    result |= Compass.S;
 
                 if (this.EastDoorSearchCounter <= 0 && ((this.Doors & Compass.E) != 0))
-                    result &= Compass.E;
+                    result |= Compass.E;
 
                 if (this.WestDoorSearchCounter <= 0 && ((this.Doors & Compass.W) != 0))
-                    result &= Compass.W;
+                    result |= Compass.W;
+
+                return result;
+            }
+        }
+        public Compass InVisibleDoors
+        {
+            get
+            {
+                var result = Compass.Null;
+                if (this.NorthDoorSearchCounter > 0 && ((this.Doors & Compass.N) != 0))
+                    result |= Compass.N;
+
+                if (this.SouthDoorSearchCounter > 0 && ((this.Doors & Compass.S) != 0))
+                    result |= Compass.S;
+
+                if (this.EastDoorSearchCounter > 0 && ((this.Doors & Compass.E) != 0))
+                    result |= Compass.E;
+
+                if (this.WestDoorSearchCounter > 0 && ((this.Doors & Compass.W) != 0))
+                    result |= Compass.W;
 
                 return result;
             }

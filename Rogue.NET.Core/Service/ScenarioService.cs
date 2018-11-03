@@ -310,7 +310,7 @@ namespace Rogue.NET.Core.Service
             }
         }
 
-        public bool Process()
+        public bool ProcessBackend()
         {
             if (!_dataQueue.Any())
                 return false;
@@ -332,7 +332,17 @@ namespace Rogue.NET.Core.Service
             return true;
         }
 
-        public ILevelUpdate GetLevelUpdate()
+        public bool AnyLevelEvents()
+        {
+            return _uiQueue.Any();
+        }
+
+        public bool AnyAnimationEvents()
+        {
+            return _animationQueue.Any();
+        }
+
+        public ILevelUpdate DequeueLevelEvent()
         {
             if (_uiQueue.Any())
                 return _uiQueue.Dequeue();
@@ -340,7 +350,7 @@ namespace Rogue.NET.Core.Service
             return null;
         }
 
-        public IAnimationEvent GetAnimation()
+        public IAnimationEvent DequeueAnimation()
         {
             if (_animationQueue.Any())
                 return _animationQueue.Dequeue();

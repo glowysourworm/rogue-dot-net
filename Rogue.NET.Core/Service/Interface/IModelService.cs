@@ -1,5 +1,7 @@
-﻿using Rogue.NET.Core.Model.Scenario;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
@@ -14,6 +16,7 @@ namespace Rogue.NET.Core.Service.Interface
     {
         void Load(
                 Player player,
+                PlayerStartLocation startLocation,
                 Level level,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration);
@@ -53,6 +56,11 @@ namespace Rogue.NET.Core.Service.Interface
         /// Statefully maintained collection of locations visible to the Player 
         /// </summary>
         IEnumerable<CellPoint> GetVisibleLocations();
+
+        /// <summary>
+        /// Statefully maintained collection of level contents visible to the Player
+        /// </summary>
+        IEnumerable<ScenarioObject> GetVisibleContents();
 
         /// <summary>
         /// Statefully maintained collection of enemies visible to the Player

@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Service.Interface
         /// Tells IScenarioService to process it's data until finished (returns false).
         /// </summary>
         /// <returns>true if more to process</returns>
-        bool Process();
+        bool ProcessBackend();
 
         /// <summary>
         /// Issues primary player command 
@@ -22,15 +22,18 @@ namespace Rogue.NET.Core.Service.Interface
         /// <param name="id">involved RogueBase.Id for action</param>
         void IssueCommand(ILevelCommand levelCommand);
 
+        bool AnyLevelEvents();
+        bool AnyAnimationEvents();
+
         /// <summary>
         /// Gets the next level update from the service
         /// </summary>
-        ILevelUpdate GetLevelUpdate();
+        ILevelUpdate DequeueLevelEvent();
 
         /// <summary>
         /// Gets the next animation update from the service. These are processed first
         /// </summary>
         /// <returns></returns>
-        IAnimationEvent GetAnimation();
+        IAnimationEvent DequeueAnimation();
     }
 }

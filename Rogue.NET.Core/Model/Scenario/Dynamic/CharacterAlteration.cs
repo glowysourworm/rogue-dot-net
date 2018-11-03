@@ -52,6 +52,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public IList<AlterationEffect> AttackAttributeTemporaryMalignEffects { get; set; }
         #endregion
 
+        public CharacterAlteration()
+        {
+            this.ActiveAuraEffects = new List<AlterationEffect>();
+            this.ActivePassiveEffects = new List<AlterationEffect>();
+            this.ActiveTemporaryEffects = new List<AlterationEffect>();
+            this.AttackAttributePassiveEffects = new List<AlterationEffect>();
+            this.AttackAttributeTemporaryFriendlyEffects = new List<AlterationEffect>();
+            this.AttackAttributeTemporaryMalignEffects = new List<AlterationEffect>();
+            this.PerStepAlterationCosts = new List<AlterationCost>();
+        }
+
         /// <summary>
         /// Convienence method to get all magic effects acting on the character
         /// </summary>

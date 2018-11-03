@@ -36,6 +36,12 @@ namespace Rogue.NET.Scenario.Content.Views
 
             // allows capturing of mouse events
             this.Background = Brushes.Transparent;
+
+            var transform = new TransformGroup();
+            transform.Children.Add(_scaleXform);
+            transform.Children.Add(_translateXform);
+
+            this.RenderTransform = transform;
         }
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
         {
@@ -166,76 +172,61 @@ namespace Rogue.NET.Scenario.Content.Views
 
             return new Point(0,0);
         }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
 
-        //private void MouseMove(MouseEventArgs e)
-        //{
-        //    if (Keyboard.Modifiers == ModifierKeys.Control)
-        //        this.Cursor = Cursors.ScrollAll;
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+                this.Cursor = Cursors.ScrollAll;
 
-        //    else
-        //        this.Cursor = Cursors.Arrow;
+            else
+                this.Cursor = Cursors.Arrow;
 
-        //    if (_mouseDownWithControl)
-        //    {
-        //        _translateXform.X += (int)(Mouse.GetPosition(this).X - _mouseDownWithControlPoint.X);
-        //        _translateXform.Y += (int)(Mouse.GetPosition(this).Y - _mouseDownWithControlPoint.Y);
-        //        _mouseDownWithControlPoint = Mouse.GetPosition(this);
-        //    }
-        //}
-        //private void MouseDown(MouseEventArgs e)
-        //{
-        //    if (Keyboard.Modifiers == ModifierKeys.Control && e.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        _mouseDownWithControl = true;
-        //        _mouseDownWithControlPoint = Mouse.GetPosition(this);
-        //    }
-        //}
-        //private void MouseUp(MouseEventArgs e)
-        //{
-        //    _mouseDownWithControl = false;
-        //}
-        //private void MouseLeave(MouseEventArgs e)
-        //{
-        //    this.Cursor = Cursors.Arrow;
-        //    _mouseDownWithControl = false;
-        //}
+            if (Keyboard.Modifiers == ModifierKeys.Control && _mouseDownWithControl)
+            {
+                _translateXform.X += (int)(Mouse.GetPosition(this).X - _mouseDownWithControlPoint.X);
+                _translateXform.Y += (int)(Mouse.GetPosition(this).Y - _mouseDownWithControlPoint.Y);
+                _mouseDownWithControlPoint = Mouse.GetPosition(this);
+            }
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
 
-        //protected override void OnMouseMove(MouseEventArgs e)
-        //{
-        //    base.OnMouseMove(e);
-        //    MouseMove(e);
-        //}
-        //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseLeftButtonDown(e);
-        //    MouseDown(e);
-        //}
-        //protected override void OnMouseLeave(MouseEventArgs e)
-        //{
-        //    base.OnMouseLeave(e);
-        //    MouseLeave(e);
-        //}
-        //protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
-        //{
-        //    base.OnPreviewMouseLeftButtonUp(e);
-        //    MouseUp(e);
-        //}
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.LeftButton == MouseButtonState.Pressed)
+            {
+                _mouseDownWithControl = true;
+                _mouseDownWithControlPoint = Mouse.GetPosition(this);
+            }
+        }
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            this.Cursor = Cursors.Arrow;
+            _mouseDownWithControl = false;
+        }
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseLeftButtonUp(e);
+            _mouseDownWithControl = false;
+        }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
 
             // WONT WORK UNTIL PLAYER IS A CHILD OF LEVEL
-            
-            //double scale = (e.Delta > 0) ? 1.05 : 0.95;
-            //if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            //{
-            //    _scaleXform.ScaleX *= scale;
-            //    _scaleXform.ScaleY *= scale;
 
-            //    //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.1 * this.RenderSize.Width);
-            //    //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.1 * this.RenderSize.Height);
-            //}
+            var scale = (e.Delta > 0) ? 1.05 : 0.95;
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                _scaleXform.ScaleX *= scale;
+                _scaleXform.ScaleY *= scale;
+
+                //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Width);
+                //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Height);
+            }
         }
 
         #region Animations

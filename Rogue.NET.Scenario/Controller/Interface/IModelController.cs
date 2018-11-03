@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Core.Controller.Interface
+namespace Rogue.NET.Scenario.Controller.Interface
 {
     /// <summary>
     /// Stateful model managing controller

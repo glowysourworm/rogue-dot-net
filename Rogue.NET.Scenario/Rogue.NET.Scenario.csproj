@@ -169,6 +169,10 @@
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controller\Interface\IModelController.cs" />
+    <Compile Include="Controller\Interface\IScenarioController.cs" />
+    <Compile Include="Controller\ModelController.cs" />
+    <Compile Include="Controller\ScenarioController.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">

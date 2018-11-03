@@ -61,23 +61,6 @@ namespace Rogue.NET.Core.Logic
         }
 
         #region (public) Methods
-        public void PlacePlayer(PlayerStartLocation location)
-        {
-            switch (location)
-            {
-                case PlayerStartLocation.StairsDown:
-                    if (_modelService.CurrentLevel.StairsDown != null)
-                        _modelService.Player.Location = _modelService.CurrentLevel.StairsDown.Location;
-                    break;
-                case PlayerStartLocation.StairsUp:
-                    if (_modelService.CurrentLevel.StairsUp != null)
-                        _modelService.Player.Location = _modelService.CurrentLevel.StairsUp.Location;
-                    break;
-                case PlayerStartLocation.Random:
-                    _modelService.Player.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
-                    break;
-            }
-        }
         public void StepOnItem(Character character, ItemBase item)
         {
             var level = _modelService.CurrentLevel;

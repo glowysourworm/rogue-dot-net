@@ -11,9 +11,8 @@
     }
     public enum PlayerStartLocation
     {
-        AtCurrent,
+        SavePoint,
         StairsUp,
-        StairsDown,
         Random,
     }
 }

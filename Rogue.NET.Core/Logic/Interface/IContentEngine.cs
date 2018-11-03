@@ -29,7 +29,6 @@ namespace Rogue.NET.Core.Logic.Interface
         /// </summary>
         void ApplyEndOfTurn();
 
-        void PlacePlayer(PlayerStartLocation location);
         void DropPlayerItem(string itemId);
         void StepOnItem(Character character, ItemBase item);
         void StepOnDoodad(Character character, DoodadBase doodad);

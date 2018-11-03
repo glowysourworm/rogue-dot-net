@@ -50,6 +50,7 @@ namespace Rogue.NET.Core.Service
 
         public void Load(
             Player player, 
+            PlayerStartLocation startLocation,
             Level level, 
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration)
@@ -58,6 +59,22 @@ namespace Rogue.NET.Core.Service
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
+
+            switch (startLocation)
+            {
+                case PlayerStartLocation.SavePoint:
+                    if (level.HasSavePoint)
+                        player.Location = level.SavePoint.Location;
+                    else
+                        player.Location = level.StairsUp.Location;
+                    break;
+                case PlayerStartLocation.StairsUp:
+                    player.Location = level.StairsUp.Location;
+                    break;
+                case PlayerStartLocation.Random:
+                    player.Location = _layoutEngine.GetRandomLocation(level, true);
+                    break;
+            }
         }
 
         public Level CurrentLevel { get; private set; }
@@ -84,6 +101,12 @@ namespace Rogue.NET.Core.Service
         {
             return this.CurrentLevel
                        .Enemies
+                       .Where(x => _visibleLocations.Contains(x.Location));
+        }
+        public IEnumerable<ScenarioObject> GetVisibleContents()
+        {
+            return this.CurrentLevel
+                       .GetContents()
                        .Where(x => _visibleLocations.Contains(x.Location));
         }
         public IEnumerable<CellPoint> GetVisibleLocations()
@@ -142,8 +165,11 @@ namespace Rogue.NET.Core.Service
                 cell.IsRevealed = false;
             }
 
-            //return all affected cells
+            // Update all effected cell locations
             _effectedLocations = visibleLocations.Union(_visibleLocations).Distinct();
+
+            // Update visible cell locations
+            _visibleLocations = visibleLocations;
         }
     }
 }

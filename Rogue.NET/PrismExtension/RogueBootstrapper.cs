@@ -48,7 +48,6 @@ namespace Rogue.NET.PrismExtension
             base.InitializeModules();
 
             Application.Current.MainWindow = this.Shell as Shell;
-            //Application.Current.MainWindow.FontFamily = (FontFamily)Application.Current.Resources["CentaurFont"];
             Application.Current.MainWindow.Show();
 
             // Request Navigate

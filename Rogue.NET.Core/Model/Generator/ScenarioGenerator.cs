@@ -49,6 +49,9 @@ namespace Rogue.NET.Core.Model.Generator
         {
             ScenarioContainer scenario = new ScenarioContainer();
 
+            // Reseed the Random number generator
+            _randomSequenceGenerator.Reseed(seed);
+
             //Generate Dungeon
             scenario.Player1 = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate);
             scenario.Player1.AttributeEmphasis = AttributeEmphasis.Agility;

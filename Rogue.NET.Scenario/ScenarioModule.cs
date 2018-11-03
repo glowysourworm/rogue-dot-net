@@ -2,16 +2,14 @@
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
+
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Common.Events.Splash;
-using Rogue.NET.Intro.Views;
 using Rogue.NET.Model.Events;
-using Rogue.NET.Scenario.Content.Views;
+using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events;
-using Rogue.NET.Scenario.Intro.Views.GameSetup;
-using Rogue.NET.Scenario.Outro.Views;
-using Rogue.NET.Scenario.Views;
+
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Scenario
@@ -21,18 +19,26 @@ namespace Rogue.NET.Scenario
     {
         readonly IRegionManager _regionManager;
         readonly IEventAggregator _eventAggregator;
+        readonly IScenarioController _scenarioController;
+        readonly IModelController _modelController;
 
         [ImportingConstructor]
         public ScenarioModule(
             IRegionManager regionManager,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            IScenarioController scenarioController,
+            IModelController modelController)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
+            _scenarioController = scenarioController;
+            _modelController = modelController;
         }
 
         public void Initialize()
         {
+            _modelController.Initialize();
+
             _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {
                 Message = "Loading Scenario Module...",
