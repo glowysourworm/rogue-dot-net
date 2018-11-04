@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Model.Scenario.Character;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -579,26 +580,26 @@ namespace Rogue.NET.Core.Logic
                 return cells[_randomSequenceGenerator.Get(0, cells.Length)].Location;
             }
         }
-        public CellPoint GetRandomAdjacentLocation(Level level, CellPoint location, bool excludeOccupiedCells)
+        public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)
         {
             var adjacentLocations = GetAdjacentLocations(level.Grid, location).
-                                    Where(x => (excludeOccupiedCells && level.IsCellOccupied(x)));
+                                    Where(x => (excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
                                            : CellPoint.Empty;
 
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, CellPoint location)
+        public IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location)
         {
             var adjacentLocations = GetAdjacentLocations(level.Grid, location);
 
-            return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x));
+            return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x, player.Location));
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, CellPoint location)
+        public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location)
         {
             var adjacentLocations = GetAdjacentLocations(level.Grid, location);
 
-            return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x));
+            return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
         }
         public IEnumerable<CellPoint> GetAdjacentLocations(LevelGrid grid, CellPoint location)
         {

@@ -123,7 +123,7 @@ namespace Rogue.NET.Core.Logic
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player.Location, true);
+            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel,_modelService.Player, _modelService.Player.Location, true);
 
             // Get direction for random move -> Move()
             return Move(_layoutEngine.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation));

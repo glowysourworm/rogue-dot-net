@@ -79,10 +79,11 @@ namespace Rogue.NET.Scenario.Controller
                 // Finally: Process the rest of the backend (Data) queue.
                 while (_scenarioService.ProcessBackend()) { }
 
-                processing = _scenarioService.AnyAnimationEvents() ||
-                             _scenarioService.AnyLevelEvents() ||
-                             _scenarioService.AnyScenarioEvents() ||
-                             _scenarioService.AnySplashEvents();
+                processing = processing &&
+                    (_scenarioService.AnyAnimationEvents() ||
+                     _scenarioService.AnyLevelEvents() ||
+                     _scenarioService.AnyScenarioEvents() ||
+                     _scenarioService.AnySplashEvents());
             }
         }
         private bool ProcessAnimationUpdate(IAnimationUpdate update)

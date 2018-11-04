@@ -522,7 +522,7 @@ namespace Rogue.NET.Core.Logic
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {
-            var location = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, enemy.Location, true);
+            var location = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player, enemy.Location, true);
             if (location == CellPoint.Empty)
                 return;
 

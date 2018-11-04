@@ -126,7 +126,7 @@ namespace Rogue.NET.Core.Logic
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player, _modelService.Player.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -455,7 +455,7 @@ namespace Rogue.NET.Core.Logic
         }
         private void DropEnemyItem(Enemy enemy, ItemBase item)
         {
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, enemy.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player, enemy.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -584,18 +584,18 @@ namespace Rogue.NET.Core.Logic
             switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, enemy.Location, true);
+                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player, enemy.Location, true);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .First();
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .Last();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, enemy.Location)
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel,  _modelService.Player, enemy.Location)
                                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                                         .First();
 

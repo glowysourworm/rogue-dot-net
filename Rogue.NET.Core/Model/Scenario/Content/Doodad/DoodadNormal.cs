@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public DoodadNormal()
         {
         }
-        public DoodadNormal(DoodadNormalType type, string name, string pairId, bool visible)
+        public DoodadNormal(DoodadNormalType type, string name, string pairId)
             : base(name, type == DoodadNormalType.SavePoint ? ImageResources.SavePoint :
                          type == DoodadNormalType.StairsDown ? ImageResources.StairsDown :
                          type == DoodadNormalType.StairsUp ? ImageResources.StairsUp :
@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         {
             this.Type = DoodadType.Normal;
             this.NormalType = type;
-            this.IsPhysicallyVisible = visible;
             this.PairId = pairId;
         }
     }

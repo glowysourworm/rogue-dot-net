@@ -196,9 +196,15 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             return _levelContentArray;
         }
-        public bool IsCellOccupied(CellPoint cellPoint)
+        /// <summary>
+        /// Checks level contents to see if cell is occupied. (NOTE** Must provide player location as well)
+        /// </summary>
+        /// <param name="cellPoint">point in question</param>
+        /// <param name="playerLocation">player location (not provided by Level)</param>
+        /// <returns></returns>
+        public bool IsCellOccupied(CellPoint cellPoint, CellPoint playerLocation)
         {
-            return _levelContentGrid[cellPoint.Column, cellPoint.Row].Count > 0;
+            return _levelContentGrid[cellPoint.Column, cellPoint.Row].Count > 0 || cellPoint == playerLocation;
         }
         public bool IsCellOccupiedByEnemy(CellPoint cellPoint)
         {
