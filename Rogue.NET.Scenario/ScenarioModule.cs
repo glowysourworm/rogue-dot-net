@@ -20,24 +20,24 @@ namespace Rogue.NET.Scenario
         readonly IRegionManager _regionManager;
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioController _scenarioController;
-        readonly IModelController _modelController;
+        readonly IGameController _gameController;
 
         [ImportingConstructor]
         public ScenarioModule(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
             IScenarioController scenarioController,
-            IModelController modelController)
+            IGameController gameController)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioController = scenarioController;
-            _modelController = modelController;
+            _gameController = gameController;
         }
 
         public void Initialize()
         {
-            _modelController.Initialize();
+            _gameController.Initialize();
 
             _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
             {

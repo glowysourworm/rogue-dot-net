@@ -1,6 +1,9 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -8,7 +11,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Service.Interface;
-
+using Rogue.NET.Core.Utility;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -20,7 +23,6 @@ namespace Rogue.NET.Core.Logic
     public class ContentEngine : IContentEngine
     {
         readonly IModelService _modelService;
-        readonly ITextService _textService;
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
         readonly IEnemyProcessor _enemyProcessor;
@@ -31,12 +33,15 @@ namespace Rogue.NET.Core.Logic
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ICharacterGenerator _characterGenerator;
 
-        public event EventHandler<Enemy> EnemyReactionEvent;
+        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
+        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
+        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public ContentEngine(
             IModelService modelService, 
-            ITextService textService,
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
             IEnemyProcessor enemyProcessor,
@@ -48,7 +53,6 @@ namespace Rogue.NET.Core.Logic
             ICharacterGenerator characterGenerator)
         {
             _modelService = modelService;
-            _textService = textService;
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
             _enemyProcessor = enemyProcessor;
@@ -229,7 +233,11 @@ namespace Rogue.NET.Core.Logic
                 if (enemy.Hp <= 0)
                     EnemyDeath(enemy);
                 else
-                    EnemyReactionEvent(this, enemy);
+                    LevelProcessingActionEvent(this, new LevelProcessingAction()
+                    {
+                        CharacterId = enemy.Id,
+                        Type = LevelProcessingActionType.EnemyReaction
+                    });
 
                 if (enemy.Hp <= 0)
                     EnemyDeath(enemy);
@@ -279,7 +287,7 @@ namespace Rogue.NET.Core.Logic
                 case DoodadNormalType.StairsUp:
                     if (character is Player)
                     {
-                        var doodadTitle = _textService.CamelCaseToTitleCase(doodad.NormalType.ToString());
+                        var doodadTitle = TextUtility.CamelCaseToTitleCase(doodad.NormalType.ToString());
                         _scenarioMessageService.Publish(doodadTitle + " (Press \"D\" to Use)");
                     }
                     break;

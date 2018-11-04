@@ -1,17 +1,16 @@
-﻿using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Core.Service.Interface;
 
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 
 using Prism.Events;
+using Rogue.NET.Core.Utility;
 
 namespace Rogue.NET.Core.Model.Generator
 {
@@ -24,7 +23,6 @@ namespace Rogue.NET.Core.Model.Generator
         readonly ICharacterGenerator _characterGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly ITextService _textService;
 
         [ImportingConstructor]
         public ScenarioGenerator(
@@ -33,8 +31,7 @@ namespace Rogue.NET.Core.Model.Generator
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
-            IRandomSequenceGenerator randomSequenceGenerator,
-            ITextService textService)
+            IRandomSequenceGenerator randomSequenceGenerator)
         {
             _eventAggregator = eventAggregator;
             _layoutGenerator = layoutGenerator;
@@ -42,7 +39,6 @@ namespace Rogue.NET.Core.Model.Generator
             _characterGenerator = characterGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
-            _textService = textService;
         }
 
         public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, int seed, bool survivorMode)
@@ -85,7 +81,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Load Encyclopedia Rogue-Tanica (Normal Doodads)
             foreach (var type in Enum.GetValues(typeof(DoodadNormalType)).Cast<DoodadNormalType>())
-                scenario.ScenarioEncyclopedia.Add(_textService.CamelCaseToTitleCase(type.ToString()), _scenarioMetaDataGenerator.CreateScenarioMetaData(type));
+                scenario.ScenarioEncyclopedia.Add(TextUtility.CamelCaseToTitleCase(type.ToString()), _scenarioMetaDataGenerator.CreateScenarioMetaData(type));
 
             //progressUpdate("Adding 'other' items...", 99);
 

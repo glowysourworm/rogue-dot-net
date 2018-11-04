@@ -3,6 +3,7 @@ using Rogue.NET.Common.EventArgs;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Controller.Interface;
@@ -35,7 +36,6 @@ namespace Rogue.NET.Scenario.Controller
         {
             // Subscribe to user input
             _userCommandToken = _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(OnUserCommand, true);
-
             
         }
         public void ExitGameMode()
@@ -45,9 +45,7 @@ namespace Rogue.NET.Scenario.Controller
 
         private void OnUserCommand(LevelCommandEventArgs e)
         {
-            return;
-
-            _scenarioService.IssueCommand(new LevelCommand()
+            _scenarioService.IssueCommand(new LevelCommandAction()
             {
                 Action = e.Action,
                 Direction = e.Direction,
@@ -63,29 +61,47 @@ namespace Rogue.NET.Scenario.Controller
             while (processing)
             {
                 // First: Process all animations
-                while (_scenarioService.AnyAnimationEvents())
-                    ProcessAnimationEvent(_scenarioService.DequeueAnimation());
+                while (_scenarioService.AnyAnimationEvents() && processing)
+                    processing = ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
 
-                // Second: Process all UI events
+                // Second: Process all Scenario Events
+                while (_scenarioService.AnyScenarioEvents() && processing)
+                    processing = ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+
+                // Third: Process all Splash events
+                while (_scenarioService.AnySplashEvents() && processing)
+                    processing = ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
+
+                // Fourth: PRocess all UI events
                 while (_scenarioService.AnyLevelEvents())
-                    ProcessUIEvent(_scenarioService.DequeueLevelEvent());
+                    processing = ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
 
-                // Third: Process entire backend queue
+                // Finally: Process the rest of the backend (Data) queue.
                 while (_scenarioService.ProcessBackend()) { }
 
-                // Last: Check to see whether there are any new UI or animation
-                //       events to process
                 processing = _scenarioService.AnyAnimationEvents() ||
-                             _scenarioService.AnyLevelEvents();
+                             _scenarioService.AnyLevelEvents() ||
+                             _scenarioService.AnyScenarioEvents() ||
+                             _scenarioService.AnySplashEvents();
             }
         }
-        private void ProcessAnimationEvent(IAnimationEvent animationEvent)
+        private bool ProcessAnimationUpdate(IAnimationUpdate update)
         {
-
+            return true;
         }
-        private void ProcessUIEvent(ILevelUpdate uiEvent)
+        private bool ProcessUIUpdate(ILevelUpdate update)
         {
-            _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(uiEvent);
+            _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(update);
+
+            return true;
+        }
+        private bool ProcessScenarioUpdate(IScenarioUpdate update)
+        {
+            return update.ScenarioUpdateType != ScenarioUpdateType.PlayerDeath;
+        }
+        private bool ProcessSplashUpdate(ISplashUpdate update)
+        {
+            return true;
         }
     }
 }

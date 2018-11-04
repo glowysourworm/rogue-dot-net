@@ -1,4 +1,4 @@
-﻿namespace Rogue.NET.Core.Logic.Event
+﻿namespace Rogue.NET.Core.Logic.Processing.Enum
 {
     public enum SplashEventType
     {
@@ -16,5 +16,11 @@
         Save,
         Splash,
         Uncurse,
+    }
+
+    public enum SplashAction
+    {
+        Show,
+        Hide
     }
 }

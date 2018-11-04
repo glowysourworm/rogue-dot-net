@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Logic.Processing.Enum;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -73,7 +74,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe((update) =>
             {
-                //OnLevelUpdate(update);
+                OnLevelUpdate(update);
             }, true);
         }
 
@@ -233,13 +234,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var visibleLocations = _modelService.GetVisibleLocations();
 
             var opacityMaskGeometry = new StreamGeometry();
-            //var opacityMaskGeometry = new PathGeometry();
-            //foreach (var cellPoint in visibleLocations)
-            //{
-            //    var rect = DataHelper.Cell2UIRect(cellPoint, false);
-            //    var rectangleGeometry = new RectangleGeometry(rect);
-            //    opacityMaskGeometry.AddGeometry(rectangleGeometry);
-            //}
 
             using (var stream = opacityMaskGeometry.Open())
             {

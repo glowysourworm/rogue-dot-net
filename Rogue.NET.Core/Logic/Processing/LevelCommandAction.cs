@@ -4,8 +4,8 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Logic.Processing
 {
-    [Export(typeof(ILevelCommand))]
-    public class LevelCommand : ILevelCommand
+    [Export(typeof(ILevelCommandAction))]
+    public class LevelCommandAction : ILevelCommandAction
     {
         public LevelAction Action { get; set; }
         public Compass Direction { get; set; }

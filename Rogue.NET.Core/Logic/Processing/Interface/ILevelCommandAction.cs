@@ -2,7 +2,7 @@
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
-    public interface ILevelCommand
+    public interface ILevelCommandAction
     {
         /// <summary>
         /// Intended player action

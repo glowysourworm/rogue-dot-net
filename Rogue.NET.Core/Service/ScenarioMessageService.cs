@@ -11,27 +11,22 @@ namespace Rogue.NET.Core.Service
     {
         public void Block()
         {
-            throw new NotImplementedException();
         }
 
         public void Publish(string message)
         {
-            throw new NotImplementedException();
         }
 
         public void Publish(string message, params string[] format)
         {
-            throw new NotImplementedException();
         }
 
         public void PublishPlayerAdvancement(string header, IEnumerable<string> messages)
         {
-            throw new NotImplementedException();
         }
 
         public void UnBlock(bool send)
         {
-            throw new NotImplementedException();
         }
     }
 }

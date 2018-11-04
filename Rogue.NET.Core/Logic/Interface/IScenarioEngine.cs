@@ -4,10 +4,8 @@ using System;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
-    public interface IScenarioEngine
+    public interface IScenarioEngine : IRogueEngine
     {
-        event EventHandler<string> PlayerDeathEvent;
-
         /// <summary>
         /// Processes automatic player action
         /// </summary>

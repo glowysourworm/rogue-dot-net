@@ -1,13 +1,13 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Logic.Processing.Interface;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -15,6 +15,12 @@ namespace Rogue.NET.Core.Logic
     public class LayoutEngine : ILayoutEngine
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+
+        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
+        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
+        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator)
@@ -682,6 +688,11 @@ namespace Rogue.NET.Core.Logic
                 default:
                     return Compass.Null;
             }
+        }
+
+        public void ApplyEndOfTurn()
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

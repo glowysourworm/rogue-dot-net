@@ -1,11 +1,11 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using System;
 using System.Collections.Generic;
 
-namespace Rogue.NET.Core.Logic.Event
+namespace Rogue.NET.Core.Logic.Processing
 {
-    public class AnimationEventArgs : EventArgs
+    public class AnimationUpdate : IAnimationUpdate
     {
         public IEnumerable<AnimationTemplate> Animations { get; set; }
         public CellPoint SourceLocation { get; set; }

@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Core.Logic.Event;
 using Rogue.NET.Core.Logic.Interface;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
@@ -29,9 +31,11 @@ namespace Rogue.NET.Core.Logic
         readonly ICharacterGenerator _characterGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
-        public event EventHandler<LevelChangeEventArgs> LevelChangeEvent;
-        public event EventHandler<SplashEventType> SplashEvent;
-        public event EventHandler<AnimationEventArgs> AnimationEvent;
+        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
+        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
+        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public SpellEngine(
@@ -65,7 +69,7 @@ namespace Rogue.NET.Core.Logic
             //Run animations before applying effects
             if (spell.Animations.Count > 0)
             {
-                AnimationEvent(this, new AnimationEventArgs()
+                AnimationUpdateEvent(this, new AnimationUpdate()
                 {
                     Animations = spell.Animations,
                     SourceLocation = _modelService.Player.Location,
@@ -92,7 +96,7 @@ namespace Rogue.NET.Core.Logic
             //Run animations before applying effects
             if (spell.Animations.Count > 0)
             {
-                AnimationEvent(this, new AnimationEventArgs()
+                AnimationUpdateEvent(this, new AnimationUpdate()
                 {
                     Animations = spell.Animations,
                     SourceLocation = enemy.Location,
@@ -281,8 +285,10 @@ namespace Rogue.NET.Core.Logic
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Min(randomLevel, numberOfLevels);
 
-                        LevelChangeEvent(this, new LevelChangeEventArgs()
+                        ScenarioUpdateEvent(this, new ScenarioUpdate()
                         {
+                            ScenarioUpdateType = ScenarioUpdateType.LevelChange,
+
                             LevelNumber = level,
                             StartLocation = PlayerStartLocation.Random
                         });
@@ -296,21 +302,23 @@ namespace Rogue.NET.Core.Logic
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Max(randomLevel, 1);
 
-                        LevelChangeEvent(this, new LevelChangeEventArgs()
+                        ScenarioUpdateEvent(this, new ScenarioUpdate()
                         {
+                            ScenarioUpdateType = ScenarioUpdateType.LevelChange,
+
                             LevelNumber = level,
                             StartLocation = PlayerStartLocation.Random
                         });
                     }
                     break;
                 case AlterationMagicEffectType.EnchantArmor:
-                    SplashEvent(this, SplashEventType.EnchantArmor);
+                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.EnchantArmor });
                     break;
                 case AlterationMagicEffectType.EnchantWeapon:
-                    SplashEvent(this, SplashEventType.EnchantWeapon);
+                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.EnchantWeapon });
                     break;
                 case AlterationMagicEffectType.Identify:
-                    SplashEvent(this, SplashEventType.Identify);
+                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Identify });
                     break;
                 case AlterationMagicEffectType.RevealFood:
                     RevealFood();
@@ -328,7 +336,7 @@ namespace Rogue.NET.Core.Logic
                     RevealSavePoint();
                     break;
                 case AlterationMagicEffectType.Uncurse:
-                    SplashEvent(this, SplashEventType.Uncurse);
+                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Uncurse });
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                     CreateMonster(alteration.CreateMonsterEnemy);
@@ -340,7 +348,7 @@ namespace Rogue.NET.Core.Logic
             switch (alteration.AttackAttributeType)
             {
                 case AlterationAttackAttributeType.Imbue:
-                    SplashEvent(this, SplashEventType.Imbue);
+                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Imbue });
                     break;
                 case AlterationAttackAttributeType.Passive:
                     _modelService.Player.Alteration.AttackAttributePassiveEffects.Add(alteration.Effect);
@@ -542,6 +550,11 @@ namespace Rogue.NET.Core.Logic
 
                 _modelService.CurrentLevel.AddContent(enemy);
             }
+        }
+
+        public void ApplyEndOfTurn()
+        {
+            throw new NotImplementedException();
         }
     }
 }

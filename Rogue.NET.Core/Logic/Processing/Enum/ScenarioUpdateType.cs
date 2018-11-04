@@ -1,4 +1,4 @@
-﻿namespace Rogue.NET.Core.Logic.Processing
+﻿namespace Rogue.NET.Core.Logic.Processing.Enum
 {
     /// <summary>
     /// Enum to specify major scenario event updates

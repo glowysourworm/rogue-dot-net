@@ -2,6 +2,9 @@
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Event.Splash;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -457,7 +460,7 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Save()
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Save
@@ -474,7 +477,7 @@ namespace Rogue.NET.ScenarioEditor
 
             PublishOutputMessage("Save complete");
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Save

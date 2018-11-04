@@ -1,7 +1,10 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.IO;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
@@ -19,12 +22,13 @@ using System.Linq;
 namespace Rogue.NET.Scenario.Controller
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(IModelController))]
-    public class ModelController : IModelController
+    [Export(typeof(IGameController))]
+    public class GameController : IGameController
     {
         readonly IScenarioResourceService _resourceService;
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
+        readonly IScenarioController _scenarioController;
         readonly IModelService _modelService;
 
         // PRIMARY MODEL STATE
@@ -32,15 +36,17 @@ namespace Rogue.NET.Scenario.Controller
         ScenarioContainer _scenarioContainer;
 
         [ImportingConstructor]
-        public ModelController(
+        public GameController(
             IScenarioResourceService resourceService,
             IEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
+            IScenarioController scenarioController,
             IModelService modelService)
         {
             _resourceService = resourceService;
             _eventAggregator = eventAggregator;
             _scenarioGenerator = scenarioGenerator;
+            _scenarioController = scenarioController;
             _modelService = modelService;
         }
 
@@ -66,7 +72,7 @@ namespace Rogue.NET.Scenario.Controller
 
             _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
                 {
                     SplashAction = SplashAction.Show,
                     SplashType = SplashEventType.Open
@@ -74,7 +80,7 @@ namespace Rogue.NET.Scenario.Controller
 
                 Open(e.ScenarioName);
 
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
                 {
                     SplashAction = SplashAction.Hide,
                     SplashType = SplashEventType.Open
@@ -83,7 +89,7 @@ namespace Rogue.NET.Scenario.Controller
 
             _eventAggregator.GetEvent<SaveScenarioEvent>().Subscribe(() =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
                 {
                     SplashAction = SplashAction.Show,
                     SplashType = SplashEventType.Save
@@ -91,7 +97,7 @@ namespace Rogue.NET.Scenario.Controller
 
                 Save();
 
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
                 {
                     SplashAction = SplashAction.Hide,
                     SplashType = SplashEventType.Save
@@ -140,7 +146,7 @@ namespace Rogue.NET.Scenario.Controller
 
         public void New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.NewScenario
@@ -197,13 +203,16 @@ namespace Rogue.NET.Scenario.Controller
 
             LoadCurrentLevel();
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.NewScenario
             });
 
             _eventAggregator.GetEvent<LevelInitializedEvent>().Publish();
+
+            // Enables backend queue processing
+            _scenarioController.EnterGameMode();
         }
         public void Open(string file)
         {

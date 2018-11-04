@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -37,7 +38,11 @@ namespace Rogue.NET.Core.Service
         //          6) Enemy uses magic spell
         //          7) UI Animation is queued
         //          8) etc...
-        Queue<IAnimationEvent> _animationQueue;
+
+        // These Have Priority:  { Animation, Scenario, Splash, UI, Data }
+        Queue<IAnimationUpdate> _animationQueue;
+        Queue<IScenarioUpdate> _scenarioQueue;
+        Queue<ISplashUpdate> _splashQueue;
         Queue<ILevelUpdate> _uiQueue;
         Queue<ILevelProcessingAction> _dataQueue;
 
@@ -57,58 +62,43 @@ namespace Rogue.NET.Core.Service
             _spellEngine = spellEngine;
             _rayTracer = rayTracer;
 
-            _dataQueue = new Queue<ILevelProcessingAction>();
-            _uiQueue = new Queue<ILevelUpdate>();
-            _animationQueue = new Queue<IAnimationEvent>();
+            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine };
 
-            _scenarioEngine.PlayerDeathEvent += (sender, e) =>
+            _animationQueue = new Queue<IAnimationUpdate>();
+            _scenarioQueue = new Queue<IScenarioUpdate>();
+            _splashQueue = new Queue<ISplashUpdate>();
+            _uiQueue = new Queue<ILevelUpdate>();
+            _dataQueue = new Queue<ILevelProcessingAction>();
+            
+            foreach (var engine in rogueEngines)
             {
-                _uiQueue.Enqueue(new LevelUpdate()
+                // Updates
+                engine.AnimationUpdateEvent += (sender, update) =>
                 {
-                    ScenarioUpdateType = ScenarioUpdateType.PlayerDeath,
-                    LevelUpdateType = LevelUpdateType.None
-                });
-            };
-            _contentEngine.EnemyReactionEvent += (sender, e) =>
-            {
-                _dataQueue.Enqueue(new LevelProcessingAction()
+                    _animationQueue.Enqueue(update);
+                };
+                engine.LevelUpdateEvent += (sender, update) =>
                 {
-                    CharacterId = e.Id,
-                    Type = LevelProcessingActionType.EnemyReaction
-                });
-            };
-            _spellEngine.AnimationEvent += (sender, e) =>
-            {
-                _animationQueue.Enqueue(new AnimationEvent()
+                    _uiQueue.Enqueue(update);
+                };
+                engine.ScenarioUpdateEvent += (sender, update) =>
                 {
-                    Animations = e.Animations,
-                    SourceLocation = _rayTracer.Transform(e.SourceLocation),
-                    TargetLocations = e.TargetLocations.Select(x => _rayTracer.Transform(x))
-                                                       .ToList()
-                });
-            };
-            _spellEngine.LevelChangeEvent += (sender, e) =>
-            {
-                _uiQueue.Enqueue(new LevelUpdate()
+                    _scenarioQueue.Enqueue(update);
+                };
+                engine.SplashUpdateEvent += (sender, update) =>
                 {
-                    ScenarioUpdateType = ScenarioUpdateType.LevelChange,
-                    LevelUpdateType = LevelUpdateType.None,
-                    LevelNumber = e.LevelNumber,
-                    StartLocation = e.StartLocation
-                });
-            };
-            _spellEngine.SplashEvent += (sender, e) =>
-            {
-                _uiQueue.Enqueue(new LevelUpdate()
+                    _splashQueue.Enqueue(update);
+                };
+
+                // Actions
+                engine.LevelProcessingActionEvent += (sender, action) =>
                 {
-                    SplashEventType = e,
-                    LevelUpdateType = LevelUpdateType.None,
-                    ScenarioUpdateType = ScenarioUpdateType.None
-                });
-            };
+                    _dataQueue.Enqueue(action);
+                };
+            }
         }
 
-        public void IssueCommand(ILevelCommand command)
+        public void IssueCommand(ILevelCommandAction command)
         {
             // Check for player altered states that cause automatic player actions
             var nextAction = _scenarioEngine.ProcessAlteredPlayerState();
@@ -310,6 +300,17 @@ namespace Rogue.NET.Core.Service
             }
         }
 
+        private void EndOfTurn(bool regenerate)
+        {
+            _contentEngine.CalculateEnemyReactions();
+            _dataQueue.Enqueue(new LevelProcessingAction()
+            {
+                Type = LevelProcessingActionType.EndOfTurn
+            });
+        }
+
+        #region (public) Queue Methods
+
         public bool ProcessBackend()
         {
             if (!_dataQueue.Any())
@@ -336,35 +337,47 @@ namespace Rogue.NET.Core.Service
         {
             return _uiQueue.Any();
         }
-
         public bool AnyAnimationEvents()
         {
             return _animationQueue.Any();
         }
+        public bool AnyScenarioEvents()
+        {
+            return _scenarioQueue.Any();
+        }
+        public bool AnySplashEvents()
+        {
+            return _splashQueue.Any();
+        }
 
-        public ILevelUpdate DequeueLevelEvent()
+        public IScenarioUpdate DequeueScenarioUpdate()
+        {
+            if (_scenarioQueue.Any())
+                return _scenarioQueue.Dequeue();
+
+            return null;
+        }
+        public ISplashUpdate DequeueSplashUpdate()
+        {
+            if (_splashQueue.Any())
+                return _splashQueue.Dequeue();
+
+            return null;
+        }
+        public ILevelUpdate DequeueLevelUpdate()
         {
             if (_uiQueue.Any())
                 return _uiQueue.Dequeue();
 
             return null;
         }
-
-        public IAnimationEvent DequeueAnimation()
+        public IAnimationUpdate DequeueAnimationUpdate()
         {
             if (_animationQueue.Any())
                 return _animationQueue.Dequeue();
 
             return null;
         }
-
-        private void EndOfTurn(bool regenerate)
-        {
-            _contentEngine.CalculateEnemyReactions();
-            _dataQueue.Enqueue(new LevelProcessingAction()
-            {
-                Type = LevelProcessingActionType.EndOfTurn
-            });
-        }
+        #endregion
     }
 }

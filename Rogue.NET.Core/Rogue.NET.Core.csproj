@@ -128,16 +128,18 @@
     <Compile Include="Graveyard\ResourceManager.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
     <Compile Include="IO\BinarySerializer.cs" />
-    <Compile Include="Logic\Processing\AnimationEvent.cs" />
-    <Compile Include="Logic\Processing\Interface\IAnimationEvent.cs" />
+    <Compile Include="Logic\Interface\IRogueEngine.cs" />
+    <Compile Include="Logic\Processing\AnimationUpdate.cs" />
+    <Compile Include="Logic\Processing\Interface\IAnimationUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelProcessingAction.cs" />
-    <Compile Include="Logic\Processing\Interface\ISplashEvent.cs" />
+    <Compile Include="Logic\Processing\Interface\IScenarioUpdate.cs" />
+    <Compile Include="Logic\Processing\Interface\ISplashUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelUpdate.cs" />
     <Compile Include="Logic\Processing\LevelProcessingAction.cs" />
-    <Compile Include="Logic\Processing\LevelProcessingActionType.cs" />
-    <Compile Include="Logic\Event\AnimationEventArgs.cs" />
-    <Compile Include="Logic\Event\LevelChangeEventArgs.cs" />
-    <Compile Include="Logic\Processing\ScenarioUpdateType.cs" />
+    <Compile Include="Logic\Processing\Enum\LevelProcessingActionType.cs" />
+    <Compile Include="Logic\Processing\Enum\ScenarioUpdateType.cs" />
+    <Compile Include="Logic\Processing\ScenarioUpdate.cs" />
+    <Compile Include="Logic\Processing\SplashUpdate.cs" />
     <Compile Include="Media\Animation.cs" />
     <Compile Include="Media\AnimationGenerator.cs" />
     <Compile Include="Media\AnimationGroup.cs" />
@@ -147,9 +149,9 @@
     <Compile Include="Media\ITimedGraphic.cs" />
     <Compile Include="Media\TimedFigure.cs" />
     <Compile Include="Model\Event\LocationChangedEventArgs.cs" />
-    <Compile Include="Logic\Event\SplashEventType.cs" />
+    <Compile Include="Logic\Processing\Enum\SplashEventType.cs" />
     <Compile Include="Logic\Processing\LevelUpdate.cs" />
-    <Compile Include="Logic\Processing\LevelUpdateType.cs" />
+    <Compile Include="Logic\Processing\Enum\LevelUpdateType.cs" />
     <Compile Include="Logic\Content\AlterationProcessor.cs" />
     <Compile Include="Logic\Content\CharacterProcessor.cs" />
     <Compile Include="Logic\Content\EnemyProcessor.cs" />
@@ -163,8 +165,8 @@
     <Compile Include="Logic\Algorithm\Interface\IPathFinder.cs" />
     <Compile Include="Logic\Interface\IScenarioEngine.cs" />
     <Compile Include="Logic\ScenarioEngine.cs" />
-    <Compile Include="Logic\Processing\Interface\ILevelCommand.cs" />
-    <Compile Include="Logic\Processing\LevelCommand.cs" />
+    <Compile Include="Logic\Processing\Interface\ILevelCommandAction.cs" />
+    <Compile Include="Logic\Processing\LevelCommandAction.cs" />
     <Compile Include="Model\Generator\AttackAttributeGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IAttackAttributeGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IScenarioMetaDataGenerator.cs" />
@@ -269,14 +271,13 @@
     <Compile Include="Service\Interface\IScenarioResourceService.cs" />
     <Compile Include="Service\Interface\IScenarioMessageService.cs" />
     <Compile Include="Service\Interface\IScenarioService.cs" />
-    <Compile Include="Service\Interface\ITextService.cs" />
     <Compile Include="Service\ModelService.cs" />
     <Compile Include="Service\ScenarioResourceService.cs" />
     <Compile Include="Service\ScenarioMessageService.cs" />
     <Compile Include="Service\ScenarioService.cs" />
-    <Compile Include="Service\TextService.cs" />
     <Compile Include="Utility\ColorConverter.cs" />
     <Compile Include="Utility\MapperInit.cs" />
+    <Compile Include="Utility\TextUtility.cs" />
     <Compile Include="View\Smiley.xaml.cs">
       <DependentUpon>Smiley.xaml</DependentUpon>
     </Compile>

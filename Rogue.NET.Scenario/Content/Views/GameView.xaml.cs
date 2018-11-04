@@ -7,6 +7,9 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
 using Prism.Events;
 using Prism.Regions;
+using Rogue.NET.Core.Event.Splash;
+using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -71,7 +74,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Objective
@@ -80,7 +83,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Help
@@ -89,7 +92,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                  SplashAction = SplashAction.Show,
                  SplashType = SplashEventType.CommandPreferences
@@ -98,7 +101,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Dialog

@@ -1,4 +1,6 @@
-﻿namespace Rogue.NET.Core.Logic.Processing.Interface
+﻿using Rogue.NET.Core.Logic.Processing.Enum;
+
+namespace Rogue.NET.Core.Logic.Processing.Interface
 {
     /// <summary>
     /// Specification for continued model processing. This is intended to live on a queue and

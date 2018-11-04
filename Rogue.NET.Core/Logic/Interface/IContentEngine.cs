@@ -6,13 +6,8 @@ using System;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
-    public interface IContentEngine
+    public interface IContentEngine : IRogueEngine
     {
-        /// <summary>
-        /// Event that signals an enemy reaction to a player action
-        /// </summary>
-        event EventHandler<Enemy> EnemyReactionEvent;
-
         /// <summary>
         /// Figures out what enemies to provide for processing. Fires events for
         /// each enemy involved.

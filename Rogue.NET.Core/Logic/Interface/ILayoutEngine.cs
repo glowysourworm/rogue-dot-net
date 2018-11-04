@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
-    public interface ILayoutEngine
+    public interface ILayoutEngine : IRogueEngine
     {
         void Search(LevelGrid grid, CellPoint location);
         void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation);

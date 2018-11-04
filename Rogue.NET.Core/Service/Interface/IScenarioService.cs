@@ -17,23 +17,32 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Issues primary player command 
         /// </summary>
-        /// <param name="action">Intended action</param>
-        /// <param name="direction">desired direction for action</param>
-        /// <param name="id">involved RogueBase.Id for action</param>
-        void IssueCommand(ILevelCommand levelCommand);
+        void IssueCommand(ILevelCommandAction levelCommand);
 
+        // Methods to show queue status
         bool AnyLevelEvents();
         bool AnyAnimationEvents();
+        bool AnyScenarioEvents();
+        bool AnySplashEvents();
 
         /// <summary>
-        /// Gets the next level update from the service
+        /// Scenario Update Events are 2nd in priority (Animation -> Scenario -> Splash -> UI)
         /// </summary>
-        ILevelUpdate DequeueLevelEvent();
+        IScenarioUpdate DequeueScenarioUpdate();
 
         /// <summary>
-        /// Gets the next animation update from the service. These are processed first
+        /// Splash Update Events are 3rd in priority (Animation -> Scenario -> Splash -> UI)
         /// </summary>
-        /// <returns></returns>
-        IAnimationEvent DequeueAnimation();
+        ISplashUpdate DequeueSplashUpdate();
+
+        /// <summary>
+        /// Level Update Events are 4th in priority (Animation -> Scenario -> Splash -> UI)
+        /// </summary>
+        ILevelUpdate DequeueLevelUpdate();
+
+        /// <summary>
+        /// Animation Update Events are 1st in priority (Animation -> Scenario -> Splash -> UI)
+        /// </summary>
+        IAnimationUpdate DequeueAnimationUpdate();
     }
 }

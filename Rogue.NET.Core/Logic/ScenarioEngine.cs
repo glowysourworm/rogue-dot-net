@@ -10,6 +10,9 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using System;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -27,7 +30,11 @@ namespace Rogue.NET.Core.Logic
         readonly IAlterationProcessor _alterationProcessor;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
-        public event EventHandler<string> PlayerDeathEvent;
+        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
+        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
+        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public ScenarioEngine(
@@ -138,7 +145,11 @@ namespace Rogue.NET.Core.Logic
 
             //I'm Not DEEEAD! (TODO: Publish event for player death)
             if (player.Hunger >= 100 || player.Hp <= 0.1)
-                PlayerDeathEvent(this, "Had a rough day");
+                ScenarioUpdateEvent(this, new ScenarioUpdate()
+                {
+                    ScenarioUpdateType = ScenarioUpdateType.PlayerDeath,
+                    PlayerDeathMessage = "Had a rough day"
+                });
 
             // Apply End-Of-Turn for the Level content
             _contentEngine.ApplyEndOfTurn();
@@ -606,6 +617,11 @@ namespace Rogue.NET.Core.Logic
             }
 
             return LevelContinuationAction.ProcessTurn;
+        }
+
+        public void ApplyEndOfTurn()
+        {
+            throw new NotImplementedException();
         }
     }
 }

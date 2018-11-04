@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Controller.Interface
 {
-    /// <summary>
-    /// Stateful model managing controller
-    /// </summary>
-    public interface IModelController
+    public interface IGameController
     {
         void Initialize();
 

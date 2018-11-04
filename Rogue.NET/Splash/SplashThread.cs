@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Splash.ViewModel;
 using Rogue.NET.View;
 using Rogue.NET.ViewModel;

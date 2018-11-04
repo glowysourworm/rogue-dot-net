@@ -2,15 +2,10 @@
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
-using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Event.Splash;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Splash;
-using Rogue.NET.Splash.ViewModel;
-using Rogue.NET.View;
-using Rogue.NET.ViewModel;
-using System;
 using System.ComponentModel.Composition;
-using System.Threading;
-using System.Windows;
 
 namespace Rogue.NET
 {

@@ -59,15 +59,13 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 characterGenerator,
                 doodadGenerator,
                 itemGenerator);
-            var textService = new TextService();
             var scenarioGenerator = new Rogue.NET.Core.Model.Generator.ScenarioGenerator(
                 _eventAggregatorMock.Object,
                 layoutGenerator,
                 contentGenerator,
                 characterGenerator,
                 scenarioMetaDataGenerator,
-                randomSequenceGenerator,
-                textService);
+                randomSequenceGenerator);
 
             return scenarioGenerator;
         }

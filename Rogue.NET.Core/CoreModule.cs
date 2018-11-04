@@ -3,6 +3,9 @@ using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Core.Event.Core;
+using Rogue.NET.Core.Event.Splash;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
 using System.ComponentModel.Composition;
 
@@ -27,7 +30,7 @@ namespace Rogue.NET.Core
         public void Initialize()
         {
             // Show the Splash Sceen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Splash
@@ -66,7 +69,7 @@ namespace Rogue.NET.Core
             _scenarioResourceService.LoadScenarioConfiguration(Model.Enums.ConfigResources.Sorcerer);
 
             // Hide the Splash Sceen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventArgs()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Splash
