@@ -106,7 +106,13 @@ namespace Rogue.NET.Core.Logic
 
             //Look for road blocks - move player
             if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, _modelService.Player.Location, desiredLocation))
+            {
+                // Update player location
                 _modelService.Player.Location = desiredLocation;
+
+                // Notify Listener queue
+                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.Player });
+            }
 
             //Increment counter
             _modelService.CurrentLevel.StepsTaken++;

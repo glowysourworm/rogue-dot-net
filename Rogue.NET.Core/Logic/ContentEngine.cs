@@ -627,17 +627,35 @@ namespace Rogue.NET.Core.Logic
 
                 // If not in a cardinally adjacent position then move into that position before opening.
                 if (enemy.Location == openingPosition)
+                {
+                    // Open the door
                     _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, openingDirection, enemy.Location);
+
+                    // Notify listener queue
+                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.Layout });
+                }
 
                 else
                 {
                     if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition))
+                    {
+                        // Update enemy location
                         enemy.Location = openingPosition;
+
+                        // Notify listener queue
+                        LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.AllContent });
+                    }
                 }
             }
-            else if (!throughDoor && 
+            else if (!throughDoor &&
                      !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, moveLocation))
+            {
+                // Update enemy location
                 enemy.Location = moveLocation;
+
+                // Notify listener queue
+                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.AllContent });
+            }
 
             // Check for items
             var item = _modelService.CurrentLevel.GetAtPoint<ItemBase>(enemy.Location);
