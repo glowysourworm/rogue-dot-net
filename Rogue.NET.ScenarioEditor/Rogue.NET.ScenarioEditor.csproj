@@ -197,6 +197,14 @@
     <Compile Include="ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IPlacementGroupViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IPlacementViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetGroupViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioConstructionViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioDifficultyViewModel.cs" />
     <Compile Include="ViewModel\PlacementGroupViewModel.cs" />
     <Compile Include="ViewModel\PlacementViewModel.cs" />
     <Compile Include="ViewModel\ScenarioAssetBrowserViewModel.cs" />

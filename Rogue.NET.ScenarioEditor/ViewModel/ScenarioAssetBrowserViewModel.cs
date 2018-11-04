@@ -1,40 +1,27 @@
 ﻿using Prism.Events;
 using Rogue.NET.ScenarioEditor.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IScenarioAssetBrowserViewModel
-    {
-        ScenarioAssetGroupViewModel LayoutGroup { get; set; }
-        ScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
-        ScenarioAssetGroupViewModel EnemyGroup { get; set; }
-        ScenarioAssetGroupViewModel EquipmentGroup { get; set; }
-        ScenarioAssetGroupViewModel ConsumableGroup { get; set; }
-        ScenarioAssetGroupViewModel DoodadGroup { get; set; }
-        ScenarioAssetGroupViewModel SpellGroup { get; set; }
-        ScenarioAssetGroupViewModel SkillSetGroup { get; set; }
-        ScenarioAssetGroupViewModel AnimationGroup { get; set; }
-        ScenarioAssetGroupViewModel BrushGroup { get; set; }
-        ScenarioAssetGroupViewModel PenGroup { get; set; }
-    }
     [Export(typeof(IScenarioAssetBrowserViewModel))]
     public class ScenarioAssetBrowserViewModel : IScenarioAssetBrowserViewModel
     {
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioEditorController _controller;
 
-        public ScenarioAssetGroupViewModel LayoutGroup { get; set; }
-        public ScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
-        public ScenarioAssetGroupViewModel EnemyGroup { get; set; }
-        public ScenarioAssetGroupViewModel EquipmentGroup { get; set; }
-        public ScenarioAssetGroupViewModel ConsumableGroup { get; set; }
-        public ScenarioAssetGroupViewModel DoodadGroup { get; set; }
-        public ScenarioAssetGroupViewModel SpellGroup { get; set; }
-        public ScenarioAssetGroupViewModel SkillSetGroup { get; set; }
-        public ScenarioAssetGroupViewModel AnimationGroup { get; set; }
-        public ScenarioAssetGroupViewModel BrushGroup { get; set; }
-        public ScenarioAssetGroupViewModel PenGroup { get; set; }
+        public IScenarioAssetGroupViewModel LayoutGroup { get; set; }
+        public IScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
+        public IScenarioAssetGroupViewModel EnemyGroup { get; set; }
+        public IScenarioAssetGroupViewModel EquipmentGroup { get; set; }
+        public IScenarioAssetGroupViewModel ConsumableGroup { get; set; }
+        public IScenarioAssetGroupViewModel DoodadGroup { get; set; }
+        public IScenarioAssetGroupViewModel SpellGroup { get; set; }
+        public IScenarioAssetGroupViewModel SkillSetGroup { get; set; }
+        public IScenarioAssetGroupViewModel AnimationGroup { get; set; }
+        public IScenarioAssetGroupViewModel BrushGroup { get; set; }
+        public IScenarioAssetGroupViewModel PenGroup { get; set; }
 
         [ImportingConstructor]
         public ScenarioAssetBrowserViewModel(

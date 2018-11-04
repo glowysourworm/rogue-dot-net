@@ -1,21 +1,12 @@
 ﻿using Prism.Commands;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IScenarioAssetViewModel
-    {
-        string Name { get; set; }
-        string Type { get; set; }
-        SymbolDetailsTemplate SymbolDetails { get; set; }
-        bool IsSelected { get; set; }
-
-        ICommand RemoveAssetCommand { get; }
-        ICommand LoadAssetCommand { get; }
-    }
     public class ScenarioAssetViewModel : IScenarioAssetViewModel, INotifyPropertyChanged
     {
         readonly IScenarioEditorController _controller;

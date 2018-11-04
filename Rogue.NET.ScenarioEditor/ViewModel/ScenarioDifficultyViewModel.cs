@@ -1,13 +1,10 @@
 ﻿using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IScenarioDifficultyViewModel
-    {
-
-    }
     [Export(typeof(IScenarioDifficultyViewModel))]
     public class ScenarioDifficultyViewModel : IScenarioDifficultyViewModel
     {

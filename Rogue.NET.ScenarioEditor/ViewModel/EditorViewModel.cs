@@ -3,22 +3,12 @@ using Prism.Events;
 using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IEditorViewModel
-    {
-        string ScenarioName { get; set; }
-
-        ICommand ExitCommand { get; }
-
-        ICommand LoadBuiltInCommand { get; }
-        ICommand SaveCommand { get; }
-        ICommand NewCommand { get; }
-        ICommand ShowDifficultyCommand { get; }
-    }
     [Export(typeof(IEditorViewModel))]
     public class EditorViewModel : NotifyViewModel, IEditorViewModel
     {

@@ -2,18 +2,13 @@
 using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IScenarioAssetGroupViewModel
-    {
-        ICommand AddAssetCommand { get; }
-
-        void RemoveAsset(IScenarioAssetViewModel asset);
-    }
     [Export(typeof(IScenarioAssetGroupViewModel))]
     public class ScenarioAssetGroupViewModel : IScenarioAssetGroupViewModel
     {

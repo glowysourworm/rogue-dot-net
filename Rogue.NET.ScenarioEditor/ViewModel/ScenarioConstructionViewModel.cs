@@ -1,15 +1,12 @@
 ﻿using Prism.Commands;
 using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IScenarioConstructionViewModel
-    {
-        ICommand LoadConstructionCommand { get; }
-    }
     [Export(typeof(IScenarioConstructionViewModel))]
     public class ScenarioConstructionViewModel : IScenarioConstructionViewModel
     {

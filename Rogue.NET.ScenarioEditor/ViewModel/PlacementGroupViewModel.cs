@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public interface IPlacementGroupViewModel
-    {
-        ObservableCollection<IPlacementViewModel> PlacementCollection { get; set; }
-    }
     public class PlacementGroupViewModel : IPlacementGroupViewModel
     {
         public ObservableCollection<IPlacementViewModel> PlacementCollection { get; set; }
