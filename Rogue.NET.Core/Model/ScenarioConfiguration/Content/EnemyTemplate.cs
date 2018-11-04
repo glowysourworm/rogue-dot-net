@@ -9,22 +9,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
-        private DungeonObjectTemplate _creatureClass;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
 
-        public DungeonObjectTemplate CreatureClass
-        {
-            get { return _creatureClass; }
-            set
-            {
-                if (_creatureClass != value)
-                {
-                    _creatureClass = value;
-                    OnPropertyChanged("CreatureClass");
-                }
-            }
-        }
         public Range<double> ExperienceGiven
         {
             get { return _experienceGiven; }
@@ -55,14 +42,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.CreatureClass = new DungeonObjectTemplate();
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.CreatureClass = new DungeonObjectTemplate();
         }
     }
 }

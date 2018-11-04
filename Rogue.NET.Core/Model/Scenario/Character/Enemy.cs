@@ -8,7 +8,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character
     [Serializable]
     public class Enemy : Character
     {
-        public string CreatureClass { get; set; }
         public double ExperienceGiven { get; set; }
         public double TurnCounter { get; set; }
         public bool IsEngaged { get; set; }

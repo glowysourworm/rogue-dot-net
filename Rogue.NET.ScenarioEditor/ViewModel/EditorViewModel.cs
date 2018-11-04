@@ -17,7 +17,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         ICommand LoadBuiltInCommand { get; }
         ICommand SaveCommand { get; }
         ICommand NewCommand { get; }
-        ICommand ScoreCommand { get; }
+        ICommand ShowDifficultyCommand { get; }
     }
     [Export(typeof(IEditorViewModel))]
     public class EditorViewModel : NotifyViewModel, IEditorViewModel
@@ -69,7 +69,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             }
         }
 
-        public ICommand ScoreCommand
+        public ICommand ShowDifficultyCommand
         {
             get
             {

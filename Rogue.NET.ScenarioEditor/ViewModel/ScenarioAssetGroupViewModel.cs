@@ -55,10 +55,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                         foreach (var v in e.DungeonTemplate.LayoutTemplates)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
                         break;
-                    case "CreatureClass":
-                        foreach (var v in e.CharacterClasses)
-                            this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType });
-                        break;
                     case "AttackAttribute":
                         foreach (var v in e.AttackAttributes)
                             this.Assets.Add(new ScenarioAssetViewModel(this, _controller) { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });

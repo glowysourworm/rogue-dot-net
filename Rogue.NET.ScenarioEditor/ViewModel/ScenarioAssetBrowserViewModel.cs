@@ -7,7 +7,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     public interface IScenarioAssetBrowserViewModel
     {
         ScenarioAssetGroupViewModel LayoutGroup { get; set; }
-        ScenarioAssetGroupViewModel CreatureClassGroup { get; set; }
         ScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
         ScenarioAssetGroupViewModel EnemyGroup { get; set; }
         ScenarioAssetGroupViewModel EquipmentGroup { get; set; }
@@ -26,7 +25,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         readonly IScenarioEditorController _controller;
 
         public ScenarioAssetGroupViewModel LayoutGroup { get; set; }
-        public ScenarioAssetGroupViewModel CreatureClassGroup { get; set; }
         public ScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
         public ScenarioAssetGroupViewModel EnemyGroup { get; set; }
         public ScenarioAssetGroupViewModel EquipmentGroup { get; set; }
@@ -52,7 +50,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         private void Initialize()
         {
             this.LayoutGroup = new ScenarioAssetGroupViewModel(_eventAggregator, _controller) { AssetType = "Layout" };
-            this.CreatureClassGroup = new ScenarioAssetGroupViewModel(_eventAggregator, _controller) { AssetType = "CreatureClass" };
             this.AttackAttributeGroup = new ScenarioAssetGroupViewModel(_eventAggregator, _controller) { AssetType = "AttackAttribute" };
             this.EnemyGroup = new ScenarioAssetGroupViewModel(_eventAggregator, _controller) { AssetType = "Enemy" };
             this.EquipmentGroup = new ScenarioAssetGroupViewModel(_eventAggregator, _controller) { AssetType = "Equipment" };

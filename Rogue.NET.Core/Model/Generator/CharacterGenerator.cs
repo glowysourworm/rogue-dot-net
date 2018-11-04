@@ -114,7 +114,6 @@ namespace Rogue.NET.Core.Model.Generator
                 throw new Exception("Trying to generate objective enemy twice");
 
             var enemy = new Enemy();
-            enemy.CreatureClass = enemyTemplate.CreatureClass.Name;
             enemy.AgilityBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Agility);
             enemy.ExperienceGiven = _randomSequenceGenerator.GetRandomValue(enemyTemplate.ExperienceGiven);
             enemy.Hp = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Hp);

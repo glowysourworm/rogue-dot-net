@@ -91,7 +91,7 @@ namespace Rogue.NET.ScenarioEditor
 
             _eventAggregator.GetEvent<ScoreScenarioEvent>().Subscribe(() =>
             {
-                Score();
+                ShowDifficulty();
             });
         }
 
@@ -103,12 +103,6 @@ namespace Rogue.NET.ScenarioEditor
                     {
                         var name = GenerateName(_config.DungeonTemplate.LayoutTemplates.Select(z => z.Name), "New Layout");
                         _config.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplate() { Name = name });
-                        return name;
-                    }
-                case "CreatureClass":
-                    {
-                        var name = GenerateName(_config.CharacterClasses.Select(z => z.Name), "New Creature Class");
-                        _config.CharacterClasses.Add(new DungeonObjectTemplate() { Name = name });
                         return name;
                     }
                 case "AttackAttribute":
@@ -491,20 +485,10 @@ namespace Rogue.NET.ScenarioEditor
             //TODO
         }
 
-        public void Score()
+        public void ShowDifficulty()
         {
             _regionManager.RequestNavigate("DesignRegion", "ScenarioDifficultyChart");
             //var ctrl = _regionManager.Regions["DesignRegion"].Views.First((v => v.GetType() == typeof(ScenarioDifficultyChart))) as ScenarioDifficultyChart;
-        }
-
-        public void Upload()
-        {
-            //TODO
-        }
-
-        public void Download()
-        {
-            //TODO
         }
 
         private string GenerateName(IEnumerable<string> names, string prefix)

@@ -8,9 +8,7 @@ namespace Rogue.NET.ScenarioEditor.Interface
         ScenarioConfigurationContainer Open(string name, bool builtIn);
         void Save();
         void Validate();
-        void Score();
-        void Upload();
-        void Download();
+        void ShowDifficulty();
 
         string AddAsset(string assetType);
         void RemoveAsset(string assetType, string assetName);

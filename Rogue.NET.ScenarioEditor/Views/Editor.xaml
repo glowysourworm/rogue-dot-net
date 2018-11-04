@@ -47,9 +47,7 @@
                         Content="&#xf0c7;" Margin="2,0,0,0" /><!-- Save -->
 
                 <Button Style="{StaticResource ActionButton}" Content="&#xf046;" Margin="16,0,0,0"/><!-- Validate -->
-                <Button Style="{StaticResource ActionButton}" Content="&#xf123;" Command="{Binding ScoreCommand}" Margin="2,0,0,0" /><!-- Score / Rate -->
-                <Button Style="{StaticResource ActionButton}" Content="&#xf093;" Margin="2,0,0,0" /><!-- Upload -->
-                <Button Style="{StaticResource ActionButton}" Content="&#xf019;" Margin="2,0,0,0" /><!-- Download -->
+                <Button Style="{StaticResource ActionButton}" Content="&#xf123;" Command="{Binding ShowDifficultyCommand}" Margin="2,0,0,0" /><!-- Score / Rate -->
                 
                 <Button Style="{StaticResource ActionButton}" Margin="16,0,0,0">
                     <Button.Content>

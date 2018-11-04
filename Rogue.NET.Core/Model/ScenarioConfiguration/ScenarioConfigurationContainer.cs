@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
         public List<SpellTemplate> MagicSpells { get; set; }
         public List<DoodadTemplate> DoodadTemplates { get; set; }
-        public List<DungeonObjectTemplate> CharacterClasses { get; set; }
         public List<DungeonObjectTemplate> AttackAttributes { get; set; }
 
         public ScenarioConfigurationContainer()
@@ -39,7 +38,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.PlayerTemplate = new PlayerTemplate();
             this.DoodadTemplates = new List<DoodadTemplate>();
             this.PenTemplates = new List<PenTemplate>();
-            this.CharacterClasses = new List<DungeonObjectTemplate>();
             this.AttackAttributes = new List<DungeonObjectTemplate>();
         }
     }
