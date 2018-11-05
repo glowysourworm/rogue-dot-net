@@ -1,22 +1,22 @@
 ﻿using Prism.Events;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
@@ -40,7 +40,7 @@ namespace Rogue.NET.ScenarioEditor
         readonly IDoodadGenerator _doodadGenerator;
         readonly IScenarioResourceService _resourceService;
 
-        ScenarioConfigurationContainer _config;
+        ScenarioConfigurationContainerViewModel _config;
 
         [ImportingConstructor]
         public ScenarioEditorController(
@@ -102,67 +102,67 @@ namespace Rogue.NET.ScenarioEditor
                 case "Layout":
                     {
                         var name = GenerateName(_config.DungeonTemplate.LayoutTemplates.Select(z => z.Name), "New Layout");
-                        _config.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplate() { Name = name });
+                        _config.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "AttackAttribute":
                     {
                         var name = GenerateName(_config.AttackAttributes.Select(z => z.Name), "New Attack Attribute");
-                        _config.AttackAttributes.Add(new AttackAttributeTemplate() { Name = name });
+                        _config.AttackAttributes.Add(new AttackAttributeTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Enemy":
                     {
                         var name = GenerateName(_config.EnemyTemplates.Select(z => z.Name), "New Enemy");
-                        _config.EnemyTemplates.Add(new EnemyTemplate() { Name = name });
+                        _config.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Equipment":
                     {
                         var name = GenerateName(_config.EquipmentTemplates.Select(z => z.Name), "New Equipment");
-                        _config.EquipmentTemplates.Add(new EquipmentTemplate() { Name = name });
+                        _config.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Consumable":
                     {
                         var name = GenerateName(_config.ConsumableTemplates.Select(z => z.Name), "New Consumable");
-                        _config.ConsumableTemplates.Add(new ConsumableTemplate() { Name = name });
+                        _config.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Doodad":
                     {
                         var name = GenerateName(_config.DoodadTemplates.Select(z => z.Name), "New Doodad");
-                        _config.DoodadTemplates.Add(new DoodadTemplate() { Name = name });
+                        _config.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Spell":
                     {
                         var name = GenerateName(_config.MagicSpells.Select(z => z.Name), "New Spell");
-                        _config.MagicSpells.Add(new SpellTemplate() { Name = name });
+                        _config.MagicSpells.Add(new SpellTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "SkillSet":
                     {
                         var name = GenerateName(_config.SkillTemplates.Select(z => z.Name), "New Skill Set");
-                        _config.SkillTemplates.Add(new SkillSetTemplate() { Name = name });
+                        _config.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Animation":
                     {
                         var name = GenerateName(_config.AnimationTemplates.Select(z => z.Name), "New Animation");
-                        _config.AnimationTemplates.Add(new AnimationTemplate() { Name = name });
+                        _config.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Brush":
                     {
                         var name = GenerateName(_config.BrushTemplates.Select(z => z.Name), "New Brush");
-                        _config.BrushTemplates.Add(new BrushTemplate() { Name = name });
+                        _config.BrushTemplates.Add(new BrushTemplateViewModel() { Name = name });
                         return name;
                     }
                 case "Pen":
                     {
                         var name = GenerateName(_config.PenTemplates.Select(z => z.Name), "New Pen");
-                        _config.PenTemplates.Add(new PenTemplate() { Name = name });
+                        _config.PenTemplates.Add(new PenTemplateViewModel() { Name = name });
                         return name;
                     }
                 default:
@@ -311,7 +311,7 @@ namespace Rogue.NET.ScenarioEditor
             asset.Name = newName;
             return true;
         }
-        private Template GetAsset(string name, string type)
+        private TemplateViewModel GetAsset(string name, string type)
         {
             switch (type)
             {
@@ -357,9 +357,9 @@ namespace Rogue.NET.ScenarioEditor
                         var ctrl = _regionManager.Regions["DesignRegion"].Views.First(v => v.GetType() == typeof(ItemPlacement)) as UserControl;
 
                         ctrl.DataContext = new PlacementGroupViewModel(_config.ConsumableTemplates.
-                            Cast<DungeonObjectTemplate>().
+                            Cast<DungeonObjectTemplateViewModel>().
                             Union(_config.EquipmentTemplates.
-                                Cast<DungeonObjectTemplate>()).
+                                Cast<DungeonObjectTemplateViewModel>()).
                                 Select(z => new PlacementViewModel()
                                 {
                                     // TODO
@@ -430,26 +430,24 @@ namespace Rogue.NET.ScenarioEditor
             }
         }
 
-        public ScenarioConfigurationContainer New()
+        public void New()
         {
-            _config = new ScenarioConfigurationContainer();
+            _config = new ScenarioConfigurationContainerViewModel();
 
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
-
-            return _config;
         }
 
-        public ScenarioConfigurationContainer Open(string name, bool builtIn)
+        public void Open(string name, bool builtIn)
         {
+            ScenarioConfigurationContainer config;
             if (builtIn)
-                _config = _resourceService.GetEmbeddedScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
-
+                config = _resourceService.GetEmbeddedScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
             else
-                _config = _resourceService.OpenScenarioConfigurationFile(name);
+                config = _resourceService.OpenScenarioConfigurationFile(name);
+
+            _config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
 
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
-
-            return _config;
         }
 
         public void Save()
@@ -466,8 +464,9 @@ namespace Rogue.NET.ScenarioEditor
             // This should be done by the serializer; but off hand I don't know how to specify this behavior.
             ResolveConfigurationReferences();
 
-            _resourceService
-                .SaveConfig(_config.DungeonTemplate.Name, _config);
+            var config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
+
+            _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
 
             PublishOutputMessage("Save complete");
 
@@ -534,8 +533,8 @@ namespace Rogue.NET.ScenarioEditor
                     if (animation != null)
                         animation = _config.AnimationTemplates.First(a => a.Name == animation.Name);
 
-                    SyncAttackAttributes(_config.AttackAttributes, spell.Effect.AttackAttributes.Cast<DungeonObjectTemplate>().ToList());
-                    SyncAttackAttributes(_config.AttackAttributes, spell.AuraEffect.AttackAttributes.Cast<DungeonObjectTemplate>().ToList());
+                    SyncAttackAttributes(_config.AttackAttributes, spell.Effect.AttackAttributes.Cast<DungeonObjectTemplateViewModel>().ToList());
+                    SyncAttackAttributes(_config.AttackAttributes, spell.AuraEffect.AttackAttributes.Cast<DungeonObjectTemplateViewModel>().ToList());
                 }
             }
 
@@ -581,7 +580,7 @@ namespace Rogue.NET.ScenarioEditor
                 if (equipment.CurseSpell != null && equipment.HasCurseSpell)
                     equipment.CurseSpell = _config.MagicSpells.First(s => s.Name == equipment.CurseSpell.Name);
 
-                SyncAttackAttributes(_config.AttackAttributes, equipment.AttackAttributes.Cast<DungeonObjectTemplate>().ToList());
+                SyncAttackAttributes(_config.AttackAttributes, equipment.AttackAttributes.Cast<DungeonObjectTemplateViewModel>().ToList());
             }
 
             // doodad spells
@@ -646,11 +645,11 @@ namespace Rogue.NET.ScenarioEditor
                 }
 
                 // enemy attack attributes
-                SyncAttackAttributes(_config.AttackAttributes, enemy.AttackAttributes.Cast<DungeonObjectTemplate>().ToList());
+                SyncAttackAttributes(_config.AttackAttributes, enemy.AttackAttributes.Cast<DungeonObjectTemplateViewModel>().ToList());
             }
         }
 
-        private void SyncAttackAttributes(IList<DungeonObjectTemplate> source, IList<DungeonObjectTemplate> dest)
+        private void SyncAttackAttributes(IList<DungeonObjectTemplateViewModel> source, IList<DungeonObjectTemplateViewModel> dest)
         {
             // Create
             foreach (var attrib in source)

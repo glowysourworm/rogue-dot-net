@@ -1,10 +1,10 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.Views.Controls;
+﻿using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.Common.Extension;
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel.Composition;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
@@ -16,7 +16,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             InitializeComponent();
         }
 
-        public void SetConfigurationData(ScenarioConfigurationContainer config)
+        public void SetConfigurationData(ScenarioConfigurationContainerViewModel config)
         {
             this.AutomaticSpellCB.ItemsSource = config.MagicSpells;
             this.InvokedSpellCB.ItemsSource = config.MagicSpells;
@@ -25,7 +25,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
             var window = new Window();
-            var model = this.DataContext as DoodadTemplate;
+            var model = this.DataContext as DoodadTemplateViewModel;
             var copy = model.SymbolDetails.Copy();
 
             window.Content = new SymbolEditor();

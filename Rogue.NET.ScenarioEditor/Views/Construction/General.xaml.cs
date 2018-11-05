@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,14 +10,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     [Export]
     public partial class General : UserControl
     {
-        ScenarioConfigurationContainer _config;
+        ScenarioConfigurationContainerViewModel _config;
 
         public General()
         {
             InitializeComponent();
         }
 
-        public void SetConfigurationParameters(ScenarioConfigurationContainer config)
+        public void SetConfigurationParameters(ScenarioConfigurationContainerViewModel config)
         {
             _config = config;
 
@@ -29,10 +29,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             var name = this.AttributeTB.Text;
             // TODO
             //var symbol = this.AttributeSymbolCB.Value;
-            _config.AttackAttributes.Add(new DungeonObjectTemplate()
+            _config.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
             {
                 Name = name,
-                SymbolDetails = new SymbolDetailsTemplate()
+                SymbolDetails = new SymbolDetailsTemplateViewModel()
                 {
                     Type = SymbolTypes.Image,
                     //Icon = symbol  TODO
@@ -45,7 +45,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.AttackAttribLB.SelectedItem as DungeonObjectTemplate;
+            var selectedItem = this.AttackAttribLB.SelectedItem as DungeonObjectTemplateViewModel;
             if (selectedItem != null)
             {
                 _config.AttackAttributes.Remove(selectedItem);

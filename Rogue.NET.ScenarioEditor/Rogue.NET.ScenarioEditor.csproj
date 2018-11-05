@@ -46,6 +46,9 @@
     <Reference Include="DynamicData, Version=6.4.0.2419, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicData.6.4.0.2419\lib\net46\DynamicData.dll</HintPath>
     </Reference>
+    <Reference Include="ExpressMapper, Version=1.9.1.0, Culture=neutral, PublicKeyToken=ac363faa09311ba0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expressmapper.1.9.1\lib\net46\ExpressMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Lovatts.ColorEditor">
       <HintPath>..\Dependencies\Lovatts.ColorEditor.dll</HintPath>
     </Reference>
@@ -249,6 +252,7 @@
     <Compile Include="Interface\IScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
+    <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IPlacementGroupViewModel.cs" />

@@ -1,7 +1,7 @@
 ﻿using Prism.Commands;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -41,7 +41,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                     PropertyChanged(this, new PropertyChangedEventArgs("IsSelected"));
             }
         }
-        public SymbolDetailsTemplate SymbolDetails { get; set; }
+        public SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
 
         public ICommand RemoveAssetCommand
         {

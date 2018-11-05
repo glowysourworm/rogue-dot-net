@@ -4,8 +4,8 @@ namespace Rogue.NET.ScenarioEditor.Interface
 {
     public interface IScenarioEditorController
     {
-        ScenarioConfigurationContainer New();
-        ScenarioConfigurationContainer Open(string name, bool builtIn);
+        void New();
+        void Open(string name, bool builtIn);
         void Save();
         void Validate();
         void ShowDifficulty();

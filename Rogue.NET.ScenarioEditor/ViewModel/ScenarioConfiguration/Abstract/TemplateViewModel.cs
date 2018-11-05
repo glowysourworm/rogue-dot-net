@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
 {
-    public abstract class TemplateViewModel : ReactiveObject
+    public class TemplateViewModel : ReactiveObject
     {
         public TemplateViewModel()
         {

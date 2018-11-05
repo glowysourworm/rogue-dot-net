@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
-    public abstract class Template : INotifyPropertyChanged
+    public class Template : INotifyPropertyChanged
     {
         public Template()
         {

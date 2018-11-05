@@ -1,6 +1,6 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -16,21 +16,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             InitializeComponent();
         }
 
-        public void SetConfigurationParameters(ScenarioConfigurationContainer config)
+        public void SetConfigurationParameters(ScenarioConfigurationContainerViewModel config)
         {
             this.ConsumablesLB.SourceLB.ItemsSource = config.ConsumableTemplates.Select(x => 
-                new ProbabilityConsumableTemplate() { Name = x.Name, TheTemplate = x });
+                new ProbabilityConsumableTemplateViewModel() { Name = x.Name, TheTemplate = x });
             this.EquipmentLB.SourceLB.ItemsSource = config.EquipmentTemplates.Select(x =>
-                new ProbabilityEquipmentTemplate() { Name = x.Name, TheTemplate = x });
+                new ProbabilityEquipmentTemplateViewModel() { Name = x.Name, TheTemplate = x });
             this.SkillsLB.SourceLB.ItemsSource = config.SkillTemplates;
 
             this.ConsumablesLB.SourceLB.DisplayMemberPath = "Name";
             this.EquipmentLB.SourceLB.DisplayMemberPath = "Name";
             this.SkillsLB.SourceLB.DisplayMemberPath = "Name";
 
-            var consumables = new ObservableCollection<ProbabilityConsumableTemplate>(config.PlayerTemplate.StartingConsumables);
-            var equipment = new ObservableCollection<ProbabilityEquipmentTemplate>(config.PlayerTemplate.StartingEquipment);
-            var skills = new ObservableCollection<SkillSetTemplate>(config.PlayerTemplate.Skills);
+            var consumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>(config.PlayerTemplate.StartingConsumables);
+            var equipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>(config.PlayerTemplate.StartingEquipment);
+            var skills = new ObservableCollection<SkillSetTemplateViewModel>(config.PlayerTemplate.Skills);
 
             consumables.CollectionChanged += (obj, e) =>
             {

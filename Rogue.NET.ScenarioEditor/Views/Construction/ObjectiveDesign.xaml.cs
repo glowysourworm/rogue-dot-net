@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -14,14 +14,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             InitializeComponent();
         }
 
-        public void SetConfigurationParameters(ScenarioConfigurationContainer config)
+        public void SetConfigurationParameters(ScenarioConfigurationContainerViewModel config)
         {
             this.DoodadLB.ItemsSource = config.DoodadTemplates;
             this.EnemyLB.ItemsSource = config.EnemyTemplates;
             this.ItemsLB.ItemsSource = config.ConsumableTemplates.
-                                            Cast<DungeonObjectTemplate>().
+                                            Cast<DungeonObjectTemplateViewModel>().
                                             Union(config.EquipmentTemplates.
-                                                Cast<DungeonObjectTemplate>());
+                                                Cast<DungeonObjectTemplateViewModel>());
         }
     }
 }

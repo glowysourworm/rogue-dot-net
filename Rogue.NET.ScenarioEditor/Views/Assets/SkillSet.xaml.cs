@@ -1,7 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -39,9 +40,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         /// <summary>
         /// Use to set skill collections
         /// </summary>
-        public void SetConfigurationData(ScenarioConfigurationContainer configuration)
+        public void SetConfigurationData(ScenarioConfigurationContainerViewModel configuration)
         {
-            this.SkillSetBuilder.SourceLB.ItemsSource = new ObservableCollection<SpellTemplate>(configuration.MagicSpells);
+            this.SkillSetBuilder.SourceLB.ItemsSource = new ObservableCollection<SpellTemplateViewModel>(configuration.MagicSpells);
             this.SkillSetBuilder.SourceLB.DisplayMemberPath = "Name";
         }
 
