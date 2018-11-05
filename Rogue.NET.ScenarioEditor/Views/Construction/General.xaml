@@ -68,7 +68,7 @@
                                             <Grid Background="Transparent">
                                                 <!-- TODO Image HorizontalAlignment="Left">
                                                     <Image.Source>
-                                                        <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                        <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
                                                             <Binding Path="SymbolDetails.CharacterColor" />
                                                             <Binding Path="SymbolDetails.CharacterSymbol" />
                                                             <Binding Path="SymbolDetails.Icon" />

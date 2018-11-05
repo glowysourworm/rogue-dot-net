@@ -38,6 +38,7 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.SmileyAuraColor = doodadTemplate.SymbolDetails.SmileyAuraColor;
             doodad.SmileyBodyColor = doodadTemplate.SymbolDetails.SmileyBodyColor;
             doodad.SmileyLineColor = doodadTemplate.SymbolDetails.SmileyLineColor;
+            doodad.SymbolType = doodadTemplate.SymbolDetails.Type;
             doodad.HasBeenUsed = false;
             doodadTemplate.HasBeenGenerated = true;
 

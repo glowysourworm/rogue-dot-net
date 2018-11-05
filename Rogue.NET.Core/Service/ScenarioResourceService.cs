@@ -5,12 +5,12 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Design;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -115,6 +115,29 @@ namespace Rogue.NET.Core.Service
                     return GetSmileySymbol(scenarioImage.RogueName, scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
                 case SymbolTypes.Image:
                     return GetImageSymbol(scenarioImage.RogueName, scenarioImage.Icon);
+                default:
+                    throw new Exception("Unknown symbol type");
+            }
+        }
+        public BitmapSource GetImageSource(
+            string rogueName,
+            string symbol, 
+            string symbolColor, 
+            ImageResources icon, 
+            SmileyMoods smileyMood, 
+            string smileyBodyColor,
+            string smileyLineColor,
+            string smileyAuraColor,
+            SymbolTypes type)
+        {
+            switch (type)
+            {
+                case SymbolTypes.Character:
+                    return GetCharacterSymbol(rogueName, symbol, symbolColor);
+                case SymbolTypes.Smiley:
+                    return GetSmileySymbol(rogueName, smileyMood, smileyBodyColor, smileyLineColor, smileyAuraColor);
+                case SymbolTypes.Image:
+                    return GetImageSymbol(rogueName, icon);
                 default:
                     throw new Exception("Unknown symbol type");
             }

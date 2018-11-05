@@ -21,6 +21,7 @@
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
     <converterScenarioEditor:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
+    <converterScenarioEditor:SymbolDetailsToImageSourceMultiConverter x:Key="SymbolDetailsToImageSourceMultiConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
     <converterScenarioMetaData:ScenarioMetaDataTextConverter x:Key="ScenarioMetaDataTextConverter" />
     <converterSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="SkillGridLevelLearnedTooltipConverter" />

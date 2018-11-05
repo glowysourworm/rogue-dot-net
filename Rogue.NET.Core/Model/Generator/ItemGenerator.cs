@@ -49,6 +49,7 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.SmileyBodyColor = equipmentTemplate.SymbolDetails.SmileyBodyColor;
             equipment.SmileyLineColor = equipmentTemplate.SymbolDetails.SmileyLineColor;
             equipment.SmileyMood = equipmentTemplate.SymbolDetails.SmileyMood;
+            equipment.SymbolType = equipmentTemplate.SymbolDetails.Type;
 
             equipment.HasAttackSpell = equipmentTemplate.HasAttackSpell;
             equipment.HasEquipSpell = equipmentTemplate.HasEquipSpell;

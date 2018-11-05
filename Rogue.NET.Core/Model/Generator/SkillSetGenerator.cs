@@ -31,7 +31,8 @@ namespace Rogue.NET.Core.Model.Generator
                 SmileyAuraColor = skillSetTemplate.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = skillSetTemplate.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = skillSetTemplate.SymbolDetails.SmileyLineColor,
-                SmileyMood = skillSetTemplate.SymbolDetails.SmileyMood
+                SmileyMood = skillSetTemplate.SymbolDetails.SmileyMood,
+                SymbolType = skillSetTemplate.SymbolDetails.Type
             };
         }
     }

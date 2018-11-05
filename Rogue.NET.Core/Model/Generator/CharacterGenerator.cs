@@ -51,6 +51,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.SmileyAuraColor = playerTemplate.SymbolDetails.SmileyAuraColor;
             player.SmileyBodyColor = playerTemplate.SymbolDetails.SmileyBodyColor;
             player.SmileyLineColor = playerTemplate.SymbolDetails.SmileyLineColor;
+            player.SymbolType = playerTemplate.SymbolDetails.Type;
 
             // Replace Agility for speed calculation
             //player.SpeedBase = //TODO
@@ -130,6 +131,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.SmileyAuraColor = enemyTemplate.SymbolDetails.SmileyAuraColor;
             enemy.SmileyBodyColor = enemyTemplate.SymbolDetails.SmileyBodyColor;
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
+            enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
 
             enemy.BehaviorDetails = new BehaviorDetails();
             enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);

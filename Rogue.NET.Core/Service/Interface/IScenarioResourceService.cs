@@ -26,6 +26,17 @@ namespace Rogue.NET.Core.Service.Interface
 
         BitmapSource GetImageSource(ScenarioImage scenarioImage);
 
+        BitmapSource GetImageSource(
+                string rogueName,
+                string symbol,
+                string symbolColor,
+                ImageResources icon,
+                SmileyMoods smileyMood,
+                string smileyBodyColor,
+                string smileyLineColor,
+                string smileyAuraColor,
+                SymbolTypes type);
+
         BitmapSource GetImage(ImageResources imageResources);
     }
 }

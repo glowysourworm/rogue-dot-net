@@ -45,7 +45,7 @@
                            HorizontalAlignment="Center" 
                            Stretch="None">
                         <Image.Source>
-                            <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
                                 <Binding Path="CharacterColor" />
                                 <Binding Path="CharacterSymbol" />
                                 <Binding Path="Icon" />

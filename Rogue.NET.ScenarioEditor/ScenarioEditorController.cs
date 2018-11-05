@@ -1,11 +1,11 @@
-﻿using Prism.Events;
+﻿using MonitoredUndo;
+using Prism.Events;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
@@ -35,9 +35,6 @@ namespace Rogue.NET.ScenarioEditor
         readonly IEventAggregator _eventAggregator;
         readonly IRegionManager _regionManager;
 
-        readonly ICharacterGenerator _characterGenerator;
-        readonly IItemGenerator _itemGenerator;
-        readonly IDoodadGenerator _doodadGenerator;
         readonly IScenarioResourceService _resourceService;
 
         ScenarioConfigurationContainerViewModel _config;
@@ -46,16 +43,10 @@ namespace Rogue.NET.ScenarioEditor
         public ScenarioEditorController(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
-            ICharacterGenerator characterGenerator,
-            IItemGenerator itemGenerator,
-            IDoodadGenerator doodadGenerator,
             IScenarioResourceService scenarioResourceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _characterGenerator = characterGenerator;
-            _itemGenerator = itemGenerator;
-            _doodadGenerator = doodadGenerator;
             _resourceService = scenarioResourceService;
 
             Initialize();
@@ -432,21 +423,32 @@ namespace Rogue.NET.ScenarioEditor
 
         public void New()
         {
+            // Create new Scenario Configuration
             _config = new ScenarioConfigurationContainerViewModel();
 
+            // Register with the Undo Service
+            UndoService.SetCurrentDocumentInstance(_config);
+
+            // Publish the Scenario Configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
         }
 
         public void Open(string name, bool builtIn)
         {
+            // Open the Scenario Configuration from file
             ScenarioConfigurationContainer config;
             if (builtIn)
                 config = _resourceService.GetEmbeddedScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
             else
                 config = _resourceService.OpenScenarioConfigurationFile(name);
 
+            // Map to the view model
             _config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
 
+            // Register with the Undo Service
+            UndoService.SetCurrentDocumentInstance(_config);
+
+            // Publish configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
         }
 
@@ -464,9 +466,14 @@ namespace Rogue.NET.ScenarioEditor
             // This should be done by the serializer; but off hand I don't know how to specify this behavior.
             ResolveConfigurationReferences();
 
+            // Map back to the model namespace
             var config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
 
+            // Save the configuration
             _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
+
+            // Clear the Undo stack
+            UndoService.Current.Clear();
 
             PublishOutputMessage("Save complete");
 
