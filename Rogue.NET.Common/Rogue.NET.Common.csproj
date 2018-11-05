@@ -171,7 +171,6 @@
     <Compile Include="Utility\EventBehaviorFactory.cs" />
     <Compile Include="Utility\Taskbar.cs" />
     <Compile Include="Utility\ZipEncoder.cs" />
-    <Compile Include="ViewModel\RangeViewModel.cs" />
     <Compile Include="View\DisappearingButton.xaml.cs">
       <DependentUpon>DisappearingButton.xaml</DependentUpon>
     </Compile>

@@ -43,6 +43,9 @@
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
     </Reference>
+    <Reference Include="DynamicData, Version=6.4.0.2419, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicData.6.4.0.2419\lib\net46\DynamicData.dll</HintPath>
+    </Reference>
     <Reference Include="Lovatts.ColorEditor">
       <HintPath>..\Dependencies\Lovatts.ColorEditor.dll</HintPath>
     </Reference>
@@ -63,16 +66,65 @@
     <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="ReactiveUI, Version=9.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ReactiveUI.9.1.1\lib\net461\ReactiveUI.dll</HintPath>
+    </Reference>
     <Reference Include="Sparrow.Chart.Wpf.40, Version=13.1.0.118, Culture=neutral, PublicKeyToken=50f33fb8697e9a92, processorArchitecture=MSIL">
       <HintPath>..\packages\Sparrow.Chart.Wpf.13.1.0.118\lib\net40\Sparrow.Chart.Wpf.40.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Splat, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Splat.4.0.2\lib\net461\Splat.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Core.4.0.0\lib\net46\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Experimental, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Experimental.4.0.0\lib\net46\System.Reactive.Experimental.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Interfaces.4.0.0\lib\net46\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Linq.4.0.0\lib\net46\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.PlatformServices.4.0.0\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Providers, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Providers.4.0.0\lib\net46\System.Reactive.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Runtime.Remoting, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Runtime.Remoting.4.0.0\lib\net46\System.Reactive.Runtime.Remoting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Forms, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Forms.4.0.0\lib\net46\System.Reactive.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.Windows.Threading.4.0.0\lib\net46\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.ObjectModel" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
       <Private>True</Private>
@@ -81,6 +133,7 @@
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -210,6 +263,34 @@
     <Compile Include="ViewModel\ScenarioAssetBrowserViewModel.cs" />
     <Compile Include="ViewModel\ScenarioAssetGroupViewModel.cs" />
     <Compile Include="ViewModel\ScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SkillSetTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SpellTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\BrushTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\GradientStopTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\PenTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\AttackAttributeTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorDetailsTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\CharacterTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ConsumableTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\DoodadTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\EnemyTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\EquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">
+      <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
+    </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDifficultyViewModel.cs" />
     <Compile Include="ViewModel\WizardViewModel.cs" />

@@ -1,13 +1,12 @@
-﻿using System.Windows;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using System.Windows;
 using System.Windows.Controls;
 
-using Rogue.NET.Common.ViewModel;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
     public partial class Range : UserControl
     {
-
         public Range()
         {
             InitializeComponent();
@@ -17,7 +16,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void Range_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is Range<int>)
+            if (e.NewValue is RangeViewModel<int>)
             {
                 this.LowUD.Increment = 1;
                 this.HighUD.Increment = 1;
