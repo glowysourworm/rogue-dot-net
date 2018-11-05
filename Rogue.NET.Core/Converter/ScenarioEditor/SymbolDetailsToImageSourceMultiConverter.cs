@@ -2,9 +2,10 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 using System;
-using System.ComponentModel.Composition;
+using System.Linq;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows;
 
 namespace Rogue.NET.Core.Converter.ScenarioEditor
 {
@@ -21,6 +22,9 @@ namespace Rogue.NET.Core.Converter.ScenarioEditor
         {
             if (values.Length != 9)
                 throw new Exception("Incorrect symbol details provided to SymbolDetailsToImageSourceMultiConverter");
+
+            if (values.Any(x => x == DependencyProperty.UnsetValue))
+                return null;
 
             return _scenarioResourceService.GetImageSource(
                     (string)values[0],          // RogueName (used for cache!)

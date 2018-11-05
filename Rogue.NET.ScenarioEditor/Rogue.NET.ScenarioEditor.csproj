@@ -255,6 +255,8 @@
     <Compile Include="Interface\IScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
+    <Compile Include="Service\Interface\IRogueUndoService.cs" />
+    <Compile Include="Service\RogueUndoService.cs" />
     <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />

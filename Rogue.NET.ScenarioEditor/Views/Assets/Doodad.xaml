@@ -29,47 +29,48 @@
             <Border BorderBrush="#888" BorderThickness="0,0,0,1">
                 <TextBlock Foreground="White" FontSize="18" Margin="10" Text="Dungeon Object Editor" />
             </Border>
-            <!-- TODOGrid DataContext="{Binding SymbolDetails}" Margin="10">
-                <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
-                <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
-                    <Border.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Offset="0">
-                                <GradientStop.Color>
+                <Grid Margin="10">
+                    <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
+                    <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
+                        <Border.Background>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="0">
+                                    <GradientStop.Color>
                                         <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="CharacterColor" />
-                                        <Binding Path="CharacterSymbol" />
-                                        <Binding Path="Icon" />
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="SmileyBodyColor" />
-                                        <Binding Path="SmileyLineColor" />
-                                        <Binding Path="SmileyMood" />
-                                        <Binding Path="Type" />
-                                    </MultiBinding>
-                                </GradientStop.Color>
-                            </GradientStop>
-                            <GradientStop Color="Transparent" Offset="1" />
-                        </RadialGradientBrush>
-                    </Border.Background>
-                    <Image VerticalAlignment="Center" 
+                                            <Binding Path="CharacterColor" />
+                                            <Binding Path="CharacterSymbol" />
+                                            <Binding Path="Icon" />
+                                            <Binding Path="SmileyAuraColor" />
+                                            <Binding Path="SmileyBodyColor" />
+                                            <Binding Path="SmileyLineColor" />
+                                            <Binding Path="SmileyMood" />
+                                            <Binding Path="Type" />
+                                        </MultiBinding>
+                                    </GradientStop.Color>
+                                </GradientStop>
+                                <GradientStop Color="Transparent" Offset="1" />
+                            </RadialGradientBrush>
+                        </Border.Background>
+                        <Image VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
                            Stretch="None">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                <Binding Path="CharacterColor" />
-                                <Binding Path="CharacterSymbol" />
-                                <Binding Path="Icon" />
-                                <Binding Path="SmileyAuraColor" />
-                                <Binding Path="SmileyBodyColor" />
-                                <Binding Path="SmileyLineColor" />
-                                <Binding Path="SmileyMood" />
-                                <Binding Path="Type" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
-                </Border>
-            </-->
-            <Grid Margin="10">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                    <Binding Path="Name" />
+                                    <Binding Path="SymbolDetails.CharacterSymbol" />
+                                    <Binding Path="SymbolDetails.CharacterColor" />
+                                    <Binding Path="SymbolDetails.Icon" />
+                                    <Binding Path="SymbolDetails.SmileyMood" />
+                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                    <Binding Path="SymbolDetails.SmileyLineColor" />
+                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                    <Binding Path="SymbolDetails.Type" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+                    </Border>
+                </Grid>
+                <Grid Margin="10">
                 <TextBlock Text="Short Description" />
                 <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="250" />
             </Grid>

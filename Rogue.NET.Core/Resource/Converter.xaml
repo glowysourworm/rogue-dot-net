@@ -5,8 +5,7 @@
                     xmlns:converterItemGrid="clr-namespace:Rogue.NET.Core.Converter.ItemGrid"
                     xmlns:converterScenarioEditor="clr-namespace:Rogue.NET.Core.Converter.ScenarioEditor"
                     xmlns:converterScenarioMetaData="clr-namespace:Rogue.NET.Core.Converter.ScenarioMetaData"
-                    xmlns:converterSkillGrid="clr-namespace:Rogue.NET.Core.Converter.SkillGrid"
-                    xmlns:converterSymbolDetailsTemplate="clr-namespace:Rogue.NET.Core.Converter.SymbolDetailsTemplate">
+                    xmlns:converterSkillGrid="clr-namespace:Rogue.NET.Core.Converter.SkillGrid">
     <converter:BoolIntConverter x:Key="BoolIntConverter" />
     <converter:BoolInverseVisibilityHiddenConverter x:Key="BoolInverseVisibilityHiddenConverter" />
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
@@ -22,8 +21,8 @@
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
     <converterScenarioEditor:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
     <converterScenarioEditor:SymbolDetailsToImageSourceMultiConverter x:Key="SymbolDetailsToImageSourceMultiConverter" />
+    <converterScenarioEditor:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
     <converterScenarioMetaData:ScenarioMetaDataTextConverter x:Key="ScenarioMetaDataTextConverter" />
     <converterSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="SkillGridLevelLearnedTooltipConverter" />
-    <converterSymbolDetailsTemplate:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
 </ResourceDictionary>

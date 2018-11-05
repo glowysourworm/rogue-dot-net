@@ -1,93 +1,43 @@
-﻿using Prism.Commands;
-using Prism.Events;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events.ScenarioEditor;
-using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+
 using System.ComponentModel.Composition;
 using System.Windows.Input;
+
+using ReactiveUI;
+using Prism.Commands;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     [Export(typeof(IEditorViewModel))]
-    public class EditorViewModel : NotifyViewModel, IEditorViewModel
+    public class EditorViewModel : ReactiveObject, IEditorViewModel
     {
         readonly IEventAggregator _eventAggregator;
+        readonly IRogueUndoService _rogueUndoService;
 
         string _scenarioName;
 
         public string ScenarioName
         {
             get { return _scenarioName; }
-            set
-            {
-                _scenarioName = value;
-                OnPropertyChanged("ScenarioName");
-            }
+            set { this.RaiseAndSetIfChanged(ref _scenarioName, value); }
         }
+        public ICommand ExitCommand { get; private set; }
+        public ICommand LoadBuiltInCommand { get; private set; }
+        public ICommand NewCommand { get; private set; }
+        public ICommand ShowDifficultyCommand { get; private set; }
+        public ICommand SaveCommand { get; private set; }
+        public DelegateCommand UndoCommand { get; private set; }
+        public DelegateCommand RedoCommand { get; private set; }
 
-        public ICommand ExitCommand
-        {
-            get
-            {
-                return new DelegateCommand(() =>
-                {
-                    _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Publish();
-                });
-            }
-        }
-
-        public ICommand LoadBuiltInCommand
-        {
-            get
-            {
-                return new DelegateCommand<string>((name) =>
-                {
-                    _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(new LoadBuiltInScenarioEventArgs() { ScenarioName = name });
-                });
-            }
-        }
-
-        public ICommand NewCommand
-        {
-            get
-            {
-                return new DelegateCommand(() =>
-                {
-                    _eventAggregator.GetEvent<NewScenarioConfigEvent>().Publish();
-                });
-            }
-        }
-
-        public ICommand ShowDifficultyCommand
-        {
-            get
-            {
-                return new DelegateCommand(() =>
-                {
-                    _eventAggregator.GetEvent<ScoreScenarioEvent>().Publish();
-                });
-            }
-        }
-
-        public ICommand SaveCommand
-        {
-            get
-            {
-                return new DelegateCommand<string>((name) =>
-                {
-                    _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().
-                        Publish(new Rogue.NET.ScenarioEditor.Events.SaveScenarioEventArgs()
-                        {
-                            ScenarioName = name
-                        });
-                });
-            }
-        }
         [ImportingConstructor]
-        public EditorViewModel(IEventAggregator eventAggregator)
+        public EditorViewModel(IEventAggregator eventAggregator, IRogueUndoService rogueUndoService)
         {
             _eventAggregator = eventAggregator;
+            _rogueUndoService = rogueUndoService;
 
             this.ScenarioName = "My Scenario";
 
@@ -101,6 +51,41 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 this.ScenarioName = e.DungeonTemplate.Name;
             });
+
+            // Commands           
+            this.SaveCommand = new DelegateCommand<string>((name) =>
+            {
+                _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().
+                    Publish(new Rogue.NET.ScenarioEditor.Events.SaveScenarioEventArgs()
+                    {
+                        ScenarioName = name
+                    });
+            });
+            this.ShowDifficultyCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<ScoreScenarioEvent>().Publish();
+            });
+            this.NewCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<NewScenarioConfigEvent>().Publish();
+            });
+            this.LoadBuiltInCommand = new DelegateCommand<string>((name) =>
+            {
+                _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(new LoadBuiltInScenarioEventArgs() { ScenarioName = name });
+            });
+            this.ExitCommand = new DelegateCommand(() =>
+            {
+                _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Publish();
+            });
+
+            this.UndoCommand = new DelegateCommand(() => _rogueUndoService.Undo(), () => _rogueUndoService.CanUndo());
+            this.RedoCommand = new DelegateCommand(() => _rogueUndoService.Redo(), () => _rogueUndoService.CanRedo());
+
+            _rogueUndoService.ChangeEvent += (sender, e) =>
+            {
+                this.UndoCommand.RaiseCanExecuteChanged();
+                this.RedoCommand.RaiseCanExecuteChanged();
+            };
         }
     }
 }

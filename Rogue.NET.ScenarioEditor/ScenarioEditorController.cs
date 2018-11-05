@@ -10,6 +10,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -34,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor
     {
         readonly IEventAggregator _eventAggregator;
         readonly IRegionManager _regionManager;
+        readonly IRogueUndoService _rogueUndoService;
 
         readonly IScenarioResourceService _resourceService;
 
@@ -43,10 +45,12 @@ namespace Rogue.NET.ScenarioEditor
         public ScenarioEditorController(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
+            IRogueUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
+            _rogueUndoService = rogueUndoService;
             _resourceService = scenarioResourceService;
 
             Initialize();
@@ -54,12 +58,6 @@ namespace Rogue.NET.ScenarioEditor
 
         private void Initialize()
         {
-            _eventAggregator.GetEvent<EditScenarioEvent>().Subscribe(() =>
-            {
-                _regionManager.RequestNavigate("MainRegion", "Editor");
-                _regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
-            });
-
             _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Subscribe((e) =>
             {
                 Open(e.ScenarioName, true);
@@ -423,11 +421,15 @@ namespace Rogue.NET.ScenarioEditor
 
         public void New()
         {
+            // Have to keep Undo Service in sync with the configuration
+            if (_config != null)
+                _rogueUndoService.Clear();
+
             // Create new Scenario Configuration
             _config = new ScenarioConfigurationContainerViewModel();
 
             // Register with the Undo Service
-            UndoService.SetCurrentDocumentInstance(_config);
+            _rogueUndoService.Register(_config);
 
             // Publish the Scenario Configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
@@ -435,6 +437,10 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Open(string name, bool builtIn)
         {
+            // Have to keep Undo Service in sync with the configuration
+            if (_config != null)
+                _rogueUndoService.Clear();
+
             // Open the Scenario Configuration from file
             ScenarioConfigurationContainer config;
             if (builtIn)
@@ -446,7 +452,7 @@ namespace Rogue.NET.ScenarioEditor
             _config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
 
             // Register with the Undo Service
-            UndoService.SetCurrentDocumentInstance(_config);
+            _rogueUndoService.Register(_config);
 
             // Publish configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
@@ -473,7 +479,7 @@ namespace Rogue.NET.ScenarioEditor
             _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
 
             // Clear the Undo stack
-            UndoService.Current.Clear();
+            _rogueUndoService.Clear();
 
             PublishOutputMessage("Save complete");
 

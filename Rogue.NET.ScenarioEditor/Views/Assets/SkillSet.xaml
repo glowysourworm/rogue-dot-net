@@ -31,45 +31,40 @@
             <Border Padding="10" BorderBrush="White" BorderThickness="0,0,0,1">
                 <TextBlock Text="Skill Set Editor" FontSize="18" Foreground="White" />
             </Border>
-            <Grid DataContext="{Binding SymbolDetails}" Margin="10">
+            <Grid Margin="10">
                 <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
                 <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
                     <Border.Background>
                         <RadialGradientBrush>
                             <GradientStop Offset="0">
                                 <GradientStop.Color>
-                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="CharacterColor" />
-                                        <Binding Path="CharacterSymbol" />
-                                        <Binding Path="Icon" />
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="SmileyBodyColor" />
-                                        <Binding Path="SmileyLineColor" />
-                                        <Binding Path="SmileyMood" />
-                                        <Binding Path="Type" />
+                                    <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
+                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                        <Binding Path="SymbolDetails.Type" />
                                     </MultiBinding>
                                 </GradientStop.Color>
                             </GradientStop>
                             <GradientStop Color="Transparent" Offset="1" />
                         </RadialGradientBrush>
                     </Border.Background>
-                    <!-- TODO Image VerticalAlignment="Center" 
+                        <Image VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
                            Stretch="None">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                <Binding Path="CharacterColor" />
-                                <Binding Path="CharacterSymbol" />
-                                <Binding Path="Icon" />
-                                <Binding Path="SmileyAuraColor" />
-                                <Binding Path="SmileyBodyColor" />
-                                <Binding Path="SmileyLineColor" />
-                                <Binding Path="SmileyMood" />
-                                <Binding Path="Type" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </-->
-                </Border>
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                    <Binding Path="Name" />
+                                    <Binding Path="SymbolDetails.CharacterColor" />
+                                    <Binding Path="SymbolDetails.CharacterSymbol" />
+                                    <Binding Path="SymbolDetails.Icon" />
+                                    <Binding Path="SymbolDetails.SmileyMood" />
+                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                    <Binding Path="SymbolDetails.SmileyLineColor" />
+                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                    <Binding Path="SymbolDetails.Type" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+                    </Border>
             </Grid>
                 <Grid Margin="10">
                     <TextBlock Text="Short Description" />

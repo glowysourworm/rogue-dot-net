@@ -81,54 +81,6 @@ namespace Rogue.NET.Scenario
                 _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
             });
         }
-        //public void OnInitialized(IContainerProvider containerProvider)
-        //{
-        //    _regionManager.RegisterViewWithRegion("MainRegion", typeof(IntroView));
-        //    _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameSetupView));
-        //    _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(NewOpenEdit));
-        //    _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
-        //    _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
-        //    _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
-        //    _regionManager.RegisterViewWithRegion("MainRegion", () => containerProvider.Resolve<DeathDisplay>());
-        //    _regionManager.RegisterViewWithRegion("MainRegion", () => containerProvider.Resolve<GameView>());
-        //    _regionManager.RegisterViewWithRegion("GameRegion", () => containerProvider.Resolve<LevelView>());
-        //    _regionManager.RegisterViewWithRegion("GameRegion", () => containerProvider.Resolve<EquipmentSelectionCtrl>());
-        //    _regionManager.RegisterViewWithRegion("GameRegion", () => containerProvider.Resolve<DungeonEncyclopedia>());
-        //    _regionManager.RegisterViewWithRegion("GameInfoRegion", () => containerProvider.Resolve<GameInfoView>());
-
-        //    _regionManager.RegisterViewWithRegion("PlayerSubpanelEquipmentRegion", () =>
-        //    {
-        //        var view = containerProvider.Resolve<ItemGrid>();
-        //        view.Mode = ItemGridModes.Equipment;
-        //        return view;
-        //    });
-
-        //    _regionManager.RegisterViewWithRegion("EquipmentSelectionRegion", () =>
-        //    {
-        //        var view = containerProvider.Resolve<ItemGrid>();
-        //        view.Mode = ItemGridModes.Equipment;
-        //        return view;
-        //    });
-
-        //    _regionManager.RegisterViewWithRegion("PlayerSubpanelConsumablesRegion", () =>
-        //    {
-        //        var view = containerProvider.Resolve<ItemGrid>();
-        //        view.Mode = ItemGridModes.Consumable;
-        //        return view;
-        //    });
-
-        //    _regionManager.RegisterViewWithRegion("PlayerSubpanelInventoryRegion", () =>
-        //    {
-        //        var view = containerProvider.Resolve<ItemGrid>();
-        //        view.Mode = ItemGridModes.Inventory;
-        //        return view;
-        //    });
-        //}
-
-        //public void RegisterTypes(IContainerRegistry containerRegistry)
-        //{
-
-        //}
     }
 }
 

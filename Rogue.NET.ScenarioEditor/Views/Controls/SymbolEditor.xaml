@@ -27,36 +27,31 @@
                             <GradientStop Offset="0">
                                 <GradientStop.Color>
                                     <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="CharacterColor" />
-                                        <Binding Path="CharacterSymbol" />
-                                        <Binding Path="Icon" />
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="SmileyBodyColor" />
-                                        <Binding Path="SmileyLineColor" />
-                                        <Binding Path="SmileyMood" />
-                                        <Binding Path="Type" />
+                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                        <Binding Path="SymbolDetails.Type" />
                                     </MultiBinding>
                                 </GradientStop.Color>
                             </GradientStop>
                             <GradientStop Color="Transparent" Offset="1" />
                         </RadialGradientBrush>
                     </Border.Background>
-                    <!-- TODO Image VerticalAlignment="Center" 
+                    <Image VerticalAlignment="Center" 
                            HorizontalAlignment="Center" 
                            Stretch="None">
                         <Image.Source>
                             <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                <Binding Path="CharacterColor" />
-                                <Binding Path="CharacterSymbol" />
-                                <Binding Path="Icon" />
-                                <Binding Path="SmileyAuraColor" />
-                                <Binding Path="SmileyBodyColor" />
-                                <Binding Path="SmileyLineColor" />
-                                <Binding Path="SmileyMood" />
-                                <Binding Path="Type" />
+                                <Binding Path="Name" />
+                                <Binding Path="SymbolDetails.CharacterSymbol" />
+                                <Binding Path="SymbolDetails.CharacterColor" />
+                                <Binding Path="SymbolDetails.Icon" />
+                                <Binding Path="SymbolDetails.SmileyMood" />
+                                <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                <Binding Path="SymbolDetails.SmileyLineColor" />
+                                <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                <Binding Path="SymbolDetails.Type" />
                             </MultiBinding>
                         </Image.Source>
-                    </-->
+                    </Image>
                 </Border>
             </Grid>            
             <Grid Margin="10">
