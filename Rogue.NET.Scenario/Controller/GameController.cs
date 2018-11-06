@@ -9,6 +9,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Model.Events;
@@ -210,6 +211,9 @@ namespace Rogue.NET.Scenario.Controller
             });
 
             _eventAggregator.GetEvent<LevelInitializedEvent>().Publish();
+
+            // Set resource cache mode
+            _resourceService.SetCacheMode(ResourceCacheMode.OnDemand);
 
             // Enables backend queue processing
             _scenarioController.EnterGameMode();

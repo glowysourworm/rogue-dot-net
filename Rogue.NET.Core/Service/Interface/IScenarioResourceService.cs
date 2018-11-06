@@ -9,6 +9,10 @@ namespace Rogue.NET.Core.Service.Interface
 {
     public interface IScenarioResourceService
     {
+        void SetCacheMode(ResourceCacheMode resourceCacheMode);
+
+        void ClearCache();
+
         /// <summary>
         /// Tells service to load and cache specified configuration.
         /// </summary>

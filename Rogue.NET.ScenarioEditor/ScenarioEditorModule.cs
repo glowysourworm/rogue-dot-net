@@ -3,6 +3,7 @@ using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
@@ -44,6 +45,8 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Initialize()
         {
+            _resourceService.SetCacheMode(ResourceCacheMode.NoCache);
+
             RegisterRegionViews();
             RegisterEvents();
         }

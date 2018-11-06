@@ -5,7 +5,6 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.View;
 using System;
@@ -21,6 +20,24 @@ using System.Windows.Media.Imaging;
 
 namespace Rogue.NET.Core.Service
 {
+    public enum ResourceCacheMode
+    {
+        /// <summary>
+        /// No caching used for image resources
+        /// </summary>
+        NoCache,
+
+        /// <summary>
+        /// Caching used for image resources - loaded on first call
+        /// </summary>
+        OnDemand,
+
+        /// <summary>
+        /// Caching used for image resources - loaded immediately
+        /// </summary>
+        PreLoad
+    }
+
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioResourceService))]
     public class ScenarioResourceService : IScenarioResourceService
@@ -35,6 +52,8 @@ namespace Rogue.NET.Core.Service
         IList<ScenarioConfigurationContainer> _scenarioConfigurations;
 
         Dictionary<SymbolTypes, Dictionary<string, BitmapSource>> _imageCache;
+
+        ResourceCacheMode _resourceCacheMode = ResourceCacheMode.OnDemand;
 
         [ImportingConstructor]
         public ScenarioResourceService(IEventAggregator eventAggregator)
@@ -197,7 +216,7 @@ namespace Rogue.NET.Core.Service
         #region ImageSource
         private BitmapSource GetImageSymbol(string rogueName, ImageResources imageResource)
         {
-            if (_imageCache[SymbolTypes.Image].ContainsKey(rogueName))
+            if (_imageCache[SymbolTypes.Image].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
                 return _imageCache[SymbolTypes.Image][rogueName];
 
             var bitmapSource = GetImage(imageResource);
@@ -207,7 +226,7 @@ namespace Rogue.NET.Core.Service
         }
         private BitmapSource GetCharacterSymbol(string rogueName, string characterSymbol, string characterSymbolColor)
         {
-            if (_imageCache[SymbolTypes.Character].ContainsKey(rogueName))
+            if (_imageCache[SymbolTypes.Character].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
                 return _imageCache[SymbolTypes.Character][rogueName];
 
             var bitmapSource = GetImage(characterSymbol, characterSymbolColor);
@@ -217,7 +236,7 @@ namespace Rogue.NET.Core.Service
         }
         private BitmapSource GetSmileySymbol(string rogueName, SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
         {
-            if (_imageCache[SymbolTypes.Smiley].ContainsKey(rogueName))
+            if (_imageCache[SymbolTypes.Smiley].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
                 return _imageCache[SymbolTypes.Smiley][rogueName];
 
             var bitmapSource = GetImage(mood, bodyColor, lineColor, auraColor);
@@ -273,6 +292,30 @@ namespace Rogue.NET.Core.Service
 
             bmp.Render(ctrl);
             return bmp;
+        }
+
+        public void SetCacheMode(ResourceCacheMode resourceCacheMode)
+        {
+            _resourceCacheMode = resourceCacheMode;
+
+            switch (resourceCacheMode)
+            {
+                case ResourceCacheMode.NoCache:
+                    ClearCache();
+                    break;
+                case ResourceCacheMode.OnDemand:
+                    break;
+                case ResourceCacheMode.PreLoad:
+                    throw new Exception("PreLoad cache mode Not Implemented");
+                default:
+                    break;
+            }
+        }
+
+        public void ClearCache()
+        {
+            foreach (var item in _imageCache)
+                item.Value.Clear();
         }
         #endregion
     }
