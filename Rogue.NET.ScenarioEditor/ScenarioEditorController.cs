@@ -130,7 +130,7 @@ namespace Rogue.NET.ScenarioEditor
 
             // resolve references: for example, if a consumable spell was altered - update the player's items.
             // This should be done by the serializer; but off hand I don't know how to specify this behavior.
-            ResolveConfigurationReferences();
+            //ResolveConfigurationReferences();
 
             // Map back to the model namespace
             var config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
