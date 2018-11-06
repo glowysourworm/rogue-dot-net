@@ -103,7 +103,7 @@ namespace Rogue.NET.ScenarioEditor
             });
             _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>
             {
-                AddAsset(e.AssetType, e.AssetUniqueName);
+                AddAsset(e.AssetType, e.AssetUniqueName, e.SymbolDetails);
             });
             _eventAggregator.GetEvent<LoadAssetEvent>().Subscribe((e) =>
             {
@@ -118,7 +118,7 @@ namespace Rogue.NET.ScenarioEditor
         /// <summary>
         /// Adds an asset with a pre-calculated name
         /// </summary>
-        private void AddAsset(string assetType, string uniqueName)
+        private void AddAsset(string assetType, string uniqueName, SymbolDetailsTemplateViewModel symbolDetails)
         {
             switch (assetType)
             {
@@ -126,25 +126,25 @@ namespace Rogue.NET.ScenarioEditor
                     _controller.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = uniqueName });
                     break;
                 case "AttackAttribute":
-                    _controller.CurrentConfig.AttackAttributes.Add(new AttackAttributeTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.AttackAttributes.Add(new AttackAttributeTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Enemy":
-                    _controller.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Equipment":
-                    _controller.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Consumable":
-                    _controller.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Doodad":
-                    _controller.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Spell":
                     _controller.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
                     break;
                 case "SkillSet":
-                    _controller.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
+                    _controller.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
                     break;
                 case "Animation":
                     _controller.CurrentConfig.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = uniqueName });
@@ -156,10 +156,8 @@ namespace Rogue.NET.ScenarioEditor
                     _controller.CurrentConfig.PenTemplates.Add(new PenTemplateViewModel() { Name = uniqueName });
                     break;
                 default:
-                    break;
+                    throw new Exception("Unidentified new asset type");
             }
-
-            throw new Exception("Unidentified new asset type");
         }
         private bool RemoveAsset(string type, string name)
         {

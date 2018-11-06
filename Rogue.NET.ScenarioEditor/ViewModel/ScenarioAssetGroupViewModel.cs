@@ -8,104 +8,150 @@ using System.ComponentModel.Composition;
 using System.Windows.Input;
 using System.Linq;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System.Collections.Specialized;
+using System.Collections;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     [Export(typeof(IScenarioAssetGroupViewModel))]
     public class ScenarioAssetGroupViewModel : IScenarioAssetGroupViewModel
     {
+        readonly IEventAggregator _eventAggregator;
+
         public ObservableCollection<IScenarioAssetViewModel> Assets { get; set; }
         public string AssetType { get; set; }
-
         public ICommand AddAssetCommand { get; private set; }
+
+        bool _hasSymbol = false;
 
         protected readonly string[] NO_SYMBOL_TYPES = new string[] { "Layout", "Spell", "Animation", "Brush" };
 
         [ImportingConstructor]
         public ScenarioAssetGroupViewModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
             this.Assets = new ObservableCollection<IScenarioAssetViewModel>();
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
             {
+                _hasSymbol = !NO_SYMBOL_TYPES.Contains(this.AssetType);
+
                 this.Assets.Clear();
                 switch (this.AssetType)
                 {
                     case "Layout":
-                        foreach (var v in e.DungeonTemplate.LayoutTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType });
+                        e.DungeonTemplate.LayoutTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.DungeonTemplate.LayoutTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "AttackAttribute":
-                        foreach (var v in e.AttackAttributes)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.AttackAttributes.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.AttackAttributes, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Enemy":
-                        foreach (var v in e.EnemyTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.EnemyTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.EnemyTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Equipment":
-                        foreach (var v in e.EquipmentTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.EquipmentTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.EquipmentTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Consumable":
-                        foreach (var v in e.ConsumableTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.ConsumableTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.ConsumableTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Doodad":
-                        foreach (var v in e.DoodadTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.DoodadTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.DoodadTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Spell":
-                        foreach (var v in e.MagicSpells)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType });
+                        e.MagicSpells.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.MagicSpells, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "SkillSet":
-                        foreach (var v in e.SkillTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType, SymbolDetails = v.SymbolDetails });
+                        e.SkillTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.SkillTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Animation":
-                        foreach (var v in e.AnimationTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType });
+                        e.AnimationTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.AnimationTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                     case "Brush":
-                        foreach (var v in e.BrushTemplates)
-                            this.Assets.Add(new ScenarioAssetViewModel() { Name = v.Name, Type = this.AssetType });
+                        e.BrushTemplates.CollectionChanged += OnConfigurationCollectionChanged;
+                        OnConfigurationCollectionChanged(e.BrushTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                         break;
                 }
-
-                // Add
-                this.AddAssetCommand = new DelegateCommand(() =>
-                {
-                    var uniqueName = NameGenerator.Get(this.Assets.Select(z => z.Name), "New " + this.AssetType);
-
-                    eventAggregator.GetEvent<AddAssetEvent>().Publish(new AddAssetEventArgs()
-                    {
-                        AssetType = this.AssetType,
-                        AssetUniqueName = uniqueName
-                    });
-
-                    if (NO_SYMBOL_TYPES.Contains(this.AssetType))
-                        this.Assets.Add(new ScenarioAssetViewModel() { Name = uniqueName, Type = this.AssetType });
-
-                    else
-                        this.Assets.Add(new ScenarioAssetViewModel() { Name = uniqueName, Type = this.AssetType, SymbolDetails = new SymbolDetailsTemplateViewModel() });
-                });
-
-                // Load, Remove
-                foreach (var asset in this.Assets)
-                {
-                    asset.LoadAssetEvent += (sender, args) =>
-                    {
-                        eventAggregator.GetEvent<LoadAssetEvent>().Publish(asset);
-                    };
-                    asset.RemoveAssetEvent += (sender, args) =>
-                    {
-                        this.Assets.Remove(args);
-
-                        eventAggregator.GetEvent<RemoveAssetEvent>().Publish(asset);
-                    };
-                }
             });
+
+            // Add
+            this.AddAssetCommand = new DelegateCommand(() =>
+            {
+                OnAddAsset();
+            });
+        }
+
+        private void HookAssetEvents()
+        {
+            // Load, Remove
+            foreach (var asset in this.Assets)
+            {
+                asset.LoadAssetEvent -= OnLoadAsset;
+                asset.LoadAssetEvent += OnLoadAsset;
+                asset.RemoveAssetEvent -= OnRemoveAsset;
+                asset.RemoveAssetEvent += OnRemoveAsset;
+            }
+        }
+
+        private void OnAddAsset()
+        {
+            var uniqueName = NameGenerator.Get(this.Assets.Select(z => z.Name), "New " + this.AssetType);
+            var symbolDetails = _hasSymbol ? new SymbolDetailsTemplateViewModel() : null;
+
+            _eventAggregator.GetEvent<AddAssetEvent>().Publish(new AddAssetEventArgs()
+            {
+                AssetType = this.AssetType,
+                AssetUniqueName = uniqueName,
+                SymbolDetails = symbolDetails
+            });
+
+            this.Assets.Add(new ScenarioAssetViewModel() { Name = uniqueName, Type = this.AssetType, SymbolDetails = symbolDetails });
+
+            HookAssetEvents();
+        }
+
+        private void OnConfigurationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // These events are initiated from this class - so ignore these because they're already handled
+            if (e.Action == NotifyCollectionChangedAction.Add)
+                return;
+
+            var collection = sender as IList;
+
+            this.Assets.Clear();
+
+            if (_hasSymbol)
+            {
+                foreach (var item in collection.Cast<DungeonObjectTemplateViewModel>())                                                  
+                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SymbolDetails = item.SymbolDetails });
+            }
+            else
+            {
+                foreach (var item in collection.Cast<TemplateViewModel>())
+                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType });
+            }
+
+            HookAssetEvents();
+        }
+
+        private void OnLoadAsset(object sender, IScenarioAssetViewModel asset)
+        {
+            _eventAggregator.GetEvent<LoadAssetEvent>().Publish(asset);
+        }
+        private void OnRemoveAsset(object sender, IScenarioAssetViewModel asset)
+        {
+            this.Assets.Remove(asset);
+
+            _eventAggregator.GetEvent<RemoveAssetEvent>().Publish(asset);
         }
     }
 }
