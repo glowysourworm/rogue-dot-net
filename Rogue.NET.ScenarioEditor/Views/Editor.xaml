@@ -20,6 +20,7 @@
         <Grid.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontFamily" Value="{StaticResource CentaurFont}" />
             </Style>
         </Grid.Resources>
             <Grid.RowDefinitions>
@@ -102,7 +103,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
-                            <TextBlock Text="Save / Embed" Margin="10,0,0,0" />
+                            <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>
                     </Button.Content>
                     <Button.InputBindings>
@@ -113,7 +114,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <coreView:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
-                            <TextBlock Text="Save / Embed" Margin="10,0,0,0" />
+                            <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>                        
                     </Button.Content>
                     <Button.InputBindings>
@@ -124,7 +125,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <coreView:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
-                            <TextBlock Text="Save / Embed" Margin="10,0,0,0" />
+                            <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>
                     </Button.Content>
                     <Button.InputBindings>
@@ -135,7 +136,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyMood="Happy" SmileyRadius="2" Height="18" Width="12" />
-                            <TextBlock Text="Save / Embed" Margin="10,0,0,0" />
+                            <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>                        
                     </Button.Content>
                     <Button.InputBindings>

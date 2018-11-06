@@ -14,7 +14,8 @@
     </Style>
     <Style x:Key="AssetBrowserItemContainerStyle" TargetType="TreeViewItem">
         <Setter Property="Background" Value="Black" />
-        <Setter Property="Foreground" Value="White" />        
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="16" />
     </Style>
     <!-- Control template style example copied from msft: http://msdn.microsoft.com/en-us/library/vstudio/ms788727(v=vs.90).aspx -->
     <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
@@ -57,7 +58,7 @@
         <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="Padding" Value="1,0,0,0"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -97,7 +98,7 @@
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}"
                                   Padding="{TemplateBinding Padding}">
-                            <ContentPresenter x:Name="PART_Header" ContentSource="Header" 
+                            <ContentPresenter x:Name="PART_Header" ContentSource="Header"
                                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                         </Border>
                         <ItemsPresenter x:Name="ItemsHost"
@@ -166,8 +167,6 @@
                             <ColumnDefinition MinWidth="19" Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -182,9 +181,37 @@
                                       IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" 
                                       ClickMode="Press"/-->
 
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="{Binding CopyAssetCommand}" 
+                                          CommandParameter="{Binding Name}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xf0c5;" FontFamily="{StaticResource FontAwesome}" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.Header>
+                                        <TextBlock>
+                                            <Run Text="Copy " />
+                                            <Run Text="{Binding Name}" />
+                                        </TextBlock>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                                <MenuItem Command="{Binding RemoveAssetCommand}" 
+                                          CommandParameter="{Binding Name}" >
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xf068;" FontFamily="{StaticResource FontAwesome}" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.Header>
+                                        <TextBlock>
+                                            <Run Text="Delete " />
+                                            <Run Text="{Binding Name}" />
+                                        </TextBlock>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
                         <Image VerticalAlignment="Center" 
                                HorizontalAlignment="Center" 
-                               
                                Margin="20,0,0,0"
                                Stretch="None">
                             <Image.Source>
@@ -201,40 +228,7 @@
                                 </MultiBinding>
                             </Image.Source>
                         </Image>
-
-                        <TextBlock Cursor="Hand" 
-                                   FontFamily="{StaticResource FontAwesome}" 
-                                   Background="Transparent" 
-                                   Foreground="White" 
-                                   FontSize="{TemplateBinding FontSize}" 
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   Padding="0"
-                                   ToolTip="Remove"
-                                   Text="&#xf068;" 
-                                   Grid.Column="3">
-                            <TextBlock.InputBindings>
-                                <MouseBinding Command="{Binding RemoveAssetCommand}" CommandParameter="{Binding Name}" MouseAction="LeftClick" />
-                            </TextBlock.InputBindings>          
-                        </TextBlock>
-
-                        <TextBlock Cursor="Hand" 
-                                   FontFamily="{StaticResource FontAwesome}" 
-                                   Background="Transparent" 
-                                   Foreground="White" 
-                                   FontSize="{TemplateBinding FontSize}" 
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   Padding="0"
-                                   ToolTip="Copy to New"
-                                   Margin="4,0,0,0"
-                                   Text="&#xf005;" 
-                                   Grid.Column="4">
-                            <TextBlock.InputBindings>
-                                <MouseBinding Command="{Binding RemoveAssetCommand}" CommandParameter="{Binding Name}" MouseAction="LeftClick" />
-                            </TextBlock.InputBindings>
-                        </TextBlock>
-
+                        
                         <Border Name="Bd"
                                   Grid.Column="1" Margin="4,0,0,0"           
                                   BorderBrush="{TemplateBinding BorderBrush}"

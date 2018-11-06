@@ -31,6 +31,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 if (this.RemoveAssetEvent != null)
                     RemoveAssetEvent(this, this);
             });
+            this.CopyAssetCommand = new DelegateCommand(() =>
+            {
+                if (this.CopyAssetEvent != null)
+                    CopyAssetEvent(this, this);
+            });
         }
 
 
@@ -58,9 +63,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         public ICommand RemoveAssetCommand { get; set; }
         public ICommand LoadAssetCommand { get; set; }
+        public ICommand CopyAssetCommand { get; set; }
 
         public event EventHandler<IScenarioAssetViewModel> RemoveAssetEvent;
         public event EventHandler<IScenarioAssetViewModel> LoadAssetEvent;
+        public event EventHandler<IScenarioAssetViewModel> CopyAssetEvent;
         #endregion
     }
 }
