@@ -12,6 +12,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="Button" x:Key="FullScreenButtonStyle">
                         <Setter Property="Template">
