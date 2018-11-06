@@ -1,5 +1,7 @@
-﻿using MonitoredUndo;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.Utility.Undo;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.ComponentModel.Composition;
@@ -10,64 +12,71 @@ namespace Rogue.NET.ScenarioEditor.Service
     [Export(typeof(IRogueUndoService))]
     public class RogueUndoService : IRogueUndoService
     {
-        private ScenarioConfigurationContainerViewModel _root;
+        readonly IEventAggregator _eventAggregator;
+
+        UndoAccumulator<ScenarioConfigurationContainerViewModel> _undoAccumulator;
+
+        [ImportingConstructor]
+        public RogueUndoService(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+        }
 
         public event EventHandler ChangeEvent;
 
         public bool CanRedo()
         {
-            if (_root == null)
+            if (_undoAccumulator == null)
                 return false;
 
-            return UndoService.Current[_root].CanRedo;
+            return _undoAccumulator.CanRedo();
         }
+
         public bool CanUndo()
         {
-            if (_root == null)
+            if (_undoAccumulator == null)
                 return false;
 
-            return UndoService.Current[_root].CanUndo;
+            return _undoAccumulator.CanUndo();
         }
+
         public void Clear()
         {
-            if (_root == null)
-                throw new Exception("Scenario Configuration not registered with IRogueUndoService");
-
-            UndoService.Current.Clear();
-
-            UndoService.Current[_root].RedoStackChanged -= OnChange;
-            UndoService.Current[_root].UndoStackChanged -= OnChange;
-
-            _root = null;
+            _undoAccumulator.Clear();
         }
+
         public void Redo()
         {
-            if (_root == null)
-                throw new Exception("Scenario Configuration not registered with IRogueUndoService");
-
-            UndoService.Current[_root].Redo();
+            _undoAccumulator.Redo();
         }
+
         public void Register(ScenarioConfigurationContainerViewModel root)
         {
-            if (_root != null)
-                throw new Exception("Scenario Configuration already registered with IRogueUndoService");
+            if (_undoAccumulator != null)
+            {
+                _undoAccumulator.UndoChangedEvent -= OnUndoChanged;
+                _undoAccumulator.Unhook();
+                _undoAccumulator = null;
+            }
 
-            UndoService.SetCurrentDocumentInstance(root);
-            UndoService.Current[root].RedoStackChanged += OnChange;
-            UndoService.Current[root].UndoStackChanged += OnChange;
+            _undoAccumulator = new UndoAccumulator<ScenarioConfigurationContainerViewModel>(root);
+            _undoAccumulator.UndoChangedEvent += OnUndoChanged;
         }
+
         public void Undo()
         {
-            if (_root == null)
-                throw new Exception("Scenario Configuration not registered with IRogueUndoService");
-
-            UndoService.Current[_root].Undo();
+            _undoAccumulator.Undo();
         }
 
-        protected void OnChange(object sender, EventArgs e)
+        private void OnUndoChanged(object sender, string message)
         {
+            _eventAggregator.GetEvent<ScenarioEditorMessageEvent>().Publish(new ScenarioEditorMessageEventArgs()
+            {
+                Message = message
+            });
+
             if (ChangeEvent != null)
-                ChangeEvent(sender, e);
+                ChangeEvent(this, new EventArgs());
         }
     }
 }

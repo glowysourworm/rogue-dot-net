@@ -2,8 +2,6 @@
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System;
 
-using ReactiveUI;
-
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
 {
     public class AnimationTemplateViewModel : TemplateViewModel

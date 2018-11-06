@@ -4,9 +4,6 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
-using ReactiveUI;
-
-
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
 {
     public class BrushTemplateViewModel : TemplateViewModel

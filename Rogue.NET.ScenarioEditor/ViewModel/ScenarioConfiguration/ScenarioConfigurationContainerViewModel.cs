@@ -4,13 +4,26 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 {
-    public class ScenarioConfigurationContainerViewModel
+    public class ScenarioConfigurationContainerViewModel : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        public DungeonTemplateViewModel DungeonTemplate { get; set; }
-        public PlayerTemplateViewModel PlayerTemplate { get; set; }
+        DungeonTemplateViewModel _dungeonTemplate;
+        PlayerTemplateViewModel _playerTemplate;
+
+        public DungeonTemplateViewModel DungeonTemplate
+        {
+            get { return _dungeonTemplate; }
+            set { this.RaiseAndSetIfChanged(ref _dungeonTemplate, value); }
+        }
+        public PlayerTemplateViewModel PlayerTemplate
+        {
+            get { return _playerTemplate; }
+            set { this.RaiseAndSetIfChanged(ref _playerTemplate, value); }
+        }
 
         public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
         public ObservableCollection<BrushTemplateViewModel> BrushTemplates { get; set; }
@@ -37,6 +50,29 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.DoodadTemplates = new ObservableCollection<DoodadTemplateViewModel>();
             this.PenTemplates = new ObservableCollection<PenTemplateViewModel>();
             this.AttackAttributes = new ObservableCollection<DungeonObjectTemplateViewModel>();
+        }
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
+        {
+            var changed = false;
+            if (field == null)
+                changed = value != null;
+            else
+                changed = !field.Equals(value);
+
+            if (changed)
+            {
+                if (PropertyChanging != null)
+                    PropertyChanging(this, new PropertyChangingEventArgs(memberName));
+
+                field = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(memberName));
+            }
         }
     }
 }

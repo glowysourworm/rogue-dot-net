@@ -2,8 +2,6 @@
 
 using System.Collections.ObjectModel;
 
-using ReactiveUI;
-
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 {

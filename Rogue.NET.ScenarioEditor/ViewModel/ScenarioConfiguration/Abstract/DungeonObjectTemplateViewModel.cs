@@ -1,7 +1,5 @@
 ﻿using System;
 
-using ReactiveUI;
-
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
 {
     public class DungeonObjectTemplateViewModel : TemplateViewModel

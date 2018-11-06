@@ -1,10 +1,11 @@
-﻿using ReactiveUI;
+﻿using Rogue.NET.ScenarioEditor.Utility.Undo;
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 {
-    public class RangeViewModel<T> : ReactiveObject where T : IComparable
+    public class RangeViewModel<T> : INotifyPropertyChanged, INotifyPropertyChanging where T : IComparable
     {
         T _low = default(T);
         T _high = default(T);
@@ -112,6 +113,31 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public override string ToString()
         {
             return "From " + this.Low + " To " + this.High;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler PropertyChanging;
+
+        protected virtual void RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
+        {
+            var changed = false;
+            if (field == null)
+                changed = value != null;
+            else
+                changed = !field.Equals(value);
+
+            if (changed)
+            {
+                // Use the Id to relate the two events
+                var eventArgs = new UndoPropertyChangingEventArgs(memberName);
+                if (PropertyChanging != null)
+                    PropertyChanging(this, eventArgs);
+
+                field = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new UndoPropertyChangedEventArgs(eventArgs.Id, memberName));
+            }
         }
     }
 }

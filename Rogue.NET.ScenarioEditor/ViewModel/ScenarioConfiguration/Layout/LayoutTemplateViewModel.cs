@@ -1,8 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 
-using ReactiveUI;
-
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 {
     public class LayoutTemplateViewModel : TemplateViewModel

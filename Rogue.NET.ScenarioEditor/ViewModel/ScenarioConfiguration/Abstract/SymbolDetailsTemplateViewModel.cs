@@ -1,7 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 
-using ReactiveUI;
-
 using System;
 using System.Windows.Media;
 

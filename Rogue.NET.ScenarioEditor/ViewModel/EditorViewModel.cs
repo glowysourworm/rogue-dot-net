@@ -7,13 +7,13 @@ using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
-using ReactiveUI;
 using Prism.Commands;
+using Rogue.NET.Common.ViewModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     [Export(typeof(IEditorViewModel))]
-    public class EditorViewModel : ReactiveObject, IEditorViewModel
+    public class EditorViewModel : NotifyViewModel, IEditorViewModel
     {
         readonly IEventAggregator _eventAggregator;
         readonly IRogueUndoService _rogueUndoService;

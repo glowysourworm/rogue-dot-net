@@ -3,8 +3,6 @@
 using System;
 using System.Windows.Media;
 
-using ReactiveUI;
-
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
 {
     public class GradientStopTemplateViewModel : TemplateViewModel

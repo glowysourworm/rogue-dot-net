@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 
-using ReactiveUI;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
