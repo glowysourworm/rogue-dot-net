@@ -6,8 +6,6 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
-using Rogue.NET.ScenarioEditor.Utility;
-using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
@@ -15,18 +13,11 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
-using Rogue.NET.ScenarioEditor.Views.Assets.Animation;
-using Rogue.NET.ScenarioEditor.Views.Assets.Consumable;
-using Rogue.NET.ScenarioEditor.Views.Assets.Enemy;
-using Rogue.NET.ScenarioEditor.Views.Assets.Equipment;
-using Rogue.NET.ScenarioEditor.Views.Assets.Spell;
 using Rogue.NET.ScenarioEditor.Views.Construction;
-using Rogue.NET.ScenarioEditor.Views.Controls;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
-using ConsumableSubType = Rogue.NET.ScenarioEditor.Views.Assets.Consumable.ConsumableSubType;
 
 namespace Rogue.NET.ScenarioEditor
 {
@@ -67,90 +58,17 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("OutputRegion", typeof(Output));
 
             // Design Region - Asset Views
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(AnimationWizard));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ConsumableWizard));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(EnemyWizard));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(EquipmentWizard));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(SpellWizard));
-            _regionManager.RegisterViewWithRegion("AnimationWizardRegion", () =>
-            {
-                return new Wizard(new WizardViewModel()
-                {
-                    FirstPageType = typeof(AnimationBasicType),
-                    Title = "Animation Creation Wizard",
-                    WizardSteps = new string[] {
-                            "Select Basic Type",
-                            "Select Focus Type",
-                            "Set Animation Parameters",
-                            "Preview"
-                    }
-                });
-            });
-            _regionManager.RegisterViewWithRegion("ConsumableWizardRegion", () =>
-            {
-                return new Wizard(new WizardViewModel()
-                {
-                    FirstPageType = typeof(ConsumableSubType),
-                    Title = "Consumable Wizard",
-                    WizardSteps = new string[]{
-                            "Select Type",
-                            "Select Use Type",
-                            "Select Spell Usage",
-                            "Set Parameters",
-                            "Set Rogue Encyclopedia Data",
-                            "Edit Symbol"
-                    }
-                });
-            });
-            _regionManager.RegisterViewWithRegion("EnemyWizardRegion", () =>
-            {
-                return new Wizard(new WizardViewModel()
-                {
-                    FirstPageType = typeof(EnemyParameters),
-                    Title = "Enemy Wizard",
-                    WizardSteps = new string[]{
-                            "Set Melee Parameters",
-                            "Set Behavior",
-                            "Set Attack Attributes",
-                            "Set Items",
-                            "Set Rogue Encyclopedia Data",
-                            "Edit Symbol"
-                    }
-                });
-            });
-            _regionManager.RegisterViewWithRegion("EquipmentWizardRegion", () =>
-            {
-                return new Wizard(new WizardViewModel()
-                {
-                    FirstPageType = typeof(EquipmentSpellSelection),
-                    Title = "Equipment Wizard",
-                    WizardSteps = new string[]{
-                            "Select Attached Spells",
-                            "Set Parameters",
-                            "Set Attack Attributes",
-                            "Set Rogue Encyclopedia Data",
-                            "Edit Symbol"
-                    }
-                });
-            });
-            _regionManager.RegisterViewWithRegion("SpellWizardRegion", () =>
-            {
-                return new Wizard(new WizardViewModel()
-                {
-                    FirstPageType = typeof(SpellType),
-                    Title = "Spell Wizard",
-                    WizardSteps = new string[]{
-                            "Select Base Type",
-                            "Select Sub Type",
-                            "Set Parameters"
-                    }
-                });
-            });
-
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Layout));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Doodad));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(SkillSet));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Animation));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(AttackAttribute));
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Rogue.NET.ScenarioEditor.Views.Assets.Brush));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Consumable));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Doodad));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Enemy));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Equipment));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Layout));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(SkillSet));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(Spell));
+
 
             // Design Region - Construction Views
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(General));
@@ -183,78 +101,60 @@ namespace Rogue.NET.ScenarioEditor
             {
                 _regionManager.RequestNavigate("DesignRegion", "ScenarioDifficultyChart");
             });
+            _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>
+            {
+                AddAsset(e.AssetType, e.AssetUniqueName);
+            });
+            _eventAggregator.GetEvent<LoadAssetEvent>().Subscribe((e) =>
+            {
+                LoadAsset(e.Type, e.Name);
+            });
+            _eventAggregator.GetEvent<RemoveAssetEvent>().Subscribe((e) =>
+            {
+                RemoveAsset(e.Type, e.Name);
+            });
         }
 
-        private string AddAsset(string assetType)
+        /// <summary>
+        /// Adds an asset with a pre-calculated name
+        /// </summary>
+        private void AddAsset(string assetType, string uniqueName)
         {
             switch (assetType)
             {
                 case "Layout":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.DungeonTemplate.LayoutTemplates.Select(z => z.Name), "New Layout");
-                        _controller.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "AttackAttribute":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.AttackAttributes.Select(z => z.Name), "New Attack Attribute");
-                        _controller.CurrentConfig.AttackAttributes.Add(new AttackAttributeTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.AttackAttributes.Add(new AttackAttributeTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Enemy":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.EnemyTemplates.Select(z => z.Name), "New Enemy");
-                        _controller.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Equipment":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.EquipmentTemplates.Select(z => z.Name), "New Equipment");
-                        _controller.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Consumable":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.ConsumableTemplates.Select(z => z.Name), "New Consumable");
-                        _controller.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Doodad":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.DoodadTemplates.Select(z => z.Name), "New Doodad");
-                        _controller.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Spell":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.MagicSpells.Select(z => z.Name), "New Spell");
-                        _controller.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "SkillSet":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.SkillTemplates.Select(z => z.Name), "New Skill Set");
-                        _controller.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Animation":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.AnimationTemplates.Select(z => z.Name), "New Animation");
-                        _controller.CurrentConfig.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Brush":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.BrushTemplates.Select(z => z.Name), "New Brush");
-                        _controller.CurrentConfig.BrushTemplates.Add(new BrushTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.BrushTemplates.Add(new BrushTemplateViewModel() { Name = uniqueName });
+                    break;
                 case "Pen":
-                    {
-                        var name = NameGenerator.Get(_controller.CurrentConfig.PenTemplates.Select(z => z.Name), "New Pen");
-                        _controller.CurrentConfig.PenTemplates.Add(new PenTemplateViewModel() { Name = name });
-                        return name;
-                    }
+                    _controller.CurrentConfig.PenTemplates.Add(new PenTemplateViewModel() { Name = uniqueName });
+                    break;
                 default:
                     break;
             }

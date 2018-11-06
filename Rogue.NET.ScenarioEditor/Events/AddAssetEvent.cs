@@ -1,0 +1,15 @@
+﻿using Prism.Events;
+
+namespace Rogue.NET.ScenarioEditor.Events
+{
+    public class AddAssetEventArgs : System.EventArgs
+    {
+        public string AssetType { get; set; }
+        public string AssetUniqueName { get; set; }
+    }
+
+    // Add Asset <Asset Type>
+    public class AddAssetEvent : PubSubEvent<AddAssetEventArgs>
+    {
+    }
+}

@@ -97,7 +97,7 @@
             <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
                 <Grid Margin="10">
                     <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Image" />
-                    <ContentControl prism:RegionManager.RegionName="SymbolEditorImageEnumComboBoxRegion" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch" />
+                    <controls:ImageEnumComboBox Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  />
                 </Grid>
             </GroupBox>
             <Grid x:Name="ButtonGrid" Visibility="Collapsed">

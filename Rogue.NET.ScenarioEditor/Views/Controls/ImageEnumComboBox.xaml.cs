@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 
@@ -34,9 +35,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 this.ImgRes = res;
             }
         }
-        public ImageEnumComboBox(IScenarioResourceService scenarioResourceService)
+        public ImageEnumComboBox()
         {
-            _scenarioResourceService = scenarioResourceService;
+            _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
 
             InitializeComponent();
             LoadComboBox();

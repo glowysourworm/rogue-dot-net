@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SpellControl.SpellType"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             Background="Black">
+    <Grid>
+        <StackPanel x:Name="RadioStack">
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.PassiveSource}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Passive:  Spell that is activated / deactivated by the player or can be used as an Equip Spell" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.TemporarySource}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary:  Spell that has a timed effect" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.PermanentSource}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent:  Spell that has a permanent effect" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.Steal}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Steal: Special spell type that allows one character to steal a random item from another character" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.RunAway}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Run Away (Enemy Only): Enemy can invoke this spell to be removed from the level (preventing player from killing it and receiving experience or reward)" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.TeleportSelf}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport: Allows a character to teleport" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.ChangeLevelRandomUp}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Change Level: Changes level by a random number. Example would be a pitfall; but random changes up are also allowed as a type." />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.Identify}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Identify: Spell that calls the identify dialog" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.Uncurse}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Uncurse: Spell that calls the uncurse dialog" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.EnchantWeapon}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Enchant: Spell that calls the enchant dialog (Note: Enchanting an item raises its class level. This is different than Imbue)" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealLevel}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal: Makes items, enemies, dungeon objects, the save point, or the dungeon map visible (depending on what type is chosen)" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Create Monster: Creates a non-unique enemy with level range that includes the current level" />
+            </RadioButton.Content>
+        </RadioButton>
+            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.AttackAttribute}" Foreground="White" Background="Black">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Attack Attribute: Allows an adjustment of the attack attributes of the player, player's equipment, or an enemy" />
+            </RadioButton.Content>
+        </RadioButton>
+    </StackPanel>
+    </Grid>
+</UserControl>

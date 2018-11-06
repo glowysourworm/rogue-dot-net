@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
@@ -12,5 +13,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
 
         ICommand RemoveAssetCommand { get; }
         ICommand LoadAssetCommand { get; }
+
+        event EventHandler<IScenarioAssetViewModel> RemoveAssetEvent;
+        event EventHandler<IScenarioAssetViewModel> LoadAssetEvent;
     }
 }

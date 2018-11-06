@@ -3,6 +3,7 @@ using Prism.Events;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
@@ -10,30 +11,25 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     public class ScenarioAssetViewModel : NotifyViewModel, IScenarioAssetViewModel
     {
-        readonly IEventAggregator _eventAggregator;
-
         bool _isSelected = false;
         string _name = "";
         string _type = "";
         SymbolDetailsTemplateViewModel _symbolDetailsViewModel;
 
         [ImportingConstructor]
-        public ScenarioAssetViewModel(IEventAggregator eventAggregator)
+        public ScenarioAssetViewModel()
         {
-            _eventAggregator = eventAggregator;
-
             this.LoadAssetCommand = new DelegateCommand(() =>
             {
-                // TODO: Use Event Bubble
-
                 this.IsSelected = true;
+
+                if (this.LoadAssetEvent != null)
+                    LoadAssetEvent(this, this);
             });
             this.RemoveAssetCommand = new DelegateCommand(() =>
             {
-                // TODO: Use Event to Bubble up
-
-                // notify group to remove this asset from list
-                // _group.RemoveAsset(this);
+                if (this.RemoveAssetEvent != null)
+                    RemoveAssetEvent(this, this);
             });
         }
 
@@ -62,6 +58,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         public ICommand RemoveAssetCommand { get; set; }
         public ICommand LoadAssetCommand { get; set; }
+
+        public event EventHandler<IScenarioAssetViewModel> RemoveAssetEvent;
+        public event EventHandler<IScenarioAssetViewModel> LoadAssetEvent;
         #endregion
     }
 }

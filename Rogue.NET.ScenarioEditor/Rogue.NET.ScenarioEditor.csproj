@@ -239,9 +239,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\AddAssetEvent.cs" />
+    <Compile Include="Events\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
+    <Compile Include="Events\RemoveAssetEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />
@@ -303,39 +306,38 @@
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDifficultyViewModel.cs" />
-    <Compile Include="ViewModel\WizardViewModel.cs" />
-    <Compile Include="Views\Assets\Animation\AnimationAura.xaml.cs">
+    <Compile Include="Views\Assets\Animation.xaml.cs">
+      <DependentUpon>Animation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationAura.xaml.cs">
       <DependentUpon>AnimationAura.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationBarrage.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationBarrage.xaml.cs">
       <DependentUpon>AnimationBarrage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationBasicType.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationBasicType.xaml.cs">
       <DependentUpon>AnimationBasicType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationBlink.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationBlink.xaml.cs">
       <DependentUpon>AnimationBlink.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationBubbles.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationBubbles.xaml.cs">
       <DependentUpon>AnimationBubbles.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationParametersExtended.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationParametersExtended.xaml.cs">
       <DependentUpon>AnimationParametersExtended.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationParametersMain.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationParametersMain.xaml.cs">
       <DependentUpon>AnimationParametersMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationPreview.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationPreview.xaml.cs">
       <DependentUpon>AnimationPreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationProjectile.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationProjectile.xaml.cs">
       <DependentUpon>AnimationProjectile.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationSpiral.xaml.cs">
+    <Compile Include="Views\Assets\AnimationControl\AnimationSpiral.xaml.cs">
       <DependentUpon>AnimationSpiral.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\Animation\AnimationWizard.xaml.cs">
-      <DependentUpon>AnimationWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\AttackAttribute.xaml.cs">
       <DependentUpon>AttackAttribute.xaml</DependentUpon>
@@ -343,68 +345,68 @@
     <Compile Include="Views\Assets\Brush.xaml.cs">
       <DependentUpon>Brush.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableMetadata.xaml.cs">
+    <Compile Include="Views\Assets\Consumable.xaml.cs">
+      <DependentUpon>Consumable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableMetadata.xaml.cs">
       <DependentUpon>ConsumableMetadata.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableParameters.xaml.cs">
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableParameters.xaml.cs">
       <DependentUpon>ConsumableParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableSpellSelection.xaml.cs">
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSpellSelection.xaml.cs">
       <DependentUpon>ConsumableSpellSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableSubType.xaml.cs">
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSubType.xaml.cs">
       <DependentUpon>ConsumableSubType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableSymbol.xaml.cs">
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSymbol.xaml.cs">
       <DependentUpon>ConsumableSymbol.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableType.xaml.cs">
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableType.xaml.cs">
       <DependentUpon>ConsumableType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\Consumable\ConsumableWizard.xaml.cs">
-      <DependentUpon>ConsumableWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\Doodad.xaml.cs">
       <DependentUpon>Doodad.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyAttackAttributes.xaml.cs">
+    <Compile Include="Views\Assets\Enemy.xaml.cs">
+      <DependentUpon>Enemy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyAttackAttributes.xaml.cs">
       <DependentUpon>EnemyAttackAttributes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyBehavior.xaml.cs">
+    <Compile Include="Views\Assets\EnemyControl\EnemyBehavior.xaml.cs">
       <DependentUpon>EnemyBehavior.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyItems.xaml.cs">
+    <Compile Include="Views\Assets\EnemyControl\EnemyItems.xaml.cs">
       <DependentUpon>EnemyItems.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyMetadata.xaml.cs">
+    <Compile Include="Views\Assets\EnemyControl\EnemyMetadata.xaml.cs">
       <DependentUpon>EnemyMetadata.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyParameters.xaml.cs">
+    <Compile Include="Views\Assets\EnemyControl\EnemyParameters.xaml.cs">
       <DependentUpon>EnemyParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemySymbol.xaml.cs">
+    <Compile Include="Views\Assets\EnemyControl\EnemySymbol.xaml.cs">
       <DependentUpon>EnemySymbol.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Enemy\EnemyWizard.xaml.cs">
-      <DependentUpon>EnemyWizard.xaml</DependentUpon>
+    <Compile Include="Views\Assets\Equipment.xaml.cs">
+      <DependentUpon>Equipment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentAttackAttributes.xaml.cs">
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml.cs">
       <DependentUpon>EquipmentAttackAttributes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentMetadata.xaml.cs">
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml.cs">
       <DependentUpon>EquipmentMetadata.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentParameters.xaml.cs">
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentParameters.xaml.cs">
       <DependentUpon>EquipmentParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentSpellSelection.xaml.cs">
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentSpellSelection.xaml.cs">
       <DependentUpon>EquipmentSpellSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentSymbol.xaml.cs">
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentSymbol.xaml.cs">
       <DependentUpon>EquipmentSymbol.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\Equipment\EquipmentWizard.xaml.cs">
-      <DependentUpon>EquipmentWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\Layout.xaml.cs">
       <DependentUpon>Layout.xaml</DependentUpon>
@@ -412,32 +414,29 @@
     <Compile Include="Views\Assets\SkillSet.xaml.cs">
       <DependentUpon>SkillSet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\Filler.xaml.cs">
-      <DependentUpon>Filler.xaml</DependentUpon>
+    <Compile Include="Views\Assets\Spell.xaml.cs">
+      <DependentUpon>Spell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellAttackAlterationType.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellAttackAlterationType.xaml.cs">
       <DependentUpon>SpellAttackAlterationType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellLevelChange.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellLevelChange.xaml.cs">
       <DependentUpon>SpellLevelChange.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellParameters.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellParameters.xaml.cs">
       <DependentUpon>SpellParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellPassive.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellPassive.xaml.cs">
       <DependentUpon>SpellPassive.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellRevealType.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellRevealType.xaml.cs">
       <DependentUpon>SpellRevealType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellTargetType.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellTargetType.xaml.cs">
       <DependentUpon>SpellTargetType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell\SpellType.xaml.cs">
+    <Compile Include="Views\Assets\SpellControl\SpellType.xaml.cs">
       <DependentUpon>SpellType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\Spell\SpellWizard.xaml.cs">
-      <DependentUpon>SpellWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Construction\DungeonObjectPlacement.xaml.cs">
       <DependentUpon>DungeonObjectPlacement.xaml</DependentUpon>
@@ -482,9 +481,6 @@
     <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
       <DependentUpon>SymbolEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\Wizard.xaml.cs">
-      <DependentUpon>Wizard.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
@@ -515,47 +511,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationAura.xaml">
+    <Page Include="Views\Assets\Animation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationBarrage.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationAura.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationBasicType.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationBarrage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationBlink.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationBasicType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationBubbles.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationBlink.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationParametersExtended.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationBubbles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationParametersMain.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationParametersExtended.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationPreview.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationParametersMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationProjectile.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationSpiral.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationProjectile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation\AnimationWizard.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationSpiral.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -567,31 +563,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableMetadata.xaml">
+    <Page Include="Views\Assets\Consumable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableParameters.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableSpellSelection.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableSubType.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableSpellSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableSymbol.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableSubType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableType.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableSymbol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Consumable\ConsumableWizard.xaml">
+    <Page Include="Views\Assets\ConsumableControl\ConsumableType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -599,55 +595,55 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyAttackAttributes.xaml">
+    <Page Include="Views\Assets\Enemy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyBehavior.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyItems.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyBehavior.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyMetadata.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyItems.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyParameters.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemySymbol.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Enemy\EnemyWizard.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemySymbol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentAttackAttributes.xaml">
+    <Page Include="Views\Assets\Equipment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentMetadata.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentParameters.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentSpellSelection.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentSymbol.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentSpellSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Equipment\EquipmentWizard.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentSymbol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -659,39 +655,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\Filler.xaml">
+    <Page Include="Views\Assets\Spell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellAttackAlterationType.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellAttackAlterationType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellLevelChange.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellLevelChange.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellParameters.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellPassive.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellPassive.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellRevealType.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellRevealType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellTargetType.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellTargetType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell\SpellType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\Spell\SpellWizard.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -748,10 +740,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\SymbolEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\Wizard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

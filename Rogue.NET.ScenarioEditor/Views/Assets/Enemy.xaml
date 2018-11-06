@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Enemy"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:enemy="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TabControl TabStripPlacement="Left">
+            <TabItem Header="Symbol">
+                <enemy:EnemySymbol />
+            </TabItem>
+            <TabItem Header="Rogue-Encyclopedia Entry">
+                <enemy:EnemyMetadata />
+            </TabItem>
+            <TabItem Header="Parameters">
+                <enemy:EnemyParameters />
+            </TabItem>
+            <TabItem Header="Behavior">
+                <enemy:EnemyBehavior />
+            </TabItem>
+            <TabItem Header="Attack Attributes">
+                <enemy:EnemyAttackAttributes />
+            </TabItem>
+            <TabItem Header="Items">
+                <enemy:EnemyItems />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

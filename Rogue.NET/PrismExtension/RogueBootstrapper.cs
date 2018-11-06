@@ -19,18 +19,7 @@ using Rogue.NET.Intro.Views;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Content.Views;
-using Rogue.NET.ScenarioEditor.Views;
-using Rogue.NET.ScenarioEditor.Views.Assets.Animation;
-using Rogue.NET.ScenarioEditor.Views.Assets.Consumable;
-using Rogue.NET.ScenarioEditor.Views.Assets.Enemy;
-using Rogue.NET.ScenarioEditor.Views.Assets;
-using Rogue.NET.ScenarioEditor.Views.Assets.Equipment;
-using Rogue.NET.ScenarioEditor.Views.Controls;
-using Rogue.NET.ScenarioEditor.ViewModel;
-using Rogue.NET.ScenarioEditor.Views.Assets.Spell;
-using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.Common.Extension.Prism;
-using System.Windows.Media;
 
 namespace Rogue.NET.PrismExtension
 {

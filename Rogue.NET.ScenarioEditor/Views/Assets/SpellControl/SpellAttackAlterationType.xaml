@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SpellControl.SpellAttackAlterationType"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             mc:Ignorable="d" Background="Black"
+             d:DesignHeight="300" d:DesignWidth="550">
+    <Grid>
+        <StackPanel x:Name="RadioStack">
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationAttackAttributeType.Imbue}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Imbue: Permanently alters the attack attributes of an item" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationAttackAttributeType.Passive}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Passive: Alters the attack attributes in a way that can be activated / deactivated" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Temporary Normal: Temporary attack attribute alteration applied to character" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Temporary Malign: Temporary attack attribute applied to character. Use this option to create a remedy item (Example: Poison attack attribute with remedy item 'Cure Potion')" />
+                </RadioButton.Content>
+            </RadioButton>
+
+            <RadioButton Margin="10" Tag="{x:Static coreModelEnums:AlterationAttackAttributeType.MeleeTarget}" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Target: Alters attack attributes of an enemy permanently" />
+                </RadioButton.Content>
+            </RadioButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

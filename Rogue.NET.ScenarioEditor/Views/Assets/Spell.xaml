@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Spell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:spell="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SpellControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TabControl TabStripPlacement="Left">
+            <TabItem Header="Spell Type">
+                <spell:SpellType />
+            </TabItem>
+            <TabItem Header="Passive Type">
+                <spell:SpellPassive />
+            </TabItem>
+            <TabItem Header="Target Type">
+                <spell:SpellTargetType />
+            </TabItem>
+            <TabItem Header="Attack Alteration Type">
+                <spell:SpellAttackAlterationType />
+            </TabItem>
+            <TabItem Header="Reveal Type">
+                <spell:SpellRevealType />
+            </TabItem>
+            <TabItem Header="(Primary) Parameters">
+                <spell:SpellParameters />
+            </TabItem>
+            <TabItem Header="Level Change Parameters">
+                <spell:SpellLevelChange />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
