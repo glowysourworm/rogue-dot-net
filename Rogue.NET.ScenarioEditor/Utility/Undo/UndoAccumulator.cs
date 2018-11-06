@@ -24,6 +24,9 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         // Pending changes for INotifyPropertyChanging event hooks
         Dictionary<string, UndoChange> _pendingChangeDict;
 
+        // Require blocker to prevent events from being consumed during an undo / redo
+        bool _performingUndo = false;
+
         public event EventHandler<string> UndoChangedEvent;
 
         public UndoAccumulator(T target)
@@ -173,20 +176,30 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         #region (private) Undo / Redo Transform Methods
         private void UndoProperty(UndoChange undoChange)
         {
+            _performingUndo = true;
+
             var type = undoChange.Node.GetType();
             var property = _propertyDict[type][undoChange.PropertyName];
 
             property.SetValue(undoChange.Node, undoChange.OldValue);
+
+            _performingUndo = false;
         }
         private void RedoProperty(UndoChange redoChange)
         {
+            _performingUndo = true;
+
             var type = redoChange.Node.GetType();
             var property = _propertyDict[type][redoChange.PropertyName];
 
             property.SetValue(redoChange.Node, redoChange.NewValue);
+
+            _performingUndo = false;
         }
         private void UndoCollection(UndoChange undoChange)
         {
+            _performingUndo = true;
+
             var collection = undoChange.CollectionNode as IList;
 
             switch (undoChange.CollectionChangeAction)
@@ -212,9 +225,13 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 default:
                     break;
             }
+
+            _performingUndo = false;
         }
         private void RedoCollection(UndoChange redoChange)
         {
+            _performingUndo = true;
+
             var collection = redoChange.CollectionNode as IList;
 
             switch (redoChange.CollectionChangeAction)
@@ -238,12 +255,17 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 default:
                     break;
             }
+
+            _performingUndo = false;
         }
         #endregion
 
         #region (private) Handlers
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (_performingUndo)
+                return;
+
             var type = sender.GetType();
             var property = _propertyDict[type][e.PropertyName];
             var propertyValue = property.GetValue(sender);
@@ -270,6 +292,9 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         // Sent before change
         private void OnPropertyChanging(object sender, PropertyChangingEventArgs e)
         {
+            if (_performingUndo)
+                return;
+
             var type = sender.GetType();
             var property = _propertyDict[type][e.PropertyName];
             var propertyValue = property.GetValue(sender);
@@ -287,6 +312,9 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         }
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_performingUndo)
+                return;
+
             var collection = sender as IList;
 
             // Hook / Unhook changed items
