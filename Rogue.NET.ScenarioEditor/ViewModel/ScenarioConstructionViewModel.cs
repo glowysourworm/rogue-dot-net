@@ -10,27 +10,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     [Export(typeof(IScenarioConstructionViewModel))]
     public class ScenarioConstructionViewModel : IScenarioConstructionViewModel
     {
-        readonly IEventAggregator _eventAggregator;
-
         [ImportingConstructor]
         public ScenarioConstructionViewModel(IEventAggregator eventAggregator)
         {
-            _eventAggregator = eventAggregator;
-        }
-
-        public ICommand LoadConstructionCommand
-        {
-            get
+            this.LoadConstructionCommand = new DelegateCommand<string>((construction) =>
             {
-                return new DelegateCommand<string>((construction) =>
+                eventAggregator.GetEvent<LoadConstructionEvent>().Publish(new LoadConstructionEventArgs()
                 {
-                    _eventAggregator.GetEvent<LoadConstructionEvent>().Publish(new LoadConstructionEventArgs()
-                    {
-                        ConstructionName = construction
-                    });
+                    ConstructionName = construction
                 });
-            }
+            });
         }
 
+        public DelegateCommand<string> LoadConstructionCommand { get; private set; }
     }
 }

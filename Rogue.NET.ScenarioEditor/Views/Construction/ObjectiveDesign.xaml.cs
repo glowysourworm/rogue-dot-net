@@ -13,15 +13,5 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         {
             InitializeComponent();
         }
-
-        public void SetConfigurationParameters(ScenarioConfigurationContainerViewModel config)
-        {
-            this.DoodadLB.ItemsSource = config.DoodadTemplates;
-            this.EnemyLB.ItemsSource = config.EnemyTemplates;
-            this.ItemsLB.ItemsSource = config.ConsumableTemplates.
-                                            Cast<DungeonObjectTemplateViewModel>().
-                                            Union(config.EquipmentTemplates.
-                                                Cast<DungeonObjectTemplateViewModel>());
-        }
     }
 }

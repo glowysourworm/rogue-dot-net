@@ -16,12 +16,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             InitializeComponent();
         }
 
-        public void SetConfigurationData(ScenarioConfigurationContainerViewModel config)
-        {
-            this.AutomaticSpellCB.ItemsSource = config.MagicSpells;
-            this.InvokedSpellCB.ItemsSource = config.MagicSpells;
-        }
-
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
             var window = new Window();

@@ -17,35 +17,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         public SkillSet()
         {
             InitializeComponent();
-
-            this.DataContextChanged += SkillSet_DataContextChanged;
         }
-
-        private void SkillSet_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var skillSet = e.NewValue as SkillSetTemplate;
-            if (skillSet != null)
-            {
-                var collection = new ObservableCollection<SpellTemplate>(skillSet.Spells);
-                collection.CollectionChanged += (obj, ev) =>
-                {
-                    skillSet.Spells.Clear();
-                    foreach (var spell in collection)
-                        skillSet.Spells.Add(spell);
-                };
-                this.SkillSetBuilder.DestinationLB.ItemsSource = collection;
-            }
-        }
-
-        /// <summary>
-        /// Use to set skill collections
-        /// </summary>
-        public void SetConfigurationData(ScenarioConfigurationContainerViewModel configuration)
-        {
-            this.SkillSetBuilder.SourceLB.ItemsSource = new ObservableCollection<SpellTemplateViewModel>(configuration.MagicSpells);
-            this.SkillSetBuilder.SourceLB.DisplayMemberPath = "Name";
-        }
-
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
             var window = new Window();

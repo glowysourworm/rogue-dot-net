@@ -1,87 +1,67 @@
 ﻿using Prism.Commands;
-using Rogue.NET.ScenarioEditor.Interface;
+using Prism.Events;
+using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
-    public class ScenarioAssetViewModel : IScenarioAssetViewModel, INotifyPropertyChanged
+    public class ScenarioAssetViewModel : NotifyViewModel, IScenarioAssetViewModel
     {
-        readonly IScenarioEditorController _controller;
-        readonly IScenarioAssetGroupViewModel _group;
+        readonly IEventAggregator _eventAggregator;
 
         bool _isSelected = false;
         string _name = "";
+        string _type = "";
+        SymbolDetailsTemplateViewModel _symbolDetailsViewModel;
 
-        public string Type { get; set; }
+        [ImportingConstructor]
+        public ScenarioAssetViewModel(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+
+            this.LoadAssetCommand = new DelegateCommand(() =>
+            {
+                // TODO: Use Event Bubble
+
+                this.IsSelected = true;
+            });
+            this.RemoveAssetCommand = new DelegateCommand(() =>
+            {
+                // TODO: Use Event to Bubble up
+
+                // notify group to remove this asset from list
+                // _group.RemoveAsset(this);
+            });
+        }
+
+
+        #region (public) Properties
+        public string Type
+        {
+            get { return _type; }
+            set { this.RaiseAndSetIfChanged(ref _type, value); }
+        }
         public string Name 
         {
             get { return _name; }
-            set
-            {
-                if (string.IsNullOrEmpty(this.Type))
-                    _name = value;
-
-                else if (_controller.UpdateAssetName(_name, value, this.Type))
-                {
-                    _name = value;
-                    OnPropertyChanged("Name");
-                }
-            }
+            set { this.RaiseAndSetIfChanged(ref _name, value); }
         }
         public bool IsSelected 
         {
             get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsSelected"));
-            }
+            set { this.RaiseAndSetIfChanged(ref _isSelected, value); }
         }
-        public SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
-
-        public ICommand RemoveAssetCommand
+        public SymbolDetailsTemplateViewModel SymbolDetails
         {
-            get
-            {
-                return new DelegateCommand<string>((name) =>
-                {
-                    _controller.RemoveAsset(this.Type, name);
-
-                    // notify group to remove this asset from list
-                    _group.RemoveAsset(this);
-                });
-            }
-        }
-        public ICommand LoadAssetCommand
-        {
-            get
-            {
-                return new DelegateCommand<string>((name) =>
-                {
-                    _controller.LoadAsset(this.Type, name);
-
-                    this.IsSelected = true;
-                });
-            }
+            get { return _symbolDetailsViewModel; }
+            set { this.RaiseAndSetIfChanged(ref _symbolDetailsViewModel, value); }
         }
 
-        public ScenarioAssetViewModel(
-            IScenarioAssetGroupViewModel group,
-            IScenarioEditorController controller)
-        {
-            _controller = controller;
-            _group = group;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string name)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-        }
+        public ICommand RemoveAssetCommand { get; set; }
+        public ICommand LoadAssetCommand { get; set; }
+        #endregion
     }
 }

@@ -252,12 +252,14 @@
     <Compile Include="Service\Interface\IRogueUndoService.cs" />
     <Compile Include="Service\RogueUndoService.cs" />
     <Compile Include="Utility\MapperInit.cs" />
+    <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\Undo\UndoChangeType.cs" />
     <Compile Include="Utility\Undo\UndoAccumulator.cs" />
     <Compile Include="Utility\Undo\UndoChange.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
+    <Compile Include="ViewModel\Constant\ConstructionType.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
     <Compile Include="ViewModel\Interface\IPlacementGroupViewModel.cs" />
     <Compile Include="ViewModel\Interface\IPlacementViewModel.cs" />

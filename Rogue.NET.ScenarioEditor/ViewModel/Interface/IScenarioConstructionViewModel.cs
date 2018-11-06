@@ -1,9 +1,9 @@
-﻿using System.Windows.Input;
+﻿using Prism.Commands;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
 {
     public interface IScenarioConstructionViewModel
     {
-        ICommand LoadConstructionCommand { get; }
+        DelegateCommand<string> LoadConstructionCommand { get; }
     }
 }
