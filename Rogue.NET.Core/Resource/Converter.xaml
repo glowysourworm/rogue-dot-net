@@ -12,6 +12,7 @@
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
     <converter:DualBoolVisibilityCollapsedConverter x:Key="DualBoolVisibilityCollapsedConverter" />
     <converter:NonNullVisibilityConverter x:Key="NonNullVisibilityConverter" />
+    <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
     <converterItemGrid:ItemGridFontStyleConverter x:Key="ItemGridFontStyleConverter" />

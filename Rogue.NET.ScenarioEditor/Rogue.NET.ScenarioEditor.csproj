@@ -245,6 +245,7 @@
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
+    <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />

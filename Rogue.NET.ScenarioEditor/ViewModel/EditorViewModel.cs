@@ -9,6 +9,8 @@ using System.Windows.Input;
 
 using Prism.Commands;
 using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Model.Enums;
+using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -27,6 +29,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         }
         public ICommand ExitCommand { get; private set; }
         public ICommand LoadBuiltInCommand { get; private set; }
+        public ICommand SaveBuiltInCommand { get; private set; }
         public ICommand NewCommand { get; private set; }
         public ICommand ShowDifficultyCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
@@ -55,11 +58,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             // Commands           
             this.SaveCommand = new DelegateCommand<string>((name) =>
             {
-                _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().
-                    Publish(new Rogue.NET.ScenarioEditor.Events.SaveScenarioEventArgs()
-                    {
-                        ScenarioName = name
-                    });
+                _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Publish();
             });
             this.ShowDifficultyCommand = new DelegateCommand(() =>
             {
@@ -69,9 +68,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 _eventAggregator.GetEvent<NewScenarioConfigEvent>().Publish();
             });
-            this.LoadBuiltInCommand = new DelegateCommand<string>((name) =>
+            this.LoadBuiltInCommand = new DelegateCommand<string>((scenarioName) =>
             {
-                _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(new LoadBuiltInScenarioEventArgs() { ScenarioName = name });
+                _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(scenarioName);
+            });
+            this.SaveBuiltInCommand = new DelegateCommand<string>((scenarioName) =>
+            {
+                var configResource = (ConfigResources)Enum.Parse(typeof(ConfigResources), scenarioName);
+
+                _eventAggregator.GetEvent<SaveBuiltInScenarioEvent>().Publish(configResource);
             });
             this.ExitCommand = new DelegateCommand(() =>
             {

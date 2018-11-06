@@ -47,6 +47,7 @@ namespace Rogue.NET.Core.Service
         const string SCENARIO_EXTENSION = "rdn";
         const string SCENARIO_CONFIG_EXTENSION = "rdns";
         const string SCENARIOS_DIR = "..\\scenarios";
+        const string EMBEDDED_SCENARIOS_DIR = "..\\..\\..\\Rogue.NET.Common\\Resource\\Configuration";
         const int DPI = 96;
 
         IList<ScenarioConfigurationContainer> _scenarioConfigurations;
@@ -123,7 +124,11 @@ namespace Rogue.NET.Core.Service
             var file = Path.Combine(SCENARIOS_DIR, name) + "." + SCENARIO_CONFIG_EXTENSION;
             SerializeToFile(file, config);
         }
-
+        public void EmbedConfig(ConfigResources configResource, ScenarioConfigurationContainer config)
+        {
+            var file = Path.Combine(EMBEDDED_SCENARIOS_DIR, configResource.ToString()) + "." + SCENARIO_CONFIG_EXTENSION;
+            SerializeToFile(file, config);
+        }
         public BitmapSource GetImageSource(ScenarioImage scenarioImage)
         {
             switch (scenarioImage.SymbolType)
@@ -317,6 +322,8 @@ namespace Rogue.NET.Core.Service
             foreach (var item in _imageCache)
                 item.Value.Clear();
         }
+
+
         #endregion
     }
 }

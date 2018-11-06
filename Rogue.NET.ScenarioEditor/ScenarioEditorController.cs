@@ -54,14 +54,19 @@ namespace Rogue.NET.ScenarioEditor
 
         private void Initialize()
         {
-            _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Subscribe((scenarioName) =>
             {
-                Open(e.ScenarioName, true);
+                Open(scenarioName, true);
             });
 
-            _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Subscribe(() =>
             {
                 Save();
+            });
+
+            _eventAggregator.GetEvent<SaveBuiltInScenarioEvent>().Subscribe((configResource) =>
+            {
+                Save(true, configResource);
             });
 
             _eventAggregator.GetEvent<NewScenarioConfigEvent>().Subscribe(() =>
@@ -111,6 +116,10 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Save()
         {
+            Save(false);
+        }
+        public void Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
+        {
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
@@ -127,7 +136,10 @@ namespace Rogue.NET.ScenarioEditor
             var config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
 
             // Save the configuration
-            _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
+            if (builtInScenario)
+                _resourceService.EmbedConfig(builtInScenarioType, config);
+            else
+                _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
 
             // Clear the Undo stack
             _rogueUndoService.Clear();
