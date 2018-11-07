@@ -245,6 +245,7 @@
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
+    <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Service\Interface\IRogueUndoService.cs" />
     <Compile Include="Service\RogueUndoService.cs" />
     <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
+    <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\Undo\UndoChangeType.cs" />
@@ -471,6 +473,9 @@
     <Compile Include="Views\Controls\ColorComboBox.xaml.cs">
       <DependentUpon>ColorComboBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\ImageEnumComboBox.xaml.cs">
       <DependentUpon>ImageEnumComboBox.xaml</DependentUpon>
     </Compile>
@@ -479,6 +484,9 @@
     </Compile>
     <Compile Include="Views\Controls\Range.xaml.cs">
       <DependentUpon>Range.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\RenameControl.xaml.cs">
+      <DependentUpon>RenameControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\SelectionFreeListBox.cs" />
     <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
@@ -733,6 +741,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\DialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\ImageEnumComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -742,6 +754,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Range.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\RenameControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

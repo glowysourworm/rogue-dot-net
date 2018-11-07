@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              mc:Ignorable="d" Background="Black"
              Height="500" Width="550">
     <UserControl.Resources>
@@ -62,6 +63,7 @@
                                     Background="Black" 
                                     Foreground="White" 
                                     Click="Character_Click"
+                                    extension:ButtonExtension.DialogResult="True"
                                     Style="{DynamicResource ShinyTextButtonStyle}" Tag="{Binding}" />
                         </Grid>
                     </DataTemplate>

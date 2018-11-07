@@ -1,5 +1,4 @@
 ﻿using Prism.Commands;
-using Prism.Events;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -30,6 +29,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             {
                 if (this.RemoveAssetEvent != null)
                     RemoveAssetEvent(this, this);
+            });
+            this.RenameAssetCommand = new DelegateCommand(() =>
+            {
+                if (this.RenameAssetEvent != null)
+                    RenameAssetEvent(this, this);
             });
             this.CopyAssetCommand = new DelegateCommand(() =>
             {
@@ -64,10 +68,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ICommand RemoveAssetCommand { get; set; }
         public ICommand LoadAssetCommand { get; set; }
         public ICommand CopyAssetCommand { get; set; }
+        public ICommand RenameAssetCommand { get; set; }
 
         public event EventHandler<IScenarioAssetViewModel> RemoveAssetEvent;
         public event EventHandler<IScenarioAssetViewModel> LoadAssetEvent;
         public event EventHandler<IScenarioAssetViewModel> CopyAssetEvent;
+        public event EventHandler<IScenarioAssetViewModel> RenameAssetEvent;
         #endregion
     }
 }

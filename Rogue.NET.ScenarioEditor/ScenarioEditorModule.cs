@@ -9,6 +9,7 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
@@ -18,6 +19,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Construction;
+using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
 using System;
 using System.Collections;
@@ -127,6 +129,10 @@ namespace Rogue.NET.ScenarioEditor
             {
                 RemoveAsset(e.Type, e.Name);
             });
+            _eventAggregator.GetEvent<RenameAssetEvent>().Subscribe((e) =>
+            {
+                RenameAsset(e);
+            });
         }
 
         /// <summary>
@@ -173,6 +179,19 @@ namespace Rogue.NET.ScenarioEditor
 
             var item = collection.Cast<TemplateViewModel>().First(x => x.Name == name);
             collection.Remove(item);
+        }
+        private void RenameAsset(IScenarioAssetViewModel assetViewModel)
+        {
+            var view = new RenameControl();
+            var asset = GetAsset(assetViewModel.Name, assetViewModel.Type);
+
+            view.DataContext = asset;
+
+            DialogWindowFactory.Show(view, "Rename Scenario Asset");
+
+            assetViewModel.Name = asset.Name;
+
+            LoadAsset(assetViewModel.Type, asset.Name);
         }
         private void LoadAsset(string assetType, string name)
         {

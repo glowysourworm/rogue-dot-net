@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.Utility;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -25,17 +26,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void CharacterSymbolButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = new Window();
-            var symbolCtrl = new CharacterMap();
-
-            window.Content = symbolCtrl;
-            window.SizeToContent = SizeToContent.WidthAndHeight;
-            window.ResizeMode = ResizeMode.NoResize;
-
+            var view = new CharacterMap();
             var viewModel = this.DataContext as DungeonObjectTemplateViewModel;
+            view.DataContext = this.DataContext;
+            view.Width = 600;
 
-            if ((bool)window.ShowDialog())
-                viewModel.SymbolDetails.CharacterSymbol = symbolCtrl.SelectedCharacter;
+            if (DialogWindowFactory.Show(view, "Rogue UTF-8 Character Map"))
+                viewModel.SymbolDetails.CharacterSymbol = view.SelectedCharacter;
         }
     }
 }

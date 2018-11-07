@@ -34,7 +34,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             var button = sender as Button;
             this.SelectedCharacter = button.Tag.ToString();
-            ((Window)this.Parent).DialogResult = true;
         }
 
         protected override void OnPreviewMouseUp(MouseButtonEventArgs e)

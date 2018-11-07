@@ -11,10 +11,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
         bool IsSelected { get; set; }
 
-        ICommand RemoveAssetCommand { get; }
-        ICommand LoadAssetCommand { get; }
+        ICommand RemoveAssetCommand { get; set; }
+        ICommand LoadAssetCommand { get; set; }
+        ICommand CopyAssetCommand { get; set; }
+        ICommand RenameAssetCommand { get; set; }
 
         event EventHandler<IScenarioAssetViewModel> RemoveAssetEvent;
         event EventHandler<IScenarioAssetViewModel> LoadAssetEvent;
+        event EventHandler<IScenarioAssetViewModel> CopyAssetEvent;
+        event EventHandler<IScenarioAssetViewModel> RenameAssetEvent;
     }
 }

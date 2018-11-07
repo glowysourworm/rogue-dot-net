@@ -190,8 +190,7 @@
                                     </MenuItem.Icon>
                                     <MenuItem.Header>
                                         <TextBlock>
-                                            <Run Text="Copy " />
-                                            <Run Text="{Binding Name}" />
+                                            <Run Text="Copy" />
                                         </TextBlock>
                                     </MenuItem.Header>
                                 </MenuItem>
@@ -202,11 +201,21 @@
                                     </MenuItem.Icon>
                                     <MenuItem.Header>
                                         <TextBlock>
-                                            <Run Text="Delete " />
-                                            <Run Text="{Binding Name}" />
+                                            <Run Text="Delete" />
                                         </TextBlock>
                                     </MenuItem.Header>
                                 </MenuItem>
+                                <MenuItem Command="{Binding RenameAssetCommand}" 
+                                          CommandParameter="{Binding Name}" >
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xf044;" FontFamily="{StaticResource FontAwesome}" />
+                                    </MenuItem.Icon>
+                                    <MenuItem.Header>
+                                        <TextBlock>
+                                            <Run Text="Rename" />
+                                        </TextBlock>
+                                    </MenuItem.Header>
+                                </MenuItem>                                
                             </ContextMenu>
                         </Grid.ContextMenu>
 

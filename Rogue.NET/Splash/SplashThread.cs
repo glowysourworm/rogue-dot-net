@@ -61,6 +61,7 @@ namespace Rogue.NET.Splash
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 SizeToContent = SizeToContent.WidthAndHeight,
+                AllowsTransparency = true,
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
                 Background = Brushes.Transparent,

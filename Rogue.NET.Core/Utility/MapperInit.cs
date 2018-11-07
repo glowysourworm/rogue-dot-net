@@ -15,8 +15,6 @@ namespace Rogue.NET.Core.Utility
             Mapper.Register<Enemy, ScenarioImage>();
             Mapper.Register<Player, ScenarioImage>();
             Mapper.Register<SymbolDetailsTemplate, ScenarioImage>();
-
-            Mapper.Compile();
         }
     }
 }

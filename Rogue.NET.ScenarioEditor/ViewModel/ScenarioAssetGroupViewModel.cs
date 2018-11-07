@@ -66,6 +66,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 asset.LoadAssetEvent += OnLoadAsset;
                 asset.RemoveAssetEvent -= OnRemoveAsset;
                 asset.RemoveAssetEvent += OnRemoveAsset;
+                asset.RenameAssetEvent -= OnRenameAsset;
+                asset.RenameAssetEvent += OnRenameAsset;
             }
         }
 
@@ -119,6 +121,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.Assets.Remove(asset);
 
             _eventAggregator.GetEvent<RemoveAssetEvent>().Publish(asset);
+        }
+        private void OnRenameAsset(object sender, IScenarioAssetViewModel asset)
+        {
+            _eventAggregator.GetEvent<RenameAssetEvent>().Publish(asset);
         }
     }
 }

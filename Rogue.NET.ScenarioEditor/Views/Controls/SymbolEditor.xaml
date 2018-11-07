@@ -7,8 +7,7 @@
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"  
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
-             mc:Ignorable="d" Background="Black"
-             d:DesignWidth="550">
+             mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
@@ -16,20 +17,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         }
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
-            var window = new Window();
-            var model = this.DataContext as SkillSetTemplateViewModel;
+            var view = new SymbolEditor();
+            view.DataContext = this.DataContext;
+            view.WindowMode = true;
+            view.Width = 600;
 
-
-            window.Content = new SymbolEditor();
-            window.Title = "Rogue Symbol Editor";
-            var ctrl = window.Content as SymbolEditor;
-            ctrl.Width = 600;
-            ctrl.DataContext = model;
-            ctrl.WindowMode = true;
-            window.SizeToContent = SizeToContent.WidthAndHeight;
-            window.ResizeMode = ResizeMode.NoResize;
-
-            window.ShowDialog();
+            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
         }
     }
 }
