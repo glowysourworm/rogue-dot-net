@@ -10,6 +10,7 @@ using System.Linq;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Collections.Specialized;
 using System.Collections;
+using AssetTypeConst = Rogue.NET.ScenarioEditor.ViewModel.Constant.AssetType;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -24,8 +25,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         bool _hasSymbol = false;
 
-        protected readonly string[] NO_SYMBOL_TYPES = new string[] { "Layout", "Spell", "Animation", "Brush" };
-
         [ImportingConstructor]
         public ScenarioAssetGroupViewModel(IEventAggregator eventAggregator)
         {
@@ -33,54 +32,22 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
             this.Assets = new ObservableCollection<IScenarioAssetViewModel>();
 
-            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
+            // Scenario loaded
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
-                _hasSymbol = !NO_SYMBOL_TYPES.Contains(this.AssetType);
+                _hasSymbol = AssetTypeConst.HasSymbol(this.AssetType);
 
+                // Obtain INotifyCollectionChanged reference
+                var notifyCollectionChanged = (INotifyCollectionChanged)ConfigurationCollectionResolver.GetAssetCollection(configuration, this.AssetType);
+
+                // Clear out assets
                 this.Assets.Clear();
-                switch (this.AssetType)
-                {
-                    case "Layout":
-                        e.DungeonTemplate.LayoutTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.DungeonTemplate.LayoutTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "AttackAttribute":
-                        e.AttackAttributes.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.AttackAttributes, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Enemy":
-                        e.EnemyTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.EnemyTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Equipment":
-                        e.EquipmentTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.EquipmentTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Consumable":
-                        e.ConsumableTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.ConsumableTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Doodad":
-                        e.DoodadTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.DoodadTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Spell":
-                        e.MagicSpells.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.MagicSpells, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "SkillSet":
-                        e.SkillTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.SkillTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Animation":
-                        e.AnimationTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.AnimationTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                    case "Brush":
-                        e.BrushTemplates.CollectionChanged += OnConfigurationCollectionChanged;
-                        OnConfigurationCollectionChanged(e.BrushTemplates, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                        break;
-                }
+
+                // Hook event to monitor collection
+                notifyCollectionChanged.CollectionChanged += OnConfigurationCollectionChanged;
+
+                // Run the handler once to refresh the Assets
+                OnConfigurationCollectionChanged(notifyCollectionChanged, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             });
 
             // Add

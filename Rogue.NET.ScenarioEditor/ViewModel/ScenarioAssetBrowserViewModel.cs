@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 
@@ -8,7 +9,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     public class ScenarioAssetBrowserViewModel : IScenarioAssetBrowserViewModel
     {
         public IScenarioAssetGroupViewModel LayoutGroup { get; set; }
-        public IScenarioAssetGroupViewModel AttackAttributeGroup { get; set; }
         public IScenarioAssetGroupViewModel EnemyGroup { get; set; }
         public IScenarioAssetGroupViewModel EquipmentGroup { get; set; }
         public IScenarioAssetGroupViewModel ConsumableGroup { get; set; }
@@ -23,17 +23,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ScenarioAssetBrowserViewModel(
             IEventAggregator eventAggregator)
         {
-            this.LayoutGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Layout" };
-            this.AttackAttributeGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "AttackAttribute" };
-            this.EnemyGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Enemy" };
-            this.EquipmentGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Equipment" };
-            this.ConsumableGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Consumable" };
-            this.DoodadGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Doodad" };
-            this.SpellGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Spell" };
-            this.SkillSetGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "SkillSet" };
-            this.AnimationGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Animation" };
-            this.BrushGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Brush" };
-            this.PenGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Pen" };
+            this.LayoutGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Layout };
+            this.EnemyGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Enemy };
+            this.EquipmentGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Equipment };
+            this.ConsumableGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Consumable };
+            this.DoodadGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Doodad };
+            this.SpellGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Spell };
+            this.SkillSetGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.SkillSet };
+            this.AnimationGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Animation };
+            this.BrushGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Brush };
+            this.PenGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Pen" }; // TODO
         }
     }
 }

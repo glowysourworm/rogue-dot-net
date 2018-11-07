@@ -255,6 +255,7 @@
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="Service\Interface\IRogueUndoService.cs" />
     <Compile Include="Service\RogueUndoService.cs" />
+    <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
     <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\Undo\UndoChangeType.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Utility\Undo\UndoChange.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
     <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
+    <Compile Include="ViewModel\Constant\AssetType.cs" />
     <Compile Include="ViewModel\EditorViewModel.cs" />
     <Compile Include="ViewModel\Constant\ConstructionType.cs" />
     <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
@@ -481,6 +483,9 @@
     <Compile Include="Views\Controls\SelectionFreeListBox.cs" />
     <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
       <DependentUpon>SymbolEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DesignRegion\AssetContainerControl.xaml.cs">
+      <DependentUpon>AssetContainerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
@@ -741,6 +746,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\SymbolEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DesignRegion\AssetContainerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

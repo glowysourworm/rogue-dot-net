@@ -11,19 +11,13 @@
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid>
         <StackPanel>
-                
-            <Border BorderBrush="White" BorderThickness="0,0,0,1" Padding="9">
-                <TextBlock Foreground="White" Text="Layout Editor" FontSize="18" HorizontalAlignment="Left" />
-            </Border>
-
             <Grid Margin="10">
                 <TextBlock Text="Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                    <views:EnumComboBox EnumValueChanged="EnumComboBox_EnumValueChanged" EnumValue="{Binding Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValueChanged="EnumComboBox_EnumValueChanged" EnumValue="{Binding Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutType}" Width="150" HorizontalAlignment="Right" />
             </Grid>
-                
+
             <GroupBox x:Name="HiddenDoorGB" Margin="10" Header="Hidden Door Parameters">
                 <StackPanel>
                     <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Hidden doors are found by searching in an adjacent cell. The counter is set at random uniformly between 3-20 search tries." />
@@ -60,7 +54,7 @@
                     </Grid>
                 </StackPanel>
             </GroupBox>
-        
+
             <GroupBox x:Name="RoomGB" Margin="10"  Header="Room Grid Parameters">
                 <StackPanel>
                     <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Each layout type is built on a grid of rooms. You must specify the size of the grid by setting the number of rows and columns as well as each cell's size." />
@@ -116,5 +110,4 @@
             </GroupBox>
         </StackPanel>
     </Grid>
-    </ScrollViewer>
 </UserControl>

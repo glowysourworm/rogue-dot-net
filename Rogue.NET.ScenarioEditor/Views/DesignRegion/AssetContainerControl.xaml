@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.DesignRegion.AssetContainerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://www.codeplex.com/prism">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border BorderBrush="#888" BorderThickness="0,0,0,1">
+            <Grid>
+                <TextBlock Foreground="White" FontSize="18" Margin="10">
+                    <Run x:Name="AssetTypeTextRun" />
+                    <Run Text=" Editor" />
+                </TextBlock>
+                <TextBlock x:Name="AssetNameTextBlock" Foreground="White" FontSize="18" Margin="10" HorizontalAlignment="Right" />
+            </Grid>
+        </Border>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+            <ContentControl prism:RegionManager.RegionName="AssetContainerRegion" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

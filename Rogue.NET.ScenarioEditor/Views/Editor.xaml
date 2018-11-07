@@ -19,16 +19,19 @@
     <Grid>
         <Grid.Resources>
             <Style TargetType="TextBlock">
-                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontSize" Value="14" />
                 <Setter Property="FontFamily" Value="{StaticResource CentaurFont}" />
             </Style>
+            <Style TargetType="TabControl">
+                <Setter Property="FontSize" Value="14" />
+            </Style>
         </Grid.Resources>
-            <Grid.RowDefinitions>
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="32" />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -185,21 +188,21 @@
             </Button.Template>
         </Button>
 
-        <Border Grid.Row="2" Margin="20"  BorderBrush="White" BorderThickness="1">
+        <Border Grid.Row="2" Margin="8"  BorderBrush="White" BorderThickness="1">
             <ContentControl prism:RegionManager.RegionName="ScenarioConstructionRegion" />
         </Border>
 
-        <Border Grid.Row="3" Grid.RowSpan="2" Margin="20"  BorderBrush="White" BorderThickness="1">
+        <Border Grid.Row="3" Grid.RowSpan="2" Margin="8"  BorderBrush="White" BorderThickness="1">
             <ContentControl prism:RegionManager.RegionName="AssetBrowserRegion" />
         </Border>
 
-        <Border BorderBrush="White" BorderThickness="1"  Margin="20" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
+        <Border BorderBrush="White" BorderThickness="1"  Margin="8" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
             <ContentControl prism:RegionManager.RegionName="DesignRegion" />
         </Border>
 
-        <Border Margin="20" Grid.Column="1" BorderBrush="White" BorderThickness="1" Grid.Row="4">
+        <Expander Margin="8" FontSize="16" Header="Output" Grid.Column="1" BorderBrush="White" MaxHeight="200" BorderThickness="1" Grid.Row="4">
             <ContentControl prism:RegionManager.RegionName="OutputRegion" />
-        </Border>
+        </Expander>
         
     </Grid>
 </UserControl>

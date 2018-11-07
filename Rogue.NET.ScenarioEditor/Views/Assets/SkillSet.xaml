@@ -26,12 +26,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid>        
-        <StackPanel>
-            <Border Padding="10" BorderBrush="White" BorderThickness="0,0,0,1">
-                <TextBlock Text="Skill Set Editor" FontSize="18" Foreground="White" />
-            </Border>
-            <Grid Margin="10">
+        <Grid>
+            <StackPanel>
+                <Grid Margin="10">
                 <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
                 <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
                     <Border.Background>
