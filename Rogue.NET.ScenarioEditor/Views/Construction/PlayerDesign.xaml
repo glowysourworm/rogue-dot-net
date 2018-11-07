@@ -4,14 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
-             mc:Ignorable="d" Background="Black"
-              d:DesignWidth="550">
+             mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
         </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid>
+        <Grid DataContext="{Binding PlayerTemplate}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
@@ -20,7 +19,7 @@
             <Grid Grid.Row="1" Margin="10">
                 <TabControl>
                     <TabItem Header="Player Symbol">
-                        <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
+                        <controls:SymbolEditor />
                     </TabItem>
                     <TabItem Header="Player Stats">
                         <Grid Height="220" VerticalAlignment="Top">

@@ -104,6 +104,12 @@ namespace Rogue.NET.ScenarioEditor
             _eventAggregator.GetEvent<LoadConstructionEvent>().Subscribe((e) =>
             {
                 _regionManager.RequestNavigate("DesignRegion", e.ConstructionName);
+
+                var view = _regionManager.Regions["DesignRegion"]
+                                         .Views
+                                         .First(x => x.GetType().Name == e.ConstructionName) as UserControl;
+
+                view.DataContext = _controller.CurrentConfig;
             });
             _eventAggregator.GetEvent<ScoreScenarioEvent>().Subscribe(() =>
             {
