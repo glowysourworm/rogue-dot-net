@@ -277,7 +277,6 @@
     <Compile Include="Service\ScenarioResourceService.cs" />
     <Compile Include="Service\ScenarioMessageService.cs" />
     <Compile Include="Service\ScenarioService.cs" />
-    <Compile Include="Utility\ColorConverter.cs" />
     <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="Utility\TextUtility.cs" />
     <Compile Include="View\Smiley.xaml.cs">

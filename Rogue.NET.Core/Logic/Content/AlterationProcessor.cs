@@ -47,11 +47,11 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
-                    symbol.SmileyAuraColor = ColorConverter.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
+                    symbol.SmileyAuraColor = ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
 
                 //Body
                 if (symbolTemplate.IsBodyDelta)
-                    symbol.SmileyBodyColor = ColorConverter.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
+                    symbol.SmileyBodyColor = ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
 
                 //Character symbol
                 if (symbolTemplate.IsCharacterDelta)
@@ -59,7 +59,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Character delta
                 if (symbolTemplate.IsColorDelta)
-                    symbol.CharacterColor = ColorConverter.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
+                    symbol.CharacterColor = ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
 
                 //Image
                 if (symbolTemplate.IsImageDelta)
@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Line
                 if (symbolTemplate.IsLineDelta)
-                    symbol.SmileyLineColor = ColorConverter.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
+                    symbol.SmileyLineColor = ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
 
                 //Mood
                 if (symbolTemplate.IsMoodDelta)
@@ -90,11 +90,11 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
-                    symbol.SmileyAuraColor = ColorConverter.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
+                    symbol.SmileyAuraColor = ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
 
                 //Body
                 if (symbolTemplate.IsBodyDelta)
-                    symbol.SmileyBodyColor = ColorConverter.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
+                    symbol.SmileyBodyColor = ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
 
                 //Character symbol
                 if (symbolTemplate.IsCharacterDelta)
@@ -102,7 +102,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Character delta
                 if (symbolTemplate.IsColorDelta)
-                    symbol.CharacterColor = ColorConverter.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
+                    symbol.CharacterColor = ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
 
                 //Image
                 if (symbolTemplate.IsImageDelta)
@@ -110,7 +110,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Line
                 if (symbolTemplate.IsLineDelta)
-                    symbol.SmileyLineColor = ColorConverter.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
+                    symbol.SmileyLineColor = ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
 
                 //Mood
                 if (symbolTemplate.IsMoodDelta)

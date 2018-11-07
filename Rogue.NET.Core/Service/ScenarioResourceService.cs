@@ -1,11 +1,13 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Utility;
+using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.View;
 using System;
 using System.Collections.Generic;
@@ -54,6 +56,8 @@ namespace Rogue.NET.Core.Service
 
         Dictionary<SymbolTypes, Dictionary<string, BitmapSource>> _imageCache;
 
+        IEnumerable<ColorViewModel> _colorCache;
+
         ResourceCacheMode _resourceCacheMode = ResourceCacheMode.OnDemand;
 
         [ImportingConstructor]
@@ -73,6 +77,8 @@ namespace Rogue.NET.Core.Service
                 { SymbolTypes.Image, new Dictionary<string, BitmapSource>() },
                 { SymbolTypes.Smiley, new Dictionary<string, BitmapSource>() }
             };
+
+            _colorCache = ColorUtility.CreateColors();
         }
 
         public void LoadScenarioConfiguration(ConfigResources configResource)
@@ -321,6 +327,11 @@ namespace Rogue.NET.Core.Service
         {
             foreach (var item in _imageCache)
                 item.Value.Clear();
+        }
+
+        public IEnumerable<ColorViewModel> GetColors()
+        {
+            return _colorCache;
         }
 
 

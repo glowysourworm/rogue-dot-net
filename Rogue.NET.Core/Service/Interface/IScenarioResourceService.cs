@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.IO;
+﻿using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -44,5 +45,7 @@ namespace Rogue.NET.Core.Service.Interface
                 SymbolTypes type);
 
         BitmapSource GetImage(ImageResources imageResources);
+
+        IEnumerable<ColorViewModel> GetColors();
     }
 }

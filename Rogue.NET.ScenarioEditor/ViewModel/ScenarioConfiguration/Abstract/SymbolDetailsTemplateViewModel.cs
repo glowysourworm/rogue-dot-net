@@ -110,6 +110,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             this.Type = SymbolTypes.Image;
             this.Icon = ImageResources.AmuletOrange;
 
+            this.SmileyMood = SmileyMoods.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();

@@ -164,7 +164,9 @@
     <Compile Include="Extension\Prism\TransitionPresenter.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
     <Compile Include="Extension\CopyExtension.cs" />
+    <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\ConstantStrings.cs" />
+    <Compile Include="ViewModel\ColorViewModel.cs" />
     <Compile Include="ViewModel\NotifyViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extension\ButtonExtension.cs" />

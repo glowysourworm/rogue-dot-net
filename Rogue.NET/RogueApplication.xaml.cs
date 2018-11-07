@@ -15,10 +15,15 @@ namespace Rogue.NET
             var centaur = new FontFamily(new Uri("pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/CENTAUR.TTF#Centaur"), "Centaur");
             var ilShakeFest = new FontFamily(new Uri("pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/ILShakeFest.ttf#ILShakeFest"), "ILShakeFest");
             var fontAwesome = new FontFamily(new Uri("pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/fontawesome-webfont.ttf#FontAwesome"), "FontAwesome");
+            var theme = new ResourceDictionary();
+
+            theme.Source = new Uri("pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml");
 
             this.Resources.Add("CentaurFont", centaur);
             this.Resources.Add("ILShakeFestFont", ilShakeFest);
             this.Resources.Add("FontAwesome", fontAwesome);
+
+            this.Resources.MergedDictionaries.Add(theme);
 
             var bootstrapper = new RogueBootstrapper();
             bootstrapper.Run();

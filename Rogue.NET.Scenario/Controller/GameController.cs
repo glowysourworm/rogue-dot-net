@@ -158,8 +158,8 @@ namespace Rogue.NET.Scenario.Controller
                 Message = "Creating " + configuration.DungeonTemplate.Name + " Scenario...",
                 Progress = 10,
                 ScenarioName = configuration.DungeonTemplate.Name,
-                SmileyBodyColor = ColorConverter.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyBodyColor),
-                SmileyLineColor = ColorConverter.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyLineColor)
+                SmileyBodyColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyBodyColor),
+                SmileyLineColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyLineColor)
             });
 
 

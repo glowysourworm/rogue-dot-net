@@ -20,18 +20,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         {
             var window = new Window();
             var model = this.DataContext as DoodadTemplateViewModel;
-            var copy = model.SymbolDetails.Copy();
 
             window.Content = new SymbolEditor();
             var ctrl = window.Content as SymbolEditor;
             ctrl.Width = 600;
-            ctrl.DataContext = copy;
+            ctrl.DataContext = model;
             ctrl.WindowMode = true;
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.ResizeMode = ResizeMode.NoResize;
 
-            if ((bool)window.ShowDialog())
-                model.SymbolDetails = copy;
+            window.ShowDialog();
         }
     }
 }

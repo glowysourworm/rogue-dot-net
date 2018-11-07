@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
@@ -30,8 +31,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             window.Content = symbolCtrl;
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.ResizeMode = ResizeMode.NoResize;
+
+            var viewModel = this.DataContext as DungeonObjectTemplateViewModel;
+
             if ((bool)window.ShowDialog())
-                this.CharacterTB.Text = symbolCtrl.SelectedCharacter;
+                viewModel.SymbolDetails.CharacterSymbol = symbolCtrl.SelectedCharacter;
         }
     }
 }
