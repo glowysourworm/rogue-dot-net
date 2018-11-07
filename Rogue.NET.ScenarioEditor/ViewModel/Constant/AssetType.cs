@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Utility;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
@@ -51,6 +52,40 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
                    assetType == Animation ||
                    assetType == Brush ||
                    assetType == Pen);
+        }
+
+        public static string GetSubType(TemplateViewModel viewModel)
+        {
+            if (viewModel is EquipmentTemplateViewModel)
+                return GetSubType(viewModel as EquipmentTemplateViewModel);
+
+            else if (viewModel is ConsumableTemplateViewModel)
+                return GetSubType(viewModel as ConsumableTemplateViewModel);
+
+            else if (viewModel is SpellTemplateViewModel)
+                return GetSubType(viewModel as SpellTemplateViewModel);
+
+            else if (viewModel is AnimationTemplateViewModel)
+                return GetSubType(viewModel as AnimationTemplateViewModel);
+
+            else
+                return "";
+        }
+        public static string GetSubType(EquipmentTemplateViewModel viewModel)
+        {
+            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
+        }
+        public static string GetSubType(ConsumableTemplateViewModel viewModel)
+        {
+            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
+        }
+        public static string GetSubType(SpellTemplateViewModel viewModel)
+        {
+            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
+        }
+        public static string GetSubType(AnimationTemplateViewModel viewModel)
+        {
+            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
         }
 
         /// <summary>

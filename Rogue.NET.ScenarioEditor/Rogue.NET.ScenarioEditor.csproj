@@ -40,6 +40,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ContinuousLinq, Version=2.2.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CLinq.2.2.0.2\lib\net45\ContinuousLinq.dll</HintPath>
+    </Reference>
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
     </Reference>

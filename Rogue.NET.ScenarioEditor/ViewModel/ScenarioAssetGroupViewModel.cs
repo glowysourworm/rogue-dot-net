@@ -94,19 +94,19 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             if (e.Action == NotifyCollectionChangedAction.Add)
                 return;
 
-            var collection = sender as IList;
+            var collection = sender as IList;            
 
             this.Assets.Clear();
 
             if (_hasSymbol)
             {
                 foreach (var item in collection.Cast<DungeonObjectTemplateViewModel>())                                                  
-                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SymbolDetails = item.SymbolDetails });
+                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SubType = AssetTypeConst.GetSubType(item),  SymbolDetails = item.SymbolDetails });
             }
             else
             {
                 foreach (var item in collection.Cast<TemplateViewModel>())
-                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType });
+                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SubType = AssetTypeConst.GetSubType(item) });
             }
 
             HookAssetEvents();

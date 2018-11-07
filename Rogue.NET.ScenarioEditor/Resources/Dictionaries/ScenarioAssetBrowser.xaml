@@ -84,6 +84,7 @@
                                    FontSize="{TemplateBinding FontSize}" 
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
+                                   ToolTip="Add Asset"
                                    Padding="0"
                                    Text="&#xf067;" 
                                    Grid.Column="3">
@@ -158,6 +159,7 @@
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
         <Setter Property="Focusable" Value="False" />
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />        
         <Setter Property="Template">
             <Setter.Value>
@@ -243,11 +245,11 @@
                                   BorderBrush="{TemplateBinding BorderBrush}"
                                   BorderThickness="{TemplateBinding BorderThickness}"
                                   Padding="{TemplateBinding Padding}">
-                            <CommonControls:EditableTextBlock x:Name="PART_Header" 
-                                       Text="{Binding Name, Mode=TwoWay}"
-                                       FontSize="12"
+                            <TextBlock x:Name="PART_Header" 
+                                       Text="{Binding Name}"
+                                       FontSize="16"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
-                            </CommonControls:EditableTextBlock>
+                            </TextBlock>
                         </Border>
                         <ItemsPresenter x:Name="ItemsHost"
                                           Grid.Row="1"

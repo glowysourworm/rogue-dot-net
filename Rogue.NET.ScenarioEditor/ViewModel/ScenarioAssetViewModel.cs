@@ -13,6 +13,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         bool _isSelected = false;
         string _name = "";
         string _type = "";
+        string _subType = "";
         SymbolDetailsTemplateViewModel _symbolDetailsViewModel;
 
         [ImportingConstructor]
@@ -48,6 +49,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         {
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
+        }
+        public string SubType
+        {
+            get { return _subType; }
+            set { this.RaiseAndSetIfChanged(ref _subType, value); }
         }
         public string Name 
         {

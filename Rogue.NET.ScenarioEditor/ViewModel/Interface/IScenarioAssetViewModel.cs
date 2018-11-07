@@ -8,6 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
     {
         string Name { get; set; }
         string Type { get; set; }
+        string SubType { get; set; }
         SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
         bool IsSelected { get; set; }
 
