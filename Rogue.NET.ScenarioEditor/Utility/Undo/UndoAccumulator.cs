@@ -151,14 +151,14 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             foreach (var item in collection)
             {
-                if (item is TemplateViewModel)
+                if (item is INotifyPropertyChanged)
                 {
                     if (unbind)
-                        UnBind(item as TemplateViewModel);
+                        UnBind(item as INotifyPropertyChanged);
                     else
-                        Bind(item as TemplateViewModel);
+                        Bind(item as INotifyPropertyChanged);
 
-                    Recurse(item as TemplateViewModel, unbind);
+                    Recurse(item as INotifyPropertyChanged, unbind);
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         }
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_performingUndo || _blocked)
+            if (_performingUndo)
                 return;
 
             var collection = sender as IList;
@@ -363,23 +363,28 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                     break;
             }
 
-            // Add change to the undo stack
-            _undoAccumulator.Push(new UndoChange()
+            // Blocking prevents accumulating changes on the stack - does NOT prevent hooking new
+            // items.
+            if (!_blocked)
             {
-                Type = UndoChangeType.Collection,
-                CollectionNode = sender as INotifyCollectionChanged,
-                CollectionChangeAction = e.Action,
-                NewItems = e.NewItems,
-                NewStartingIndex = e.NewStartingIndex,
-                OldItems = e.OldItems,
-                OldStartingIndex = e.OldStartingIndex
-            });
+                // Add change to the undo stack
+                _undoAccumulator.Push(new UndoChange()
+                {
+                    Type = UndoChangeType.Collection,
+                    CollectionNode = sender as INotifyCollectionChanged,
+                    CollectionChangeAction = e.Action,
+                    NewItems = e.NewItems,
+                    NewStartingIndex = e.NewStartingIndex,
+                    OldItems = e.OldItems,
+                    OldStartingIndex = e.OldStartingIndex
+                });
 
-            // Clear the redo stack (can't redo after change is made)
-            _redoAccumulator.Clear();
+                // Clear the redo stack (can't redo after change is made)
+                _redoAccumulator.Clear();
 
-            // Notify listeners
-            UndoChangedEvent(this, "Element " + (e.Action == NotifyCollectionChangedAction.Add ? " added to " : " removed from ") + sender.GetType().Name);
+                // Notify listeners
+                UndoChangedEvent(this, "Element " + (e.Action == NotifyCollectionChangedAction.Add ? " added to " : " removed from ") + sender.GetType().Name);
+            }
         }
         #endregion
     }
