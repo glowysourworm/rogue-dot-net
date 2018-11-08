@@ -1,7 +1,10 @@
-﻿using Prism.Events;
+﻿using Prism.Commands;
+using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
+using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -19,10 +22,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public IScenarioAssetGroupViewModel BrushGroup { get; set; }
         public IScenarioAssetGroupViewModel PenGroup { get; set; }
 
+        public ICommand CollapseAssetTreeCommand { get; set; }
+
         [ImportingConstructor]
         public ScenarioAssetBrowserViewModel(
             IEventAggregator eventAggregator)
         {
+            this.CollapseAssetTreeCommand = new DelegateCommand(() =>
+            {
+                eventAggregator.GetEvent<CollapseAssetTreeEvent>().Publish();
+            });
+
             this.LayoutGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Layout };
             this.EnemyGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Enemy };
             this.EquipmentGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Equipment };

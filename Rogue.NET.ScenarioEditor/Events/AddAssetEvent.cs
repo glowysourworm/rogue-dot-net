@@ -7,7 +7,6 @@ namespace Rogue.NET.ScenarioEditor.Events
     {
         public string AssetType { get; set; }
         public string AssetUniqueName { get; set; }
-        public SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
     }
 
     // Add Asset <Asset Type>

@@ -9,12 +9,12 @@ using System.Windows.Controls;
 namespace Rogue.NET.ScenarioEditor.Views.Construction
 {
     [Export]
-    public partial class DungeonObjectPlacement : UserControl
+    public partial class ScenarioObjectPlacement : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
 
         [ImportingConstructor]
-        public DungeonObjectPlacement(IScenarioResourceService scenarioResourceService)
+        public ScenarioObjectPlacement(IScenarioResourceService scenarioResourceService)
         {
             _scenarioResourceService = scenarioResourceService;
 

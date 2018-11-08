@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.DungeonObjectPlacement"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.ScenarioObjectPlacement"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,7 +14,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Dungeon Object Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
+        <TextBlock Text="Scenario Object Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
 
         <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding PlacementCollection}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
 

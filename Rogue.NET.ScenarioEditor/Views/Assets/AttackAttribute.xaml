@@ -36,11 +36,11 @@
                     </MultiBinding>
                 </Image.Source>
             </Image>
-            <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="14" />
+            <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="18" />
         </StackPanel>
-        <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
-        <TextBlock Text="Resistance" Grid.Row="2" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
-        <TextBlock Text="Weakness" Grid.Row="3" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="14" />
+        <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
+        <TextBlock Text="Resistance" Grid.Row="2" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
+        <TextBlock Text="Weakness" Grid.Row="3" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
         <controls:Range DataContext="{Binding Attack}" Grid.Column="1" Grid.Row="1" />
         <controls:Range DataContext="{Binding Resistance}" Grid.Column="1" Grid.Row="2" />
         <controls:Range DataContext="{Binding Weakness}" Grid.Column="1" Grid.Row="3" />

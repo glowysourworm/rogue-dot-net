@@ -53,7 +53,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             // Add
             this.AddAssetCommand = new DelegateCommand(() =>
             {
-                OnAddAsset();
+                var uniqueName = NameGenerator.Get(this.Assets.Select(z => z.Name), "New " + this.AssetType);
+
+                _eventAggregator.GetEvent<AddAssetEvent>().Publish(new AddAssetEventArgs()
+                {
+                    AssetType = this.AssetType,
+                    AssetUniqueName = uniqueName,
+                });
             });
         }
 
@@ -71,29 +77,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             }
         }
 
-        private void OnAddAsset()
-        {
-            var uniqueName = NameGenerator.Get(this.Assets.Select(z => z.Name), "New " + this.AssetType);
-            var symbolDetails = _hasSymbol ? new SymbolDetailsTemplateViewModel() : null;
-
-            _eventAggregator.GetEvent<AddAssetEvent>().Publish(new AddAssetEventArgs()
-            {
-                AssetType = this.AssetType,
-                AssetUniqueName = uniqueName,
-                SymbolDetails = symbolDetails
-            });
-
-            this.Assets.Add(new ScenarioAssetViewModel() { Name = uniqueName, Type = this.AssetType, SymbolDetails = symbolDetails });
-
-            HookAssetEvents();
-        }
-
         private void OnConfigurationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // These events are initiated from this class - so ignore these because they're already handled
-            if (e.Action == NotifyCollectionChangedAction.Add)
-                return;
-
             var collection = sender as IList;            
 
             this.Assets.Clear();

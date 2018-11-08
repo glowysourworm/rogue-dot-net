@@ -24,7 +24,7 @@
             <ListBoxItem x:Name="LayoutConstructionItem" Tag="LayoutDesign" Content="Layout Design" />
             <ListBoxItem x:Name="EnemyPlacementItem" Tag="EnemyPlacement" Content="Enemy Placement" />
             <ListBoxItem x:Name="ItemPlacementItem" Tag="ItemPlacement" Content="Item Placement" />
-            <ListBoxItem x:Name="DoodadPlacementItem" Tag="DoodadPlacement" Content="Scenario Object Placement" />
+            <ListBoxItem x:Name="DoodadPlacementItem" Tag="ScenarioObjectPlacement" Content="Scenario Object Placement" />
         </ListBox>
     </Grid>
 </UserControl>

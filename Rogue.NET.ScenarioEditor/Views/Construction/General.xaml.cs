@@ -1,4 +1,7 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,8 +11,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     [Export]
     public partial class General : UserControl
     {
-        public General()
+        readonly IEventAggregator _eventAggregator;
+
+        [ImportingConstructor]
+        public General(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
             InitializeComponent();
 
             this.DataContextChanged += General_DataContextChanged;
@@ -26,34 +34,23 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //var name = this.AttributeTB.Text;
-            //// TODO
-            ////var symbol = this.AttributeSymbolCB.Value;
-            //_config.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
-            //{
-            //    Name = name,
-            //    SymbolDetails = new SymbolDetailsTemplateViewModel()
-            //    {
-            //        Type = SymbolTypes.Image,
-            //        //Icon = symbol  TODO
-            //    }
-            //});
+            var name = this.AttributeTB.Text;
+            var symbol = this.AttributeSymbolCB.Value;
 
-            //this.AttackAttribLB.ClearValue(ListBox.ItemsSourceProperty);
-            //this.AttackAttribLB.ItemsSource = _config.AttackAttributes;
+            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Publish(new AddAttackAttributeEventArgs()
+            {
+                Icon = symbol,
+                Name = name
+            });
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //var selectedItem = this.AttackAttribLB.SelectedItem as DungeonObjectTemplateViewModel;
-            //if (selectedItem != null)
-            //{
-            //    _config.AttackAttributes.Remove(selectedItem);
-            //    this.AttackAttribLB.ClearValue(ListBox.ItemsSourceProperty);
-            //    this.AttackAttribLB.ItemsSource = _config.AttackAttributes;
-            //}
+            var selectedItem = this.AttackAttribLB.SelectedItem as DungeonObjectTemplateViewModel;
+            if (selectedItem != null)
+            {
+                _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Publish(selectedItem);               
+            }
         }
 
         private void AttackAttribLB_SelectionChanged(object sender, SelectionChangedEventArgs e)

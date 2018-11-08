@@ -3,14 +3,14 @@ using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
-using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
@@ -34,19 +34,22 @@ namespace Rogue.NET.ScenarioEditor
     {
         readonly IEventAggregator _eventAggregator;
         readonly IRegionManager _regionManager;
-        readonly IScenarioEditorController _controller;
+        readonly IScenarioAssetController _scenarioAssetController;
+        readonly IScenarioEditorController _scenarioEditorController;
         readonly IScenarioResourceService _resourceService;
 
         [ImportingConstructor]
         public ScenarioEditorModule(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
+            IScenarioAssetController scenarioAssetController,
             IScenarioEditorController scenarioEditorController,
             IScenarioResourceService scenarioResourceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _controller = scenarioEditorController;
+            _scenarioAssetController = scenarioAssetController;
+            _scenarioEditorController = scenarioEditorController;
             _resourceService = scenarioResourceService;
         }
 
@@ -82,7 +85,7 @@ namespace Rogue.NET.ScenarioEditor
 
             // Design Region - Construction Views
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(General));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(DungeonObjectPlacement));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ScenarioObjectPlacement));
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(EnemyPlacement));
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ItemPlacement));
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(LayoutDesign));
@@ -94,112 +97,84 @@ namespace Rogue.NET.ScenarioEditor
         }
         private void RegisterEvents()
         {
+            // Scenario Editor Events
             _eventAggregator.GetEvent<EditScenarioEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("MainRegion", "Editor");
                 _regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
 
                 // Create an instance of the config so that there aren't any null refs.
-                _controller.New();
-            });
-
-            _eventAggregator.GetEvent<LoadConstructionEvent>().Subscribe((e) =>
-            {
-                _regionManager.RequestNavigate("DesignRegion", e.ConstructionName);
-
-                var view = _regionManager.Regions["DesignRegion"]
-                                         .Views
-                                         .First(x => x.GetType().Name == e.ConstructionName) as UserControl;
-
-                view.DataContext = _controller.CurrentConfig;
+                _scenarioEditorController.New();
             });
             _eventAggregator.GetEvent<ScoreScenarioEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("DesignRegion", "ScenarioDifficultyChart");
             });
+
+            // Asset Events
             _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>
             {
-                AddAsset(e.AssetType, e.AssetUniqueName, e.SymbolDetails);
+                _scenarioAssetController.AddAsset(e.AssetType, e.AssetUniqueName);
             });
             _eventAggregator.GetEvent<LoadAssetEvent>().Subscribe((e) =>
             {
-                LoadAsset(e.Type, e.Name);
+                LoadAsset(e);
             });
             _eventAggregator.GetEvent<RemoveAssetEvent>().Subscribe((e) =>
             {
-                RemoveAsset(e.Type, e.Name);
+                _scenarioAssetController.RemoveAsset(e.Type, e.Name);
             });
             _eventAggregator.GetEvent<RenameAssetEvent>().Subscribe((e) =>
             {
-                RenameAsset(e);
+                // Show rename control
+                var view = new RenameControl();
+                var asset = _scenarioAssetController.GetAsset(e.Name, e.Type);
+
+                view.DataContext = asset;
+
+                DialogWindowFactory.Show(view, "Rename Scenario Asset");
+
+                // Update Asset Name
+                e.Name = asset.Name;
+
+                // Reload Asset
+                LoadAsset(e);
+            });
+
+            // Construction Events
+            _eventAggregator.GetEvent<LoadConstructionEvent>().Subscribe((e) =>
+            {
+                LoadConstruction(e.ConstructionName);
+            });
+            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
+            {
+                _scenarioEditorController.CurrentConfig.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
+                {
+                    Name = e.Name,
+                    SymbolDetails = new SymbolDetailsTemplateViewModel()
+                    {
+                        Type = SymbolTypes.Image,
+                        Icon = e.Icon
+                    }
+                });
+
+                LoadConstruction("General");
+            });
+            _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Subscribe((e) =>
+            {
+                _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e);
+
+                LoadConstruction("General");
             });
         }
 
-        /// <summary>
-        /// Adds an asset with a pre-calculated name
-        /// </summary>
-        private void AddAsset(string assetType, string uniqueName, SymbolDetailsTemplateViewModel symbolDetails)
-        {
-            switch (assetType)
-            {
-                case AssetType.Layout:
-                    _controller.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(new LayoutTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Enemy:
-                    _controller.CurrentConfig.EnemyTemplates.Add(new EnemyTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
-                    break;
-                case AssetType.Equipment:
-                    _controller.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
-                    break;
-                case AssetType.Consumable:
-                    _controller.CurrentConfig.ConsumableTemplates.Add(new ConsumableTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
-                    break;
-                case AssetType.Doodad:
-                    _controller.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
-                    break;
-                case AssetType.Spell:
-                    _controller.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.SkillSet:
-                    _controller.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName, SymbolDetails = symbolDetails });
-                    break;
-                case AssetType.Animation:
-                    _controller.CurrentConfig.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Brush:
-                    _controller.CurrentConfig.BrushTemplates.Add(new BrushTemplateViewModel() { Name = uniqueName });
-                    break;
-                default:
-                    throw new Exception("Unidentified new asset type");
-            }
-        }
-        private void RemoveAsset(string assetType, string name)
-        {
-            var collection = (IList)ConfigurationCollectionResolver.GetAssetCollection(_controller.CurrentConfig, assetType);
-
-            var item = collection.Cast<TemplateViewModel>().First(x => x.Name == name);
-            collection.Remove(item);
-        }
-        private void RenameAsset(IScenarioAssetViewModel assetViewModel)
-        {
-            var view = new RenameControl();
-            var asset = GetAsset(assetViewModel.Name, assetViewModel.Type);
-
-            view.DataContext = asset;
-
-            DialogWindowFactory.Show(view, "Rename Scenario Asset");
-
-            assetViewModel.Name = asset.Name;
-
-            LoadAsset(assetViewModel.Type, asset.Name);
-        }
-        private void LoadAsset(string assetType, string name)
+        private void LoadAsset(IScenarioAssetViewModel assetViewModel)
         {
             // Get the asset for loading into the design region
-            var viewModel = GetAsset(name, assetType);
+            var viewModel = _scenarioAssetController.GetAsset(assetViewModel.Name, assetViewModel.Type);
 
             // Get the view name for this asset type
-            var viewName = AssetType.AssetViews[assetType];
+            var viewName = AssetType.AssetViews[assetViewModel.Type];
 
             // Request navigate to load the control (These are by type string)
             _regionManager.RequestNavigate("DesignRegion", "AssetContainerControl");
@@ -209,20 +184,25 @@ namespace Rogue.NET.ScenarioEditor
             var assetContainer = _regionManager.Regions["DesignRegion"]
                                                .Views.First(x => x.GetType() == typeof(AssetContainerControl)) as AssetContainerControl;
 
-            assetContainer.AssetNameTextBlock.Text = name;
-            assetContainer.AssetTypeTextRun.Text = assetType;
+            assetContainer.AssetNameTextBlock.Text = assetViewModel.Name;
+            assetContainer.AssetTypeTextRun.Text = assetViewModel.Type;
 
             // Resolve active control by name: NAMING CONVENTION REQUIRED
             var view = _regionManager.Regions["AssetContainerRegion"]
-                                     .Views.First(v => v.GetType().Name == assetType) as UserControl;
+                                     .Views.First(v => v.GetType().Name == assetViewModel.Type) as UserControl;
 
             view.DataContext = viewModel;
         }
-        private TemplateViewModel GetAsset(string name, string assetType)
-        {
-            var collection = (IList)ConfigurationCollectionResolver.GetAssetCollection(_controller.CurrentConfig, assetType);
 
-            return collection.Cast<TemplateViewModel>().First(x => x.Name == name);
+        private void LoadConstruction(string constructionName)
+        {
+            _regionManager.RequestNavigate("DesignRegion", constructionName);
+
+            var view = _regionManager.Regions["DesignRegion"]
+                                     .Views
+                                     .First(x => x.GetType().Name == constructionName) as UserControl;
+
+            view.DataContext = _scenarioEditorController.CurrentConfig;
         }
     }
 }

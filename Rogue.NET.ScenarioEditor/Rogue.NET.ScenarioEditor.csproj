@@ -239,23 +239,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
+    <Compile Include="Controller\ScenarioAssetController.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
+    <Compile Include="Events\AddAttackAttributeEvent.cs" />
+    <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
+    <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />
     <Compile Include="Events\ScoreScenarioEvent.cs" />
-    <Compile Include="Interface\IScenarioEditorController.cs" />
-    <Compile Include="ScenarioEditorController.cs" />
+    <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
+    <Compile Include="Controller\ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
-    <Compile Include="Service\Interface\IRogueUndoService.cs" />
-    <Compile Include="Service\RogueUndoService.cs" />
+    <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
+    <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
     <Compile Include="Utility\MapperInit.cs" />
@@ -443,8 +448,8 @@
     <Compile Include="Views\Assets\SpellControl\SpellType.xaml.cs">
       <DependentUpon>SpellType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Construction\DungeonObjectPlacement.xaml.cs">
-      <DependentUpon>DungeonObjectPlacement.xaml</DependentUpon>
+    <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
+      <DependentUpon>ScenarioObjectPlacement.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Construction\EnemyPlacement.xaml.cs">
       <DependentUpon>EnemyPlacement.xaml</DependentUpon>
@@ -701,7 +706,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Construction\DungeonObjectPlacement.xaml">
+    <Page Include="Views\Construction\ScenarioObjectPlacement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

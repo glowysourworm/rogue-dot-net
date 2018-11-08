@@ -9,15 +9,15 @@ using System.ComponentModel.Composition;
 namespace Rogue.NET.ScenarioEditor.Service
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(IRogueUndoService))]
-    public class RogueUndoService : IRogueUndoService
+    [Export(typeof(IScenarioConfigurationUndoService))]
+    public class ScenarioConfigurationUndoService : IScenarioConfigurationUndoService
     {
         readonly IEventAggregator _eventAggregator;
 
         UndoAccumulator<ScenarioConfigurationContainerViewModel> _undoAccumulator;
 
         [ImportingConstructor]
-        public RogueUndoService(IEventAggregator eventAggregator)
+        public ScenarioConfigurationUndoService(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
         }

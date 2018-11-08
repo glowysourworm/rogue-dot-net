@@ -1,0 +1,614 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6696051A-37BB-4F3E-9E0B-62B83F298EE7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Rogue.NET.ScenarioEditor</RootNamespace>
+    <AssemblyName>Rogue.NET.ScenarioEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
+    <Compile Include="Controller\ScenarioAssetController.cs" />
+    <Compile Include="Events\AddAssetEvent.cs" />
+    <Compile Include="Events\CollapseAssetTreeEvent.cs" />
+    <Compile Include="Events\LoadAssetEvent.cs" />
+    <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
+    <Compile Include="Events\LoadConstructionEvent.cs" />
+    <Compile Include="Events\NewScenarioConfigEvent.cs" />
+    <Compile Include="Events\RemoveAssetEvent.cs" />
+    <Compile Include="Events\RenameAssetEvent.cs" />
+    <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
+    <Compile Include="Events\SaveScenarioEvent.cs" />
+    <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
+    <Compile Include="Events\ScenarioLoadedEvent.cs" />
+    <Compile Include="Events\ScoreScenarioEvent.cs" />
+    <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
+    <Compile Include="Controller\ScenarioEditorController.cs" />
+    <Compile Include="ScenarioEditorModule.cs" />
+    <Compile Include="Service\Interface\IRogueUndoService.cs" />
+    <Compile Include="Service\RogueUndoService.cs" />
+    <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
+    <Compile Include="Utility\DialogWindowFactory.cs" />
+    <Compile Include="Utility\MapperInit.cs" />
+    <Compile Include="Utility\NameGenerator.cs" />
+    <Compile Include="Utility\Undo\UndoChangeType.cs" />
+    <Compile Include="Utility\Undo\UndoAccumulator.cs" />
+    <Compile Include="Utility\Undo\UndoChange.cs" />
+    <Compile Include="Utility\Undo\UndoPropertyChangedEventArgs.cs" />
+    <Compile Include="Utility\Undo\UndoPropertyChangingEventArgs.cs" />
+    <Compile Include="ViewModel\Constant\AssetType.cs" />
+    <Compile Include="ViewModel\EditorViewModel.cs" />
+    <Compile Include="ViewModel\Constant\ConstructionType.cs" />
+    <Compile Include="ViewModel\Interface\IEditorViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IPlacementGroupViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IPlacementViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetBrowserViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetGroupViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioConstructionViewModel.cs" />
+    <Compile Include="ViewModel\Interface\IScenarioDifficultyViewModel.cs" />
+    <Compile Include="ViewModel\PlacementGroupViewModel.cs" />
+    <Compile Include="ViewModel\PlacementViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioAssetBrowserViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioAssetGroupViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioAssetViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\DungeonObjectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SkillSetTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SpellTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\BrushTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\GradientStopTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Animation\PenTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\AttackAttributeTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorDetailsTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\CharacterTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ConsumableTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\DoodadTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\EnemyTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\EquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">
+      <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
+    </Compile>
+    <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioDifficultyViewModel.cs" />
+    <Compile Include="Views\Assets\Animation.xaml.cs">
+      <DependentUpon>Animation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationAura.xaml.cs">
+      <DependentUpon>AnimationAura.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationBarrage.xaml.cs">
+      <DependentUpon>AnimationBarrage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationBasicType.xaml.cs">
+      <DependentUpon>AnimationBasicType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationBlink.xaml.cs">
+      <DependentUpon>AnimationBlink.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationBubbles.xaml.cs">
+      <DependentUpon>AnimationBubbles.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationParametersExtended.xaml.cs">
+      <DependentUpon>AnimationParametersExtended.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationParametersMain.xaml.cs">
+      <DependentUpon>AnimationParametersMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationPreview.xaml.cs">
+      <DependentUpon>AnimationPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationProjectile.xaml.cs">
+      <DependentUpon>AnimationProjectile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AnimationControl\AnimationSpiral.xaml.cs">
+      <DependentUpon>AnimationSpiral.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\AttackAttribute.xaml.cs">
+      <DependentUpon>AttackAttribute.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Brush.xaml.cs">
+      <DependentUpon>Brush.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Consumable.xaml.cs">
+      <DependentUpon>Consumable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableMetadata.xaml.cs">
+      <DependentUpon>ConsumableMetadata.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableParameters.xaml.cs">
+      <DependentUpon>ConsumableParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSpellSelection.xaml.cs">
+      <DependentUpon>ConsumableSpellSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSubType.xaml.cs">
+      <DependentUpon>ConsumableSubType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableSymbol.xaml.cs">
+      <DependentUpon>ConsumableSymbol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\ConsumableControl\ConsumableType.xaml.cs">
+      <DependentUpon>ConsumableType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Doodad.xaml.cs">
+      <DependentUpon>Doodad.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Enemy.xaml.cs">
+      <DependentUpon>Enemy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyAttackAttributes.xaml.cs">
+      <DependentUpon>EnemyAttackAttributes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyBehavior.xaml.cs">
+      <DependentUpon>EnemyBehavior.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyItems.xaml.cs">
+      <DependentUpon>EnemyItems.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyMetadata.xaml.cs">
+      <DependentUpon>EnemyMetadata.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemyParameters.xaml.cs">
+      <DependentUpon>EnemyParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EnemyControl\EnemySymbol.xaml.cs">
+      <DependentUpon>EnemySymbol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Equipment.xaml.cs">
+      <DependentUpon>Equipment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml.cs">
+      <DependentUpon>EquipmentAttackAttributes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml.cs">
+      <DependentUpon>EquipmentMetadata.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentParameters.xaml.cs">
+      <DependentUpon>EquipmentParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentSpellSelection.xaml.cs">
+      <DependentUpon>EquipmentSpellSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentSymbol.xaml.cs">
+      <DependentUpon>EquipmentSymbol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Layout.xaml.cs">
+      <DependentUpon>Layout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SkillSet.xaml.cs">
+      <DependentUpon>SkillSet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\Spell.xaml.cs">
+      <DependentUpon>Spell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellAttackAlterationType.xaml.cs">
+      <DependentUpon>SpellAttackAlterationType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellLevelChange.xaml.cs">
+      <DependentUpon>SpellLevelChange.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellParameters.xaml.cs">
+      <DependentUpon>SpellParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellPassive.xaml.cs">
+      <DependentUpon>SpellPassive.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellRevealType.xaml.cs">
+      <DependentUpon>SpellRevealType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellTargetType.xaml.cs">
+      <DependentUpon>SpellTargetType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellType.xaml.cs">
+      <DependentUpon>SpellType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\DungeonObjectPlacement.xaml.cs">
+      <DependentUpon>DungeonObjectPlacement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\EnemyPlacement.xaml.cs">
+      <DependentUpon>EnemyPlacement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\General.xaml.cs">
+      <DependentUpon>General.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\ItemPlacement.xaml.cs">
+      <DependentUpon>ItemPlacement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\LayoutDesign.xaml.cs">
+      <DependentUpon>LayoutDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\ObjectiveDesign.xaml.cs">
+      <DependentUpon>ObjectiveDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Construction\PlayerDesign.xaml.cs">
+      <DependentUpon>PlayerDesign.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\AnimationPreviewControl.xaml.cs">
+      <DependentUpon>AnimationPreviewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\CharacterMap.xaml.cs">
+      <DependentUpon>CharacterMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\ColorComboBox.xaml.cs">
+      <DependentUpon>ColorComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\ImageEnumComboBox.xaml.cs">
+      <DependentUpon>ImageEnumComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\ListBuilder.xaml.cs">
+      <DependentUpon>ListBuilder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Range.xaml.cs">
+      <DependentUpon>Range.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\RenameControl.xaml.cs">
+      <DependentUpon>RenameControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\SelectionFreeListBox.cs" />
+    <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
+      <DependentUpon>SymbolEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DesignRegion\AssetContainerControl.xaml.cs">
+      <DependentUpon>AssetContainerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditorInstructions.xaml.cs">
+      <DependentUpon>EditorInstructions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Output.xaml.cs">
+      <DependentUpon>Output.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScenarioAssetBrowser.xaml.cs">
+      <DependentUpon>ScenarioAssetBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Editor.xaml.cs">
+      <DependentUpon>Editor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScenarioConstruction.xaml.cs">
+      <DependentUpon>ScenarioConstruction.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScenarioDifficultyChart.xaml.cs">
+      <DependentUpon>ScenarioDifficultyChart.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
+      <Project>{6353f2f1-d936-4f9c-9898-074dc4480d71}</Project>
+      <Name>Rogue.NET.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rogue.NET.Core\Rogue.NET.Core.csproj">
+      <Project>{3e574589-233f-4b39-b93c-445e6f44a736}</Project>
+      <Name>Rogue.NET.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Dependencies\Dotway.WPF.Effects.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\DynamicData.6.4.0.2419\lib\net46\DynamicData.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Expressmapper.1.9.1\lib\net46\ExpressMapper.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Dependencies\Lovatts.ColorEditor.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\PublicAssemblies\Microsoft.Windows.Design.Extensibility.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.Aero.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Core.6.3.0\lib\net45\Prism.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Mef.6.3.0\lib\net45\Prism.Mef.Wpf.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Common\bin\Debug\Rogue.NET.Common.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.Core\bin\Debug\Rogue.NET.Core.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Sparrow.Chart.Wpf.13.1.0.118\lib\net40\Sparrow.Chart.Wpf.40.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Splat.4.0.2\lib\net461\Splat.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.Composition.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Configuration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Drawing.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ObjectModel.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Core.4.0.0\lib\net46\System.Reactive.Core.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Experimental.4.0.0\lib\net46\System.Reactive.Experimental.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Interfaces.4.0.0\lib\net46\System.Reactive.Interfaces.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Linq.4.0.0\lib\net46\System.Reactive.Linq.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.PlatformServices.4.0.0\lib\net46\System.Reactive.PlatformServices.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Providers.4.0.0\lib\net46\System.Reactive.Providers.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Runtime.Remoting.4.0.0\lib\net46\System.Reactive.Runtime.Remoting.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Windows.Forms.4.0.0\lib\net46\System.Reactive.Windows.Forms.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.Reactive.Windows.Threading.4.0.0\lib\net46\System.Reactive.Windows.Threading.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Layout.Toolkit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Forms.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationProvider.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\WPFToolkit.3.5.50211.1\lib\WPFToolkit.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Wpg.1.0.20150225.1\lib\Net\WPG.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.Aero.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.MetroAccent.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.MetroAccent.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.Office2007.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.Office2007.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.AvalonDock.Themes.VS2010.3.0.16174.17450\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.DataGrid_Toolkit.3.0.16174.17450\lib\net40\Xceed.Wpf.DataGrid.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.DataGrid.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.DataGrid.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.DataGrid.Themes.Office2007.3.0.16174.17450\lib\net40\Xceed.Wpf.DataGrid.Themes.Office2007.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.ListBox.3.0.16174.17450\lib\net40\Xceed.Wpf.ListBox.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.ListBox.Themes.LiveExplorer.3.0.16174.17450\lib\net40\Xceed.Wpf.ListBox.Themes.LiveExplorer.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.ListBox.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.ListBox.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.ListBox.Themes.Office2007.3.0.16174.17450\lib\net40\Xceed.Wpf.ListBox.Themes.Office2007.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.ListBox.Themes.WMP11.3.0.16174.17450\lib\net40\Xceed.Wpf.ListBox.Themes.WMP11.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Themes.3.0.16174.17450\lib\net40\Xceed.Wpf.Themes.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Themes.Office2007.3.0.16174.17450\lib\net40\Xceed.Wpf.Themes.Office2007.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Toolkit.3.0.16174.17450\lib\net40\Xceed.Wpf.Toolkit.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Toolkit.Themes.Metro.3.0.16174.17450\lib\net40\Xceed.Wpf.Toolkit.Themes.Metro.dll" />
+    <ReferencePath Include="C:\Backup\_Source\Git\rogue-dot-net\packages\Xceed.Wpf.Toolkit.Themes.Office2007.3.0.16174.17450\lib\net40\Xceed.Wpf.Toolkit.Themes.Office2007.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\Microsoft.Win32.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.AppContext.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Collections.Concurrent.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Collections.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Collections.NonGeneric.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Collections.Specialized.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ComponentModel.Annotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ComponentModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ComponentModel.EventBasedAsync.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ComponentModel.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ComponentModel.TypeConverter.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Console.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Data.Common.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.Contracts.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.Debug.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.FileVersionInfo.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.Process.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.StackTrace.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.TextWriterTraceListener.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.Tools.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Diagnostics.TraceSource.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Dynamic.Runtime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Globalization.Calendars.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Globalization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Globalization.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.Compression.ZipFile.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.FileSystem.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.FileSystem.DriveInfo.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.FileSystem.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.FileSystem.Watcher.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.IsolatedStorage.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.MemoryMappedFiles.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.Pipes.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.IO.UnmanagedMemoryStream.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Linq.Expressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Linq.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Linq.Queryable.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Http.Rtc.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.NameResolution.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.NetworkInformation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Ping.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Requests.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Security.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.Sockets.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebHeaderCollection.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebSockets.Client.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Net.WebSockets.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Emit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Emit.ILGeneration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Emit.Lightweight.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Reflection.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Resources.Reader.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Resources.ResourceManager.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Resources.Writer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.CompilerServices.VisualC.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Handles.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.InteropServices.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.InteropServices.RuntimeInformation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.InteropServices.WindowsRuntime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Numerics.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Serialization.Formatters.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Serialization.Json.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Serialization.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Runtime.Serialization.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Claims.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Cryptography.Algorithms.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Cryptography.Csp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Cryptography.Encoding.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Cryptography.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Cryptography.X509Certificates.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.Principal.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Security.SecureString.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ServiceModel.Duplex.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ServiceModel.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ServiceModel.NetTcp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ServiceModel.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.ServiceModel.Security.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Text.Encoding.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Text.Encoding.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Text.RegularExpressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.Overlapped.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.Tasks.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.Tasks.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.Thread.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.ThreadPool.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Threading.Timer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.ReaderWriter.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XDocument.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XmlDocument.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XmlSerializer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XPath.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\System.Xml.XPath.XDocument.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Animation.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationAura.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationBarrage.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationBasicType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationBlink.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationBubbles.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationParametersExtended.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationParametersMain.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationPreview.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationProjectile.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AnimationControl\AnimationSpiral.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\AttackAttribute.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Brush.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Consumable.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableMetadata.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableParameters.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableSpellSelection.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableSubType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableSymbol.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\ConsumableControl\ConsumableType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Doodad.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Enemy.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemyAttackAttributes.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemyBehavior.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemyItems.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemyMetadata.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemyParameters.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EnemyControl\EnemySymbol.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Equipment.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EquipmentControl\EquipmentAttackAttributes.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EquipmentControl\EquipmentMetadata.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EquipmentControl\EquipmentParameters.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EquipmentControl\EquipmentSpellSelection.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\EquipmentControl\EquipmentSymbol.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Layout.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SkillSet.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\Spell.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellAttackAlterationType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellLevelChange.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellParameters.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellPassive.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellRevealType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellTargetType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Assets\SpellControl\SpellType.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\DungeonObjectPlacement.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\EnemyPlacement.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\General.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\ItemPlacement.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\LayoutDesign.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\ObjectiveDesign.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Construction\PlayerDesign.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\AnimationPreviewControl.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\CharacterMap.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\ColorComboBox.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\DialogView.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\ImageEnumComboBox.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\ListBuilder.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\Range.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\RenameControl.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Controls\SymbolEditor.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\DesignRegion\AssetContainerControl.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\EditorInstructions.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Output.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\ScenarioAssetBrowser.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\Editor.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\ScenarioConstruction.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\Views\ScenarioDifficultyChart.g.cs" />
+    <Compile Include="C:\Backup\_Source\Git\rogue-dot-net\Rogue.NET.ScenarioEditor\obj\Debug\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>

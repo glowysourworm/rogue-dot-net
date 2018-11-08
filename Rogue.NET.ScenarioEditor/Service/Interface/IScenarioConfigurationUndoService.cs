@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Service.Interface
 {
-    public interface IRogueUndoService
+    public interface IScenarioConfigurationUndoService
     {
         void Register(ScenarioConfigurationContainerViewModel root);
 

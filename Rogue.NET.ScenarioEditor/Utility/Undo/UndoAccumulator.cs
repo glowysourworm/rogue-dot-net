@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Reflection;
 using System;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 
 namespace Rogue.NET.ScenarioEditor.Utility.Undo
 {
@@ -120,14 +121,14 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 }
 
                 // Complex object properties
-                else if (propertyValue is TemplateViewModel)
+                else if (propertyValue is INotifyPropertyChanged)
                 {
                     if (unbind)
-                        UnBind(propertyValue as TemplateViewModel);
+                        UnBind(propertyValue as INotifyPropertyChanged);
                     else
-                        Bind(propertyValue as TemplateViewModel);
+                        Bind(propertyValue as INotifyPropertyChanged);
 
-                    Recurse(propertyValue as TemplateViewModel, unbind);
+                    Recurse(propertyValue as INotifyPropertyChanged, unbind);
                 }
             }
         }
@@ -153,19 +154,25 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         #endregion
 
         #region (private) Binding Methods
-        private void Bind(TemplateViewModel node)
+        private void Bind(INotifyPropertyChanged node)
         {
+            if (!(node is INotifyPropertyChanging))
+                throw new Exception("Undo property must also implement INotifyPropertyChanging");
+
             node.PropertyChanged += OnPropertyChanged;
-            node.PropertyChanging += OnPropertyChanging;
+            (node as INotifyPropertyChanging).PropertyChanging += OnPropertyChanging;
         }
         private void Bind(INotifyCollectionChanged collectionNode)
         {
             collectionNode.CollectionChanged += OnCollectionChanged;
         }
-        private void UnBind(TemplateViewModel node)
+        private void UnBind(INotifyPropertyChanged node)
         {
+            if (!(node is INotifyPropertyChanging))
+                throw new Exception("Undo property must also implement INotifyPropertyChanging");
+
             node.PropertyChanged -= OnPropertyChanged;
-            node.PropertyChanging -= OnPropertyChanging;
+            (node as INotifyPropertyChanging).PropertyChanging += OnPropertyChanging;
         }
         private void UnBind(INotifyCollectionChanged collectionNode)
         {
@@ -184,6 +191,8 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             property.SetValue(undoChange.Node, undoChange.OldValue);
 
             _performingUndo = false;
+
+            UndoChangedEvent(this, property.Name + " of type " + type.Name + " was changed to " + undoChange.OldValue?.ToString() ?? " (Null)");
         }
         private void RedoProperty(UndoChange redoChange)
         {
@@ -195,6 +204,8 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             property.SetValue(redoChange.Node, redoChange.NewValue);
 
             _performingUndo = false;
+
+            UndoChangedEvent(this, property.Name + " of type " + type.Name + " was changed to " + redoChange.NewValue?.ToString() ?? " (Null)");
         }
         private void UndoCollection(UndoChange undoChange)
         {
@@ -227,6 +238,8 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             }
 
             _performingUndo = false;
+
+            UndoChangedEvent(this, "Element " + (undoChange.CollectionChangeAction == NotifyCollectionChangedAction.Remove ? " added to " : " removed from ") + undoChange.CollectionNode.GetType().Name);
         }
         private void RedoCollection(UndoChange redoChange)
         {
@@ -257,6 +270,8 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             }
 
             _performingUndo = false;
+
+            UndoChangedEvent(this, "Element " + (redoChange.CollectionChangeAction == NotifyCollectionChangedAction.Add ? " added to " : " removed from ") + redoChange.CollectionNode.GetType().Name);
         }
         #endregion
 
@@ -305,7 +320,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             _pendingChangeDict.Add(undoEventArgs.Id, new UndoChange()
             {
                 Type = UndoChangeType.Property,
-                Node = sender as TemplateViewModel,
+                Node = sender as INotifyPropertyChanged,
                 OldValue = propertyValue,
                 PropertyName = e.PropertyName
             });

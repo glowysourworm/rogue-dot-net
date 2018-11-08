@@ -1,8 +1,9 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Linq;
 
 namespace Rogue.NET.ScenarioEditor.Views
 {
@@ -10,11 +11,18 @@ namespace Rogue.NET.ScenarioEditor.Views
     public partial class ScenarioAssetBrowser : UserControl
     {
         [ImportingConstructor]
-        public ScenarioAssetBrowser(IScenarioAssetBrowserViewModel viewModel)
+        public ScenarioAssetBrowser(IScenarioAssetBrowserViewModel viewModel, IEventAggregator eventAggregator)
         {
             InitializeComponent();
 
             this.DataContext = viewModel;
+
+            // Collapse tree event
+            eventAggregator.GetEvent<CollapseAssetTreeEvent>().Subscribe(() =>
+            {
+                foreach (var item in this.AssetTreeView.Items.Cast<TreeViewItem>())
+                    item.IsExpanded = false;
+            });
         }
     }
 }

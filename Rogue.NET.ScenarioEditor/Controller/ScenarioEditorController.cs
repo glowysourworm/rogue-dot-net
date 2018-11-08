@@ -1,38 +1,28 @@
 ﻿using Prism.Events;
-using Prism.Regions;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
-using Rogue.NET.ScenarioEditor.Interface;
 using Rogue.NET.ScenarioEditor.Service.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
-using Rogue.NET.ScenarioEditor.Views.Assets;
-using Rogue.NET.ScenarioEditor.Views.Construction;
-using Rogue.NET.ScenarioEditor.Views.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor
+namespace Rogue.NET.Controller.ScenarioEditor
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioEditorController))]
     public class ScenarioEditorController : IScenarioEditorController
     {
         readonly IEventAggregator _eventAggregator;
-        readonly IRogueUndoService _rogueUndoService;
+        readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _resourceService;
 
         ScenarioConfigurationContainerViewModel _config;
@@ -40,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor
         [ImportingConstructor]
         public ScenarioEditorController(
             IEventAggregator eventAggregator,
-            IRogueUndoService rogueUndoService,
+            IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService)
         {
             _eventAggregator = eventAggregator;
@@ -93,6 +83,13 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Open(string name, bool builtIn)
         {
+            // Show Splash Screen
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Show,
+                SplashType = SplashEventType.Open
+            });
+
             // Have to keep Undo Service in sync with the configuration
             if (_config != null)
                 _rogueUndoService.Clear();
@@ -112,6 +109,13 @@ namespace Rogue.NET.ScenarioEditor
 
             // Publish configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
+
+            // Hide Splash Screen
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Hide,
+                SplashType = SplashEventType.Open
+            });
         }
 
         public void Save()

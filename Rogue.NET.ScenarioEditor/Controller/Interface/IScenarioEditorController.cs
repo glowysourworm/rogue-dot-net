@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 
-namespace Rogue.NET.ScenarioEditor.Interface
+namespace Rogue.NET.ScenarioEditor.Controller.Interface
 {
     public interface IScenarioEditorController
     {

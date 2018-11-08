@@ -1,4 +1,5 @@
-﻿
+﻿using System.Windows.Input;
+
 namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
 {
     public interface IScenarioAssetBrowserViewModel
@@ -13,5 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         IScenarioAssetGroupViewModel AnimationGroup { get; set; }
         IScenarioAssetGroupViewModel BrushGroup { get; set; }
         IScenarioAssetGroupViewModel PenGroup { get; set; }
+
+        ICommand CollapseAssetTreeCommand { get; set; }
     }
 }

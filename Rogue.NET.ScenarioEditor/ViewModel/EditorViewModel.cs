@@ -18,7 +18,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     public class EditorViewModel : NotifyViewModel, IEditorViewModel
     {
         readonly IEventAggregator _eventAggregator;
-        readonly IRogueUndoService _rogueUndoService;
+        readonly IScenarioConfigurationUndoService _rogueUndoService;
 
         string _scenarioName;
 
@@ -37,7 +37,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public DelegateCommand RedoCommand { get; private set; }
 
         [ImportingConstructor]
-        public EditorViewModel(IEventAggregator eventAggregator, IRogueUndoService rogueUndoService)
+        public EditorViewModel(IEventAggregator eventAggregator, IScenarioConfigurationUndoService rogueUndoService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
