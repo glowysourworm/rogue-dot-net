@@ -28,6 +28,9 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         // Require blocker to prevent events from being consumed during an undo / redo
         bool _performingUndo = false;
 
+        // Require another blocker to prevent registering new changes
+        bool _blocked = false;
+
         public event EventHandler<string> UndoChangedEvent;
 
         public UndoAccumulator(T target)
@@ -87,6 +90,14 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         public void Unhook()
         {
             Recurse(_target, true);
+        }
+        public void Block()
+        {
+            _blocked = true;
+        }
+        public void UnBlock()
+        {
+            _blocked = false;
         }
         #endregion
 
@@ -278,7 +289,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         #region (private) Handlers
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_performingUndo)
+            if (_performingUndo || _blocked)
                 return;
 
             var type = sender.GetType();
@@ -307,7 +318,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         // Sent before change
         private void OnPropertyChanging(object sender, PropertyChangingEventArgs e)
         {
-            if (_performingUndo)
+            if (_performingUndo || _blocked)
                 return;
 
             var type = sender.GetType();
@@ -327,7 +338,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
         }
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_performingUndo)
+            if (_performingUndo || _blocked)
                 return;
 
             var collection = sender as IList;

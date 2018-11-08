@@ -8,6 +8,7 @@ using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
@@ -37,6 +38,8 @@ namespace Rogue.NET.ScenarioEditor
         readonly IScenarioAssetController _scenarioAssetController;
         readonly IScenarioEditorController _scenarioEditorController;
         readonly IScenarioResourceService _resourceService;
+        readonly IScenarioConfigurationUndoService _undoService;
+        readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
 
         [ImportingConstructor]
         public ScenarioEditorModule(
@@ -44,13 +47,17 @@ namespace Rogue.NET.ScenarioEditor
             IEventAggregator eventAggregator,
             IScenarioAssetController scenarioAssetController,
             IScenarioEditorController scenarioEditorController,
-            IScenarioResourceService scenarioResourceService)
+            IScenarioResourceService scenarioResourceService,
+            IScenarioConfigurationUndoService scenarioConfigurationUndoService,
+            IScenarioAssetReferenceService scenarioAssetReferenceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioAssetController = scenarioAssetController;
             _scenarioEditorController = scenarioEditorController;
             _resourceService = scenarioResourceService;
+            _undoService = scenarioConfigurationUndoService;
+            _scenarioAssetReferenceService = scenarioAssetReferenceService;
         }
 
         public void Initialize()
@@ -148,6 +155,11 @@ namespace Rogue.NET.ScenarioEditor
             });
             _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
             {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Add Attack Attribute to the scenario
                 _scenarioEditorController.CurrentConfig.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
                 {
                     Name = e.Name,
@@ -158,12 +170,33 @@ namespace Rogue.NET.ScenarioEditor
                     }
                 });
 
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
                 LoadConstruction("General");
             });
             _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Subscribe((e) =>
             {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Remove Attack Attribute from the scenario
                 _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e);
 
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
                 LoadConstruction("General");
             });
         }

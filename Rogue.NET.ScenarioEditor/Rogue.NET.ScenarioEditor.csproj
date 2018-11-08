@@ -259,7 +259,9 @@
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
+    <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
+    <Compile Include="Service\ScenarioAssetReferenceService.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />

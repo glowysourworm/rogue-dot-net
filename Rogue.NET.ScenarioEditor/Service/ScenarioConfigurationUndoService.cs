@@ -63,6 +63,16 @@ namespace Rogue.NET.ScenarioEditor.Service
             _undoAccumulator.UndoChangedEvent += OnUndoChanged;
         }
 
+        public void Block()
+        {
+            _undoAccumulator.Block();
+        }
+
+        public void UnBlock()
+        {
+            _undoAccumulator.UnBlock();
+        }
+
         public void Undo()
         {
             _undoAccumulator.Undo();

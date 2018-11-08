@@ -17,6 +17,16 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         void Clear();
 
         /// <summary>
+        /// Prevents new changes from accumulating on the Undo Accumulator stack
+        /// </summary>
+        void Block();
+
+        /// <summary>
+        /// Allows new changes to be accumulated on the Undo stack
+        /// </summary>
+        void UnBlock();
+
+        /// <summary>
         /// Occurs when a change is made to the Undo or Redo stack
         /// </summary>
         event EventHandler ChangeEvent;

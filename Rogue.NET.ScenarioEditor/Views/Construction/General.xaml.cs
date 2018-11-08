@@ -2,7 +2,9 @@
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,21 +21,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
-
-            this.DataContextChanged += General_DataContextChanged;
         }
 
-        private void General_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var config = e.NewValue as ScenarioConfigurationContainerViewModel;
-            if (config == null)
-                return;
-
-            this.DataContext = config.DungeonTemplate;
-        }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            var config = this.DataContext as ScenarioConfigurationContainerViewModel;
+            if (config == null || string.IsNullOrEmpty(this.AttributeTB.Text))
+                return;
+
+            if (config.AttackAttributes.Any(x => x.Name == this.AttributeTB.Text))
+                return;
+
             var name = this.AttributeTB.Text;
             var symbol = this.AttributeSymbolCB.Value;
 
@@ -42,6 +41,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 Icon = symbol,
                 Name = name
             });
+
+            this.AttributeTB.Text = "";
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)

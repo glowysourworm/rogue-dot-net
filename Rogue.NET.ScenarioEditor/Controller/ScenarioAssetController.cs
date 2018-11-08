@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.Controller.Interface;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -17,11 +18,18 @@ namespace Rogue.NET.ScenarioEditor.Controller
     public class ScenarioAssetController : IScenarioAssetController
     {
         readonly IScenarioEditorController _scenarioEditorController;
+        readonly IScenarioConfigurationUndoService _undoService;
+        readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
 
         [ImportingConstructor]
-        public ScenarioAssetController(IScenarioEditorController scenarioEditorController)
-        {
+        public ScenarioAssetController(
+            IScenarioEditorController scenarioEditorController, 
+            IScenarioAssetReferenceService scenarioAssetReferenceService,
+            IScenarioConfigurationUndoService scenarioConfigurationUndoService)
+        {            
             _scenarioEditorController = scenarioEditorController;
+            _scenarioAssetReferenceService = scenarioAssetReferenceService;
+            _undoService = scenarioConfigurationUndoService;
         }
 
         /// <summary>
@@ -61,6 +69,15 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 default:
                     throw new Exception("Unidentified new asset type");
             }
+
+            // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
+            _undoService.Block();
+
+            // Update Asset References - (Example: Attack Attributes for enemy or alteration or other affected object)
+            _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+
+            // Restore Undo Service
+            _undoService.UnBlock();
         }
         public void RemoveAsset(string assetType, string name)
         {
