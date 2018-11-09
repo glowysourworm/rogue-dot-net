@@ -13,17 +13,12 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
+using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
-using System;
-using System.Collections;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -84,6 +79,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Consumable));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Doodad));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Enemy));
+            _regionManager.RegisterViewWithRegion("EnemyItemsRegion", typeof(EnemyItems));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Equipment));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
@@ -226,7 +222,6 @@ namespace Rogue.NET.ScenarioEditor
 
             view.DataContext = viewModel;
         }
-
         private void LoadConstruction(string constructionName)
         {
             _regionManager.RequestNavigate("DesignRegion", constructionName);

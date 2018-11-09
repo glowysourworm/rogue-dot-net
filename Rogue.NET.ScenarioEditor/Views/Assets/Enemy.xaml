@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:enemy="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl"
+             xmlns:prism="http://www.codeplex.com/prism"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,7 +25,7 @@
                 <enemy:EnemyAttackAttributes />
             </TabItem>
             <TabItem Header="Items">
-                <enemy:EnemyItems />
+                <ContentControl prism:RegionManager.RegionName="EnemyItemsRegion" />
             </TabItem>
         </TabControl>
     </Grid>

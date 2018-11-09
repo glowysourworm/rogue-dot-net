@@ -9,11 +9,16 @@
         <StackPanel>
             <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select items that the enemy will carry" />
             <GroupBox Header="Consumables" Margin="10">
-                <controls:ListBuilder x:Name="ConsumablesLB" Height="100" Margin="10" />
+                <controls:ListBuilder x:Name="ConsumablesLB" 
+                                      DestinationItemsSource="{Binding StartingConsumables}"
+                                      Height="100" 
+                                      Margin="10" />
             </GroupBox>
             <GroupBox Header="Equipment" Margin="10">
-                <controls:ListBuilder x:Name="EquipmentLB" Height="100" Margin="10">
-                </controls:ListBuilder>
+                <controls:ListBuilder x:Name="EquipmentLB" 
+                                      DestinationItemsSource="{Binding StartingEquipment}"
+                                      Height="100" 
+                                      Margin="10" />
             </GroupBox>
         </StackPanel>
     </Grid>

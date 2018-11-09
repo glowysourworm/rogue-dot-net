@@ -499,6 +499,7 @@
     <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
       <DependentUpon>SymbolEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\TemplateSelector\ListBuilderTemplateSelector.cs" />
     <Compile Include="Views\DesignRegion\AssetContainerControl.xaml.cs">
       <DependentUpon>AssetContainerControl.xaml</DependentUpon>
     </Compile>
