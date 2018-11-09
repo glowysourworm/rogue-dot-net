@@ -3,6 +3,7 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 {
@@ -22,6 +23,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 
             this.ConsumablesLB.AddEvent += OnAddConsumable;
             this.EquipmentLB.AddEvent += OnAddEquipment;
+
+            this.ConsumablesLB.RemoveEvent += OnRemoveConsumable;
+            this.EquipmentLB.RemoveEvent += OnRemoveEquipment;
         }
 
         private void OnAddConsumable(object sender, object consumable)
@@ -43,6 +47,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
                 Name = equipmentTemplate.Name,
                 TheTemplate = equipmentTemplate
             });
+        }
+        private void OnRemoveConsumable(object sender, object consumable)
+        {
+            var enemy = this.DataContext as EnemyTemplateViewModel;
+            var probabilityConsumableTemplate = consumable as ProbabilityConsumableTemplateViewModel;
+            enemy.StartingConsumables.Remove(probabilityConsumableTemplate);
+        }
+        private void OnRemoveEquipment(object sender, object equipment)
+        {
+            var enemy = this.DataContext as EnemyTemplateViewModel;
+            var probabilityEquipmentTemplate = equipment as ProbabilityEquipmentTemplateViewModel;
+            enemy.StartingEquipment.Remove(probabilityEquipmentTemplate);
         }
     }
 }

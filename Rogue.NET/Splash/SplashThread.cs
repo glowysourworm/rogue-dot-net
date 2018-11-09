@@ -50,7 +50,7 @@ namespace Rogue.NET.Splash
             {
                 // Have to terminate dispatcher for new window when thread is aborted
                 _window.Dispatcher.InvokeShutdown();
-                _thread.Abort();
+                _thread.Join();
                 _thread = null;
             }
         }

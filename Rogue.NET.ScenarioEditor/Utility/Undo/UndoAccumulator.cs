@@ -170,11 +170,14 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             if (!(node is INotifyPropertyChanging))
                 throw new Exception("Undo property must also implement INotifyPropertyChanging");
 
+            node.PropertyChanged -= OnPropertyChanged;
             node.PropertyChanged += OnPropertyChanged;
+            (node as INotifyPropertyChanging).PropertyChanging -= OnPropertyChanging;
             (node as INotifyPropertyChanging).PropertyChanging += OnPropertyChanging;
         }
         private void Bind(INotifyCollectionChanged collectionNode)
         {
+            collectionNode.CollectionChanged -= OnCollectionChanged;
             collectionNode.CollectionChanged += OnCollectionChanged;
         }
         private void UnBind(INotifyPropertyChanged node)
@@ -183,7 +186,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 throw new Exception("Undo property must also implement INotifyPropertyChanging");
 
             node.PropertyChanged -= OnPropertyChanged;
-            (node as INotifyPropertyChanging).PropertyChanging += OnPropertyChanging;
+            (node as INotifyPropertyChanging).PropertyChanging -= OnPropertyChanging;
         }
         private void UnBind(INotifyCollectionChanged collectionNode)
         {
@@ -227,23 +230,26 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             switch (undoChange.CollectionChangeAction)
             {
                 case NotifyCollectionChangedAction.Add:
+                    Loop(undoChange.NewItems, true);
+
                     foreach (var item in undoChange.NewItems)
                         collection.Remove(item);
                     break;
                 case NotifyCollectionChangedAction.Remove:
+
+                    var index = undoChange.OldStartingIndex;
                     foreach (var item in undoChange.OldItems)
                         if (!collection.Contains(item))
-                            collection.Add(item);
+                            collection.Insert(index++, item);
+
+                    Loop(undoChange.OldItems, false);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     throw new Exception("Replace not handled for Undo collections");
                 case NotifyCollectionChangedAction.Move:
                     throw new Exception("Move not handled for Undo collections");
                 case NotifyCollectionChangedAction.Reset:
-                    collection.Clear();
-                    foreach (var item in undoChange.OldItems)
-                        collection.Add(item);
-                    break;
+                    throw new Exception("Reset not handled for Undo collections");
                 default:
                     break;
             }
@@ -261,10 +267,17 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             switch (redoChange.CollectionChangeAction)
             {
                 case NotifyCollectionChangedAction.Add:
+
+                    var index = redoChange.NewStartingIndex;
                     foreach (var item in redoChange.NewItems)
-                        collection.Add(item);
+                        collection.Insert(index++, item);
+
+                    Loop(redoChange.NewItems, false);
                     break;
                 case NotifyCollectionChangedAction.Remove:
+
+                    Loop(redoChange.OldItems, true);
+
                     foreach (var item in redoChange.OldItems)
                         if (collection.Contains(item))
                             collection.Remove(item);
@@ -274,8 +287,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 case NotifyCollectionChangedAction.Move:
                     throw new Exception("Move not handled for Undo collections");
                 case NotifyCollectionChangedAction.Reset:
-                    collection.Clear();
-                    break;
+                    throw new Exception("Reset not handled for Undo collections");
                 default:
                     break;
             }
@@ -357,8 +369,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 case NotifyCollectionChangedAction.Move:
                     throw new Exception("Move not handled for Undo collections");
                 case NotifyCollectionChangedAction.Reset:
-                    Loop(collection, true);
-                    break;
+                    throw new Exception("Reset not handled for Undo collections");
                 default:
                     break;
             }
