@@ -33,12 +33,36 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
      */
     public interface IScenarioAssetReferenceService
     {
+        /// <summary>
+        /// Updates Attack Attribute references on Enemies, Equipment, and Alterations. This will
+        /// ADD them to the collections if they don't exist. (ALL Attack Attributes exist on ALL
+        /// collections of them in the Scenario. This makes it much easier to manage downstream)
+        /// </summary>
         void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Updates Item references on Enemies, and Player
+        /// </summary>
         void UpdateItems(ScenarioConfigurationContainerViewModel configuration);
-        void UpdateDoodads(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Updates SkillSet references on Player, and Alterations
+        /// </summary>
         void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Updates Alteration references on Equipment, Consumable, Doodad, and SkillSet
+        /// </summary>
         void UpdateAlterations(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Updates Animation references on Alterations
+        /// </summary>
         void UpdateAnimations(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Updates Brush references on Animations
+        /// </summary>
         void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration);
     }
 }

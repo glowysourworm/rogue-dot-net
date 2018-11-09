@@ -27,7 +27,7 @@
                 <TextBlock Text="{Binding TheTemplate.Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="4" />
                 <Slider Grid.Column="1" FontSize="16" Margin="4" Minimum="0" Maximum="1" Value="{Binding GenerationProbability, Delay=300, Mode=TwoWay}" />
                 <TextBlock Text="{Binding GenerationProbability, StringFormat=F2}"  FontSize="16" Grid.Column="2" Foreground="White" VerticalAlignment="Center" />
-                <CheckBox IsChecked="{Binding EquipOnStartup, Mode=TwoWay}" Margin="0,8,0,0"  FontSize="16" Content="Equip On Startup" Grid.Column="3" Foreground="White" VerticalAlignment="Center" />
+                <CheckBox IsChecked="{Binding EquipOnStartup, Mode=TwoWay}" Margin="8,0,0,0"  FontSize="16" Content="Equip On Startup" Grid.Column="3" Foreground="White" VerticalAlignment="Center" />
             </Grid>
         </DataTemplate>        
         <DataTemplate x:Key="ConsumableTemplateViewModel">

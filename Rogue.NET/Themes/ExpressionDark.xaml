@@ -2076,7 +2076,7 @@
                             </Border.Background>
                         </Border>
                         <Grid>
-                            <ContentPresenter x:Name="ContentSite" RecognizesAccessKey="True" ContentSource="Header" HorizontalAlignment="Center" Margin="6,1,6,1" VerticalAlignment="Center" />
+                            <ContentPresenter x:Name="ContentSite" RecognizesAccessKey="True" ContentSource="Header" HorizontalAlignment="Center" Margin="8" VerticalAlignment="Center" />
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>

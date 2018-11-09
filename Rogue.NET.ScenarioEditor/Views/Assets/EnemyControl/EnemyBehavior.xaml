@@ -38,11 +38,11 @@
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Increment="0.01" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -74,11 +74,11 @@
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -92,7 +92,7 @@
                         <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
                     </Grid>
                     <Grid Margin="10,0,10,0">
-                        <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
+                        <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" Increment="0.01" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
                         <TextBlock Foreground="White" Text="Secondary Invoke Probability" VerticalAlignment="Center" Margin="10" />
                     </Grid>
                 </StackPanel>

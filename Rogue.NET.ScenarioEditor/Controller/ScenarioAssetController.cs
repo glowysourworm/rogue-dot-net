@@ -81,10 +81,46 @@ namespace Rogue.NET.ScenarioEditor.Controller
         }
         public void RemoveAsset(string assetType, string name)
         {
+            // Get collection to modify
             var collection = (IList)ConfigurationCollectionResolver.GetAssetCollection(_scenarioEditorController.CurrentConfig, assetType);
 
+            // Modify the collection
             var item = collection.Cast<TemplateViewModel>().First(x => x.Name == name);
             collection.Remove(item);
+
+            // BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
+            _undoService.Block();
+
+            // Update Asset References
+            switch (assetType)
+            {
+                // No references to update
+                case AssetType.Layout:
+                case AssetType.Enemy:
+                case AssetType.Doodad:
+                    break;
+                case AssetType.Equipment:
+                case AssetType.Consumable:
+                    _scenarioAssetReferenceService.UpdateItems(_scenarioEditorController.CurrentConfig);
+                    break;
+                case AssetType.Spell:
+                    _scenarioAssetReferenceService.UpdateAlterations(_scenarioEditorController.CurrentConfig);
+                    break;
+                case AssetType.SkillSet:
+                    _scenarioAssetReferenceService.UpdateSkillSets(_scenarioEditorController.CurrentConfig);
+                    break;
+                case AssetType.Animation:
+                    _scenarioAssetReferenceService.UpdateAnimations(_scenarioEditorController.CurrentConfig);
+                    break;
+                case AssetType.Brush:
+                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
+                    break;
+                default:
+                    throw new Exception("Unidentified new asset type");
+            }
+
+            // Restore Undo Service
+            _undoService.UnBlock();
         }
         public TemplateViewModel GetAsset(string name, string assetType)
         {
