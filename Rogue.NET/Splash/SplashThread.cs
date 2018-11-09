@@ -29,10 +29,10 @@ namespace Rogue.NET.Splash
             {
                 var parameters = e as SplashParameters;
                 _window = CreateSplashWindow(parameters.EventAggregator, parameters.Type);                
-                _window.Show();
+                _window.ShowDialog();
 
                 // DON'T UNDERSTAND THIS CALL - BUT IT FORCES A WAIT ON THIS THREAD
-                Dispatcher.Run();
+                //Dispatcher.Run();
             }));
 
             _thread.SetApartmentState(ApartmentState.STA);
