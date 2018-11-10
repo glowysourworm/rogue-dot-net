@@ -255,6 +255,7 @@
     <Compile Include="Events\SaveScenarioEvent.cs" />
     <Compile Include="Events\ScenarioEditorMessageEvent.cs" />
     <Compile Include="Events\ScenarioLoadedEvent.cs" />
+    <Compile Include="Events\ScenarioUpdateEvent.cs" />
     <Compile Include="Events\ScoreScenarioEvent.cs" />
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />

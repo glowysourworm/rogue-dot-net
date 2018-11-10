@@ -16,6 +16,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
+using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
@@ -81,6 +82,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Enemy));
             _regionManager.RegisterViewWithRegion("EnemyItemsRegion", typeof(EnemyItems));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Equipment));
+            _regionManager.RegisterViewWithRegion("EquipmentParametersRegion", typeof(EquipmentParameters));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Spell));
@@ -118,6 +120,9 @@ namespace Rogue.NET.ScenarioEditor
             _eventAggregator.GetEvent<AddAssetEvent>().Subscribe((e) =>
             {
                 _scenarioAssetController.AddAsset(e.AssetType, e.AssetUniqueName);
+
+                // Publish a special event to update source lists for specific views
+                PublishScenarioUpdate();
             });
             _eventAggregator.GetEvent<LoadAssetEvent>().Subscribe((e) =>
             {
@@ -126,6 +131,9 @@ namespace Rogue.NET.ScenarioEditor
             _eventAggregator.GetEvent<RemoveAssetEvent>().Subscribe((e) =>
             {
                 _scenarioAssetController.RemoveAsset(e.Type, e.Name);
+
+                // Publish a special event to update source lists for specific views
+                PublishScenarioUpdate();
             });
             _eventAggregator.GetEvent<RenameAssetEvent>().Subscribe((e) =>
             {
@@ -139,6 +147,9 @@ namespace Rogue.NET.ScenarioEditor
 
                 // Update Asset Name
                 e.Name = asset.Name;
+
+                // Publish a special event to update source lists for specific views
+                PublishScenarioUpdate();
 
                 // Reload Asset
                 LoadAsset(e);
@@ -199,6 +210,10 @@ namespace Rogue.NET.ScenarioEditor
 
         private void LoadAsset(IScenarioAssetViewModel assetViewModel)
         {
+            // KLUDGE:  This block is to prevent ComboBox Binding update issues. Events were firing when
+            //          the view changed that were caught by the undo service. This should prevent those.
+            _undoService.Block();
+
             // Get the asset for loading into the design region
             var viewModel = _scenarioAssetController.GetAsset(assetViewModel.Name, assetViewModel.Type);
 
@@ -221,6 +236,9 @@ namespace Rogue.NET.ScenarioEditor
                                      .Views.First(v => v.GetType().Name == assetViewModel.Type) as UserControl;
 
             view.DataContext = viewModel;
+
+            // Unblock the undo service
+            _undoService.UnBlock();
         }
         private void LoadConstruction(string constructionName)
         {
@@ -231,6 +249,10 @@ namespace Rogue.NET.ScenarioEditor
                                      .First(x => x.GetType().Name == constructionName) as UserControl;
 
             view.DataContext = _scenarioEditorController.CurrentConfig;
+        }
+        private void PublishScenarioUpdate()
+        {
+            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(_scenarioEditorController.CurrentConfig);
         }
     }
 }

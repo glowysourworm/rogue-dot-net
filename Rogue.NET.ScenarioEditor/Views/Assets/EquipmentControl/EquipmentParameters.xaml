@@ -29,34 +29,36 @@
             </Grid>
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
-                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
+                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
             </Grid>            
             <Grid>
                 <ComboBox x:Name="EquipSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding EquipSpell, Mode=TwoWay}"
+                          SelectedItem="{Binding EquipSpell}"
                           SelectedValue="{Binding EquipSpell.Name}"
-                          SelectedValuePath="Name" HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="1" />
+                          SelectedValuePath="Name"
+                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="1" />
                 <TextBlock Grid.Row="1" Foreground="White" Text="Equip Spell" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>
                 <ComboBox x:Name="AttackSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding AttackSpell, Mode=TwoWay}" 
-                          SelectedValue="{Binding AttackSpell.Name}"
-                          SelectedValuePath="Name" HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="2" />
+                          SelectedItem="{Binding AttackSpell}" 
+                          SelectedValue="{Binding AttackSpell.Name}" 
+                          SelectedValuePath="Name"
+                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="2" />
                 <TextBlock Grid.Row="2" Foreground="White" Text="Attack Spell" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>
                 <ComboBox x:Name="CurseSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding CurseSpell, Mode=TwoWay}" 
-                          SelectedValue="{Binding CurseSpell.Name}"
+                          SelectedItem="{Binding CurseSpell}" 
+                          SelectedValue="{Binding CurseSpell.Name}" 
                           SelectedValuePath="Name"
                           HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="3" />
                 <TextBlock Grid.Row="3" Foreground="White" Text="Curse Spell" Margin="10" VerticalAlignment="Center" />
             </Grid>
             <Grid>
                 <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding AmmoTemplate, Mode=TwoWay}" 
-                          SelectedValue="{Binding AmmoTemplate.Name}"
+                          SelectedItem="{Binding AmmoTemplate}" 
+                          SelectedValue="{Binding AmmoTemplate.Name}" 
                           SelectedValuePath="Name"
                           HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="4" />
                 <TextBlock Grid.Row="4" Foreground="White" Text="Ammunition" Margin="10" VerticalAlignment="Center" />
