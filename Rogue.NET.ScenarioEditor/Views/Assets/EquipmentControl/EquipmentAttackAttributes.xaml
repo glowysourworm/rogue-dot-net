@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <Grid>
-        <ListBox x:Name="AttackAttributesLB">
+        <ListBox x:Name="AttackAttributesLB" ItemsSource="{Binding AttackAttributes}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <assets:AttackAttribute />

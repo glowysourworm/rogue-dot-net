@@ -15,18 +15,12 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.ColumnSpan="2">
-            <TextBlock Margin="10" TextWrapping="Wrap" 
-                   Text="You can add an Equip Spell, Attack Spell, or Curse Spell to the Equipment item. " 
-                   Foreground="White" />
-            <TextBlock Margin="10" TextWrapping="Wrap" 
-                   Text="Equip Spells are passive and have effect when the item is equipped." 
-                   Foreground="White" />
-            <TextBlock Margin="10" TextWrapping="Wrap" 
-                   Text="Attack Spells are temporary or permanent and take effect on the target." 
-                   Foreground="White" />
-            <TextBlock Margin="10" TextWrapping="Wrap" 
-                   Text="Curse Spells take effect on the wearer when the item is equipped - this item cannot be removed without an uncurse spell." 
-                   Foreground="White" />            
+            <Viewbox>
+                <TextBlock Margin="10" 
+                           TextWrapping="Wrap" 
+                           Text="You can add an Equip Spell, Attack Spell, or Curse Spell to the Equipment item. Equip Spells are passive and have effect when the item is equipped. Attack Spells are temporary or permanent and take effect on the target. Curse Spells take effect on the wearer when the item is equipped - this item cannot be removed without an uncurse spell." 
+                           Foreground="White" />
+            </Viewbox>
         </StackPanel>
 
         <TextBlock Grid.Row="1" Foreground="White" Text="Has Equip Spell" Margin="10" VerticalAlignment="Center" />

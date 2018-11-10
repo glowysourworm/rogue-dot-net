@@ -30,19 +30,19 @@
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.EngageRadius, Mode=TwoWay}" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.EngageRadius, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.DisengageRadius, Mode=TwoWay}" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.DisengageRadius, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Increment="0.01" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="0" Increment="0.01" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -66,19 +66,19 @@
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.EngageRadius, Mode=TwoWay}" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.EngageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.DisengageRadius, Mode=TwoWay}" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
                         <Grid>
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>

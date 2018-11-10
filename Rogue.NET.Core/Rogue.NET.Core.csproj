@@ -84,6 +84,7 @@
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
+    <Compile Include="Converter\RadioButtonEnumConverter.cs" />
     <Compile Include="Converter\ScenarioEditor\SymbolDetailsToImageSourceMultiConverter.cs" />
     <Compile Include="Converter\ScenarioEditor\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />

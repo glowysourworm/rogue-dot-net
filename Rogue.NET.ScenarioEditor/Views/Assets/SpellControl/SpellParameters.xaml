@@ -46,7 +46,7 @@
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Text="Effect Range" Foreground="White" />
-                        <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" />
+                        <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
                     </Grid>                    
                 </StackPanel>
             </TabItem>
@@ -58,39 +58,39 @@
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Strength" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Strength, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Strength, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Agility" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Agility, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Agility, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Intelligence" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Intelligence}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Intelligence}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Food Usage (per turn)" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.FoodUsagePerTurn, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.FoodUsagePerTurn, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Aura Radius" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.AuraRadius, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.AuraRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Experience" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Experience, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Experience, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hunger" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Hunger, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Hunger, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hp" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Hp, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Hp, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>
                     <Grid Margin="10,5,10,5">
                         <TextBlock Foreground="White" VerticalAlignment="Center" Text="Mp" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Mp, Mode=TwoWay}" HorizontalAlignment="Right" Width="150" />
+                        <toolkit:DoubleUpDown Value="{Binding Cost.Mp, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
                     </Grid>                 
                 </StackPanel>
             </TabItem>

@@ -39,16 +39,25 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Button x:Name="FullScreenButton" 
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                <TextBlock Text="Full Screen"
+                           FontSize="20"
+                           Foreground="White"
+                           FontFamily="{StaticResource CentaurFont}"
+                           VerticalAlignment="Center"
+                           Margin="8" />
+                <Button x:Name="FullScreenButton" 
                     Style="{StaticResource ResourceKey=FullScreenButtonStyle}"
-                    HorizontalAlignment="Right" 
                     Margin="2" 
                     Cursor="Hand" 
                     Width="24" 
                     Height="24" 
                     Click="FullScreenButton_Click" 
                     ToolTip="Full Screen">
-            </Button>
+                </Button>
+            </StackPanel>
+            
         </Grid>
         <ContentControl x:Name="MainRegion" Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
     </Grid>

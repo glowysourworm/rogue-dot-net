@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
+             xmlns:prism="http://www.codeplex.com/prism"
              xmlns:consumable="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -22,7 +22,7 @@
                 <consumable:ConsumableMetadata />
             </TabItem>
             <TabItem Header="Parameters">
-                <consumable:ConsumableParameters />
+                <ContentControl prism:RegionManager.RegionName="ConsumableParametersRegion" />
             </TabItem>
             <TabItem Header="Consumable Effect">
                 <consumable:ConsumableSpellSelection />

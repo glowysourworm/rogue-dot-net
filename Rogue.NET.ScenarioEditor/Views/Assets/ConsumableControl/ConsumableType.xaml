@@ -6,21 +6,39 @@
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              mc:Ignorable="d" Background="Black"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+    </UserControl.Resources>
     <Grid>
         <StackPanel x:Name="RadioStack">
-            <RadioButton Margin="10" x:Name="OneUseRB" Tag="{x:Static coreModelEnums:ConsumableType.OneUse}" Foreground="White" Background="Black">
+            <RadioButton Margin="10" 
+                         x:Name="OneUseRB" 
+                         GroupName="ConsumableType"
+                         IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableType.OneUse}}" 
+                         Foreground="White" 
+                         Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="One Use:  Create a consumable with one use only" />
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton Margin="10" x:Name="MultipleUsesRB" Tag="{x:Static coreModelEnums:ConsumableType.MultipleUses}" Foreground="White" Background="Black">
+            <RadioButton Margin="10" 
+                         x:Name="MultipleUsesRB" 
+                         GroupName="ConsumableType"
+                         IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableType.MultipleUses}}" 
+                         Foreground="White" 
+                         Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Multiple Uses:  Create a consumable that may be used more than once" />
                 </RadioButton.Content>
             </RadioButton>
-            <RadioButton Margin="10" x:Name="UnlimitedUsesRB" Tag="{x:Static coreModelEnums:ConsumableType.UnlimitedUses}" Foreground="White" Background="Black">
+            <RadioButton Margin="10" 
+                         x:Name="UnlimitedUsesRB" 
+                         GroupName="ConsumableType"
+                         IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableType.UnlimitedUses}}" 
+                         Foreground="White" 
+                         Background="Black">
                 <RadioButton.Content>
                     <TextBlock  TextWrapping="Wrap"
                                 Text="Unlimited Uses:  Create a consumable with no use limit" />

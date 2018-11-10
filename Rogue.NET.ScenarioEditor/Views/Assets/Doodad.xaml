@@ -69,31 +69,45 @@
                 </Grid>
                 <Grid Margin="10">
                 <TextBlock Text="Short Description" />
-                <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="250" />
-            </Grid>
+                    <TextBox Text="{Binding ShortDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="60"
+                         Width="300" />
+                </Grid>
             <Grid Margin="10">
                 <TextBlock Text="Long Description" />
-                <TextBox Text="{Binding LongDescription}" HorizontalAlignment="Right" Width="250" />
-            </Grid>
+                    <TextBox Text="{Binding LongDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="100"
+                         Width="300" />
+                </Grid>
             <Grid Margin="10">
                 <TextBlock Text="Is Unique" />
                 <CheckBox IsChecked="{Binding IsUnique}" 
                          HorizontalAlignment="Right"  />
             </Grid>
             <Grid Margin="10">
-                <CheckBox Grid.Column="1" IsChecked="{Binding IsAutomatic, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" IsChecked="{Binding IsAutomatic}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBlock Foreground="White" Text="Automatic (Triggers when stepped on)" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>
             <Grid Margin="10">
-                <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding IsVisible, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding IsVisible}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="1" Foreground="White" Text="Visible (before being stepped on)" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>
             <Grid Margin="10">
-                <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding IsInvoked, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding IsInvoked}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="2" Foreground="White" Text="Invoked (player must trigger manually)" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>
             <Grid Margin="10">
-                <CheckBox Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsOneUse, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsOneUse}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                 <TextBlock Grid.Row="3" Foreground="White" Text="One Use (as opposed to unlimited uses)" VerticalAlignment="Center" />
             </Grid>
             <Grid Margin="10">
@@ -105,10 +119,11 @@
                 <TextBlock Grid.Row="4" Foreground="White" Text="Automatic Spell" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>
             <Grid Margin="10">
-                <ComboBox x:Name="InvokedSpellCB" DisplayMemberPath="Name" 
-                      SelectedItem="{Binding InvokedMagicSpellTemplate, Mode=TwoWay}" 
-                      SelectedValue="{Binding InvokedMagicSpellTemplate.Name}"
-                      SelectedValuePath="Name" Width="200" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="InvokedSpellCB" 
+                          DisplayMemberPath="Name" 
+                          SelectedItem="{Binding InvokedMagicSpellTemplate, Mode=TwoWay}" 
+                          SelectedValue="{Binding InvokedMagicSpellTemplate.Name}"
+                          SelectedValuePath="Name" Width="200" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="5" Foreground="White" Text="Manual (Invoked) Spell" HorizontalAlignment="Left" VerticalAlignment="Center" />
             </Grid>          
         </StackPanel>

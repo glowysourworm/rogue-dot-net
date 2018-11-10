@@ -15,6 +15,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
+using Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
@@ -78,6 +79,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Animation));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Rogue.NET.ScenarioEditor.Views.Assets.Brush));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Consumable));
+            _regionManager.RegisterViewWithRegion("ConsumableParametersRegion", typeof(ConsumableParameters));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Doodad));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Enemy));
             _regionManager.RegisterViewWithRegion("EnemyItemsRegion", typeof(EnemyItems));
@@ -131,6 +133,9 @@ namespace Rogue.NET.ScenarioEditor
             _eventAggregator.GetEvent<RemoveAssetEvent>().Subscribe((e) =>
             {
                 _scenarioAssetController.RemoveAsset(e.Type, e.Name);
+
+                // Load the Editor Instructions to prevent editing removed asset
+                _regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
 
                 // Publish a special event to update source lists for specific views
                 PublishScenarioUpdate();

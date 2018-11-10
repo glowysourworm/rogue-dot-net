@@ -80,7 +80,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Publish the Scenario Configuration
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
 
-            PublishOutputMessage("Created new Scenario " + _config.DungeonTemplate.Name);
+            PublishOutputMessage("Created Scenario " + _config.DungeonTemplate.Name);
         }
 
         public void Open(string name, bool builtIn)

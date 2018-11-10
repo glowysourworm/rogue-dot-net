@@ -38,9 +38,9 @@
 
             <GroupBox x:Name="MazeGB" Margin="10" Header="Maze Parameters">
                 <StackPanel>
-                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Mazes are built using a recursive backtracking algorithm which has a chance to leave very few paths to the end. " />
-                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="To make the maze easier you can remove walls at random. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
-                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
+                    <Viewbox>
+                        <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Mazes are built using a recursive backtracking algorithm which has a chance to leave very few paths to the end. To make the maze easier you can remove walls at random. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
+                    </Viewbox>
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Extra Wall Removals" />
                         <toolkit:IntegerUpDown 

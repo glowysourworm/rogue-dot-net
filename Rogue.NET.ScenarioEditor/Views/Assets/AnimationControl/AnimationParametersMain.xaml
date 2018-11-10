@@ -25,39 +25,39 @@
             </Grid.RowDefinitions>
                 <Grid Height="36">
                     <TextBlock FontSize="14" Foreground="White" Text="Animation Time (ms)" VerticalAlignment="Center" />
-                    <wpftoolkit:IntegerUpDown Value="{Binding AnimationTime}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:IntegerUpDown Value="{Binding AnimationTime}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="1">
                     <TextBlock FontSize="14" Foreground="White" Text="Repeat Count" VerticalAlignment="Center" />
-                    <wpftoolkit:IntegerUpDown Value="{Binding RepeatCount}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:IntegerUpDown Value="{Binding RepeatCount}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="2">
                     <TextBlock FontSize="14" Foreground="White" Text="Border Thickness" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding StrokeThickness}" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding StrokeThickness}" AllowTextInput="True" AllowSpin="True" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="3">
                     <TextBlock FontSize="14" Foreground="White" Text="Opacity Start" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Opacity1}" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Opacity1}" AllowTextInput="True" AllowSpin="True" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="4">
                     <TextBlock FontSize="14" Foreground="White" Text="Height Start" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Height1}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Height1}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="5">
                     <TextBlock FontSize="14" Foreground="White" Text="Width Start" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Width1}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Width1}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="6">
                     <TextBlock FontSize="14" Foreground="White" Text="Height End" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Height2}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Height2}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="7">
                     <TextBlock FontSize="14" Foreground="White" Text="Width End" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Width2}" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Width2}" AllowTextInput="True" AllowSpin="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="8">
                     <TextBlock FontSize="14" Foreground="White" Text="Opacity End" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Opacity2}" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+                <wpftoolkit:DoubleUpDown Value="{Binding Opacity2}" AllowTextInput="True" AllowSpin="True" FormatString="F2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
                 </Grid>
                 <Grid Height="36" Grid.Row="9">
                     <TextBlock FontSize="14" Foreground="White" Text="Auto Reverse" VerticalAlignment="Center" />

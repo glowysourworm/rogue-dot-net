@@ -29,7 +29,7 @@
             </Grid>
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
-                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
+                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
             </Grid>            
             <Grid>
                 <ComboBox x:Name="EquipSpellCB" DisplayMemberPath="Name" 

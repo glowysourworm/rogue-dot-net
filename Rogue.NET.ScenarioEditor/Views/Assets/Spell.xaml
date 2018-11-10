@@ -11,23 +11,8 @@
             <TabItem Header="Spell Type">
                 <spell:SpellType />
             </TabItem>
-            <TabItem Header="Passive Type">
-                <spell:SpellPassive />
-            </TabItem>
-            <TabItem Header="Target Type">
-                <spell:SpellTargetType />
-            </TabItem>
-            <TabItem Header="Attack Alteration Type">
-                <spell:SpellAttackAlterationType />
-            </TabItem>
-            <TabItem Header="Reveal Type">
-                <spell:SpellRevealType />
-            </TabItem>
             <TabItem Header="(Primary) Parameters">
                 <spell:SpellParameters />
-            </TabItem>
-            <TabItem Header="Level Change Parameters">
-                <spell:SpellLevelChange />
             </TabItem>
         </TabControl>
     </Grid>

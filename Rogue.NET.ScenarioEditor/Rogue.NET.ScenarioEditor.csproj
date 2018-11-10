@@ -430,23 +430,8 @@
     <Compile Include="Views\Assets\Spell.xaml.cs">
       <DependentUpon>Spell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellAttackAlterationType.xaml.cs">
-      <DependentUpon>SpellAttackAlterationType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellLevelChange.xaml.cs">
-      <DependentUpon>SpellLevelChange.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\SpellControl\SpellParameters.xaml.cs">
       <DependentUpon>SpellParameters.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellPassive.xaml.cs">
-      <DependentUpon>SpellPassive.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellRevealType.xaml.cs">
-      <DependentUpon>SpellRevealType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellTargetType.xaml.cs">
-      <DependentUpon>SpellTargetType.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SpellControl\SpellType.xaml.cs">
       <DependentUpon>SpellType.xaml</DependentUpon>
@@ -682,27 +667,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellAttackAlterationType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SpellControl\SpellLevelChange.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\SpellControl\SpellParameters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SpellControl\SpellPassive.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SpellControl\SpellRevealType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SpellControl\SpellTargetType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

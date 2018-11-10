@@ -3,86 +3,296 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              Background="Black">
-    <Grid>
-        <StackPanel x:Name="RadioStack">
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.PassiveSource}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Passive:  Spell that is activated / deactivated by the player or can be used as an Equip Spell" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.TemporarySource}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Temporary:  Spell that has a timed effect" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.PermanentSource}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary>
+                    <Style TargetType="RadioButton">
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Background" Value="Black" />
+                        <Setter Property="Margin" Value="8" />
+                        <Setter Property="FontSize" Value="16" />
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="MainGrid">
+        <StackPanel>
+            <StackPanel x:Name="TypeGroupRadioStack">
+                <!-- Passive -->
+                <RadioButton GroupName="TypeGroup" x:Name="PassiveRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Passive:  Spell that is activated / deactivated by the Character or can be used as an Equip Spell" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="PassiveGroupRadioStack" 
+                            Margin="20, 0,0,0"
+                            Visibility="{Binding ElementName=PassiveRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding Type, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveSource}, Converter={StaticResource RadioButtonEnumConverter}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                Text="Passive Source:  This type of passive spell affects just the invoker" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}, Converter={StaticResource RadioButtonEnumConverter}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Passive Aura:  This type of passive spell affects characters within a radius of the invoker. NOT SUPPORTED FOR ENEMIES" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+                <!-- Temporary -->
+                <RadioButton GroupName="TypeGroup" x:Name="TemporaryRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    Text="Temporary:  Spell that has a timed effect" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="TemporaryGroupRadioStack"
+                            Margin="20,0,0,0"
+                            Visibility="{Binding ElementName=TemporaryRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporarySource}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary Source:  Spell that has a timed effect on the invoker" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporaryTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary Target:  Spell that has a timed effect on the target" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporaryAllTargets}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary All Targets:  Spell that has a timed effect on all targets (Or Player if used by an Enemy)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+                <!-- Permanent -->
+                <RadioButton GroupName="TypeGroup" x:Name="PermanentRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    Text="Permanent:  Spell that has a permanent effect" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="PermanentGroupRadioStack"
+                            Margin="20,0,0,0"
+                            Visibility="{Binding ElementName=PermanentRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentSource}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent Source:  Spell that has a permanent effect on the invoker" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent Target:  Spell that has a permanent effect on one target" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentAllTargets}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent All Targets:  Spell that has a permanent effect on all targets" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+                <!-- Teleport -->
+                <RadioButton GroupName="TypeGroup" x:Name="TeleportRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport:  Allows a character to teleport" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="TeleportGroupRadioStack"
+                            Margin="20,0,0,0"
+                            Visibility="{Binding ElementName=TeleportRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportSelf}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport Source:  Teleports invoker (to random spot in the level)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport Target:  Teleports targeted character (to random spot in the level)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportAllTargets}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport All Targets:  Teleports all targets (to random spots in the level). All targets are enemies within the Player's visible range" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+                <!-- Steal / RunAway -->
+                <RadioButton GroupName="TypeGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Steal}}">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Steal: Special spell type that allows one character to steal a random item from another character" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton GroupName="TypeGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.RunAway}}">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Run Away (Enemy Only): Enemy can invoke this spell to be removed from the level (preventing player from killing it and receiving experience or reward)" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <!-- Attack Attribute -->
+                <RadioButton GroupName="TypeGroup" x:Name="AttackAttributeRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Attack Attribute: Alterations that have an effect on special attack attributes (See Scenario Design -> General -> Attack Attributes)" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="AttackAttributeGroupRadioStack"
+                            Margin="20,0,0,0"
+                            Visibility="{Binding ElementName=AttackAttributeRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Imbue}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                Text="Imbue: Permanently alters the attack attributes of an item" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Passive}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                Text="Passive: Alters the attack attributes in a way that can be activated / deactivated" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    Text="Temporary Source: Temporarily alters attack attributes for the invoker" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    Text="Temporary Target: Temporary attack attribute alteration applied to target" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Temporary Malign Source: Attack attribute calulated hit per-step (applied to invoker). This is a temporary event; and can be remedied using Consumable remedy options. (Example: Poison Attack Attribute)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    MaxWidth="{Binding ElementName=MainGrid, Path=ActualWidth}"
+                                    Text="Temporary Malign Target: Attack attribute calulated hit per-step (applied to character). This is a temporary event; and can be remedied using Consumable remedy options. (Example: Poison Attack Attribute)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.MeleeTarget}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    Text="Target: Alters attack attributes of an enemy permanently" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+                <!-- Other -->
+                <RadioButton GroupName="TypeGroup" x:Name="OtherRB">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
                             Text="Permanent:  Spell that has a permanent effect" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.Steal}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Steal: Special spell type that allows one character to steal a random item from another character" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.RunAway}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Run Away (Enemy Only): Enemy can invoke this spell to be removed from the level (preventing player from killing it and receiving experience or reward)" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.TeleportSelf}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Teleport: Allows a character to teleport" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.ChangeLevelRandomUp}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Change Level: Changes level by a random number. Example would be a pitfall; but random changes up are also allowed as a type." />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.Identify}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Identify: Spell that calls the identify dialog" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.Uncurse}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Uncurse: Spell that calls the uncurse dialog" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.EnchantWeapon}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Enchant: Spell that calls the enchant dialog (Note: Enchanting an item raises its class level. This is different than Imbue)" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.RevealLevel}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Reveal: Makes items, enemies, dungeon objects, the save point, or the dungeon map visible (depending on what type is chosen)" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
+                    </RadioButton.Content>
+                </RadioButton>
+                <StackPanel x:Name="OtherGroupRadioStack"
+                            Margin="20,0,0,0"
+                            Visibility="{Binding ElementName=OtherRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.ChangeLevelRandomUp}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Change Level Up: Changes level up by a random number. This is calculated in-game" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.ChangeLevelRandomDown}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Change Level Down: Changes level down by a random number. This is calculated in-game" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
                             Text="Create Monster: Creates a non-unique enemy with level range that includes the current level" />
-            </RadioButton.Content>
-        </RadioButton>
-            <RadioButton Checked="RadioButton_Checked" Margin="10" Tag="{x:Static coreModelEnums:AlterationType.AttackAttribute}" Foreground="White" Background="Black">
-            <RadioButton.Content>
-                <TextBlock  TextWrapping="Wrap"
-                            Text="Attack Attribute: Allows an adjustment of the attack attributes of the player, player's equipment, or an enemy" />
-            </RadioButton.Content>
-        </RadioButton>
-    </StackPanel>
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.EnchantArmor}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Enchant Armor: Effect that increases the Class of an Armor Item" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.EnchantWeapon}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Enchant Weapon: Effect that increases the Class of a Weapon Item" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.Identify}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Identify: Spell that calls the identify dialog" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RevealLevel}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal All: Makes Items, Enemies, Scenario Objects, and the Scenario Map visible" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RevealMonsters}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal Enemy: Makes Enemies visible" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RevealSavePoint}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal Save Point: Makes Save Point visible" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RevealItems}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal Items: Makes all Items visible" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RevealFood}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Reveal Food: Makes food Items visible" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.Uncurse}}">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Uncurse: Spell that calls the uncurse dialog" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

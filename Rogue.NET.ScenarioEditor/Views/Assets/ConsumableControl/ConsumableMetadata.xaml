@@ -21,19 +21,33 @@
         <StackPanel Grid.Column="1">
             <Grid Margin="10">
                 <TextBlock Text="Short Description" />
-                <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="250" />
+                <TextBox Text="{Binding ShortDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="60"
+                         Width="300" />
             </Grid>
             <Grid Margin="10">
                 <TextBlock Text="Long Description" />
-                <TextBox Text="{Binding LongDescription}" HorizontalAlignment="Right" Width="250" />
+                <TextBox Text="{Binding LongDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="100"
+                         Width="300" />
             </Grid>
             <Grid Margin="10">
                 <TextBlock Text="Is Cursed" />
-                <TextBox Text="{Binding IsCursed}" HorizontalAlignment="Right" Width="250" />
+                <CheckBox IsChecked="{Binding IsCursed}" HorizontalAlignment="Right" />
             </Grid>
             <Grid Margin="10">
                 <TextBlock Text="Is Unique" />
-                <TextBox Text="{Binding IsUnique}" HorizontalAlignment="Right" Width="250" />
+                <CheckBox IsChecked="{Binding IsUnique}" HorizontalAlignment="Right" />
             </Grid>
         </StackPanel>
     </Grid>

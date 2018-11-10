@@ -16,14 +16,18 @@
             <RowDefinition Height="48" />
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.ColumnSpan="2" Margin="10" TextWrapping="Wrap" 
-                   Text="You can add a use spell, projectile spell, and/or a learned skill to the consumable. For example, a special piece of food that also acts as a grenade would have a use spell and a projectile spell." 
-                   Foreground="White" />
+        <StackPanel Grid.ColumnSpan="2">
+            <Viewbox>
+                <TextBlock Margin="10" TextWrapping="Wrap" 
+                       Text="You can add a use spell, projectile spell, and/or a learned skill to the consumable. For example, a special piece of food that also acts as a grenade would have a use spell and a projectile spell." 
+                       Foreground="White" />
+            </Viewbox>
+        </StackPanel>
         <TextBlock Grid.Row="1" Foreground="White" Text="Has Use Spell" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="2" Foreground="White" Text="Has Projectile Spell" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="3" Foreground="White" Text="Has Learned Skill" Margin="10" VerticalAlignment="Center" />        
         <CheckBox IsChecked="{Binding HasSpell}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
-        <CheckBox IsChecked="{Binding HasProjectileSpell}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+        <CheckBox IsChecked="{Binding IsProjectile}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
         <CheckBox IsChecked="{Binding HasLearnedSkill}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" />            
         
     </Grid>
