@@ -92,6 +92,7 @@
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
     <Compile Include="Converter\ScenarioEditor\SymbolDetailsTemplateAuraToColorConverter.cs" />
+    <Compile Include="Converter\StringColorConverter.cs" />
     <Compile Include="Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Event\ExitEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\LevelCommandEventArgs.cs" />

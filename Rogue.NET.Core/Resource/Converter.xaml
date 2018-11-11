@@ -15,6 +15,7 @@
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
+    <converter:StringColorConverter x:Key="StringColorConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
     <converterItemGrid:ItemGridFontStyleConverter x:Key="ItemGridFontStyleConverter" />

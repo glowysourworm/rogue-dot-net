@@ -11,7 +11,10 @@ namespace Rogue.NET.Core.Utility
         {
             return (Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
         }
-
+        public static string ConvertBack(Color color)
+        {
+            return color.ToString();
+        }
         public static string Add(string colorString1, string colorString2)
         {
             var color1 = Convert(colorString1);

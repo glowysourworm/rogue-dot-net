@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.BrushEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:brushEnum="clr-namespace:Rogue.NET.Core.Model.ScenarioConfiguration.Animation;assembly=Rogue.NET.Core">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Border BorderBrush="#AFFFFFFF" BorderThickness="1">
+            <local:BrushPreviewCanvas x:Name="PreviewCanvas"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="400" Height="400" />
+        </Border>
+        
+        <StackPanel Grid.Column="1">
+            <commonView:EnumComboBox EnumValue="{Binding Type}" Margin="10" EnumType="{x:Type brushEnum:BrushType}" />
+
+            <GroupBox Grid.Column="1" Header="Gradient Stops" Margin="10" Padding="8" HorizontalContentAlignment="Stretch">
+                <StackPanel>
+                    <ListBox x:Name="GradientStopListBox" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GradientStops}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Slider Value="{Binding GradientOffset, Delay=300}" Minimum="0" Maximum="1" LargeChange="0.1" SmallChange="0.01" HorizontalAlignment="Stretch" />
+                                    <toolkit:ColorPicker Width="60" Grid.Column="1" SelectedColor="{Binding GradientColor, Delay=300, Converter={StaticResource StringColorConverter}, Mode=TwoWay}" />
+                                </Grid>                                        
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Button Content="+" FontSize="20" Click="AddGradientStopButton_Click" HorizontalAlignment="Stretch" />
+                        <Button Content="-" FontSize="20" Grid.Column="1" Click="RemoveGradientStopButton_Click" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

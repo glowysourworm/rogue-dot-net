@@ -20,7 +20,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
             get { return _gradientOffset; }
             set { this.RaiseAndSetIfChanged(ref _gradientOffset, value); }
         }
-        public GradientStopTemplateViewModel() { }
+        public GradientStopTemplateViewModel()
+        {
+            this.GradientColor = Colors.Transparent.ToString();
+            this.GradientOffset = 0;
+        }
         public GradientStopTemplateViewModel(double offset, Color c)
         {
             this.GradientColor = c.ToString();
