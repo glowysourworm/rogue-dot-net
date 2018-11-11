@@ -43,6 +43,7 @@ namespace Rogue.NET.Scenario.Content.Views
 
             this.RenderTransform = transform;
         }
+         
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             // TODO
@@ -346,6 +347,24 @@ namespace Rogue.NET.Scenario.Content.Views
         //    StartNextAnimation();
         //}
         #endregion
+    }
+
+    public class ItemsPanelCanvas : Canvas
+    {
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+
+            // Required because ZIndex binding isn't supported out of the box
+            var frameworkElement = visualAdded as FrameworkElement;
+            if (frameworkElement != null)
+            {
+                var contentPresenter = frameworkElement.Parent as UIElement;
+
+                if (contentPresenter != null)
+                    Canvas.SetZIndex(contentPresenter, Canvas.GetZIndex(frameworkElement));
+            }
+        }
     }
 }
 

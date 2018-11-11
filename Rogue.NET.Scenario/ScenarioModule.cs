@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Microsoft.Practices.ServiceLocation;
+using Prism.Events;
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
@@ -6,11 +7,16 @@ using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Intro.Views;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events;
-
+using Rogue.NET.Scenario.Intro.Views.GameSetup;
+using Rogue.NET.Scenario.Outro.Views;
+using Rogue.NET.Scenario.Views;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 
 namespace Rogue.NET.Scenario
 {
@@ -37,6 +43,8 @@ namespace Rogue.NET.Scenario
 
         public void Initialize()
         {
+            RegisterRegionViews();
+
             _gameController.Initialize();
 
             _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
@@ -80,6 +88,25 @@ namespace Rogue.NET.Scenario
             {
                 _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
             });
+        }
+
+        private void RegisterRegionViews()
+        {
+            _regionManager.RegisterViewWithRegion("MainRegion", typeof(IntroView));
+            _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameSetupView));
+            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(NewOpenEdit));
+            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
+            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
+            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
+            _regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
+            _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
+            _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
+            _regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
+            _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
+            _regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
+            _regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
+            _regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));
+            _regionManager.RegisterViewWithRegion("StatusCtrlRegion", typeof(StatusCtrl));
         }
     }
 }

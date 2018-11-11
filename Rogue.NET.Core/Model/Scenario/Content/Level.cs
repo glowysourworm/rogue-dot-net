@@ -189,7 +189,25 @@ namespace Rogue.NET.Core.Model.Scenario
 
             scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
 
-            _levelContentArray = _levelContent.ToArray();
+            // Sort these to provide "ZIndex"... Not a preferred method; but it works.
+            _levelContentArray = _levelContent.OrderBy(z => z, Comparer<ScenarioObject>.Create((x, y) =>
+            {
+                if (x is Enemy)
+                    return 1;
+
+                else if (x is ItemBase)
+                    return (y is Enemy) ? -1 :
+                           (y is ItemBase) ? 0 :
+                           (y is DoodadBase) ? 1 : 0;
+
+                else if (x is DoodadBase)
+                    return (y is Enemy) ? -1 :
+                           (y is ItemBase) ? -1 :
+                           (y is DoodadBase) ? 0 : 0;
+
+                else
+                    throw new Exception("Unhandled Content Type in Level.cs");
+            })).ToArray();
         }
 
         public ScenarioObject[] GetContents()

@@ -32,7 +32,7 @@ namespace Rogue.NET.PrismExtension
 
         protected override void InitializeModules()
         {
-            RegisterRegionViews();
+            RegisterViewsUsingContainer();
 
             base.InitializeModules();
 
@@ -68,55 +68,13 @@ namespace Rogue.NET.PrismExtension
             return mappings;
         }
 
-        private void RegisterRegionViews()
+        // Couldn't figure out an easy way to do this with injection.. or to call the container in the code
+        private void RegisterViewsUsingContainer()
         {
-            var regionManager = this.Container.GetExport<IRegionManager>().Value;
+            var regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();
 
-            // Put this here because was having some MAJOR issues getting MEF to work
-            // with the version 7 PrismLibrary abstractions to inject IContainerProvider into
-            // the IModule instances. So, I moved them all here to use this.Container
-
-            // Item Grid Regions
-            regionManager.RegisterViewWithRegion("UncurseItemGridRegion", () =>
-            {
-                var itemGrid = this.Container.GetExport<ItemGrid>().Value;
-                itemGrid.Mode = ItemGridModes.Uncurse;
-                return itemGrid;
-            });
-            regionManager.RegisterViewWithRegion("ImbueItemGridRegion", () =>
-            {
-                var itemGrid = this.Container.GetExport<ItemGrid>().Value;
-                itemGrid.Mode = ItemGridModes.Imbue;
-                return itemGrid;
-            });
-            regionManager.RegisterViewWithRegion("IdentifyItemGridRegion", () =>
-            {
-                var itemGrid = this.Container.GetExport<ItemGrid>().Value;
-                itemGrid.Mode = ItemGridModes.Identify;
-                return itemGrid;
-            });
-            regionManager.RegisterViewWithRegion("EnchantItemGridRegion", () =>
-            {
-                var itemGrid = this.Container.GetExport<ItemGrid>().Value;
-                itemGrid.Mode = ItemGridModes.Identify;
-                return itemGrid;
-            });
-
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(IntroView));
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(GameSetupView));
-            regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(NewOpenEdit));
-            regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
-            regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
-            regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
-            regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
-            regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
-            regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
-            regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
-            regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
-            regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));
-
+            // Have to use composition container to be  able to resolve the view here. The 
+            // other way to do this is to inject a service or view model.
             regionManager.RegisterViewWithRegion("PlayerSubpanelEquipmentRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
@@ -142,6 +100,31 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Inventory;
+                return view;
+            });
+
+            regionManager.RegisterViewWithRegion("UncurseItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.Uncurse;
+                return view;
+            });
+            regionManager.RegisterViewWithRegion("ImbueItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.Imbue;
+                return view;
+            });
+            regionManager.RegisterViewWithRegion("IdentifyItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.Identify;
+                return view;
+            });
+            regionManager.RegisterViewWithRegion("EnchantItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.Identify;
                 return view;
             });
         }

@@ -1,16 +1,19 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.LevelCanvas"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ItemsControl ItemsSource="{Binding Contents}" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views">
+    <ItemsControl x:Name="TheItemsControl"
+                  ItemsSource="{Binding Contents}" 
                   BorderBrush="#AF0000FF" 
                   BorderThickness="1" 
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <Canvas x:Name="TheLevelCanvas" 
+                <local:ItemsPanelCanvas x:Name="TheLevelCanvas" 
                         Width="{Binding LevelWidth, FallbackValue=500}" 
-                        Height="{Binding LevelHeight, FallbackValue=500}"/>
+                        Height="{Binding LevelHeight, FallbackValue=500}">
+                </local:ItemsPanelCanvas>
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
     </ItemsControl>

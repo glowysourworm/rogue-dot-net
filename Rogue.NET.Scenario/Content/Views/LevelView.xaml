@@ -13,7 +13,7 @@
             <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
 
-        <local:StatusCtrl VerticalAlignment="Top" />
+        <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion" VerticalAlignment="Top" />
 
         <Border ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="0.75, 0.75, 0.75, 0.75">
             <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion" />
