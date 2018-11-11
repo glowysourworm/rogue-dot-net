@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.ColumnSpan="2">
-            <Viewbox>
+            <Viewbox MaxWidth="500">
                 <TextBlock Margin="10" 
                            TextWrapping="Wrap" 
                            Text="You can add an Equip Spell, Attack Spell, or Curse Spell to the Equipment item. Equip Spells are passive and have effect when the item is equipped. Attack Spells are temporary or permanent and take effect on the target. Curse Spells take effect on the wearer when the item is equipped - this item cannot be removed without an uncurse spell." 

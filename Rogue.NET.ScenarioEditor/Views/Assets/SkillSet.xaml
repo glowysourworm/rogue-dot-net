@@ -50,8 +50,8 @@
                             <Image.Source>
                                 <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
                                     <Binding Path="Name" />
-                                    <Binding Path="SymbolDetails.CharacterColor" />
                                     <Binding Path="SymbolDetails.CharacterSymbol" />
+                                    <Binding Path="SymbolDetails.CharacterColor" />
                                     <Binding Path="SymbolDetails.Icon" />
                                     <Binding Path="SymbolDetails.SmileyMood" />
                                     <Binding Path="SymbolDetails.SmileyBodyColor" />
@@ -65,11 +65,25 @@
             </Grid>
                 <Grid Margin="10">
                     <TextBlock Text="Short Description" />
-                    <TextBox Text="{Binding ShortDescription}" HorizontalAlignment="Right" Width="250" />
+                    <TextBox Text="{Binding ShortDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="60"
+                         Width="300" />
                 </Grid>
                 <Grid Margin="10">
                     <TextBlock Text="Long Description" />
-                    <TextBox Text="{Binding LongDescription}" HorizontalAlignment="Right" AcceptsReturn="True" Width="250" />
+                    <TextBox Text="{Binding LongDescription}" 
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="100"
+                         Width="300" />
                 </Grid>
                 <Grid Margin="10,10,10,5">
                 <TextBlock Foreground="White" Text="Required Player Level" VerticalAlignment="Center" />
@@ -79,7 +93,7 @@
                 <GroupBox Header="Select Skills">
                     <StackPanel>
                         <TextBlock TextWrapping="Wrap" Margin="5" Foreground="White" Text="The skills in the set will be learned in the order they appear in the list. The first of these will be available when the player has reached the minimum level." />
-                        <controls:ListBuilder x:Name="SkillSetBuilder" Height="140" Margin="5" />
+                        <controls:ListBuilder x:Name="SkillSetBuilder" DestinationItemsSource="{Binding Spells}" Height="140" Margin="5" />
                     </StackPanel>
                 </GroupBox>
             </Grid>    

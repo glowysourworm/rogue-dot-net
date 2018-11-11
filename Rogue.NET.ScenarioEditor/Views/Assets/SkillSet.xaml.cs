@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Common.Extension;
+﻿using Prism.Events;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
@@ -11,10 +13,37 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     [Export]
     public partial class SkillSet : UserControl
     {
-        public SkillSet()
+        [ImportingConstructor]
+        public SkillSet(IEventAggregator eventAggregator)
         {
             InitializeComponent();
+
+            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
+            {
+                this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
+            });
+
+            this.SkillSetBuilder.AddEvent += SkillSetBuilder_AddEvent;
+            this.SkillSetBuilder.RemoveEvent += SkillSetBuilder_RemoveEvent;
         }
+
+        private void SkillSetBuilder_AddEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as SkillSetTemplateViewModel;
+            if (viewModel == null)
+                return;
+
+            viewModel.Spells.Add(e as SpellTemplateViewModel);
+        }
+        private void SkillSetBuilder_RemoveEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as SkillSetTemplateViewModel;
+            if (viewModel == null)
+                return;
+
+            viewModel.Spells.Remove(e as SpellTemplateViewModel);
+        }
+
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
             var view = new SymbolEditor();

@@ -1,6 +1,8 @@
 ﻿using ExpressMapper;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 
 namespace Rogue.NET.ScenarioEditor.Utility
 {
@@ -13,6 +15,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
         {
             Mapper.Register<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>();
             Mapper.Register<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>();
+
+            Mapper.Register<AnimationTemplateViewModel, AnimationTemplate>();
 
             Mapper.Compile();
         }

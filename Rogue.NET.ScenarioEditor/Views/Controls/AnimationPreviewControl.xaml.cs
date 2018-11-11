@@ -1,12 +1,15 @@
-﻿using Rogue.NET.Core.Media;
+﻿using ExpressMapper;
+using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class AnimationPreviewControl : UserControl
     {
         readonly IAnimationGenerator _animationGenerator;
@@ -24,11 +27,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         }
         private void PlayAnimation()
         {
-            var tmp = this.DataContext as AnimationTemplate;
+            var viewModel = this.DataContext as AnimationTemplateViewModel;
 
-            this.AnimationSlider.Maximum = tmp.AnimationTime / 1000.0;
+            this.AnimationSlider.Maximum = viewModel.AnimationTime / 1000.0;
 
-            _animation = CreateNewAnimation(tmp);
+            var model = Mapper.Map<AnimationTemplateViewModel, AnimationTemplate>(viewModel);
+
+            _animation = CreateNewAnimation(model);
             StartAnimation();
         }
         private void StartAnimation()
@@ -47,7 +52,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 _updating = false;
             };
             _animation.Start();
-            //UpdateLayout();
         }
         private void OnEndAnimation(ITimedGraphic sender)
         {

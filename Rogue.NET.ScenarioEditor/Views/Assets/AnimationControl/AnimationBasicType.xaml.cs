@@ -1,10 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using Rogue.NET.ScenarioEditor.ViewModel;
-using Rogue.NET.ScenarioEditor.Views.Controls;
-using System;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,61 +9,82 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl
     [Export]
     public partial class AnimationBasicType : UserControl
     {
+        public static readonly DependencyProperty IsProjectileAnimationTypeProperty =
+            DependencyProperty.Register("IsProjectileAnimationType", typeof(bool), typeof(AnimationBasicType));
+
+        public bool IsProjectileAnimationType
+        {
+            get { return (bool)GetValue(IsProjectileAnimationTypeProperty); }
+            set { SetValue(IsProjectileAnimationTypeProperty, value); }
+        }
+
         public AnimationBasicType()
         {
             InitializeComponent();
-        }
-        public void Inject()
-        {
-            // TODO
-            //this.DataContext = model;
 
-            //var animation = model as AnimationTemplate;
-            //if (animation == null)
-            //    return;
-
-            //switch (animation.Type)
-            //{
-            //    case AnimationType.AuraSelf:
-            //    case AnimationType.AuraTarget:
-            //        this.AuraRB.IsChecked = true;
-            //        break;
-            //    case AnimationType.BarrageSelf:
-            //    case AnimationType.BarrageTarget:
-            //        this.BarrageRB.IsChecked = true;
-            //        break;
-            //    case AnimationType.BubblesScreen:
-            //    case AnimationType.BubblesSelf:
-            //    case AnimationType.BubblesTarget:
-            //        this.BubblesRB.IsChecked = true;
-            //        break;
-            //    case AnimationType.ProjectileSelfToTarget:
-            //    case AnimationType.ProjectileSelfToTargetsInRange:
-            //    case AnimationType.ProjectileTargetsInRangeToSelf:
-            //    case AnimationType.ProjectileTargetToSelf:
-            //    default:
-            //        this.ProjectileRB.IsChecked = true;
-            //        break;
-            //    case AnimationType.ScreenBlink:
-            //        this.BlinkRB.IsChecked = true;
-            //        break;
-            //    case AnimationType.SpiralSelf:
-            //    case AnimationType.SpiralTarget:
-            //        this.SpiralRB.IsChecked = true;
-            //        break;
-            //}
+            this.DataContextChanged += AnimationBasicType_DataContextChanged;
         }
 
-        private void RB_Checked(object sender, RoutedEventArgs e)
+        private void AnimationBasicType_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var radioButton = sender as RadioButton;
-            var typeName = radioButton.Name.Replace("RB", "");
-            var enumNames = Enum.GetNames(typeof(AnimationType));
-            var matchedName = enumNames.First(n => n.Contains(typeName));
-            var enumValue = (AnimationType)Enum.Parse(typeof(AnimationType), matchedName);
+            var animationTemplate = this.DataContext as AnimationTemplateViewModel;
+            if (animationTemplate == null)
+                return;
 
-            var model = this.DataContext as AnimationTemplate;
-            model.Type = enumValue;
+            switch (animationTemplate.Type)
+            {
+                case AnimationType.ProjectileSelfToTarget:
+                case AnimationType.ProjectileTargetToSelf:
+                case AnimationType.ProjectileSelfToTargetsInRange:
+                case AnimationType.ProjectileTargetsInRangeToSelf:
+                    this.ProjectileRB.IsChecked = true;
+                    this.AuraRB.IsChecked = false;
+                    this.BubblesRB.IsChecked = false;
+                    this.BarrageRB.IsChecked = false;
+                    this.SpiralRB.IsChecked = false;
+                    break;
+                case AnimationType.AuraSelf:
+                case AnimationType.AuraTarget:
+                    this.ProjectileRB.IsChecked = false;
+                    this.AuraRB.IsChecked = true;
+                    this.BubblesRB.IsChecked = false;
+                    this.BarrageRB.IsChecked = false;
+                    this.SpiralRB.IsChecked = false;
+                    break;
+                case AnimationType.BubblesSelf:
+                case AnimationType.BubblesTarget:
+                case AnimationType.BubblesScreen:
+                    this.ProjectileRB.IsChecked = false;
+                    this.AuraRB.IsChecked = false;
+                    this.BubblesRB.IsChecked = true;
+                    this.BarrageRB.IsChecked = false;
+                    this.SpiralRB.IsChecked = false;
+                    break;
+                case AnimationType.BarrageSelf:
+                case AnimationType.BarrageTarget:
+                    this.ProjectileRB.IsChecked = false;
+                    this.AuraRB.IsChecked = false;
+                    this.BubblesRB.IsChecked = false;
+                    this.BarrageRB.IsChecked = true;
+                    this.SpiralRB.IsChecked = false;
+                    break;
+                case AnimationType.SpiralSelf:
+                case AnimationType.SpiralTarget:
+                    this.ProjectileRB.IsChecked = false;
+                    this.AuraRB.IsChecked = false;
+                    this.BubblesRB.IsChecked = false;
+                    this.BarrageRB.IsChecked = false;
+                    this.SpiralRB.IsChecked = true;
+                    break;
+                //case AnimationType.ChainSelfToTargetsInRange:
+                //    break;
+                case AnimationType.ScreenBlink:
+                    break;
+
+                // If none of these then it's the projectile
+                default:
+                    break;
+            }
         }
     }
 }

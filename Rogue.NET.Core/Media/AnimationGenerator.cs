@@ -9,11 +9,15 @@ using System.Windows.Media.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Media.Interface;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Media
 {
+    [Export(typeof(IAnimationGenerator))]
     public class AnimationGenerator : IAnimationGenerator
     {
+        public AnimationGenerator() { }
+
         public IEnumerable<ITimedGraphic> CreateAnimation(IEnumerable<AnimationTemplate> animationTemplates, Rect bounds, Point sourcePoint, Point[] targetPoints)
         {
             return animationTemplates.Select(x => CreateAnimation(x, bounds, sourcePoint, targetPoints))

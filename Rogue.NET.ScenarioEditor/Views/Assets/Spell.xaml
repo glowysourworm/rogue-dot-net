@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:spell="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SpellControl"
+             xmlns:prism="http://www.codeplex.com/prism"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -12,7 +13,7 @@
                 <spell:SpellType />
             </TabItem>
             <TabItem Header="(Primary) Parameters">
-                <spell:SpellParameters />
+                <ContentControl prism:RegionManager.RegionName="SpellParametersRegion" />
             </TabItem>
         </TabControl>
     </Grid>

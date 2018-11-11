@@ -40,6 +40,16 @@
                 <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="SkillSetTemplateViewModel">
+            <Grid>
+                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="SpellTemplateViewModel">
+            <Grid>
+                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="16" VerticalAlignment="Center" Margin="2" HorizontalAlignment="Left" />
+            </Grid>
+        </DataTemplate>
         <templateSelector:ListBuilderTemplateSelector x:Key="ProbabilityTemplateSelector" />
     </UserControl.Resources>
     <Grid>

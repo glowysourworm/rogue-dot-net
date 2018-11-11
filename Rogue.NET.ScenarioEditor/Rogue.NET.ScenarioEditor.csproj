@@ -322,35 +322,17 @@
     <Compile Include="Views\Assets\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationAura.xaml.cs">
-      <DependentUpon>AnimationAura.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationBarrage.xaml.cs">
-      <DependentUpon>AnimationBarrage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\AnimationControl\AnimationBasicType.xaml.cs">
       <DependentUpon>AnimationBasicType.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\AnimationControl\AnimationBlink.xaml.cs">
       <DependentUpon>AnimationBlink.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationBubbles.xaml.cs">
-      <DependentUpon>AnimationBubbles.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationParametersExtended.xaml.cs">
-      <DependentUpon>AnimationParametersExtended.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationParametersMain.xaml.cs">
-      <DependentUpon>AnimationParametersMain.xaml</DependentUpon>
+    <Compile Include="Views\Assets\AnimationControl\AnimationParameters.xaml.cs">
+      <DependentUpon>AnimationParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\AnimationControl\AnimationPreview.xaml.cs">
       <DependentUpon>AnimationPreview.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationProjectile.xaml.cs">
-      <DependentUpon>AnimationProjectile.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationSpiral.xaml.cs">
-      <DependentUpon>AnimationSpiral.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\AttackAttribute.xaml.cs">
       <DependentUpon>AttackAttribute.xaml</DependentUpon>
@@ -523,14 +505,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationAura.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationBarrage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\AnimationControl\AnimationBasicType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -539,27 +513,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationBubbles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationParametersExtended.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationParametersMain.xaml">
+    <Page Include="Views\Assets\AnimationControl\AnimationParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\AnimationControl\AnimationPreview.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationProjectile.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationSpiral.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

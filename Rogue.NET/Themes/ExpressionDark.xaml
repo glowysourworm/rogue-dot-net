@@ -427,17 +427,21 @@
                     <BeginStoryboard Storyboard="{StaticResource FocussedOn}" x:Name="FocussedOn_BeginStoryboard" />
                 </Trigger.EnterActions>
             </Trigger>
-            <Trigger Property="IsChecked" Value="false">
+            <Trigger Property="IsChecked" Value="False">
 
-                <Trigger.ExitActions>
+                <Setter Property="Opacity" TargetName="CheckIcon" Value="0" />
+
+                <!--Trigger.ExitActions>
                     <BeginStoryboard x:Name="CheckedOn_BeginStoryboard" Storyboard="{StaticResource CheckedOn}" />
-                </Trigger.ExitActions>
+                </>
                 <Trigger.EnterActions>
                     <BeginStoryboard x:Name="CheckedOff_BeginStoryboard" Storyboard="{StaticResource CheckedOff}" />
-                </Trigger.EnterActions>
+                </Trigger.EnterActions-->
 
             </Trigger>
-            <Trigger Property="IsChecked" Value="True" />
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Opacity" TargetName="CheckIcon" Value="1" />
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="true">
 
                 <Trigger.ExitActions>

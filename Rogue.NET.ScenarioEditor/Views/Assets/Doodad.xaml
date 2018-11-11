@@ -34,14 +34,8 @@
                                 <GradientStop Offset="0">
                                     <GradientStop.Color>
                                         <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                            <Binding Path="CharacterColor" />
-                                            <Binding Path="CharacterSymbol" />
-                                            <Binding Path="Icon" />
-                                            <Binding Path="SmileyAuraColor" />
-                                            <Binding Path="SmileyBodyColor" />
-                                            <Binding Path="SmileyLineColor" />
-                                            <Binding Path="SmileyMood" />
-                                            <Binding Path="Type" />
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.Type" />
                                         </MultiBinding>
                                     </GradientStop.Color>
                                 </GradientStop>

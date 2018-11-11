@@ -15,9 +15,11 @@ using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
+using Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
+using Rogue.NET.ScenarioEditor.Views.Assets.SpellControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
@@ -77,6 +79,8 @@ namespace Rogue.NET.ScenarioEditor
             // Design Region - Asset Views
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(AssetContainerControl));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Animation));
+            _regionManager.RegisterViewWithRegion("AnimationParametersRegion", typeof(AnimationParameters));
+            _regionManager.RegisterViewWithRegion("AnimationPreviewRegion", typeof(AnimationPreviewControl));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Rogue.NET.ScenarioEditor.Views.Assets.Brush));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Consumable));
             _regionManager.RegisterViewWithRegion("ConsumableParametersRegion", typeof(ConsumableParameters));
@@ -88,6 +92,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Spell));
+            _regionManager.RegisterViewWithRegion("SpellParametersRegion", typeof(SpellParameters));
 
 
             // Design Region - Construction Views
