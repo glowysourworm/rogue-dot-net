@@ -88,7 +88,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             eventAggregator.GetEvent<AnimationStartEvent>().Subscribe(async update =>
             {
                 await PlayAnimationSeries(update);
-            });
+
+                eventAggregator.GetEvent<AnimationCompletedEvent>().Publish();
+
+            }, true);
         }
 
         #region (public) Properties

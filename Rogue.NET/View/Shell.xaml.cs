@@ -17,6 +17,17 @@ namespace Rogue.NET.View
         readonly IEventAggregator _eventAggregator;
         readonly IKeyResolver _keyResolver;
 
+        // NOTE*** This is required because the Publish / Subscribe mechanism for this IEventAggregator isn't
+        //         working!!!  I need to be able to block inputs during animation. I tried the following:
+        //
+        //         1) async / await Subscribe to Animation Event - works! (i was amazed..)
+        //         2) Set PublisherThread option on Subscribe to force wait on the calling thread (didn't work)
+        //         3) Tried Un-subscribe in the IScenarioController to force blocking of events from user input (DIDN'T WORK!!)
+        //         4) Also tried keepSubscriberReferenceAlive = false for UserCommand events (DIDN'T WORK!)
+        //
+        //         So... Am resorting to forcefully blocking them here.
+        bool _blockInput = false;
+
         [ImportingConstructor]
         public Shell(ShellViewModel viewModel, IEventAggregator eventAggregator, IKeyResolver keyResolver)
         {
@@ -48,6 +59,14 @@ namespace Rogue.NET.View
         }
         private void InitializeEvents()
         {
+            _eventAggregator.GetEvent<AnimationStartEvent>().Subscribe(_ =>
+            {
+                _blockInput = true;
+            });
+            _eventAggregator.GetEvent<AnimationCompletedEvent>().Subscribe(() =>
+            {
+                _blockInput = false;
+            });
             _eventAggregator.GetEvent<ExitEvent>().Subscribe(() =>
             {
                 Application.Current.Shutdown();
@@ -68,7 +87,7 @@ namespace Rogue.NET.View
                 return;
             }
 
-            if (_keyResolver == null)
+            if (_keyResolver == null || _blockInput)
                 return;
 
             var levelCommand = _keyResolver.ResolveKeys(

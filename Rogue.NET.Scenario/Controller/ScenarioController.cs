@@ -57,8 +57,9 @@ namespace Rogue.NET.Scenario.Controller
             // Processing involves checking animation and UI update queues - then continuing
             // with backend logic (IScenarioService.Process)
 
-            // Zero:  Enter processing loop
             var processing = true;
+
+            // Zero:  Enter processing 
             while (processing)
             {
                 // First: Process all animations
