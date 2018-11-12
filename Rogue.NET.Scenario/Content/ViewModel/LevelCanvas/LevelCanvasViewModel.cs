@@ -129,20 +129,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // TODO: Make more granular
             switch (levelUpdate.LevelUpdateType)
             {
-                case LevelUpdateType.Layout:
-                    DrawLayout();
-                    UpdateVisibility();
-                    break;
-                case LevelUpdateType.LayoutVisible:
-                    UpdateVisibility();
-                    break;
                 case LevelUpdateType.AllContent:
                     DrawLayout();
                     DrawContent();
                     UpdateVisibility();
                     break;
-                case LevelUpdateType.VisibleContent:
-                    DrawContent();
+                case LevelUpdateType.Layout:
+                    DrawLayout();
+                    UpdateVisibility();
+                    break;
+                case LevelUpdateType.LayoutVisible:
                     UpdateVisibility();
                     break;
                 case LevelUpdateType.Player:
@@ -151,6 +147,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     break;
                 case LevelUpdateType.RemoveCharacter:
                     RemoveContent(levelUpdate.Id);
+                    break;
+                case LevelUpdateType.ToggleDoor:
+                    DrawLayout();
+                    UpdateVisibility();
+                    break;
+                case LevelUpdateType.VisibleContent:
+                    DrawContent();
+                    UpdateVisibility();
                     break;
                 case LevelUpdateType.None:
                 default:
@@ -260,13 +264,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private void UpdateVisibility()
         {
             var level = _modelService.CurrentLevel;
-            var visibleLocations = _modelService.GetVisibleLocations();
+            var exploredLocations = _modelService.GetExploredLocations();
 
             var opacityMaskGeometry = new StreamGeometry();
 
             using (var stream = opacityMaskGeometry.Open())
             {
-                foreach (var cellPoint in visibleLocations)
+                foreach (var cellPoint in exploredLocations)
                 {
                     var rect = DataHelper.Cell2UIRect(cellPoint, false);
                     stream.BeginFigure(rect.TopLeft, true, true);
@@ -334,9 +338,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             if (_contentDict.Any(x => x.Key == key))
             {
-                var existingLayout = _contentDict[key];
+                var existingElement = _contentDict[key];
 
-                this.Contents.Remove(existingLayout);
+                this.Contents.Remove(existingElement);
 
                 _contentDict[key] = newElement;
                 this.Contents.Add(newElement);

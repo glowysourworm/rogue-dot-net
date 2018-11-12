@@ -27,6 +27,9 @@ namespace Rogue.NET.Core.Service
         // PRIMARY SCENARIO STATE
         ScenarioContainer _scenarioContainer;
 
+        // Explored location collection calculated each time the player moves; and kept up to date
+        IEnumerable<CellPoint> _exploredLocations;
+
         // Visible location collection calculated each time the player moves
         IEnumerable<CellPoint> _visibleLocations;
 
@@ -43,6 +46,7 @@ namespace Rogue.NET.Core.Service
             _rayTracer = rayTracer;
             _characterProcessor = characterProcessor;
 
+            _exploredLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
             _effectedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
@@ -113,6 +117,10 @@ namespace Rogue.NET.Core.Service
         {
             return _visibleLocations;
         }
+        public IEnumerable<CellPoint> GetExploredLocations()
+        {
+            return _exploredLocations;
+        }
 
         public void SetTargetedEnemy(Enemy enemy)
         {
@@ -170,6 +178,14 @@ namespace Rogue.NET.Core.Service
 
             // Update visible cell locations
             _visibleLocations = visibleLocations;
+
+            // Update Explored locations
+            _exploredLocations = this.CurrentLevel
+                         .Grid
+                         .GetCells()
+                         .Where(x => x.IsExplored)
+                         .Select(x => x.Location)
+                         .ToList();
         }
     }
 }

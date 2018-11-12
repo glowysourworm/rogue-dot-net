@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Logic.Interface
     {
         void Search(LevelGrid grid, CellPoint location);
         void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation);
-        bool IsCellThroughDoor(LevelGrid grid, CellPoint point1, CellPoint point2, out CellPoint openingPosition, out Compass openingDirection);
+        bool IsCellThroughDoor(LevelGrid grid, CellPoint location1, Compass openingDirection1, out CellPoint openingPosition1, out CellPoint openingPosition2, out Compass openingDirection2);
         bool IsCellThroughWall(LevelGrid grid, CellPoint point1, CellPoint point2);
         bool IsPathToAdjacentCellBlocked(Level level, CellPoint point1, CellPoint point2);
         CellPoint GetPointInDirection(LevelGrid grid, CellPoint cellPoint, Compass direction);

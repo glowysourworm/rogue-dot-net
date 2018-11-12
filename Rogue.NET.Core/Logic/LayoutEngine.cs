@@ -9,6 +9,8 @@ using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -98,190 +100,130 @@ namespace Rogue.NET.Core.Logic
         }
         public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
         {
-            var nextPoint = GetPointInDirection(grid, characterLocation, direction);
-            var openingPosition = CellPoint.Empty;
-            var openingDirection = Compass.Null;
+            var openingPosition1 = CellPoint.Empty;
+            var openingPosition2 = CellPoint.Empty;
+            var openingDirection2 = Compass.Null;
 
-            if (IsCellThroughDoor(grid, characterLocation, nextPoint, out openingPosition, out openingDirection))
+            if (IsCellThroughDoor(grid, characterLocation, direction, out openingPosition1, out openingPosition2, out openingDirection2))
             {
                 var characterCell = grid.GetCell(characterLocation);
-                var openingPositionCell = grid.GetCell(openingPosition);
+                var openingPositionCell = grid.GetCell(openingPosition2);
 
                 characterCell.ToggleDoor(direction);
-                openingPositionCell.ToggleDoor(GetOppositeDirection(direction));
+                openingPositionCell.ToggleDoor(openingDirection2);
+
+                LevelUpdateEvent(this, new LevelUpdate()
+                {
+                    LevelUpdateType = LevelUpdateType.ToggleDoor
+                });
             }
         }
         #endregion
 
         #region (public) Query Methods
-        public bool IsCellThroughDoor(LevelGrid grid, CellPoint point1, CellPoint point2, out CellPoint openingPosition, out Compass openingDirection)
+        public bool IsCellThroughDoor(
+            LevelGrid grid, 
+            CellPoint location1, 
+            Compass openingDirection1,      // Represents the Door for location1
+            out CellPoint openingPosition1, // Represents the opening position for the door
+            out CellPoint openingPosition2, // Represents the same door opposite cell
+            out Compass openingDirection2)  // Represents the Door for location2
         {
-            openingPosition = CellPoint.Empty;
-            openingDirection = Compass.Null;
+            openingPosition1 = CellPoint.Empty;
+            openingPosition2 = CellPoint.Empty;
+            openingDirection2 = Compass.Null;
 
-            Cell c1 = grid.GetCell(point1);
-            Cell c2 = grid.GetCell(point2);
-            if (c1 == null || c2 == null)
+            var location2 = GetPointInDirection(grid, location1, openingDirection1);
+
+            Cell cell1 = grid.GetCell(location1);
+            Cell cell2 = grid.GetCell(location2);
+
+            if (cell1 == null || cell2 == null)
                 return false;
 
-            Compass c = GetDirectionBetweenAdjacentPoints(point1, point2);
-            switch (c)
+            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = GetOppositeDirection(direction);
+
+            switch (direction)
             {
                 case Compass.N:
-                    openingPosition = point1;
-                    openingDirection = c;
-                    return ((c1.Doors & Compass.N) != 0) && ((c2.Doors & Compass.S) != 0);
                 case Compass.S:
-                    openingPosition = point1;
-                    openingDirection = c;
-                    return ((c1.Doors & Compass.S) != 0) && ((c2.Doors & Compass.N) != 0);
                 case Compass.E:
-                    openingPosition = point1;
-                    openingDirection = c;
-                    return ((c1.Doors & Compass.E) != 0) && ((c2.Doors & Compass.W) != 0);
                 case Compass.W:
-                    openingPosition = point1;
-                    openingDirection = c;
-                    return ((c1.Doors & Compass.W) != 0) && ((c2.Doors & Compass.E) != 0);
+                    {
+                        openingDirection2 = oppositeDirection;
+                        openingPosition1 = location1;
+                        openingPosition2 = location2;
+                        return ((cell1.Doors & direction) != 0) &&          // Position 1 -> Door in this direction
+                               ((cell2.Doors & oppositeDirection) != 0);    // Position 2 -> Door in opposite direction
+                    }
                 case Compass.NE:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        if (diag1 != null)
-                        {
-                            if ((diag1.Doors & Compass.S) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.N;
-                            }
-                            if ((c2.Doors & Compass.W) != 0)
-                            {
-                                openingPosition = diag1.Location;
-                                openingDirection = Compass.E;
-                            }
-                        }
-                        if (diag2 != null)
-                        {
-                            if ((diag2.Doors & Compass.W) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.E;
-                            }
-                            if ((c2.Doors & Compass.S) != 0)
-                            {
-                                openingPosition = diag2.Location;
-                                openingDirection = Compass.N;
-                            }
-                        }
-                        return openingPosition != CellPoint.Empty;
-                    }
                 case Compass.NW:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        if (diag1 != null)
-                        {
-                            if ((diag1.Doors & Compass.S) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.N;
-                            }
-                            if ((c2.Doors & Compass.E) != 0)
-                            {
-                                openingPosition = diag1.Location;
-                                openingDirection = Compass.W;
-                            }
-                        }
-                        if (diag2 != null)
-                        {
-                            if ((diag2.Doors & Compass.E) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.W;
-                            }
-                            if ((c2.Doors & Compass.S) != 0)
-                            {
-                                openingPosition = diag2.Location;
-                                openingDirection = Compass.N;
-                            }
-                        }
-                        return openingPosition != CellPoint.Empty;
-                    }
                 case Compass.SE:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        if (diag1 != null)
-                        {
-                            if ((diag1.Doors & Compass.N) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.S;
-                            }
-                            if ((c2.Doors & Compass.W) != 0)
-                            {
-                                openingPosition = diag1.Location;
-                                openingDirection = Compass.E;
-                            }
-                        }
-                        if (diag2 != null)
-                        {
-                            if ((diag2.Doors & Compass.W) != 0)
-                            {
-                                openingPosition = point1;
-                                openingDirection = Compass.E;
-                            }
-                            if ((c2.Doors & Compass.N) != 0)
-                            {
-                                openingPosition = diag2.Location;
-                                openingDirection = Compass.S;
-                            }
-                        }
-                        return openingPosition != CellPoint.Empty;
-                    }
                 case Compass.SW:
                     {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
+                        Compass cardinal1 = Compass.Null;
+                        Compass cardinal2 = Compass.Null;
+
+                        var diag1 = grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
+                        var diag2 = grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
+
                         if (diag1 == null && diag2 == null)
-                            return true;
+                            return false;
+
+                        var cardinal1Opposite = GetOppositeDirection(cardinal1);
+                        var cardinal2Opposite = GetOppositeDirection(cardinal2);
 
                         if (diag1 != null)
                         {
-                            if ((diag1.Doors & Compass.N) != 0)
+                            // Current cell -> 1st off-diagonal cell
+                            if ((diag1.Doors & cardinal1Opposite) != 0 &&
+                                (cell1.Doors & cardinal1) != 0)
                             {
-                                openingPosition = point1;
-                                openingDirection = Compass.S;
+                                openingPosition1 = location1;
+                                openingPosition2 = diag1.Location;
+                                openingDirection2 = cardinal1Opposite;
+
+                                return true;
                             }
-                            if ((c2.Doors & Compass.E) != 0)
+                            // 1st off-diagonal cell -> Desired cell
+                            else if ((diag1.Doors & cardinal2) != 0 &&
+                                     (cell2.Doors & cardinal2Opposite) != 0)
                             {
-                                openingPosition = diag1.Location;
-                                openingDirection = Compass.W;
+                                openingPosition1 = diag1.Location;
+                                openingPosition2 = location2;
+                                openingDirection2 = cardinal2Opposite;
+
+                                return false;  // TODO: Use for enemy movement
                             }
+
+                            return false;
                         }
-                        if (diag2 != null)
+                        else if (diag2 != null)
                         {
-                            if ((diag2.Doors & Compass.E) != 0)
+                            // Current cell -> 2nd off-diagonal cell
+                            if ((cell1.Doors & cardinal2) != 0 &&
+                                (diag2.Doors & cardinal2Opposite) != 0)
                             {
-                                openingPosition = point1;
-                                openingDirection = Compass.W;
+                                openingPosition1 = location1;
+                                openingPosition2 = diag2.Location;
+                                openingDirection2 = cardinal2Opposite;
+
+                                return true;
                             }
-                            if ((c2.Doors & Compass.N) != 0)
+                            // 2nd off-diagonal cell -> Desired cell
+                            else if ((cell2.Doors & cardinal1Opposite) != 0 &&
+                                     (diag2.Doors & cardinal1) != 0)
                             {
-                                openingPosition = diag2.Location;
-                                openingDirection = Compass.S;
+                                openingPosition1 = diag2.Location;
+                                openingPosition2 = location2;
+                                openingDirection2 = cardinal1Opposite;
+
+                                return false; // TODO: Use for enemy movement
                             }
                         }
-                        return openingPosition != CellPoint.Empty;
+
+                        return false;
                     }
             }
             return false;

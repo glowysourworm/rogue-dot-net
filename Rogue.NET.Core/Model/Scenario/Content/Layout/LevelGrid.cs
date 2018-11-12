@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Linq;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -153,6 +154,48 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public Cell GetCell(CellPoint cp)
         {
             return GetCell(cp.Column, cp.Row);
+        }
+
+        /// <summary>
+        /// Returns 1st of 2 off diagonal cells in the specified non-cardinal direction (Exapmle: NE -> N cell)
+        /// </summary>
+        /// <param name="direction">NE, NW, SE, SW</param>
+        public Cell GetOffDiagonalCell1(CellPoint location, Compass direction, out Compass cardinalDirection1)
+        {
+            switch (direction)
+            {
+                case Compass.NE:
+                case Compass.NW:
+                    cardinalDirection1 = Compass.N;
+                    return GetCell(location.Column, location.Row - 1);
+                case Compass.SE:
+                case Compass.SW:
+                    cardinalDirection1 = Compass.S;
+                    return GetCell(location.Column, location.Row + 1);
+                default:
+                    throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Exapmle: NE -> E cell)
+        /// </summary>
+        /// <param name="direction">NE, NW, SE, SW</param>
+        public Cell GetOffDiagonalCell2(CellPoint location, Compass direction, out Compass cardinalDirection2)
+        {
+            switch (direction)
+            {
+                case Compass.NE:
+                case Compass.SE:
+                    cardinalDirection2 = Compass.E;
+                    return GetCell(location.Column + 1, location.Row);
+                case Compass.SW:
+                case Compass.NW:
+                    cardinalDirection2 = Compass.W;
+                    return GetCell(location.Column - 1, location.Row);
+                default:
+                    throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
+            }
         }
         public CellRectangle GetRoom(int column, int row)
         {

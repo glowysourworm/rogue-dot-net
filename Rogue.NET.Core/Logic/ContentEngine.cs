@@ -619,10 +619,19 @@ namespace Rogue.NET.Core.Logic
                 return;
 
             // Check for opening of doors
-            var openingPosition = CellPoint.Empty;
-            var openingDirection = Compass.Null;
+            var openingPosition1 = CellPoint.Empty;
+            var openingPosition2 = CellPoint.Empty;
+            var openingDirection2 = Compass.Null;
 
-            var throughDoor = _layoutEngine.IsCellThroughDoor(_modelService.CurrentLevel.Grid, enemy.Location, moveLocation, out openingPosition, out openingDirection);
+            var moveDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
+
+            var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsCellThroughDoor(
+                                _modelService.CurrentLevel.Grid, 
+                                enemy.Location, 
+                                moveDirection, 
+                                out openingPosition1, 
+                                out openingPosition2, 
+                                out openingDirection2);
 
             // Behavior allows opening of doors
             if (enemy.BehaviorDetails.CurrentBehavior.CanOpenDoors && throughDoor)
@@ -630,21 +639,21 @@ namespace Rogue.NET.Core.Logic
                 var desiredDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
 
                 // If not in a cardinally adjacent position then move into that position before opening.
-                if (enemy.Location == openingPosition)
+                if (enemy.Location == openingPosition1)
                 {
                     // Open the door
-                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, openingDirection, enemy.Location);
+                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, moveDirection, enemy.Location);
 
                     // Notify listener queue
-                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.Layout });
+                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ToggleDoor });
                 }
 
                 else
                 {
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition))
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition1))
                     {
                         // Update enemy location
-                        enemy.Location = openingPosition;
+                        enemy.Location = openingPosition1;
 
                         // Notify listener queue
                         LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.AllContent });

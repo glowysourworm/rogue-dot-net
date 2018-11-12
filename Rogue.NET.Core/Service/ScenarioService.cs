@@ -128,6 +128,7 @@ namespace Rogue.NET.Core.Service
                     }
                     break;
                 case LevelAction.Close:
+                case LevelAction.Open:
                     {
                         _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
@@ -141,12 +142,6 @@ namespace Rogue.NET.Core.Service
                         else if (obj is DoodadBase)
                             _contentEngine.StepOnDoodad(player, (DoodadBase)obj);
                         nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelAction.Open:
-                    {
-                        _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
-                        nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
                 case LevelAction.Search:

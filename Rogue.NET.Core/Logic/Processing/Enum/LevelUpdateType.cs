@@ -35,6 +35,11 @@
         /// <summary>
         /// Occurs when Enemy Dies and needs to be removed from the Level
         /// </summary>
-        RemoveCharacter
+        RemoveCharacter,
+
+        /// <summary>
+        /// Occurs when a door has been toggled
+        /// </summary>
+        ToggleDoor
     }
 }
