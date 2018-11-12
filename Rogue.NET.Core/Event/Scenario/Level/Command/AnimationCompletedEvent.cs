@@ -7,7 +7,6 @@ namespace Rogue.NET.Model.Events
 {
     public class AnimationCompletedEventArgs : System.EventArgs
     {
-        public AnimationReturnAction ReturnAction { get; set; }
         public AlterationContainer Alteration { get; set; }
         public Character Source { get; set; }
         public List<Character> Targets { get; set; }

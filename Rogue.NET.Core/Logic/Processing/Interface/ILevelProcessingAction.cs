@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
@@ -11,6 +12,10 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     public interface ILevelProcessingAction
     {
         LevelProcessingActionType Type { get; set; }
+
         string CharacterId { get; set; }
+
+        // Animation Processing Related
+        Spell PlayerSpell { get; set; }
     }
 }

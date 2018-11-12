@@ -30,6 +30,11 @@
         /// <summary>
         /// Occurs when the player needs to be updated
         /// </summary>
-        Player
+        Player,
+
+        /// <summary>
+        /// Occurs when Enemy Dies and needs to be removed from the Level
+        /// </summary>
+        RemoveCharacter
     }
 }

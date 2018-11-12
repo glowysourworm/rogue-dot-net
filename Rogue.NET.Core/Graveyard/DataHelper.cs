@@ -17,9 +17,13 @@ namespace Rogue.NET.Core.Graveyard
         {
             return new Point(x * ModelConstants.CELLWIDTH, y * ModelConstants.CELLHEIGHT);
         }
-        public static Point Cell2UI(CellPoint p)
+        public static Point Cell2UI(CellPoint p, bool offsetToMiddleOfCell = false)
         {
-            return new Point(p.Column * ModelConstants.CELLWIDTH, p.Row * ModelConstants.CELLHEIGHT);
+            if (!offsetToMiddleOfCell)
+                return new Point(p.Column * ModelConstants.CELLWIDTH, p.Row * ModelConstants.CELLHEIGHT);
+
+            else
+                return new Point((p.Column + 0.5D) * ModelConstants.CELLWIDTH, (p.Row + 0.5D) * ModelConstants.CELLHEIGHT);
         }
         public static Rect Cell2UIRect(CellPoint p, bool addCellOffset)
         {

@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Logic
     {
         readonly ILayoutEngine _layoutEngine;
         readonly IContentEngine _contentEngine;
+        readonly ISpellEngine _spellEngine;
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IInteractionProcessor _interactionProcessor;
@@ -40,6 +41,7 @@ namespace Rogue.NET.Core.Logic
         public ScenarioEngine(
             ILayoutEngine layoutEngine,
             IContentEngine contentEngine,
+            ISpellEngine spellEngine,
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
             IInteractionProcessor interactionProcessor,
@@ -50,6 +52,7 @@ namespace Rogue.NET.Core.Logic
         {
             _layoutEngine = layoutEngine;
             _contentEngine = contentEngine;
+            _spellEngine = spellEngine;
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _interactionProcessor = interactionProcessor;
@@ -207,7 +210,7 @@ namespace Rogue.NET.Core.Logic
             var attackLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, location, direction);
 
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, attackLocation);
+            var blocked = _layoutEngine.IsCellThroughWall(_modelService.CurrentLevel.Grid, location, attackLocation);
 
             // Get target for attack
             var enemy = _modelService.CurrentLevel.Enemies.FirstOrDefault(x => x.Location == attackLocation);
@@ -579,7 +582,7 @@ namespace Rogue.NET.Core.Logic
             var player = _modelService.Player;
             var doodad = _modelService.CurrentLevel.GetAtPoint<DoodadBase>(player.Location);
             if (doodad == null)
-                return LevelContinuationAction.ProcessTurn;
+                return LevelContinuationAction.DoNothing;
 
             //Sets identified
             _modelService.ScenarioEncyclopedia[doodad.RogueName].IsIdentified = true;
@@ -596,10 +599,8 @@ namespace Rogue.NET.Core.Logic
 
                             var doodadMagic = (DoodadMagic)doodad;
                             doodadMagic.HasBeenUsed = true;
-                            if (doodadMagic.IsInvoked)
-                                return LevelContinuationAction.ProcessTurn;
-                            // TODO
-                            //return ProcessPlayerMagicSpell(doodadMagic.InvokedSpell);
+
+                            return _spellEngine.InvokePlayerMagicSpell(doodadMagic.InvokedSpell);
                         }
                     }
                     break;

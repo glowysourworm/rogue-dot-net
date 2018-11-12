@@ -17,8 +17,6 @@ namespace Rogue.NET.View
         readonly IEventAggregator _eventAggregator;
         readonly IKeyResolver _keyResolver;
 
-        public bool BlockUserInputs { get; private set; }
-
         [ImportingConstructor]
         public Shell(ShellViewModel viewModel, IEventAggregator eventAggregator, IKeyResolver keyResolver)
         {
@@ -50,23 +48,6 @@ namespace Rogue.NET.View
         }
         private void InitializeEvents()
         {
-            // Block user inputs while animation playing or no level data loaded
-            _eventAggregator.GetEvent<AnimationStartEvent>().Subscribe((e) =>
-            {
-                this.BlockUserInputs = true;
-            });
-            _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
-            {
-                this.BlockUserInputs = true;
-            });
-            _eventAggregator.GetEvent<AnimationCompletedEvent>().Subscribe((e) =>
-            {
-                this.BlockUserInputs = false;
-            });
-            _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
-            {
-                this.BlockUserInputs = false;
-            });
             _eventAggregator.GetEvent<ExitEvent>().Subscribe(() =>
             {
                 Application.Current.Shutdown();
@@ -87,7 +68,7 @@ namespace Rogue.NET.View
                 return;
             }
 
-            if (_keyResolver == null || this.BlockUserInputs)
+            if (_keyResolver == null)
                 return;
 
             var levelCommand = _keyResolver.ResolveKeys(

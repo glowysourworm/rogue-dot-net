@@ -98,54 +98,56 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             IModelService modelService,
             ICharacterProcessor characterProcessor)
         {
+            this.Equipment = new ObservableCollection<EquipmentViewModel>();
+            this.Consumables = new ObservableCollection<ConsumableViewModel>();
+
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
-                if (update.LevelUpdateType == LevelUpdateType.Player)
+                // TODO: Filter events using the Type
+
+                var player = modelService.Player;
+
+                // Synchronize Equipment
+                foreach (var equipment in player.Equipment.Values)
                 {
-                    var player = modelService.Player;
-
-                    // Synchronize Equipment
-                    foreach (var equipment in player.Equipment.Values)
-                    {
-                        if (!this.Equipment.Any(x => x.Id == equipment.Id))
-                            this.Equipment.Add(new EquipmentViewModel(equipment));
-                    }
-                    for (int i=this.Equipment.Count - 1;i>=0;i--)
-                    {
-                        if (!player.Equipment.ContainsKey(this.Equipment[i].Id))
-                            this.Equipment.RemoveAt(i);
-                    }
-
-                    // Synchronize Consumables
-                    foreach (var consumable in player.Consumables.Values)
-                    {
-                        if (!this.Consumables.Any(x => x.Id == consumable.Id))
-                            this.Consumables.Add(new ConsumableViewModel(consumable));
-                    }
-                    for (int i = this.Consumables.Count - 1; i >= 0; i--)
-                    {
-                        if (!player.Consumables.ContainsKey(this.Consumables[i].Id))
-                            this.Consumables.RemoveAt(i);
-                    }
-
-                    // Active Skill
-                    var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
-
-                    this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet);
-
-                    this.Level = player.Level;
-                    this.Class = player.Class;
-                    this.Experience = player.Experience;
-                    this.Haul = characterProcessor.GetHaul(player);
-                    this.HaulMax = characterProcessor.GetHaulMax(player);
-                    this.Hp = player.Hp;
-                    this.HpMax = player.HpMax;
-                    this.Hunger = player.Hunger;
-                    this.Mp = player.Mp;
-                    this.MpMax = player.MpMax;
-                    this.RogueName = player.RogueName;
+                    if (!this.Equipment.Any(x => x.Id == equipment.Id))
+                        this.Equipment.Add(new EquipmentViewModel(equipment));
                 }
-            });
+                for (int i = this.Equipment.Count - 1; i >= 0; i--)
+                {
+                    if (!player.Equipment.ContainsKey(this.Equipment[i].Id))
+                        this.Equipment.RemoveAt(i);
+                }
+
+                // Synchronize Consumables
+                foreach (var consumable in player.Consumables.Values)
+                {
+                    if (!this.Consumables.Any(x => x.Id == consumable.Id))
+                        this.Consumables.Add(new ConsumableViewModel(consumable));
+                }
+                for (int i = this.Consumables.Count - 1; i >= 0; i--)
+                {
+                    if (!player.Consumables.ContainsKey(this.Consumables[i].Id))
+                        this.Consumables.RemoveAt(i);
+                }
+
+                // Active Skill
+                var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
+
+                this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet);
+
+                this.Level = player.Level;
+                this.Class = player.Class;
+                this.Experience = player.Experience;
+                this.Haul = characterProcessor.GetHaul(player);
+                this.HaulMax = characterProcessor.GetHaulMax(player);
+                this.Hp = player.Hp;
+                this.HpMax = player.HpMax;
+                this.Hunger = player.Hunger;
+                this.Mp = player.Mp;
+                this.MpMax = player.MpMax;
+                this.RogueName = player.RogueName;
+            }, true);
         }
     }
 }

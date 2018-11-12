@@ -6,6 +6,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
 using System.ComponentModel.Composition;
 
@@ -88,6 +89,8 @@ namespace Rogue.NET.Scenario.Controller
         }
         private bool ProcessAnimationUpdate(IAnimationUpdate update)
         {
+            _eventAggregator.GetEvent<AnimationStartEvent>().Publish(update);
+
             return true;
         }
         private bool ProcessUIUpdate(ILevelUpdate update)

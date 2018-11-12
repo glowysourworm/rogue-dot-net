@@ -218,6 +218,13 @@ namespace Rogue.NET.Core.Logic
 
             //Set enemy identified
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
+
+            // Publish Level update
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                Id = enemy.Id,
+                LevelUpdateType = LevelUpdateType.RemoveCharacter
+            });
         }
         public void CalculateEnemyReactions()
         {
@@ -225,7 +232,7 @@ namespace Rogue.NET.Core.Logic
 
             // Enemy Reactions: 0) Check whether enemy is still alive 
             //                  1) Process Enemy Reaction (Applies End-Of-Turn)
-            //                  2) Check for Enemy Death
+            //                  2) Check for Enemy Death (After Enemy Reaction)
             for (int i = level.Enemies.Count() - 1; i >= 0; i--)
             {
                 var enemy = level.Enemies.ElementAt(i);
@@ -238,9 +245,6 @@ namespace Rogue.NET.Core.Logic
                         CharacterId = enemy.Id,
                         Type = LevelProcessingActionType.EnemyReaction
                     });
-
-                if (enemy.Hp <= 0)
-                    EnemyDeath(enemy);
             }
         }
         public void ProcessEnemyReaction(Enemy enemy)
@@ -264,6 +268,9 @@ namespace Rogue.NET.Core.Logic
 
             if (enemy.TurnCounter >= 1)
                 OnEnemyReaction(enemy);
+
+            if (enemy.Hp <= 0)
+                EnemyDeath(enemy);
         }
         public void ApplyEndOfTurn()
         {
@@ -510,7 +517,7 @@ namespace Rogue.NET.Core.Logic
                             if (attackLocation != null) // TODO && 
                                                         //!e.States.Any(z => z == CharacterStateType.Confused))
                             {
-                                if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, attackLocation))
+                                if (!_layoutEngine.IsCellThroughWall(_modelService.CurrentLevel.Grid, enemy.Location, attackLocation))
                                 {
                                     OnEnemyMeleeAttack(enemy);
                                     actionTaken = true;
@@ -546,30 +553,27 @@ namespace Rogue.NET.Core.Logic
                 _enemyProcessor.ApplyEndOfTurn(enemy);
             }
         }
-        private void OnEnemyMeleeAttack(Enemy e)
+        private void OnEnemyMeleeAttack(Enemy enemy)
         {
             var player = _modelService.Player;
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, e.Location, player.Location))
+            var hit = _interactionProcessor.CalculateEnemyHit(player, enemy);
+            var dodge = _randomSequenceGenerator.Get() <= _characterProcessor.GetDodge(player);
+            var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CurrentBehavior.CriticalRatio;
+
+            if (hit > 0 && !dodge)
             {
-                var hit = _interactionProcessor.CalculateEnemyHit(player, e);
-                var dodge = _randomSequenceGenerator.Get() <= _characterProcessor.GetDodge(player);
-                var criticalHit = _randomSequenceGenerator.Get() <= e.BehaviorDetails.CurrentBehavior.CriticalRatio;
-
-                if (hit > 0 && !dodge)
+                if (criticalHit)
                 {
-                    if (criticalHit)
-                    {
-                        hit *= 2;
-                        _scenarioMessageService.Publish(e.RogueName + " attacks for a critical hit!");
-                    }
-                    else
-                        _scenarioMessageService.Publish(e.RogueName + " attacks");
-
-                    player.Hp -= hit;
+                    hit *= 2;
+                    _scenarioMessageService.Publish(enemy.RogueName + " attacks for a critical hit!");
                 }
                 else
-                    _scenarioMessageService.Publish(e.RogueName + " Misses");
+                    _scenarioMessageService.Publish(enemy.RogueName + " attacks");
+
+                player.Hp -= hit;
             }
+            else
+                _scenarioMessageService.Publish(enemy.RogueName + " Misses");
         }
         private CellPoint CalculateEnemyMoveLocation(Enemy enemy, CellPoint desiredLocation)
         {

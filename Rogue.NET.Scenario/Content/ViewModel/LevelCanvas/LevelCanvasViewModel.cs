@@ -23,6 +23,11 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Media;
+using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Model;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -31,6 +36,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
     {
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
+        readonly IAnimationGenerator _animationGenerator;
 
         // Identifies the layout entry in the content dictionary
         const string WALLS_KEY = "Layout";
@@ -47,10 +53,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         public LevelCanvasViewModel(
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
+            IAnimationGenerator animationGenerator,
             IModelService modelService)
         {
             _resourceService = resourceService;
             _modelService = modelService;
+            _animationGenerator = animationGenerator;
 
             this.Contents = new ObservableCollection<FrameworkElement>();
             _contentDict = new Dictionary<string, FrameworkElement>();
@@ -76,6 +84,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 OnLevelUpdate(update);
             }, true);
+
+            eventAggregator.GetEvent<AnimationStartEvent>().Subscribe(async update =>
+            {
+                await PlayAnimationSeries(update);
+            });
         }
 
         #region (public) Properties
@@ -132,6 +145,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 case LevelUpdateType.Player:
                     DrawContent();
                     UpdateVisibility();
+                    break;
+                case LevelUpdateType.RemoveCharacter:
+                    RemoveContent(levelUpdate.Id);
                     break;
                 case LevelUpdateType.None:
                 default:
@@ -210,7 +226,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var visibleContents = _modelService.GetVisibleEnemies();
 
             // Create contents for all ScenarioObjects + Player
-            foreach (var scenarioObject in level.GetContents().Union(new ScenarioObject[] { player }))
+            DrawCollection(level.DoodadsNormal);
+            DrawCollection(level.Doodads);
+            DrawCollection(level.Consumables);
+            DrawCollection(level.Equipment);
+            DrawCollection(level.Enemies);
+            DrawCollection(new ScenarioObject[] { player });
+        }
+
+        private void DrawCollection(IEnumerable<ScenarioObject> collection)
+        {
+            foreach (var scenarioObject in collection)
             {
                 // Update
                 if (_contentDict.ContainsKey(scenarioObject.Id))
@@ -317,6 +343,65 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 _contentDict[key] = newElement;
                 this.Contents.Add(newElement);
             }
+        }
+
+        // Removes an entry from the dictionary
+        private void RemoveContent(string key)
+        {
+            if (_contentDict.Any(x => x.Key == key))
+            {
+                var content = _contentDict[key];
+
+                _contentDict.Remove(key);
+                this.Contents.Remove(content);
+            }
+        }
+        #endregion
+
+        #region (private) Animations
+        /// <summary>
+        /// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
+        /// last one as a handle
+        /// </summary>
+        public async Task PlayAnimationSeries(IAnimationUpdate animationData)
+        {
+            // Source / Target / Render bounds
+            var source = DataHelper.Cell2UI(animationData.SourceLocation, true);
+            var targets = animationData.TargetLocations.Select(x =>  DataHelper.Cell2UI(x, true)).ToArray();
+            var bounds = new Rect(0, 0, _levelWidth, _levelHeight);
+
+            //Create animations
+            var animations = animationData.Animations.Select(x =>
+            {
+                return _animationGenerator.CreateAnimation(x, bounds, source, targets);
+            });
+
+            foreach (var animation in animations)
+            {
+                // Start
+                foreach (var graphic in animation.GetGraphics())
+                {
+                    Canvas.SetZIndex(graphic, 100);
+                    this.Contents.Add(graphic);
+                }
+
+                animation.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
+                animation.Start();
+
+                // Wait for completion
+                var waitTime = animationData.Animations.Sum(x => x.AnimationTime * x.RepeatCount * (x.AutoReverse ? 2 : 1));
+
+                await Task.Delay(waitTime);
+            }
+        }
+
+        private void OnAnimationTimerElapsed(ITimedGraphic sender)
+        {
+            foreach (var timedGraphic in sender.GetGraphics())
+                this.Contents.Remove(timedGraphic);
+
+            sender.TimeElapsed -= new TimerElapsedHandler(OnAnimationTimerElapsed);
+            sender.CleanUp();
         }
         #endregion
     }

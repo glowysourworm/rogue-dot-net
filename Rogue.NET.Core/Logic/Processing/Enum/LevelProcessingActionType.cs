@@ -8,6 +8,11 @@
         EnemyReaction,
 
         /// <summary>
+        /// Process Player Spell
+        /// </summary>
+        PlayerSpell,
+
+        /// <summary>
         /// Primary End-Of-Turn for Scenario. { Player End-Of-Turn, Content End-Of-Turn }
         /// </summary>
         EndOfTurn,

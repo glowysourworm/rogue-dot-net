@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 using Prism.Events;
 
@@ -12,12 +13,19 @@ using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
+using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Graveyard;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
     [Export]
     public partial class LevelCanvas : UserControl
     {
+        readonly IAnimationGenerator _animationGenerator;
+        readonly IEventAggregator _eventAggregator;
+
         List<AnimationGroup> _targetAnimationGroupList = new List<AnimationGroup>();
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
@@ -28,8 +36,14 @@ namespace Rogue.NET.Scenario.Content.Views
         const int SCREEN_BUFFER = 120;
 
         [ImportingConstructor]
-        public LevelCanvas(LevelCanvasViewModel viewModel)
+        public LevelCanvas(
+            LevelCanvasViewModel viewModel, 
+            IEventAggregator eventAggregator, 
+            IAnimationGenerator animationGenerator)
         {
+            _animationGenerator = animationGenerator;
+            _eventAggregator = eventAggregator;
+
             this.DataContext = viewModel;
 
             InitializeComponent();
@@ -42,6 +56,8 @@ namespace Rogue.NET.Scenario.Content.Views
             transform.Children.Add(_translateXform);
 
             this.RenderTransform = transform;
+
+            Initialize();
         }
          
         private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -95,7 +111,7 @@ namespace Rogue.NET.Scenario.Content.Views
 
         private void Initialize()
         {
-            //// subscribe to events
+            // subscribe to events TODO
             //_eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
             //{
             //    // recenter display if player is off screen
@@ -108,10 +124,6 @@ namespace Rogue.NET.Scenario.Content.Views
             //    StopTargetAnimation();
             //});
 
-            //_eventAggregator.GetEvent<AnimationStartEvent>().Subscribe((e) =>
-            //{
-            //    PlayAnimationSeries(e);
-            //});
         }
 
         public void OnPlayerLocationChanged()
@@ -275,96 +287,8 @@ namespace Rogue.NET.Scenario.Content.Views
         //    }
         //}
 
-        //List<ITimedGraphic> _animationList = new List<ITimedGraphic>();
-        //AnimationStartEventArgs _animationData = null;
 
-        ///// <summary>
-        ///// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
-        ///// last one as a handle
-        ///// </summary>
-        //public ITimedGraphic PlayAnimationSeries(AnimationStartEventArgs e)
-        //{
-        //    _animationData = e;
-
-        //    //var levelData = this.DataContext as LevelData;
-        //    //var xform = levelData.Player.RenderTransform;
-        //    //var offset = xform.Transform(new Point(0,0));
-        //    //var offsetVector = new Vector(offset.X + ModelConstants.CELLWIDTH / 2, offset.Y + ModelConstants.CELLHEIGHT / 2);
-
-        //    ////Create animations
-        //    //foreach (AnimationTemplate t in e.Animations)
-        //    //    _animationList.Add(
-        //    //        AnimationGenerator.CreateAnimation(
-        //    //        t, 
-        //    //        new Rect(this.RenderSize), 
-        //    //        Point.Add(new Point(e.Source.Margin.Left, e.Source.Margin.Top), offsetVector),
-        //    //        e.Targets.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray()));
-
-        //    //Start the first and return a handle to the last one
-        //    ITimedGraphic g = _animationList[_animationList.Count - 1];
-        //    StartNextAnimation();
-        //    return g;
-        //}
-        //private void StartNextAnimation()
-        //{
-        //    if (_animationList.Count <= 0)
-        //    {
-        //        _eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(new AnimationCompletedEventArgs()
-        //        {
-        //            Alteration = _animationData.Alteration,
-        //            ReturnAction = _animationData.ReturnAction,
-        //            Source = _animationData.Source,
-        //            Targets = _animationData.Targets
-        //        });
-        //        return;
-        //    }
-
-        //    ITimedGraphic t = _animationList[0];
-        //    _animationList.RemoveAt(0);
-        //    StartTimedGraphicalEvent(t);
-        //}
-        //private void StartTimedGraphicalEvent(ITimedGraphic e)
-        //{
-        //    Graphic[] graphics = e.GetGraphics();
-        //    foreach (Graphic g in graphics)
-        //    {
-        //        Canvas.SetZIndex(g, 100);
-        //        this.TheLevelCanvas.Children.Add(g);
-        //    }
-        //    e.TimeElapsed += new TimerElapsedHandler(OnTimedEventElapsed);
-        //    e.Start();
-        //    UpdateLayout();
-        //}
-        //private void OnTimedEventElapsed(ITimedGraphic sender)
-        //{
-        //    Graphic[] graphics = sender.GetGraphics();
-        //    foreach (Graphic g in graphics)
-        //        this.TheLevelCanvas.Children.Remove(g);
-        //    sender.TimeElapsed -= new TimerElapsedHandler(OnTimedEventElapsed);
-        //    sender.CleanUp();
-
-        //    //Will play next animation if any left on the list
-        //    StartNextAnimation();
-        //}
         #endregion
-    }
-
-    public class ItemsPanelCanvas : Canvas
-    {
-        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
-        {
-            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-
-            // Required because ZIndex binding isn't supported out of the box
-            var frameworkElement = visualAdded as FrameworkElement;
-            if (frameworkElement != null)
-            {
-                var contentPresenter = frameworkElement.Parent as UIElement;
-
-                if (contentPresenter != null)
-                    Canvas.SetZIndex(contentPresenter, Canvas.GetZIndex(frameworkElement));
-            }
-        }
     }
 }
 

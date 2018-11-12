@@ -75,16 +75,16 @@ namespace Rogue.NET.Core.Logic
                     SourceLocation = _modelService.Player.Location,
                     TargetLocations = _modelService.GetTargetedEnemies().Select(x => x.Location)
                 });
-
-                return LevelContinuationAction.DoNothing;
             }
-            //No animations - just apply effects
-            else
+
+            // Apply Effect on Queue
+            LevelProcessingActionEvent(this, new LevelProcessingAction()
             {
-                OnPlayerMagicSpell(spell);
+                Type = LevelProcessingActionType.PlayerSpell,
+                PlayerSpell = spell
+            });
 
-                return LevelContinuationAction.ProcessTurn;
-            }
+            return LevelContinuationAction.ProcessTurn;
         }
         //Used for item throw effects
         public LevelContinuationAction InvokeEnemyMagicSpell(Enemy enemy, Spell spell)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
@@ -8,5 +10,7 @@ namespace Rogue.NET.Core.Logic.Interface
     /// </summary>
     public interface ISpellEngine : IRogueEngine
     {
+        LevelContinuationAction InvokePlayerMagicSpell(Spell spell);
+        LevelContinuationAction InvokeEnemyMagicSpell(Enemy enemy, Spell spell);
     }
 }

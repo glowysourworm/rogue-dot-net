@@ -29,24 +29,9 @@ namespace Rogue.NET.Scenario.Views
 
             InitializeComponent();
 
-            this.Loaded += GameView_Loaded;
-        }
-
-        private void GameView_Loaded(object sender, RoutedEventArgs e)
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            if (_initialized)
-                return;
-
-            _initialized = true;
-
-            _eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((e) =>
+            eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
-                this.DialogTB.Text = e.Message;
+                this.DialogTB.Text = message;
             });
         }
 
