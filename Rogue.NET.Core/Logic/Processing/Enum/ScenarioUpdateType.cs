@@ -6,11 +6,6 @@
     public enum ScenarioUpdateType
     {
         /// <summary>
-        /// Nothing to process
-        /// </summary>
-        None,
-
-        /// <summary>
         /// Process a change of level
         /// </summary>
         LevelChange,
@@ -18,6 +13,11 @@
         /// <summary>
         /// Player Death event
         /// </summary>
-        PlayerDeath
+        PlayerDeath,
+
+        /// <summary>
+        /// Save Scenario from a save point
+        /// </summary>
+        Save
     }
 }

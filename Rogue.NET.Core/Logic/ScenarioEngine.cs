@@ -15,6 +15,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -107,14 +108,14 @@ namespace Rogue.NET.Core.Logic
         public ScenarioObject Move(Compass direction)
         {
             // Desired Location
-            var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, _modelService.Player.Location, direction);
+            var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.Level.Grid, _modelService.Player.Location, direction);
 
             // Invalid location
             if (desiredLocation == CellPoint.Empty)
                 return null;
 
             //Look for road blocks - move player
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, _modelService.Player.Location, desiredLocation, true))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, _modelService.Player.Location, desiredLocation, true))
             {
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
@@ -124,15 +125,15 @@ namespace Rogue.NET.Core.Logic
             }
 
             //Increment counter
-            _modelService.CurrentLevel.StepsTaken++;
+            _modelService.Level.StepsTaken++;
 
             //See what the player stepped on...
-            return _modelService.CurrentLevel.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
+            return _modelService.Level.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
         }
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel,_modelService.Player, _modelService.Player.Location, true);
+            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Level,_modelService.Player, _modelService.Player.Location, true);
 
             // Get direction for random move -> Move()
             return Move(_layoutEngine.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation));
@@ -145,7 +146,7 @@ namespace Rogue.NET.Core.Logic
         /// <param name="regenerate">Set to false to prevent Player regeneration</param>
         public void ProcessEndOfTurn(bool regenerate)
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var player = _modelService.Player;
 
             // Block Scenario Message Processing to prevent sending UI messages
@@ -221,17 +222,17 @@ namespace Rogue.NET.Core.Logic
 
             // Get points involved with the attack
             var location = _modelService.Player.Location;
-            var attackLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, location, direction);
+            var attackLocation = _layoutEngine.GetPointInDirection(_modelService.Level.Grid, location, direction);
 
             // Invalid attack location
             if (attackLocation == CellPoint.Empty)
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, attackLocation, false);
+            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, attackLocation, false);
 
             // Get target for attack
-            var enemy = _modelService.CurrentLevel.GetAtPoint<Enemy>(attackLocation);
+            var enemy = _modelService.Level.GetAtPoint<Enemy>(attackLocation);
 
             if (enemy != null && !blocked)
             {
@@ -312,19 +313,36 @@ namespace Rogue.NET.Core.Logic
             var meetsAlterationCost = _alterationProcessor.CalculatePlayerMeetsAlterationCost(player, consumable.Spell.Cost);
             var displayName = _modelService.GetDisplayName(consumable.RogueName);
 
+            // Check for removal of item
             switch (consumable.Type)
             {
                 case ConsumableType.OneUse:
                     if (meetsAlterationCost)
+                    {
+                        // Remove the item
                         player.Consumables.Remove(itemId);
+
+                        // Queue an update
+                        QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemId);
+                    }
+                    else
+                        return LevelContinuationAction.ProcessTurn;
                     break;
                 case ConsumableType.MultipleUses:
                     {
                         if (meetsAlterationCost)
                             consumable.Uses--;
+                        else
+                            return LevelContinuationAction.ProcessTurn;
 
                         if (consumable.Uses <= 0)
+                        {
+                            // Remove the item
                             player.Consumables.Remove(itemId);
+
+                            // Queue an update
+                            QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemId);
+                        }
                     }
                     break;
                 case ConsumableType.UnlimitedUses:
@@ -332,16 +350,22 @@ namespace Rogue.NET.Core.Logic
                     break;
             }
 
+            // Learned SkillSet Item
             if (consumable.HasLearnedSkillSet)
             {
                 if (!player.SkillSets.Any(z => z.RogueName == consumable.LearnedSkill.RogueName))
                 {
-                    //Message plays on dungeon turn
+                    // Message plays on dungeon turn
                     player.SkillSets.Add(consumable.LearnedSkill);
+
+                    // Queue an update for the skill sets
+                    QueueLevelUpdate(LevelUpdateType.PlayerSkillSetAdd, string.Empty);
 
                     _scenarioMessageService.Publish(player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
                 }
             }
+
+            // All other types - including Ammo type
             if (consumable.HasSpell || consumable.SubType == ConsumableSubType.Ammo)
             {
                 var targetedEnemy = _modelService.GetTargetedEnemies()
@@ -352,9 +376,12 @@ namespace Rogue.NET.Core.Logic
 
                 else
                 {
-                    _scenarioMessageService.Publish("Consuming " + displayName);
-                    // TODO
-                    //return ProcessPlayerMagicSpell((c.SubType == ConsumableSubType.Ammo) ? c.AmmoSpell : c.Spell);
+                    _scenarioMessageService.Publish("Using " + displayName);
+                    
+                    // Queue processing of spell
+                    return _spellEngine.QueuePlayerMagicSpell((consumable.SubType == ConsumableSubType.Ammo) ? 
+                                                               consumable.AmmoSpell : 
+                                                               consumable.Spell);
                 }
             }
 
@@ -370,13 +397,22 @@ namespace Rogue.NET.Core.Logic
             item.IsIdentified = true;
 
             _scenarioMessageService.Publish(item.RogueName + " Identified");
+
+            // Queue an update
+            if (item is Consumable)
+                QueuePlayerConsumableAddOrUpdate(itemId);
+            else if (item is Equipment)
+                QueuePlayerEquipmentAddOrUpdate(itemId);
         }
-        public void Enchant(string id)
+        public void Enchant(string equipmentId)
         {
-            var equipment = _modelService.Player.Equipment[id];
+            var equipment = _modelService.Player.Equipment[equipmentId];
             equipment.Class++;
 
             _scenarioMessageService.Publish("Your " + _modelService.GetDisplayName(equipment.RogueName) + " starts to glow!");
+
+            // Queue update
+            QueuePlayerEquipmentAddOrUpdate(equipmentId);
         }
         public void Uncurse(string itemId)
         {
@@ -396,6 +432,9 @@ namespace Rogue.NET.Core.Logic
 
                 _scenarioMessageService.Publish("Your " + equipment.RogueName + " is now safe to use (with caution...)");
             }
+
+            // Queue an update
+            QueuePlayerEquipmentAddOrUpdate(itemId);
         }
         public void Drop(string itemId)
         {
@@ -412,7 +451,7 @@ namespace Rogue.NET.Core.Logic
             else if (targetedEnemy == null)
                 _scenarioMessageService.Publish("Must first target an enemy");
 
-            else if (_layoutEngine.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= 2)
+            else if (_layoutEngine.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MIN_FIRING_DISTANCE)
                 _scenarioMessageService.Publish("Too close to fire your weapon");
 
             else
@@ -427,6 +466,9 @@ namespace Rogue.NET.Core.Logic
 
                 // Remove ammo from inventory
                 _modelService.Player.Consumables.Remove(ammo.Id);
+
+                // Queue update
+                QueuePlayerConsumableRemove(ammo.Id);
 
                 // Player Misses
                 var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, targetedEnemy);
@@ -447,8 +489,7 @@ namespace Rogue.NET.Core.Logic
                         targetedEnemy.Hp -= hit;
                     }
 
-                    // TODO
-                    //return ProcessPlayerMagicSpell((c.SubType == ConsumableSubType.Ammo) ? c.AmmoSpell : c.Spell);
+                    return _spellEngine.QueuePlayerMagicSpell(ammo.AmmoSpell);
                 }
             }
             return LevelContinuationAction.ProcessTurn;
@@ -541,6 +582,9 @@ namespace Rogue.NET.Core.Logic
 
             if (skillSet != null)
                 skillSet.IsActive = !isActive;
+
+            // Queue update for all skill sets
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.SkillSets.Select(x => x.Id).ToArray());
         }
         public void EmphasizeSkillUp(string skillSetId)
         {
@@ -550,6 +594,8 @@ namespace Rogue.NET.Core.Logic
                 if (skillSet.Emphasis < 3)
                     skillSet.Emphasis++;
             }
+
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, skillSet.Id);
         }
         public void EmphasizeSkillDown(string skillSetId)
         {
@@ -559,6 +605,8 @@ namespace Rogue.NET.Core.Logic
                 if (skillSet.Emphasis > 0)
                     skillSet.Emphasis--;
             }
+
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, skillSet.Id);
         }
         public LevelContinuationAction InvokePlayerSkill()
         {
@@ -567,7 +615,7 @@ namespace Rogue.NET.Core.Logic
             // No Active Skill Set
             if (activeSkillSet == null)
             {
-                _scenarioMessageService.Publish("No Active Skill");
+                _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
                 return LevelContinuationAction.ProcessTurn;
             }
 
@@ -575,7 +623,7 @@ namespace Rogue.NET.Core.Logic
             var currentSkill = activeSkillSet.GetCurrentSkill();
             if (currentSkill == null)
             {
-                _scenarioMessageService.Publish("No Active Skill");
+                _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
                 return LevelContinuationAction.ProcessTurn;
             }
 
@@ -589,10 +637,11 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, currentSkill.Cost))
                 return LevelContinuationAction.ProcessTurn;
 
-            // Deactivate passive if it's turned on
+            // For passives - work with IsTurnedOn flag
             if (activeSkillSet.GetCurrentSkill().Type == AlterationType.PassiveAura ||
                 activeSkillSet.GetCurrentSkill().Type == AlterationType.PassiveSource)
             {
+                // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)
                 {
                     _scenarioMessageService.Publish("Deactivating - " + activeSkillSet.RogueName);
@@ -600,24 +649,37 @@ namespace Rogue.NET.Core.Logic
                     //this.Player.DeactivatePassiveEffect(activeSkillSet.CurrentSkill.Id);
                     activeSkillSet.IsTurnedOn = false;
                 }
+                // Turn on the passive and queue processing
                 else
+                {
                     activeSkillSet.IsTurnedOn = true;
+
+                    // Queue processing -> Animation -> Process parameters (backend)
+                    return  _spellEngine.QueuePlayerMagicSpell(currentSkill);
+                }
             }
+            // All other skill types
+            else
+            {
+                // Publish message
+                _scenarioMessageService.Publish("Invoking - " + activeSkillSet.RogueName);
 
-
-            _scenarioMessageService.Publish("Invoking - " + activeSkillSet.RogueName);
-
-            // TODO - Finally process the spell
-            //return ProcessPlayerMagicSpell(activeSkillSet.CurrentSkill);
+                // Queue processing -> Animation -> Process parameters (backend)
+                return _spellEngine.QueuePlayerMagicSpell(currentSkill);
+            }
 
             return LevelContinuationAction.ProcessTurn;
         }
         public LevelContinuationAction InvokeDoodad()
         {
             var player = _modelService.Player;
-            var doodad = _modelService.CurrentLevel.GetAtPoint<DoodadBase>(player.Location);
+            var doodad = _modelService.Level.GetAtPoint<DoodadBase>(player.Location);
             if (doodad == null)
+            {
+                _scenarioMessageService.Publish("Nothing here to use! (Requires Scenario Object)");
+
                 return LevelContinuationAction.DoNothing;
+            }
 
             //Sets identified
             _modelService.ScenarioEncyclopedia[doodad.RogueName].IsIdentified = true;
@@ -643,15 +705,14 @@ namespace Rogue.NET.Core.Logic
                     {
                         switch (((DoodadNormal)doodad).NormalType)
                         {
-                            // TODO
                             case DoodadNormalType.SavePoint:
-                                //PublishSaveEvent();
+                                QueueScenarioSave();
                                 break;
                             case DoodadNormalType.StairsDown:
-                                //PublishLoadLevelRequest(this.Level.Number + 1, PlayerStartLocation.StairsUp);
+                                QueueScenarioLevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp);
                                 break;
                             case DoodadNormalType.StairsUp:
-                                //PublishLoadLevelRequest(this.Level.Number - 1, PlayerStartLocation.StairsDown);
+                                QueueScenarioLevelChange(_modelService.Level.Number - 1, PlayerStartLocation.StairsDown);
                                 break;
                         }
                     }
@@ -681,6 +742,62 @@ namespace Rogue.NET.Core.Logic
             {
                 LevelUpdateType = type,
                 ContentIds = contentIds
+            });
+        }
+        private void QueuePlayerConsumableAddOrUpdate(string consumableId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerConsumableAddOrUpdate,
+                ContentIds = new string[] {consumableId}
+            });
+        }
+        private void QueuePlayerConsumableRemove(string consumableId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerConsumableRemove,
+                ContentIds = new string[] { consumableId }
+            });
+        }
+        private void QueuePlayerEquipmentAddOrUpdate(string equipmentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
+                ContentIds = new string[] { equipmentId }
+            });
+        }
+        private void QueuePlayerEquipmentRemove(string equipmentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerEquipmentRemove,
+                ContentIds = new string[] { equipmentId }
+            });
+        }
+        private void QueueScenarioLevelChange(int levelNumber, PlayerStartLocation playerStartLocation)
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.LevelChange,
+                LevelNumber = levelNumber,
+                StartLocation = playerStartLocation
+            });
+        }
+        private void QueueScenarioPlayerDeath(string deathMessage)
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.PlayerDeath,
+                PlayerDeathMessage = deathMessage
+            });
+        }
+        private void QueueScenarioSave()
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.Save
             });
         }
         #endregion

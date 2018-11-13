@@ -74,11 +74,11 @@ namespace Rogue.NET.Core.Logic.Algorithm
             if (pathIdx > maxSeparation)
                 return null;
 
-            var grid = _modelService.CurrentLevel.Grid;
+            var grid = _modelService.Level.Grid;
 
             // Gets a set of adjacent locations that aren't blocked
-            var adjacentPathLocations = _layoutEngine.GetAdjacentLocations(_modelService.CurrentLevel.Grid, location)
-                                                     .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, x, true) &&
+            var adjacentPathLocations = _layoutEngine.GetAdjacentLocations(_modelService.Level.Grid, location)
+                                                     .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, x, true) &&
                                                                  !(_layoutEngine.EuclideanDistance(x, end) > maxSeparation))
                                                      .ToList();
 

@@ -70,7 +70,7 @@ namespace Rogue.NET.Core.Logic
         #region (public) Methods
         public void StepOnItem(Character character, ItemBase item)
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var haulMax = _characterProcessor.GetHaulMax(character);
             var projectedHaul = item.Weight + _characterProcessor.GetHaul(character);
 
@@ -101,13 +101,13 @@ namespace Rogue.NET.Core.Logic
                     if (item is Consumable)
                         LevelUpdateEvent(this, new LevelUpdate()
                         {
-                            LevelUpdateType = LevelUpdateType.PlayerConsumableAdd,
+                            LevelUpdateType = LevelUpdateType.PlayerConsumableAddOrUpdate,
                             ContentIds = new string[] { item.Id }
                         });
                     else if (item is Equipment)
                         LevelUpdateEvent(this, new LevelUpdate()
                         {
-                            LevelUpdateType = LevelUpdateType.PlayerEquipmentAdd,
+                            LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
                             ContentIds = new string[] { item.Id }
                         });
 
@@ -138,21 +138,29 @@ namespace Rogue.NET.Core.Logic
         }
         public bool Equip(string equipId)
         {
+            // Fetch reference to equipment
             var equipment = _modelService.Player.Equipment[equipId];
+            var result = false;
 
+            // Process the update
             if (equipment.IsEquipped)
-                return UnEquip(equipment);
+                result = UnEquip(equipment);
 
             else
-                return Equip(equipment);
+                result = Equip(equipment);
+
+            // Queue player update for this item
+            QueuePlayerEquipmentAddOrUpdate(equipId);
+
+            return result;
         }
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player, _modelService.Player.Location);
-            var location = adjacentFreeLocations.FirstOrDefault();
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Level, _modelService.Player, _modelService.Player.Location);
+            var dropLocation = adjacentFreeLocations.FirstOrDefault();
 
-            if (location == null)
+            if (dropLocation == null)
             {
                 _scenarioMessageService.Publish("Cannot drop item here");
                 return;
@@ -170,44 +178,38 @@ namespace Rogue.NET.Core.Logic
                 }
 
                 // Set item location
-                equipment.Location = location;
+                equipment.Location = dropLocation;
 
                 // Remove from inventory
                 _modelService.Player.Equipment.Remove(equipment.Id);
 
                 // Add level content
-                _modelService.CurrentLevel.AddContent(equipment);
+                _modelService.Level.AddContent(equipment);
 
-                // TODO
-                //Deactivate passives
-                //if (equipment.HasEquipSpell)
-                //{
-                //    if (equipment.EquipSpell.Type == AlterationType.PassiveSource)
-                //        this.Player.DeactivatePassiveEffect(equipment.EquipSpell.Id);
-
-                //    else
-                //        this.Player.DeactivatePassiveAura(equipment.EquipSpell.Id);
-                //}
-
-                // Publish message
-                _scenarioMessageService.Publish(displayName + " Dropped");
+                // Queue updates
+                QueuePlayerEquipmentRemove(equipment.Id);
+                QueueLevelUpdate(LevelUpdateType.ContentAll, string.Empty);
             }
             if (item is Consumable)
             {
                 var consumable = item as Consumable;
 
                 // Set item location
-                consumable.Location = location;
+                consumable.Location = dropLocation;
 
                 // Remove from inventory
                 _modelService.Player.Consumables.Remove(consumable.Id);
 
                 // Add level content
-                _modelService.CurrentLevel.AddContent(consumable);
+                _modelService.Level.AddContent(consumable);
 
-                // Publish message
-                _scenarioMessageService.Publish(displayName + " Dropped");
+                // Queue updates
+                QueuePlayerConsumableRemove(consumable.Id);
+                QueueLevelUpdate(LevelUpdateType.ContentAll, string.Empty);
             }
+
+            // Publish message
+            _scenarioMessageService.Publish(displayName + " Dropped");
         }
         public void EnemyDeath(Enemy enemy)
         {
@@ -221,7 +223,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             //Update level object
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
 
             level.RemoveContent(enemy);
             level.MonsterScore += (int)enemy.ExperienceGiven;
@@ -251,7 +253,7 @@ namespace Rogue.NET.Core.Logic
         }
         public void CalculateEnemyReactions()
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
 
             // Enemy Reactions: 0) Check whether enemy is still alive 
             //                  1) Process Enemy Reaction (Applies End-Of-Turn)
@@ -272,7 +274,7 @@ namespace Rogue.NET.Core.Logic
         }
         public void ProcessEnemyReaction(Enemy enemy)
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var player = _modelService.Player;
 
             double dist = _layoutEngine.EuclideanDistance(enemy.Location, player.Location);
@@ -304,7 +306,7 @@ namespace Rogue.NET.Core.Logic
         #region (private) Sub-Methods
         private void StepOnDoodadNormal(Character character, DoodadNormal doodad)
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
 
             if (character is Player)
@@ -326,7 +328,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case DoodadNormalType.TeleportRandom:
                     {
-                        character.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
+                        character.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
 
@@ -387,7 +389,7 @@ namespace Rogue.NET.Core.Logic
         }
         private void StepOnDoodadMagic(Character character, DoodadMagic doodad)
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
 
             if (character is Player)
@@ -432,9 +434,10 @@ namespace Rogue.NET.Core.Logic
 
                 // Publish Message
                 _scenarioMessageService.Publish("Un-Equipped " + (metaData.IsIdentified ? equipment.RogueName : "???"));
-
+                
                 // TODO
-                //if (e.HasEquipSpell)
+                // If equip spell is present - make sure it's deactivated and removed
+                //if (equipment.HasEquipSpell)
                 //{
                 //    if (e.EquipSpell.Type == AlterationType.PassiveSource)
                 //        _modelService.Player.DeactivatePassiveEffect(e.EquipSpell.Id);
@@ -504,19 +507,18 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish("Equipped " + _modelService.GetDisplayName(equipment.RogueName));
 
-            // TODO
-            //Fire equip spell
-            //if (equipment.HasEquipSpell)
-            //    ProcessPlayerMagicSpell(equipment.EquipSpell);
+            // Fire equip spell
+            if (equipment.HasEquipSpell)
+                _spellEngine.QueuePlayerMagicSpell(equipment.EquipSpell);
 
-            //if (equipment.HasCurseSpell && equipment.IsCursed)
-            //    ProcessPlayerMagicSpell(equipment.CurseSpell);
+            if (equipment.HasCurseSpell && equipment.IsCursed)
+                _spellEngine.QueuePlayerMagicSpell(equipment.CurseSpell);
 
             return true;
         }
         private void DropEnemyItem(Enemy enemy, ItemBase item)
         {
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.CurrentLevel, _modelService.Player, enemy.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Level, _modelService.Player, enemy.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -533,7 +535,7 @@ namespace Rogue.NET.Core.Logic
                 enemy.Consumables.Remove(item.Id);
 
             // Add to level
-            _modelService.CurrentLevel.AddContent(item);
+            _modelService.Level.AddContent(item);
         }
         #endregion
 
@@ -565,13 +567,13 @@ namespace Rogue.NET.Core.Logic
                 {
                     case CharacterAttackType.Melee:
                         {
-                            var adjacentCells = _layoutEngine.GetAdjacentLocations(_modelService.CurrentLevel.Grid, enemy.Location);
+                            var adjacentCells = _layoutEngine.GetAdjacentLocations(_modelService.Level.Grid, enemy.Location);
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
                             if (attackLocation != null) // TODO && 
                                                         //!e.States.Any(z => z == CharacterStateType.Confused))
                             {
-                                if (!_layoutEngine.IsPathToCellThroughWall(_modelService.CurrentLevel.Grid, enemy.Location, attackLocation))
+                                if (!_layoutEngine.IsPathToCellThroughWall(_modelService.Level.Grid, enemy.Location, attackLocation))
                                 {
                                     OnEnemyMeleeAttack(enemy);
                                     actionTaken = true;
@@ -642,18 +644,18 @@ namespace Rogue.NET.Core.Logic
             switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player, enemy.Location, true);
+                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, _modelService.Player, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .First();
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel, _modelService.Player, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                         .Last();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.CurrentLevel,  _modelService.Player, enemy.Location)
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
                                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
                                                         .First();
 
@@ -681,7 +683,7 @@ namespace Rogue.NET.Core.Logic
             var moveDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
 
             var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsPathToCellThroughDoor(
-                                _modelService.CurrentLevel.Grid, 
+                                _modelService.Level.Grid, 
                                 enemy.Location, 
                                 moveDirection, 
                                 out openingPosition1, 
@@ -696,7 +698,7 @@ namespace Rogue.NET.Core.Logic
                 if (shouldMoveToOpeningPosition1)
                 {
                     // Have to move to opening position 1 first - which means the door is on one of the off-diagonal locations
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition1, true))
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, openingPosition1, true))
                     {
                         // Update enemy location
                         enemy.Location = openingPosition1;
@@ -714,14 +716,14 @@ namespace Rogue.NET.Core.Logic
                 else
                 {
                     // Open the door
-                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, moveDirection, enemy.Location);
+                    _layoutEngine.ToggleDoor(_modelService.Level.Grid, moveDirection, enemy.Location);
 
                     // Notify listener queue
                     LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
                 }
             }
             else if (!throughDoor &&
-                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, moveLocation, true))
+                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, moveLocation, true))
             {
                 // Update enemy location
                 enemy.Location = moveLocation;
@@ -735,12 +737,12 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Check for items
-            var item = _modelService.CurrentLevel.GetAtPoint<ItemBase>(enemy.Location);
+            var item = _modelService.Level.GetAtPoint<ItemBase>(enemy.Location);
             if (item != null)
                 StepOnItem(enemy, item);
 
             // Check for doodad
-            var doodad = _modelService.CurrentLevel.GetAtPoint<DoodadBase>(enemy.Location);
+            var doodad = _modelService.Level.GetAtPoint<DoodadBase>(enemy.Location);
             if (doodad != null)
                 StepOnDoodad(enemy, doodad);
         }
@@ -762,7 +764,7 @@ namespace Rogue.NET.Core.Logic
                                               {
                                                   return !(x.IsUnique && x.HasBeenGenerated) &&
                                                           !x.IsObjectiveItem &&
-                                                           x.Level.Contains(_modelService.CurrentLevel.Number);
+                                                           x.Level.Contains(_modelService.Level.Number);
                                               })
                                               .ToList();
 
@@ -774,10 +776,53 @@ namespace Rogue.NET.Core.Logic
             var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
-            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
+            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
 
             // Add content to level
-            _modelService.CurrentLevel.AddContent(enemy);
+            _modelService.Level.AddContent(enemy);
+        }
+        #endregion
+
+        #region (private) Queue Methods
+        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = type,
+                ContentIds = new string[] {contentId}
+            });
+        }
+        private void QueuePlayerEquipmentRemove(string equipmentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
+                ContentIds = new string[] { equipmentId }
+            });
+        }
+        private void QueuePlayerEquipmentAddOrUpdate(string equipmentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
+                ContentIds = new string[] { equipmentId }
+            });
+        }
+        private void QueuePlayerConsumableAddOrUpdate(string consumableId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerConsumableAddOrUpdate,
+                ContentIds = new string[] { consumableId }
+            });
+        }
+        private void QueuePlayerConsumableRemove(string consumableId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = LevelUpdateType.PlayerConsumableRemove,
+                ContentIds = new string[] { consumableId }
+            });
         }
         #endregion
     }

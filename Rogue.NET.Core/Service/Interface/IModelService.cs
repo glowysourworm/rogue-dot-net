@@ -24,7 +24,7 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Currently loaded Scenario Level
         /// </summary>
-        Level CurrentLevel { get; }
+        Level Level { get; }
 
         /// <summary>
         /// Player (single) instance for the Scenario

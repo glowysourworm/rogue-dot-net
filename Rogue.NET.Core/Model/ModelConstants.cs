@@ -14,5 +14,6 @@
         public const double LVL_GAIN_BASE = 0.5;
         public const double MIN_SPEED = 0.1;
         public const double MAX_SPEED = 1;
+        public const double MIN_FIRING_DISTANCE = 2.0D;
     }
 }

@@ -60,7 +60,7 @@
         /// <summary>
         /// Occurs when player has added consumable from inventory
         /// </summary>
-        PlayerConsumableAdd,
+        PlayerConsumableAddOrUpdate,
 
         /// <summary>
         /// Occurs when player has removed equipment from inventory
@@ -70,7 +70,23 @@
         /// <summary>
         /// Occurs when player has added equipment to inventory
         /// </summary>
-        PlayerEquipmentAdd,
+        PlayerEquipmentAddOrUpdate,
+
+        /// <summary>
+        /// Occurs when player learns new skill set from a consumable item. This should not require the skill be sent - so
+        /// will require a full refresh from the model for the player skill sets.
+        /// </summary>
+        PlayerSkillSetAdd,
+
+        /// <summary>
+        /// Occurs when player changes property of any skill set
+        /// </summary>
+        PlayerSkillSetRefresh,
+
+        /// <summary>
+        /// Signals an update for all player Inventory items, Skill sets, stats, and location
+        /// </summary>
+        PlayerAll,
 
         /// <summary>
         /// Signals end of targeting animation

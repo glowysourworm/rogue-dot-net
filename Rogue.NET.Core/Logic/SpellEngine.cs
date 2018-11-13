@@ -201,7 +201,7 @@ namespace Rogue.NET.Core.Logic
                     _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
                     break;
                 case AlterationType.RunAway:
-                    _modelService.CurrentLevel.RemoveContent(enemy);
+                    _modelService.Level.RemoveContent(enemy);
                     _scenarioMessageService.Publish(_modelService.GetDisplayName(enemy.RogueName) + " has run away!");
                     break;
                 case AlterationType.Steal:
@@ -279,8 +279,8 @@ namespace Rogue.NET.Core.Logic
             {
                 case AlterationMagicEffectType.ChangeLevelRandomDown:
                     {
-                        var minLevel = _modelService.CurrentLevel.Number + 1;
-                        var maxLevel = _modelService.CurrentLevel.Number + 10;
+                        var minLevel = _modelService.Level.Number + 1;
+                        var maxLevel = _modelService.Level.Number + 10;
                         var numberOfLevels = _modelService.ScenarioConfiguration.DungeonTemplate.NumberOfLevels;
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Min(randomLevel, numberOfLevels);
@@ -296,8 +296,8 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationMagicEffectType.ChangeLevelRandomUp:
                     {
-                        var minLevel = _modelService.CurrentLevel.Number - 10;
-                        var maxLevel = _modelService.CurrentLevel.Number - 1;
+                        var minLevel = _modelService.Level.Number - 10;
+                        var maxLevel = _modelService.Level.Number - 1;
                         var numberOfLevels = _modelService.ScenarioConfiguration.DungeonTemplate.NumberOfLevels;
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Max(randomLevel, 1);
@@ -448,7 +448,7 @@ namespace Rogue.NET.Core.Logic
 
         private void TeleportRandom(Character character)
         {
-            character.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
+            character.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
 
             if (character is Player)
                 _scenarioMessageService.Publish("You were teleported!");
@@ -458,22 +458,22 @@ namespace Rogue.NET.Core.Logic
         }
         private void RevealSavePoint()
         {
-            if (_modelService.CurrentLevel.HasSavePoint)
+            if (_modelService.Level.HasSavePoint)
             {
-                _modelService.CurrentLevel.SavePoint.IsRevealed = true;
+                _modelService.Level.SavePoint.IsRevealed = true;
             }
             _scenarioMessageService.Publish("You sense odd shrines near by...");
         }
         private void RevealMonsters()
         {
-            foreach (var enemy in _modelService.CurrentLevel.Enemies)
+            foreach (var enemy in _modelService.Level.Enemies)
                 enemy.IsRevealed = true;
 
             _scenarioMessageService.Publish("You hear growling in the distance...");
         }
         private void RevealLevel()
         {
-            foreach (var cell in _modelService.CurrentLevel.Grid.GetCells())
+            foreach (var cell in _modelService.Level.Grid.GetCells())
                 cell.IsRevealed = true;
 
             RevealSavePoint();
@@ -485,27 +485,27 @@ namespace Rogue.NET.Core.Logic
         }
         private void RevealStairs()
         {
-            if (_modelService.CurrentLevel.HasStairsDown)
-                _modelService.CurrentLevel.StairsDown.IsRevealed = true;
+            if (_modelService.Level.HasStairsDown)
+                _modelService.Level.StairsDown.IsRevealed = true;
 
-            if (_modelService.CurrentLevel.HasStairsUp)
-                _modelService.CurrentLevel.StairsUp.IsRevealed = true;
+            if (_modelService.Level.HasStairsUp)
+                _modelService.Level.StairsUp.IsRevealed = true;
 
             _scenarioMessageService.Publish("You sense exits nearby");
         }
         private void RevealItems()
         {
-            foreach (var consumable in _modelService.CurrentLevel.Consumables)
+            foreach (var consumable in _modelService.Level.Consumables)
                 consumable.IsRevealed = true;
 
-            foreach (var equipment in _modelService.CurrentLevel.Equipment)
+            foreach (var equipment in _modelService.Level.Equipment)
                 equipment.IsRevealed = true;
 
             _scenarioMessageService.Publish("You sense objects nearby");
         }
         private void RevealContent()
         {
-            foreach (var scenarioObject in _modelService.CurrentLevel.GetContents())
+            foreach (var scenarioObject in _modelService.Level.GetContents())
             {
                 scenarioObject.IsHidden = false;
                 scenarioObject.IsRevealed = true;
@@ -515,14 +515,14 @@ namespace Rogue.NET.Core.Logic
         }
         private void RevealFood()
         {
-            foreach (var consumable in _modelService.CurrentLevel.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
+            foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
             _scenarioMessageService.Publish("Hunger makes a good sauce.....  :)");
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {
-            var location = _layoutEngine.GetRandomAdjacentLocation(_modelService.CurrentLevel, _modelService.Player, enemy.Location, true);
+            var location = _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
             if (location == CellPoint.Empty)
                 return;
 
@@ -534,7 +534,7 @@ namespace Rogue.NET.Core.Logic
 
                 minion.Location = location;
 
-                _modelService.CurrentLevel.AddContent(minion);
+                _modelService.Level.AddContent(minion);
             }
         }
         private void CreateMonster(string monsterName)
@@ -546,9 +546,9 @@ namespace Rogue.NET.Core.Logic
                 _scenarioMessageService.Publish("You hear growling in the distance");
 
                 var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
-                enemy.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
+                enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
 
-                _modelService.CurrentLevel.AddContent(enemy);
+                _modelService.Level.AddContent(enemy);
             }
         }
 

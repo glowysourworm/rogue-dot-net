@@ -144,7 +144,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     break;
                 case LevelUpdateType.ContentMove:
                     foreach (var contentId in levelUpdate.ContentIds)
-                        UpdateObject(_contentDict[contentId], _modelService.CurrentLevel.GetContent(contentId));
+                        UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
                         break;
                 case LevelUpdateType.LayoutAll:
                     DrawLayout();
@@ -178,7 +178,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// </summary>
         private void DrawLayout()
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var bounds = DataHelper.Cell2UIRect(level.Grid.GetBounds());
 
             this.LevelWidth = (int)bounds.Width;
@@ -238,7 +238,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         private void DrawContent()
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var player = _modelService.Player;
             var visibleContents = _modelService.GetVisibleEnemies();
 
@@ -273,7 +273,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// </summary>
         private void UpdateLayoutVisibility()
         {
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
             var exploredLocations = _modelService.GetExploredLocations();
 
             var opacityMaskGeometry = new StreamGeometry();

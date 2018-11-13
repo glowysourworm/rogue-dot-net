@@ -110,7 +110,7 @@ namespace Rogue.NET.Core.Service
             }
 
             var player = _modelService.Player;
-            var level = _modelService.CurrentLevel;
+            var level = _modelService.Level;
 
             nextAction = LevelContinuationAction.DoNothing;
 
@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelAction.ToggleDoor:
                     {
-                        _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
+                        _layoutEngine.ToggleDoor(_modelService.Level.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
@@ -145,7 +145,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelAction.Search:
                     {
-                        _layoutEngine.Search(_modelService.CurrentLevel.Grid, _modelService.Player.Location);
+                        _layoutEngine.Search(_modelService.Level.Grid, _modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
@@ -230,7 +230,7 @@ namespace Rogue.NET.Core.Service
                     }
                     break;
 
-                //TODO: Remove this
+#if DEBUG
                 case LevelAction.DebugNext:
                     {
                         //Give all items and experience to the player and 
@@ -263,17 +263,28 @@ namespace Rogue.NET.Core.Service
 
                         if (level.HasStairsDown)
                             player.Location = level.StairsDown.Location;
+
+                        // Queue update: TODO: Clean this up maybe? 
+                        _modelService.UpdateVisibleLocations();
+                        _modelService.UpdateContents();
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentAll });
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutAll });
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
                     }
                     break;
-                //TODO: Remove this
                 case LevelAction.DebugIdentifyAll:
                     {
                         foreach (var item in player.Inventory)
                             _scenarioEngine.Identify(item.Key);
+
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
                     }
                     break;
                 case LevelAction.DebugExperience:
-                    player.Experience += 10000;
+                    {
+                        player.Experience += 10000;
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+                    }
                     break;
                 case LevelAction.DebugSkillUp:
                     {
@@ -282,8 +293,10 @@ namespace Rogue.NET.Core.Service
                             if (skillSet.Level < player.SkillSets.Count)
                                 skillSet.Level++;
                         }
+                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
                     }
                     break;
+#endif
             }
 
             if (nextAction == LevelContinuationAction.ProcessTurn || 
@@ -321,7 +334,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelProcessingActionType.EnemyReaction:
                     // If enemy not available then we've made a mistake in our processing logic. So, let it crash!
-                    _contentEngine.ProcessEnemyReaction(_modelService.CurrentLevel.Enemies.First(x => x.Id == workItem.CharacterId));
+                    _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.CharacterId));
                     break;
                 case LevelProcessingActionType.PlayerSpell:
                     _spellEngine.ProcessPlayerMagicSpell(workItem.PlayerSpell);

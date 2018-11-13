@@ -66,6 +66,8 @@ namespace Rogue.NET.Scenario.Controller
                 while (_scenarioService.AnyAnimationEvents() && processing)
                     processing = ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
 
+                // TODO: May have to put a wait on the dispatcher (Thread.Sleep) to force wait until Application Idle.
+
                 // Second: Process all Scenario Events
                 while (_scenarioService.AnyScenarioEvents() && processing)
                     processing = ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
@@ -78,8 +80,8 @@ namespace Rogue.NET.Scenario.Controller
                 while (_scenarioService.AnyLevelEvents())
                     processing = ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
 
-                // Finally: Process the rest of the backend (Data) queue.
-                while (_scenarioService.ProcessBackend()) { }
+                // Finally: Process the next backend work item
+                processing = _scenarioService.ProcessBackend();
 
                 processing = processing &&
                     (_scenarioService.AnyAnimationEvents() ||
@@ -90,6 +92,7 @@ namespace Rogue.NET.Scenario.Controller
         }
         private bool ProcessAnimationUpdate(IAnimationUpdate update)
         {
+            // TODO: This runs as Fire + Forget! (no way around it!)
             _eventAggregator.GetEvent<AnimationStartEvent>().Publish(update);
 
             return true;

@@ -59,7 +59,7 @@ namespace Rogue.NET.Core.Service
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration)
         {
-            this.CurrentLevel = level;
+            this.Level = level;
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
@@ -84,7 +84,7 @@ namespace Rogue.NET.Core.Service
             UpdateContents();
         }
 
-        public Level CurrentLevel { get; private set; }
+        public Level Level { get; private set; }
 
         public Player Player { get; private set; }
 
@@ -106,13 +106,13 @@ namespace Rogue.NET.Core.Service
         }
         public IEnumerable<Enemy> GetVisibleEnemies()
         {
-            return this.CurrentLevel
+            return this.Level
                        .Enemies
                        .Where(x => _visibleLocations.Contains(x.Location));
         }
         public IEnumerable<ScenarioObject> GetVisibleContents()
         {
-            return this.CurrentLevel
+            return this.Level
                        .GetContents()
                        .Where(x => _visibleLocations.Contains(x.Location));
         }
@@ -134,11 +134,11 @@ namespace Rogue.NET.Core.Service
         {
             foreach (var location in _effectedLocations)
             {
-                var scenarioObject = this.CurrentLevel.GetAtPoint<ScenarioObject>(location);
+                var scenarioObject = this.Level.GetAtPoint<ScenarioObject>(location);
 
                 if (scenarioObject != null)
                 {
-                    var cell = this.CurrentLevel.Grid.GetCell(location);
+                    var cell = this.Level.Grid.GetCell(location);
 
                     scenarioObject.IsExplored = cell.IsPhysicallyVisible;
                     scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible;
@@ -157,17 +157,17 @@ namespace Rogue.NET.Core.Service
 
             // If blind - no visible locations
             var visibleLocations = this.Player.Alteration.GetStates().Any(z => z == CharacterStateType.Blind) ?
-                                   _layoutEngine.GetAdjacentLocations(this.CurrentLevel.Grid, this.Player.Location) : 
-                                   _rayTracer.GetVisibleLocations(this.CurrentLevel.Grid, this.Player.Location, (int)lightRadius);
+                                   _layoutEngine.GetAdjacentLocations(this.Level.Grid, this.Player.Location) : 
+                                   _rayTracer.GetVisibleLocations(this.Level.Grid, this.Player.Location, (int)lightRadius);
 
             // Reset flag for currently visible locations
-            foreach (var cell in _visibleLocations.Select(x => this.CurrentLevel.Grid[x.Column, x.Row]))
+            foreach (var cell in _visibleLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
             {
                 cell.IsPhysicallyVisible = false;
             }
 
             // Set flags for newly calculated visible locations
-            foreach (var cell in visibleLocations.Select(x => this.CurrentLevel.Grid[x.Column, x.Row]))
+            foreach (var cell in visibleLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
             {
                 cell.IsPhysicallyVisible = true;
                 cell.IsExplored = true;
@@ -183,7 +183,7 @@ namespace Rogue.NET.Core.Service
             _visibleLocations = visibleLocations;
 
             // Update Explored locations
-            _exploredLocations = this.CurrentLevel
+            _exploredLocations = this.Level
                          .Grid
                          .GetCells()
                          .Where(x => x.IsExplored)
