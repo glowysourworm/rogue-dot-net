@@ -55,66 +55,64 @@ namespace Rogue.NET.Scenario.Service
             }
             return Compass.Null;
         }
-        public LevelCommandEventArgs ResolveKeys(Key k, bool shift, bool ctrl, bool alt)
+        public LevelCommandEventArgs ResolveKeys(Key key, bool shift, bool ctrl, bool alt)
         {
             //Searching
-            if (k == _preferences.Search)
+            if (key == _preferences.Search)
                 return new LevelCommandEventArgs(LevelAction.Search, Compass.Null, "");
             //Target
-            else if (k == _preferences.Target)
+            else if (key == _preferences.Target)
                 return new LevelCommandEventArgs(LevelAction.Target, Compass.E, "");
             //Skill Usage
-            else if (k == _preferences.Skill)
+            else if (key == _preferences.Skill)
                 return new LevelCommandEventArgs(shift ? LevelAction.CycleActiveSkill : LevelAction.InvokeSkill, Compass.Null, "");
             //Doodad Usage
-            else if (k == _preferences.Doodad)
+            else if (key == _preferences.Doodad)
                 return new LevelCommandEventArgs(LevelAction.InvokeDoodad, Compass.Null, "");
             //Fire Range Weapon
-            else if (k == _preferences.Fire)
+            else if (key == _preferences.Fire)
                 return new LevelCommandEventArgs(LevelAction.Fire, Compass.Null, "");
 
 //Debug*******
 #if DEBUG
-            else if (k == Key.N)
+            else if (key == Key.N)
                 return new LevelCommandEventArgs(LevelAction.DebugNext, Compass.Null, "");
-            else if (k == Key.W)
+            else if (key == Key.W)
                 return new LevelCommandEventArgs(LevelAction.DebugExperience, Compass.Null, "");
-            else if (k == Key.Q)
+            else if (key == Key.Q)
                 return new LevelCommandEventArgs(LevelAction.DebugIdentifyAll, Compass.Null, "");
-            else if (k == Key.A)
+            else if (key == Key.A)
                 return new LevelCommandEventArgs(LevelAction.DebugSkillUp, Compass.Null, "");
 #endif
             //Debug*******
 
             else
             {
-                if (ctrl && shift)
-                    return ProcessCompassLevelAction(LevelAction.Close, k);
-                else if (shift)
-                    return ProcessCompassLevelAction(LevelAction.Open, k);
+                if (shift)
+                    return ProcessCompassLevelAction(LevelAction.ToggleDoor, key);
                 else if (ctrl)
-                    return ProcessCompassLevelAction(LevelAction.Attack, k);
+                    return ProcessCompassLevelAction(LevelAction.Attack, key);
                 else
-                    return ProcessCompassLevelAction(LevelAction.Move, k);
+                    return ProcessCompassLevelAction(LevelAction.Move, key);
             }
         }
-        private LevelCommandEventArgs ProcessCompassLevelAction(LevelAction action, Key k)
+        private LevelCommandEventArgs ProcessCompassLevelAction(LevelAction action, Key key)
         {
-            if (k == _preferences.NorthWest)
+            if (key == _preferences.NorthWest)
                 return new LevelCommandEventArgs(action, Compass.NW, "");
-            else if (k == _preferences.North)
+            else if (key == _preferences.North)
                 return new LevelCommandEventArgs(action, Compass.N, "");
-            else if (k == _preferences.NorthEast)
+            else if (key == _preferences.NorthEast)
                 return new LevelCommandEventArgs(action, Compass.NE, "");
-            else if (k == _preferences.West)
+            else if (key == _preferences.West)
                 return new LevelCommandEventArgs(action, Compass.W, "");
-            else if (k == _preferences.East)
+            else if (key == _preferences.East)
                 return new LevelCommandEventArgs(action, Compass.E, "");
-            else if (k == _preferences.SouthWest)
+            else if (key == _preferences.SouthWest)
                 return new LevelCommandEventArgs(action, Compass.SW, "");
-            else if (k == _preferences.South)
+            else if (key == _preferences.South)
                 return new LevelCommandEventArgs(action, Compass.S, "");
-            else if (k == _preferences.SouthEast)
+            else if (key == _preferences.SouthEast)
                 return new LevelCommandEventArgs(action, Compass.SE, "");
 
             return null;

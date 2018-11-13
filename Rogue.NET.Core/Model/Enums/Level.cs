@@ -24,8 +24,7 @@ namespace Rogue.NET.Core.Model.Enums
         Null = 0,
         Move,
         Attack,
-        Open,
-        Close,
+        ToggleDoor,
         Search,
         Target,
         Throw,
@@ -58,10 +57,17 @@ namespace Rogue.NET.Core.Model.Enums
     public enum LevelContinuationAction
     {
         DoNothing,
+
+        /// <summary>
+        /// Processes Turn to allow Enemies to react. Can occur when Player performs an action that constitutes a turn - meaning they did something: Opened
+        /// a door; Searched a wall; etc... They're penalized with no regenration for that turn.
+        /// </summary>
         ProcessTurnNoRegeneration,
+
+        /// <summary>
+        /// Processes turn to allow enemies to react
+        /// </summary>
         ProcessTurn,
-        ProcessTurnAfterAnimation,
-        DungeonTickNoReactions
     }
     public enum LayoutType : int
     {

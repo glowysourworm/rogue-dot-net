@@ -60,7 +60,7 @@ namespace Rogue.NET.Core.Logic
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public LevelContinuationAction InvokePlayerMagicSpell(Spell spell)
+        public LevelContinuationAction QueuePlayerMagicSpell(Spell spell)
         {
             // Cost will be applied on turn - after animations are processed
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, spell.Cost))
@@ -87,7 +87,7 @@ namespace Rogue.NET.Core.Logic
             return LevelContinuationAction.ProcessTurn;
         }
         //Used for item throw effects
-        public LevelContinuationAction InvokeEnemyMagicSpell(Enemy enemy, Spell spell)
+        public LevelContinuationAction QueueEnemyMagicSpell(Enemy enemy, Spell spell)
         {
             // TODO: MOVE THIS!  Cost will be applied on turn - after animations are processed
             if (!_alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, spell.Cost))
@@ -108,12 +108,12 @@ namespace Rogue.NET.Core.Logic
             //No animations - just apply effects
             else
             {
-                OnEnemyMagicSpell(enemy, spell);
+                ProcessEnemyMagicSpell(enemy, spell);
 
                 return LevelContinuationAction.ProcessTurn;
             }
         }
-        private void OnPlayerMagicSpell(Spell spell)
+        public void ProcessPlayerMagicSpell(Spell spell)
         {
             var player = _modelService.Player;
 
@@ -165,7 +165,7 @@ namespace Rogue.NET.Core.Logic
                     break;
             }
         }
-        private void OnEnemyMagicSpell(Enemy enemy, Spell spell)
+        public void ProcessEnemyMagicSpell(Enemy enemy, Spell spell)
         {
             // Calculate alteration from spell's random parameters
             var alteration = _alterationGenerator.GenerateAlteration(spell);

@@ -3,43 +3,83 @@
     public enum LevelUpdateType
     {
         /// <summary>
-        /// Nothing to update
+        /// Occurs when all content in the level needs to be updated
         /// </summary>
-        None,
+        ContentAll,
+
+        /// <summary>
+        /// Occurs when visible content has changed (includes setting explored boolean)
+        /// </summary>
+        ContentVisible,
+
+        /// <summary>
+        /// Occurs when content is revealed
+        /// </summary>
+        ContentReveal,
+
+        /// <summary>
+        /// Occurs when content is removed from level
+        /// </summary>
+        ContentRemove,
+
+        /// <summary>
+        /// Occurs when content location is changed
+        /// </summary>
+        ContentMove,
 
         /// <summary>
         /// Occurs when the layout has changed (LevelGrid)
         /// </summary>
-        Layout,
+        LayoutAll,
 
         /// <summary>
-        /// Occurs when the region surrounding the player changes (visible locations)
+        /// Occurs when the region surrounding the player changes (visible locations and explored locations)
         /// </summary>
         LayoutVisible,
 
         /// <summary>
-        /// Occurs when all content in the level needs to be updated
+        /// Occurs when the layout is fully revealed
         /// </summary>
-        AllContent,
+        LayoutReveal,
 
         /// <summary>
-        /// Occurs when content surrounding the player needs to be updated
+        /// Occurs when the layout has changed because the door topology has changed (includes searched doors)
         /// </summary>
-        VisibleContent,
+        LayoutTopology,
 
         /// <summary>
-        /// Occurs when the player needs to be updated
+        /// Occurs when the player location needs to be updated
         /// </summary>
-        Player,
+        PlayerLocation,
 
         /// <summary>
-        /// Occurs when Enemy Dies and needs to be removed from the Level
+        /// Occurs when player has removed consumable from inventory
         /// </summary>
-        RemoveCharacter,
+        PlayerConsumableRemove,
 
         /// <summary>
-        /// Occurs when a door has been toggled
+        /// Occurs when player has added consumable from inventory
         /// </summary>
-        ToggleDoor
+        PlayerConsumableAdd,
+
+        /// <summary>
+        /// Occurs when player has removed equipment from inventory
+        /// </summary>
+        PlayerEquipmentRemove,
+
+        /// <summary>
+        /// Occurs when player has added equipment to inventory
+        /// </summary>
+        PlayerEquipmentAdd,
+
+        /// <summary>
+        /// Signals end of targeting animation
+        /// </summary>
+        TargetingEnd,
+
+        /// <summary>
+        /// Signals start of targeting animation
+        /// </summary>
+        TargetingStart
     }
 }

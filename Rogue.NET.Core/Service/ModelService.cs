@@ -79,6 +79,9 @@ namespace Rogue.NET.Core.Service
                     player.Location = _layoutEngine.GetRandomLocation(level, true);
                     break;
             }
+
+            UpdateVisibleLocations();
+            UpdateContents();
         }
 
         public Level CurrentLevel { get; private set; }

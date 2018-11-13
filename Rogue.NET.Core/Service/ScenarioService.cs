@@ -127,8 +127,7 @@ namespace Rogue.NET.Core.Service
                         nextAction = _scenarioEngine.Throw(command.ScenarioObjectId);
                     }
                     break;
-                case LevelAction.Close:
-                case LevelAction.Open:
+                case LevelAction.ToggleDoor:
                     {
                         _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
@@ -323,6 +322,9 @@ namespace Rogue.NET.Core.Service
                 case LevelProcessingActionType.EnemyReaction:
                     // If enemy not available then we've made a mistake in our processing logic. So, let it crash!
                     _contentEngine.ProcessEnemyReaction(_modelService.CurrentLevel.Enemies.First(x => x.Id == workItem.CharacterId));
+                    break;
+                case LevelProcessingActionType.PlayerSpell:
+                    _spellEngine.ProcessPlayerMagicSpell(workItem.PlayerSpell);
                     break;
             }
             return true;

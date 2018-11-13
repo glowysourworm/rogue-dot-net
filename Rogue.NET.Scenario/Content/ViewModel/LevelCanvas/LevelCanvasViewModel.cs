@@ -28,6 +28,7 @@ using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -46,6 +47,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         int _levelWidth;
         int _levelHeight;
 
+        // Targeting animation (singular)
+        IList<ITimedGraphic> _targetingAnimations;
+
         // Used for quick access to elements
         IDictionary<string, FrameworkElement> _contentDict;
 
@@ -63,20 +67,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Contents = new ObservableCollection<FrameworkElement>();
             _contentDict = new Dictionary<string, FrameworkElement>();
 
+            _targetingAnimations = new List<ITimedGraphic>();
+
             // Defaults for canvas size
             this.LevelHeight = 500;
             this.LevelWidth = 500;
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                // TODO: REMOVE THIS
-                _modelService.UpdateVisibleLocations();
-                _modelService.UpdateContents();
-
                 DrawLayout();
                 DrawContent();
-
-                UpdateVisibility();
+                UpdateLayoutVisibility();
 
             }, true);
 
@@ -126,37 +127,46 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         private void OnLevelUpdate(ILevelUpdate levelUpdate)
         {
-            // TODO: Make more granular
             switch (levelUpdate.LevelUpdateType)
             {
-                case LevelUpdateType.AllContent:
-                    DrawLayout();
+                case LevelUpdateType.ContentAll:
                     DrawContent();
-                    UpdateVisibility();
                     break;
-                case LevelUpdateType.Layout:
+                case LevelUpdateType.ContentVisible:
+                    DrawContent();
+                    break;
+                case LevelUpdateType.ContentReveal:
+                    // TODO
+                    break;
+                case LevelUpdateType.ContentRemove:
+                    foreach (var contentId in levelUpdate.ContentIds)
+                        RemoveContent(contentId);
+                    break;
+                case LevelUpdateType.ContentMove:
+                    foreach (var contentId in levelUpdate.ContentIds)
+                        UpdateObject(_contentDict[contentId], _modelService.CurrentLevel.GetContent(contentId));
+                        break;
+                case LevelUpdateType.LayoutAll:
                     DrawLayout();
-                    UpdateVisibility();
                     break;
                 case LevelUpdateType.LayoutVisible:
-                    UpdateVisibility();
+                    UpdateLayoutVisibility();
                     break;
-                case LevelUpdateType.Player:
-                    DrawContent();
-                    UpdateVisibility();
+                case LevelUpdateType.LayoutReveal:
+                    // TODO
                     break;
-                case LevelUpdateType.RemoveCharacter:
-                    RemoveContent(levelUpdate.Id);
-                    break;
-                case LevelUpdateType.ToggleDoor:
+                case LevelUpdateType.LayoutTopology:
                     DrawLayout();
-                    UpdateVisibility();
                     break;
-                case LevelUpdateType.VisibleContent:
-                    DrawContent();
-                    UpdateVisibility();
+                case LevelUpdateType.PlayerLocation:
+                    UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
                     break;
-                case LevelUpdateType.None:
+                case LevelUpdateType.TargetingStart:
+                    PlayTargetAnimation();
+                    break;
+                case LevelUpdateType.TargetingEnd:
+                    StopTargetAnimation();
+                    break;
                 default:
                     break;
             }
@@ -261,7 +271,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// <summary>
         /// Draws visibility visual used as an opacity mask for the level
         /// </summary>
-        private void UpdateVisibility()
+        private void UpdateLayoutVisibility()
         {
             var level = _modelService.CurrentLevel;
             var exploredLocations = _modelService.GetExploredLocations();
@@ -310,6 +320,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             else if (scenarioObject is Character)
                 Canvas.SetZIndex(image, 3);
+            else
+                throw new Exception("Unhandled ScenarioObject Type");
 
             var point = DataHelper.Cell2UI(scenarioObject.Location);
 
@@ -401,7 +413,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 await Task.Delay(waitTime);
             }
         }
-
         private void OnAnimationTimerElapsed(ITimedGraphic sender)
         {
             foreach (var timedGraphic in sender.GetGraphics())
@@ -409,6 +420,47 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             sender.TimeElapsed -= new TimerElapsedHandler(OnAnimationTimerElapsed);
             sender.CleanUp();
+        }
+
+        private void PlayTargetAnimation()
+        {
+            if (_targetingAnimations.Count != 0)
+                StopTargetAnimation();
+
+            var points = _modelService.GetTargetedEnemies()
+                                      .Select(x => DataHelper.Cell2UI(x.Location))
+                                      .ToArray();
+
+            // Start the animation group
+            foreach (var animation in _animationGenerator.CreateTargetingAnimation(points))
+            {
+                foreach (var graphic in animation.GetGraphics())
+                {
+                    Canvas.SetZIndex(graphic, 100);
+                    this.Contents.Add(graphic);
+                }
+
+                animation.Start();
+
+                // Add animation to list to clear it in a separate call and stop the animation
+                _targetingAnimations.Add(animation);
+            }
+        }
+        public void StopTargetAnimation()
+        {
+            if (_targetingAnimations.Count != 0)
+            {
+                foreach (var animation in _targetingAnimations)
+                {
+                    foreach (var graphic in animation.GetGraphics())
+                        this.Contents.Remove(graphic);
+
+                    animation.Stop();
+                    animation.CleanUp();
+                }
+
+                _targetingAnimations.Clear();
+            }
         }
         #endregion
     }

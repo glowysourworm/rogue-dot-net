@@ -26,7 +26,6 @@ namespace Rogue.NET.Scenario.Content.Views
         readonly IAnimationGenerator _animationGenerator;
         readonly IEventAggregator _eventAggregator;
 
-        List<AnimationGroup> _targetAnimationGroupList = new List<AnimationGroup>();
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
 
@@ -229,66 +228,18 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             base.OnMouseWheel(e);
 
-            // WONT WORK UNTIL PLAYER IS A CHILD OF LEVEL
-
             var scale = (e.Delta > 0) ? 1.05 : 0.95;
+
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 _scaleXform.ScaleX *= scale;
                 _scaleXform.ScaleY *= scale;
 
+                // TODO
                 //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Width);
                 //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Height);
             }
         }
-
-        #region Animations
-        //public void PlayTargetAnimation(Point[] pts)
-        //{
-        //    if (_targetAnimationGroupList.Count != 0)
-        //        StopTargetAnimation();
-
-        //    for (int i = 0; i < pts.Length;i++)
-        //    {
-        //        Point p = pts[i];
-        //        int len = 20;
-        //        Rect r = new Rect(p, new Size(10, 15));
-        //        Size s2 = new Size(1, 8);
-        //        Size s = new Size(1, 1);
-
-        //        Point nw = new Point(p.X - len, p.Y - len);
-        //        Point ne = new Point(r.TopRight.X + len, r.TopRight.Y - len);
-        //        Point se = new Point(r.BottomRight.X + len, r.BottomRight.Y + len);
-        //        Point sw = new Point(r.BottomLeft.X - len, r.BottomLeft.Y + len);
-
-        //        //Animation a1 = AnimationGenerator.GenerateProjectilePath(new Point[] { nw, r.TopLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-        //        //Animation a2 = AnimationGenerator.GenerateProjectilePath(new Point[] { ne, r.TopRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-        //        //Animation a3 = AnimationGenerator.GenerateProjectilePath(new Point[] { se, r.BottomRight }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-        //        //Animation a4 = AnimationGenerator.GenerateProjectilePath(new Point[] { sw, r.BottomLeft }, s, s2, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-        //        //Animation a5 = AnimationGenerator.GenerateTimedFigure(new RectangleGeometry(r), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
-        //        //AnimationGroup group = new AnimationGroup(new Animation[] { a1, a2, a3, a4, a5 });
-        //        //_targetAnimationGroupList.Add(group);
-        //        //StartTimedGraphicalEvent(group);
-        //    }
-        //}
-        //public void StopTargetAnimation()
-        //{
-        //    if (_targetAnimationGroupList.Count != 0)
-        //    {
-        //        foreach (AnimationGroup group in _targetAnimationGroupList)
-        //        {
-        //            Graphic[] graphics = group.GetGraphics();
-        //            foreach (Graphic g in graphics)
-        //                this.TheLevelCanvas.Children.Remove(g);
-        //            group.Stop();
-        //            group.CleanUp();
-        //        }
-        //        _targetAnimationGroupList.Clear();
-        //    }
-        //}
-
-
-        #endregion
     }
 }
 

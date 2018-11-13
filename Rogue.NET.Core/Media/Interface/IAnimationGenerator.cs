@@ -17,5 +17,7 @@ namespace Rogue.NET.Core.Media.Interface
             Rect bounds,
             Point sourcePoint,
             Point[] targetPoints);
+
+        IEnumerable<ITimedGraphic> CreateTargetingAnimation(Point[] points);
     }
 }

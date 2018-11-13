@@ -45,6 +45,9 @@ namespace Rogue.NET.Core.Model.Scenario
         // Gives the contents as an array
         ScenarioObject[] _levelContentArray;
 
+        // Gives the contents as a dictionary
+        IDictionary<string, ScenarioObject> _levelContentDict;
+
         public IEnumerable<Enemy> Enemies
         {
             get { return _enemies; }
@@ -74,8 +77,8 @@ namespace Rogue.NET.Core.Model.Scenario
         //Statistics
         public int StepsTaken { get; set; }
         public int MonsterScore { get; set; }   //Monster Killed * Experience for that monster
-        public Dictionary<string, int> MonstersKilled { get; set; }
-        public Dictionary<string, int> ItemsFound { get; set; }
+        public IDictionary<string, int> MonstersKilled { get; set; }
+        public IDictionary<string, int> ItemsFound { get; set; }
 
         public Level() { } 
         public Level(LevelGrid grid, LayoutType layoutType, int number)
@@ -99,6 +102,7 @@ namespace Rogue.NET.Core.Model.Scenario
             _levelContent = new List<ScenarioObject>();
             _levelContentGrid = new List<ScenarioObject>[grid.GetBounds().Right, grid.GetBounds().Bottom];
             _levelContentArray = new ScenarioObject[] { };
+            _levelContentDict = new Dictionary<string, ScenarioObject>();
 
             RebuildContentGrid();
         }
@@ -193,16 +197,21 @@ namespace Rogue.NET.Core.Model.Scenario
             MaintainLevelContentsArray();
         }
 
-        // Sort these to provide "ZIndex"... Not a preferred method; but it works.
         private void MaintainLevelContentsArray()
         {
             _levelContentArray = _levelContent.ToArray();
+            _levelContentDict = _levelContent.ToDictionary(x => x.Id, x => x);
         }
 
         public ScenarioObject[] GetContents()
         {
             return _levelContentArray;
         }
+        public ScenarioObject GetContent(string id)
+        {
+            return _levelContentDict[id];
+        }
+
         /// <summary>
         /// Checks level contents to see if cell is occupied. (NOTE** Must provide player location as well)
         /// </summary>

@@ -13,6 +13,8 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -104,17 +106,21 @@ namespace Rogue.NET.Core.Logic
 
         public ScenarioObject Move(Compass direction)
         {
-            //Desired Location
+            // Desired Location
             var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, _modelService.Player.Location, direction);
 
+            // Invalid location
+            if (desiredLocation == CellPoint.Empty)
+                return null;
+
             //Look for road blocks - move player
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, _modelService.Player.Location, desiredLocation))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, _modelService.Player.Location, desiredLocation, true))
             {
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
 
                 // Notify Listener queue
-                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.Player });
+                QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
             }
 
             //Increment counter
@@ -166,8 +172,16 @@ namespace Rogue.NET.Core.Logic
             // Update Model Content: 0) End Targeting
             //                       1) Update visible contents
             //                       2) Calculate model delta to prepare for UI
+
+            foreach (var target in _modelService.GetTargetedEnemies())
+                QueueLevelUpdate(LevelUpdateType.TargetingEnd, target.Id);
+
             _modelService.ClearTargetedEnemies();
             _modelService.UpdateContents();
+
+            // Queue Updates for level
+            QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
+            QueueLevelUpdate(LevelUpdateType.ContentVisible, string.Empty);
 
             // Allow passing of messages back to the UI
             _scenarioMessageService.UnBlock(false);
@@ -209,22 +223,28 @@ namespace Rogue.NET.Core.Logic
             var location = _modelService.Player.Location;
             var attackLocation = _layoutEngine.GetPointInDirection(_modelService.CurrentLevel.Grid, location, direction);
 
+            // Invalid attack location
+            if (attackLocation == CellPoint.Empty)
+                return;
+
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsCellThroughWall(_modelService.CurrentLevel.Grid, location, attackLocation);
+            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, location, attackLocation, false);
 
             // Get target for attack
-            var enemy = _modelService.CurrentLevel.Enemies.FirstOrDefault(x => x.Location == attackLocation);
+            var enemy = _modelService.CurrentLevel.GetAtPoint<Enemy>(attackLocation);
 
             if (enemy != null && !blocked)
             {
                 //Engage enemy if they're attacked
                 enemy.IsEngaged = true;
 
-                // Enemy dodges
+                // Enemy gets hit OR dodges
                 var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, enemy);
+
                 if (hit <= 0 || _randomSequenceGenerator.Get() < _characterProcessor.GetDodge(enemy))
                     _scenarioMessageService.Publish(player.RogueName + " Misses");
 
+                // Enemy hit
                 else
                 {
                     //Critical hit
@@ -262,27 +282,28 @@ namespace Rogue.NET.Core.Logic
             if (!_modelService.GetTargetedEnemies().Any())
                 return LevelContinuationAction.DoNothing;
 
-            var nextAction = LevelContinuationAction.DoNothing;
             var player = _modelService.Player;
             var enemy = _modelService.GetTargetedEnemies()
                                      .First();
 
             var thrownItem = player.Consumables[itemId];
 
-            // Remove item from inventory
-            player.Consumables.Remove(itemId);
-
+            // TBD: Create general consumable for projectiles that has melee parameters
             if (thrownItem.HasProjectileSpell)
             {
-                //Get the spell and null the item
-                var spell = thrownItem.ProjectileSpell;
+                // Queue the spell and remove the item
+                _spellEngine.QueuePlayerMagicSpell(thrownItem.ProjectileSpell);
 
-                //Process the spell TODO
-                //TODO - Change this to enemy invoke
-                //nextAction = ProcessPlayerMagicSpell(s);
+                // Remove item from inventory
+                player.Consumables.Remove(itemId);
+
+                // Queue Level Update - Player Consumables Remove
+                QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemId);
+
+                return LevelContinuationAction.ProcessTurnNoRegeneration;
             }
 
-            return nextAction;
+            return LevelContinuationAction.DoNothing;
         }
         public LevelContinuationAction Consume(string itemId)
         {
@@ -437,37 +458,51 @@ namespace Rogue.NET.Core.Logic
             var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
             var enemiesInRange = _modelService.GetVisibleEnemies().ToList();
 
+            Enemy target = null;
+
             if (targetedEnemy != null)
             {
+                // End targeting of current target
+                QueueLevelUpdate(LevelUpdateType.TargetingEnd, targetedEnemy.Id);
+
                 int targetedEnemyIndex = enemiesInRange.IndexOf(targetedEnemy);
                 switch (direction)
                 {
                     case Compass.E:
                         {
                             if (targetedEnemyIndex + 1 == enemiesInRange.Count)
-                                _modelService.SetTargetedEnemy(enemiesInRange[0]);
+                                target = enemiesInRange[0];
                             else
-                                _modelService.SetTargetedEnemy(enemiesInRange[targetedEnemyIndex + 1]);
+                                target = enemiesInRange[targetedEnemyIndex + 1];
                         }
                         break;
                     case Compass.W:
                         {
                             if (targetedEnemyIndex - 1 == -1)
-                                _modelService.SetTargetedEnemy(enemiesInRange[enemiesInRange.Count - 1]);
+                                target = enemiesInRange[enemiesInRange.Count - 1];
                             else
-                                _modelService.SetTargetedEnemy(enemiesInRange[targetedEnemyIndex - 1]);
+                                target = enemiesInRange[targetedEnemyIndex - 1];
                         }
                         break;
                     default:
-                        _modelService.SetTargetedEnemy(enemiesInRange[0]);
+                        target = enemiesInRange[0];
                         break;
-
                 }
             }
             else
             {
                 if (enemiesInRange.Count > 0)
-                    _modelService.SetTargetedEnemy(enemiesInRange[0]);
+                    target = enemiesInRange[0];
+            }
+
+            // Start targeting of Enemy
+            if (target != null)
+            {
+                // Set the targeted enemy
+                _modelService.SetTargetedEnemy(target);
+
+                // Queue update to level to show animation
+                QueueLevelUpdate(LevelUpdateType.TargetingStart, target.Id);
             }
         }
         public void ToggleActiveSkill(string skillSetId, bool activate)
@@ -600,7 +635,7 @@ namespace Rogue.NET.Core.Logic
                             var doodadMagic = (DoodadMagic)doodad;
                             doodadMagic.HasBeenUsed = true;
 
-                            return _spellEngine.InvokePlayerMagicSpell(doodadMagic.InvokedSpell);
+                            return _spellEngine.QueuePlayerMagicSpell(doodadMagic.InvokedSpell);
                         }
                     }
                     break;
@@ -630,5 +665,24 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
+
+        #region (private) Event Methods
+        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = type,
+                ContentIds = new string[] {contentId}
+            });
+        }
+        private void QueueLevelUpdate(LevelUpdateType type, string[] contentIds)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = type,
+                ContentIds = contentIds
+            });
+        }
+        #endregion
     }
 }

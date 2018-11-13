@@ -25,6 +25,7 @@ namespace Rogue.NET.Core.Logic
         readonly IModelService _modelService;
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
+        readonly ISpellEngine _spellEngine;
         readonly IEnemyProcessor _enemyProcessor;
         readonly IPlayerProcessor _playerProcessor;        
         readonly ICharacterProcessor _characterProcessor;
@@ -44,6 +45,7 @@ namespace Rogue.NET.Core.Logic
             IModelService modelService, 
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
+            ISpellEngine spellEngine,
             IEnemyProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
             ICharacterProcessor characterProcessor,
@@ -55,6 +57,7 @@ namespace Rogue.NET.Core.Logic
             _modelService = modelService;
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
+            _spellEngine = spellEngine;
             _enemyProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
             _characterProcessor = characterProcessor;
@@ -83,11 +86,31 @@ namespace Rogue.NET.Core.Logic
                 // Remove from the level
                 level.RemoveContent(item);
 
+                // Queue level update event for removed item
+                LevelUpdateEvent(this, new LevelUpdate()
+                {
+                    LevelUpdateType = LevelUpdateType.ContentRemove,
+                    ContentIds = new string[] { item.Id }
+                });
+
                 if (character is Player)
                 {
                     // Publish message
                     _scenarioMessageService.Publish("Found " + _modelService.GetDisplayName(item.RogueName));
-                    
+
+                    if (item is Consumable)
+                        LevelUpdateEvent(this, new LevelUpdate()
+                        {
+                            LevelUpdateType = LevelUpdateType.PlayerConsumableAdd,
+                            ContentIds = new string[] { item.Id }
+                        });
+                    else if (item is Equipment)
+                        LevelUpdateEvent(this, new LevelUpdate()
+                        {
+                            LevelUpdateType = LevelUpdateType.PlayerEquipmentAdd,
+                            ContentIds = new string[] { item.Id }
+                        });
+
                     //Update level statistics
                     if (!level.ItemsFound.ContainsKey(item.RogueName))
                         level.ItemsFound.Add(item.RogueName, 1);
@@ -222,8 +245,8 @@ namespace Rogue.NET.Core.Logic
             // Publish Level update
             LevelUpdateEvent(this, new LevelUpdate()
             {
-                Id = enemy.Id,
-                LevelUpdateType = LevelUpdateType.RemoveCharacter
+                ContentIds = new string[] { enemy.Id },
+                LevelUpdateType = LevelUpdateType.ContentRemove
             });
         }
         public void CalculateEnemyReactions()
@@ -285,7 +308,10 @@ namespace Rogue.NET.Core.Logic
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
 
             if (character is Player)
+            {
                 metaData.IsIdentified = true;
+                doodad.IsHidden = false;
+            }
 
             switch (doodad.NormalType)
             {
@@ -303,28 +329,54 @@ namespace Rogue.NET.Core.Logic
                         character.Location = _layoutEngine.GetRandomLocation(_modelService.CurrentLevel, true);
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
+
+                        // Queue update event for character location
+                        LevelUpdateEvent(this, new LevelUpdate()
+                        {
+                            LevelUpdateType  = LevelUpdateType.ContentMove,
+                            ContentIds = new string[] {character.Id}
+                        });
                     }
                     break;
                 case DoodadNormalType.Teleport1:
                 case DoodadNormalType.Teleport2:
                     {
-                        //Identify regardless of character
-                        metaData.IsIdentified = true;
-
                         var otherTeleporter = level.DoodadsNormal.First(x => x.PairId == doodad.Id);
 
+                        // Show the other teleporter also if it's hidden
                         otherTeleporter.IsHidden = false;
 
                         // Have to boot enemy if it's sitting on other teleporter
-                        if (level.IsCellOccupiedByEnemy(otherTeleporter.Location))
+                        if (character is Player && level.IsCellOccupiedByEnemy(otherTeleporter.Location))
                         {
                             var enemy = level.GetAtPoint<Enemy>(otherTeleporter.Location);
 
+                            // Remove from the level
                             level.RemoveContent(enemy);
+
+                            // Queue update to the level
+                            LevelUpdateEvent(this, new LevelUpdate()
+                            {
+                                LevelUpdateType = LevelUpdateType.ContentRemove,
+                                ContentIds = new string[] {enemy.Id}
+                            });
+                        }
+                        // Enemy is trying to teleport in where Player is
+                        else if (character is Enemy && character.Location == _modelService.Player.Location)
+                        {
+                            _scenarioMessageService.Publish("Enemy is trying to use your teleporter!");
+                            break;
                         }
 
                         // Set character location to other teleporter
                         character.Location = otherTeleporter.Location;
+
+                        // Queue update to level 
+                        LevelUpdateEvent(this, new LevelUpdate()
+                        {
+                            LevelUpdateType = LevelUpdateType.ContentMove,
+                            ContentIds = new string[] { character.Id }
+                        });
 
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
@@ -333,28 +385,30 @@ namespace Rogue.NET.Core.Logic
                     }
             }
         }
-        private void StepOnDoodadMagic(Character c, DoodadMagic d)
+        private void StepOnDoodadMagic(Character character, DoodadMagic doodad)
         {
             var level = _modelService.CurrentLevel;
-            var metaData = _modelService.ScenarioEncyclopedia[d.RogueName];
+            var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
 
-            if (c is Player)
+            if (character is Player)
             {
-                var displayName = _modelService.GetDisplayName(d.RogueName);
+                var displayName = _modelService.GetDisplayName(doodad.RogueName);
 
-                if (!(d.IsOneUse && d.HasBeenUsed))
+                if (!(doodad.IsOneUse && doodad.HasBeenUsed))
                 {
-                    if (d.IsAutomatic)
+                    if (doodad.IsAutomatic)
                     {
-                        // TODO
-                        //nextAction = ProcessPlayerMagicSpell(dm.AutomaticSpell);
-                        //dm.HasBeenUsed = true;
+                        // Mark that the doodad has been used
+                        doodad.HasBeenUsed = true;
+
+                        // Queue magic spell with animation
+                        _spellEngine.QueuePlayerMagicSpell(doodad.AutomaticSpell);
                     }
                     else
                         _scenarioMessageService.Publish(displayName + " Press \"D\" to Use");
                 }
                 else
-                    _scenarioMessageService.Publish(displayName);
+                    _scenarioMessageService.Publish(displayName + " seems to be inactive");
             }
         }
         private bool UnEquip(Equipment equipment)
@@ -517,7 +571,7 @@ namespace Rogue.NET.Core.Logic
                             if (attackLocation != null) // TODO && 
                                                         //!e.States.Any(z => z == CharacterStateType.Confused))
                             {
-                                if (!_layoutEngine.IsCellThroughWall(_modelService.CurrentLevel.Grid, enemy.Location, attackLocation))
+                                if (!_layoutEngine.IsPathToCellThroughWall(_modelService.CurrentLevel.Grid, enemy.Location, attackLocation))
                                 {
                                     OnEnemyMeleeAttack(enemy);
                                     actionTaken = true;
@@ -622,52 +676,62 @@ namespace Rogue.NET.Core.Logic
             var openingPosition1 = CellPoint.Empty;
             var openingPosition2 = CellPoint.Empty;
             var openingDirection2 = Compass.Null;
+            var shouldMoveToOpeningPosition1 = false;
 
             var moveDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
 
-            var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsCellThroughDoor(
+            var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsPathToCellThroughDoor(
                                 _modelService.CurrentLevel.Grid, 
                                 enemy.Location, 
                                 moveDirection, 
                                 out openingPosition1, 
                                 out openingPosition2, 
-                                out openingDirection2);
+                                out openingDirection2,
+                                out shouldMoveToOpeningPosition1);
 
             // Behavior allows opening of doors
             if (enemy.BehaviorDetails.CurrentBehavior.CanOpenDoors && throughDoor)
             {
-                var desiredDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
-
-                // If not in a cardinally adjacent position then move into that position before opening.
-                if (enemy.Location == openingPosition1)
+                // If have to move into position first then move
+                if (shouldMoveToOpeningPosition1)
                 {
-                    // Open the door
-                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, moveDirection, enemy.Location);
-
-                    // Notify listener queue
-                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ToggleDoor });
-                }
-
-                else
-                {
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition1))
+                    // Have to move to opening position 1 first - which means the door is on one of the off-diagonal locations
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, openingPosition1, true))
                     {
                         // Update enemy location
                         enemy.Location = openingPosition1;
 
                         // Notify listener queue
-                        LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.AllContent });
+                        LevelUpdateEvent(this, new LevelUpdate()
+                        {
+                            LevelUpdateType = LevelUpdateType.ContentMove,
+                            ContentIds = new string[] { enemy.Id }
+                        });
                     }
+                }
+
+                // Can open the door where the enemy is at
+                else
+                {
+                    // Open the door
+                    _layoutEngine.ToggleDoor(_modelService.CurrentLevel.Grid, moveDirection, enemy.Location);
+
+                    // Notify listener queue
+                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
                 }
             }
             else if (!throughDoor &&
-                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, moveLocation))
+                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.CurrentLevel, enemy.Location, moveLocation, true))
             {
                 // Update enemy location
                 enemy.Location = moveLocation;
 
                 // Notify listener queue
-                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.AllContent });
+                LevelUpdateEvent(this, new LevelUpdate()
+                {
+                    LevelUpdateType = LevelUpdateType.ContentMove,
+                    ContentIds = new string[] { enemy.Id }
+                });
             }
 
             // Check for items

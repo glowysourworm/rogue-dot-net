@@ -44,6 +44,18 @@ namespace Rogue.NET.Core.Logic
             Cell se = grid[location.Column + 1, location.Row + 1];
             Cell sw = grid[location.Column - 1, location.Row + 1];
 
+            var cells = new Cell[] { c, n, s, e, w, ne, sw, se, sw };
+
+            var visibleDoors = new Compass[] {
+                c?.VisibleDoors ?? Compass.Null,
+                n?.VisibleDoors ?? Compass.Null,
+                s?.VisibleDoors ?? Compass.Null,
+                e?.VisibleDoors ?? Compass.Null,
+                w?.VisibleDoors ?? Compass.Null,
+                ne?.VisibleDoors ?? Compass.Null,
+                nw?.VisibleDoors ?? Compass.Null,
+                se?.VisibleDoors ?? Compass.Null,
+                sw?.VisibleDoors  ?? Compass.Null};
 
             if (c != null)
             {
@@ -97,15 +109,29 @@ namespace Rogue.NET.Core.Logic
                 sw.NorthDoorSearchCounter--;
                 sw.EastDoorSearchCounter--;
             }
+
+            var topologyChange = false;
+            for (int i=0;i<cells.Length && !topologyChange;i++)
+            {
+                topologyChange = topologyChange || (cells[i]?.VisibleDoors ?? Compass.Null) != visibleDoors[i];
+            }
+
+            if (topologyChange)
+                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
         }
         public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
         {
             var openingPosition1 = CellPoint.Empty;
             var openingPosition2 = CellPoint.Empty;
             var openingDirection2 = Compass.Null;
+            var shouldMoveToOpeningPosition1 = false;
 
-            if (IsCellThroughDoor(grid, characterLocation, direction, out openingPosition1, out openingPosition2, out openingDirection2))
+            if (IsPathToCellThroughDoor(grid, characterLocation, direction, out openingPosition1, out openingPosition2, out openingDirection2, out shouldMoveToOpeningPosition1))
             {
+                // Have to move into position first
+                if (shouldMoveToOpeningPosition1)
+                    return;
+
                 var characterCell = grid.GetCell(characterLocation);
                 var openingPositionCell = grid.GetCell(openingPosition2);
 
@@ -114,24 +140,26 @@ namespace Rogue.NET.Core.Logic
 
                 LevelUpdateEvent(this, new LevelUpdate()
                 {
-                    LevelUpdateType = LevelUpdateType.ToggleDoor
+                    LevelUpdateType = LevelUpdateType.LayoutTopology
                 });
             }
         }
         #endregion
 
         #region (public) Query Methods
-        public bool IsCellThroughDoor(
+        public bool IsPathToCellThroughDoor(
             LevelGrid grid, 
             CellPoint location1, 
-            Compass openingDirection1,      // Represents the Door for location1
-            out CellPoint openingPosition1, // Represents the opening position for the door
-            out CellPoint openingPosition2, // Represents the same door opposite cell
-            out Compass openingDirection2)  // Represents the Door for location2
+            Compass openingDirection1,              // Represents the Door for location1
+            out CellPoint openingPosition1,         // Represents the opening position for the door
+            out CellPoint openingPosition2,         // Represents the same door opposite cell
+            out Compass openingDirection2,          // Represents the Door for location2
+            out bool shouldMoveToOpeningPosition1)  // Should move into position for opening the door before opening
         {
             openingPosition1 = CellPoint.Empty;
             openingPosition2 = CellPoint.Empty;
             openingDirection2 = Compass.Null;
+            shouldMoveToOpeningPosition1 = false;
 
             var location2 = GetPointInDirection(grid, location1, openingDirection1);
 
@@ -194,7 +222,10 @@ namespace Rogue.NET.Core.Logic
                                 openingPosition2 = location2;
                                 openingDirection2 = cardinal2Opposite;
 
-                                return false;  // TODO: Use for enemy movement
+                                // Used for enemy movement
+                                shouldMoveToOpeningPosition1 = true;
+
+                                return true;
                             }
 
                             return false;
@@ -219,7 +250,10 @@ namespace Rogue.NET.Core.Logic
                                 openingPosition2 = location2;
                                 openingDirection2 = cardinal1Opposite;
 
-                                return false; // TODO: Use for enemy movement
+                                // Used for enemy movement
+                                shouldMoveToOpeningPosition1 = true;
+
+                                return true;
                             }
                         }
 
@@ -228,234 +262,95 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsCellThroughWall(LevelGrid grid, CellPoint point1, CellPoint point2)
+        public bool IsPathToCellThroughWall(LevelGrid grid, CellPoint location1, CellPoint location2)
         {
-            Cell cell1 = grid.GetCell(point1);
-            Cell cell2 = grid.GetCell(point2);
+            var cell1 = grid.GetCell(location1);
+            var cell2 = grid.GetCell(location2);
 
             if (cell1 == null || cell2 == null)
                 return false;
 
-            Compass direction = GetDirectionBetweenAdjacentPoints(point1, point2);
+            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = GetOppositeDirection(direction);
+
             switch (direction)
             {
                 case Compass.N:
-                    return ((cell1.Walls & Compass.N) != 0) && ((cell2.Walls & Compass.S) != 0);
                 case Compass.S:
-                    return ((cell1.Walls & Compass.S) != 0) && ((cell2.Walls & Compass.N) != 0);
                 case Compass.E:
-                    return ((cell1.Walls & Compass.E) != 0) && ((cell2.Walls & Compass.W) != 0);
                 case Compass.W:
-                    return ((cell1.Walls & Compass.W) != 0) && ((cell2.Walls & Compass.E) != 0);
+                    return ((cell1.Walls & direction) != 0) && ((cell2.Walls & oppositeDirection) != 0);
                 case Compass.NE:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = diag1 == null;
-                        bool b2 = diag2 == null;
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Walls & Compass.S) != 0;
-                            b1 |= (cell2.Walls & Compass.W) != 0;
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Walls & Compass.W) != 0;
-                            b2 |= (cell2.Walls & Compass.S) != 0;
-                        }
-                        return b1 && b2;
-                    }
                 case Compass.NW:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = diag1 == null;
-                        bool b2 = diag2 == null;
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Walls & Compass.S) != 0;
-                            b1 |= (cell2.Walls & Compass.E) != 0;
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Walls & Compass.E) != 0;
-                            b2 |= (cell2.Walls & Compass.S) != 0;
-                        }
-                        return b1 && b2;
-                    }
                 case Compass.SE:
-                    {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = diag1 == null;
-                        bool b2 = diag2 == null;
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Walls & Compass.N) != 0;
-                            b1 |= (cell2.Walls & Compass.W) != 0;
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Walls & Compass.W) != 0;
-                            b2 |= (cell2.Walls & Compass.N) != 0;
-                        }
-                        return b1 && b2;
-                    }
                 case Compass.SW:
                     {
-                        Cell diag1 = grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = grid.GetCell(point1.Column - 1, point1.Row);
+                        Compass cardinal1;
+                        Compass cardinal2;
+
+                        var diag1 = grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
+                        var diag2 = grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
+
+                        var oppositeCardinal1 = GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = GetOppositeDirection(cardinal2);
+
                         if (diag1 == null && diag2 == null)
                             return true;
 
                         bool b1 = diag1 == null;
                         bool b2 = diag2 == null;
+
                         if (diag1 != null)
                         {
-                            b1 |= (diag1.Walls & Compass.N) != 0;
-                            b1 |= (cell2.Walls & Compass.E) != 0;
+                            b1 |= (diag1.Walls & oppositeCardinal1) != 0;
+                            b1 |= (cell2.Walls & oppositeCardinal2) != 0;
                         }
                         if (diag2 != null)
                         {
-                            b2 |= (diag2.Walls & Compass.E) != 0;
-                            b2 |= (cell2.Walls & Compass.N) != 0;
+                            b2 |= (diag2.Walls & oppositeCardinal2) != 0;
+                            b2 |= (cell2.Walls & oppositeCardinal1) != 0;
                         }
                         return b1 && b2;
                     }
             }
             return false;
         }
-        public bool IsPathToAdjacentCellBlocked(Level level, CellPoint point1, CellPoint point2)
+        public bool IsPathToAdjacentCellBlocked(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
         {
-            var cell1 = level.Grid.GetCell(point1);
-            var cell2 = level.Grid.GetCell(point2);
+            var cell1 = level.Grid.GetCell(location1);
+            var cell2 = level.Grid.GetCell(location2);
 
             if (cell1 == null || cell2 == null)
                 return true;
 
-            if (level.IsCellOccupiedByEnemy(cell2.Location))
+            if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
                 return true;
 
-            switch (GetDirectionBetweenAdjacentPoints(point1, point2))
+            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = GetOppositeDirection(direction);
+
+            switch (direction)
             {
                 case Compass.N:
-                    {
-                        bool b = ((cell1.Doors & Compass.N) != 0) && ((cell2.Doors & Compass.S) != 0);
-                        b |= ((cell1.Walls & Compass.N) != 0) && ((cell2.Walls & Compass.S) != 0);
-                        return b;
-                    }
                 case Compass.S:
-                    {
-                        bool b = ((cell1.Doors & Compass.S) != 0) && ((cell2.Doors & Compass.N) != 0);
-                        b |= ((cell1.Walls & Compass.S) != 0) && ((cell2.Walls & Compass.N) != 0);
-                        return b;
-                    }
                 case Compass.E:
-                    {
-                        bool b = ((cell1.Doors & Compass.E) != 0) && ((cell2.Doors & Compass.W) != 0);
-                        b |= ((cell1.Walls & Compass.E) != 0) && ((cell2.Walls & Compass.W) != 0);
-                        return b;
-                    }
                 case Compass.W:
-                    {
-                        bool b = ((cell1.Doors & Compass.W) != 0) && ((cell2.Doors & Compass.E) != 0);
-                        b |= ((cell1.Walls & Compass.W) != 0) && ((cell2.Walls & Compass.E) != 0);
-                        return b;
-                    }
+                    return ((cell1.Doors & direction) != 0) && ((cell2.Doors & oppositeDirection) != 0) ||
+                           ((cell1.Walls & direction) != 0) && ((cell2.Walls & oppositeDirection) != 0);
                 case Compass.NE:
-                    {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = (diag1 == null);
-                        bool b2 = (diag2 == null);
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Doors & Compass.S) != 0;
-                            b1 |= (cell2.Doors & Compass.W) != 0;
-                            b1 |= (diag1.Walls & Compass.S) != 0;
-                            b1 |= (cell2.Walls & Compass.W) != 0;
-                            b1 |= level.IsCellOccupiedByEnemy(diag1.Location);
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Doors & Compass.W) != 0;
-                            b2 |= (cell2.Doors & Compass.S) != 0;
-                            b2 |= (diag2.Walls & Compass.W) != 0;
-                            b2 |= (cell2.Walls & Compass.S) != 0;
-                            b2 |= level.IsCellOccupiedByEnemy(diag2.Location);
-                        }
-                        return (b1 && b2);
-                    }
                 case Compass.NW:
-                    {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row - 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = (diag1 == null);
-                        bool b2 = (diag2 == null);
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Doors & Compass.S) != 0;
-                            b1 |= (cell2.Doors & Compass.E) != 0;
-                            b1 |= (diag1.Walls & Compass.S) != 0;
-                            b1 |= (cell2.Walls & Compass.E) != 0;
-                            b1 |= level.IsCellOccupiedByEnemy(diag1.Location);
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Doors & Compass.E) != 0;
-                            b2 |= (cell2.Doors & Compass.S) != 0;
-                            b2 |= (diag2.Walls & Compass.E) != 0;
-                            b2 |= (cell2.Walls & Compass.S) != 0;
-                            b2 |= level.IsCellOccupiedByEnemy(diag2.Location);
-                        }
-                        return (b1 && b2);
-                    }
                 case Compass.SE:
-                    {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column + 1, point1.Row);
-                        if (diag1 == null && diag2 == null)
-                            return true;
-
-                        bool b1 = (diag1 == null);
-                        bool b2 = (diag2 == null);
-                        if (diag1 != null)
-                        {
-                            b1 |= (diag1.Doors & Compass.N) != 0;
-                            b1 |= (cell2.Doors & Compass.W) != 0;
-                            b1 |= (diag1.Walls & Compass.N) != 0;
-                            b1 |= (cell2.Walls & Compass.W) != 0;
-                            b1 |= level.IsCellOccupiedByEnemy(diag1.Location);
-                        }
-                        if (diag2 != null)
-                        {
-                            b2 |= (diag2.Doors & Compass.W) != 0;
-                            b2 |= (cell2.Doors & Compass.N) != 0;
-                            b2 |= (diag2.Walls & Compass.W) != 0;
-                            b2 |= (cell2.Walls & Compass.N) != 0;
-                            b2 |= level.IsCellOccupiedByEnemy(diag2.Location);
-                        }
-                        return (b1 && b2);
-                    }
                 case Compass.SW:
                     {
-                        Cell diag1 = level.Grid.GetCell(point1.Column, point1.Row + 1);
-                        Cell diag2 = level.Grid.GetCell(point1.Column - 1, point1.Row);
+                        Compass cardinal1;
+                        Compass cardinal2;
+
+                        var diag1 = level.Grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
+                        var diag2 = level.Grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
+
+                        var oppositeCardinal1 = GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = GetOppositeDirection(cardinal2);
+
                         if (diag1 == null && diag2 == null)
                             return true;
 
@@ -463,21 +358,23 @@ namespace Rogue.NET.Core.Logic
                         bool b2 = (diag2 == null);
                         if (diag1 != null)
                         {
-                            b1 |= (diag1.Doors & Compass.N) != 0;
-                            b1 |= (cell2.Doors & Compass.E) != 0;
-                            b1 |= (diag1.Walls & Compass.N) != 0;
-                            b1 |= (cell2.Walls & Compass.E) != 0;
-                            b1 |= level.IsCellOccupiedByEnemy(diag1.Location);
+                            b1 |= (diag1.Doors & oppositeCardinal1) != 0;
+                            b1 |= (cell2.Doors & oppositeCardinal2) != 0;
+                            b1 |= (diag1.Walls & oppositeCardinal1) != 0;
+                            b1 |= (cell2.Walls & oppositeCardinal2) != 0;
+                            b1 |= (level.IsCellOccupiedByEnemy(diag1.Location) && includeBlockedByEnemy);
                         }
                         if (diag2 != null)
                         {
-                            b2 |= (diag2.Doors & Compass.E) != 0;
-                            b2 |= (cell2.Doors & Compass.N) != 0;
-                            b2 |= (diag2.Walls & Compass.E) != 0;
-                            b2 |= (cell2.Walls & Compass.N) != 0;
-                            b2 |= level.IsCellOccupiedByEnemy(diag2.Location);
+                            b2 |= (diag2.Doors & oppositeCardinal2) != 0;
+                            b2 |= (cell2.Doors & oppositeCardinal1) != 0;
+                            b2 |= (diag2.Walls & oppositeCardinal2) != 0;
+                            b2 |= (cell2.Walls & oppositeCardinal1) != 0;
+                            b2 |= (level.IsCellOccupiedByEnemy(diag2.Location) && includeBlockedByEnemy);
                         }
-                        return (b1 && b2);
+
+                        // Both paths are blocked
+                        return b1 && b2;
                     }
             }
             return false;

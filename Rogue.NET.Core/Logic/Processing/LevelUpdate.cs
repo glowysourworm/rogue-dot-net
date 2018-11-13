@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Processing
 {
@@ -8,8 +9,8 @@ namespace Rogue.NET.Core.Logic.Processing
         public LevelUpdateType LevelUpdateType { get; set; }
 
         /// <summary>
-        /// Id of Scenario Object involved
+        /// Ids of Scenario Object involved
         /// </summary>
-        public string Id { get; set; }
+        public IEnumerable<string> ContentIds { get; set; }
     }
 }
