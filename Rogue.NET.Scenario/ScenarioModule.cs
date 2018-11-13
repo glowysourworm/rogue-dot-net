@@ -45,6 +45,7 @@ namespace Rogue.NET.Scenario
         {
             RegisterRegionViews();
 
+            _scenarioController.Initialize();
             _gameController.Initialize();
 
             _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()

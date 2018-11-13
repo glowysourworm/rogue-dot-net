@@ -90,7 +90,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 await PlayAnimationSeries(update);
 
-                eventAggregator.GetEvent<AnimationCompletedEvent>().Publish();
+                eventAggregator.GetEvent<AnimationCompletedEvent>().Publish(update);
 
             }, true);
         }

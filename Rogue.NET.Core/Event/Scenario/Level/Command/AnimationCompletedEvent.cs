@@ -1,11 +1,9 @@
 ﻿using Prism.Events;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Character;
-using System.Collections.Generic;
+using Rogue.NET.Core.Logic.Processing.Interface;
 
 namespace Rogue.NET.Model.Events
 {
-    public class AnimationCompletedEvent : PubSubEvent
+    public class AnimationCompletedEvent : PubSubEvent<IAnimationUpdate>
     {
 
     }

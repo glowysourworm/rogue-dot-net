@@ -32,7 +32,7 @@ namespace Rogue.NET.Scenario.Views
             eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
                 this.DialogTB.Text = message;
-            });
+            }, ThreadOption.UIThread);
         }
 
         private void GameViewButton_Click(object sender, RoutedEventArgs e)

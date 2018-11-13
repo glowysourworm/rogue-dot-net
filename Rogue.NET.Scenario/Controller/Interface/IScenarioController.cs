@@ -11,10 +11,19 @@ namespace Rogue.NET.Scenario.Controller.Interface
     /// </summary>
     public interface IScenarioController
     {
+        /// <summary>
+        /// Subscribes to user commands
+        /// </summary>
         void Initialize();
 
+        /// <summary>
+        /// Starts primary worker process to accept user commands and process backend queues
+        /// </summary>
         void EnterGameMode();
 
+        /// <summary>
+        /// Stops primary worker process
+        /// </summary>
         void ExitGameMode();
     }
 }

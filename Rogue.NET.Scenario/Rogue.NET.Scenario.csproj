@@ -174,9 +174,12 @@
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controller\FrontEndController.cs" />
+    <Compile Include="Controller\Interface\IFrontEndController.cs" />
     <Compile Include="Controller\Interface\IGameController.cs" />
     <Compile Include="Controller\Interface\IScenarioController.cs" />
     <Compile Include="Controller\GameController.cs" />
+    <Compile Include="Controller\RogueMessageQueue.cs" />
     <Compile Include="Controller\ScenarioController.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />

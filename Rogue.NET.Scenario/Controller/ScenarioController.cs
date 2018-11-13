@@ -1,115 +1,238 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.EventArgs;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
+using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
+using System;
 using System.ComponentModel.Composition;
+using System.Threading;
+using System.Windows;
 
 namespace Rogue.NET.Scenario.Controller
 {
+    /// <summary>
+    /// Implementation of the IScenarioController that uses separate Dispatcher / Worker threads to manage communication
+    /// between:  UIThread (Front End) | IScenarioController (dispatcher) thread (Not UIThread) | Backend thread.
+    /// </summary>
     [Export(typeof(IScenarioController))]
     public class ScenarioController : IScenarioController
     {
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioService _scenarioService;
+        readonly IFrontEndController _frontEndController;
 
-        SubscriptionToken _userCommandToken;
+        // NOTE*** This is required because the Publish / Subscribe mechanism for this IEventAggregator isn't
+        //         working!!!  I need to be able to process animation "synchronously". I tried the following:
+        //
+        //         1) async / await Subscribe to Animation Event - works! (i was amazed..)
+        //         2) Set PublisherThread option on Subscribe to force wait on the calling thread (didn't work)
+        //         3) Tried Un-subscribe in the IScenarioController to force blocking of events from user input (DIDN'T WORK!!)
+        //         4) Also tried keepSubscriberReferenceAlive = false for UserCommand events (DIDN'T WORK!)
+        //
+        //         So... Am resorting to using a separate backend thread.
+        Thread _backendThread;
+        bool _backendThreadWork = false;
+
+        const int FRONTEND_WAIT = 50;
+
+        /// <summary>
+        /// Allow a single user command to be stored. When background thread is idle - process the command
+        /// and set to null.
+        /// </summary>
+        LevelCommandAction _userCommand;
+
+        object _backendThreadInterruptLock = new object();
+        object _userCommandLock = new object();
 
         [ImportingConstructor]
         public ScenarioController(
             IEventAggregator eventAggregator, 
+            IFrontEndController frontEndController,
             IScenarioService scenarioService)
         {
             _eventAggregator = eventAggregator;
             _scenarioService = scenarioService;
+            _frontEndController = frontEndController;
         }
 
         public void Initialize()
         {
-            
+            // Subscribe to user input
+            _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(OnUserCommand, true);
         }
         public void EnterGameMode()
         {
-            // Subscribe to user input
-            _userCommandToken = _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(OnUserCommand, true);
-            
+            // Close the backend if running
+            Shutdown();
+
+            _backendThreadWork = true;         // This operation is thread-safe because backend thread not running
+            _backendThread = new Thread(Work);
+            _backendThread.Start();
         }
         public void ExitGameMode()
         {
-            _eventAggregator.GetEvent<UserCommandEvent>().Unsubscribe(_userCommandToken);
+            Shutdown();
         }
 
         private void OnUserCommand(LevelCommandEventArgs e)
         {
-            _scenarioService.IssueCommand(new LevelCommandAction()
+            if (!_backendThreadWork)
+                return;
+
+            lock (_userCommandLock)
             {
-                Action = e.Action,
-                Direction = e.Direction,
-                ScenarioObjectId = e.ItemId
-            });
+                _userCommand = new LevelCommandAction()
+                {
+                    Action = e.Action,
+                    Direction = e.Direction,
+                    ScenarioObjectId = e.ItemId
+                };
+            }
+        }
 
-            // IssueCommand -> Fills up IScenarioService queues. Example: 0) Player moves 1) Enemy reactions queued 
-            // Processing involves checking animation and UI update queues - then continuing
-            // with backend logic (IScenarioService.Process)
-
+        /// <summary>
+        /// Primary dispatch method for the backend thread
+        /// </summary>
+        private void Work()
+        {
             var processing = true;
 
-            // Zero:  Enter processing 
+            // 0) Frontend Processing (Wait)
+            // 1) Backend Process 1 Message
+            // 2) If (no further processing of either) Then (issue user command)
             while (processing)
             {
                 // First: Process all animations
-                while (_scenarioService.AnyAnimationEvents() && processing)
-                    processing = ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
-
-                // TODO: May have to put a wait on the dispatcher (Thread.Sleep) to force wait until Application Idle.
+                while (_scenarioService.AnyAnimationEvents())
+                    ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
 
                 // Second: Process all Scenario Events
-                while (_scenarioService.AnyScenarioEvents() && processing)
-                    processing = ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+                while (_scenarioService.AnyScenarioEvents())
+                    ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
 
                 // Third: Process all Splash events
-                while (_scenarioService.AnySplashEvents() && processing)
-                    processing = ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
+                while (_scenarioService.AnySplashEvents())
+                    ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
 
-                // Fourth: PRocess all UI events
+                // Fourth: Process all UI events
                 while (_scenarioService.AnyLevelEvents())
-                    processing = ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
+                    ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
 
-                // Finally: Process the next backend work item
-                processing = _scenarioService.ProcessBackend();
+                // Finally: Process the next backend work item. (If processing finished - then allow user command)
+                if (!_scenarioService.ProcessBackend())
+                {
+                    // Lock user command resource and wait to issue
+                    lock (_userCommandLock)
+                    {
+                        if (_userCommand != null)
+                        {
+                            // IssueCommand -> Fills up IScenarioService queues. Example: 0) Player moves 1) Enemy reactions queued 
+                            // Processing involves checking animation and UI update queues - then continuing
+                            // with backend logic
+                            _scenarioService.IssueCommand(_userCommand);
 
-                processing = processing &&
-                    (_scenarioService.AnyAnimationEvents() ||
-                     _scenarioService.AnyLevelEvents() ||
-                     _scenarioService.AnyScenarioEvents() ||
-                     _scenarioService.AnySplashEvents());
+                            // NOTE** This signals the main thread that the command has been processed
+                            _userCommand = null;
+                        }
+                    }
+                }
+
+                // Check the interrupt flag
+                lock (_backendThreadInterruptLock)
+                {
+                    processing = _backendThreadWork;
+                }
+
+                Thread.Sleep(1);
             }
         }
-        private bool ProcessAnimationUpdate(IAnimationUpdate update)
-        {
-            // TODO: This runs as Fire + Forget! (no way around it!)
-            _eventAggregator.GetEvent<AnimationStartEvent>().Publish(update);
 
-            return true;
-        }
-        private bool ProcessUIUpdate(ILevelUpdate update)
+        /// <summary>
+        /// Closes the backend and Joins the backend thread
+        /// </summary>
+        private void Shutdown()
         {
-            _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(update);
+            if (_backendThread != null)
+            {
+                // Send message to the thread to finish up final execution loop
+                InterruptBackendThread();
 
-            return true;
+                // Safely join the thread
+                _backendThread.Join();
+                _backendThread = null;
+            }
         }
-        private bool ProcessScenarioUpdate(IScenarioUpdate update)
+
+        /// <summary>
+        /// Sends message to backend thread to halt processing on next iteration
+        /// </summary>
+        private void InterruptBackendThread()
         {
-            return update.ScenarioUpdateType != ScenarioUpdateType.PlayerDeath;
+            lock (_backendThreadInterruptLock)
+            {
+                _backendThreadWork = false;
+            }
         }
-        private bool ProcessSplashUpdate(ISplashUpdate update)
+
+        #region (private) Processing
+        private void ProcessAnimationUpdate(IAnimationUpdate update)
         {
-            return true;
+            // Post message to front end and tell it to process
+            //
+            // NOTE*** Posting message on the dispatch thread but reading output from this thread. For full
+            //         Dispatcher / worker scenario - would normally have separate Frontend thread to manage
+            //         its queue. 
+            InvokeDispatcher(() =>
+            {
+                _frontEndController.PostInputMessage(update);
+            });
+
+            // Wait for message to return
+            while (_frontEndController.ReadOutputMessage<IAnimationUpdate>() != update)
+                Thread.Sleep(FRONTEND_WAIT);
         }
+        private void ProcessUIUpdate(ILevelUpdate update)
+        {
+            InvokeDispatcher(() =>
+            {
+                _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(update);
+            });
+        }
+        private void ProcessScenarioUpdate(IScenarioUpdate update)
+        {
+            InvokeDispatcher(() =>
+            {
+                // TODO
+            });
+        }
+        private void ProcessSplashUpdate(ISplashUpdate update)
+        {
+            // Post message to front end and tell it to process
+            //
+            // NOTE*** Posting message on the dispatch thread but reading output from this thread. For full
+            //         Dispatcher / worker scenario - would normally have separate Frontend thread to manage
+            //         its queue. 
+            InvokeDispatcher(() =>
+            {
+                _frontEndController.PostInputMessage(update);
+            });
+
+            // Wait for message to return
+            while (_frontEndController.ReadOutputMessage<ISplashUpdate>() != update)
+                Thread.Sleep(FRONTEND_WAIT);
+        }
+
+        private void InvokeDispatcher(Action action)
+        {
+            Application.Current.Dispatcher.Invoke(action);
+        }
+        #endregion
     }
 }
