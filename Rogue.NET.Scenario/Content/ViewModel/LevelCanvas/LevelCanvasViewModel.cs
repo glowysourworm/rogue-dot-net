@@ -297,7 +297,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // Add
                 else
                 {
-                    Ellipse aura = null;
+                    Rectangle aura = null;
                     var contentObject = CreateObject(scenarioObject, out aura);
 
                     UpdateOrAddContent(scenarioObject.Id, contentObject);
@@ -369,13 +369,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
 
             // Update Aura Opacity masks
-            //foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
-            //    _contentDict[key].OpacityMask = visibleDrawingBrush;
+            foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
+                _contentDict[key].OpacityMask = visibleDrawingBrush;
         }
         #endregion
 
         #region (private) Add / Update collections
-        private FrameworkElement CreateObject(ScenarioObject scenarioObject, out Ellipse aura)
+        private FrameworkElement CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
         {
             var image = new Image();
             image.Source = _resourceService.GetImageSource(scenarioObject);
@@ -411,16 +411,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
 
                 // Make the full size of the level - then apply the level opacity mask drawing
-                aura = new Ellipse();
+                aura = new Rectangle();
                 aura.Height = this.LevelHeight;
                 aura.Width = this.LevelWidth;
 
                 var brush = new RadialGradientBrush(ColorUtility.Convert(scenarioObject.SmileyAuraColor), Colors.Transparent);
-                brush.RadiusX = 0.5;
-                brush.RadiusY = 0.5;
-                brush.Center = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
-                //brush.GradientOrigin = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
-                brush.Opacity = 0.5;
+                brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
+                brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
+                brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
+                brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
+                brush.Opacity = 0.3;
 
                 Canvas.SetZIndex(aura, 1);
 
@@ -448,12 +448,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
                 var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
 
-                var auraCircle = _contentDict[scenarioObject.Id + AURA_EXT] as Ellipse;
-                auraCircle.Height = this.LevelHeight;
-                auraCircle.Width = this.LevelWidth;
+                var aura = _contentDict[scenarioObject.Id + AURA_EXT] as Rectangle;
+                aura.Height = this.LevelHeight;
+                aura.Width = this.LevelWidth;
 
-                var brush = auraCircle.Fill as RadialGradientBrush;
-                brush.Center = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
+                var brush = aura.Fill as RadialGradientBrush;
+                brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
+                brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
+                brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
+                brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
                 //brush.GradientStops[0] = TODO
             }
         }
