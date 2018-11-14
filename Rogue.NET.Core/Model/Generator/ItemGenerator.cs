@@ -92,6 +92,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.SmileyBodyColor = consumableTemplate.SymbolDetails.SmileyBodyColor;
             consumable.SmileyLineColor = consumableTemplate.SymbolDetails.SmileyLineColor;
             consumable.SmileyMood = consumableTemplate.SymbolDetails.SmileyMood;
+            consumable.SymbolType = consumableTemplate.SymbolDetails.Type;
 
             consumable.Type = consumableTemplate.Type;
             consumable.SubType = consumableTemplate.SubType;

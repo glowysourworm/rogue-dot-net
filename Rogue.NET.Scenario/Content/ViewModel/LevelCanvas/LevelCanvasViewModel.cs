@@ -29,6 +29,8 @@ using Rogue.NET.Core.Model;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System;
+using Rogue.NET.Core.Utility;
+using Rogue.NET.Core.Logic.Content.Interface;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -37,11 +39,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
     {
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
+        readonly ICharacterProcessor _characterProcessor;
         readonly IAnimationGenerator _animationGenerator;
 
         // Identifies the layout entry in the content dictionary
         const string WALLS_KEY = "Layout";
         const string DOORS_KEY = "Doors";
+        const string AURA_EXT = "-Aura";
 
         ObservableCollection<FrameworkElement> _content;
         int _levelWidth;
@@ -59,11 +63,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
             IAnimationGenerator animationGenerator,
+            ICharacterProcessor characterProcessor,
             IModelService modelService)
         {
             _resourceService = resourceService;
             _modelService = modelService;
             _animationGenerator = animationGenerator;
+            _characterProcessor = characterProcessor;
 
             this.Contents = new ObservableCollection<FrameworkElement>();
             _contentDict = new Dictionary<string, FrameworkElement>();
@@ -136,11 +142,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         }
         public Point PlayerLocation
         {
-            get { return _playerLocation; }
-            set
+            get
             {
-                _playerLocation = value;
-                OnPropertyChanged("PlayerLocation");
+                if (_modelService == null)
+                    return new Point(0, 0);
+
+                return DataHelper.Cell2UI(_modelService.Player.Location);
             }
         }
         #endregion
@@ -151,9 +158,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 case LevelUpdateType.ContentAll:
                     DrawContent();
+                    UpdateLayoutVisibility(); // Opacity Mask for Auras
                     break;
                 case LevelUpdateType.ContentVisible:
                     DrawContent();
+                    UpdateLayoutVisibility(); // Opacity Mask for Auras
                     break;
                 case LevelUpdateType.ContentReveal:
                     // TODO
@@ -162,12 +171,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     foreach (var contentId in levelUpdate.ContentIds)
                         RemoveContent(contentId);
                     break;
+                case LevelUpdateType.ContentAdd:
+                    // TODO
+                    break;
                 case LevelUpdateType.ContentMove:
                     foreach (var contentId in levelUpdate.ContentIds)
                         UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
                         break;
                 case LevelUpdateType.LayoutAll:
                     DrawLayout();
+                    UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.LayoutVisible:
                     UpdateLayoutVisibility();
@@ -177,14 +190,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     break;
                 case LevelUpdateType.LayoutTopology:
                     DrawLayout();
+                    UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.PlayerLocation:
-
-                    // Update UI Location stored here
-                    this.PlayerLocation = DataHelper.Cell2UI(_modelService.Player.Location);
-
-                    // Update the framework element
                     UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
+                    UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.TargetingStart:
                     PlayTargetAnimation();
@@ -287,8 +297,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // Add
                 else
                 {
-                    var contentObject = CreateObject(scenarioObject);
+                    Ellipse aura = null;
+                    var contentObject = CreateObject(scenarioObject, out aura);
+
                     UpdateOrAddContent(scenarioObject.Id, contentObject);
+                    if (aura != null)
+                        UpdateOrAddContent(scenarioObject.Id + AURA_EXT, aura);
                 }
             }
         }
@@ -300,10 +314,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var level = _modelService.Level;
             var exploredLocations = _modelService.GetExploredLocations();
+            var visibleLocations = _modelService.GetVisibleLocations();
 
-            var opacityMaskGeometry = new StreamGeometry();
+            var exploredLocationsOpacityMask = new StreamGeometry();
+            var visibleLocationsOpacityMask = new StreamGeometry();
 
-            using (var stream = opacityMaskGeometry.Open())
+            // Explored Locations
+            using (var stream = exploredLocationsOpacityMask.Open())
             {
                 foreach (var cellPoint in exploredLocations)
                 {
@@ -316,35 +333,62 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 }
             }
 
-            var drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), opacityMaskGeometry);
-            var drawingBrush = new DrawingBrush(drawing);
+            // Visible Locations
+            using (var stream = visibleLocationsOpacityMask.Open())
+            {
+                foreach (var cellPoint in visibleLocations)
+                {
+                    var rect = DataHelper.Cell2UIRect(cellPoint, false);
+                    stream.BeginFigure(rect.TopLeft, true, true);
+                    stream.LineTo(rect.TopRight, true, false);
+                    stream.LineTo(rect.BottomRight, true, false);
+                    stream.LineTo(rect.BottomLeft, true, false);
+                    stream.LineTo(rect.TopLeft, true, false);
+                }
+            }
 
-            drawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            drawingBrush.ViewportUnits = BrushMappingMode.Absolute;
+            var exploredDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), exploredLocationsOpacityMask);
+            var visibleDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), visibleLocationsOpacityMask);
+            var exploredDrawingBrush = new DrawingBrush(exploredDrawing);
+            var visibleDrawingBrush = new DrawingBrush(visibleDrawing);
 
-            drawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            drawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+            exploredDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            exploredDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
 
-            _contentDict[WALLS_KEY].OpacityMask = drawingBrush;
-            _contentDict[DOORS_KEY].OpacityMask = drawingBrush;
+            exploredDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            exploredDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+
+            visibleDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            visibleDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
+
+            visibleDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            visibleDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+            
+
+            _contentDict[WALLS_KEY].OpacityMask = exploredDrawingBrush;
+            _contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
+
+            // Update Aura Opacity masks
+            //foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
+            //    _contentDict[key].OpacityMask = visibleDrawingBrush;
         }
         #endregion
 
         #region (private) Add / Update collections
-        private FrameworkElement CreateObject(ScenarioObject scenarioObject)
+        private FrameworkElement CreateObject(ScenarioObject scenarioObject, out Ellipse aura)
         {
             var image = new Image();
             image.Source = _resourceService.GetImageSource(scenarioObject);
             image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
             if (scenarioObject is DoodadBase)
-                Canvas.SetZIndex(image, 1);
-
-            else if (scenarioObject is ItemBase)
                 Canvas.SetZIndex(image, 2);
 
-            else if (scenarioObject is Character)
+            else if (scenarioObject is ItemBase)
                 Canvas.SetZIndex(image, 3);
+
+            else if (scenarioObject is Character)
+                Canvas.SetZIndex(image, 4);
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 
@@ -355,10 +399,39 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             Canvas.SetLeft(image, point.X);
             Canvas.SetTop(image, point.Y);
 
+            aura = null;
+
+            // AURA
+            if (scenarioObject is Character &&
+                scenarioObject.SymbolType == SymbolTypes.Smiley)
+            {
+                // TODO: Put transform somewhere else
+                var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
+                var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
+                var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
+
+                // Make the full size of the level - then apply the level opacity mask drawing
+                aura = new Ellipse();
+                aura.Height = this.LevelHeight;
+                aura.Width = this.LevelWidth;
+
+                var brush = new RadialGradientBrush(ColorUtility.Convert(scenarioObject.SmileyAuraColor), Colors.Transparent);
+                brush.RadiusX = 0.5;
+                brush.RadiusY = 0.5;
+                brush.Center = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
+                //brush.GradientOrigin = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
+                brush.Opacity = 0.5;
+
+                Canvas.SetZIndex(aura, 1);
+
+                aura.Fill = brush;
+                aura.Stroke = null;
+            }
+
             return image;
         }
 
-        private FrameworkElement UpdateObject(FrameworkElement content, ScenarioObject scenarioObject)
+        private void UpdateObject(FrameworkElement content, ScenarioObject scenarioObject)
         {
             var point = DataHelper.Cell2UI(scenarioObject.Location);
 
@@ -366,8 +439,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);
+            
+            // Update related Aura
+            if (_contentDict.ContainsKey(scenarioObject.Id + AURA_EXT))
+            {
+                // TODO: Put transform somewhere else
+                var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
+                var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
+                var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
 
-            return content;
+                var auraCircle = _contentDict[scenarioObject.Id + AURA_EXT] as Ellipse;
+                auraCircle.Height = this.LevelHeight;
+                auraCircle.Width = this.LevelWidth;
+
+                var brush = auraCircle.Fill as RadialGradientBrush;
+                brush.Center = new Point(point.X + adjustment.X, point.Y + adjustment.Y);
+                //brush.GradientStops[0] = TODO
+            }
         }
 
         // Updates an entry in the dictionary along with the observable collection
@@ -398,6 +486,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                 _contentDict.Remove(key);
                 this.Contents.Remove(content);
+            }
+
+            if (_contentDict.Any(x => x.Key == key + AURA_EXT))
+            {
+                var contentAura = _contentDict[key + AURA_EXT];
+
+                _contentDict.Remove(key + AURA_EXT);
+                this.Contents.Remove(contentAura);
             }
         }
         #endregion

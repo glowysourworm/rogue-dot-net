@@ -32,7 +32,7 @@ namespace Rogue.NET.Scenario.Views
 
                 else
                     this.CanvasBorder.BorderBrush = brush;
-            });
+            }, true);
         }
    }
 }

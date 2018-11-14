@@ -28,6 +28,11 @@
         ContentMove,
 
         /// <summary>
+        /// Occurs when content is changed
+        /// </summary>
+        ContentAdd,
+
+        /// <summary>
         /// Occurs when the layout has changed (LevelGrid)
         /// </summary>
         LayoutAll,
