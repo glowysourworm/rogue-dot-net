@@ -18,6 +18,11 @@
         /// <summary>
         /// Save Scenario from a save point
         /// </summary>
-        Save
+        Save,
+
+        /// <summary>
+        /// Objective is acheived
+        /// </summary>
+        ObjectiveAcheived
     }
 }

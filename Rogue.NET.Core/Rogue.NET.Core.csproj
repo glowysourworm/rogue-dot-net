@@ -112,6 +112,7 @@
     <Compile Include="Event\Scenario\Command\ScenarioDeletedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\ScenarioSavedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\UserCommandEvent.cs" />
+    <Compile Include="Event\Scenario\Level\Event\ScenarioUpdateEvent.cs" />
     <Compile Include="Event\Splash\CreatingScenarioEvent.cs" />
     <Compile Include="Event\Splash\MessageBoxEvent.cs" />
     <Compile Include="Event\Splash\SplashEvent.cs" />

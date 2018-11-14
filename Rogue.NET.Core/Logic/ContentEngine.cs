@@ -648,17 +648,16 @@ namespace Rogue.NET.Core.Logic
                 case CharacterMovementType.HeatSeeker:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
-                                        .First();
+                                        .FirstOrDefault();
                 case CharacterMovementType.StandOffIsh:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
-                                        .Last();
+                                        .LastOrDefault();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
                     return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
                                                         .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
-                                                        .First();
-
+                                                        .FirstOrDefault();
                 default:
                     throw new Exception("Unknown Enemy Movement Type");
             }

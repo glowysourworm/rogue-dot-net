@@ -17,15 +17,14 @@ using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Event.Scenario.Level.Event;
+using Rogue.NET.Core.Logic.Processing.Enum;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
     [Export]
     public partial class LevelCanvas : UserControl
     {
-        readonly IAnimationGenerator _animationGenerator;
-        readonly IEventAggregator _eventAggregator;
-
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
 
@@ -34,15 +33,21 @@ namespace Rogue.NET.Scenario.Content.Views
 
         const int SCREEN_BUFFER = 120;
 
+        public static readonly DependencyProperty PrimaryTransformProperty =
+            DependencyProperty.Register("PrimaryTransform", typeof(Transform), typeof(LevelCanvas));
+
+        public Transform PrimaryTransform
+        {
+            get { return (Transform)GetValue(PrimaryTransformProperty); }
+            set { SetValue(PrimaryTransformProperty, value); }
+        }
+
         [ImportingConstructor]
         public LevelCanvas(
             LevelCanvasViewModel viewModel, 
             IEventAggregator eventAggregator, 
             IAnimationGenerator animationGenerator)
         {
-            _animationGenerator = animationGenerator;
-            _eventAggregator = eventAggregator;
-
             this.DataContext = viewModel;
 
             InitializeComponent();
@@ -54,136 +59,55 @@ namespace Rogue.NET.Scenario.Content.Views
             transform.Children.Add(_scaleXform);
             transform.Children.Add(_translateXform);
 
-            this.RenderTransform = transform;
+            this.TheItemsControl.RenderTransform = transform;
 
-            Initialize();
-        }
-         
-        private void LevelCanvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            // TODO
-            //var view = this.DataContext as LevelData;
-            //if (view != null)
-            //{
-            //    CenterOnPlayer();
-            //}
-        }
-        private void LevelCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.NewValue == null)
-                return;
-
-            // TODO
-            //var model = e.NewValue as LevelData;
-            //if (model != null)
-            //{
-            //    this.Children.Clear();
-
-            //    var xform = new TransformGroup();
-            //    xform.Children.Add(_scaleXform);
-            //    xform.Children.Add(_translateXform);
-
-            //    //model.Level.RenderTransform = xform;
-            //    //model.Player.RenderTransform = xform;
-
-            //    //this.Children.Add(model.Level);
-            //    //this.Children.Add(model.Player);
-
-            //    //model.Player.PropertyChanged += (obj, ev) =>
-            //    //{
-            //    //    if (ev.PropertyName == "Location")
-            //    //        OnPlayerLocationChanged();
-            //    //};
-
-            //    //model.TargetedEnemies.CollectionChanged += (obj, ev) =>
-            //    //{
-            //    //    var offset = xform.Transform(new Point(0, 0));
-            //    //    var offsetVector = new Vector(offset.X, offset.Y);
-            //    //    var points = model.TargetedEnemies.Select(x => Point.Add(new Point(x.Margin.Left, x.Margin.Top), offsetVector)).ToArray();
-            //    //    PlayTargetAnimation(points);
-            //    //};
-
-            //    CenterOnPlayer();
-            //    InvalidateVisual();
-            //}
-        }
-
-        private void Initialize()
-        {
-            // subscribe to events TODO
-            //_eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
-            //{
-            //    // recenter display if player is off screen
-            //    Point p = GetPlayerLocation();
-            //    Rect r = new Rect(this.RenderSize);
-
-            //    if (!r.Contains(p) && !(p.X == 0 && p.Y == 0))
-            //        CenterOnPlayer();
-
-            //    StopTargetAnimation();
-            //});
-
-        }
-
-        public void OnPlayerLocationChanged()
-        {
-            Point p = GetPlayerLocation();
-            Rect r = new Rect(this.RenderSize);
-
-            if (!r.Contains(p))
-                CenterOnPlayer();
-
-            else if ((r.Bottom - p.Y) < SCREEN_BUFFER)
-                _translateXform.Y -= SCREEN_BUFFER - (r.Bottom - p.Y);
-
-            else if (p.Y < SCREEN_BUFFER)
-                _translateXform.Y += SCREEN_BUFFER - p.Y;
-
-            else if ((r.Right - p.X) < SCREEN_BUFFER)
-                _translateXform.X -= SCREEN_BUFFER - (r.Right - p.X);
-
-            else if (p.X < SCREEN_BUFFER)
-                _translateXform.X += SCREEN_BUFFER - p.X;
-        }
-        public void ShiftDisplay(Compass direction, bool largeShift)
-        {
-            switch (direction)
+            // subscribe to event to update RenderTransform on player move
+            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
-                case Compass.N:
-                    _translateXform.Y -= largeShift ? 60 : 15;
-                    break;
-                case Compass.S:
-                    _translateXform.Y += largeShift ? 60 : 15;
-                    break;
-                case Compass.E:
-                    _translateXform.X += largeShift ? 60 : 15;
-                    break;
-                case Compass.W:
-                    _translateXform.X -= largeShift ? 60 : 15;
-                    break;
+                if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
+                    OnPlayerLocationChanged(viewModel);
+            }, true);
+        }
+
+        public void OnPlayerLocationChanged(LevelCanvasViewModel viewModel)
+        {
+            // Offset of this control relative to ContentControl parent
+            var offset = this.TheItemsControl.RenderTransform.Transform(new Point(0, 0));
+
+            // Add offset to bounds and player location
+            var location = Point.Add(viewModel.PlayerLocation, new Vector(offset.X, offset.Y));
+            var bounds = new Rect((this.Parent as ContentControl).RenderSize);
+
+            // recenter display if player is off screen
+            if (!bounds.Contains(location))
+            {
+                //CenterOnLocation(location);
             }
+
+            else if ((bounds.Bottom - location.Y) < SCREEN_BUFFER)
+                _translateXform.Y -= SCREEN_BUFFER - (bounds.Bottom - location.Y);
+
+            else if (location.Y < SCREEN_BUFFER)
+                _translateXform.Y += SCREEN_BUFFER - location.Y;
+
+            else if ((bounds.Right - location.X) < SCREEN_BUFFER)
+                _translateXform.X -= SCREEN_BUFFER - (bounds.Right - location.X);
+
+            else if (location.X < SCREEN_BUFFER)
+                _translateXform.X += SCREEN_BUFFER - location.X;
         }
-        public void CenterOnPlayer()
+        public void CenterOnLocation(Point location)
         {
-            Rect r = new Rect(this.RenderSize);
-            Point midpt = new Point(r.Width / 2, r.Height / 2);
+            // Offset of this control relative to ContentControl parent
+            var offset = this.TheItemsControl.RenderTransform.Transform(new Point(0, 0));
 
-            // TODO
-            // var data  = this.DataContext as LevelData;
-            //var origin = data.Player.RenderTransform.Transform(new Point(0, 0));
+            var bounds = new Rect((this.Parent as ContentControl).RenderSize);
+            var midpt = new Point(bounds.Width / 2.0D, bounds.Height / 2.0D);
 
-            //_translateXform.X += midpt.X - (data.Player.Margin.Left + origin.X);
-            //_translateXform.Y += midpt.Y - (data.Player.Margin.Top + origin.Y);
+            _translateXform.X += midpt.X - (location.X + offset.X);
+            _translateXform.Y += midpt.Y - (location.Y + offset.Y);
         }
 
-        private Point GetPlayerLocation()
-        {
-            //var data = this.DataContext as LevelData;
-            //if (data != null)
-            //    return Point.Add(data.Player.RenderTransform.Transform(new Point(0, 0)), new Vector(data.Player.Margin.Left, data.Player.Margin.Top));
-
-            return new Point(0,0);
-        }
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);

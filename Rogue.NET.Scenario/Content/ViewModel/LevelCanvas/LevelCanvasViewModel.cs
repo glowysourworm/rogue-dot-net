@@ -46,6 +46,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         ObservableCollection<FrameworkElement> _content;
         int _levelWidth;
         int _levelHeight;
+        Point _playerLocation = new Point(0, 0);
 
         // Targeting animation (singular)
         IList<ITimedGraphic> _targetingAnimations;
@@ -112,6 +113,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 _levelWidth = value;
                 OnPropertyChanged("LevelWidth");
+                OnPropertyChanged("LevelContainerWidth");
             }
         }
         public int LevelHeight
@@ -121,6 +123,24 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 _levelHeight = value;
                 OnPropertyChanged("LevelHeight");
+                OnPropertyChanged("LevelContainerHeight");
+            }
+        }
+        public int LevelContainerWidth
+        {
+            get { return _levelWidth + 200; }
+        }
+        public int LevelContainerHeight
+        {
+            get { return _levelHeight + 200; }
+        }
+        public Point PlayerLocation
+        {
+            get { return _playerLocation; }
+            set
+            {
+                _playerLocation = value;
+                OnPropertyChanged("PlayerLocation");
             }
         }
         #endregion
@@ -159,6 +179,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     DrawLayout();
                     break;
                 case LevelUpdateType.PlayerLocation:
+
+                    // Update UI Location stored here
+                    this.PlayerLocation = DataHelper.Cell2UI(_modelService.Player.Location);
+
+                    // Update the framework element
                     UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
                     break;
                 case LevelUpdateType.TargetingStart:

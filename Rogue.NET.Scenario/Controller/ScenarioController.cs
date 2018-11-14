@@ -209,7 +209,7 @@ namespace Rogue.NET.Scenario.Controller
         {
             InvokeDispatcher(() =>
             {
-                // TODO
+                _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(update);
             });
         }
         private void ProcessSplashUpdate(ISplashUpdate update)

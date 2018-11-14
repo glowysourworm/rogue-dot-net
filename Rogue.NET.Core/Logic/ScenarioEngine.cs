@@ -188,16 +188,15 @@ namespace Rogue.NET.Core.Logic
             _scenarioMessageService.UnBlock(false);
 
             // Check Scenario Objective - TODO - Create different message event
-            if (CheckObjective())
-                _scenarioMessageService.Publish("YOU WON!");
+            CheckObjective();
         }
 
-        private bool CheckObjective()
+        private void CheckObjective()
         {
-            return _modelService.ScenarioEncyclopedia
-                                .Values
-                                .Where(z => z.IsObjective)
-                                .All((metaData) =>
+            var acheived = _modelService.ScenarioEncyclopedia
+                                        .Values
+                                        .Where(z => z.IsObjective)
+                                        .All((metaData) =>
             {
                 switch (metaData.ObjectType)
                 {
@@ -214,6 +213,9 @@ namespace Rogue.NET.Core.Logic
                         throw new Exception("Unknown Scenario Meta Data Object Type");
                 }
             });
+
+            if (acheived)
+                QueueScenarioObjectiveAcheived();
         }
 
         public void Attack(Compass direction)
@@ -798,6 +800,13 @@ namespace Rogue.NET.Core.Logic
             ScenarioUpdateEvent(this, new ScenarioUpdate()
             {
                 ScenarioUpdateType = ScenarioUpdateType.Save
+            });
+        }
+        private void QueueScenarioObjectiveAcheived()
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.ObjectiveAcheived
             });
         }
         #endregion
