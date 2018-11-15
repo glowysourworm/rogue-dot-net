@@ -11,6 +11,7 @@ using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Service.Interface;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -18,6 +19,7 @@ namespace Rogue.NET.Core.Logic
     public class LayoutEngine : ILayoutEngine
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IScenarioMessageService _scenarioMessageService;
 
         public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
         public event EventHandler<ISplashUpdate> SplashUpdateEvent;
@@ -26,9 +28,10 @@ namespace Rogue.NET.Core.Logic
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
-        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator)
+        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, IScenarioMessageService scenarioMessageService)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
+            _scenarioMessageService = scenarioMessageService;
         }
 
         #region (public) Player Action Methods
@@ -117,7 +120,13 @@ namespace Rogue.NET.Core.Logic
             }
 
             if (topologyChange)
+            {
+                _scenarioMessageService.Publish("Door found!");
+
                 LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
+            }
+            else
+                _scenarioMessageService.Publish("Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
         }
         public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
         {

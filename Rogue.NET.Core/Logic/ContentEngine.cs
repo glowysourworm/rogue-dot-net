@@ -274,6 +274,13 @@ namespace Rogue.NET.Core.Logic
         }
         public void ProcessEnemyReaction(Enemy enemy)
         {
+            // Don't let Enemy get the last word. Check this here to prevent Enemy Death checks every where else.
+            if (enemy.Hp <= 0)
+            {
+                EnemyDeath(enemy);
+                return;
+            }
+
             var level = _modelService.Level;
             var player = _modelService.Player;
 

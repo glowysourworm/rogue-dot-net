@@ -312,7 +312,7 @@ namespace Rogue.NET.Core.Service
             _contentEngine.CalculateEnemyReactions();
             _dataQueue.Enqueue(new LevelProcessingAction()
             {
-                Type = LevelProcessingActionType.EndOfTurn
+                Type = regenerate ? LevelProcessingActionType.EndOfTurn  : LevelProcessingActionType.EndOfTurnNoRegenerate
             });
         }
 
