@@ -52,7 +52,21 @@
                     <coreView:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
                     <DataTemplate x:Key="ImageCellTemplate">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <Image Source="{Binding SymbolInfo.SymbolImageSource}" VerticalAlignment="Center" />
+                            <Image VerticalAlignment="Center">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                        <Binding Path="RogueName" />
+                                        <Binding Path="CharacterSymbol" />
+                                        <Binding Path="CharacterColor" />
+                                        <Binding Path="Icon" />
+                                        <Binding Path="SmileyMood"/>
+                                        <Binding Path="SmileyBodyColor" />
+                                        <Binding Path="SmileyLineColor" />
+                                        <Binding Path="SmileyAuraColor" />
+                                        <Binding Path="SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                         </Grid>
                     </DataTemplate>
                     <DataTemplate x:Key="ProgressColumnTemplate">

@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.EnchantEquipment = new ObservableCollection<ItemGridRowViewModel>();
             this.ImbueEquipment = new ObservableCollection<ItemGridRowViewModel>();
 
+            // Player Events
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 switch (update.LevelUpdateType)
@@ -52,14 +54,17 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     case LevelUpdateType.PlayerEquipmentRemove:
                     case LevelUpdateType.PlayerEquipmentAddOrUpdate:
                     case LevelUpdateType.PlayerAll:
-
-                    // TODO REMOVE
-                    case LevelUpdateType.ContentAll:
                         UpdateCollections(modelService, itemProcessor);
                         break;
                     default:
                         break;
                 }
+            }, true);
+
+            // Level Loaded
+            eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
+            {
+                UpdateCollections(modelService, itemProcessor);
             }, true);
         }
 

@@ -110,7 +110,21 @@
                                             </Grid.RowDefinitions>
                                             <StackPanel Grid.ColumnSpan="2">
                                                 <StackPanel Orientation="Horizontal" Margin="4">
-                                                    <Image Source="{Binding ImageSource}" Width="20" Height="30" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                    <Image Width="20" Height="30" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Image.Source>
+                                                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                                                <Binding Path="RogueName" />
+                                                                <Binding Path="CharacterSymbol" />
+                                                                <Binding Path="CharacterColor" />
+                                                                <Binding Path="Icon" />
+                                                                <Binding Path="SmileyMood" />
+                                                                <Binding Path="SmileyBodyColor" />
+                                                                <Binding Path="SmileyLineColor" />
+                                                                <Binding Path="SmileyAuraColor" />
+                                                                <Binding Path="SymbolType" />
+                                                            </MultiBinding>
+                                                        </Image.Source>
+                                                    </Image>
                                                     <TextBlock Text="{Binding RogueName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding UsageDescription}" FontSize="14" VerticalAlignment="Center" Margin="4" HorizontalAlignment="Left" TextWrapping="Wrap" />

@@ -165,6 +165,8 @@ namespace Rogue.NET.Scenario.Views
                 view.SortDescriptions.Add(new SortDescription("RogueName", ListSortDirection.Ascending));
                 view.Refresh();
             }
+
+            InvalidateVisual();
         }
 
         private void SelectCheckBox_Click(object sender, RoutedEventArgs e)

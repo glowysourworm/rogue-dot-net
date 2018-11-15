@@ -914,7 +914,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Source="{Binding ImageSource}" VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" />
+            <Image VerticalAlignment="Center" Grid.Column="1" HorizontalAlignment="Center">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                        <Binding Path="RogueName" />
+                        <Binding Path="CharacterSymbol" />
+                        <Binding Path="CharacterColor" />
+                        <Binding Path="Icon" />
+                        <Binding Path="SmileyMood"/>
+                        <Binding Path="SmileyBodyColor" />
+                        <Binding Path="SmileyLineColor" />
+                        <Binding Path="SmileyAuraColor" />
+                        <Binding Path="SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="AttackAttributesCellTemplate">
