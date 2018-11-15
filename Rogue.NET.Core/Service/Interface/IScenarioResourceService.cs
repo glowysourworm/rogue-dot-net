@@ -29,6 +29,10 @@ namespace Rogue.NET.Core.Service.Interface
 
         void SaveConfig(string name, ScenarioConfigurationContainer config);
 
+        void SaveScenarioFile(ScenarioFile scenarioFile, string playerName);
+
+        ScenarioFile OpenScenarioFile(string playerName);
+
         void EmbedConfig(ConfigResources configResource, ScenarioConfigurationContainer config);
 
         BitmapSource GetImageSource(ScenarioImage scenarioImage);

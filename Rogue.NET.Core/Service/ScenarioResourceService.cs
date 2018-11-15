@@ -173,6 +173,19 @@ namespace Rogue.NET.Core.Service
             }
         }
 
+        public void SaveScenarioFile(ScenarioFile scenarioFile, string playerName)
+        {
+            var buffer = scenarioFile.Save();
+
+            File.WriteAllBytes(SAVED_GAMES_DIR + "\\" + playerName + "." + SCENARIO_EXTENSION, buffer);
+        }
+        public ScenarioFile OpenScenarioFile(string playerName)
+        {
+            var buffer = File.ReadAllBytes(SAVED_GAMES_DIR + "\\" + playerName + "." + SCENARIO_EXTENSION);
+
+            return ScenarioFile.Open(buffer);
+        }
+
         #region Serialization
         private byte[] Serialize(object obj)
         {
@@ -333,6 +346,8 @@ namespace Rogue.NET.Core.Service
         {
             return _colorCache;
         }
+
+
 
 
         #endregion

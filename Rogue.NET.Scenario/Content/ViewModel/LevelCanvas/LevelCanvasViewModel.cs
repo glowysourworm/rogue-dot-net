@@ -82,6 +82,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
+                _content.Clear();
+                _contentDict.Clear();
+                _targetingAnimations.Clear();
+
                 DrawLayout();
                 DrawContent();
                 UpdateLayoutVisibility();

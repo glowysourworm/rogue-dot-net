@@ -55,7 +55,7 @@
                 <common:DisappearingButton ImagePadding="10" Tag="{x:Type local:DungeonEncyclopedia}" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="GameDictionaryButton" Click="GameViewButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
             </StackPanel>
 
-            <TextBlock x:Name="DialogTB" Cursor="Hand" MouseDown="DialogTB_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Foreground="Beige" FontSize="24" />
+            <TextBlock x:Name="DialogTB" Text="{Binding DialogMessage, Delay=300, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:GameView}}}" Cursor="Hand" MouseDown="DialogTB_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Foreground="Beige" FontSize="24" />
 		</Grid>
 	</Border>
 </UserControl>

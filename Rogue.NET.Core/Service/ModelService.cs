@@ -24,9 +24,6 @@ namespace Rogue.NET.Core.Service
         readonly IRayTracer _rayTracer;
         readonly ICharacterProcessor _characterProcessor;
 
-        // PRIMARY SCENARIO STATE
-        ScenarioContainer _scenarioContainer;
-
         // Explored location collection calculated each time the player moves; and kept up to date
         IEnumerable<CellPoint> _exploredLocations;
 
@@ -82,6 +79,19 @@ namespace Rogue.NET.Core.Service
 
             UpdateVisibleLocations();
             UpdateContents();
+        }
+
+        public void Unload()
+        {
+            this.Level = null;
+            this.Player = null;
+            this.ScenarioConfiguration = null;
+            this.ScenarioEncyclopedia = null;
+
+            _exploredLocations = new List<CellPoint>();
+            _visibleLocations = new List<CellPoint>();
+            _effectedLocations = new List<CellPoint>();
+            _targetedEnemies = new List<Enemy>();
         }
 
         public Level Level { get; private set; }

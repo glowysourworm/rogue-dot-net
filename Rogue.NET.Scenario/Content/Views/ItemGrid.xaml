@@ -1,12 +1,10 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:viewModel="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid"
              xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
-             x:Class="Rogue.NET.Scenario.Views.ItemGrid"
-             mc:Ignorable="d" Background="Transparent" BorderBrush="Black">
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             x:Class="Rogue.NET.Scenario.Views.ItemGrid" Background="Transparent" BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,6 +16,14 @@
                 <ResourceDictionary>
                     <scenarioConverter:ItemGridButtonVisibilityConverter x:Key="ItemGridButtonVisibilityConverter" />
                     <scenarioConverter:ItemGridRowButtonVisibilitiyConverter x:Key="ItemGridRowButtonVisibilitiyConverter" />
+
+                    <!-- Collection View Source Binding to DataContext -->
+                    <CollectionViewSource x:Key='SortedItemsSource' Source="{Binding}">
+                        <CollectionViewSource.SortDescriptions>
+                            <componentModel:SortDescription PropertyName="Type" />
+                            <componentModel:SortDescription PropertyName="RogueName" />
+                        </CollectionViewSource.SortDescriptions>
+                    </CollectionViewSource>
 
                     <!-- Resources that reference code behind -->
                     <DataTemplate x:Key="ButtonCellTemplate">
@@ -243,7 +249,7 @@
             <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Drop}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
         </StackPanel>
         <DataGrid x:Name="TheGrid"
-                  ItemsSource="{Binding}"
+                  ItemsSource="{Binding Source={StaticResource SortedItemsSource}}"
                   Grid.Row="1"
                   Background="Transparent" 
                   IsReadOnly="True"
@@ -286,7 +292,7 @@
                 <DataGridTextColumn x:Name="ClassColumn" Width="Auto" Header="Class" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Class}" />
                 <DataGridTextColumn x:Name="WeightColumn" Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
                 <DataGridTextColumn Header="" Width="0" SortDirection="Ascending" Visibility="Collapsed"  Binding="{Binding Type}" />
-                <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding RogueName}">
+                <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding DisplayName}">
                     <DataGridTextColumn.CellStyle>
                         <Style BasedOn="{StaticResource DataGridCellStyle}" TargetType="DataGridCell">
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Stretch" />

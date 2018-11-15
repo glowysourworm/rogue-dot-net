@@ -158,14 +158,6 @@ namespace Rogue.NET.Scenario.Views
 
         private void ItemGrid_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var view = CollectionViewSource.GetDefaultView(this.TheGrid.ItemsSource);
-            if (view != null)
-            {
-                view.SortDescriptions.Add(new SortDescription("Type", ListSortDirection.Ascending));
-                view.SortDescriptions.Add(new SortDescription("RogueName", ListSortDirection.Ascending));
-                view.Refresh();
-            }
-
             InvalidateVisual();
         }
 

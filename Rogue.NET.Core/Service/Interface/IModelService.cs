@@ -21,6 +21,8 @@ namespace Rogue.NET.Core.Service.Interface
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration);
 
+        void Unload();
+
         /// <summary>
         /// Currently loaded Scenario Level
         /// </summary>

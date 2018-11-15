@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Logic.Processing;
@@ -73,44 +74,28 @@ namespace Rogue.NET.Scenario.Controller
 
             _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
-                {
-                    SplashAction = SplashAction.Show,
-                    SplashType = SplashEventType.Open
-                });
-
                 Open(e.ScenarioName);
-
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
-                {
-                    SplashAction = SplashAction.Hide,
-                    SplashType = SplashEventType.Open
-                });
             });
 
-            _eventAggregator.GetEvent<SaveScenarioEvent>().Subscribe(() =>
+            // Level Change Event
+            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+                switch (update.ScenarioUpdateType)
                 {
-                    SplashAction = SplashAction.Show,
-                    SplashType = SplashEventType.Save
-                });
-
-                Save();
-
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
-                {
-                    SplashAction = SplashAction.Hide,
-                    SplashType = SplashEventType.Save
-                });
-
-                _eventAggregator.GetEvent<ScenarioSavedEvent>().Publish();
-            });
-
-            _eventAggregator.GetEvent<LoadLevelEvent>().Subscribe((e) =>
-            {
-                LoadLevel(e.LevelNumber, e.StartLocation);
-            });
+                    case ScenarioUpdateType.LevelChange:
+                        LoadLevel(update.LevelNumber, update.StartLocation);
+                        break;
+                    case ScenarioUpdateType.PlayerDeath:
+                        // TODO
+                        break;
+                    case ScenarioUpdateType.Save:
+                        Save();
+                        break;
+                    case ScenarioUpdateType.ObjectiveAcheived:
+                    default:
+                        break;
+                }
+            }, ThreadOption.UIThread, true);
 
             _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
             {
@@ -163,11 +148,15 @@ namespace Rogue.NET.Scenario.Controller
             });
 
 
-            // TODO: Handle unloading state
-            //if (_scenarioContainer != null)
-            //{
-            //    _scenarioContainer = null;
-            //}
+            // Unload current scenario container
+            if (_scenarioContainer != null)
+            {
+                // Unload old model
+                _modelService.Unload();
+
+                // Null-out container to indicate unloaded model
+                _scenarioContainer = null;
+            }
 
             //Create expanded dungeon contents in memory
 #if DEBUG
@@ -187,7 +176,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
                 Message = "Compressing Scenario in Memory...",
-                Progress = 90
+                Progress = 50
             });
 
             //Compress to dungeon file
@@ -196,7 +185,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
                 Message = "Loading First Level...",
-                Progress = 95
+                Progress = 80
             });
 
             //Unpack bare minimum to dungeon object - get levels as needed
@@ -218,29 +207,66 @@ namespace Rogue.NET.Scenario.Controller
             // Enables backend queue processing
             _scenarioController.EnterGameMode();
         }
-        public void Open(string file)
+        public void Open(string playerName)
         {
+            // Show Splash
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Show,
+                SplashType = SplashEventType.Open
+            });
+
+            // Unload current scenario container
             if (_scenarioContainer != null)
             {
+                // Unload old model
+                _modelService.Unload();
+
+                // Null-out container to indicate unloaded model
                 _scenarioContainer = null;
             }
 
             //Read dungeon file - TODO: Handle exceptions
-            _scenarioFile = ScenarioFile.Open(File.ReadAllBytes(file));
+            _scenarioFile = _resourceService.OpenScenarioFile(playerName);
+
             if (_scenarioFile == null)
                 return;
 
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
 
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Hide,
+                SplashType = SplashEventType.Open
+            });
+
             LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.SavePoint);
         }
         public void Save()
         {
+            // Splash Show
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Show,
+                SplashType = SplashEventType.Save
+            });
+
+            // Update the ScenarioFile with unpacked levels
             _scenarioFile.Update(_scenarioContainer);
 
-            // TODO
-            //_scenarioFile.Save(Constants.SAVED_GAMES_DIR + "\\" + _scenarioContainer.Player1.RogueName + "." + Constants.SCENARIO_EXTENSION);
+            // Save scenario file to disk
+            _resourceService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player1.RogueName);
+
+            // Hide Splash
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            {
+                SplashAction = SplashAction.Hide,
+                SplashType = SplashEventType.Save
+            });
+
+            // Notify listeners
+            _eventAggregator.GetEvent<ScenarioSavedEvent>().Publish();
         }
 
         public void LoadCurrentLevel()
@@ -265,7 +291,10 @@ namespace Rogue.NET.Scenario.Controller
                     _scenarioContainer.LoadedLevels.Add(nextLevel);
                 }
 
-                // Register instance of level data object in the container
+                // Unload current model
+                _modelService.Unload();
+
+                // Register next level data with the model service
                 _modelService.Load(
                     _scenarioContainer.Player1,
                     location,

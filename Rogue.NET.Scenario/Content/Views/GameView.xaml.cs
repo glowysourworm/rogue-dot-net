@@ -19,7 +19,14 @@ namespace Rogue.NET.Scenario.Views
         readonly IRegionManager _regionManager;
         readonly IEventAggregator _eventAggregator;
 
-        bool _initialized = false;
+        public static readonly DependencyProperty DialogMessageProperty =
+            DependencyProperty.Register("DialogMessage", typeof(string), typeof(GameView));
+
+        public string DialogMessage
+        {
+            get { return (string)GetValue(DialogMessageProperty); }
+            set { SetValue(DialogMessageProperty, value); }
+        }
 
         [ImportingConstructor]
         public GameView(IRegionManager regionManager, IEventAggregator eventAggregator)
@@ -31,8 +38,9 @@ namespace Rogue.NET.Scenario.Views
 
             eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
-                this.DialogTB.Text = message;
-            }, ThreadOption.UIThread);
+                this.DialogMessage = message;
+
+            }, ThreadOption.UIThread, true);
         }
 
         private void GameViewButton_Click(object sender, RoutedEventArgs e)

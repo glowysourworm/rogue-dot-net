@@ -105,10 +105,8 @@
     <Compile Include="Event\Scenario\Command\DeleteScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\EditScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\ExitScenarioEvent.cs" />
-    <Compile Include="Event\Scenario\Command\LoadLevelEvent.cs" />
     <Compile Include="Event\Scenario\Command\NewScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\OpenScenarioEvent.cs" />
-    <Compile Include="Event\Scenario\Level\Event\SaveScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\ScenarioDeletedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\ScenarioSavedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Command\UserCommandEvent.cs" />

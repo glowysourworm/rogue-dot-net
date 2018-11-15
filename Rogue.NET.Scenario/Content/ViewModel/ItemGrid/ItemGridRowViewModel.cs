@@ -245,22 +245,97 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             this.AttackAttributes = new ObservableCollection<AttackAttribute>();
 
-            UpdateItem(equipment, metaData, 0);
+            UpdateEquipment(equipment, metaData);
         }
-        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, int consumableQuantity)
+        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttribute>();
 
-            UpdateItem(consumable, metaData, consumableQuantity);
+            UpdateConsumable(consumable, metaData, identifyConsumable, totalQuantity, totalUses, totalWeight);
         }
-
-        public void UpdateItem(ItemBase item, ScenarioMetaData metaData, int consumableQuantity)
+        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
-            this.Id = item.Id;
-            this.RogueName = item.RogueName;
+            this.Id = consumable.Id;
+            this.RogueName = consumable.RogueName;
 
-            bool isEquipment = item is Equipment;
-            bool isConsumable = item is Consumable;
+            // Make sure identifyConsumable applies to consume an identify item (there's at least one thing to identify)
+            bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
+
+            bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || (isIdentify && identifyConsumable);
+            bool throwEnable = consumable.HasProjectileSpell && consumable.SubType != ConsumableSubType.Ammo;
+
+            string quality = "N/A";
+            string classs = "N/A";
+
+            this.IsEquipment = false;
+            this.IsConsumable = true;
+
+            this.Quantity = totalQuantity;
+            this.Weight = totalWeight.ToString("F2");
+            this.Type = consumable.SubType.ToString();
+            this.Uses = totalUses;
+
+            this.EquipEnable = false;
+            this.ConsumeEnable = consumeEnable;
+            this.IdentifyEnable = !metaData.IsIdentified;
+            this.UncurseEnable = false;
+            this.DropEnable = true;
+            this.SelectEnable = true;
+            this.ThrowEnable = throwEnable;
+            this.EnchantEnable = false;
+
+            this.UsageDescription = CreateConsumableUsageDescription(consumable.SubType, throwEnable, consumeEnable, this.Quantity, this.Uses);
+
+            // Symbol Details
+            this.CharacterSymbol = consumable.CharacterSymbol;
+            this.CharacterColor = consumable.CharacterColor;
+            this.Icon = consumable.Icon;
+            this.SmileyMood = consumable.SmileyMood;
+            this.SmileyBodyColor = consumable.SmileyBodyColor;
+            this.SmileyLineColor = consumable.SmileyLineColor;
+            this.SmileyAuraColor = consumable.SmileyAuraColor;
+            this.SymbolType = consumable.SymbolType;
+
+            this.IsEquiped = false;
+            this.IsCursed = false;
+            this.IsObjective = (metaData.IsObjective && metaData.IsIdentified);
+            this.IsUnique = (metaData.IsUnique && metaData.IsIdentified);
+
+            this.Quality = quality;
+            this.Class = classs;
+
+            if (!metaData.IsIdentified)
+            {
+                this.DisplayName = "???";
+                this.ShortDescription = "";
+                this.LongDescription = "";
+            }
+            // Different rule for consumable of multiple uses
+            else
+            {
+                if (consumable.Type == ConsumableType.MultipleUses)
+                {
+                    this.DisplayName = consumable.RogueName + " (" + consumable.Uses.ToString("N0") + ")";
+                }
+
+                else if (consumable.Type == ConsumableType.UnlimitedUses)
+                {
+                    //Infinity symbol
+                    this.DisplayName = consumable.RogueName + " (" + Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E }) + ")";
+                }
+
+                else
+                    this.DisplayName = consumable.RogueName;
+
+                this.LongDescription = metaData.LongDescription;
+                this.ShortDescription = metaData.Description;
+            }
+        }
+        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData)
+        {
+            this.Id = equipment.Id;
+            this.RogueName = equipment.RogueName;
+
             bool shouldShowClass = false;
             bool consumeEnable = false;
             bool enchantEnable = false;
@@ -272,55 +347,38 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             string quality = "N/A";
             string classs = "N/A";
 
-            this.IsEquipment = isEquipment;
-            this.IsConsumable = isConsumable;
+            this.IsEquipment = true;
+            this.IsConsumable = false;
 
-            if (isEquipment)
-            {
-                Equipment equipment = item as Equipment;
-                shouldShowClass = equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.Boots
-                    || equipment.Type == EquipmentType.Gauntlets || equipment.Type == EquipmentType.Helmet
-                    || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.Shield
-                    || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.Shoulder
-                    || equipment.Type == EquipmentType.TwoHandedMeleeWeapon || equipment.Type == EquipmentType.Belt;
+            shouldShowClass = equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.Boots
+                || equipment.Type == EquipmentType.Gauntlets || equipment.Type == EquipmentType.Helmet
+                || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.Shield
+                || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.Shoulder
+                || equipment.Type == EquipmentType.TwoHandedMeleeWeapon || equipment.Type == EquipmentType.Belt;
 
-                enchantEnable = equipment.Type == EquipmentType.Belt || equipment.Type == EquipmentType.Shoulder || equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.TwoHandedMeleeWeapon;
-                uncurseEnable = equipment.IsCursed;
-                isEquiped = equipment.IsEquipped;
-                isCursed = equipment.IsCursed && metaData.IsCurseIdentified;
-                quality = shouldShowClass ? equipment.Quality.ToString("F2") : "N/A";
-                classs = shouldShowClass ? equipment.Class.ToString("F0") : "N/A";
+            enchantEnable = equipment.Type == EquipmentType.Belt || equipment.Type == EquipmentType.Shoulder || equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.TwoHandedMeleeWeapon;
+            uncurseEnable = equipment.IsCursed;
+            isEquiped = equipment.IsEquipped;
+            isCursed = equipment.IsCursed && metaData.IsCurseIdentified;
+            quality = shouldShowClass ? equipment.Quality.ToString("F2") : "N/A";
+            classs = shouldShowClass ? equipment.Class.ToString("F0") : "N/A";
 
-                if (!equipment.IsIdentified)
-                    classs = "?";
+            if (!equipment.IsIdentified)
+                classs = "?";
 
-                this.EquipType = equipment.Type;
-                this.Quantity = 1;
-                this.Weight = equipment.Weight.ToString("F2");
-                this.Type = equipment.Type.ToString();
-                this.AttackAttributes.Clear();
-                this.AttackAttributes.AddRange(equipment.AttackAttributes
-                                                 .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0));
+            this.EquipType = equipment.Type;
+            this.Quantity = 1;
+            this.Weight = equipment.Weight.ToString("F2");
+            this.Type = equipment.Type.ToString();
+            this.AttackAttributes.Clear();
+            this.AttackAttributes.AddRange(equipment.AttackAttributes
+                                                .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0));
 
-                this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
-            }
-            if (isConsumable)
-            {
-                Consumable consumable = item as Consumable;
-                throwEnable = consumable.HasProjectileSpell && consumable.SubType != ConsumableSubType.Ammo;
-                consumeEnable = consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo;
+            this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
 
-                this.Quantity = consumableQuantity;
-                this.Weight = (this.Quantity * consumable.Weight).ToString("F2");
-                this.Type = consumable.SubType.ToString();
-                this.Uses = consumable.Uses;
-
-                this.UsageDescription = CreateConsumableUsageDescription(consumable.SubType, throwEnable, consumeEnable, this.Quantity, this.Uses);
-            }
-
-            this.EquipEnable = isEquipment;
+            this.EquipEnable = true;
             this.ConsumeEnable = consumeEnable;
-            this.IdentifyEnable = !metaData.IsIdentified || (!item.IsIdentified && isEquipment && shouldShowClass);
+            this.IdentifyEnable = !metaData.IsIdentified || (!equipment.IsIdentified && shouldShowClass);
             this.UncurseEnable = uncurseEnable;
             this.DropEnable = true;
             this.SelectEnable = true;
@@ -328,14 +386,14 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.EnchantEnable = enchantEnable;
 
             // Symbol Details
-            this.CharacterSymbol = item.CharacterSymbol;
-            this.CharacterColor = item.CharacterColor;
-            this.Icon = item.Icon;
-            this.SmileyMood = item.SmileyMood;
-            this.SmileyBodyColor = item.SmileyBodyColor;
-            this.SmileyLineColor = item.SmileyLineColor;
-            this.SmileyAuraColor = item.SmileyAuraColor;
-            this.SymbolType = item.SymbolType;
+            this.CharacterSymbol = equipment.CharacterSymbol;
+            this.CharacterColor = equipment.CharacterColor;
+            this.Icon = equipment.Icon;
+            this.SmileyMood = equipment.SmileyMood;
+            this.SmileyBodyColor = equipment.SmileyBodyColor;
+            this.SmileyLineColor = equipment.SmileyLineColor;
+            this.SmileyAuraColor = equipment.SmileyAuraColor;
+            this.SymbolType = equipment.SymbolType;
             
             this.IsEquiped = isEquiped;
             this.IsCursed = isCursed;
@@ -356,23 +414,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 this.ShortDescription = "";
                 this.LongDescription = "";
             }
-            // Different rule for consumable of multiple uses
             else
             {
-                if (isConsumable && (item as Consumable).Type == ConsumableType.MultipleUses)
-                {
-                    this.DisplayName = item.RogueName + " (" + (item as Consumable).Uses.ToString("N0") + ")";
-                }
-
-                else if (isConsumable && (item as Consumable).Type == ConsumableType.UnlimitedUses)
-                {
-                    //Infinity symbol
-                    this.DisplayName = item.RogueName + " (" + Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E }) + ")";
-                }
-
-                else
-                    this.DisplayName = item.RogueName;
-
+                this.DisplayName = equipment.RogueName;
                 this.LongDescription = metaData.LongDescription;
                 this.ShortDescription = metaData.Description;
             }
