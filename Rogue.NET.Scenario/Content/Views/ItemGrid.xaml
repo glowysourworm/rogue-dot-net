@@ -30,8 +30,8 @@
                             Margin="0" 
                             Cursor="Hand">
                             <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource ItemGridRowButtonVisibilityConverter}" UpdateSourceTrigger="PropertyChanged">
-                                    <Binding />
+                                <MultiBinding Converter="{StaticResource ItemGridRowButtonVisibilitiyConverter}">
+                                    <Binding Path="." NotifyOnSourceUpdated="True" />
                                     <Binding Path="IntendedAction" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}" />
                                 </MultiBinding>
                             </Button.Visibility>
@@ -55,6 +55,8 @@
                             <Setter.Value>
                                 <ToolTip Background="Black"
                                          BorderThickness="1"
+                                         ToolTipService.HasDropShadow="True"
+                                         ToolTipService.ShowDuration="30000"
                                          StaysOpen="True"
                                          Width="350">
                                     <ToolTip.Style>
@@ -272,12 +274,12 @@
                   ColumnWidth="SizeToCells">
             <DataGrid.Columns>
                 <DataGridTemplateColumn x:Name="ButtonColumn" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource ButtonCellTemplate}">
-                    <DataGridTemplateColumn.Visibility>
+                    <!--DataGridTemplateColumn.Visibility>
                         <MultiBinding Converter="{StaticResource ItemGridButtonVisibilityConverter}">
-                            <Binding />
+                            <Binding Path="." NotifyOnSourceUpdated="True" />
                             <Binding Path="IntendedAction" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}" />
                         </MultiBinding>
-                    </DataGridTemplateColumn.Visibility>
+                    </-->
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"  HeaderStyle="{StaticResource HeaderStyle}" />
                 <DataGridTextColumn x:Name="QuantityColumn" Header="#" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Quantity}" />

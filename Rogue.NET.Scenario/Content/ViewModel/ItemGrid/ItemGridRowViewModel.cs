@@ -310,7 +310,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 throwEnable = consumable.HasProjectileSpell && consumable.SubType != ConsumableSubType.Ammo;
                 consumeEnable = consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo;
 
-                this.Quantity = Quantity;
+                this.Quantity = consumableQuantity;
                 this.Weight = (this.Quantity * consumable.Weight).ToString("F2");
                 this.Type = consumable.SubType.ToString();
                 this.Uses = consumable.Uses;
