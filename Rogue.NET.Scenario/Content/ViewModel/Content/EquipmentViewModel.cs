@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class EquipmentViewModel : ScenarioObjectViewModel
+    public class EquipmentViewModel : ItemViewModel
     {
         public EquipmentViewModel(Equipment equipment) : base(equipment)
         {

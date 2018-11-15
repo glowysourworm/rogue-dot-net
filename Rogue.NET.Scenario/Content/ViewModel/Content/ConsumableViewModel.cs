@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class ConsumableViewModel : ScenarioObjectViewModel
+    public class ConsumableViewModel : ItemViewModel
     {
         public ConsumableViewModel(Consumable consumable) : base(consumable)
         {

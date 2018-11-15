@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -18,9 +19,11 @@ namespace Rogue.NET.Scenario.Views
         readonly List<RadioButton> _radioList;
 
         [ImportingConstructor]
-        public PlayerSubpanel(IEventAggregator eventAggregator)
+        public PlayerSubpanel(PlayerViewModel playerViewModel, IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
+
+            this.DataContext = playerViewModel;
 
             InitializeComponent();
 

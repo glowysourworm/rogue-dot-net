@@ -5,39 +5,39 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Image Source="{Binding SymbolInfo.SymbolImageSource}" Visibility="{Binding Converter={StaticResource AttackAttributeConverter}}" />
-            <TextBlock Text="{Binding RogueName}"  Visibility="{Binding Converter={StaticResource AttackAttributeConverter}}" VerticalAlignment="Center" FontSize="14" Foreground="Beige" Margin="4">
+            <Image Source="{Binding SymbolInfo.SymbolImageSource}" Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" />
+            <TextBlock Text="{Binding RogueName}"  Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" VerticalAlignment="Center" FontSize="14" Foreground="Beige" Margin="4">
             </TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock Text="{Binding Attack, StringFormat=N0}" 
-                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="Yellow" 
                        Margin="0" />
             <TextBlock Text="A" 
                        VerticalAlignment="Center" 
-                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        Foreground="Yellow" 
                        Margin="0,4,4,4" />
             <TextBlock Text="{Binding Resistance, StringFormat=N0}" 
-                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="LightSteelBlue" 
                        Margin="0" />
             <TextBlock Text="R" 
                        Foreground="LightSteelBlue" 
-                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        Margin="0,4,4,4" 
                        VerticalAlignment="Center" />
             <TextBlock Text="{Binding Weakness, StringFormat=N0}" 
-                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="Red" 
@@ -45,7 +45,7 @@
             <TextBlock Text="W" 
                        Foreground="Red" 
                        Margin="0,4,4,4" 
-                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVisibilityConverter}}" 
+                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" />            
         </StackPanel>
     </Grid>

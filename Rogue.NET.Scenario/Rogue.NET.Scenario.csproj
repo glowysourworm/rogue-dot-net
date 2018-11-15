@@ -157,10 +157,13 @@
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ConsumableViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ItemViewModel.cs" />
+    <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
+    <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioObjectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\SkillSetViewModel.cs" />
-    <Compile Include="Content\ViewModel\ItemGridViewModel.cs" />
+    <Compile Include="Content\ViewModel\ItemGrid\ItemGridRowViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
     <Compile Include="Content\Views\GameInfoView.xaml.cs">
       <DependentUpon>GameInfoView.xaml</DependentUpon>
@@ -181,6 +184,8 @@
     <Compile Include="Controller\GameController.cs" />
     <Compile Include="Controller\RogueMessageQueue.cs" />
     <Compile Include="Controller\ScenarioController.cs" />
+    <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
+    <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">

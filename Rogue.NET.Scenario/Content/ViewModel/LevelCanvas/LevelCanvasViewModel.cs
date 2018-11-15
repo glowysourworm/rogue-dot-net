@@ -408,7 +408,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // TODO: Put transform somewhere else
                 var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
                 var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
-                var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
 
                 // Make the full size of the level - then apply the level opacity mask drawing
                 aura = new Rectangle();
@@ -446,7 +445,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // TODO: Put transform somewhere else
                 var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
                 var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
-                var adjustment = new Point(-1 * ((auraRadiusUI / 2) - cellOffset.X), -1 * ((auraRadiusUI / 2) - cellOffset.Y));
 
                 var aura = _contentDict[scenarioObject.Id + AURA_EXT] as Rectangle;
                 aura.Height = this.LevelHeight;

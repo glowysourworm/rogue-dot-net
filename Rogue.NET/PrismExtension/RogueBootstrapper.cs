@@ -20,6 +20,8 @@ using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Common.Extension.Prism;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
+using Rogue.NET.Scenario.ViewModel.ItemGrid;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -79,6 +81,8 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Equipment;
+                view.IntendedAction = ItemGridActions.Equip;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Equipment;
                 return view;
             });
 
@@ -86,6 +90,8 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Equipment;
+                view.IntendedAction = ItemGridActions.Equip;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Equipment;
                 return view;
             });
 
@@ -93,6 +99,8 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Consumable;
+                view.IntendedAction = ItemGridActions.Consume;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Consumables;
                 return view;
             });
 
@@ -100,6 +108,8 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Inventory;
+                view.IntendedAction = ItemGridActions.Drop;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Inventory;
                 return view;
             });
 
@@ -107,24 +117,32 @@ namespace Rogue.NET.PrismExtension
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Uncurse;
+                view.IntendedAction = ItemGridActions.Uncurse;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.UncurseEquipment;
                 return view;
             });
             regionManager.RegisterViewWithRegion("ImbueItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Imbue;
+                view.IntendedAction = ItemGridActions.Imbue;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.ImbueEquipment;
                 return view;
             });
             regionManager.RegisterViewWithRegion("IdentifyItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Identify;
+                view.IntendedAction = ItemGridActions.Identify;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.IdentifyInventory;
                 return view;
             });
             regionManager.RegisterViewWithRegion("EnchantItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
-                view.Mode = ItemGridModes.Identify;
+                view.Mode = ItemGridModes.Enchant;
+                view.IntendedAction = ItemGridActions.Enchant;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantEquipment;
                 return view;
             });
         }

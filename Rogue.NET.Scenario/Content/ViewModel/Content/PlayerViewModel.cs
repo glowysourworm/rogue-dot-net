@@ -7,10 +7,14 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Content.Interface;
+using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Content;
+using System;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
     [Export]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public class PlayerViewModel : NotifyViewModel
     {
         #region (private) Backing Fields
@@ -90,7 +94,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
 
         public ObservableCollection<EquipmentViewModel> Equipment { get; set; }
-        public ObservableCollection<ConsumableViewModel> Consumables { get; set; }
 
         [ImportingConstructor]
         public PlayerViewModel(
@@ -99,37 +102,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             ICharacterProcessor characterProcessor)
         {
             this.Equipment = new ObservableCollection<EquipmentViewModel>();
-            this.Consumables = new ObservableCollection<ConsumableViewModel>();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 // TODO: Filter events using the Type
 
                 var player = modelService.Player;
+                var encyclopedia = modelService.ScenarioEncyclopedia;
 
-                // Synchronize Equipment
-                foreach (var equipment in player.Equipment.Values)
-                {
-                    if (!this.Equipment.Any(x => x.Id == equipment.Id))
-                        this.Equipment.Add(new EquipmentViewModel(equipment));
-                }
-                for (int i = this.Equipment.Count - 1; i >= 0; i--)
-                {
-                    if (!player.Equipment.ContainsKey(this.Equipment[i].Id))
-                        this.Equipment.RemoveAt(i);
-                }
-
-                // Synchronize Consumables
-                foreach (var consumable in player.Consumables.Values)
-                {
-                    if (!this.Consumables.Any(x => x.Id == consumable.Id))
-                        this.Consumables.Add(new ConsumableViewModel(consumable));
-                }
-                for (int i = this.Consumables.Count - 1; i >= 0; i--)
-                {
-                    if (!player.Consumables.ContainsKey(this.Consumables[i].Id))
-                        this.Consumables.RemoveAt(i);
-                }
+                // Base Collections
+                SynchronizeCollection(player.Equipment.Values, this.Equipment, (x) => new EquipmentViewModel(x));
 
                 // Active Skill
                 var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
@@ -148,6 +130,24 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 this.MpMax = player.MpMax;
                 this.RogueName = player.RogueName;
             }, true);
+        }
+
+        private void SynchronizeCollection<TSource, TDest>(
+                        IEnumerable<TSource> sourceCollection, 
+                        IList<TDest> destCollection,
+                        Func<TSource, TDest> constructor) where TSource : ScenarioObject 
+                                                           where TDest : ScenarioObjectViewModel
+        {
+            foreach (var item in sourceCollection)
+            {
+                if (!destCollection.Any(x => x.Id == item.Id))
+                    destCollection.Add(constructor(item));
+            }
+            for (int i = destCollection.Count - 1; i >= 0; i--)
+            {
+                if (!sourceCollection.Any(x => x.Id == destCollection[i].Id))
+                    destCollection.RemoveAt(i);
+            }
         }
     }
 }
