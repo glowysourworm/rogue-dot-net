@@ -19,11 +19,11 @@ namespace Rogue.NET.Scenario.Controller.Interface
         /// <summary>
         /// Starts primary worker process to accept user commands and process backend queues
         /// </summary>
-        void EnterGameMode();
+        void Start();
 
         /// <summary>
         /// Stops primary worker process
         /// </summary>
-        void ExitGameMode();
+        void Stop();
     }
 }

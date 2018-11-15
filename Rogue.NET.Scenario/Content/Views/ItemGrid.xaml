@@ -279,18 +279,12 @@
                   CellStyle="{StaticResource DataGridCellStyle}"
                   ColumnWidth="SizeToCells">
             <DataGrid.Columns>
-                <DataGridTemplateColumn x:Name="ButtonColumn" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource ButtonCellTemplate}">
-                    <!--DataGridTemplateColumn.Visibility>
-                        <MultiBinding Converter="{StaticResource ItemGridButtonVisibilityConverter}">
-                            <Binding Path="." NotifyOnSourceUpdated="True" />
-                            <Binding Path="IntendedAction" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}" />
-                        </MultiBinding>
-                    </-->
-                </DataGridTemplateColumn>
+                <DataGridTemplateColumn x:Name="ButtonColumn" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource ButtonCellTemplate}" />
                 <DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"  HeaderStyle="{StaticResource HeaderStyle}" />
                 <DataGridTextColumn x:Name="QuantityColumn" Header="#" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Quantity}" />
                 <DataGridTextColumn x:Name="ClassColumn" Width="Auto" Header="Class" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Class}" />
                 <DataGridTextColumn x:Name="WeightColumn" Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
+                <DataGridTemplateColumn x:Name="AttackAttributeColumn" Header="Attack Attributes" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource AttackAttributesCellTemplate}" />
                 <DataGridTextColumn Header="" Width="0" SortDirection="Ascending" Visibility="Collapsed"  Binding="{Binding Type}" />
                 <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding DisplayName}">
                     <DataGridTextColumn.CellStyle>

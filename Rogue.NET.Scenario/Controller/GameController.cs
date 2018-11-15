@@ -205,7 +205,7 @@ namespace Rogue.NET.Scenario.Controller
             _resourceService.SetCacheMode(ResourceCacheMode.OnDemand);
 
             // Enables backend queue processing
-            _scenarioController.EnterGameMode();
+            _scenarioController.Start();
         }
         public void Open(string playerName)
         {
@@ -281,6 +281,10 @@ namespace Rogue.NET.Scenario.Controller
         {
             if (levelNumber <= _scenarioContainer.StoredConfig.DungeonTemplate.NumberOfLevels && levelNumber > 0)
             {
+                // First halt processing of backend
+                _scenarioController.Stop();
+
+                // Update the level number in the container
                 _scenarioContainer.CurrentLevel = levelNumber;
 
                 //If level is not loaded - must load it from the dungeon file
@@ -301,6 +305,9 @@ namespace Rogue.NET.Scenario.Controller
                     nextLevel, 
                     _scenarioContainer.ScenarioEncyclopedia, 
                     _scenarioContainer.StoredConfig);
+
+                // Enable processing of backend
+                _scenarioController.Start();
 
                 // Notify Listeners
                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();

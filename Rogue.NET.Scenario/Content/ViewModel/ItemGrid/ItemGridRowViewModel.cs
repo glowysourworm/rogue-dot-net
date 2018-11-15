@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         #endregion
 
         #region (public) Properties
-        public ObservableCollection<AttackAttribute> AttackAttributes { get; set; }
+        public ObservableCollection<AttackAttributeViewModel> AttackAttributes { get; set; }
 
         public string Id
         {
@@ -243,13 +244,13 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
         public ItemGridRowViewModel(Equipment equipment, ScenarioMetaData metaData)
         {
-            this.AttackAttributes = new ObservableCollection<AttackAttribute>();
+            this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
             UpdateEquipment(equipment, metaData);
         }
         public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
-            this.AttackAttributes = new ObservableCollection<AttackAttribute>();
+            this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
             UpdateConsumable(consumable, metaData, identifyConsumable, totalQuantity, totalUses, totalWeight);
         }
@@ -372,7 +373,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.Type = equipment.Type.ToString();
             this.AttackAttributes.Clear();
             this.AttackAttributes.AddRange(equipment.AttackAttributes
-                                                .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0));
+                                                    .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
+                                                    .Select(x => new AttackAttributeViewModel(x)));
 
             this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
 

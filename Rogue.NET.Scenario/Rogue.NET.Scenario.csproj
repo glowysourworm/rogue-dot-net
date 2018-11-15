@@ -155,9 +155,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ConsumableViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ItemViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\RogueBaseViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />

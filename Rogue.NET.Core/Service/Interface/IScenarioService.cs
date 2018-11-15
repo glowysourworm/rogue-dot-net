@@ -15,6 +15,12 @@ namespace Rogue.NET.Core.Service.Interface
         bool ProcessBackend();
 
         /// <summary>
+        /// Tells IScenarioService to clear out all queued updates and data. This should
+        /// be done between loading of IModelService (between levels)
+        /// </summary>
+        void ClearQueues();
+
+        /// <summary>
         /// Issues primary player command 
         /// </summary>
         void IssueCommand(ILevelCommandAction levelCommand);

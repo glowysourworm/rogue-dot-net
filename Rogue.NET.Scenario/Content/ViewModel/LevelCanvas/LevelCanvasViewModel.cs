@@ -532,12 +532,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                 animation.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
                 animation.Start();
-
-                // Wait for completion
-                var waitTime = animationData.Animations.Sum(x => x.AnimationTime * x.RepeatCount * (x.AutoReverse ? 2 : 1));
-
-                await Task.Delay(waitTime);
             }
+
+            // Wait for completion
+            var waitTime = animationData.Animations.Sum(x => x.AnimationTime * x.RepeatCount * (x.AutoReverse ? 2 : 1));
+
+            await Task.Delay(waitTime);
         }
         private void OnAnimationTimerElapsed(ITimedGraphic sender)
         {

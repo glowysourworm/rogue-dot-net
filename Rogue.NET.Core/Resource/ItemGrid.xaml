@@ -944,7 +944,21 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding SymbolInfo.SymbolImageSource}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Image Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Image.Source>
+                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                <Binding Path="RogueName" />
+                                <Binding Path="CharacterSymbol" />
+                                <Binding Path="CharacterColor" />
+                                <Binding Path="Icon" />
+                                <Binding Path="SmileyMood"/>
+                                <Binding Path="SmileyBodyColor" />
+                                <Binding Path="SmileyLineColor" />
+                                <Binding Path="SmileyAuraColor" />
+                                <Binding Path="SymbolType" />
+                            </MultiBinding>
+                        </Image.Source>
+                    </Image>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

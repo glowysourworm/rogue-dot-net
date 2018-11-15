@@ -343,6 +343,15 @@ namespace Rogue.NET.Core.Service
             return true;
         }
 
+        public void ClearQueues()
+        {
+            _animationQueue.Clear();
+            _dataQueue.Clear();
+            _scenarioQueue.Clear();
+            _splashQueue.Clear();
+            _uiQueue.Clear();
+        }
+
         public bool AnyLevelEvents()
         {
             return _uiQueue.Any();

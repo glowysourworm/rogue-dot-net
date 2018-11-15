@@ -67,7 +67,7 @@ namespace Rogue.NET.Scenario.Controller
             // Subscribe to user input
             _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(OnUserCommand, true);
         }
-        public void EnterGameMode()
+        public void Start()
         {
             // Close the backend if running
             Shutdown();
@@ -76,7 +76,7 @@ namespace Rogue.NET.Scenario.Controller
             _backendThread = new Thread(Work);
             _backendThread.Start();
         }
-        public void ExitGameMode()
+        public void Stop()
         {
             Shutdown();
         }
@@ -159,6 +159,7 @@ namespace Rogue.NET.Scenario.Controller
         /// </summary>
         private void Shutdown()
         {
+            // First, stop execution of backend thread
             if (_backendThread != null)
             {
                 // Send message to the thread to finish up final execution loop
@@ -168,6 +169,9 @@ namespace Rogue.NET.Scenario.Controller
                 _backendThread.Join();
                 _backendThread = null;
             }
+
+            // Second, clear and unload all backend queues. (This is safe because backend thread is halted)
+            _scenarioService.ClearQueues();
         }
 
         /// <summary>
