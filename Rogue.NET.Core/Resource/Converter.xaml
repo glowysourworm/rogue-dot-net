@@ -10,6 +10,7 @@
     <converter:BoolInverseVisibilityHiddenConverter x:Key="BoolInverseVisibilityHiddenConverter" />
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
+    <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />
     <converter:DualBoolVisibilityCollapsedConverter x:Key="DualBoolVisibilityCollapsedConverter" />
     <converter:NonNullVisibilityConverter x:Key="NonNullVisibilityConverter" />
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />

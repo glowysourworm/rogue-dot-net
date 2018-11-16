@@ -5,6 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
+    xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
     xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
     xmlns:prism="http://www.codeplex.com/prism"
 	x:Class="Rogue.NET.Scenario.Views.EquipmentSelectionCtrl"
@@ -20,6 +21,7 @@
                         <local:DungeonEncyclopediaAttackAttributeCtrl Visibility="{Binding Converter={StaticResource AttackAttributeVisibilityCollapsedConverter}}">
                         </local:DungeonEncyclopediaAttackAttributeCtrl>
                     </DataTemplate>
+                    <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
                 </ResourceDictionary>                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -32,119 +34,114 @@
 		</Grid.ColumnDefinitions>
 		<Border x:Name="EquipmentDisplayBorder" BorderBrush="White" ClipToBounds="True" BorderThickness="1">
 			<Grid x:Name="LayoutRoot" Margin="24">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="65*"/>
-					<ColumnDefinition Width="78*"/>
-					<ColumnDefinition Width="65*"/>
-					<ColumnDefinition Width="77*"/>
-					<ColumnDefinition Width="58*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="0.306*"/>
-					<RowDefinition Height="0.119*"/>
-					<RowDefinition Height="0.113*"/>
-					<RowDefinition Height="0.064*"/>
-					<RowDefinition Height="0.234*"/>
-					<RowDefinition Height="0.164*"/>
-				</Grid.RowDefinitions>
-				<StackPanel x:Name="HeadStack" Margin="0" Grid.Column="1" Orientation="Vertical" Grid.RowSpan="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel x:Name="RightHandStack" Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Right Hand" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
+                        <Image x:Name="RightHandImageWeapon"  Source="{Binding EquippedRightHandWeapon, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                    </Border>
+                    <Border HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
+                        <Image x:Name="RightHandImageGlove"  Source="{Binding EquippedGauntlets, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2"/>
+                    </Border>
+                    <Border BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="20" Height="20" Margin="4">
+                        <Image x:Name="RightRing1"  Source="{Binding EquippedRightRing, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="1" />
+                    </Border>
+                </StackPanel>
+                <StackPanel x:Name="HeadStack" Margin="0" Grid.Column="1" VerticalAlignment="Top">
 					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Head" TextWrapping="Wrap"/>
 					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-						<Image x:Name="HeadImage" Margin="2" />
+                        <Image x:Name="HeadImage" Source="{Binding EquippedHelmet, Converter={StaticResource ScenarioImageSourceConverter}}"  Margin="2" />
 					</Border>
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Amulet" TextWrapping="Wrap"/>
                     <Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-                        <Image x:Name="AmuletImage" Margin="2" />
+                        <Image x:Name="AmuletImage"  Source="{Binding EquippedAmulet, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
                     </Border>
                 </StackPanel>
-				<StackPanel x:Name="CenterStack" Margin="0,100,0,10" Grid.Column="2" Grid.RowSpan="5" Orientation="Vertical" VerticalAlignment="Center" Height="348">
+				<StackPanel x:Name="CenterStack" Grid.Column="2" VerticalAlignment="Center">
                     <StackPanel x:Name="OrbStack" Margin="0,0,0,12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
 						<TextBlock HorizontalAlignment="Center" Margin="0" FontSize="16" Foreground="White" Text="Orb" TextWrapping="Wrap"/>
 						<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="24" Height="24" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-							<Image x:Name="OrbImage" Margin="2" />
+                            <Image x:Name="OrbImage" Source="{Binding EquippedOrb, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
 						</Border>
 					</StackPanel>
                     <view:Smiley x:Name="Smiley" Height="150" 
-                                             SmileyColor="{Binding Player.SymbolInfo.SmileyBodyColor}" 
-                                             SmileyLineColor="{Binding Player.SymbolInfo.SmileyLineColor}"
-                                             SmileyMood="{Binding Player.SymbolInfo.SmileyMood}"
+                                             SmileyColor="{Binding SmileyBodyColor}" 
+                                             SmileyLineColor="{Binding SmileyLineColor}"
+                                             SmileyMood="{Binding SmileyMood}"
                                              SmileyRadius="20" Width="100"/>
                 
                     <TextBlock HorizontalAlignment="Center" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Belt" TextWrapping="Wrap"/>
                     <Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-                        <Image x:Name="BeltImage" Margin="2" />
+                        <Image x:Name="BeltImage"  Source="{Binding EquippedBelt, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
                     </Border>
 
                     <StackPanel x:Name="FeetStack" Margin="0,8,0,0" Orientation="Vertical">
 						<TextBlock Margin="0,4,0,0" FontSize="16" Foreground="White" Text="Feet" TextWrapping="Wrap" d:LayoutOverrides="Width" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						<Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-							<Image x:Name="FeetImage" Margin="2" />
+                            <Image x:Name="FeetImage"  Source="{Binding EquippedBoots, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
 						</Border>
 					</StackPanel>
 				</StackPanel>
-				<StackPanel x:Name="BodyStack" Grid.Column="3" Orientation="Vertical" Grid.RowSpan="6">
-					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Body" TextWrapping="Wrap"/>
-					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="BodyImage" Margin="2" />
-					</Border>
+                <StackPanel x:Name="BodyStack" Grid.Column="3" VerticalAlignment="Top">
+                    <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Body" TextWrapping="Wrap"/>
+                    <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
+                        <Image x:Name="BodyImage"  Source="{Binding EquippedArmor, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                    </Border>
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Shoulders" TextWrapping="Wrap"/>
                     <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="ShoulderImage" Margin="2" />
-                    </Border>
-                    <ListBox x:Name="AttackAttributesLB" ItemsSource="{Binding Player.MeleeAttackAttributes, NotifyOnSourceUpdated=True}" HorizontalContentAlignment="Stretch" Margin="0,24,0,8" Style="{StaticResource DarkListBoxStyle}" ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}" Background="Black" BorderThickness="0" ItemTemplate="{StaticResource AttackAttribCtrl}" />
-                </StackPanel>
-				<StackPanel x:Name="RightHandStack" Orientation="Vertical" Grid.RowSpan="4" VerticalAlignment="Center" Height="156" Margin="0,28,0,106" Grid.Row="1">
-					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Right Hand" TextWrapping="Wrap" VerticalAlignment="Center"/>
-					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="RightHandImageWeapon" Margin="2" />
-					</Border>
-					<Border HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-						<Image x:Name="RightHandImageGlove" Margin="2"/>
-					</Border>
-                    <Border BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="20" Height="20" Margin="4">
-                        <Image x:Name="RightRing1" Margin="1" />
+                        <Image x:Name="ShoulderImage"  Source="{Binding EquippedShoulder, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
                     </Border>
                 </StackPanel>
-				<StackPanel x:Name="LeftHandStack" Orientation="Vertical" Grid.RowSpan="4" Grid.Column="4" VerticalAlignment="Center" Height="156" Margin="0,28,0,106" Grid.Row="1">
+                <StackPanel x:Name="LeftHandStack" Grid.Column="4" VerticalAlignment="Center">
 					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Left Hand" TextWrapping="Wrap"/>
 					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="LeftHandImageWeapon" Margin="2" />
+                        <Image x:Name="LeftHandImageWeapon"  Source="{Binding EquippedLeftHandWeapon, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
 					</Border>
 					<Border HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="LeftHandImageGlove" Margin="2" />
+                        <Image x:Name="LeftHandImageGlove"  Source="{Binding EquippedGauntlets, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
 					</Border>
                     <Border BorderBrush="White" BorderThickness="1" CornerRadius="2"  Width="20" Height="20" Margin="4">
-                        <Image x:Name="LeftRing1" Margin="1" />
+                        <Image x:Name="LeftRing1"  Source="{Binding EquippedLeftRing, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="1" />
                     </Border>
                 </StackPanel>
-				<Rectangle x:Name="glossRect" Stroke="Black" Margin="0" Grid.ColumnSpan="5" Grid.RowSpan="6" RadiusY="20" RadiusX="20">
-					<Rectangle.Fill>
-						<RadialGradientBrush Center="0.494,0.519" GradientOrigin="0.494,0.519" RadiusX="1.382" RadiusY="0.536">
-							<GradientStop Color="#00000000" Offset="0.931"/>
-							<GradientStop Color="#4BFFFFFF" Offset="0.94"/>
-						</RadialGradientBrush>
-					</Rectangle.Fill>
-				</Rectangle>
-				<Rectangle RadiusX="20" RadiusY="20" Margin="0" Grid.ColumnSpan="5" Grid.Row="5">
-					<Rectangle.Fill>
-						<RadialGradientBrush Center="0.507,-0.032" GradientOrigin="0.507,-0.032" RadiusX="1.382" RadiusY="2.036">
-							<GradientStop Color="#00000000" Offset="0.31"/>
-							<GradientStop Color="#4BFFFFFF" Offset="0.466"/>
-						</RadialGradientBrush>
-					</Rectangle.Fill>
-				</Rectangle>
+
+                <Rectangle x:Name="glossRect" Stroke="Black" Margin="0" Grid.ColumnSpan="5" RadiusY="20" RadiusX="20">
+                    <Rectangle.Fill>
+                        <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="1.382" RadiusY="0.536">
+                            <GradientStop Color="#00000000" Offset="0.931"/>
+                            <GradientStop Color="#4BFFFFFF" Offset="0.94"/>
+                        </RadialGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
                 <Rectangle x:Name="auraRect" Stroke="White" Margin="0" Grid.ColumnSpan="5" Grid.RowSpan="6" RadiusY="20" RadiusX="20">
                     <Rectangle.Fill>
                         <RadialGradientBrush Center="0.47,0.5" GradientOrigin="0.47,0.5" Opacity="0.2" RadiusX="0.903" RadiusY="0.903">
                             <GradientStop Color="Black" Offset="0.6"/>
-                            <GradientStop Color="{Binding Level.Player.SmileyAuraColor}" Offset="0.078"/>
+                            <GradientStop Color="{Binding SmileyAuraColor}" Offset="0.078"/>
                         </RadialGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
             </Grid>
 		</Border>
 		<Border x:Name="EquipmentListBorder" Grid.Column="1" BorderThickness="1" Background="Black" BorderBrush="White">
-            <ContentControl prism:RegionManager.RegionName="EquipmentSelectionRegion"  x:Name="EquipmentListCtrl"  Margin="8" />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <ContentControl prism:RegionManager.RegionName="EquipmentSelectionRegion"  x:Name="EquipmentListCtrl"  Margin="8" />
+                <StackPanel Grid.Row="1" Visibility="{Binding MeleeAttackAttributes, Converter={StaticResource CollectionNonEmptyVisibilityConverter}}">
+                    <TextBlock Foreground="White" FontSize="20" Text="Attack Attributes" Margin="8" />
+                    <ListBox x:Name="AttackAttributesLB" ItemsSource="{Binding MeleeAttackAttributes}" HorizontalContentAlignment="Stretch" Margin="8" Style="{StaticResource DarkListBoxStyle}" ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}" Background="Black" BorderThickness="0" ItemTemplate="{StaticResource AttackAttribCtrl}" />
+                </StackPanel>
+            </Grid>
 		</Border>
 	</Grid>
 </UserControl>

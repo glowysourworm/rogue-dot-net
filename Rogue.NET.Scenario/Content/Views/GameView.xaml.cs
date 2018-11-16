@@ -10,6 +10,9 @@ using Prism.Regions;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Common.View;
+using System;
+using Rogue.NET.Scenario.Events.Content;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -45,16 +48,16 @@ namespace Rogue.NET.Scenario.Views
 
         private void GameViewButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            //var levelData = this.DataContext as LevelData;
-            //var type = (sender as DisappearingButton).Tag as Type;
+            _eventAggregator.GetEvent<RequestNavigateToLevelViewEvent>().Publish();
+        }
+        private void EquipmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<RequestNavigateToEquipmentSelectionEvent>().Publish();
+        }
 
-            //var active = _regionManager.Regions["GameRegion"].ActiveViews.FirstOrDefault();
-            //var view = (object)_unityContainer.Resolve(type);
-
-            //// can use Add repeatedly due to the border region adapter
-            //_regionManager.Regions["GameRegion"].Deactivate(active);
-            //_regionManager.Regions["GameRegion"].Activate(view);
+        private void GameDictionaryButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Publish();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)

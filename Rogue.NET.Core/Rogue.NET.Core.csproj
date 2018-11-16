@@ -76,6 +76,7 @@
     <Compile Include="Converter\BoolInverseVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\BoolVisibilityCollapseConverter.cs" />
     <Compile Include="Converter\BoolVisibilityHiddenConverter.cs" />
+    <Compile Include="Converter\CollectionNonEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />

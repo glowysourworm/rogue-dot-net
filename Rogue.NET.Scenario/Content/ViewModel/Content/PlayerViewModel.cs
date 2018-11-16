@@ -14,12 +14,14 @@ using ExpressMapper;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public class PlayerViewModel : NotifyViewModel
+    public class PlayerViewModel : ScenarioImageViewModel
     {
         readonly IModelService _modelService;
         readonly ICharacterProcessor _characterProcessor;
@@ -62,6 +64,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         double _magicBlock;
         double _magicBlockBase;
         SkillSetViewModel _activeSkillSet;
+        EquipmentViewModel _equippedAmulet;
+        EquipmentViewModel _equippedArmor;
+        EquipmentViewModel _equippedBelt;
+        EquipmentViewModel _equippedBoots;
+        EquipmentViewModel _equippedGauntlets;
+        EquipmentViewModel _equippedHelmet;
+        EquipmentViewModel _equippedLeftHandWeapon;
+        EquipmentViewModel _equippedLeftRing;
+        EquipmentViewModel _equippedOrb;
+        EquipmentViewModel _equippedRightHandWeapon;
+        EquipmentViewModel _equippedRightRing;
+        EquipmentViewModel _equippedShoulder;
+
         #endregion
 
         #region (public) Properties
@@ -248,8 +263,72 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
         #endregion
 
-        public ObservableCollection<EquipmentViewModel> Equipment { get; set; }
+        #region (public) Equipped Item Properties
+        public EquipmentViewModel EquippedAmulet
+        {
+            get { return _equippedAmulet; }
+            set { this.RaiseAndSetIfChanged(ref _equippedAmulet, value); }
+        }
+        public EquipmentViewModel EquippedArmor
+        {
+            get { return _equippedArmor; }
+            set { this.RaiseAndSetIfChanged(ref _equippedArmor, value); }
+        }
+        public EquipmentViewModel EquippedBelt
+        {
+            get { return _equippedBelt; }
+            set { this.RaiseAndSetIfChanged(ref _equippedBelt, value); }
+        }
+        public EquipmentViewModel EquippedBoots
+        {
+            get { return _equippedBoots; }
+            set { this.RaiseAndSetIfChanged(ref _equippedBoots, value); }
+        }
+        public EquipmentViewModel EquippedGauntlets
+        {
+            get { return _equippedGauntlets; }
+            set { this.RaiseAndSetIfChanged(ref _equippedGauntlets, value); }
+        }
+        public EquipmentViewModel EquippedHelmet
+        {
+            get { return _equippedHelmet; }
+            set { this.RaiseAndSetIfChanged(ref _equippedHelmet, value); }
+        }
+        public EquipmentViewModel EquippedLeftHandWeapon
+        {
+            get { return _equippedLeftHandWeapon; }
+            set { this.RaiseAndSetIfChanged(ref _equippedLeftHandWeapon, value); }
+        }
+        public EquipmentViewModel EquippedLeftRing
+        {
+            get { return _equippedLeftRing; }
+            set { this.RaiseAndSetIfChanged(ref _equippedLeftRing, value); }
+        }
+        public EquipmentViewModel EquippedOrb
+        {
+            get { return _equippedOrb; }
+            set { this.RaiseAndSetIfChanged(ref _equippedOrb, value); }
+        }
+        public EquipmentViewModel EquippedRightHandWeapon
+        {
+            get { return _equippedRightHandWeapon; }
+            set { this.RaiseAndSetIfChanged(ref _equippedRightHandWeapon, value); }
+        }
+        public EquipmentViewModel EquippedRightRing
+        {
+            get { return _equippedRightRing; }
+            set { this.RaiseAndSetIfChanged(ref _equippedRightRing, value); }
+        }
+        public EquipmentViewModel EquippedShoulder
+        {
+            get { return _equippedShoulder; }
+            set { this.RaiseAndSetIfChanged(ref _equippedShoulder, value); }
+        }
+        #endregion
+
         public ObservableCollection<SkillSetViewModel> SkillSets { get; set; }
+
+        public ObservableCollection<AttackAttributeViewModel> MeleeAttackAttributes { get; set; }
 
         [ImportingConstructor]
         public PlayerViewModel(
@@ -262,8 +341,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             _characterProcessor = characterProcessor;
             _playerProcessor = playerProcessor;
 
-            this.Equipment = new ObservableCollection<EquipmentViewModel>();
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
+            this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
@@ -300,9 +379,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             var player = _modelService.Player;
             var encyclopedia = _modelService.ScenarioEncyclopedia;
+            var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Base Collections
-            SynchronizeCollection(player.Equipment.Values, this.Equipment, (x) => new EquipmentViewModel(x));
             SynchronizeCollection(player.SkillSets, this.SkillSets, x => new SkillSetViewModel(x));
 
             // Active Skill
@@ -322,6 +401,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Mp = player.Mp;
             this.MpMax = player.MpMax;
             this.RogueName = player.RogueName;
+
+            this.CharacterColor = player.CharacterColor;
+            this.CharacterSymbol = player.CharacterSymbol;
+            this.Icon = player.Icon;
+            this.SmileyMood = player.SmileyMood;
+            this.SmileyAuraColor = player.SmileyAuraColor;
+            this.SmileyBodyColor = player.SmileyBodyColor;
+            this.SmileyLineColor = player.SmileyLineColor;
+            this.SymbolType = player.SymbolType;
 
             this.Agility = _characterProcessor.GetAgility(player);
             this.AgilityBase = player.AgilityBase;
@@ -346,7 +434,36 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MpRegenBase = player.MpRegenBase;
             this.Strength = _characterProcessor.GetStrength(player);
             this.StrengthBase = player.StrengthBase;
+
+            var constructor = new Func<Equipment, EquipmentViewModel>(x => x == null ? null : new EquipmentViewModel(x));
+
+            this.EquippedAmulet = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Amulet));
+            this.EquippedArmor = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Armor));
+            this.EquippedBelt = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Belt));
+            this.EquippedBoots = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Boots));
+            this.EquippedGauntlets = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Gauntlets));
+            this.EquippedHelmet = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Helmet));
+            this.EquippedLeftHandWeapon = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.OneHandedMeleeWeapon || 
+                                                                                                                      x.Type == EquipmentType.TwoHandedMeleeWeapon ||
+                                                                                                                      x.Type == EquipmentType.RangeWeapon));
+            this.EquippedLeftRing = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Ring));
+            this.EquippedOrb = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Orb));
+
+            // Check for two handed weapons first
+            this.EquippedRightHandWeapon = constructor(equippedItems.FirstOrDefault(x =>  x.Type == EquipmentType.TwoHandedMeleeWeapon ||
+                                                                                                                        x.Type == EquipmentType.RangeWeapon));
+            // If none, then check for second one-handed weapon
+            if (this.EquippedRightHandWeapon == null)
+                this.EquippedRightHandWeapon = constructor(equippedItems.Where(x => x.Type == EquipmentType.OneHandedMeleeWeapon)
+                                                                                                      .Skip(1)
+                                                                                                      .FirstOrDefault());
+
+            this.EquippedRightRing = constructor(equippedItems.Where(x => x.Type == EquipmentType.Ring)
+                                                                                            .Skip(1)
+                                                                                            .FirstOrDefault());
+            this.EquippedShoulder = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Shoulder));
         }
+
 
         private void SynchronizeCollection<TSource, TDest>(
                         IEnumerable<TSource> sourceCollection, 

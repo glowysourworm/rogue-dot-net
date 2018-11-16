@@ -12,6 +12,7 @@ using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events;
+using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Views;
@@ -88,6 +89,19 @@ namespace Rogue.NET.Scenario
             _eventAggregator.GetEvent<GameSetupDisplayFinished>().Subscribe((e) =>
             {
                 _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
+            });
+
+            _eventAggregator.GetEvent<RequestNavigateToLevelViewEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("GameRegion", "LevelView");
+            });
+            _eventAggregator.GetEvent<RequestNavigateToEquipmentSelectionEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("GameRegion", "EquipmentSelectionCtrl");
+            });
+            _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("GameRegion", "DungeonEncyclopedia");
             });
         }
 

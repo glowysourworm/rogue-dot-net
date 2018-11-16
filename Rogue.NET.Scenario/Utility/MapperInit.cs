@@ -9,7 +9,10 @@ namespace Rogue.NET.Scenario.Utility
     {
         static MapperInit()
         {
-            Mapper.Register<Equipment, EquipmentViewModel>();
+            Mapper.Register<Equipment, EquipmentViewModel>()
+                  .Member(x => x.RogueName, x => x.RogueName)
+                  .Member(x => x.Id, x => x.Id);
+
             Mapper.Register<SkillSet, SkillSetViewModel>();
 
             Mapper.Compile();
