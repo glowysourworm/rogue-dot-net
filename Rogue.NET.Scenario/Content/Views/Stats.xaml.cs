@@ -1,11 +1,17 @@
-﻿using System.Windows.Controls;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
+using System.ComponentModel.Composition;
+using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class StatsControl : UserControl
     {
-        public StatsControl()
+        [ImportingConstructor]
+        public StatsControl(PlayerViewModel playerViewModel)
         {
+            this.DataContext = playerViewModel;
+
             InitializeComponent();
         }
     }

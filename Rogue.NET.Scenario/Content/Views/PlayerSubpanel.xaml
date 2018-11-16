@@ -23,8 +23,8 @@
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelEquipmentRegion" x:Name="EquipmentCtrl" Grid.Row="1" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelConsumablesRegion" x:Name="ConsumablesCtrl" Visibility="Collapsed" Grid.Row="1" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelInventoryRegion" x:Name="InventoryCtrl" Visibility="Collapsed" Grid.Row="1" />
-        <local:SkillGrid x:Name="SkillCtrl" Visibility="Collapsed" Grid.Row="1" />
-        <local:StatsControl x:Name="StatsCtrl" Visibility="Collapsed" Grid.Row="1" />
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelSkillsRegion" Grid.Row="1" x:Name="SkillCtrl" Visibility="Collapsed" />
+        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelStatsRegion" Grid.Row="1" Visibility="Collapsed" x:Name="StatsCtrl" />
         <Grid Margin="4,0,4,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
             <TextBlock x:Name="TitleTB" Grid.Row="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0,0,0" Foreground="#FFFFDE87" Text="Title" />

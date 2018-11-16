@@ -159,13 +159,12 @@ namespace Rogue.NET.Core.Logic
             // Player: End-Of-Turn
             _playerProcessor.ApplyEndOfTurn(player, regenerate);
 
-            //I'm Not DEEEAD! (TODO: Publish event for player death)
+            // Update player stats
+            QueueLevelUpdate(LevelUpdateType.PlayerStats, player.Id);
+
+            //I'm Not DEEEAD! (TODO: Make event message specific to what happened)
             if (player.Hunger >= 100 || player.Hp <= 0.1)
-                ScenarioUpdateEvent(this, new ScenarioUpdate()
-                {
-                    ScenarioUpdateType = ScenarioUpdateType.PlayerDeath,
-                    PlayerDeathMessage = "Had a rough day"
-                });
+                QueueScenarioPlayerDeath("Had a rough day");
 
             // Apply End-Of-Turn for the Level content
             _contentEngine.ApplyEndOfTurn();
@@ -187,7 +186,7 @@ namespace Rogue.NET.Core.Logic
             // Allow passing of messages back to the UI
             _scenarioMessageService.UnBlock(false);
 
-            // Check Scenario Objective - TODO - Create different message event
+            // Check Scenario Objective
             CheckObjective();
         }
 

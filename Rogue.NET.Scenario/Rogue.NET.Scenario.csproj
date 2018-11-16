@@ -35,6 +35,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
     </Reference>
+    <Reference Include="ExpressMapper, Version=1.9.1.0, Culture=neutral, PublicKeyToken=ac363faa09311ba0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expressmapper.1.9.1\lib\net46\ExpressMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -159,11 +162,10 @@
     <Compile Include="Content\ViewModel\Content\ConsumableViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ItemViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\RogueBaseViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\ScenarioObjectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\SkillSetViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridRowViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
@@ -249,6 +251,7 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utility\MapperInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\GameInfoView.xaml">

@@ -72,6 +72,9 @@ namespace Rogue.NET.Core.Service
                 case PlayerStartLocation.StairsUp:
                     player.Location = level.StairsUp.Location;
                     break;
+                case PlayerStartLocation.StairsDown:
+                    player.Location = level.StairsDown.Location;
+                    break;
                 case PlayerStartLocation.Random:
                     player.Location = _layoutEngine.GetRandomLocation(level, true);
                     break;

@@ -372,9 +372,11 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.Weight = equipment.Weight.ToString("F2");
             this.Type = equipment.Type.ToString();
             this.AttackAttributes.Clear();
-            this.AttackAttributes.AddRange(equipment.AttackAttributes
-                                                    .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
-                                                    .Select(x => new AttackAttributeViewModel(x)));
+
+            if (equipment.IsIdentified)
+                this.AttackAttributes.AddRange(equipment.AttackAttributes
+                                                        .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
+                                                        .Select(x => new AttackAttributeViewModel(x)));
 
             this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
 

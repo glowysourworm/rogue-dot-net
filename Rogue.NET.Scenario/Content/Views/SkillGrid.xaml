@@ -213,7 +213,7 @@
     		RowBackground="Black"
             Style="{DynamicResource Rogue2ItemDataGridStyle}" 
     		SelectionUnit="FullRow" ColumnHeaderStyle="{DynamicResource Rogue2DataGridColumnHeaderStyle}" 
-    		ItemsSource="{Binding Player.Skills}" Background="#00F0F0F0" RowStyle="{DynamicResource Rogue2DataGridRowStyle}">
+    		ItemsSource="{Binding SkillSets}" Background="#00F0F0F0" RowStyle="{DynamicResource Rogue2DataGridRowStyle}">
     		<DataGrid.Columns>
                 <!-- ICON, Level, Name, PRogress, Emphasis, Up/Down, Activate-->
     			<DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"   HeaderStyle="{StaticResource HeaderStyle}" />

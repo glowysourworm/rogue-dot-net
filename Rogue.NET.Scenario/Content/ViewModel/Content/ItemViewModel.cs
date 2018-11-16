@@ -2,7 +2,7 @@
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class ItemViewModel : ScenarioObjectViewModel
+    public class ItemViewModel : ScenarioImageViewModel
     {
         double _weight;
 
@@ -12,6 +12,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             set { this.RaiseAndSetIfChanged(ref _weight, value); }
         }
 
+        public ItemViewModel() { }
         public ItemViewModel(ScenarioObject scenarioObject) : base(scenarioObject)
         {
         }

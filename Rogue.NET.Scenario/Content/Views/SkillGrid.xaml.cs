@@ -5,21 +5,24 @@ using Rogue.NET.Common.EventArgs;
 using Prism.Events;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.Enums;
+using System.ComponentModel.Composition;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class SkillGrid : UserControl
     {
-        IEventAggregator _eventAggregator;
+        readonly IEventAggregator _eventAggregator;
 
-        public SkillGrid()
-        {
-            InitializeComponent();
-        }
-
-        public void InitializeEvents(IEventAggregator eventAggregator)
+        [ImportingConstructor]
+        public SkillGrid(IEventAggregator eventAggregator, PlayerViewModel playerViewModel)
         {
             _eventAggregator = eventAggregator;
+
+            this.DataContext = playerViewModel;
+
+            InitializeComponent();
         }
 
         private void UpButton_Click(object sender, RoutedEventArgs e)

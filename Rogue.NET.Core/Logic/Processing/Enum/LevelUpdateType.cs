@@ -89,6 +89,11 @@
         PlayerSkillSetRefresh,
 
         /// <summary>
+        /// Occurs when player stats change
+        /// </summary>
+        PlayerStats,
+
+        /// <summary>
         /// Signals an update for all player Inventory items, Skill sets, stats, and location
         /// </summary>
         PlayerAll,
