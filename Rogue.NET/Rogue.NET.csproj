@@ -41,6 +41,9 @@
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
     </Reference>
+    <Reference Include="ExpressMapper, Version=1.9.1.0, Culture=neutral, PublicKeyToken=ac363faa09311ba0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expressmapper.1.9.1\lib\net46\ExpressMapper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -185,6 +188,7 @@
     </Compile>
     <Compile Include="RogueModule.cs" />
     <Compile Include="Splash\SplashThread.cs" />
+    <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
     <Compile Include="ViewModel\SplashViewModel.cs" />
     <Compile Include="View\CommandPreferencesView.xaml.cs">

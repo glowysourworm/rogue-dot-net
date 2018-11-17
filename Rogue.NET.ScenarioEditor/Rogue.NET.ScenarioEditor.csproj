@@ -263,7 +263,6 @@
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Utility\ConfigurationCollectionResolver.cs" />
     <Compile Include="Utility\DialogWindowFactory.cs" />
-    <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Utility\Undo\UndoChangeType.cs" />
     <Compile Include="Utility\Undo\UndoAccumulator.cs" />

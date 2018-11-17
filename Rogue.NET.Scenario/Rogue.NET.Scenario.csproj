@@ -258,7 +258,6 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utility\MapperInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\GameInfoView.xaml">

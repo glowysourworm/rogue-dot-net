@@ -1,4 +1,5 @@
 ﻿using System;
+using Rogue.NET.Utility;
 
 namespace Rogue.NET
 {
@@ -7,6 +8,8 @@ namespace Rogue.NET
         [STAThread]
         public static void Main()
         {
+            MapperInit.Initialize();
+
             var application = new RogueApplication();
 
             application.Run();
