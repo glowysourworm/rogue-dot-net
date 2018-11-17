@@ -160,7 +160,10 @@
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\RogueEncyclopediaCategoryViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\RogueEncyclopediaViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ScenarioMetaDataViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />
@@ -172,6 +175,9 @@
     </Compile>
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\LevelCanvas.xaml.cs">
+      <DependentUpon>LevelCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\LevelView.xaml.cs">
       <DependentUpon>LevelView.xaml</DependentUpon>
@@ -186,6 +192,8 @@
     <Compile Include="Controller\GameController.cs" />
     <Compile Include="Controller\RogueMessageQueue.cs" />
     <Compile Include="Controller\ScenarioController.cs" />
+    <Compile Include="Control\EllipsePanel.cs" />
+    <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
     <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
@@ -221,9 +229,6 @@
     </Compile>
     <Compile Include="Outro\Views\Outro.xaml.cs">
       <DependentUpon>Outro.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Views\LevelCanvas.xaml.cs">
-      <DependendUpon>LevelCanvas.xaml</DependendUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\Views\DungeonEncyclopediaAttackAttribute.xaml.cs">
@@ -266,7 +271,7 @@
     </Page>
     <Page Include="Content\Views\LevelCanvas.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Content\Views\LevelView.xaml">
       <SubType>Designer</SubType>

@@ -50,6 +50,8 @@ namespace Rogue.NET.Core.Service.Interface
 
         BitmapSource GetImage(ImageResources imageResources);
 
+        BitmapSource GetImage(string characterSymbol, string characterSymbolColor);
+
         IEnumerable<ColorViewModel> GetColors();
     }
 }

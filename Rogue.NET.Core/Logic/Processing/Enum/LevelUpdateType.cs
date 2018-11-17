@@ -99,6 +99,16 @@
         PlayerAll,
 
         /// <summary>
+        /// Occurs when an item, enemy, or doodad has been identified
+        /// </summary>
+        EncyclopediaIdentify,
+
+        /// <summary>
+        /// Occurs when a curse has been identified
+        /// </summary>
+        EncyclopediaCurseIdentify,
+
+        /// <summary>
         /// Signals end of targeting animation
         /// </summary>
         TargetingEnd,

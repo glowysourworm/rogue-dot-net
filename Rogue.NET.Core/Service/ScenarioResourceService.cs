@@ -279,7 +279,7 @@ namespace Rogue.NET.Core.Service
             var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             return decoder.Frames[0];
         }
-        private BitmapSource GetImage(string symbol, string symbolColor)
+        public BitmapSource GetImage(string symbol, string symbolColor)
         {
             var text = new TextBlock();
             var foregroundColor = (Color)ColorConverter.ConvertFromString(symbolColor);

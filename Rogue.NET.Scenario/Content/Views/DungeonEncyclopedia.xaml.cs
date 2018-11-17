@@ -8,20 +8,19 @@ using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 
 namespace Rogue.NET.Scenario.Views
 {
     [Export]
     public partial class DungeonEncyclopedia : UserControl
     {
-        Dictionary<string, ScenarioMetaData> _encyclopedia = null;
-
-        public DungeonEncyclopedia()
+        [ImportingConstructor]
+        public DungeonEncyclopedia(RogueEncyclopediaViewModel viewModel)
         {
             InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(DungeonEncyclopediaCtrl_Loaded);
-            this.DataContextChanged += new DependencyPropertyChangedEventHandler(DungeonEncyclopediaCtrl_DataContextChanged);
+            this.CategoryLB.ItemsSource = viewModel;
         }
 
         private void DungeonEncyclopediaCtrl_Loaded(object sender, RoutedEventArgs e)
@@ -389,21 +388,21 @@ namespace Rogue.NET.Scenario.Views
         }
         private void EntryLeftButton_Click(object sender, RoutedEventArgs e)
         {
-            this.SubPanel.SeekPrevious();
+            //this.SubPanel.SeekPrevious();
         }
 
         private void EntryRightButton_Click(object sender, RoutedEventArgs e)
         {
-            this.SubPanel.SeekNext();
+            //this.SubPanel.SeekNext();
         }
 
         private void TypeLeftButton_Click(object sender, RoutedEventArgs e)
         {
-            this.TypePanel.SeekPrevious();
+            //this.TypePanel.SeekPrevious();
         }
         private void TypeRightButton_Click(object sender, RoutedEventArgs e)
         {
-            this.TypePanel.SeekNext();
+            //this.TypePanel.SeekNext();
         }
     }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Rogue.NET.Common.Control;assembly=Rogue.NET.Common"
+             xmlns:control="clr-namespace:Rogue.NET.Scenario.Control"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views" 
              mc:Ignorable="d" 
              x:Class="Rogue.NET.Scenario.Views.DungeonEncyclopedia" d:DesignWidth="1241.5" d:DesignHeight="606.42">
@@ -285,9 +285,6 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    <ItemsPanelTemplate x:Key="SpinItemsPanel">
-                        <controls:SpinPanel Padding="64,0,0,0"/>
-                    </ItemsPanelTemplate>
                     <Style x:Key="ButtonFocusVisual3">
                         <Setter Property="Control.Template">
                             <Setter.Value>
@@ -430,15 +427,28 @@
         	</Grid>
         </Border>
         <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
-        	<Grid>
-                <controls:SpinPanel x:Name="TypePanel" ObjectCentered="TypePanel_ObjectCentered" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" Margin="0,50"/>
+            <Grid>
+                <ListBox x:Name="CategoryLB">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <control:EllipsePanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
                 <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
                 <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>
         	</Grid>
         </Border>
         <Border Grid.Column="1"  Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10" >
         	<Grid>
-                <controls:SpinPanel x:Name="SubPanel" FontSize="18" Foreground="White" Padding="64" IsSelectable="False" ObjectCentered="SubPanel_ObjectCentered" Margin="0,50" />
+                <ListBox x:Name="SubCategoryLB" 
+                              ItemsSource="{Binding ElementName=CategoryLB, Path=SelectedItem.Items}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <control:EllipsePanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
                 <Button x:Name="EntryLeftButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" Click="EntryLeftButton_Click" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8,0,0,8" Cursor="Hand"/>
                 <Button x:Name="EntryRightButton" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" Click="EntryRightButton_Click" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="0,0,8,8" Cursor="Hand"/>
         	</Grid>
