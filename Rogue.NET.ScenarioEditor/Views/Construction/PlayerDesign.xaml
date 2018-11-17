@@ -9,66 +9,70 @@
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid DataContext="{Binding PlayerTemplate}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <TextBlock Margin="10" FontSize="18" Foreground="White" Text="Player Design" />
-            <Grid Grid.Row="1" Margin="10">
-                <TabControl>
-                    <TabItem Header="Player Symbol">
-                        <controls:SymbolEditor />
-                    </TabItem>
-                    <TabItem Header="Player Stats">
-                        <Grid Height="220" VerticalAlignment="Top">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="3*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+    <Grid DataContext="{Binding PlayerTemplate}" Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Margin="10" FontSize="18" Foreground="White" Text="Player Design" />
+        <Grid Grid.Row="1" Margin="10">
+            <TabControl>
+                <TabItem Header="Player Symbol">
+                    <controls:SymbolEditor />
+                </TabItem>
+                <TabItem Header="Player Stats">
+                    <Grid Height="220" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
-                            <controls:Range DataContext="{Binding Strength}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" />
-                            <controls:Range DataContext="{Binding Agility}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" />
-                            <controls:Range DataContext="{Binding Intelligence}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" />
-                            <controls:Range DataContext="{Binding Hp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
-                            <controls:Range DataContext="{Binding Mp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
+                        <controls:Range DataContext="{Binding Strength}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" />
+                        <controls:Range DataContext="{Binding Agility}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" />
+                        <controls:Range DataContext="{Binding Intelligence}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" />
+                        <controls:Range DataContext="{Binding Hp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
+                        <controls:Range DataContext="{Binding Mp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
 
-                            <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
-                            <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
-                            <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
-                            <TextBlock Grid.Row="3" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-                            <TextBlock Grid.Row="4" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="3" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="4" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
 
-                        </Grid>
-                    </TabItem>
-                    <TabItem Header="Player Skills">
-                        <StackPanel>
-                            <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select Skill Sets that the player will learn while gaining experience" />
-                            <controls:ListBuilder x:Name="SkillsLB" Height="100" Margin="10" />
-                        </StackPanel>
-                    </TabItem>
-                    <TabItem Header="Player Items">
-                        <StackPanel>
-                            <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select items that the player will have when starting the scenario" />
-                            <GroupBox Header="Consumables" Margin="10">
-                                <controls:ListBuilder x:Name="ConsumablesLB" Height="100" Margin="10" />
-                            </GroupBox>
-                            <GroupBox Header="Equipment" Margin="10">
-                                <controls:ListBuilder x:Name="EquipmentLB" Height="100" Margin="10" />
-                            </GroupBox>
-                        </StackPanel>
-                    </TabItem>
-                </TabControl>
-            </Grid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Player Skills">
+                    <StackPanel>
+                        <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select Skill Sets that the player will learn while gaining experience" />
+                        <controls:ListBuilder x:Name="SkillsLB" Height="100" Margin="10" />
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Player Items">
+                    <StackPanel>
+                        <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select items that the player will have when starting the scenario" />
+                        <GroupBox Header="Consumables" Margin="10">
+                            <controls:ListBuilder x:Name="ConsumablesLB" 
+                                                      DestinationItemsSource="{Binding StartingConsumables}"
+                                                      Height="100" 
+                                                      Margin="10" />
+                        </GroupBox>
+                        <GroupBox Header="Equipment" Margin="10">
+                            <controls:ListBuilder x:Name="EquipmentLB" 
+                                                      DestinationItemsSource="{Binding StartingEquipment}"
+                                                      Height="100" 
+                                                      Margin="10" />
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
         </Grid>
-    </ScrollViewer>
+    </Grid>
 </UserControl>

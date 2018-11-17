@@ -95,9 +95,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 var category = this.FirstOrDefault(x => x.CategoryName == metaData.Type);
 
                 if (category == null)
-                    continue;
-                    // TODO
-                    //throw new Exception("Unknown Scenario MetaData Type");
+                    throw new Exception("Unknown Scenario MetaData Type");
 
                 var item = category.Items.FirstOrDefault(x => x.RogueName == metaData.RogueName);
 
