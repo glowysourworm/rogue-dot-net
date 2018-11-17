@@ -33,7 +33,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         private void OnAddConsumable(object sender, object consumable)
         {
-            var player = this.DataContext as PlayerTemplateViewModel;
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
             var consumableTemplate = consumable as ConsumableTemplateViewModel;
             player.StartingConsumables.Add(new ProbabilityConsumableTemplateViewModel()
             {
@@ -53,13 +53,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         private void OnRemoveConsumable(object sender, object consumable)
         {
-            var player = this.DataContext as PlayerTemplateViewModel;
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
             var probabilityConsumableTemplate = consumable as ProbabilityConsumableTemplateViewModel;
             player.StartingConsumables.Remove(probabilityConsumableTemplate);
         }
         private void OnRemoveEquipment(object sender, object equipment)
         {
-            var player = this.DataContext as PlayerTemplateViewModel;
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
             var probabilityEquipmentTemplate = equipment as ProbabilityEquipmentTemplateViewModel;
             player.StartingEquipment.Remove(probabilityEquipmentTemplate);
         }
