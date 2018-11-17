@@ -13,7 +13,7 @@ namespace Rogue.NET.Scenario.Control
     /// Panel that arranges elements on an ellipse geometry. For animations, it attaches clocks when child
     /// elements are added.
     /// </summary>
-    public class EllipsePanel : Panel
+    public class EllipsePanel : Canvas
     {
         EllipseGeometry _ellipseGeometry;
 
@@ -30,10 +30,10 @@ namespace Rogue.NET.Scenario.Control
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
 
-            if (_animationDict.ContainsKey(visualRemoved as FrameworkElement))
+            if (visualRemoved != null && _animationDict.ContainsKey(visualRemoved as FrameworkElement))
                 _animationDict.Remove(visualRemoved as FrameworkElement);
 
-            if (!_animationDict.ContainsKey(visualAdded as FrameworkElement))
+            if (visualAdded != null && !_animationDict.ContainsKey(visualAdded as FrameworkElement))
                 _animationDict.Add(visualAdded as FrameworkElement, new EllipsePanelAnimation(_ellipseGeometry, visualAdded as FrameworkElement));
 
             ResetAnimations();
@@ -53,10 +53,11 @@ namespace Rogue.NET.Scenario.Control
         private void ResetAnimations()
         {
             // Define Geometry -> Set relative offset -> Seek to initial point
+            var counter = 1.0D;
             foreach (var keyValuePair in _animationDict)
             {
                 keyValuePair.Value.DefineGeometry(_ellipseGeometry, keyValuePair.Key);
-                keyValuePair.Value.SetRelativeOffset(1.0D / _animationDict.Count);
+                keyValuePair.Value.SetRelativeOffset(counter++ / _animationDict.Count);
                 keyValuePair.Value.Seek(0);
             }
         }

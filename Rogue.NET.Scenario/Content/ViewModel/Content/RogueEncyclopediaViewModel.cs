@@ -13,11 +13,15 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
     [Export(typeof(RogueEncyclopediaViewModel))]
-    public class RogueEncyclopediaViewModel : ObservableCollection<RogueEncyclopediaCategoryViewModel>
+    public class RogueEncyclopediaViewModel
     {
+        public ObservableCollection<RogueEncyclopediaCategoryViewModel> Categories { get; set; }
+
         [ImportingConstructor]
         public RogueEncyclopediaViewModel(IEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
+            this.Categories = new ObservableCollection<RogueEncyclopediaCategoryViewModel>();
+
             CreateCategories(scenarioResourceService);
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
@@ -52,7 +56,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 };
             });
 
-            this.AddRange(new RogueEncyclopediaCategoryViewModel[]
+            this.Categories.AddRange(new RogueEncyclopediaCategoryViewModel[]
             {
                 constructor(ImageResources.PotionGreen, ConsumableSubType.Potion.ToString(), "Potion"),
                 constructor(ImageResources.ScrollBlue, ConsumableSubType.Scroll.ToString(), "Scroll"),
@@ -93,7 +97,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
             {
                 // To locate the ScenarioMetaDataViewModel -> find category by Type
-                var category = this.FirstOrDefault(x => x.CategoryName == metaData.Type);
+                var category = this.Categories.FirstOrDefault(x => x.CategoryName == metaData.Type);
 
                 if (category == null)
                     throw new Exception("Unknown Scenario MetaData Type");

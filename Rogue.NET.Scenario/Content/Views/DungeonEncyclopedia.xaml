@@ -428,12 +428,21 @@
         </Border>
         <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
             <Grid>
-                <ListBox x:Name="CategoryLB">
+                <ListBox x:Name="CategoryLB"
+                         ItemsSource="{Binding Categories}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <control:EllipsePanel />
+                            <control:EllipsePanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Width" Value="20" />
+                            <Setter Property="Height" Value="30" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
                 <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
                 <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>

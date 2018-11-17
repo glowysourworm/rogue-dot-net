@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -27,6 +28,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public RogueEncyclopediaCategoryViewModel()
         {
+            this.Height = ModelConstants.CELLHEIGHT * 2;
+            this.Width = ModelConstants.CELLWIDTH * 2;
+
             this.Items = new ObservableCollection<ScenarioMetaDataViewModel>();
         }
 

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -81,6 +82,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public ScenarioMetaDataViewModel(ScenarioMetaData metaData)
         {
+            this.Height = ModelConstants.CELLHEIGHT * 2;
+            this.Width = ModelConstants.CELLWIDTH * 2;
+
             Update(metaData);
         }
 

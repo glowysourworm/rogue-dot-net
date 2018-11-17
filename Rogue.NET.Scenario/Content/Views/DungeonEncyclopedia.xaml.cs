@@ -20,7 +20,7 @@ namespace Rogue.NET.Scenario.Views
         {
             InitializeComponent();
 
-            this.CategoryLB.ItemsSource = viewModel;
+            this.DataContext = viewModel;
         }
 
         private void DungeonEncyclopediaCtrl_Loaded(object sender, RoutedEventArgs e)
