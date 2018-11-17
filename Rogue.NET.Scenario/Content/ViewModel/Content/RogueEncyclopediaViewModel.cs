@@ -63,6 +63,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 constructor(ImageResources.MirrorRainbow, ConsumableSubType.Misc.ToString(),"Miscellaneous"),
                 constructor(ImageResources.ShortSwordBlack, EquipmentType.OneHandedMeleeWeapon.ToString(), "One Handed Weapon"),
                 constructor(ImageResources.SwordWhite, EquipmentType.TwoHandedMeleeWeapon.ToString(),  "Two Handed Weapon"),
+                constructor(ImageResources.SwordWhite, EquipmentType.RangeWeapon.ToString(),  "Range Weapon"),
                 constructor(ImageResources.ArmorBlue, EquipmentType.Armor.ToString(), "Armor"),
                 constructor(ImageResources.ShieldBlack, EquipmentType.Shield.ToString(), "Shield"),
                 constructor(ImageResources.HelmetBlack, EquipmentType.Helmet.ToString(), "Helmet"),
