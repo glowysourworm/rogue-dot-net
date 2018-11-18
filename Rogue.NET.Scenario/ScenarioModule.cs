@@ -18,6 +18,7 @@ using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Views;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Windows;
 
 namespace Rogue.NET.Scenario
 {
@@ -40,6 +41,9 @@ namespace Rogue.NET.Scenario
             _eventAggregator = eventAggregator;
             _scenarioController = scenarioController;
             _gameController = gameController;
+
+            // Halt back end threads on application exit
+            Application.Current.Exit += (sender, e) => { _scenarioController.Stop(); };
         }
 
         public void Initialize()
@@ -125,6 +129,8 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("PlayerSubpanelStatsRegion", typeof(StatsControl));
             _regionManager.RegisterViewWithRegion("StatusCtrlRegion", typeof(StatusCtrl));
         }
+
+
     }
 }
 

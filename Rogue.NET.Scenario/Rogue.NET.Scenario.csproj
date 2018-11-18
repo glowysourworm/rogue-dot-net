@@ -196,6 +196,7 @@
     <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
+    <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
     <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />

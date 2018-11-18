@@ -30,9 +30,8 @@ namespace Rogue.NET.Scenario.Control
         /// (from 0 to 1) is used to specify where the starting point is for the animation. This must be provided by the 
         /// owner.
         /// </summary>
-        public EllipsePanelAnimation(EllipseGeometry ellipse, FrameworkElement element)
+        public EllipsePanelAnimation()
         {
-            DefineGeometry(ellipse, element);
         }
 
         public void SetRelativeOffset(double relativeOffset)
@@ -43,11 +42,9 @@ namespace Rogue.NET.Scenario.Control
         /// <summary>
         /// Defines geometry for animation clocks. Call to re-initialize clocks
         /// </summary>
-        public void DefineGeometry(EllipseGeometry ellipse, FrameworkElement element)
+        public void DefineGeometry(PathGeometry geometry, FrameworkElement element)
         {
-            CreateClocks(ellipse, element);
-
-            Seek(_relativeOffset);
+            CreateClocks(geometry, element);
         }
 
         /// <summary>
@@ -58,7 +55,10 @@ namespace Rogue.NET.Scenario.Control
             if (!_clockReady)
                 throw new Exception("Must start clocks before calling Seek");
 
-            var offset = (point + _relativeOffset) % 1;
+            var offset = point + _relativeOffset;
+
+            if (offset > 1)
+                offset = offset % 1;
 
             var position = TimeSpan.FromMilliseconds(offset * TOTAL_MILLISEC);
 
@@ -94,27 +94,22 @@ namespace Rogue.NET.Scenario.Control
         /// <summary>
         /// Creates animation clocks and attaches them to the element opacity and render transform
         /// </summary>
-        private void CreateClocks(EllipseGeometry ellipse, FrameworkElement element)
+        private void CreateClocks(PathGeometry geometry, FrameworkElement element)
         {
             StopClocks();
 
             var scaleTransform = new ScaleTransform();
-            var translateTransformCenter = new TranslateTransform(-1 * element.Width / 2, -1 * element.Height / 2);
+            //var translateTransformCenter = new TranslateTransform(-1 * element.RenderSize.Width / 2, -1 * element.RenderSize.Height / 2);
             var translateTransform = new TranslateTransform();
 
-            var pointAnimation = new PointAnimationUsingPath();
-            pointAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            pointAnimation.PathGeometry = ellipse.GetFlattenedPathGeometry();
-            pointAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
-
             var xAnimation = new DoubleAnimationUsingPath();
-            xAnimation.PathGeometry = ellipse.GetFlattenedPathGeometry();
+            xAnimation.PathGeometry = geometry;
             xAnimation.Source = PathAnimationSource.X;
             xAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
             xAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
 
             var yAnimation = new DoubleAnimationUsingPath();
-            yAnimation.PathGeometry = ellipse.GetFlattenedPathGeometry();
+            yAnimation.PathGeometry = geometry;
             yAnimation.Source = PathAnimationSource.Y;
             yAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
             yAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
@@ -127,7 +122,7 @@ namespace Rogue.NET.Scenario.Control
             var opacityKeyFrame3 = new LinearDoubleKeyFrame(1,    KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 4)));
             var opacityKeyFrame4 = new LinearDoubleKeyFrame(1,    KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) + 10)));
             var opacityKeyFrame5 = new LinearDoubleKeyFrame(0.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 2)));
-            var opacityKeyFrame6 = new LinearDoubleKeyFrame(0.3,  KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC * 3) / 4)));
+            var opacityKeyFrame6 = new LinearDoubleKeyFrame(0.5,  KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC * 3) / 4)));
             var opacityKeyFrame7 = new LinearDoubleKeyFrame(0.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC)));
             opacity.KeyFrames.Add(opacityKeyFrame1);
             opacity.KeyFrames.Add(opacityKeyFrame2);
@@ -203,9 +198,9 @@ namespace Rogue.NET.Scenario.Control
 
             // Set render transform
             var transformGroup = new TransformGroup();
-            transformGroup.Children.Add(scaleTransform);
-            transformGroup.Children.Add(translateTransform);
-            transformGroup.Children.Add(translateTransformCenter);
+            transformGroup.Children.Add(scaleTransform);            // Animated
+            transformGroup.Children.Add(translateTransform);        // Animated
+            //transformGroup.Children.Add(translateTransformCenter);  // Static
 
             element.RenderTransform = transformGroup;
         }

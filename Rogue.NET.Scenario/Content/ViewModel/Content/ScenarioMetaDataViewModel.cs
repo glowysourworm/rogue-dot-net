@@ -1,10 +1,12 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Service.Interface;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -80,15 +82,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             set { this.RaiseAndSetIfChanged(ref _objectType, value); }
         }
 
-        public ScenarioMetaDataViewModel(ScenarioMetaData metaData)
+        public ScenarioMetaDataViewModel(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
         {
             this.Height = ModelConstants.CELLHEIGHT * 2;
             this.Width = ModelConstants.CELLWIDTH * 2;
 
-            Update(metaData);
+            Update(metaData, scenarioResourceService);
         }
 
-        public void Update(ScenarioMetaData metaData)
+        public void Update(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
         {
             this.Id = metaData.Id;
             this.RogueName = metaData.RogueName;
@@ -102,6 +104,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.IsCurseIdentified = metaData.IsCurseIdentified;
             this.IsObjective = metaData.IsObjective;
             this.ObjectType = metaData.ObjectType;
+
+            if (metaData.IsIdentified)
+                this.Source = scenarioResourceService.GetImageSource(metaData);
+
+            else
+                this.Source = scenarioResourceService.GetImage("?", Colors.White.ToString());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

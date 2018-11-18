@@ -1,37 +1,76 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using Rogue.NET.Core.Service.Interface;
+using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
     public class RogueEncyclopediaCategoryViewModel : Image, INotifyPropertyChanged
     {
-        string _displayName;
         string _categoryName;
-        private DungeonMetaDataObjectTypes _type;
+        string _categoryDescription;
+        string _categoryDisplayName;
 
-        public string DisplayName
+        public string CategoryDescription
         {
-            get { return _displayName; }
-            set { this.RaiseAndSetIfChanged(ref _displayName, value); }
+            get { return _categoryDescription; }
+            set { this.RaiseAndSetIfChanged(ref _categoryDescription, value); }
         }
         public string CategoryName
         {
             get { return _categoryName; }
             set { this.RaiseAndSetIfChanged(ref _categoryName, value); }
         }
+        public string CategoryDisplayName
+        {
+            get { return _categoryDisplayName; }
+            set { this.RaiseAndSetIfChanged(ref _categoryDisplayName, value); }
+        }
+        public double PercentComplete
+        {
+            get { return this.Items.Count(x => x.IsIdentified) / (double)this.Items.Count; }
+        }
+        public bool IsIdentifiedCategory
+        {
+            get { return this.Items.Any(x => x.IsIdentified); }
+        }
+        public bool IsObjectiveCategory
+        {
+            get { return this.CategoryName == "Objective"; }
+        }
 
         public ObservableCollection<ScenarioMetaDataViewModel> Items { get; set; }
 
-        public RogueEncyclopediaCategoryViewModel()
+        public RogueEncyclopediaCategoryViewModel(IScenarioResourceService scenarioResourceService)
         {
             this.Height = ModelConstants.CELLHEIGHT * 2;
             this.Width = ModelConstants.CELLWIDTH * 2;
 
             this.Items = new ObservableCollection<ScenarioMetaDataViewModel>();
+
+            // Initialize the category as not known
+            this.Source = scenarioResourceService.GetImage("?", Colors.White.ToString());
+        }
+
+        /// <summary>
+        /// Invalidates the calculated parameters and the image - which is a "?" until one of the
+        /// items is identified. After that it's set to the first-or-default image in the category
+        /// </summary>
+        public void Invalidate()
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("PercentComplete"));
+                PropertyChanged(this, new PropertyChangedEventArgs("IsIdentifiedCategory"));
+                PropertyChanged(this, new PropertyChangedEventArgs("IsObjectiveCategory"));
+            }
+
+            this.Source = this.Items.FirstOrDefault(x => x.IsIdentified)?.Source ?? this.Source;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

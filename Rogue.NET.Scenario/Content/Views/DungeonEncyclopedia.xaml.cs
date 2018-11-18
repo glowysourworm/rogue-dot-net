@@ -18,9 +18,9 @@ namespace Rogue.NET.Scenario.Views
         [ImportingConstructor]
         public DungeonEncyclopedia(RogueEncyclopediaViewModel viewModel)
         {
-            InitializeComponent();
-
             this.DataContext = viewModel;
+
+            InitializeComponent();
         }
 
         private void DungeonEncyclopediaCtrl_Loaded(object sender, RoutedEventArgs e)

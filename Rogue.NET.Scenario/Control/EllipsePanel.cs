@@ -15,13 +15,16 @@ namespace Rogue.NET.Scenario.Control
     /// </summary>
     public class EllipsePanel : Canvas
     {
-        EllipseGeometry _ellipseGeometry;
+        const int PADDING = 60;
+        const int ITEM_HEIGHT = 60;
+        const int ITEM_WIDTH = 40;
 
         Dictionary<FrameworkElement, EllipsePanelAnimation> _animationDict;
 
+        delegate void VoidDelegate();
+
         public EllipsePanel()
         {
-            _ellipseGeometry = new EllipseGeometry();
             _animationDict = new Dictionary<FrameworkElement, EllipsePanelAnimation>();
         }
 
@@ -34,31 +37,34 @@ namespace Rogue.NET.Scenario.Control
                 _animationDict.Remove(visualRemoved as FrameworkElement);
 
             if (visualAdded != null && !_animationDict.ContainsKey(visualAdded as FrameworkElement))
-                _animationDict.Add(visualAdded as FrameworkElement, new EllipsePanelAnimation(_ellipseGeometry, visualAdded as FrameworkElement));
+                _animationDict.Add(visualAdded as FrameworkElement, new EllipsePanelAnimation());
 
-            ResetAnimations();
+            Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            // Re-calculate ellipse geometry
-            _ellipseGeometry.RadiusX = sizeInfo.NewSize.Width;
-            _ellipseGeometry.RadiusY = sizeInfo.NewSize.Height;
-
-            ResetAnimations();
+            Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
         }
 
-        private void ResetAnimations()
+        private void Reset()
         {
+            // Re-Calculate Ellipse Geometry
+            var geometry =
+                new EllipseGeometry(
+                    new Point((this.RenderSize.Width - ITEM_WIDTH) / 2.0D, (this.RenderSize.Height - ITEM_HEIGHT) / 2.0D),
+                              (this.RenderSize.Width / 2.0D) - PADDING, (this.RenderSize.Height / 2.0D) - PADDING)
+                              .GetFlattenedPathGeometry();
+
             // Define Geometry -> Set relative offset -> Seek to initial point
-            var counter = 1.0D;
+            var counter = 0D;
             foreach (var keyValuePair in _animationDict)
             {
-                keyValuePair.Value.DefineGeometry(_ellipseGeometry, keyValuePair.Key);
+                keyValuePair.Value.DefineGeometry(geometry, keyValuePair.Key);
                 keyValuePair.Value.SetRelativeOffset(counter++ / _animationDict.Count);
-                keyValuePair.Value.Seek(0);
+                keyValuePair.Value.Seek(0.1);
             }
         }
     }

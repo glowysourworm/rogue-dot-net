@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:control="clr-namespace:Rogue.NET.Scenario.Control"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views" 
              mc:Ignorable="d" 
@@ -12,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary>
+                    <converter:RogueMetaDataCategoryFilter x:Key="RogueMetaDataCategoryFilter" />
                     <DataTemplate x:Key="AttackAttributeTemplate">
                         <local:DungeonEncyclopediaAttackAttributeCtrl Background="Black" />
                     </DataTemplate>
@@ -303,6 +305,161 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <Style x:Key="EllipseListBoxItemStyle" TargetType="ListBoxItem">
+                        <Setter Property="Width" Value="40" />
+                        <Setter Property="Height" Value="60" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Grid>
+                                        <Ellipse x:Name="RefractionLayer">
+                                            <Ellipse.Fill>
+                                                <RadialGradientBrush Opacity="0.2" GradientOrigin="0.5,1.0">
+                                                    <RadialGradientBrush.RelativeTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                            <TranslateTransform X="0.02" Y="0.3"/>
+                                                        </TransformGroup>
+                                                    </RadialGradientBrush.RelativeTransform>
+                                                    <GradientStop Offset="1" Color="#00000000"/>
+                                                    <GradientStop Offset="0.4" Color="#FFFFFFFF"/>
+                                                </RadialGradientBrush>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                        <!-- Reflection Layer -->
+                                        <Path x:Name="ReflectionLayer" VerticalAlignment="Top" Stretch="Fill">
+                                            <Path.RenderTransform>
+                                                <ScaleTransform ScaleY="0.5" />
+                                            </Path.RenderTransform>
+                                            <Path.Data>
+                                                <PathGeometry>
+                                                    <PathFigure IsClosed="True" StartPoint="98.999,45.499">
+                                                        <BezierSegment Point1="98.999,54.170" 
+                                                                       Point2="89.046,52.258" 
+                                                                       Point3="85.502,51.029"/>
+                                                        <BezierSegment IsSmoothJoin="True" 
+                                                                       Point1="75.860,47.685" 
+                                                                       Point2="69.111,45.196" 
+                                                                       Point3="50.167,45.196"/>
+                                                        <BezierSegment Point1="30.805,45.196" 
+                                                                       Point2="20.173,47.741" 
+                                                                       Point3="10.665,51.363"/>
+                                                        <BezierSegment IsSmoothJoin="True" 
+                                                                       Point1="7.469,52.580" 
+                                                                       Point2="1.000,53.252" 
+                                                                       Point3="1.000,44.999"/>
+                                                        <BezierSegment Point1="1.000,39.510" 
+                                                                       Point2="0.884,39.227" 
+                                                                       Point3="2.519,34.286"/>
+                                                        <BezierSegment IsSmoothJoin="True" 
+                                                                       Point1="9.106,14.370" 
+                                                                       Point2="27.875,0" 
+                                                                       Point3="50,0"/>
+                                                        <BezierSegment Point1="72.198,0" 
+                                                                       Point2="91.018,14.466" 
+                                                                       Point3="97.546,34.485"/>
+                                                        <BezierSegment IsSmoothJoin="True" 
+                                                                       Point1="99.139,39.369" 
+                                                                       Point2="98.999,40.084" 
+                                                                       Point3="98.999,45.499"/>
+                                                    </PathFigure>
+                                                </PathGeometry>
+                                            </Path.Data>
+                                            <Path.Fill>
+                                                <RadialGradientBrush Opacity="0.2" GradientOrigin="0.5,0.5">
+                                                    <RadialGradientBrush.RelativeTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" 
+                                                                            ScaleX="1" 
+                                                                            ScaleY="2"/>
+                                                            <TranslateTransform X="0" Y="0.5"/>
+                                                        </TransformGroup>
+                                                    </RadialGradientBrush.RelativeTransform>
+                                                    <GradientStop Offset="1" Color="#FFFFFFFF"/>
+                                                    <GradientStop Offset="0.85" Color="#92FFFFFF"/>
+                                                    <GradientStop Offset="0" Color="#00000000"/>
+                                                </RadialGradientBrush>
+                                            </Path.Fill>
+                                        </Path>
+                                        <ContentPresenter Content="{Binding}" />
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush GradientOrigin="0.496,1.052">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
+                                                                                ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.45" Color="#FFFFFFFF"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter TargetName="ReflectionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush GradientOrigin="0.498,0.526">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
+                                                                                ScaleX="1" ScaleY="1.997"/>
+                                                                <TranslateTransform X="0" Y="0.5"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#FFFFFFFF"/>
+                                                        <GradientStop Offset="0.85" Color="#BBFFFFFF"/>
+                                                        <GradientStop Offset="0" Color="#00000000"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
+                                                                                ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.3" Color="#FFFFFFFF"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter TargetName="ReflectionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush GradientOrigin="0.5,0.5">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
+                                                                                ScaleX="1" ScaleY="2"/>
+                                                                <TranslateTransform X="0" Y="0.5"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#CCFFFFFF"/>
+                                                        <GradientStop Offset="0.85" Color="#66FFFFFF"/>
+                                                        <GradientStop Offset="0" Color="#00000000"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                 </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -310,14 +467,45 @@
     </UserControl.Resources>
     <Grid>
     	<Grid.RowDefinitions>
-    		<RowDefinition Height="148"/>
+    		<RowDefinition Height="150"/>
     		<RowDefinition/>
     	</Grid.RowDefinitions>
     	<Grid.ColumnDefinitions>
-    		<ColumnDefinition Width="0.468*"/>
+    		<ColumnDefinition Width="0.5*"/>
     		<ColumnDefinition Width="0.5*"/>
     	</Grid.ColumnDefinitions>
-        <Border x:Name="EntryBorder" Margin="8" BorderThickness="1" CornerRadius="10" Grid.Column="1">
+        <!-- Category -->
+        <Border Grid.ColumnSpan="1" 
+                DataContext="{Binding ElementName=CategoryLB, Path=SelectedItem}"
+                Margin="8" 
+                BorderThickness="1" 
+                BorderBrush="White" 
+                CornerRadius="10" >
+            <Grid x:Name="DataGrid1" Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Category" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryName}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Description" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Row="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryDescription}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Percent Complete" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Row="2" />
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding PercentComplete, StringFormat=P0}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="2" />
+            </Grid>
+        </Border>
+        <!-- Category Entry -->
+        <Border x:Name="EntryBorder" 
+                DataContext="{Binding ElementName=CategoryEntryLB, Path=SelectedItem}"
+                Margin="8" 
+                BorderThickness="1" 
+                CornerRadius="10" 
+                Grid.Column="1">
             <Border.Style>
                 <Style TargetType="{x:Type Border}">
                     <Style.Triggers>
@@ -326,7 +514,7 @@
                                 <Condition Binding="{Binding IsObjective}" Value="False" />
                                 <Condition Binding="{Binding IsUnique}" Value="False" />
                             </MultiDataTrigger.Conditions>
-                        	<Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="BorderBrush" Value="White" />
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -334,7 +522,7 @@
                                 <Condition Binding="{Binding IsUnique}" Value="True" />
                                 <Condition Binding="{Binding IsIdentified}" Value="True" />
                             </MultiDataTrigger.Conditions>
-                        	<Setter Property="BorderBrush" Value="Goldenrod" />
+                            <Setter Property="BorderBrush" Value="Goldenrod" />
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -342,7 +530,7 @@
                                 <Condition Binding="{Binding IsUnique}" Value="False" />
                                 <Condition Binding="{Binding IsIdentified}" Value="True" />
                             </MultiDataTrigger.Conditions>
-                        	<Setter Property="BorderBrush" Value="Cyan" />
+                            <Setter Property="BorderBrush" Value="Cyan" />
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -350,7 +538,7 @@
                                 <Condition Binding="{Binding IsUnique}" Value="True" />
                                 <Condition Binding="{Binding IsIdentified}" Value="True" />
                             </MultiDataTrigger.Conditions>
-                        	<Setter Property="BorderBrush" Value="Cyan" />
+                            <Setter Property="BorderBrush" Value="Cyan" />
                         </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsIdentified}" Value="False">
                             <Setter Property="BorderBrush" Value="White" />
@@ -359,28 +547,19 @@
                 </Style>
             </Border.Style>
             <Grid x:Name="DataGrid" Margin="8,8,8,0">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="165"/>
-        			<ColumnDefinition/>
-                    <ColumnDefinition Width="Auto" />
-        		</Grid.ColumnDefinitions>
-        		<Grid.RowDefinitions>
-        			<RowDefinition Height="Auto"/>
-        			<RowDefinition Height="*"/>
-        		</Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-        		    <TextBlock 
-        			    x:Name="NameTB"
-        			    Margin="8,0,0,0" 
-        			    FontSize="20" 
-        			    VerticalAlignment="Center"
-        			    HorizontalAlignment="Left"
-        			    TextAlignment="Left"
-                        Visibility="Visible"
-                        Style="{StaticResource EntryTextBlockStyleName}"/>
+                    <TextBlock Text="Name"  Margin="8" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource EntryTextBlockStyleName}"/>
                     <TextBlock Text="(Unique)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsUnique" />
                             </MultiBinding>
@@ -388,7 +567,7 @@
                     </TextBlock>
                     <TextBlock Text="(Objective)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
-                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}" ConverterParameter="SomeParameter">
+                            <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}">
                                 <Binding Path="IsIdentified" />
                                 <Binding Path="IsObjective" />
                             </MultiBinding>
@@ -398,51 +577,25 @@
                 <!--TextBlock Text="Attack Attributes" Foreground="Beige" 
                            Visibility="{Binding Converter={StaticResource AttackAttributeVisibilityConverter}}"
                            FontStyle="Italic" VerticalAlignment="Center" Margin="4" Grid.Column="2" /-->
-        		<TextBlock 
-        			x:Name="LongTB"
-        			TextWrapping="Wrap" 
-        			Grid.Row="1" 
-        			Cursor="Arrow"  Style="{StaticResource EntryTextBlockStyleLong}" Grid.Column="1" Margin="8" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16"/>
-                <TextBlock TextWrapping="Wrap" Style="{StaticResource EntryLabelTextBlockStyle}"  Text="Description" Margin="8" VerticalAlignment="Top" FontSize="16" Grid.Row="1"/>
-                <Image Margin="8,0,0,0" Width="20"  Height="30" HorizontalAlignment="Left" Source="{Binding ImageSource}"/>
-        	</Grid>
-        </Border>
-        <Border Grid.ColumnSpan="1" Margin="8" BorderThickness="1" BorderBrush="White" CornerRadius="10" >
-        	<Grid x:Name="DataGrid1" Margin="8">
-        		<Grid.ColumnDefinitions>
-        			<ColumnDefinition Width="0.336*"/>
-        			<ColumnDefinition Width="0.664*"/>
-        		</Grid.ColumnDefinitions>
-        		<Grid.RowDefinitions>
-        			<RowDefinition Height="*"/>
-        			<RowDefinition Height="*"/>
-        			<RowDefinition Height="*"/>
-        		</Grid.RowDefinitions>
-        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Entry Type" VerticalAlignment="Center" Foreground="White" Margin="8,0,0,0" FontSize="18.667"/>
-        		<TextBlock x:Name="EntryTypeTB" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Margin="7.997,0,0,0" FontSize="18.667" Grid.Column="1"/>
-        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Entry Description" VerticalAlignment="Center" Foreground="White" Margin="8,0,0,0" FontSize="18.667" Grid.Row="1"/>
-        		<TextBlock x:Name="EntryDescriptionTB" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Margin="7.997,0,0,0" FontSize="18.667" Grid.Column="1" Grid.Row="1"/>
-        		<TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Percent Complete" VerticalAlignment="Center" Foreground="White" Margin="8,0,0,0" FontSize="18.667" Grid.Row="4" d:LayoutOverrides="GridBox"/>
-        		<TextBlock x:Name="PercentTB" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="White" Margin="7.996,0,0,0" FontSize="18.667" Grid.Column="1" Grid.Row="4" d:LayoutOverrides="GridBox"/>
-        	</Grid>
+
+                <TextBlock Text="Description" Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource EntryLabelTextBlockStyle}"  Margin="8" VerticalAlignment="Top" FontSize="20" />
+                <TextBlock Text="{Binding LongDescription}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Style="{StaticResource EntryTextBlockStyleLong}" Margin="8" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20"/>
+
+                <ContentPresenter Margin="8" Width="20" Height="30" HorizontalAlignment="Left" />
+            </Grid>
         </Border>
         <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
             <Grid>
                 <ListBox x:Name="CategoryLB"
-                         ItemsSource="{Binding Categories}">
+                         Background="Black"
+                         VirtualizingPanel.IsVirtualizing="False"
+                         ItemContainerStyle="{StaticResource EllipseListBoxItemStyle}"
+                         ItemsSource="{Binding Categories, Converter={StaticResource RogueMetaDataCategoryFilter}}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <control:EllipsePanel IsItemsHost="True" />
+                            <control:EllipsePanel IsItemsHost="True" Background="Black" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Width" Value="20" />
-                            <Setter Property="Height" Value="30" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Margin" Value="0" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
                 </ListBox>
                 <Button x:Name="TypeLeftButton" Click="TypeLeftButton_Click" Content="Button" HorizontalAlignment="Left"  Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" VerticalAlignment="Bottom" Width="36" Style="{DynamicResource ShinyButtonStyle}" Height="36" Margin="8" Cursor="Hand"/>
                 <Button x:Name="TypeRightButton" Click="TypeRightButton_Click" Background="Black" BorderBrush="White" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="36" Height="36" Style="{DynamicResource ShinyButtonStyle}" Margin="8" Cursor="Hand"/>
@@ -450,11 +603,14 @@
         </Border>
         <Border Grid.Column="1"  Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10" >
         	<Grid>
-                <ListBox x:Name="SubCategoryLB" 
-                              ItemsSource="{Binding ElementName=CategoryLB, Path=SelectedItem.Items}">
+                <ListBox x:Name="CategoryEntryLB" 
+                         Background="Black"
+                         VirtualizingPanel.IsVirtualizing="False"
+                         ItemContainerStyle="{StaticResource EllipseListBoxItemStyle}"
+                         ItemsSource="{Binding ElementName=CategoryLB, Path=SelectedItem.Items}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <control:EllipsePanel />
+                            <control:EllipsePanel IsItemsHost="True" Background="Black" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

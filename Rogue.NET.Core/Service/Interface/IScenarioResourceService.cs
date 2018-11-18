@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace Rogue.NET.Core.Service.Interface
