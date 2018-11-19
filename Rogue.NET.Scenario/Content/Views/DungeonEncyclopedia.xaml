@@ -593,7 +593,7 @@
                          ItemsSource="{Binding Categories, Converter={StaticResource RogueMetaDataCategoryFilter}}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <control:EllipsePanel IsItemsHost="True" Background="Black" />
+                            <control:EllipsePanel SelectedItem="{Binding ElementName=CategoryLB, Path=SelectedItem}" IsItemsHost="True" Background="Black" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
@@ -610,7 +610,7 @@
                          ItemsSource="{Binding ElementName=CategoryLB, Path=SelectedItem.Items}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <control:EllipsePanel IsItemsHost="True" Background="Black" />
+                            <control:EllipsePanel SelectedItem="{Binding ElementName=CategoryEntryLB, Path=SelectedItem}"  IsItemsHost="True" Background="Black" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

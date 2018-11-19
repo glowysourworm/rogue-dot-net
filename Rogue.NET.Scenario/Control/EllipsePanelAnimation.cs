@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Media;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,199 +11,157 @@ using System.Windows.Media.Animation;
 namespace Rogue.NET.Scenario.Control
 {
     /// <summary>
-    /// Animation class with methods that are scaled to [0, 1] (beginning -> end)
+    /// Create an animation using the provided ellipse geometry for the given FrameworkElement. A relative offset
+    /// (from 0 to 1) is used to specify where the starting point is for the animation. This must be provided by the 
+    /// owner.
     /// </summary>
     public class EllipsePanelAnimation
     {
         private const int TOTAL_MILLISEC = 1000;
 
-        AnimationClock _xAnimationClock;
-        AnimationClock _yAnimationClock;
-        AnimationClock _opacityAnimationClock;
-        AnimationClock _widthAnimationClock;
-        AnimationClock _heightAnimationClock;
+        TranslateTransform _translateTransform;
+        ScaleTransform _scaleTransform;
+
+        FrameworkElement _element;
+
+        TimeSpan _currentEndTime;
 
         bool _clockReady = false;
         double _relativeOffset = 0;
 
-        /// <summary>
-        /// Create an animation using the provided ellipse geometry for the given FrameworkElement. A relative offset
-        /// (from 0 to 1) is used to specify where the starting point is for the animation. This must be provided by the 
-        /// owner.
-        /// </summary>
-        public EllipsePanelAnimation()
+        public FrameworkElement Element { get { return _element; } }
+
+        public double Offset { get; set; }
+
+        public EllipsePanelAnimation(FrameworkElement element)
         {
-        }
-
-        public void SetRelativeOffset(double relativeOffset)
-        {
-            _relativeOffset = relativeOffset;
-        }
-
-        /// <summary>
-        /// Defines geometry for animation clocks. Call to re-initialize clocks
-        /// </summary>
-        public void DefineGeometry(PathGeometry geometry, FrameworkElement element)
-        {
-            CreateClocks(geometry, element);
-        }
-
-        /// <summary>
-        /// Seeks to point in animation (0 -> 1)
-        /// </summary>
-        public void Seek(double point)
-        {
-            if (!_clockReady)
-                throw new Exception("Must start clocks before calling Seek");
-
-            var offset = point + _relativeOffset;
-
-            if (offset > 1)
-                offset = offset % 1;
-
-            var position = TimeSpan.FromMilliseconds(offset * TOTAL_MILLISEC);
-
-            _xAnimationClock.Controller.Seek(position, TimeSeekOrigin.BeginTime);
-            _yAnimationClock.Controller.Seek(position, TimeSeekOrigin.BeginTime);
-            _opacityAnimationClock.Controller.Seek(position, TimeSeekOrigin.BeginTime);
-            _widthAnimationClock.Controller.Seek(position, TimeSeekOrigin.BeginTime);
-            _heightAnimationClock.Controller.Seek(position, TimeSeekOrigin.BeginTime);
-
-            // TODO: Set Z-Index
-        }
-
-        private void StopClocks()
-        {
-            if (_clockReady)
-            {
-                _xAnimationClock.Controller.Stop();
-                _yAnimationClock.Controller.Stop();
-                _opacityAnimationClock.Controller.Stop();
-                _widthAnimationClock.Controller.Stop();
-                _heightAnimationClock.Controller.Stop();
-
-                _xAnimationClock = null;
-                _yAnimationClock = null;
-                _opacityAnimationClock = null;
-                _widthAnimationClock = null;
-                _heightAnimationClock = null;
-
-                _clockReady = false;
-            }
-        }
-
-        /// <summary>
-        /// Creates animation clocks and attaches them to the element opacity and render transform
-        /// </summary>
-        private void CreateClocks(PathGeometry geometry, FrameworkElement element)
-        {
-            StopClocks();
-
-            var scaleTransform = new ScaleTransform();
-            //var translateTransformCenter = new TranslateTransform(-1 * element.RenderSize.Width / 2, -1 * element.RenderSize.Height / 2);
-            var translateTransform = new TranslateTransform();
-
-            var xAnimation = new DoubleAnimationUsingPath();
-            xAnimation.PathGeometry = geometry;
-            xAnimation.Source = PathAnimationSource.X;
-            xAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            xAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
-
-            var yAnimation = new DoubleAnimationUsingPath();
-            yAnimation.PathGeometry = geometry;
-            yAnimation.Source = PathAnimationSource.Y;
-            yAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            yAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
-
-            var opacity = new DoubleAnimationUsingKeyFrames();
-            opacity.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            opacity.BeginTime = TimeSpan.FromMilliseconds(0);
-            var opacityKeyFrame1 = new LinearDoubleKeyFrame(0.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0)));
-            var opacityKeyFrame2 = new LinearDoubleKeyFrame(1,    KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) - 10)));
-            var opacityKeyFrame3 = new LinearDoubleKeyFrame(1,    KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 4)));
-            var opacityKeyFrame4 = new LinearDoubleKeyFrame(1,    KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) + 10)));
-            var opacityKeyFrame5 = new LinearDoubleKeyFrame(0.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 2)));
-            var opacityKeyFrame6 = new LinearDoubleKeyFrame(0.5,  KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC * 3) / 4)));
-            var opacityKeyFrame7 = new LinearDoubleKeyFrame(0.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC)));
-            opacity.KeyFrames.Add(opacityKeyFrame1);
-            opacity.KeyFrames.Add(opacityKeyFrame2);
-            opacity.KeyFrames.Add(opacityKeyFrame3);
-            opacity.KeyFrames.Add(opacityKeyFrame4);
-            opacity.KeyFrames.Add(opacityKeyFrame5);
-            opacity.KeyFrames.Add(opacityKeyFrame6);
-            opacity.KeyFrames.Add(opacityKeyFrame7);
-
-            var widthAnimation = new DoubleAnimationUsingKeyFrames();
-            widthAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            widthAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
-            var widthKeyFrame1 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0)));
-            var widthKeyFrame2 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) - 10)));
-            var widthKeyFrame3 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 4)));
-            var widthKeyFrame4 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) + 10)));
-            var widthKeyFrame5 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 2)));
-            var widthKeyFrame6 = new LinearDoubleKeyFrame(.5,  KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC * 3) / 4)));
-            var widthKeyFrame7 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC)));
-            widthAnimation.KeyFrames.Add(widthKeyFrame1);
-            widthAnimation.KeyFrames.Add(widthKeyFrame2);
-            widthAnimation.KeyFrames.Add(widthKeyFrame3);
-            widthAnimation.KeyFrames.Add(widthKeyFrame4);
-            widthAnimation.KeyFrames.Add(widthKeyFrame5);
-            widthAnimation.KeyFrames.Add(widthKeyFrame6);
-            widthAnimation.KeyFrames.Add(widthKeyFrame7);
-
-            var heightAnimation = new DoubleAnimationUsingKeyFrames();
-            heightAnimation.Duration = TimeSpan.FromMilliseconds(TOTAL_MILLISEC);
-            heightAnimation.BeginTime = TimeSpan.FromMilliseconds(0);
-            var heightKeyFrame1 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0)));
-            var heightKeyFrame2 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) - 10)));
-            var heightKeyFrame3 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 4)));
-            var heightKeyFrame4 = new LinearDoubleKeyFrame(1,   KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC / 4) + 10)));
-            var heightKeyFrame5 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC / 2)));
-            var heightKeyFrame6 = new LinearDoubleKeyFrame(.5,  KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds((TOTAL_MILLISEC * 3) / 4)));
-            var heightKeyFrame7 = new LinearDoubleKeyFrame(.75, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(TOTAL_MILLISEC)));
-            heightAnimation.KeyFrames.Add(heightKeyFrame1);
-            heightAnimation.KeyFrames.Add(heightKeyFrame2);
-            heightAnimation.KeyFrames.Add(heightKeyFrame3);
-            heightAnimation.KeyFrames.Add(heightKeyFrame4);
-            heightAnimation.KeyFrames.Add(heightKeyFrame5);
-            heightAnimation.KeyFrames.Add(heightKeyFrame6);
-            heightAnimation.KeyFrames.Add(heightKeyFrame7);
-
-            // Create the clocks
-            _xAnimationClock = xAnimation.CreateClock();
-            _yAnimationClock = yAnimation.CreateClock();
-            _opacityAnimationClock = opacity.CreateClock();
-            _widthAnimationClock = widthAnimation.CreateClock();
-            _heightAnimationClock = heightAnimation.CreateClock();
-
-            // Apply clocks to render transforms
-            translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, _xAnimationClock);
-            translateTransform.ApplyAnimationClock(TranslateTransform.YProperty, _yAnimationClock);
-            element.ApplyAnimationClock(FrameworkElement.OpacityProperty, _opacityAnimationClock);
-            scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleXProperty, _widthAnimationClock);
-            scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleYProperty, _heightAnimationClock);
-
-            _xAnimationClock.Controller.Begin();
-            _yAnimationClock.Controller.Begin();
-            _opacityAnimationClock.Controller.Begin();
-            _widthAnimationClock.Controller.Begin();
-            _heightAnimationClock.Controller.Begin();
-
-            _xAnimationClock.Controller.Pause();
-            _yAnimationClock.Controller.Pause();
-            _opacityAnimationClock.Controller.Pause();
-            _widthAnimationClock.Controller.Pause();
-            _heightAnimationClock.Controller.Pause();
-
-            _clockReady = true;
+            _scaleTransform = new ScaleTransform();
+            _translateTransform = new TranslateTransform();
 
             // Set render transform
             var transformGroup = new TransformGroup();
-            transformGroup.Children.Add(scaleTransform);            // Animated
-            transformGroup.Children.Add(translateTransform);        // Animated
-            //transformGroup.Children.Add(translateTransformCenter);  // Static
+            transformGroup.Children.Add(_scaleTransform);            // Animated
+            transformGroup.Children.Add(_translateTransform);        // Animated
 
             element.RenderTransform = transformGroup;
+
+            _element = element;
+        }
+
+
+        /// <summary>
+        /// Animates target element along the specified path until it has reached offsetEnd. The Offset public parameter
+        /// here and offsetEnd are relative to a [0, 1) path geometry trajectory (repeating)
+        /// </summary>
+        /// <param name="offsetEnd">the final desired value for the offset (current offset is set publicly)</param>
+        public void Animate(PathGeometry pathGeometry, double offsetEnd)
+        {
+            // Have to calculate the start and end parameters for the elliptical path of the element. These
+            // are started here and then let to animate until the clocks expire
+
+            // 0) Calculate the path geometry involved for the ellipse portion to animate (use key frame collection)
+            // 1) Calculate opacity key frames
+            // 2) Calculate scael key frames
+
+            // Path Key Frames
+            var xKeyFrames = new List<LinearDoubleKeyFrame>();
+            var yKeyFrames = new List<LinearDoubleKeyFrame>();
+            var scalingKeyFrames = new List<LinearDoubleKeyFrame>();
+
+            // Increment position until end point is reached
+            var position = this.Offset;
+            var progress = 0D;
+            var increment = (offsetEnd - this.Offset) / 100.0D; // Create 100 key frames
+            do
+            {
+                var unitPosition = position < 0 ? position + (int)position + 1 : 
+                                   position > 0 ? position - (int)position :
+                                   position;
+
+                // take the position % 1 to give you a unit position [0, 1)
+                var scalingFactor = CalculateScalingFactor(unitPosition % 1);
+
+                // Get Point at Fraction Length must be relative to [0, 1). So, use modulo relative position to calculate
+                Point point, tangent;
+                pathGeometry.GetPointAtFractionLength(unitPosition % 1, out point, out tangent);
+
+                // Path
+                xKeyFrames.Add(new LinearDoubleKeyFrame(point.X, KeyTime.FromPercent(progress)));
+                yKeyFrames.Add(new LinearDoubleKeyFrame(point.Y, KeyTime.FromPercent(progress)));
+
+                // Scaling
+                scalingKeyFrames.Add(new LinearDoubleKeyFrame(scalingFactor, KeyTime.FromPercent(progress)));
+
+                // Increment carries the sign for the position. Progress is measure from [0,1) so for 100 key
+                // frames - increment by 0.01
+                position += increment;
+                progress = 1 - Math.Abs((position - offsetEnd) / (this.Offset - offsetEnd));
+            }
+            while (increment < 0 ? position > offsetEnd : position < offsetEnd);
+
+            // Calculate Animation parameters
+            var duration = TimeSpan.FromMilliseconds((Math.Abs(offsetEnd - this.Offset) % 1) * TOTAL_MILLISEC);
+
+            // X Animation
+            var xAnimation = new DoubleAnimationUsingKeyFrames();
+            xAnimation.Duration = duration;
+            xAnimation.KeyFrames.AddRange(xKeyFrames);
+
+            // Y Animation
+            var yAnimation = new DoubleAnimationUsingKeyFrames();
+            yAnimation.Duration = duration;
+            yAnimation.KeyFrames.AddRange(yKeyFrames);
+
+            // Opacity Animation
+            var opacityAnimation = new DoubleAnimationUsingKeyFrames();
+            opacityAnimation.Duration = duration;
+            opacityAnimation.KeyFrames.AddRange(scalingKeyFrames);
+
+            // Width Animation
+            var widthAnimation = new DoubleAnimationUsingKeyFrames();
+            widthAnimation.Duration = duration;
+            widthAnimation.KeyFrames.AddRange(scalingKeyFrames);
+
+            // Height Animation
+            var heightAnimation = new DoubleAnimationUsingKeyFrames();
+            heightAnimation.Duration = duration;
+            heightAnimation.KeyFrames.AddRange(scalingKeyFrames);
+
+            // Apply clocks to render transforms
+            _translateTransform.ApplyAnimationClock(TranslateTransform.XProperty, xAnimation.CreateClock());
+            _translateTransform.ApplyAnimationClock(TranslateTransform.YProperty, yAnimation.CreateClock());
+            _element.ApplyAnimationClock(FrameworkElement.OpacityProperty, opacityAnimation.CreateClock());
+            _scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleXProperty, widthAnimation.CreateClock());
+            _scaleTransform.ApplyAnimationClock(ScaleTransform.ScaleYProperty, heightAnimation.CreateClock());
+
+            // UPDATE THE OFFSET
+            this.Offset = offsetEnd;
+        }
+
+        /// <summary>
+        /// Returns a fraction based on the absolute offset [0,1) in the animation
+        /// timeline. This will scale the opacity and size of the animated parameters.
+        /// </summary>
+        private double CalculateScalingFactor(double offset)
+        {
+            // Interpolate based on these positions
+            if (offset < 0.25)
+                return offset + 0.75;
+
+            else if (offset < 0.75)
+                return (-1 * offset) + 1.25;
+
+            else
+                return offset - 0.25;
+        }
+    }
+
+    public static class AnimationCollectionExtensions
+    {
+        public static void AddRange<T>(this DoubleKeyFrameCollection collection, IEnumerable<T> source) where T : DoubleKeyFrame
+        {
+            foreach (var keyFrame in source)
+                collection.Add(keyFrame);
         }
     }
 }

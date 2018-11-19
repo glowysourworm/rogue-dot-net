@@ -19,25 +19,44 @@ namespace Rogue.NET.Scenario.Control
         const int ITEM_HEIGHT = 60;
         const int ITEM_WIDTH = 40;
 
-        Dictionary<FrameworkElement, EllipsePanelAnimation> _animationDict;
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register(
+                "SelectedItem", 
+                typeof(DependencyObject), 
+                typeof(EllipsePanel), 
+                new PropertyMetadata(new PropertyChangedCallback(OnSelectedItemChanged)));
+
+        IList<EllipsePanelAnimation> _animations;
+
+        PathGeometry _ellipseGeometry;
 
         delegate void VoidDelegate();
 
-        public EllipsePanel()
+        public DependencyObject SelectedItem
         {
-            _animationDict = new Dictionary<FrameworkElement, EllipsePanelAnimation>();
+            get { return (DependencyObject)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
         }
 
+        public EllipsePanel()
+        {
+            _animations = new List<EllipsePanelAnimation>();
+            _ellipseGeometry = new PathGeometry();
+        }
+        
         // Attach Animation Clocks
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+       
+            // Remove
+            var animationRemoved = _animations.FirstOrDefault(x => x.Element == visualRemoved);
+            if (animationRemoved != null)
+                _animations.Remove(animationRemoved);
 
-            if (visualRemoved != null && _animationDict.ContainsKey(visualRemoved as FrameworkElement))
-                _animationDict.Remove(visualRemoved as FrameworkElement);
-
-            if (visualAdded != null && !_animationDict.ContainsKey(visualAdded as FrameworkElement))
-                _animationDict.Add(visualAdded as FrameworkElement, new EllipsePanelAnimation());
+            // Add
+            if (visualAdded != null)
+                _animations.Add(new EllipsePanelAnimation(visualAdded as FrameworkElement));
 
             Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
         }
@@ -46,25 +65,57 @@ namespace Rogue.NET.Scenario.Control
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
-        }
-
-        private void Reset()
-        {
             // Re-Calculate Ellipse Geometry
-            var geometry =
+            _ellipseGeometry =
                 new EllipseGeometry(
                     new Point((this.RenderSize.Width - ITEM_WIDTH) / 2.0D, (this.RenderSize.Height - ITEM_HEIGHT) / 2.0D),
                               (this.RenderSize.Width / 2.0D) - PADDING, (this.RenderSize.Height / 2.0D) - PADDING)
                               .GetFlattenedPathGeometry();
 
-            // Define Geometry -> Set relative offset -> Seek to initial point
-            var counter = 0D;
-            foreach (var keyValuePair in _animationDict)
+            Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
+        }
+
+        // When item is selected - seek to selection
+        protected static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var element = e.NewValue as FrameworkElement;
+            var panel = sender as EllipsePanel;
+            if (element != null || panel == null)
             {
-                keyValuePair.Value.DefineGeometry(geometry, keyValuePair.Key);
-                keyValuePair.Value.SetRelativeOffset(counter++ / _animationDict.Count);
-                keyValuePair.Value.Seek(0.1);
+                panel.AnimateTo(element);
+            }
+        }
+
+        private void Reset()
+        {
+            // Reset the offset for each element
+            var counter = 0D;
+            foreach (var animation in _animations)
+                animation.Offset = (counter++ / _animations.Count);
+
+            AnimateTo(null);
+        }
+
+        private void AnimateTo(FrameworkElement element)
+        {
+            EllipsePanelAnimation selectedAnimation = null;
+
+            // Center this element
+            if (element != null)
+            {
+                // Had to cast this here because of container.. TODO: fix the container problem
+                selectedAnimation = _animations.FirstOrDefault(x => (x.Element as ListBoxItem).Content == element);
+            }
+
+            // Either send elements back to starting place or center the selected element
+            var delta = selectedAnimation == null ? 0 : 0.25 - selectedAnimation.Offset;
+
+            // Animations each element from current (relative) offset -> next position (either current "Bump" or 
+            // to "Select" the targeted element) -> Plays animation
+            foreach (var animation in _animations)
+            {
+                // Center the element by moving it to relative position 0.25;
+                animation.Animate(_ellipseGeometry, animation.Offset + delta);
             }
         }
     }
