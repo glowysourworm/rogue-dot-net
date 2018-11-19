@@ -1,8 +1,16 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Graveyard;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.Events.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -18,82 +26,75 @@ namespace Rogue.NET.Scenario.Views
     public partial class CompassCtrl : UserControl
     {
         readonly IEventAggregator _eventAggregator;
-        bool _eventsHooked = false;
 
         List<Rectangle> _canvasPoints = new List<Rectangle>();
         List<Line> _canvasLines = new List<Line>();
         int currentLevelNumber = -1;
 
         [ImportingConstructor]
-        public CompassCtrl(IEventAggregator eventAggregator)
+        public CompassCtrl(IEventAggregator eventAggregator, IModelService modelService, PlayerViewModel playerViewModel)
         {
             _eventAggregator = eventAggregator;
 
+            this.DataContext = playerViewModel;
+
             InitializeComponent();
-            InitializeEvents();
-        }
-
-        public void InitializeEvents()
-        {
-            if (_eventsHooked)
-                return;
-
-            _eventsHooked = true;
 
             // subscribe to events
-            _eventAggregator.GetEvent<UserCommandEvent>().Subscribe((e) =>
+            eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                // TODO
-                //var data = this.DataContext as LevelData;
-                //if (data != null)
-                //    Update();
-            });
+                Update(modelService);
+            }, ThreadOption.UIThread, true);
+
+            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            {
+                if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
+                    Update(modelService);
+            }, ThreadOption.UIThread, true);
         }
 
-        // TODO
-        private void Update()
+        private void Update(IModelService modelService)
         {
-            //if (data.Level.Number != currentLevelNumber)
-            //    DrawLevelLines(data.Level);
+            foreach (var rectangle in _canvasPoints)
+                this.GlobeCanvas.Children.Remove(rectangle);
 
-            foreach (Rectangle r in _canvasPoints)
-                this.GlobeCanvas.Children.Remove(r);
+            foreach (var content in modelService.Level.GetContents().Where(z => z.IsExplored))
+            {
+                var contentMarker = new Rectangle();
+                contentMarker.StrokeThickness = 0;
+                contentMarker.Fill = content is Enemy ? Brushes.Red : Brushes.LightBlue;
+                contentMarker.Fill = content is ItemBase ? Brushes.YellowGreen : contentMarker.Fill;
 
-            //foreach (var o in data.Level.GetEverything().Where(z => z.IsExplored || (z.Visibility == System.Windows.Visibility.Visible)))
-            //{
-            //    Rectangle r = new Rectangle();
-            //    r.StrokeThickness = 0;
-            //    r.Fill = o is Enemy ? Brushes.Red : Brushes.LightBlue;
-            //    r.Fill = o is Item ? Brushes.YellowGreen : r.Fill;
+                var levelUIBounds = DataHelper.Cell2UIRect(modelService.Level.Grid.GetBounds());
 
-            //    bool xneg = false;
-            //    bool yneg = false;
-            //    Point p = TranslatePoint(
-            //        data.Player.Location.ToPoint(),
-            //        o.Location.ToPoint(),
-            //        data.Level.RenderSize.Width * ScenarioConfiguration.CELLWIDTH,
-            //        data.Level.RenderSize.Height * ScenarioConfiguration.CELLHEIGHT,
-            //        out xneg,
-            //        out yneg);
+                var xneg = false;
+                var yneg = false;
+                Point compassLocation = TranslatePoint(
+                    DataHelper.Cell2UI(modelService.Player.Location),
+                    DataHelper.Cell2UI(content.Location),
+                    levelUIBounds.Width,
+                    levelUIBounds.Height,
+                    out xneg,
+                    out yneg);
 
-            //    double maxWidth = 4;
-            //    double dist = Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2));
-            //    r.Width = (((1 - maxWidth) / 50) * dist) + maxWidth;
-            //    r.Height = r.Width;
+                double maxWidth = 4;
+                double dist = Math.Sqrt(Math.Pow(compassLocation.X, 2) + Math.Pow(compassLocation.Y, 2));
+                contentMarker.Width = (((1 - maxWidth) / 50) * dist) + maxWidth;
+                contentMarker.Height = contentMarker.Width;
 
-            //    if (yneg)
-            //        Canvas.SetTop(r, 50 - p.Y);
-            //    else
-            //        Canvas.SetTop(r, p.Y + 48);
+                if (yneg)
+                    Canvas.SetTop(contentMarker, 50 - compassLocation.Y);
+                else
+                    Canvas.SetTop(contentMarker, compassLocation.Y + 48);
 
-            //    if (xneg)
-            //        Canvas.SetLeft(r, 50 - p.X);
-            //    else
-            //        Canvas.SetLeft(r, p.X + 48);
+                if (xneg)
+                    Canvas.SetLeft(contentMarker, 50 - compassLocation.X);
+                else
+                    Canvas.SetLeft(contentMarker, compassLocation.X + 48);
 
-            //    _canvasPoints.Add(r);
-            //    this.GlobeCanvas.Children.Add(r);
-            //}
+                _canvasPoints.Add(contentMarker);
+                this.GlobeCanvas.Children.Add(contentMarker);
+            }
         }
 
         private void DrawLevelLines(Level level)
@@ -180,6 +181,45 @@ namespace Rogue.NET.Scenario.Views
             negativeX = map2.X < map1.X;
             negativeY = map2.Y < map1.Y;
             return new Point(Math.Min(xTrans, 50), Math.Min(yTrans, 50));
+        }
+
+        private void UpButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShiftDisplayEvent>().Publish(ShiftDisplayType.Up);
+        }
+
+        private void DownButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShiftDisplayEvent>().Publish(ShiftDisplayType.Down);
+        }
+
+        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShiftDisplayEvent>().Publish(ShiftDisplayType.Left);
+        }
+
+        private void RightButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShiftDisplayEvent>().Publish(ShiftDisplayType.Right);
+        }
+
+        private void CenterButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ShiftDisplayEvent>().Publish(ShiftDisplayType.CenterOnPlayer);
+        }
+
+        private void CollapseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.GlobeCanvas.Visibility == Visibility.Collapsed)
+            {
+                this.GlobeCanvas.Visibility = Visibility.Visible;
+                this.WidgetBorder.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.WidgetBorder.Visibility = Visibility.Collapsed;
+                this.GlobeCanvas.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

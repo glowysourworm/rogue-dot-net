@@ -19,6 +19,7 @@ using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Scenario.Events.Content;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -32,6 +33,7 @@ namespace Rogue.NET.Scenario.Content.Views
         Point _mouseDownWithControlPoint = new Point();
 
         const int SCREEN_BUFFER = 120;
+        const int SHIFT_AMOUNT = 100;
 
         public static readonly DependencyProperty PrimaryTransformProperty =
             DependencyProperty.Register("PrimaryTransform", typeof(Transform), typeof(LevelCanvas));
@@ -66,7 +68,13 @@ namespace Rogue.NET.Scenario.Content.Views
             {
                 if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
                     OnPlayerLocationChanged(viewModel);
-            }, true);
+
+            }, ThreadOption.UIThread, true);
+
+            eventAggregator.GetEvent<ShiftDisplayEvent>().Subscribe(type =>
+            {
+                ShiftDisplay(type, viewModel);
+            }, ThreadOption.UIThread, true);
         }
 
         public void OnPlayerLocationChanged(LevelCanvasViewModel viewModel)
@@ -81,7 +89,7 @@ namespace Rogue.NET.Scenario.Content.Views
             // recenter display if player is off screen
             if (!bounds.Contains(location))
             {
-                //CenterOnLocation(location);
+                CenterOnLocation(viewModel.PlayerLocation);
             }
 
             else if ((bounds.Bottom - location.Y) < SCREEN_BUFFER)
@@ -106,6 +114,30 @@ namespace Rogue.NET.Scenario.Content.Views
 
             _translateXform.X += midpt.X - (location.X + offset.X);
             _translateXform.Y += midpt.Y - (location.Y + offset.Y);
+        }
+
+        private void ShiftDisplay(ShiftDisplayType type, LevelCanvasViewModel viewModel)
+        {
+            switch (type)
+            {
+                case ShiftDisplayType.Left:
+                    _translateXform.X -= SHIFT_AMOUNT;
+                    break;
+                case ShiftDisplayType.Right:
+                    _translateXform.X += SHIFT_AMOUNT;
+                    break;
+                case ShiftDisplayType.Up:
+                    _translateXform.Y -= SHIFT_AMOUNT;
+                    break;
+                case ShiftDisplayType.Down:
+                    _translateXform.Y += SHIFT_AMOUNT;
+                    break;
+                case ShiftDisplayType.CenterOnPlayer:
+                    CenterOnLocation(viewModel.PlayerLocation);
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

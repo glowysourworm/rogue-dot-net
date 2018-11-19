@@ -16,7 +16,13 @@
         <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion" VerticalAlignment="Top" />
 
         <Border x:Name="CanvasBorder" ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="1">
-            <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion" />
+            <Grid>
+                <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion" />
+                <ContentControl prism:RegionManager.RegionName="LevelCompassRegion" 
+                                Margin="10"
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Left" />
+            </Grid>
         </Border>
 
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelRegion"  Grid.Column="2" VerticalAlignment="Stretch" />

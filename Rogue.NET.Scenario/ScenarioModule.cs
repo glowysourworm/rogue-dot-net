@@ -124,6 +124,7 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
             _regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
             _regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
+            _regionManager.RegisterViewWithRegion("LevelCompassRegion", typeof(CompassCtrl));
             _regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));
             _regionManager.RegisterViewWithRegion("PlayerSubpanelSkillsRegion", typeof(SkillGrid));
             _regionManager.RegisterViewWithRegion("PlayerSubpanelStatsRegion", typeof(StatsControl));
