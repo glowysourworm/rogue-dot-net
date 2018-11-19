@@ -108,7 +108,9 @@ namespace Rogue.NET.Scenario.Control
             }
 
             // Either send elements back to starting place or center the selected element
-            var delta = selectedAnimation == null ? 0 : 0.25 - selectedAnimation.Offset;
+            var delta = selectedAnimation == null ? 0 :
+                        selectedAnimation.Offset > 0.75 ? 1.25 - selectedAnimation.Offset : // Past the furthest back location
+                                                          0.25 - selectedAnimation.Offset;  // Before the furthest back location
 
             // Animations each element from current (relative) offset -> next position (either current "Bump" or 
             // to "Select" the targeted element) -> Plays animation
@@ -116,6 +118,26 @@ namespace Rogue.NET.Scenario.Control
             {
                 // Center the element by moving it to relative position 0.25;
                 animation.Animate(_ellipseGeometry, animation.Offset + delta);
+            }
+
+            // "Reset" animation offsets
+            if (_animations.Any())
+            {
+                var maxOffset = _animations.Max(x => x.Offset);
+                var minOffset = _animations.Min(x => x.Offset);
+
+                // "Rewind" the animations
+                if (maxOffset > 1)
+                {
+                    foreach (var animation in _animations)
+                        animation.Offset = animation.Offset % 1;
+                }
+                // "Unwind" the animtions
+                else if (minOffset < 0)
+                {
+                    foreach (var animation in _animations)
+                        animation.Offset = (animation.Offset - (int)animation.Offset) + 1;
+                }
             }
         }
     }

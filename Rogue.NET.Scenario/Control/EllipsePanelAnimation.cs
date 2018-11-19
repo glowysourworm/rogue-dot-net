@@ -74,7 +74,7 @@ namespace Rogue.NET.Scenario.Control
             var increment = (offsetEnd - this.Offset) / 100.0D; // Create 100 key frames
             do
             {
-                var unitPosition = position < 0 ? position + (int)position + 1 : 
+                var unitPosition = position < 0 ? (position - (int)position) + 1 : 
                                    position > 0 ? position - (int)position :
                                    position;
 
