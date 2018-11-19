@@ -25,7 +25,7 @@ namespace Rogue.NET.Core.Model.Generator
                 Icon = template.SymbolDetails.Icon,
                 IsCursed = template.IsCursed,
                 IsCurseIdentified = false,
-                IsIdentified = false,
+                IsIdentified = template.IsObjectiveItem,           // Identify all objectives immediately
                 IsObjective = template.IsObjectiveItem,
                 IsUnique = template.IsUnique,
                 LongDescription = template.LongDescription,
@@ -81,7 +81,7 @@ namespace Rogue.NET.Core.Model.Generator
                 Icon = template.SymbolDetails.Icon,
                 IsCursed = template.IsCursed,
                 IsCurseIdentified = false,
-                IsIdentified = false,
+                IsIdentified = template.IsObjectiveItem,
                 IsObjective = template.IsObjectiveItem,
                 IsUnique = template.IsUnique,
                 LongDescription = template.LongDescription,

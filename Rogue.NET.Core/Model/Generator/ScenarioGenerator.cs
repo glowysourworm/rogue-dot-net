@@ -56,9 +56,6 @@ namespace Rogue.NET.Core.Model.Generator
 
             scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, survivorMode).ToList();
 
-            // TODO
-            //PublishLoadingMessage("Initializing Scenario Meta Data", 99);
-
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
@@ -82,8 +79,6 @@ namespace Rogue.NET.Core.Model.Generator
             //Load Encyclopedia Rogue-Tanica (Normal Doodads)
             foreach (var type in Enum.GetValues(typeof(DoodadNormalType)).Cast<DoodadNormalType>())
                 scenario.ScenarioEncyclopedia.Add(TextUtility.CamelCaseToTitleCase(type.ToString()), _scenarioMetaDataGenerator.CreateScenarioMetaData(type));
-
-            //progressUpdate("Adding 'other' items...", 99);
 
             //Identify player skills / equipment / consumables
             foreach (var skillSet in scenario.Player1.SkillSets)
