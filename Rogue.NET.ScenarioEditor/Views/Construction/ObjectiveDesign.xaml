@@ -14,10 +14,24 @@
                 <DataTemplate x:Key="ObjectiveItemTemplate" DataType="ListBoxItem">
                     <Grid Margin="4">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <Image Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsConverter}}" />
+                            <Image>
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
+                                        <Binding Path="Name" />
+                                        <Binding Path="SymbolDetails.CharacterSymbol" />
+                                        <Binding Path="SymbolDetails.CharacterColor" />
+                                        <Binding Path="SymbolDetails.Icon" />
+                                        <Binding Path="SymbolDetails.SmileyMood" />
+                                        <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                        <Binding Path="SymbolDetails.SmileyLineColor" />
+                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                        <Binding Path="SymbolDetails.Type" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                             <TextBlock Foreground="White" Text="{Binding Name}" VerticalAlignment="Center" Margin="4" />
                         </StackPanel>
-                        <CheckBox IsChecked="{Binding IsObjective, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding IsObjectiveItem, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
@@ -28,23 +42,29 @@
             <TextBlock FontSize="18" Foreground="White" Text="Objective Design" Margin="10" />
             <Grid Grid.Row="1">
                 <StackPanel>
-                    <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="The objectives selected here must be met before the player may exit the dungeon and complete the scenario" />
-                    <GroupBox Margin="10" Header="Item Objectives">
-                        <StackPanel>
-                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Item objectives must be collected by the player. They may be found either on a particular level or held by an enemy." />
-                            <ListBox x:Name="ItemsLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
-                        </StackPanel>
-                    </GroupBox>
+                    <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="20" Text="The objectives selected here must be met before the player may exit the dungeon and complete the scenario" />
                     <GroupBox Margin="10" Header="Enemy Objectives">
                         <StackPanel>
-                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Enemies set as objectives must be slain before the player may exit the dungeon." />
-                            <ListBox x:Name="EnemyLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="18" Text="Enemies set as objectives must be slain before the player may exit the dungeon." />
+                            <ListBox ItemsSource="{Binding EnemyTemplates}" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Margin="10" Header="Consumable Item Objectives">
+                        <StackPanel>
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="18" Text="Item objectives must be collected by the player. They may be found either on a particular level or held by an enemy." />
+                            <ListBox ItemsSource="{Binding ConsumableTemplates}" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Margin="10" Header="Equipment Item Objectives">
+                        <StackPanel>
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="18" Text="Item objectives must be collected by the player. They may be found either on a particular level or held by an enemy." />
+                            <ListBox ItemsSource="{Binding EquipmentTemplates}" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Margin="10" Header="Dungeon Object Objectives">
                         <StackPanel>
-                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="13" Text="Dungeon Objects selected here must be used at least once before the player may exit." />
-                            <ListBox x:Name="DoodadLB" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
+                            <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="18" Text="Dungeon Objects selected here must be used at least once before the player may exit." />
+                            <ListBox ItemsSource="{Binding DoodadTemplates}" ItemTemplate="{StaticResource ObjectiveItemTemplate}" Margin="10" Height="200" Background="Black" />
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

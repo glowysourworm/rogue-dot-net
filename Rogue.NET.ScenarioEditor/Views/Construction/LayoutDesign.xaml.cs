@@ -13,24 +13,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         public LayoutDesign()
         {
             InitializeComponent();
-
-            this.DataContextChanged += LayoutDesign_DataContextChanged;
-        }
-
-        private void LayoutDesign_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            var config = e.NewValue as ScenarioConfigurationContainerViewModel;
-            if (config == null)
-                return;
-
-            this.DataContext = new PlacementGroupViewModel(config
-                    .DungeonTemplate
-                    .LayoutTemplates
-                    .Select(template => new PlacementViewModel()
-                    {
-                        ImageSource = null,
-                        Template = template
-                    }));
         }
     }
 }

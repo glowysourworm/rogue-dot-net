@@ -12,11 +12,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         
-        <TextBlock Text="Item Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
+        <TextBlock Text="Consumable Item Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
 
-        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding PlacementCollection}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
+        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding ConsumableTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
+
+        <TextBlock Text="Equipment Item Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
+
+        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding EquipmentTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
 
     </Grid>
 </UserControl>

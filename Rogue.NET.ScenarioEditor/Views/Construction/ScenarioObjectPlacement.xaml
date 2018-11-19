@@ -16,7 +16,7 @@
 
         <TextBlock Text="Scenario Object Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
 
-        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding PlacementCollection}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
+        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding DoodadTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
 
     </Grid>
 </UserControl>
