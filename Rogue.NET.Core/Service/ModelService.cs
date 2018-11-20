@@ -162,7 +162,6 @@ namespace Rogue.NET.Core.Service
                     scenarioObject.IsRevealed = scenarioObject.IsRevealed || !cell.IsPhysicallyVisible;
                 }
             }
-
         }
         public void UpdateVisibleLocations()
         {

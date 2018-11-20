@@ -407,13 +407,13 @@ namespace Rogue.NET.Core.Logic
                     throw new Exception("Unhandled Compass type");
             }
         }
-        public CellPoint GetRandomLocation(Level level, bool excludeOccupiedCells)
+        public CellPoint GetRandomLocation(Level level, bool excludeOccupiedLocations)
         {
             // Get cell array from the grid
             var cells = level.Grid.GetCells();
 
             // Slower operation
-            if (excludeOccupiedCells)
+            if (excludeOccupiedLocations)
             {
                 var occupiedLocations = level.GetContents().Select(x => x.Location);
 
@@ -426,6 +426,29 @@ namespace Rogue.NET.Core.Logic
             else
             {
                 return cells[_randomSequenceGenerator.Get(0, cells.Length)].Location;
+            }
+        }
+        public CellPoint GetRandomLocation(Level level, IEnumerable<CellPoint> otherExcludedLocations, bool excludeOccupiedLocations)
+        {
+            var locations = level.Grid.GetCells()
+                                  .Select(x => x.Location)
+                                  .Except(otherExcludedLocations)
+                                  .ToList();
+
+            // Slower operation
+            if (excludeOccupiedLocations)
+            {
+                var occupiedLocations = level.GetContents().Select(x => x.Location);
+
+                var freeCells = locations.Except(occupiedLocations);
+
+                // Return random cell
+                return freeCells.ElementAt(_randomSequenceGenerator.Get(0, freeCells.Count()));
+            }
+            // O(1)
+            else
+            {
+                return locations[_randomSequenceGenerator.Get(0, locations.Count)];
             }
         }
         public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)

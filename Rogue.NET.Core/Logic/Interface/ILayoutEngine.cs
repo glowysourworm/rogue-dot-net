@@ -14,7 +14,8 @@ namespace Rogue.NET.Core.Logic.Interface
         bool IsPathToCellThroughWall(LevelGrid grid, CellPoint point1, CellPoint point2);
         bool IsPathToAdjacentCellBlocked(Level level, CellPoint point1, CellPoint point2, bool includeBlockedByEnemy);
         CellPoint GetPointInDirection(LevelGrid grid, CellPoint cellPoint, Compass direction);
-        CellPoint GetRandomLocation(Level level, bool excludeOccupiedCells);
+        CellPoint GetRandomLocation(Level level, bool excludeOccupiedLocations);
+        CellPoint GetRandomLocation(Level level, IEnumerable<CellPoint> otherExcludedLocations, bool excludeOccupiedLocations);
         CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells);
         IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location);
         IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location);

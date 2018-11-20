@@ -392,7 +392,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 Canvas.SetZIndex(image, 3);
 
             else if (scenarioObject is Character)
-                Canvas.SetZIndex(image, 4);
+                Canvas.SetZIndex(image, 0);
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 

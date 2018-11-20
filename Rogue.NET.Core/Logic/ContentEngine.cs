@@ -329,12 +329,11 @@ namespace Rogue.NET.Core.Logic
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
 
+                        // Update Content Visibility
+                        _modelService.UpdateContents();
+
                         // Queue update event for character location
-                        LevelUpdateEvent(this, new LevelUpdate()
-                        {
-                            LevelUpdateType  = LevelUpdateType.ContentMove,
-                            ContentIds = new string[] {character.Id}
-                        });
+                        QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
                     }
                     break;
                 case DoodadNormalType.Teleport1:
@@ -370,12 +369,11 @@ namespace Rogue.NET.Core.Logic
                         // Set character location to other teleporter
                         character.Location = otherTeleporter.Location;
 
+                        // Update Content Visibility
+                        _modelService.UpdateContents();
+
                         // Queue update to level 
-                        LevelUpdateEvent(this, new LevelUpdate()
-                        {
-                            LevelUpdateType = LevelUpdateType.ContentMove,
-                            ContentIds = new string[] { character.Id }
-                        });
+                        QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
 
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
@@ -570,7 +568,7 @@ namespace Rogue.NET.Core.Logic
                             if (attackLocation != null) // TODO && 
                                                         //!e.States.Any(z => z == CharacterStateType.Confused))
                             {
-                                if (!_layoutEngine.IsPathToCellThroughWall(_modelService.Level.Grid, enemy.Location, attackLocation))
+                                if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
                                     OnEnemyMeleeAttack(enemy);
                                     actionTaken = true;
@@ -699,12 +697,11 @@ namespace Rogue.NET.Core.Logic
                         // Update enemy location
                         enemy.Location = openingPosition1;
 
+                        // Update Content Visibility
+                        _modelService.UpdateContents();
+
                         // Notify listener queue
-                        LevelUpdateEvent(this, new LevelUpdate()
-                        {
-                            LevelUpdateType = LevelUpdateType.ContentMove,
-                            ContentIds = new string[] { enemy.Id }
-                        });
+                        QueueLevelUpdate(LevelUpdateType.ContentMove, enemy.Id);
                     }
                 }
 
@@ -724,12 +721,11 @@ namespace Rogue.NET.Core.Logic
                 // Update enemy location
                 enemy.Location = moveLocation;
 
+                // Update Content Visibility
+                _modelService.UpdateContents();
+
                 // Notify listener queue
-                LevelUpdateEvent(this, new LevelUpdate()
-                {
-                    LevelUpdateType = LevelUpdateType.ContentMove,
-                    ContentIds = new string[] { enemy.Id }
-                });
+                QueueLevelUpdate(LevelUpdateType.ContentMove, enemy.Id);
             }
 
             // Check for items
@@ -772,7 +768,7 @@ namespace Rogue.NET.Core.Logic
             var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
-            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
+            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, _modelService.GetVisibleLocations(), true);
 
             // Add content to level
             _modelService.Level.AddContent(enemy);

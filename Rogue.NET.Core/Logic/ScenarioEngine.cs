@@ -120,6 +120,10 @@ namespace Rogue.NET.Core.Logic
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
 
+                // Want to now update model service from the model. This will process new visibility of
+                // the Level Grid.
+                _modelService.UpdateVisibleLocations();
+
                 // Notify Listener queue
                 QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
             }
@@ -149,10 +153,6 @@ namespace Rogue.NET.Core.Logic
             // Block Scenario Message Processing to prevent sending UI messages
             _scenarioMessageService.Block();
 
-            // Want to now update model service from the model. This will process new visibility of
-            // the Level Grid.
-            _modelService.UpdateVisibleLocations();
-
             // Player: End-Of-Turn
             _playerProcessor.ApplyEndOfTurn(player, regenerate);
 
@@ -177,13 +177,13 @@ namespace Rogue.NET.Core.Logic
             _modelService.UpdateContents();
 
             // Queue Updates for level
-            QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
+            // QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
             QueueLevelUpdate(LevelUpdateType.ContentVisible, string.Empty);
 
             // Allow passing of messages back to the UI
             _scenarioMessageService.UnBlock(false);
 
-            // Fire a tick event
+            // Fire a tick event to update level ticks
             QueueScenarioTick();
         }
 
