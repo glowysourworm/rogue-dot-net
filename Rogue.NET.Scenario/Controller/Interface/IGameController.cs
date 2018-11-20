@@ -1,9 +1,4 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Controller.Interface
 {
@@ -17,8 +12,5 @@ namespace Rogue.NET.Scenario.Controller.Interface
         void Save();
 
         void LoadCurrentLevel();
-
-        // TODO: move this 
-        Dictionary<string, string> GetGameDisplayStats();
     }
 }

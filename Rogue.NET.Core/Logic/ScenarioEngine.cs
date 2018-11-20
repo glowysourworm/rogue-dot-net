@@ -124,9 +124,6 @@ namespace Rogue.NET.Core.Logic
                 QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
             }
 
-            //Increment counter
-            _modelService.Level.StepsTaken++;
-
             //See what the player stepped on...
             return _modelService.Level.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
         }
@@ -186,35 +183,8 @@ namespace Rogue.NET.Core.Logic
             // Allow passing of messages back to the UI
             _scenarioMessageService.UnBlock(false);
 
-            // Check Scenario Objective
-            CheckObjective();
-        }
-
-        private void CheckObjective()
-        {
-            var acheived = _modelService.ScenarioEncyclopedia
-                                        .Values
-                                        .Where(z => z.IsObjective)
-                                        .All((metaData) =>
-            {
-                switch (metaData.ObjectType)
-                {
-                    case DungeonMetaDataObjectTypes.Skill:
-                        return _modelService.Player.SkillSets.Any(skill => skill.RogueName == metaData.RogueName);
-                    case DungeonMetaDataObjectTypes.Item:
-                        return (_modelService.Player.Consumables.Values.Any(item => item.RogueName == metaData.RogueName)
-                             || _modelService.Player.Equipment.Values.Any(item => item.RogueName == metaData.RogueName));
-                    case DungeonMetaDataObjectTypes.Enemy:
-                        return metaData.IsIdentified;
-                    case DungeonMetaDataObjectTypes.Doodad:
-                        return metaData.IsIdentified;
-                    default:
-                        throw new Exception("Unknown Scenario Meta Data Object Type");
-                }
-            });
-
-            if (acheived)
-                QueueScenarioObjectiveAcheived();
+            // Fire a tick event
+            QueueScenarioTick();
         }
 
         public void Attack(Compass direction)
@@ -801,18 +771,11 @@ namespace Rogue.NET.Core.Logic
                 ScenarioUpdateType = ScenarioUpdateType.Save
             });
         }
-        private void QueueScenarioObjectiveAcheived()
-        {
-            ScenarioUpdateEvent(this, new ScenarioUpdate()
-            {
-                ScenarioUpdateType = ScenarioUpdateType.ObjectiveAcheived
-            });
-        }
         private void QueueScenarioTick()
         {
             ScenarioUpdateEvent(this, new ScenarioUpdate()
             {
-                ScenarioUpdateType = ScenarioUpdateType.Tick
+                ScenarioUpdateType = ScenarioUpdateType.StatisticsTick
             });
         }
         #endregion

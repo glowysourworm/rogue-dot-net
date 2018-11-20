@@ -20,8 +20,8 @@ using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Views;
 using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
 using System.Windows;
+using System.Linq;
 
 namespace Rogue.NET.Scenario
 {
@@ -64,7 +64,7 @@ namespace Rogue.NET.Scenario
                 Message = "Loading Scenario Module...",
                 Progress = 50
             });
-            _eventAggregator.GetEvent<LevelInitializedEvent>().Subscribe(() =>
+            _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("MainRegion", "GameView");
                 _regionManager.RequestNavigate("GameRegion", "LevelView");
@@ -76,7 +76,9 @@ namespace Rogue.NET.Scenario
                 if (update.ScenarioUpdateType == ScenarioUpdateType.PlayerDeath)
                 {
                     (_regionManager.Regions["MainRegion"]
-                                   .GetView("DeathDisplay") as DeathDisplay).DiedOfText = update.PlayerDeathMessage;
+                                   .Views
+                                   .FirstOrDefault(x => x.GetType() == typeof(DeathDisplay)) as DeathDisplay)
+                                   .DiedOfText = update.PlayerDeathMessage;
 
                     _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
                 }

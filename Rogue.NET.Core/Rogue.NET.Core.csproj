@@ -120,7 +120,6 @@
     <Compile Include="Event\Scenario\Level\Command\AnimationCompletedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\AnimationStartEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\EnemyTargetedEvent.cs" />
-    <Compile Include="Event\Scenario\Level\Event\LevelInitializedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelLoadedEvent.cs" />
     <Compile Include="Event\Scenario\Event\RemoveScenarioObjectEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
@@ -267,6 +266,10 @@
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
     <Compile Include="Model\Scenario\ScenarioMetaData.cs" />
+    <Compile Include="Model\Scenario\ScenarioStatistics.cs" />
+    <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
+    <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />
+    <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Interface\IModelService.cs" />
     <Compile Include="Service\Interface\IScenarioResourceService.cs" />

@@ -4,7 +4,35 @@
              xmlns:prism="http://www.codeplex.com/prism"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary>
+                    <Style x:Key="CanvasBorderStyle" TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsObjectiveAcheived}" Value="False">
+                                <Setter Property="BorderBrush" Value="Silver" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsObjectiveAcheived}" Value="True">
+                                <Setter Property="BorderBrush">
+                                    <Setter.Value>
+                                        <LinearGradientBrush>
+                                            <GradientStop Offset="0" Color="Red" />
+                                            <GradientStop Offset="0.2" Color="Orange" />
+                                            <GradientStop Offset="0.4" Color="Yellow" />
+                                            <GradientStop Offset="0.6" Color="Green" />
+                                            <GradientStop Offset="0.8" Color="Blue" />
+                                            <GradientStop Offset="1" Color="Purple" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderThickness" Value="2" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -15,7 +43,7 @@
 
         <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion" VerticalAlignment="Top" />
 
-        <Border x:Name="CanvasBorder" ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderBrush="Gray" BorderThickness="1">
+        <Border x:Name="CanvasBorder" Style="{StaticResource CanvasBorderStyle}" ClipToBounds="True" Grid.Column="1" Margin="8, 0, 0, 0" BorderThickness="1">
             <Grid>
                 <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion" />
                 <ContentControl prism:RegionManager.RegionName="LevelCompassRegion" 

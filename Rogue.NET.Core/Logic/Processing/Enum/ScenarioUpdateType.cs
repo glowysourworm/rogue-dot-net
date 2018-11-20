@@ -21,13 +21,23 @@
         Save,
 
         /// <summary>
-        /// Objective is acheived
-        /// </summary>
-        ObjectiveAcheived,
-
-        /// <summary>
         /// Occurs after end of processing on the primary scenario engine
         /// </summary>
-        Tick
+        StatisticsTick,
+
+        /// <summary>
+        /// Occurs when enemy has died and stats need to be updated
+        /// </summary>
+        StatisticsEnemyDeath,
+
+        /// <summary>
+        /// Occurs when item has been found and stats need to be updated
+        /// </summary>
+        StatisticsItemFound,
+
+        /// <summary>
+        /// Occurs when doodad has been used and stats need to be updated
+        /// </summary>
+        StatisticsDoodadUsed
     }
 }

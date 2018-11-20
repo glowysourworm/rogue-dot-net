@@ -28,11 +28,8 @@ namespace Rogue.NET.Core.IO
         public const string SEED = "Seed";
         public const string CURRENT_LEVEL = "Current Level";
         public const string SURVIVOR_MODE = "Survivor Mode";
-        public const string OBJECTIVE_ACHEIVED = "Objective Acheived";
         public const string ENCYCLOPEDIA = "Encyclopedia";
-        public const string START_TIME = "StartTime";
-        public const string COMPLETED_TIME = "CompletedTime";
-        public const string TICKS = "Ticks";
+        public const string STATISTICS = "Statistics";
 
         /// <summary>
         /// Prepend this to level number to identify level section (LEVEL_PREVIX + level.ToString())
@@ -65,10 +62,7 @@ namespace Rogue.NET.Core.IO
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
-            byte[] objectiveAcheived = BitConverter.GetBytes(dungeon.ObjectiveAcheived);
-            byte[] startTime = BinarySerializer.SerializeAndCompress(dungeon.StartTime);
-            byte[] completedTime = BinarySerializer.SerializeAndCompress(dungeon.CompletedTime);
-            byte[] ticks = BinarySerializer.SerializeAndCompress(dungeon.TotalTicks);
+            byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
 
             //Build the new header object and buffer simultaneously
             _header.StaticObjects.Clear();
@@ -106,22 +100,11 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(encyclopedia, 0, encyclopedia.Length);
 
             offset += encyclopedia.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(bool), OBJECTIVE_ACHEIVED, offset, objectiveAcheived.Length));
-            dungeonFileStream.Write(objectiveAcheived, 0, objectiveAcheived.Length);
+            _header.StaticObjects.Add(new IndexedObject(typeof(ScenarioStatistics), STATISTICS, offset, statistics.Length));
+            dungeonFileStream.Write(statistics, 0, statistics.Length);
 
-            offset += objectiveAcheived.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(DateTime), START_TIME, offset, startTime.Length));
-            dungeonFileStream.Write(startTime, 0, startTime.Length);
-
-            offset += startTime.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(DateTime), COMPLETED_TIME, offset, completedTime.Length));
-            dungeonFileStream.Write(completedTime, 0, completedTime.Length);
-
-            offset += completedTime.Length;
-            _header.StaticObjects.Add(new IndexedObject(typeof(int), TICKS, offset, ticks.Length));
-            dungeonFileStream.Write(ticks, 0, ticks.Length);
-
-            offset += ticks.Length;
+            offset += statistics.Length;
+            
             //Dynamic contents
             for (int i=1;i<=dungeon.StoredConfig.DungeonTemplate.NumberOfLevels;i++)
             {
@@ -201,17 +184,8 @@ namespace Rogue.NET.Core.IO
                     case ENCYCLOPEDIA:
                         dungeon.ScenarioEncyclopedia = BinarySerializer.DeserializeAndDecompress<Dictionary<string, ScenarioMetaData>>(buffer);
                         break;
-                    case OBJECTIVE_ACHEIVED:
-                        dungeon.ObjectiveAcheived = BitConverter.ToBoolean(buffer, 0);
-                        break;
-                    case START_TIME:
-                        dungeon.StartTime = BinarySerializer.DeserializeAndDecompress<DateTime>(buffer);
-                        break;
-                    case COMPLETED_TIME:
-                        dungeon.CompletedTime = BinarySerializer.DeserializeAndDecompress<DateTime>(buffer);
-                        break;
-                    case TICKS:
-                        dungeon.TotalTicks = BinarySerializer.DeserializeAndDecompress<int>(buffer);
+                    case STATISTICS:
+                        dungeon.Statistics = BinarySerializer.DeserializeAndDecompress<ScenarioStatistics>(buffer);
                         break;
                 }
             }
@@ -345,21 +319,9 @@ namespace Rogue.NET.Core.IO
             byte[] seed = BitConverter.GetBytes(dungeon.Seed);
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
-            byte[] objectiveAcheived = BitConverter.GetBytes(dungeon.ObjectiveAcheived);
+            byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
             
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
-            //Add to allow other thread processing
-            Thread.Sleep(10);
-
-            byte[] startTime = BinarySerializer.SerializeAndCompress(dungeon.StartTime);
-            //Add to allow other thread processing
-            Thread.Sleep(10);
-
-            byte[] completedTime = BinarySerializer.SerializeAndCompress(dungeon.CompletedTime);
-            //Add to allow other thread processing
-            Thread.Sleep(10);
-
-            byte[] ticks = BinarySerializer.SerializeAndCompress(dungeon.TotalTicks);
             //Add to allow other thread processing
             Thread.Sleep(10);
 
@@ -401,22 +363,10 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(encyclopedia, 0, encyclopedia.Length);
 
             offset += encyclopedia.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(bool), OBJECTIVE_ACHEIVED, offset, objectiveAcheived.Length));
-            dungeonFileStream.Write(objectiveAcheived, 0, objectiveAcheived.Length);
+            header.StaticObjects.Add(new IndexedObject(typeof(bool), STATISTICS, offset, statistics.Length));
+            dungeonFileStream.Write(statistics, 0, statistics.Length);
 
-            offset += objectiveAcheived.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(DateTime), START_TIME, offset, startTime.Length));
-            dungeonFileStream.Write(startTime, 0, startTime.Length);
-
-            offset += startTime.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(DateTime), COMPLETED_TIME, offset, completedTime.Length));
-            dungeonFileStream.Write(completedTime, 0, completedTime.Length);
-
-            offset += completedTime.Length;
-            header.StaticObjects.Add(new IndexedObject(typeof(int), TICKS, offset, ticks.Length));
-            dungeonFileStream.Write(ticks, 0, ticks.Length);
-
-            offset += ticks.Length;
+            offset += statistics.Length;
 
             // compress levels on multiple threads
             var compressedDictionary = new ConcurrentDictionary<int, byte[]>();

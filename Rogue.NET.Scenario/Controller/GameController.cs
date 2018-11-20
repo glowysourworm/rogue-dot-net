@@ -9,18 +9,20 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Doodad;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
+using Rogue.NET.Scenario.Events.Content;
+using Rogue.NET.Scenario.Service.Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Windows;
 
 namespace Rogue.NET.Scenario.Controller
 {
@@ -29,6 +31,7 @@ namespace Rogue.NET.Scenario.Controller
     public class GameController : IGameController
     {
         readonly IScenarioResourceService _resourceService;
+        readonly IScenarioStatisticsService _statisticsService;
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
         readonly IScenarioController _scenarioController;
@@ -41,11 +44,13 @@ namespace Rogue.NET.Scenario.Controller
         [ImportingConstructor]
         public GameController(
             IScenarioResourceService resourceService,
+            IScenarioStatisticsService scenarioStatisticsService,
             IEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
             IScenarioController scenarioController,
             IModelService modelService)
         {
+            _statisticsService = scenarioStatisticsService;
             _resourceService = resourceService;
             _eventAggregator = eventAggregator;
             _scenarioGenerator = scenarioGenerator;
@@ -80,7 +85,7 @@ namespace Rogue.NET.Scenario.Controller
                 Open(e.ScenarioName);
             });
 
-            // Level Change / Save Events
+            // Level Change / Save Events / Statistics
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
                 switch (update.ScenarioUpdateType)
@@ -91,8 +96,21 @@ namespace Rogue.NET.Scenario.Controller
                     case ScenarioUpdateType.Save:
                         Save();
                         break;
-                    case ScenarioUpdateType.Tick:
-                        _scenarioContainer.TotalTicks++;
+                    case ScenarioUpdateType.StatisticsTick:
+                        _statisticsService.ProcessScenarioTick(_scenarioContainer.Statistics);
+                        PublishGameUpdate();
+                        break;
+                    case ScenarioUpdateType.StatisticsDoodadUsed:
+                        _statisticsService.ProcessDoodadStatistics(_scenarioContainer.Statistics, _modelService.ScenarioEncyclopedia[update.ContentRogueName]);
+                        PublishGameUpdate();
+                        break;
+                    case ScenarioUpdateType.StatisticsEnemyDeath:
+                        _statisticsService.ProcessEnemyStatistics(_scenarioContainer.Statistics, _modelService.ScenarioEncyclopedia[update.ContentRogueName]);
+                        PublishGameUpdate();
+                        break;
+                    case ScenarioUpdateType.StatisticsItemFound:
+                        _statisticsService.ProcessItemStatistics(_scenarioContainer.Statistics, _modelService.ScenarioEncyclopedia[update.ContentRogueName]);
+                        PublishGameUpdate();
                         break;
                 }
             }, ThreadOption.UIThread, true);
@@ -101,11 +119,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
             {
                 //Unpack snapshot from file
-                var scenario = _scenarioFile.Unpack();
-
-                //Check current level
-                if (scenario.CurrentLevel < 1 || scenario.CurrentLevel > scenario.StoredConfig.DungeonTemplate.NumberOfLevels)
-                    scenario.CurrentLevel = 1;
+                _scenarioContainer = _scenarioFile.Unpack();
 
                 LoadCurrentLevel();
             });
@@ -127,7 +141,6 @@ namespace Rogue.NET.Scenario.Controller
                 SmileyBodyColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyBodyColor),
                 SmileyLineColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyLineColor)
             });
-
 
             // Unload current scenario container
             if (_scenarioContainer != null)
@@ -152,7 +165,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioContainer.Player1.RogueName = characterName;
             _scenarioContainer.StoredConfig = configuration;
             _scenarioContainer.SurvivorMode = survivorMode;
-            _scenarioContainer.StartTime = DateTime.Now;
+            _scenarioContainer.Statistics.StartTime = DateTime.Now;
 
             _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
             {
@@ -172,6 +185,7 @@ namespace Rogue.NET.Scenario.Controller
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
 
+            // Loads level and fires event to listeners
             LoadCurrentLevel();
 
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
@@ -179,11 +193,6 @@ namespace Rogue.NET.Scenario.Controller
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.NewScenario
             });
-
-            _eventAggregator.GetEvent<LevelInitializedEvent>().Publish();
-
-            // Enables backend queue processing
-            _scenarioController.Start();
         }
         public void Open(string playerName)
         {
@@ -219,7 +228,7 @@ namespace Rogue.NET.Scenario.Controller
                 SplashType = SplashEventType.Open
             });
 
-            LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.SavePoint);
+            LoadCurrentLevel();
         }
         public void Save()
         {
@@ -229,6 +238,10 @@ namespace Rogue.NET.Scenario.Controller
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Save
             });
+
+            // Update the Save Level
+            _scenarioContainer.SaveLevel = _scenarioContainer.CurrentLevel;
+            _scenarioContainer.SaveLocation = PlayerStartLocation.SavePoint;
 
             // Update the ScenarioFile with unpacked levels
             _scenarioFile.Update(_scenarioContainer);
@@ -249,11 +262,11 @@ namespace Rogue.NET.Scenario.Controller
 
         public void LoadCurrentLevel()
         {
-            if (_scenarioContainer.SaveLevel >= _scenarioContainer.CurrentLevel)
+            if (_scenarioContainer.SaveLevel != 0)
                 LoadLevel(_scenarioContainer.SaveLevel, _scenarioContainer.SaveLocation);
 
             else
-                LoadLevel(_scenarioContainer.CurrentLevel, PlayerStartLocation.StairsUp);
+                LoadLevel(1, PlayerStartLocation.StairsUp);
         }
         private void LoadLevel(int levelNumber, PlayerStartLocation location)
         {
@@ -287,31 +300,24 @@ namespace Rogue.NET.Scenario.Controller
                 // Enable processing of backend
                 _scenarioController.Start();
 
-                // Notify Listeners
-               _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
+                // Notify Listeners - Level Loaded -> Game Update
+                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
+
+                PublishGameUpdate();
             }
         }
 
-        public Dictionary<string, string> GetGameDisplayStats()
+        private void PublishGameUpdate()
         {
-            Dictionary<string, string> stats = new Dictionary<string, string>();
-
-            //Make sure levels are checked out
-            for (int i = 1; i <= _scenarioContainer.StoredConfig.DungeonTemplate.NumberOfLevels; i++)
+            _eventAggregator.GetEvent<GameUpdateEvent>().Publish(new GameUpdateEventArgs()
             {
-                if (!_scenarioContainer.LoadedLevels.Any(z => z.Number == i))
-                    _scenarioContainer.LoadedLevels.Add(_scenarioFile.Checkout(i));
-            }
-
-            stats.Add("Percentage Cleared", (((double)_scenarioContainer.ScenarioEncyclopedia.Count(z => z.Value.IsIdentified) / (double)_scenarioContainer.ScenarioEncyclopedia.Count()) * 100.0D).ToString("N0"));
-            stats.Add("Steps Taken", _scenarioContainer.LoadedLevels.Sum(z => z.StepsTaken).ToString());
-            stats.Add("Monsters Killed", _scenarioContainer.LoadedLevels.Sum(z => z.MonstersKilled.Sum(y => y.Value)).ToString());
-            stats.Add("Items Found", _scenarioContainer.LoadedLevels.Sum(z => z.ItemsFound.Sum(y => y.Value)).ToString());
-            stats.Add("Unique Items Found", _scenarioContainer.LoadedLevels.Sum(z => z.ItemsFound.Where(y => _scenarioContainer.ScenarioEncyclopedia[y.Key].IsUnique).Sum(x => x.Value)).ToString());
-            stats.Add("Unique Monsters Found", _scenarioContainer.LoadedLevels.Sum(z => z.MonstersKilled.Where(y => _scenarioContainer.ScenarioEncyclopedia[y.Key].IsUnique).Sum(x => x.Value)).ToString());
-            stats.Add("Total Score", _scenarioContainer.LoadedLevels.Sum(z => z.MonsterScore).ToString());
-
-            return stats;
+                ScenarioName = _scenarioContainer.StoredConfig.DungeonTemplate.Name,
+                IsObjectiveAcheived = _scenarioContainer.IsObjectiveAcheived(),
+                IsSurvivorMode = _scenarioContainer.SurvivorMode,
+                Statistics = _scenarioContainer.Statistics,
+                Seed = _scenarioContainer.Seed,
+                LevelNumber = _scenarioContainer.CurrentLevel
+            });
         }
     }
 }

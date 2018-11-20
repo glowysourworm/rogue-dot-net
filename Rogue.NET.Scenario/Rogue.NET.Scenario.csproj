@@ -164,6 +164,7 @@
     <Compile Include="Content\ViewModel\Content\RogueEncyclopediaViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaDataViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />
     <Compile Include="Events\Content\ShiftDisplayEvent.cs" />
+    <Compile Include="Events\Content\GameUpdateEvent.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
@@ -226,6 +228,7 @@
       <DependentUpon>IntroView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service\Interface\IKeyResolver.cs" />
+    <Compile Include="Service\Interface\IScenarioStatisticsService.cs" />
     <Compile Include="Service\Interface\IScenarioUIGeometryService.cs" />
     <Compile Include="Service\KeyResolver.cs" />
     <Compile Include="Outro\Views\Death.xaml.cs">
@@ -262,6 +265,7 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Service\ScenarioStatisticsService.cs" />
     <Compile Include="Service\ScenarioUIGeometryService.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -21,5 +21,10 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
         /// Start location for the "ChangeOfLevel" ScenarioUpdateType
         /// </summary>
         PlayerStartLocation StartLocation { get; set; }
+
+        /// <summary>
+        /// Content RogueName used for statistics updates
+        /// </summary>
+        string ContentRogueName { get; set; }
     }
 }

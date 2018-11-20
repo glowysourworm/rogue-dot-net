@@ -74,20 +74,12 @@ namespace Rogue.NET.Core.Model.Scenario
             protected set { _doodadNormals = new List<DoodadNormal>(value); }
         }
 
-        //Statistics
-        public int StepsTaken { get; set; }
-        public int MonsterScore { get; set; }   //Monster Killed * Experience for that monster
-        public IDictionary<string, int> MonstersKilled { get; set; }
-        public IDictionary<string, int> ItemsFound { get; set; }
-
         public Level() { } 
         public Level(LevelGrid grid, LayoutType layoutType, int number)
         {
             this.Type = layoutType;
             this.Grid = grid;
             this.Number = number;
-            this.MonstersKilled = new Dictionary<string, int>();
-            this.ItemsFound = new Dictionary<string, int>();
 
             this.StairsDown = null;
             this.StairsUp = null;
@@ -121,7 +113,7 @@ namespace Rogue.NET.Core.Model.Scenario
         }
         public void AddSavePoint(DoodadNormal savePoint)
         {
-            this.StairsDown = savePoint;
+            this.SavePoint = savePoint;
 
             AddContent(savePoint);
         }

@@ -112,10 +112,7 @@ namespace Rogue.NET.Core.Logic
                         });
 
                     //Update level statistics
-                    if (!level.ItemsFound.ContainsKey(item.RogueName))
-                        level.ItemsFound.Add(item.RogueName, 1);
-                    else
-                        level.ItemsFound[item.RogueName]++;
+                    QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsItemFound, item.RogueName);
                 }
             }
             else if (character is Player)
@@ -226,12 +223,9 @@ namespace Rogue.NET.Core.Logic
             var level = _modelService.Level;
 
             level.RemoveContent(enemy);
-            level.MonsterScore += (int)enemy.ExperienceGiven;
 
-            if (!level.MonstersKilled.ContainsKey(enemy.RogueName))
-                level.MonstersKilled.Add(enemy.RogueName, 1);
-            else
-                level.MonstersKilled[enemy.RogueName]++;
+            // Update statistics
+            QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName);
 
             // TODO: Consider where to put this
             _modelService.Player.Experience += enemy.ExperienceGiven;
@@ -245,11 +239,7 @@ namespace Rogue.NET.Core.Logic
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
 
             // Publish Level update
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                ContentIds = new string[] { enemy.Id },
-                LevelUpdateType = LevelUpdateType.ContentRemove
-            });
+            QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
         }
         public void CalculateEnemyReactions()
         {
@@ -796,6 +786,14 @@ namespace Rogue.NET.Core.Logic
             {
                 LevelUpdateType = type,
                 ContentIds = new string[] {contentId}
+            });
+        }
+        private void QueueScenarioStatisticsUpdate(ScenarioUpdateType type, string rogueName)
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType  = type,
+                ContentRogueName = rogueName
             });
         }
         private void QueuePlayerEquipmentRemove(string equipmentId)
