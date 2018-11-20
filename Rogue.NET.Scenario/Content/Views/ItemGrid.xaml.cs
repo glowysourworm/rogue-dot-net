@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Rogue.NET.Scenario.ViewModel;
+using System.ComponentModel.Composition;
+
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.EventArgs;
-using Prism.Events;
-using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Graveyard;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Scenario.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
+
+using Prism.Events;
+
 
 namespace Rogue.NET.Scenario.Views
 {

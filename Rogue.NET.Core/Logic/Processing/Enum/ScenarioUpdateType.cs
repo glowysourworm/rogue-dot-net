@@ -23,6 +23,11 @@
         /// <summary>
         /// Objective is acheived
         /// </summary>
-        ObjectiveAcheived
+        ObjectiveAcheived,
+
+        /// <summary>
+        /// Occurs after end of processing on the primary scenario engine
+        /// </summary>
+        Tick
     }
 }

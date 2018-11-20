@@ -808,6 +808,13 @@ namespace Rogue.NET.Core.Logic
                 ScenarioUpdateType = ScenarioUpdateType.ObjectiveAcheived
             });
         }
+        private void QueueScenarioTick()
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.Tick
+            });
+        }
         #endregion
     }
 }

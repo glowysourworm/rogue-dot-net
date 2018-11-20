@@ -1,9 +1,6 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
@@ -11,6 +8,7 @@ using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Events.Content;
+using Rogue.NET.Scenario.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -32,7 +30,7 @@ namespace Rogue.NET.Scenario.Views
         int currentLevelNumber = -1;
 
         [ImportingConstructor]
-        public CompassCtrl(IEventAggregator eventAggregator, IModelService modelService, PlayerViewModel playerViewModel)
+        public CompassCtrl(IEventAggregator eventAggregator, IScenarioUIGeometryService scenarioUIGeometryService, IModelService modelService, PlayerViewModel playerViewModel)
         {
             _eventAggregator = eventAggregator;
 
@@ -43,17 +41,17 @@ namespace Rogue.NET.Scenario.Views
             // subscribe to events
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                Update(modelService);
+                Update(modelService, scenarioUIGeometryService);
             }, ThreadOption.UIThread, true);
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
-                    Update(modelService);
+                    Update(modelService, scenarioUIGeometryService);
             }, ThreadOption.UIThread, true);
         }
 
-        private void Update(IModelService modelService)
+        private void Update(IModelService modelService, IScenarioUIGeometryService scenarioUIGeometryService)
         {
             foreach (var rectangle in _canvasPoints)
                 this.GlobeCanvas.Children.Remove(rectangle);
@@ -65,13 +63,13 @@ namespace Rogue.NET.Scenario.Views
                 contentMarker.Fill = content is Enemy ? Brushes.Red : Brushes.LightBlue;
                 contentMarker.Fill = content is ItemBase ? Brushes.YellowGreen : contentMarker.Fill;
 
-                var levelUIBounds = DataHelper.Cell2UIRect(modelService.Level.Grid.GetBounds());
+                var levelUIBounds = scenarioUIGeometryService.Cell2UIRect(modelService.Level.Grid.GetBounds());
 
                 var xneg = false;
                 var yneg = false;
                 Point compassLocation = TranslatePoint(
-                    DataHelper.Cell2UI(modelService.Player.Location),
-                    DataHelper.Cell2UI(content.Location),
+                    scenarioUIGeometryService.Cell2UI(modelService.Player.Location),
+                    scenarioUIGeometryService.Cell2UI(content.Location),
                     levelUIBounds.Width,
                     levelUIBounds.Height,
                     out xneg,

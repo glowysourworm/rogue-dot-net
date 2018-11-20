@@ -1,10 +1,6 @@
 ﻿using Prism.Events;
-using Rogue.NET.Core.Graveyard;
-using Rogue.NET.Core.Model.Scenario;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 

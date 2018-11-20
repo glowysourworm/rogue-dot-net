@@ -1,9 +1,7 @@
 ﻿using Prism.Events;
 
 using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -11,7 +9,6 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Interface;
-using Rogue.NET.Core.Logic.Processing;
 
 using System.Linq;
 using System.Collections.ObjectModel;
@@ -27,16 +24,17 @@ using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using System;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Scenario.Service.Interface;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
     [Export(typeof(LevelCanvasViewModel))]
     public class LevelCanvasViewModel : NotifyViewModel
     {
+        readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
         readonly ICharacterProcessor _characterProcessor;
@@ -60,12 +58,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         [ImportingConstructor]
         public LevelCanvasViewModel(
+            IScenarioUIGeometryService scenarioUIGeometryService,
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
             IAnimationGenerator animationGenerator,
             ICharacterProcessor characterProcessor,
             IModelService modelService)
         {
+            _scenarioUIGeometryService = scenarioUIGeometryService;
             _resourceService = resourceService;
             _modelService = modelService;
             _animationGenerator = animationGenerator;
@@ -151,7 +151,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 if (_modelService == null)
                     return new Point(0, 0);
 
-                return DataHelper.Cell2UI(_modelService.Player.Location);
+                return _scenarioUIGeometryService.Cell2UI(_modelService.Player.Location);
             }
         }
         #endregion
@@ -218,7 +218,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private void DrawLayout()
         {
             var level = _modelService.Level;
-            var bounds = DataHelper.Cell2UIRect(level.Grid.GetBounds());
+            var bounds = _scenarioUIGeometryService.Cell2UIRect(level.Grid.GetBounds());
 
             this.LevelWidth = (int)bounds.Width;
             this.LevelHeight = (int)bounds.Height;
@@ -231,7 +231,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 foreach (var cell in level.Grid.GetCells())
                 {
-                    var rect = DataHelper.Cell2UIRect(cell.Location, false);
+                    var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
                     var invisibleDoors = cell.InVisibleDoors;
 
                     stream.BeginFigure(rect.TopLeft, false, false);
@@ -247,7 +247,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 foreach (var cell in level.Grid.GetDoors())
                 {
-                    var rect = DataHelper.Cell2UIRect(cell.Location, false);
+                    var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
                     var visibleDoors = cell.VisibleDoors;
 
                     stream.BeginFigure(rect.TopLeft, false, false);
@@ -328,7 +328,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 foreach (var cellPoint in exploredLocations)
                 {
-                    var rect = DataHelper.Cell2UIRect(cellPoint, false);
+                    var rect = _scenarioUIGeometryService.Cell2UIRect(cellPoint, false);
                     stream.BeginFigure(rect.TopLeft, true, true);
                     stream.LineTo(rect.TopRight, true, false);
                     stream.LineTo(rect.BottomRight, true, false);
@@ -342,7 +342,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 foreach (var cellPoint in visibleLocations)
                 {
-                    var rect = DataHelper.Cell2UIRect(cellPoint, false);
+                    var rect = _scenarioUIGeometryService.Cell2UIRect(cellPoint, false);
                     stream.BeginFigure(rect.TopLeft, true, true);
                     stream.LineTo(rect.TopRight, true, false);
                     stream.LineTo(rect.BottomRight, true, false);
@@ -379,9 +379,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         #endregion
 
         #region (private) Add / Update collections
-        private FrameworkElement CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
+        private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
         {
-            var image = new Image();
+            var image = new LevelCanvasImage();
             image.Source = _resourceService.GetImageSource(scenarioObject);
             image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
@@ -396,7 +396,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 
-            var point = DataHelper.Cell2UI(scenarioObject.Location);
+            // Set the special ZIndex property - used for binding
+            image.ZIndex = Canvas.GetZIndex(image);
+
+            var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
             image.Visibility = scenarioObject.IsPhysicallyVisible ? Visibility.Visible : Visibility.Hidden;
 
@@ -436,7 +439,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         private void UpdateObject(FrameworkElement content, ScenarioObject scenarioObject)
         {
-            var point = DataHelper.Cell2UI(scenarioObject.Location);
+            var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
             content.Visibility = scenarioObject.IsPhysicallyVisible ? Visibility.Visible : Visibility.Hidden;
 
@@ -511,8 +514,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         public async Task PlayAnimationSeries(IAnimationUpdate animationData)
         {
             // Source / Target / Render bounds
-            var source = DataHelper.Cell2UI(animationData.SourceLocation, true);
-            var targets = animationData.TargetLocations.Select(x =>  DataHelper.Cell2UI(x, true)).ToArray();
+            var source = _scenarioUIGeometryService.Cell2UI(animationData.SourceLocation, true);
+            var targets = animationData.TargetLocations.Select(x => _scenarioUIGeometryService.Cell2UI(x, true)).ToArray();
             var bounds = new Rect(0, 0, _levelWidth, _levelHeight);
 
             //Create animations
@@ -554,7 +557,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 StopTargetAnimation();
 
             var points = _modelService.GetTargetedEnemies()
-                                      .Select(x => DataHelper.Cell2UI(x.Location))
+                                      .Select(x => _scenarioUIGeometryService.Cell2UI(x.Location))
                                       .ToArray();
 
             // Start the animation group

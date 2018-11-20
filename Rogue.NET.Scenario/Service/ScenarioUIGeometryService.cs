@@ -1,23 +1,19 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Media;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
+﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Scenario.Service.Interface;
+using System.ComponentModel.Composition;
+using System.Windows;
 
-namespace Rogue.NET.Core.Graveyard
+namespace Rogue.NET.Scenario.Service
 {
-    public static class DataHelper
+    [Export(typeof(IScenarioUIGeometryService))]
+    public class ScenarioUIGeometryService : IScenarioUIGeometryService
     {
-        //Configuration Helper
-        public static Point Cell2UI(int x, int y)
+        public Point Cell2UI(int x, int y)
         {
             return new Point(x * ModelConstants.CELLWIDTH, y * ModelConstants.CELLHEIGHT);
         }
-        public static Point Cell2UI(CellPoint p, bool offsetToMiddleOfCell = false)
+        public Point Cell2UI(CellPoint p, bool offsetToMiddleOfCell = false)
         {
             if (!offsetToMiddleOfCell)
                 return new Point(p.Column * ModelConstants.CELLWIDTH, p.Row * ModelConstants.CELLHEIGHT);
@@ -25,7 +21,7 @@ namespace Rogue.NET.Core.Graveyard
             else
                 return new Point((p.Column + 0.5D) * ModelConstants.CELLWIDTH, (p.Row + 0.5D) * ModelConstants.CELLHEIGHT);
         }
-        public static Rect Cell2UIRect(CellPoint p, bool addCellOffset)
+        public Rect Cell2UIRect(CellPoint p, bool addCellOffset)
         {
             if (!addCellOffset)
                 return new Rect(Cell2UI(p), new Size(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT));
@@ -37,7 +33,7 @@ namespace Rogue.NET.Core.Graveyard
                 return new Rect(pt, new Size(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT));
             }
         }
-        public static Rect Cell2UIRect(CellRectangle r)
+        public Rect Cell2UIRect(CellRectangle r)
         {
             Point p = Cell2UI((int)r.Location.Column, (int)r.Location.Row);
             int w = (int)r.CellWidth * ModelConstants.CELLWIDTH;

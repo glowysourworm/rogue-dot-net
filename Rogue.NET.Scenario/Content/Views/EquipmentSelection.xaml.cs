@@ -1,8 +1,5 @@
 ﻿using System.ComponentModel.Composition;
-using System.Windows;
 using System.Windows.Controls;
-using Rogue.NET.Core.Graveyard;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 

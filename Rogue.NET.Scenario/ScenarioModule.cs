@@ -7,6 +7,9 @@ using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Core.Event.Scenario.Level.Event;
+using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Intro.Views;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.Views;
@@ -29,18 +32,21 @@ namespace Rogue.NET.Scenario
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioController _scenarioController;
         readonly IGameController _gameController;
+        readonly IScenarioResourceService _scenarioResourceService;
 
         [ImportingConstructor]
         public ScenarioModule(
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
             IScenarioController scenarioController,
-            IGameController gameController)
+            IGameController gameController,
+            IScenarioResourceService scenarioResourceService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioController = scenarioController;
             _gameController = gameController;
+            _scenarioResourceService = scenarioResourceService;
 
             // Halt back end threads on application exit
             Application.Current.Exit += (sender, e) => { _scenarioController.Stop(); };
@@ -65,12 +71,16 @@ namespace Rogue.NET.Scenario
                 _regionManager.RequestNavigate("GameInfoRegion", "GameInfoView");
             }, true);
 
-            _eventAggregator.GetEvent<PlayerDiedEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
-                _regionManager.Regions["DeathDisplay"].Context = e;
+                if (update.ScenarioUpdateType == ScenarioUpdateType.PlayerDeath)
+                {
+                    (_regionManager.Regions["MainRegion"]
+                                   .GetView("DeathDisplay") as DeathDisplay).DiedOfText = update.PlayerDeathMessage;
 
-                _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
-            }, true);
+                    _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
+                }
+            }, ThreadOption.UIThread, true);
 
             _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
             {
@@ -106,6 +116,20 @@ namespace Rogue.NET.Scenario
             _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("GameRegion", "DungeonEncyclopedia");
+            });
+
+            // Delete Scenario
+            _eventAggregator.GetEvent<DeleteScenarioEvent>().Subscribe((e) =>
+            {
+                var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + e.ScenarioName, MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
+                {
+                    // Delete the file
+                    _scenarioResourceService.DeleteScenario(e.ScenarioName);
+
+                    // Notify listeners
+                    _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();
+                }
             });
         }
 

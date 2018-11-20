@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.ComponentModel.Composition;
-using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Graveyard;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 

@@ -11,10 +11,6 @@ namespace Rogue.NET.Core.Service.Interface
 {
     public interface IScenarioResourceService
     {
-        void SetCacheMode(ResourceCacheMode resourceCacheMode);
-
-        void ClearCache();
-
         /// <summary>
         /// Tells service to load and cache specified configuration.
         /// </summary>
@@ -33,6 +29,8 @@ namespace Rogue.NET.Core.Service.Interface
         void SaveScenarioFile(ScenarioFile scenarioFile, string playerName);
 
         ScenarioFile OpenScenarioFile(string playerName);
+
+        void DeleteScenario(string name);
 
         void EmbedConfig(ConfigResources configResource, ScenarioConfigurationContainer config);
 

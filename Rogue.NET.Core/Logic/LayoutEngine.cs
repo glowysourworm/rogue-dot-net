@@ -431,7 +431,7 @@ namespace Rogue.NET.Core.Logic
         public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)
         {
             var adjacentLocations = GetAdjacentLocations(level.Grid, location).
-                                    Where(x => (excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
+                                    Where(x => !(excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
                                            : CellPoint.Empty;

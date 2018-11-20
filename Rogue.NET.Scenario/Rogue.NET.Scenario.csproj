@@ -170,6 +170,7 @@
     <Compile Include="Content\ViewModel\Content\SkillSetViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridRowViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasImage.cs" />
     <Compile Include="Content\Views\GameInfoView.xaml.cs">
       <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
@@ -225,6 +226,7 @@
       <DependentUpon>IntroView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service\Interface\IKeyResolver.cs" />
+    <Compile Include="Service\Interface\IScenarioUIGeometryService.cs" />
     <Compile Include="Service\KeyResolver.cs" />
     <Compile Include="Outro\Views\Death.xaml.cs">
       <DependentUpon>Death.xaml</DependentUpon>
@@ -260,6 +262,7 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Service\ScenarioUIGeometryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\GameInfoView.xaml">

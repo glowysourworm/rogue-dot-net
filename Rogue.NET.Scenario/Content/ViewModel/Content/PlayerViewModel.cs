@@ -30,7 +30,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         #region (private) Backing Fields
         int _level;
         string _class;
-        string _rogueName;
         double _experience;
         double _experienceNext;
         double _hunger;
@@ -89,11 +88,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _class; }
             set { this.RaiseAndSetIfChanged(ref _class, value); }
-        }
-        public string RogueName
-        {
-            get { return _rogueName; }
-            set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
         }
         public double Experience
         {

@@ -1,22 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 using Prism.Events;
 
-using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Model.Events;
-using Rogue.NET.Core.Media;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Media.Interface;
-using Rogue.NET.Core.Graveyard;
-using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
@@ -33,7 +24,7 @@ namespace Rogue.NET.Scenario.Content.Views
         Point _mouseDownWithControlPoint = new Point();
 
         const int SCREEN_BUFFER = 120;
-        const int SHIFT_AMOUNT = 100;
+        const int SHIFT_AMOUNT = 60;
 
         public static readonly DependencyProperty PrimaryTransformProperty =
             DependencyProperty.Register("PrimaryTransform", typeof(Transform), typeof(LevelCanvas));
@@ -180,22 +171,22 @@ namespace Rogue.NET.Scenario.Content.Views
             _mouseDownWithControl = false;
         }
 
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            base.OnMouseWheel(e);
+        //protected override void OnMouseWheel(MouseWheelEventArgs e)
+        //{
+        //    base.OnMouseWheel(e);
 
-            var scale = (e.Delta > 0) ? 1.05 : 0.95;
+        //    var scale = (e.Delta > 0) ? 1.05 : 0.95;
 
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                _scaleXform.ScaleX *= scale;
-                _scaleXform.ScaleY *= scale;
+        //    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+        //    {
+        //        _scaleXform.ScaleX *= scale;
+        //        _scaleXform.ScaleY *= scale;
 
-                // TODO
-                //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Width);
-                //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Height);
-            }
-        }
+        //        // TODO
+        //        //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Width);
+        //        //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Height);
+        //    }
+        //}
     }
 }
 

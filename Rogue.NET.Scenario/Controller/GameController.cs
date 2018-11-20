@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace Rogue.NET.Scenario.Controller
 {
@@ -65,6 +66,7 @@ namespace Rogue.NET.Scenario.Controller
                 _eventAggregator.GetEvent<MessageBoxEvent>().Publish("Error creating save directory - will not be able to save game progress");
             }
 
+            // New
             _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
             {
                 var config = _resourceService.GetScenarioConfigurations().FirstOrDefault(c => c.DungeonTemplate.Name == e.ScenarioName);
@@ -72,12 +74,13 @@ namespace Rogue.NET.Scenario.Controller
                     New(config, e.RogueName, e.Seed, e.SurvivorMode);
             }, true);
 
+            // Open
             _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
             {
                 Open(e.ScenarioName);
             });
 
-            // Level Change Event
+            // Level Change / Save Events
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
                 switch (update.ScenarioUpdateType)
@@ -85,18 +88,16 @@ namespace Rogue.NET.Scenario.Controller
                     case ScenarioUpdateType.LevelChange:
                         LoadLevel(update.LevelNumber, update.StartLocation);
                         break;
-                    case ScenarioUpdateType.PlayerDeath:
-                        // TODO
-                        break;
                     case ScenarioUpdateType.Save:
                         Save();
                         break;
-                    case ScenarioUpdateType.ObjectiveAcheived:
-                    default:
+                    case ScenarioUpdateType.Tick:
+                        _scenarioContainer.TotalTicks++;
                         break;
                 }
             }, ThreadOption.UIThread, true);
 
+            // Continue Scenario
             _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
             {
                 //Unpack snapshot from file
@@ -107,26 +108,6 @@ namespace Rogue.NET.Scenario.Controller
                     scenario.CurrentLevel = 1;
 
                 LoadCurrentLevel();
-            });
-
-            // TODO MOVE THIS
-            _eventAggregator.GetEvent<DeleteScenarioEvent>().Subscribe((e) =>
-            {
-                //var result = MessageBox.Show("Are you sure you want to delete this scenario?", "Delete " + e.ScenarioName, MessageBoxButton.YesNoCancel);
-                //if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
-                //{
-                //    var path = Path.Combine(Constants.SAVED_GAMES_DIR, e.ScenarioName + "." + Constants.SCENARIO_EXTENSION);
-                //    if (File.Exists(path))
-                //        File.Delete(path);
-
-                //    _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();
-                //}
-            });
-
-            _eventAggregator.GetEvent<ScenarioTickEvent>().Subscribe(() =>
-            {
-                _scenarioContainer.TotalTicks++;
-                UpdateScenarioInfo();
             });
         }
 
@@ -200,9 +181,6 @@ namespace Rogue.NET.Scenario.Controller
             });
 
             _eventAggregator.GetEvent<LevelInitializedEvent>().Publish();
-
-            // Set resource cache mode
-            _resourceService.SetCacheMode(ResourceCacheMode.OnDemand);
 
             // Enables backend queue processing
             _scenarioController.Start();
@@ -311,8 +289,6 @@ namespace Rogue.NET.Scenario.Controller
 
                 // Notify Listeners
                _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
-
-                UpdateScenarioInfo();
             }
         }
 
@@ -336,24 +312,6 @@ namespace Rogue.NET.Scenario.Controller
             stats.Add("Total Score", _scenarioContainer.LoadedLevels.Sum(z => z.MonsterScore).ToString());
 
             return stats;
-        }
-
-        /// <summary>
-        /// Updates game info view data
-        /// </summary>
-        public void UpdateScenarioInfo()
-        {
-            _eventAggregator.GetEvent<ScenarioInfoUpdatedEvent>().Publish(new ScenarioInfoUpdatedEventArgs()
-            {
-                Ticks = _scenarioContainer.TotalTicks,
-                CurrentLevel = _scenarioContainer.CurrentLevel,
-                ObjectiveAcheived = _scenarioContainer.ObjectiveAcheived,
-                PlayerName = _scenarioContainer.Player1.RogueName,
-                ScenarioName = _scenarioContainer.StoredConfig.DungeonTemplate.Name,
-                Seed = _scenarioContainer.Seed,
-                StartTime = _scenarioContainer.StartTime,
-                SurvivorMode = _scenarioContainer.SurvivorMode
-            });
         }
     }
 }

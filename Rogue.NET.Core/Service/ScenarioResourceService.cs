@@ -22,24 +22,6 @@ using System.Windows.Media.Imaging;
 
 namespace Rogue.NET.Core.Service
 {
-    public enum ResourceCacheMode
-    {
-        /// <summary>
-        /// No caching used for image resources
-        /// </summary>
-        NoCache,
-
-        /// <summary>
-        /// Caching used for image resources - loaded on first call
-        /// </summary>
-        OnDemand,
-
-        /// <summary>
-        /// Caching used for image resources - loaded immediately
-        /// </summary>
-        PreLoad
-    }
-
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioResourceService))]
     public class ScenarioResourceService : IScenarioResourceService
@@ -54,12 +36,6 @@ namespace Rogue.NET.Core.Service
 
         IList<ScenarioConfigurationContainer> _scenarioConfigurations;
 
-        Dictionary<SymbolTypes, Dictionary<string, BitmapSource>> _imageCache;
-
-        IEnumerable<ColorViewModel> _colorCache;
-
-        ResourceCacheMode _resourceCacheMode = ResourceCacheMode.OnDemand;
-
         [ImportingConstructor]
         public ScenarioResourceService(IEventAggregator eventAggregator)
         {
@@ -70,15 +46,6 @@ namespace Rogue.NET.Core.Service
                 Directory.CreateDirectory(SCENARIOS_DIR);
 
             _scenarioConfigurations = new List<ScenarioConfigurationContainer>();
-
-            _imageCache = new Dictionary<SymbolTypes, Dictionary<string, BitmapSource>>()
-            {
-                { SymbolTypes.Character, new Dictionary<string, BitmapSource>() },
-                { SymbolTypes.Image, new Dictionary<string, BitmapSource>() },
-                { SymbolTypes.Smiley, new Dictionary<string, BitmapSource>() }
-            };
-
-            _colorCache = ColorUtility.CreateColors();
         }
 
         public void LoadScenarioConfiguration(ConfigResources configResource)
@@ -140,11 +107,11 @@ namespace Rogue.NET.Core.Service
             switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    return GetCharacterSymbol(scenarioImage.RogueName, scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
+                    return GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
                 case SymbolTypes.Smiley:
-                    return GetSmileySymbol(scenarioImage.RogueName, scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
+                    return GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
                 case SymbolTypes.Image:
-                    return GetImageSymbol(scenarioImage.RogueName, scenarioImage.Icon);
+                    return GetImage(scenarioImage.Icon);
                 default:
                     throw new Exception("Unknown symbol type");
             }
@@ -163,11 +130,11 @@ namespace Rogue.NET.Core.Service
             switch (type)
             {
                 case SymbolTypes.Character:
-                    return GetCharacterSymbol(rogueName, symbol, symbolColor);
+                    return GetImage(symbol, symbolColor);
                 case SymbolTypes.Smiley:
-                    return GetSmileySymbol(rogueName, smileyMood, smileyBodyColor, smileyLineColor, smileyAuraColor);
+                    return GetImage(smileyMood, smileyBodyColor, smileyLineColor, smileyAuraColor);
                 case SymbolTypes.Image:
-                    return GetImageSymbol(rogueName, icon);
+                    return GetImage(icon);
                 default:
                     throw new Exception("Unknown symbol type");
             }
@@ -184,6 +151,14 @@ namespace Rogue.NET.Core.Service
             var buffer = File.ReadAllBytes(SAVED_GAMES_DIR + "\\" + playerName + "." + SCENARIO_EXTENSION);
 
             return ScenarioFile.Open(buffer);
+        }
+
+        public void DeleteScenario(string name)
+        {
+            var path = Path.Combine(SAVED_GAMES_DIR, name + "." + SCENARIO_EXTENSION);
+
+            if (File.Exists(path))
+                File.Delete(path);
         }
 
         #region Serialization
@@ -237,37 +212,7 @@ namespace Rogue.NET.Core.Service
         }
         #endregion
 
-        #region ImageSource
-        private BitmapSource GetImageSymbol(string rogueName, ImageResources imageResource)
-        {
-            if (_imageCache[SymbolTypes.Image].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
-                return _imageCache[SymbolTypes.Image][rogueName];
-
-            var bitmapSource = GetImage(imageResource);
-
-            _imageCache[SymbolTypes.Image][rogueName] = bitmapSource;
-            return bitmapSource;
-        }
-        private BitmapSource GetCharacterSymbol(string rogueName, string characterSymbol, string characterSymbolColor)
-        {
-            if (_imageCache[SymbolTypes.Character].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
-                return _imageCache[SymbolTypes.Character][rogueName];
-
-            var bitmapSource = GetImage(characterSymbol, characterSymbolColor);
-
-            _imageCache[SymbolTypes.Character][rogueName] = bitmapSource;
-            return bitmapSource;
-        }
-        private BitmapSource GetSmileySymbol(string rogueName, SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
-        {
-            if (_imageCache[SymbolTypes.Smiley].ContainsKey(rogueName) && _resourceCacheMode != ResourceCacheMode.NoCache)
-                return _imageCache[SymbolTypes.Smiley][rogueName];
-
-            var bitmapSource = GetImage(mood, bodyColor, lineColor, auraColor);
-
-            _imageCache[SymbolTypes.Smiley][rogueName] = bitmapSource;
-            return bitmapSource;
-        }
+        #region Image and Color Resources
         public BitmapSource GetImage(ImageResources img)
         {
             if (img == ImageResources.WellYellowCopy)
@@ -318,38 +263,10 @@ namespace Rogue.NET.Core.Service
             return bmp;
         }
 
-        public void SetCacheMode(ResourceCacheMode resourceCacheMode)
-        {
-            _resourceCacheMode = resourceCacheMode;
-
-            switch (resourceCacheMode)
-            {
-                case ResourceCacheMode.NoCache:
-                    ClearCache();
-                    break;
-                case ResourceCacheMode.OnDemand:
-                    break;
-                case ResourceCacheMode.PreLoad:
-                    throw new Exception("PreLoad cache mode Not Implemented");
-                default:
-                    break;
-            }
-        }
-
-        public void ClearCache()
-        {
-            foreach (var item in _imageCache)
-                item.Value.Clear();
-        }
-
         public IEnumerable<ColorViewModel> GetColors()
         {
-            return _colorCache;
+            return ColorUtility.CreateColors();
         }
-
-
-
-
         #endregion
     }
 }

@@ -32,7 +32,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public string RogueName
         {
             get { return _rogueName; }
-            private set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
+            set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
         }
         public string DisplayName
         {

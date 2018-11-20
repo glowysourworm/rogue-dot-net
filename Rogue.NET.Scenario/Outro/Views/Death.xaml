@@ -273,11 +273,9 @@
     <Grid Background="Black">
     	<StackPanel Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
     		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
-    			<TextBlock x:Name="NameTextBlock" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PlayerName}"/>
-    			<TextBlock
-    			x:Name="DashTExt" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text=" - "/>
-    			<TextBlock x:Name="DiedOfTextBlock"
-    		TextWrapping="Wrap" Text="{Binding DiedOf}" FontSize="32" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8"/>
+    			<TextBlock x:Name="NameTextBlock" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding RogueName}"/>
+    			<TextBlock x:Name="DashText" Margin="8" FontSize="32" TextWrapping="Wrap" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text=" - "/>
+    			<TextBlock x:Name="DiedOfTextBlock" TextWrapping="Wrap" Text="{Binding}" FontSize="32" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8"/>
     		</StackPanel>
     		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
     			<Button x:Name="ContinueButton" Click="ContinueButton_Click" Content="Button" Style="{DynamicResource ContinueButtonStyle}" Margin="8" Cursor="Hand" Height="175" Width="175"/>

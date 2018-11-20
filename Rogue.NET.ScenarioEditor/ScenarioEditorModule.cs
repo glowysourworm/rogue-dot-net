@@ -61,8 +61,6 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Initialize()
         {
-            _resourceService.SetCacheMode(ResourceCacheMode.NoCache);
-
             RegisterRegionViews();
             RegisterEvents();
         }
