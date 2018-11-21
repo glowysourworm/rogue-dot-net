@@ -124,6 +124,7 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
+    <Compile Include="Logic\Static\Calculator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />

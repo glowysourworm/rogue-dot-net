@@ -1,9 +1,12 @@
 ﻿using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -18,74 +21,28 @@ namespace Rogue.NET.Core.Logic.Content
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public void ApplyEndOfTurn(Enemy enemy)
+        public void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken)
         {
-            //this.MalignAuraEffects.Clear();
-            //this.MalignAuraEffects.AddRange(passiveAuraEffects);
+            enemy.Hp += enemy.GetHpRegen(true);
+            enemy.Mp += enemy.GetMpRegen();
 
-            //playerAdvancementEventArgs = null;
-            //LevelMessageEventArgs[] msgs = new LevelMessageEventArgs[] { };
+            // Increment event times - ignore messages to publish
+            enemy.Alteration.DecrementEventTimes();
 
-            //if (regenerate)
-            //{
-            //    this.Hp += this.GetHpRegen(regenerate);
-            //    this.Mp += this.GetMpRegen();
-            //}
+            // Calculate Auras Affecting Enemy
+            var distance = Calculator.RoguianDistance(player.Location, enemy.Location);
 
-            //for (int i = this.ActiveTemporaryEffects.Count - 1; i >= 0; i--)
-            //{
-            //    //Check temporary event
-            //    this.ActiveTemporaryEffects[i].EventTime--;
-            //    if (this.ActiveTemporaryEffects[i].EventTime < 0)
-            //    {
-            //        this.ActiveTemporaryEffects.RemoveAt(i);
-            //        continue;
-            //    }
-            //}
+            // Get Player Active Auras
+            var playerAuraEffects = player.Alteration.GetActiveAuras();
 
-            // Affects from player to enemy from auras
-            //for (int i = level.Enemies.Count() - 1; i >= 0; i--)
-            //{
-            //    // TODO
-            //    ////distance between enemy and player
-            //    //double dist = Helper.RoguianDistance(this.Player.Location, enemy.Location);
+            // Set Effect to Enemies in range
+            enemy.Alteration.SetAuraEffects(playerAuraEffects.Where(x => x.EffectRange >= distance));
 
-            //    ////Add enemy auras to list where player is within aura effect range
-            //    //passiveEnemyAuraEffects.AddRange(enemy.GetActiveAuras().Where(z => z.EffectRange >= dist));
-
-            //    ////Process tick - pass in active player auras where the enemy is within effect radius
-            //    //PlayerAdvancementEventArgs enemyAdvancementEventArgs = null;
-            //    //LevelMessageEventArgs[] msgArgs = enemy.OnDungeonTick(this.Random, this.Player.GetActiveAuras().Where(z => z.EffectRange >= dist), true, out enemyAdvancementEventArgs);
-            //    //foreach (LevelMessageEventArgs a in msgArgs)
-            //    //    PublishScenarioMessage(a.Message);
-            //}
-
-
-            ////Attack attribute temporary effects
-            //for (int i = this.AttackAttributeTemporaryFriendlyEffects.Count - 1; i >= 0; i--)
-            //{
-            //    this.AttackAttributeTemporaryFriendlyEffects[i].EventTime--;
-            //    if (this.AttackAttributeTemporaryFriendlyEffects[i].EventTime < 0)
-            //    {
-            //        this.AttackAttributeTemporaryFriendlyEffects.RemoveAt(i);
-            //    }
-            //}
-            //for (int i = this.AttackAttributeTemporaryMalignEffects.Count - 1; i >= 0; i--)
-            //{
-            //    this.AttackAttributeTemporaryMalignEffects[i].EventTime--;
-            //    if (this.AttackAttributeTemporaryMalignEffects[i].EventTime < 0)
-            //    {
-            //        this.AttackAttributeTemporaryMalignEffects.RemoveAt(i);
-            //    }
-            //}
-
-            //ApplyBehaviorRules(enemy);
-            //ApplyLimits();
-
-            //return msgs;
+            ApplyBehaviorRules(enemy, actionTaken);
+            enemy.ApplyLimits();
         }
 
-        private void ApplyBehaviorRules(Enemy enemy)
+        private void ApplyBehaviorRules(Enemy enemy, bool actionTaken)
         {
             switch (enemy.BehaviorDetails.SecondaryReason)
             {
@@ -93,10 +50,10 @@ namespace Rogue.NET.Core.Logic.Content
                     enemy.BehaviorDetails.IsSecondaryBehavior = false;
                     break;
                 case SecondaryBehaviorInvokeReason.PrimaryInvoked:
-                    enemy.BehaviorDetails.IsSecondaryBehavior = true;
+                    enemy.BehaviorDetails.IsSecondaryBehavior |= actionTaken;
                     break;
                 case SecondaryBehaviorInvokeReason.HpLow: // Hp is less than 10%
-                    if ((enemy.Hp / enemy.HpMax) < 0.1)
+                    if ((enemy.Hp / enemy.HpMax) < ModelConstants.HpLowFraction)
                         enemy.BehaviorDetails.IsSecondaryBehavior = true;
                     break;
                 case SecondaryBehaviorInvokeReason.Random:

@@ -9,6 +9,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         // Calculate Level Gains / Experience
         double CalculateExperienceNext(Player player);
         void CalculateLevelGains(Player player);
+        void CalculateEnemyDeathGains(Player player, Enemy slainEnemy);
 
         // Query Equipment Inventory
         Equipment GetEquippedType(Player player, EquipmentType type);
@@ -17,6 +18,5 @@ namespace Rogue.NET.Core.Logic.Content.Interface
 
         // Process Turn for Player
         void ApplyEndOfTurn(Player player, bool regenerate);
-        void ProcessSkillLearning(Player player);
     }
 }

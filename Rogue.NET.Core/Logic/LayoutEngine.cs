@@ -488,18 +488,6 @@ namespace Rogue.NET.Core.Logic
             return result.Where(x => x != null);
         }
 
-        public double EuclideanDistance(CellPoint p1, CellPoint p2)
-        {
-            double x = p2.Column - p1.Column;
-            double y = p2.Row - p1.Row;
-            return Math.Sqrt((x * x) + (y * y));
-        }
-        public double RoguianDistance(CellPoint p1, CellPoint p2)
-        {
-            double x = Math.Abs(p2.Column - p1.Column);
-            double y = Math.Abs(p2.Row - p1.Row);
-            return Math.Max(x, y);
-        }
         public Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2)
         {
             int deltaX = cell2.Column - cell1.Column;

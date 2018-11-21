@@ -20,8 +20,6 @@ namespace Rogue.NET.Core.Logic.Interface
         IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location);
         IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location);
         IEnumerable<CellPoint> GetAdjacentLocations(LevelGrid grid, CellPoint location);
-        double EuclideanDistance(CellPoint p1, CellPoint p2);
-        double RoguianDistance(CellPoint p1, CellPoint p2);
         Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2);
     }
 }

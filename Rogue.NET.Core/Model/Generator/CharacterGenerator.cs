@@ -54,7 +54,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.SymbolType = playerTemplate.SymbolDetails.Type;
 
             // Replace Agility for speed calculation
-            player.SpeedBase = ModelConstants.MAX_SPEED; // TODO
+            player.SpeedBase = ModelConstants.MaxSpeed; // TODO
 
             player.Class = playerTemplate.Class;
             player.Experience = 0;
@@ -133,7 +133,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
 
-            enemy.SpeedBase = ModelConstants.MAX_SPEED; // TODO
+            enemy.SpeedBase = ModelConstants.MaxSpeed; // TODO
 
             enemy.BehaviorDetails = new BehaviorDetails();
             enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);

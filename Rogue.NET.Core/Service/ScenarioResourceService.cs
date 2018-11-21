@@ -216,7 +216,7 @@ namespace Rogue.NET.Core.Service
             text.Measure(new Size(text.Width, text.Height));
             text.Arrange(new Rect(text.DesiredSize));
 
-            var bmp = new RenderTargetBitmap((int)(ModelConstants.CELLWIDTH), (int)(ModelConstants.CELLHEIGHT), DPI, DPI, PixelFormats.Default);
+            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth), (int)(ModelConstants.CellHeight), DPI, DPI, PixelFormats.Default);
             bmp.Render(text);
             return bmp;
         }
@@ -227,7 +227,7 @@ namespace Rogue.NET.Core.Service
             ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
             ctrl.Arrange(new Rect(ctrl.DesiredSize));
             RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
-            var bmp = new RenderTargetBitmap(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT, DPI, DPI, PixelFormats.Default);
+            var bmp = new RenderTargetBitmap(ModelConstants.CellWidth, ModelConstants.CellHeight, DPI, DPI, PixelFormats.Default);
 
             bmp.Render(ctrl);
             return bmp;
@@ -239,8 +239,8 @@ namespace Rogue.NET.Core.Service
                 imageResource = ImageResources.WellYellow;
 
             var result = new Image();
-            result.Width = ModelConstants.CELLWIDTH;
-            result.Height = ModelConstants.CELLHEIGHT;
+            result.Width = ModelConstants.CellWidth;
+            result.Height = ModelConstants.CellHeight;
             result.Source = GetImage(imageResource);
 
             return result;
@@ -257,8 +257,8 @@ namespace Rogue.NET.Core.Service
             text.FontFamily = Application.Current.MainWindow.FontFamily;
             text.TextAlignment = TextAlignment.Center;
             text.Margin = new Thickness(0);
-            text.Height = ModelConstants.CELLHEIGHT;
-            text.Width = ModelConstants.CELLWIDTH;
+            text.Height = ModelConstants.CellHeight;
+            text.Width = ModelConstants.CellWidth;
 
             return text;
         }
@@ -269,8 +269,8 @@ namespace Rogue.NET.Core.Service
             ctrl.SmileyLineColor = (Color)ColorConverter.ConvertFromString(lineColor);
             ctrl.SmileyMood = mood;
             ctrl.SmileyRadius = 2;
-            ctrl.Width = ModelConstants.CELLWIDTH;
-            ctrl.Height = ModelConstants.CELLHEIGHT;
+            ctrl.Width = ModelConstants.CellWidth;
+            ctrl.Height = ModelConstants.CellHeight;
             return ctrl;
         }
         #endregion

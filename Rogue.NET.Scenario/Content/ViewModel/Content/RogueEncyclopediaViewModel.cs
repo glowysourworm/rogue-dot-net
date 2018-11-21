@@ -51,8 +51,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             {
                 return new RogueEncyclopediaCategoryViewModel(scenarioResourceService)
                 {
-                    Height = ModelConstants.CELLHEIGHT * 2,
-                    Width = ModelConstants.CELLWIDTH * 2,
+                    Height = ModelConstants.CellHeight * 2,
+                    Width = ModelConstants.CellWidth * 2,
                     CategoryDescription = categoryDescription,
                     CategoryName = categoryName,
                     CategoryDisplayName = categoryDisplayName

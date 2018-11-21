@@ -2,18 +2,31 @@
 {
     public static class ModelConstants
     {
-        public const int CELLHEIGHT = 15;
-        public const int CELLWIDTH = 10;
+        public const int CellHeight = 15;
+        public const int CellWidth = 10;
 
-        public const string UN_IDENTIFIED_DISPLAY_NAME = "???";
+        public const string UnIdentifiedDisplayName = "???";
 
-        public const double HAUL_FOOD_USAGE_DIVISOR = 1000;
+        public const double HpRegenBaseMultiplier = 0.01;
+        public const double MpRegenBaseMultiplier = 0.01;
+
+        public const double HaulFoodUsageDivisor = 1000;
         public const double HaulMaxStrengthMultiplier = 5;
-        public const double MAGIC_DEF_BASE = 0.25;
-        public const double CRITICAL_HIT_BASE = 0.1;
-        public const double LVL_GAIN_BASE = 0.5;
-        public const double MIN_SPEED = 0.1;
-        public const double MAX_SPEED = 1;
-        public const double MIN_FIRING_DISTANCE = 2.0D;
+        public const double MagicDefenseBase = 0.25;
+        public const double CriticalHitBase = 0.1;
+        public const double LevelGainBase = 0.5;
+        public const double MinSpeed = 0.1;
+        public const double MaxSpeed = 1;
+        public const double MinFiringDistance = 2.0D;
+        public const double HpLowFraction = 0.1D;
+
+        public const double ConfusedStrikeProbability = 0.1;
+
+        public const double SkillLowProgressIncrement = 0.001;
+        public const double SkillMediumProgressIncrement = 0.005;
+        public const double SkillHighProgressIncrement = 0.01;
+        public const double SkillLowHungerIncrement = 0.1;
+        public const double SkillMediumHungerIncrement = 0.75;
+        public const double SkillHighHungerIncrement = 1.5;
     }
 }

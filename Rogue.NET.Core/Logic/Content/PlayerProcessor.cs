@@ -49,27 +49,27 @@ namespace Rogue.NET.Core.Logic.Content
             string header = player.RogueName + " Has Reached Level " + (player.Level + 1).ToString() + "!";
 
             //Hp Max
-            var d = (player.StrengthBase) * ModelConstants.LVL_GAIN_BASE * 2 * _randomSequenceGenerator.Get();
+            var d = (player.StrengthBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
             player.HpMax += d;
             messages.Add("Hp Increased By:  " + d.ToString("F3"));
 
             //Mp Max
-            d = (player.IntelligenceBase) * ModelConstants.LVL_GAIN_BASE * 2 * _randomSequenceGenerator.Get();
+            d = (player.IntelligenceBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
             player.MpMax += d;
             messages.Add("Mp Increased By:  " + d.ToString("F3"));
 
             //Strength
-            d = ModelConstants.LVL_GAIN_BASE * _randomSequenceGenerator.Get();
+            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.StrengthBase += (player.AttributeEmphasis == AttributeEmphasis.Strength) ? 3 * d : d;
             messages.Add("Strength Increased By:  " + d.ToString("F3"));
 
             //Intelligence
-            d = ModelConstants.LVL_GAIN_BASE * _randomSequenceGenerator.Get();
+            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.IntelligenceBase += (player.AttributeEmphasis == AttributeEmphasis.Intelligence) ? 3 * d : d;
             messages.Add("Intelligence Increased By:  " + d.ToString("F3"));
 
             //Agility
-            d = ModelConstants.LVL_GAIN_BASE * _randomSequenceGenerator.Get();
+            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.AgilityBase += (player.AttributeEmphasis == AttributeEmphasis.Agility) ? 3 * d : d;
             messages.Add("Agility Increased By:  " + d.ToString("F3"));
 
@@ -77,6 +77,14 @@ namespace Rogue.NET.Core.Logic.Content
             player.Level++;
 
             _scenarioMessageService.PublishPlayerAdvancement(header, messages);
+        }
+        public void CalculateEnemyDeathGains(Player player, Enemy slainEnemy)
+        {
+            // Add to player experience
+            player.Experience += slainEnemy.ExperienceGiven;
+
+            // Skill Progress - Player gets boost on enemy death
+            ProcessSkillLearning(player);
         }
 
         public Equipment GetEquippedType(Player player, EquipmentType type)
@@ -112,23 +120,25 @@ namespace Rogue.NET.Core.Logic.Content
                 player.Mp = player.MpMax;
             }
 
-            //Normal temporary effects
-            UpdateAlterationEffectCollection(player.Alteration.ActiveTemporaryEffects);
-            UpdateAlterationEffectCollection(player.Alteration.AttackAttributeTemporaryFriendlyEffects);
-            UpdateAlterationEffectCollection(player.Alteration.AttackAttributeTemporaryMalignEffects);
+            // Normal temporary effects
+            var effectsFinished = player.Alteration.DecrementEventTimes();
+
+            // Display PostEffect Messages - TODO: Calculate reverse effect
+            foreach (var effect in effectsFinished)
+                _scenarioMessageService.Publish(effect.PostEffectString);
 
             //Apply per step alteration costs
-            foreach (AlterationCost alt in player.Alteration.PerStepAlterationCosts.Values)
+            foreach (AlterationCost alterationCost in player.Alteration.GetAlterationCosts())
             {
-                player.AgilityBase -= alt.Agility;
-                player.AuraRadiusBase -= alt.AuraRadius;
-                player.Experience -= alt.Experience;
-                player.FoodUsagePerTurnBase += alt.FoodUsagePerTurn;
-                player.Hp -= alt.Hp;
-                player.Hunger += alt.Hunger;
-                player.IntelligenceBase -= alt.Intelligence;
-                player.Mp -= alt.Mp;
-                player.StrengthBase -= alt.Strength;
+                player.AgilityBase -= alterationCost.Agility;
+                player.AuraRadiusBase -= alterationCost.AuraRadius;
+                player.Experience -= alterationCost.Experience;
+                player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
+                player.Hp -= alterationCost.Hp;
+                player.Hunger += alterationCost.Hunger;
+                player.IntelligenceBase -= alterationCost.Intelligence;
+                player.Mp -= alterationCost.Mp;
+                player.StrengthBase -= alterationCost.Strength;
             }
 
             //Maintain Passive Effects
@@ -144,48 +154,43 @@ namespace Rogue.NET.Core.Logic.Content
 
                     var currentSkill = skillSet.GetCurrentSkill();
 
-                    // Remove Per Step Alteration Cost
-                    if (currentSkill.Cost.Type == AlterationCostType.PerStep)
-                        player.Alteration.PerStepAlterationCosts.Remove(currentSkill.Id);
-
-                    // Current turned on skill is a Passive Aura (PLAYER ONLY)
-                    if (currentSkill.Type == AlterationType.PassiveAura)
-                        player.Alteration.ActiveAuras.Remove(currentSkill.Id);
-
-                    // Current turned on skill is a Passive Source (Active Passive Effect)
-                    else if (currentSkill.Type == AlterationType.PassiveSource)
-                        player.Alteration.ActivePassiveEffects.Remove(currentSkill.Id);
-
-                    // Current turned on skill is a Passive Attack Attribute Effect
-                    else if (currentSkill.Type == AlterationType.AttackAttribute &&
-                             currentSkill.AttackAttributeType == AlterationAttackAttributeType.Passive)
-                        player.Alteration.AttackAttributePassiveEffects.Remove(currentSkill.Id);
-
-                    else
-                        throw new Exception("Trying to Deactivate Unknown Passive Effect Type");
+                    // Deactive the passive alteration - referenced by Spell Id
+                    player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
                 }
             }
 
             player.ApplyLimits();
         }
-        public void ProcessSkillLearning(Player player)
+
+        private void ProcessSkillLearning(Player player)
         {
-            // Foreach SkillSet that can still require learning
+            // Process skill learning
+            foreach (var skillSet in player.SkillSets)
+            {
+                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
+                {
+                    skillSet.IsLearned = true;
+
+                    _scenarioMessageService.Publish(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
+                }
+            }
+
+            // Foreach SkillSet that can still require learning (From slain enemy reward)
             foreach (var skill in player.SkillSets.Where(x => x.Level < x.Skills.Count))
             {
                 switch (skill.Emphasis)
                 {
                     case 1:
-                        skill.SkillProgress += (0.001);
-                        player.Hunger += 0.1;
+                        skill.SkillProgress += ModelConstants.SkillLowProgressIncrement;
+                        player.Hunger += ModelConstants.SkillLowHungerIncrement;
                         break;
                     case 2:
-                        skill.SkillProgress += (0.005);
-                        player.Hunger += 0.75;
+                        skill.SkillProgress += ModelConstants.SkillMediumProgressIncrement;
+                        player.Hunger += ModelConstants.SkillMediumHungerIncrement;
                         break;
                     case 3:
-                        skill.SkillProgress += (0.01);
-                        player.Hunger += 1.5;
+                        skill.SkillProgress += ModelConstants.SkillHighProgressIncrement;
+                        player.Hunger += ModelConstants.SkillHighHungerIncrement;
                         break;
                 }
                 if (skill.SkillProgress >= 1)
@@ -197,8 +202,10 @@ namespace Rogue.NET.Core.Logic.Content
                                              skill.GetCurrentSkill().Type == AlterationType.PassiveSource))
                         {
                             _scenarioMessageService.Publish("Deactivating - " + skill.RogueName);
-                            // TODO
-                            //this.Player.DeactivatePassiveEffect(s.CurrentSkill.Id);
+
+                            // Deactive the passive alteration - referenced by Spell Id
+                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkill().Id);
+
                             skill.IsTurnedOn = false;
                         }
 
@@ -212,23 +219,6 @@ namespace Rogue.NET.Core.Logic.Content
                     }
                     else
                         skill.SkillProgress = 1;
-                }
-            }
-        }
-
-        private void UpdateAlterationEffectCollection(IList<AlterationEffect> collection)
-        {
-            for (int i = collection.Count - 1; i >= 0; i--)
-            {
-                //Check temporary event time
-                collection[i].EventTime--;
-                if (collection[i].EventTime <= 0)
-                {
-                    // Publish message after effect wears off
-                    _scenarioMessageService.Publish(collection[i].PostEffectString);
-
-                    // Remove the effect
-                    collection.RemoveAt(i);
                 }
             }
         }

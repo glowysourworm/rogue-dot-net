@@ -85,8 +85,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public ScenarioMetaDataViewModel(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
         {
-            this.Height = ModelConstants.CELLHEIGHT * 2;
-            this.Width = ModelConstants.CELLWIDTH * 2;
+            this.Height = ModelConstants.CellHeight * 2;
+            this.Width = ModelConstants.CellWidth * 2;
 
             Update(metaData, scenarioResourceService);
         }

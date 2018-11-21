@@ -33,6 +33,7 @@ namespace Rogue.NET.Core.Model.Enums
         Consume,
         Equip,
         Enchant,
+        Imbue,
         Uncurse,
         Identify,
         Drop,

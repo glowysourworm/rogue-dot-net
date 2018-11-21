@@ -67,27 +67,27 @@
         Passive,
 
         /// <summary>
-        /// Applied with a temporary event to be calulcated as friendly to the source character
+        /// Applied with a temporary event to be calulcated as friendly to the source character (EXAMPLE WOULD BE DEFENSIVE EVENT)
         /// </summary>
         TemporaryFriendlySource,
 
         /// <summary>
-        /// Applied with a temporary event to be calulcated as friendly to the target
+        /// Applied with a temporary event to be calulcated as friendly to the target (EXAMPLE WOULD BE DEFENSIVE EVENT)
         /// </summary>
         TemporaryFriendlyTarget,
 
         /// <summary>
-        /// Applied with a temporary event to be calulcated as malign to the source character
+        /// Applied with a temporary event to be calulcated as malign to the source character (EXAMPLE WOULD BE POISON)
         /// </summary>
         TemporaryMalignSource,
 
         /// <summary>
-        /// Applied with a temporary event to be calulcated as malign to the target
+        /// Applied with a temporary event to be calulcated as malign to the target (EXAMPLE WOULD BE POISON)
         /// </summary>
         TemporaryMalignTarget,
 
         /// <summary>
-        /// Applied as a one-time attack attribute melee to the target
+        /// Applied as a one-time attack attribute melee to the target (EXAMPLE IS FIREBALL)
         /// </summary>
         MeleeTarget
     }

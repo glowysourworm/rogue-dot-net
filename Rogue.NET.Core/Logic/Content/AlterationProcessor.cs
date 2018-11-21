@@ -11,6 +11,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
+using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -191,7 +192,8 @@ namespace Rogue.NET.Core.Logic.Content
 
             return true;
         }
-        public void ApplyAlterationCost(Player player, string spellId, AlterationCost alterationCost)
+
+        public void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -205,12 +207,10 @@ namespace Rogue.NET.Core.Logic.Content
                 player.Mp -= alterationCost.Mp;
                 player.StrengthBase -= alterationCost.Strength;
             }
-            else if (alterationCost.Type == AlterationCostType.PerStep)
-            {
-                player.Alteration.PerStepAlterationCosts.Add(spellId, alterationCost);
-            }
+            else
+                throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
         }
-        public void ApplyAlterationCost(Enemy enemy, string spellId, AlterationCost alterationCost)
+        public void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -221,10 +221,8 @@ namespace Rogue.NET.Core.Logic.Content
                 enemy.Mp -= alterationCost.Mp;
                 enemy.StrengthBase -= alterationCost.Strength;
             }
-            else if (alterationCost.Type == AlterationCostType.PerStep)
-            {
-                enemy.Alteration.PerStepAlterationCosts.Add(spellId, alterationCost);
-            }
+            else
+                throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
         }
         public void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect)
         {
@@ -234,42 +232,20 @@ namespace Rogue.NET.Core.Logic.Content
             player.AuraRadiusBase += alterationEffect.AuraRadius;
             player.FoodUsagePerTurnBase += alterationEffect.FoodUsagePerTurn;
 
-            //Blockable - if negative then block a fraction of the amount
+            //Blockable - if negative then block a fraction of the amount (TODO)
             player.Experience += alterationEffect.Experience;
             player.Hunger += alterationEffect.Hunger;
             player.Hp += alterationEffect.Hp;
             player.Mp += alterationEffect.Mp;
 
             //Apply remedies
-            for (int i = player.Alteration.ActiveTemporaryEffects.Count - 1; i >= 0; i--)
+            foreach (var remediedSpellName in alterationEffect.RemediedSpellNames)
             {
-                var effect = player.Alteration.ActiveTemporaryEffects[i];
+                // Alteration applies remedy to remove or modify internal collections
+                var remediedEffects = player.Alteration.ApplyRemedy(remediedSpellName);
 
-                if (alterationEffect.RemediedSpellNames.Contains(effect.RogueName))
-                {
+                foreach (var effect in remediedEffects)
                     _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
-                    player.Alteration.ActiveTemporaryEffects.RemoveAt(i);
-                }
-            }
-            for (int i = player.Alteration.AttackAttributeTemporaryFriendlyEffects.Count - 1; i >= 0; i--)
-            {
-                var effect = player.Alteration.AttackAttributeTemporaryFriendlyEffects[i];
-
-                if (alterationEffect.RemediedSpellNames.Contains(effect.RogueName))
-                {
-                    _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
-                    player.Alteration.AttackAttributeTemporaryFriendlyEffects.RemoveAt(i);
-                }
-            }
-            for (int i = player.Alteration.AttackAttributeTemporaryMalignEffects.Count - 1; i >= 0; i--)
-            {
-                var effect = player.Alteration.AttackAttributeTemporaryMalignEffects[i];
-
-                if (alterationEffect.RemediedSpellNames.Contains(effect.RogueName))
-                {
-                    _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
-                    player.Alteration.AttackAttributeTemporaryMalignEffects.RemoveAt(i);
-                }
             }
         }
         public void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)

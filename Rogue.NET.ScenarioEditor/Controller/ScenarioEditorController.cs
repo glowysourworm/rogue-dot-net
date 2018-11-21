@@ -1,5 +1,5 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension;
+﻿using ExpressMapper;
+using Prism.Events;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -10,11 +10,8 @@ using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 
 namespace Rogue.NET.Controller.ScenarioEditor
 {
@@ -108,7 +105,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 config = _scenarioFileService.OpenConfiguration(name);
 
             // Map to the view model
-            _config = config.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>();
+            _config = Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
@@ -141,7 +138,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
 
             // Map back to the model namespace
-            var config = _config.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>();
+            var config = Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
 
             // Save the configuration
             if (builtInScenario)

@@ -106,7 +106,7 @@ namespace Rogue.NET.Core.Service
 
         public string GetDisplayName(string rogueName)
         {
-            return this.ScenarioEncyclopedia[rogueName].IsIdentified ? rogueName : ModelConstants.UN_IDENTIFIED_DISPLAY_NAME;
+            return this.ScenarioEncyclopedia[rogueName].IsIdentified ? rogueName : ModelConstants.UnIdentifiedDisplayName;
         }
         public IEnumerable<Enemy> GetTargetedEnemies()
         {

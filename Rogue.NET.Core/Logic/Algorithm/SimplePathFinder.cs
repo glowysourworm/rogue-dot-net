@@ -6,6 +6,7 @@ using Rogue.NET.Core.Logic.Interface;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Core.Logic.Algorithm
 {
@@ -79,14 +80,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
             // Gets a set of adjacent locations that aren't blocked
             var adjacentPathLocations = _layoutEngine.GetAdjacentLocations(_modelService.Level.Grid, location)
                                                      .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, x, true) &&
-                                                                 !(_layoutEngine.EuclideanDistance(x, end) > maxSeparation))
+                                                                 !(Calculator.EuclideanDistance(x, end) > maxSeparation))
                                                      .ToList();
 
             // Sort by distance from target
             adjacentPathLocations.Sort((point1, point2) =>
             {
-                double dist1 = _layoutEngine.RoguianDistance(point1, end);
-                double dist2 = _layoutEngine.RoguianDistance(point2, end);
+                double dist1 = Calculator.RoguianDistance(point1, end);
+                double dist2 = Calculator.RoguianDistance(point2, end);
 
                 return dist1.CompareTo(dist2);
             });

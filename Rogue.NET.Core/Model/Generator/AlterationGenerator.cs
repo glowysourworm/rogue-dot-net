@@ -49,6 +49,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.AttackAttributeType = spell.AttackAttributeType;
             alterationContainer.BlockType = spell.BlockType;
             alterationContainer.Type = spell.Type;
+            alterationContainer.GeneratingSpellId = spell.Id;
             alterationContainer.IsStackable = spell.IsStackable;
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 

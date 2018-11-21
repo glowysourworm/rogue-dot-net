@@ -89,7 +89,7 @@ namespace Rogue.NET.Core.Logic
         //Used for item throw effects
         public LevelContinuationAction QueueEnemyMagicSpell(Enemy enemy, Spell spell)
         {
-            // TODO: MOVE THIS!  Cost will be applied on turn - after animations are processed
+            // Cost will be applied on turn - after animations are processed
             if (!_alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, spell.Cost))
                 return LevelContinuationAction.ProcessTurn;
 
@@ -120,29 +120,25 @@ namespace Rogue.NET.Core.Logic
             //Calculate alteration from spell's random parameters
             var alteration = _alterationGenerator.GenerateAlteration(spell);
 
-            //Apply alteration cost
-            _alterationProcessor.ApplyAlterationCost(_modelService.Player, spell.Id, alteration.Cost);
+            //Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
+            if (alteration.Cost.Type == AlterationCostType.OneTime)
+                _alterationProcessor.ApplyOneTimeAlterationCost(_modelService.Player, alteration.Cost);
 
-            // TODO: Apply stackable
+            // TBD - Show (Non)-Stackable Alteration not applied
             switch (alteration.Type)
             {
-                // TODO: HIDE THESE COLLECTIONS!!
                 case AlterationType.PassiveAura:
-                    player.Alteration.ActiveAuras.Add(spell.Id, alteration.AuraEffect);
-                    break;
                 case AlterationType.TemporarySource:
-                    player.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
-                    break;
                 case AlterationType.PassiveSource:
-                    player.Alteration.ActivePassiveEffects.Add(spell.Id, alteration.Effect);
+                    player.Alteration.ActiveAlteration(alteration, true);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
                     break;
                 case AlterationType.PermanentTarget:
+                case AlterationType.PermanentAllTargets:
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TeleportAllTargets:
-                case AlterationType.PermanentAllTargets:
                 case AlterationType.TemporaryAllTargets:
                     ProcessPlayerTargetAlteration(alteration);
                     break;
@@ -171,6 +167,10 @@ namespace Rogue.NET.Core.Logic
             // Calculate alteration from spell's random parameters
             var alteration = _alterationGenerator.GenerateAlteration(spell);
 
+            // Apply Alteration Cost
+            if (alteration.Cost.Type == AlterationCostType.OneTime)
+                _alterationProcessor.ApplyOneTimeAlterationCost(enemy, alteration.Cost);
+
             // Spell blocked by Player
             if (_interactionProcessor.CalculateSpellBlock(_modelService.Player, alteration.BlockType == AlterationBlockType.Physical))
             {
@@ -178,25 +178,22 @@ namespace Rogue.NET.Core.Logic
                 return;
             }
 
-            //TODO - apply stackable
+            //TBD - Show Stackable Alterations when NOT applied
             switch (alteration.Type)
             {
-                // TODO: HIDE THESE COLLECTIONS
                 case AlterationType.PassiveAura:
                     // Not supported for Enemy
                     break;
                 case AlterationType.TemporarySource:
-                    enemy.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
-                    break;
                 case AlterationType.PassiveSource:
-                    enemy.Alteration.ActivePassiveEffects.Add(spell.Id, alteration.Effect);
+                    enemy.Alteration.ActiveAlteration(alteration, true);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
-                    _modelService.Player.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
+                    _modelService.Player.Alteration.ActiveAlteration(alteration, false);
                     break;
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
@@ -247,7 +244,7 @@ namespace Rogue.NET.Core.Logic
                     else if (alteration.Type == AlterationType.TeleportAllTargets)
                         TeleportRandom(enemy);
                     else
-                        enemy.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
+                        enemy.Alteration.ActiveAlteration(alteration, false);
                 }
             }
         }
@@ -264,8 +261,22 @@ namespace Rogue.NET.Core.Logic
                 var itemStolen = enemyInventory.ElementAt(_randomSequenceGenerator.Get(0, enemyInventory.Count()));
                 if (itemStolen.Value is Equipment)
                 {
-                    _modelService.Player.Equipment.Add(itemStolen.Key, itemStolen.Value as Equipment);
-                    enemy.Equipment.Remove(itemStolen.Key);
+                    var equipment = itemStolen.Value as Equipment;
+
+                    _modelService.Player.Equipment.Add(equipment.Id, equipment);
+
+                    // Mark equipment not-equiped (SHOULD NEVER BE EQUIPPED)
+                    equipment.IsEquipped = false;
+
+                    // Remove Equipment from enemy inventory and deactivate passive effects
+                    enemy.Equipment.Remove(equipment.Id);
+                    
+                    // These should never be turned on; but doing for good measure
+                    if (equipment.HasEquipSpell)
+                        enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+
+                    if (equipment.HasCurseSpell)
+                        enemy.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
                 }
                 else
                 {
@@ -349,26 +360,18 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
-                // TODO: HIDE THESE COLLECTIONS
                 case AlterationAttackAttributeType.Imbue:
                     SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Imbue });
                     break;
                 case AlterationAttackAttributeType.Passive:
-                    _modelService.Player.Alteration.AttackAttributePassiveEffects.Add(alteration.Id, alteration.Effect);
-                    break;
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
-                    _modelService.Player.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);
-                    break;
-                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                    foreach (var enemy in _modelService.GetTargetedEnemies())
-                        enemy.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);
-                    break;
                 case AlterationAttackAttributeType.TemporaryMalignSource:
-                    _modelService.Player.Alteration.AttackAttributeTemporaryMalignEffects.Add(alteration.Effect);
+                    _modelService.Player.Alteration.ActiveAlteration(alteration, true);
                     break;
                 case AlterationAttackAttributeType.TemporaryMalignTarget:
+                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
                     foreach (var enemy in _modelService.GetTargetedEnemies())
-                        enemy.Alteration.AttackAttributeTemporaryMalignEffects.Add(alteration.Effect);
+                        enemy.Alteration.ActiveAlteration(alteration, false);
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     foreach (var enemy in _modelService.GetTargetedEnemies())
@@ -393,8 +396,24 @@ namespace Rogue.NET.Core.Logic
             var itemStolen = _modelService.Player.Inventory.ElementAt(_randomSequenceGenerator.Get(0, inventory.Count));
             if (itemStolen.Value is Equipment)
             {
-                _modelService.Player.Equipment.Remove(itemStolen.Key);
-                enemy.Equipment.Add(itemStolen.Key, itemStolen.Value as Equipment);
+                var equipment = itemStolen.Value as Equipment;
+
+                // Remove equipment from player inventory
+                _modelService.Player.Equipment.Remove(equipment.Id);
+
+                // Add equipment to enemy inventory
+                enemy.Equipment.Add(equipment.Id, equipment);
+
+                // Mark un-equipped
+                equipment.IsEquipped = false;
+
+                // Deactivate passive alterations
+                if (equipment.HasEquipSpell)
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+
+                // (Forgiven curse spell when enemy steals item)
+                if (equipment.HasCurseSpell)
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
             }
             else
             {
@@ -420,24 +439,17 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
-                // TODO: HIDE THESE COLLECTIONS
                 case AlterationAttackAttributeType.Imbue:
                     // Not supported for Enemy
                     break;
                 case AlterationAttackAttributeType.Passive:
-                    enemy.Alteration.AttackAttributePassiveEffects.Add(alteration.Id, alteration.Effect);
-                    break;
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
-                    enemy.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);
-                    break;
-                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                    _modelService.Player.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);
-                    break;
                 case AlterationAttackAttributeType.TemporaryMalignSource:
-                    enemy.Alteration.AttackAttributeTemporaryMalignEffects.Add(alteration.Effect);
+                    enemy.Alteration.ActiveAlteration(alteration, true);
                     break;
                 case AlterationAttackAttributeType.TemporaryMalignTarget:
-                    _modelService.Player.Alteration.AttackAttributeTemporaryMalignEffects.Add(alteration.Effect);
+                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
+                    _modelService.Player.Alteration.ActiveAlteration(alteration, false);
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     foreach (var attackAttribute in alteration.Effect.AttackAttributes)

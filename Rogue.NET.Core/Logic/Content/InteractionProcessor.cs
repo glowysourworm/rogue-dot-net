@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -23,32 +24,65 @@ namespace Rogue.NET.Core.Logic.Content
             _playerProcessor = playerProcessor;
         }
 
-        public double CalculateAttackAttributeMelee(Character character, AttackAttribute offenseAttribute)
+        public double CalculateAttackAttributeMelee(Enemy enemy, AttackAttribute offenseAttribute)
         {
             // Offense
             var attack = offenseAttribute.Attack;
 
             // Resistance (Enemy type only has inate Attack Attributes)
-            var resistance = character is Enemy ? (character as Enemy).AttackAttributes[offenseAttribute.RogueName].Resistance
-                                                : 0;
+            var resistance = enemy.AttackAttributes[offenseAttribute.RogueName].Resistance;
 
             // Weakness (Enemy type only has inate Attack Attributes)
-            var weakness = character is Enemy ? (character as Enemy).AttackAttributes[offenseAttribute.RogueName].Weakness
-                                                : 0;
+            var weakness = enemy.AttackAttributes[offenseAttribute.RogueName].Weakness;
 
-            //Friendly attack attribute contributions - TODO
-            //foreach (AlterationEffect friendlyEffect in this.AttackAttributeTemporaryFriendlyEffects)
-            //    resistance += friendlyEffect.AttackAttributes.First(y => y.RogueName == attrib.RogueName).Resistance;
+            // Friendly attack attribute contributions
+            foreach (AlterationEffect friendlyEffect in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true))
+                resistance += friendlyEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
 
-            //Equipment contributions
-            foreach (var equipment in character.Equipment.Values.Where(z => z.IsEquipped))
+            // Passive attack attribute contributions
+            foreach (AlterationEffect passiveEffect in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true))
+            {
+                resistance += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
+                weakness += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
+            }
+
+            // Equipment contributions
+            foreach (var equipment in enemy.Equipment.Values.Where(z => z.IsEquipped))
             {
                 resistance += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
                 weakness += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
             }
 
-            return CalculateAttackAttributeMelee(attack, resistance, weakness);
+            return Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
         }
+        public double CalculateAttackAttributeMelee(Player player, AttackAttribute offenseAttribute)
+        {
+            // Offense
+            var attack = offenseAttribute.Attack;
+            var resistance = 0D;
+            var weakness = 0;
+
+            // Friendly attack attribute contributions
+            foreach (AlterationEffect friendlyEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(true))
+                resistance += friendlyEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
+
+            // Passive attack attribute contributions
+            foreach (AlterationEffect passiveEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(true))
+            {
+                resistance += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
+                weakness += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
+            }
+
+            // Equipment contributions
+            foreach (var equipment in player.Equipment.Values.Where(z => z.IsEquipped))
+            {
+                resistance += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
+                weakness += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
+            }
+
+            return Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
+        }
+
         public double CalculateEnemyTurn(Player player, Enemy enemy)
         {
             // TODO: Calculate this based on total speed
@@ -56,34 +90,73 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public double CalculatePlayerHit(Player player, Enemy enemy)
         {
-            double baseAttk = player.GetAttack();
-            double attk = _randomSequenceGenerator.Get() * (baseAttk - (enemy.StrengthBase / 5.0D));
+            // Start with standard melee - randomized
+            double attack = _randomSequenceGenerator.Get() * (player.GetAttack() - enemy.GetDefense());
 
-            //Attack attributes (TODO)
-            //foreach (var attackAttribute in p.MeleeAttackAttributes)
-            //    attk += e.GetAttackAttributeMelee(attrib);
+            //Attack attributes (need empty attributes for player calculation)
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
+            {
+                RogueName = x.RogueName,
+                Attack = 0,
+                Resistance = 0, 
+                Weakness = 0
+            });
 
-            return attk < 0 ? 0 : attk;
+            var playerAttributes = player.GetMeleeAttributes(baseAttributes);
+            var enemyAttributes = enemy.GetMeleeAttributes();
+
+            // Calculate Melee
+            foreach (var playerAttribute in playerAttributes)
+            {
+                // Enemy (Defense) Attribute
+                var enemyAttribute = enemyAttributes.First(x => x.RogueName == playerAttribute.RogueName);
+
+                attack += Calculator.CalculateAttackAttributeMelee(
+                            playerAttribute.Attack, 
+                            enemyAttribute.Resistance, 
+                            enemyAttribute.Weakness);
+            }
+            return attack < 0 ? 0 : attack;
         }
         public double CalculateEnemyHit(Player player, Enemy enemy)
         {
-            double baseDef = player.GetDefenseBase();
-            double attk = _randomSequenceGenerator.Get() * (enemy.GetStrength() - baseDef);
+            // Start with standard melee - randomized
+            double attack = _randomSequenceGenerator.Get() * (enemy.GetAttack() - player.GetDefense());
 
-            //Attack attributes (TODO)
-            //foreach (AttackAttribute attrib in e.MeleeAttackAttributes)
-            //    attk += p.GetAttackAttributeMelee(attrib);
+            //Attack attributes (need empty attributes for player calculation)
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
+            {
+                RogueName = x.RogueName,
+                Attack = 0,
+                Resistance = 0,
+                Weakness = 0
+            });
 
-            return attk < 0 ? 0 : attk;
+            var playerAttributes = player.GetMeleeAttributes(baseAttributes);
+            var enemyAttributes = enemy.GetMeleeAttributes();
+
+            // Calculate Melee
+            foreach (var playerAttribute in playerAttributes)
+            {
+                // Enemy (Defense) Attribute
+                var enemyAttribute = enemyAttributes.First(x => x.RogueName == playerAttribute.RogueName);
+
+                attack += Calculator.CalculateAttackAttributeMelee(
+                            enemyAttribute.Attack,
+                            playerAttribute.Resistance,
+                            playerAttribute.Weakness);
+            }
+            return attack < 0 ? 0 : attack;
         }
-        public double CalculateAttackAttributeMelee(double attack, double resistance, double weakness)
+        public bool CalculateSpellBlock(Enemy enemy, bool physicalBlock)
         {
-            return attack > 0 ? attack * (1 - (resistance / (attack + resistance)) + weakness) : 0;
+            return physicalBlock ? _randomSequenceGenerator.Get() < enemy.GetDodge() :
+                                   _randomSequenceGenerator.Get() < enemy.GetMagicBlock();
         }
-        public bool CalculateSpellBlock(Character character, bool physicalBlock)
+        public bool CalculateSpellBlock(Player player, bool physicalBlock)
         {
-            return physicalBlock ? _randomSequenceGenerator.Get() < character.GetDodge() :
-                                   _randomSequenceGenerator.Get() < character.GetMagicBlock();
+            return physicalBlock ? _randomSequenceGenerator.Get() < player.GetDodge() :
+                                   _randomSequenceGenerator.Get() < player.GetMagicBlock();
         }
     }
 }

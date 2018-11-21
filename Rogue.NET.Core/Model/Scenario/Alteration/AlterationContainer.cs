@@ -20,6 +20,11 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public bool IsStackable { get; set; }
 
         /// <summary>
+        /// Spell Id used as a reference for lookup
+        /// </summary>
+        public string GeneratingSpellId { get; set; }
+
+        /// <summary>
         /// Enemy created as an effect of the alteration
         /// </summary>
         public string CreateMonsterEnemy { get; set; }

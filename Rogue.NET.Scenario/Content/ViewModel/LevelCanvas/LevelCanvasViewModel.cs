@@ -390,7 +390,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 Canvas.SetZIndex(image, 3);
 
             else if (scenarioObject is Character)
-                Canvas.SetZIndex(image, 0);
+                Canvas.SetZIndex(image, 4);
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 
@@ -412,8 +412,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 // TODO: Put transform somewhere else
                 var character = scenarioObject as Character;
-                var auraRadiusUI = character.GetAuraRadius() * ModelConstants.CELLHEIGHT;
-                var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
+                var auraRadiusUI = character.GetAuraRadius() * ModelConstants.CellHeight;
+                var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
 
                 // Make the full size of the level - then apply the level opacity mask drawing
                 aura = new Rectangle();
@@ -449,8 +449,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             if (_contentDict.ContainsKey(scenarioObject.Id + AURA_EXT))
             {
                 // TODO: Put transform somewhere else
-                var auraRadiusUI = (scenarioObject as Character).GetAuraRadius() * ModelConstants.CELLHEIGHT;
-                var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
+                var auraRadiusUI = (scenarioObject as Character).GetAuraRadius() * ModelConstants.CellHeight;
+                var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
 
                 var aura = _contentDict[scenarioObject.Id + AURA_EXT] as Rectangle;
                 aura.Height = this.LevelHeight;

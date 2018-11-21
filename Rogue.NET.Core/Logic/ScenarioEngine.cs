@@ -17,6 +17,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -156,20 +157,6 @@ namespace Rogue.NET.Core.Logic
 
             // Update player stats
             QueueLevelUpdate(LevelUpdateType.PlayerStats, player.Id);
-
-            // TODO: Move this - Process skill learning
-            foreach (var skillSet in player.SkillSets)
-            {
-                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
-                {
-                    _modelService.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
-                    skillSet.IsLearned = true;
-
-                    _scenarioMessageService.UnBlock(false);
-                    _scenarioMessageService.Publish(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
-                    _scenarioMessageService.Block();
-                }
-            }
 
             //I'm Not DEEEAD! (TODO: Make event message specific to what happened)
             if (player.Hunger >= 100 || player.Hp <= 0.1)
@@ -341,6 +328,9 @@ namespace Rogue.NET.Core.Logic
                     // Message plays on dungeon turn
                     player.SkillSets.Add(consumable.LearnedSkill);
 
+                    // Set Skill Identified
+                    _modelService.ScenarioEncyclopedia[consumable.LearnedSkill.RogueName].IsIdentified = true;
+
                     // Queue an update for the skill sets
                     QueueLevelUpdate(LevelUpdateType.PlayerSkillSetAdd, string.Empty);
 
@@ -397,6 +387,15 @@ namespace Rogue.NET.Core.Logic
             // Queue update
             QueuePlayerEquipmentAddOrUpdate(equipmentId);
         }
+        public void Imbue(string equipmentId)
+        {
+            var equipment = _modelService.Player.Equipment[equipmentId];
+
+            // TODO: Figure out a way to pass imbue data along with request...
+
+            // Queue update
+            QueuePlayerEquipmentAddOrUpdate(equipmentId);
+        }
         public void Uncurse(string itemId)
         {
             var equipment = _modelService.Player.Equipment[itemId];
@@ -405,16 +404,10 @@ namespace Rogue.NET.Core.Logic
             _scenarioMessageService.Publish(_modelService.GetDisplayName(equipment.RogueName) + " Uncursed");
 
             if (equipment.HasCurseSpell)
-            {
-                // TODO
-                //if (equipment.EquipSpell.Type == AlterationType.PassiveSource)
-                //    this.Player.DeactivatePassiveEffect(equipment.CurseSpell.Id);
-
-                //else
-                //    this.Player.DeactivatePassiveAura(equipment.CurseSpell.Id);
-
                 _scenarioMessageService.Publish("Your " + equipment.RogueName + " is now safe to use (with caution...)");
-            }
+
+            if (equipment.IsEquipped)
+                _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
 
             // Queue an update
             QueuePlayerEquipmentAddOrUpdate(itemId);
@@ -434,7 +427,7 @@ namespace Rogue.NET.Core.Logic
             else if (targetedEnemy == null)
                 _scenarioMessageService.Publish("Must first target an enemy");
 
-            else if (_layoutEngine.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MIN_FIRING_DISTANCE)
+            else if (Calculator.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
                 _scenarioMessageService.Publish("Too close to fire your weapon");
 
             else

@@ -16,6 +16,8 @@ using Rogue.NET.Core.Utility;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
+using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -217,19 +219,17 @@ namespace Rogue.NET.Core.Logic
                 DropEnemyItem(enemy, enemy.Consumables.ElementAt(i).Value);
             }
 
-            //Update level object
+            // Update level object
             var level = _modelService.Level;
 
             level.RemoveContent(enemy);
 
-            // Update statistics
+            // Calculate player gains
+            _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
+
+            // Update statistics / Player skills
             QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName);
-
-            // TODO: Consider where to put this
-            _modelService.Player.Experience += enemy.ExperienceGiven;
-
-            //Skill Progress - Player gets boost on enemy death
-            _playerProcessor.ProcessSkillLearning(_modelService.Player);
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
 
             _scenarioMessageService.Publish(enemy.RogueName + " Slayed");
 
@@ -272,13 +272,13 @@ namespace Rogue.NET.Core.Logic
             var level = _modelService.Level;
             var player = _modelService.Player;
 
-            double dist = _layoutEngine.EuclideanDistance(enemy.Location, player.Location);
+            var distance = Calculator.RoguianDistance(enemy.Location, player.Location);
 
             //Check for engaged
-            if (dist < enemy.BehaviorDetails.CurrentBehavior.EngageRadius)
+            if (distance < enemy.BehaviorDetails.CurrentBehavior.EngageRadius)
                 enemy.IsEngaged = true;
 
-            if (dist > enemy.BehaviorDetails.CurrentBehavior.DisengageRadius)
+            if (distance > enemy.BehaviorDetails.CurrentBehavior.DisengageRadius)
                 enemy.IsEngaged = false;
 
             if (!enemy.IsEngaged)
@@ -427,17 +427,10 @@ namespace Rogue.NET.Core.Logic
 
                 // Publish Message
                 _scenarioMessageService.Publish("Un-Equipped " + (metaData.IsIdentified ? equipment.RogueName : "???"));
-                
-                // TODO
-                // If equip spell is present - make sure it's deactivated and removed
-                //if (equipment.HasEquipSpell)
-                //{
-                //    if (e.EquipSpell.Type == AlterationType.PassiveSource)
-                //        _modelService.Player.DeactivatePassiveEffect(e.EquipSpell.Id);
 
-                //    else
-                //        _modelService.Player.DeactivatePassiveAura(e.EquipSpell.Id);
-                //}
+                // If equip spell is present - make sure it's deactivated and removed
+                if (equipment.HasEquipSpell)
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
 
                 return true;
             }
@@ -500,7 +493,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish("Equipped " + _modelService.GetDisplayName(equipment.RogueName));
 
-            // Fire equip spell
+            // Fire equip spell -> This will activate any passive effects after animating
             if (equipment.HasEquipSpell)
                 _spellEngine.QueuePlayerMagicSpell(equipment.EquipSpell);
 
@@ -522,7 +515,22 @@ namespace Rogue.NET.Core.Logic
 
             // Remove from enemy inventory
             if (item is Equipment)
+            {
+                var equipment = item as Equipment;
+
                 enemy.Equipment.Remove(item.Id);
+
+                // This has a chance of happening if enemy steals something that is marked equiped. Though, it
+                // SHOULD NEVER HAPPEN
+                equipment.IsEquipped = false;
+
+                // These cases should never happen; but want to cover them here to be sure.
+                if (equipment.HasEquipSpell && equipment.IsEquipped)
+                    enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+
+                if (equipment.HasCurseSpell && equipment.IsEquipped)
+                    enemy.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
+            }
 
             if (item is Consumable)
                 enemy.Consumables.Remove(item.Id);
@@ -542,17 +550,17 @@ namespace Rogue.NET.Core.Logic
             for (int j = 0; j < turns; j++)
             {
                 //Check altered states
-                var alteredStates = enemy.Alteration.GetStates();
 
                 //Sleeping
-                if (alteredStates.Any(z => z == CharacterStateType.Sleeping))
+                if (enemy.IsSleeping())
                     continue;
 
                 //Paralyzed
-                else if (alteredStates.Any(z => z == CharacterStateType.Paralyzed))
+                else if (enemy.IsParalyzed())
                     continue;
 
                 //Confused - check during calculate character move
+                var willConfusedStrikeMelee = _randomSequenceGenerator.Get() <= ModelConstants.ConfusedStrikeProbability;
 
                 var actionTaken = false;
 
@@ -563,8 +571,8 @@ namespace Rogue.NET.Core.Logic
                             var adjacentCells = _layoutEngine.GetAdjacentLocations(_modelService.Level.Grid, enemy.Location);
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
-                            if (attackLocation != null) // TODO && 
-                                                        //!e.States.Any(z => z == CharacterStateType.Confused))
+                            // Attack Conditions: location is non-null; AND enemy is not confused; OR enemy is confused and can strike
+                            if (attackLocation != null && (!enemy.IsConfused() || (enemy.IsConfused() && willConfusedStrikeMelee)))
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
@@ -575,16 +583,16 @@ namespace Rogue.NET.Core.Logic
                         }
                         break;
                     case CharacterAttackType.Skill:
-                        // TODO
-                        //else if (e.BehaviorDetails.CurrentBehavior.AttackType == CharacterAttackType.Skill
-                        //    && dist < e.BehaviorDetails.CurrentBehavior.EngageRadius
-                        //    && this.Level.Grid.GetVisibleCells().Any(z => z.Location.Equals(e.Location))
-                        //    && !e.States.Any(z => z == CharacterStateType.Confused))
-                        //{
-                        //    ProcessEnemyInvokeSkill(e);
-                        //    e.BehaviorDetails.SetPrimaryInvoked();
-                        //    actionTaken = true;
-                        //}
+                        if (!enemy.IsConfused())
+                        {
+                            // Must have line of sight to player
+                            var isLineOfSight = _modelService.GetVisibleEnemies().Any(x => x.Id == enemy.Id);
+
+                            // Queue Enemy Magic Spell -> Animation -> Post Animation Processing
+                            _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);
+
+                            actionTaken = true;
+                        }
                         break;
                     case CharacterAttackType.None:
                     default:
@@ -595,11 +603,14 @@ namespace Rogue.NET.Core.Logic
                 {
                     var moveLocation = CalculateEnemyMoveLocation(enemy, _modelService.Player.Location);
                     if (moveLocation != null)
+                    {
                         ProcessEnemyMove(enemy, moveLocation);
+                        actionTaken = true;
+                    }
                 }
 
                 // Apply end-of-turn behavior for enemy
-                _enemyProcessor.ApplyEndOfTurn(enemy);
+                _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, actionTaken);
             }
         }
         private void OnEnemyMeleeAttack(Enemy enemy)
@@ -626,13 +637,9 @@ namespace Rogue.NET.Core.Logic
         }
         private CellPoint CalculateEnemyMoveLocation(Enemy enemy, CellPoint desiredLocation)
         {
-            // TODO
-            //if (states.Any(z => z == CharacterStateType.Confused))
-            //{
-            //    //Return random if confused
-            //    List<Cell> adjCells = Helper.GetAdjacentCells(location.Row, location.Column, this.Level.Grid);
-            //    return adjCells[this.Random.Next(0, adjCells.Count)];
-            //}
+            //Return random if confused
+            if (enemy.IsConfused())
+                return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
 
             switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
             {
@@ -640,16 +647,16 @@ namespace Rogue.NET.Core.Logic
                     return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
                 case CharacterMovementType.HeatSeeker:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
-                                        .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
+                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .FirstOrDefault();
                 case CharacterMovementType.StandOffIsh:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
-                                        .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
+                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
                     return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
-                                                        .OrderBy(x => _layoutEngine.RoguianDistance(x, desiredLocation))
+                                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault();
                 default:
                     throw new Exception("Unknown Enemy Movement Type");

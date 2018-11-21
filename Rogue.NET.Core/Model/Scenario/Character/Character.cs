@@ -4,17 +4,15 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Dynamic;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
     [Serializable]
     public abstract class Character : ScenarioObject
     {
-        protected const double HP_REGEN_BASE_MULTIPLIER = 0.01;
-        protected const double MP_REGEN_BASE_MULTIPLIER = 0.01;
-
         public Dictionary<string, Equipment> Equipment { get; set; }
-        public Dictionary<string, Consumable> Consumables { get; set; }
+        public Dictionary<string, Consumable> Consumables { get; set; }     
 
         /// <summary>
         /// Returns inventory as a single collection (avoid repeated use)
@@ -37,8 +35,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double IntelligenceBase { get; set; }
         public double AgilityBase { get; set; }
         public double SpeedBase { get; set; }
-        public double HpRegenBase { get { return HP_REGEN_BASE_MULTIPLIER * this.StrengthBase; } }
-        public double MpRegenBase { get { return MP_REGEN_BASE_MULTIPLIER * this.IntelligenceBase; } }
+        public double HpRegenBase { get { return ModelConstants.HpRegenBaseMultiplier * this.StrengthBase; } }
+        public double MpRegenBase { get { return ModelConstants.MpRegenBaseMultiplier * this.IntelligenceBase; } }
         public double AuraRadiusBase { get; set; }
         public double Hp { get; set; }
         public double Mp { get; set; }
@@ -64,7 +62,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             this.Consumables = new Dictionary<string, Consumable>();
 
             // TODO: Add this to the scenario editor / generator
-            this.SpeedBase = ModelConstants.MAX_SPEED;
+            this.SpeedBase = ModelConstants.MaxSpeed;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Rogue.NET.Core
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioResourceService _scenarioResourceService;
 
-        // TODO: MAKE THIS EXPLICIT IN THE BOOTSTRAPPER
         [ImportingConstructor]
         public CoreModule(
             IEventAggregator eventAggregator, 

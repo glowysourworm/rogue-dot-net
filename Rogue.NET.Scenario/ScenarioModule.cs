@@ -159,8 +159,6 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("PlayerSubpanelStatsRegion", typeof(StatsControl));
             _regionManager.RegisterViewWithRegion("StatusCtrlRegion", typeof(StatusCtrl));
         }
-
-
     }
 }
 

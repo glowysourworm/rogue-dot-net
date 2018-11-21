@@ -25,8 +25,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
             result.Add(locationCell.GetHashCode(), locationCell);
 
             var origin = TransformToPhysicalLayout(location);
-            origin.X += ModelConstants.CELLWIDTH / 2.0F;
-            origin.Y += ModelConstants.CELLHEIGHT / 2.0F;
+            origin.X += ModelConstants.CellWidth / 2.0F;
+            origin.Y += ModelConstants.CellHeight / 2.0F;
 
             int angle = 0;
 
@@ -62,10 +62,10 @@ namespace Rogue.NET.Core.Logic.Algorithm
                        Math.Pow(xIndex, 2) + Math.Pow(yIndex, 2) < Math.Pow(maxCellRadius, 2) &&
                        !hitWall)
                 {
-                    var nextVerticalX = verticalGridLines[xIndex] * ModelConstants.CELLWIDTH;
+                    var nextVerticalX = verticalGridLines[xIndex] * ModelConstants.CellWidth;
                     var nextVerticalY = (slope * nextVerticalX) + intercept;
 
-                    var nextHorizontalY = horizontalGridLines[yIndex] * ModelConstants.CELLHEIGHT;
+                    var nextHorizontalY = horizontalGridLines[yIndex] * ModelConstants.CellHeight;
                     var nextHorizontalX = (nextHorizontalY - intercept) / slope;
 
                     var radiusHorizontal2 = Math.Pow(nextHorizontalX - origin.X, 2) + Math.Pow(nextHorizontalY - origin.Y, 2);
@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         // Pick the 2 involved cells - cell 2 is the one "advanced to" or the destination
                         var cellY1 = (angle < 180) ? horizontalGridLines[yIndex] - 1 : horizontalGridLines[yIndex];
                         var cellY2 = (angle < 180) ? horizontalGridLines[yIndex] : horizontalGridLines[yIndex] - 1;                        
-                        var cellX = (int)Math.Floor(nextHorizontalX / ModelConstants.CELLWIDTH); // truncate to get location
+                        var cellX = (int)Math.Floor(nextHorizontalX / ModelConstants.CellWidth); // truncate to get location
 
                         var cell1 = grid.GetCell(cellX, cellY1);
                         var cell2 = grid.GetCell(cellX, cellY2);
@@ -125,7 +125,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         // Pick the 2 involved cells
                         var cellX1 = (angle < 90 || angle > 270) ? verticalGridLines[xIndex] - 1 : verticalGridLines[xIndex];
                         var cellX2 = (angle < 90 || angle > 270) ? verticalGridLines[xIndex] : verticalGridLines[xIndex] - 1;
-                        var cellY = (int)Math.Floor(nextVerticalY / ModelConstants.CELLHEIGHT); // truncate to get location
+                        var cellY = (int)Math.Floor(nextVerticalY / ModelConstants.CellHeight); // truncate to get location
 
                         var cell1 = grid.GetCell(cellX1, cellY);
                         var cell2 = grid.GetCell(cellX2, cellY);
@@ -178,14 +178,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
         }
         public PointF TransformToPhysicalLayout(CellPoint p)
         {
-            float x = (float)(ModelConstants.CELLWIDTH * p.Column);
-            float y = (float)(ModelConstants.CELLHEIGHT * p.Row);
+            float x = (float)(ModelConstants.CellWidth * p.Column);
+            float y = (float)(ModelConstants.CellHeight * p.Row);
             return new PointF(x, y);
         }
         public System.Windows.Point Transform(CellPoint p)
         {
-            var x = (ModelConstants.CELLWIDTH * p.Column);
-            var y = (ModelConstants.CELLHEIGHT * p.Row);
+            var x = (ModelConstants.CellWidth * p.Column);
+            var y = (ModelConstants.CellHeight * p.Row);
             return new System.Windows.Point(x, y);
         }
     }
