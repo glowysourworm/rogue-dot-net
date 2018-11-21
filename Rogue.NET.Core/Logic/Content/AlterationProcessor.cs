@@ -1,8 +1,10 @@
 ﻿using ExpressMapper;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
@@ -17,24 +19,17 @@ namespace Rogue.NET.Core.Logic.Content
     [Export(typeof(IAlterationProcessor))]
     public class AlterationProcessor : IAlterationProcessor
     {
-        readonly IPlayerProcessor _playerProcessor;
-        readonly ICharacterProcessor _characterProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
 
         [ImportingConstructor]
-        public AlterationProcessor(
-            IPlayerProcessor playerProcessor, 
-            ICharacterProcessor characterProcessor,
-            IScenarioMessageService scenarioMessageService)
+        public AlterationProcessor(IScenarioMessageService scenarioMessageService)
         {
-            _playerProcessor = playerProcessor;
-            _characterProcessor = characterProcessor;
             _scenarioMessageService = scenarioMessageService;
         }
 
         public ScenarioImage CalculateEffectiveSymbol(Enemy enemy)
         {
-            var symbol = Mapper.Map<Enemy, ScenarioImage>(enemy);
+            var symbol = enemy.Map<Enemy, ScenarioImage>();
 
             foreach (var symbolTemplate in enemy.Alteration
                                                 .GetAlterations()
@@ -43,7 +38,7 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 //Full symbol
                 if (symbolTemplate.IsFullSymbolDelta)
-                    return Mapper.Map<SymbolDetailsTemplate, ScenarioImage>(symbolTemplate);
+                    return symbolTemplate.Map<SymbolDetailsTemplate, ScenarioImage>();
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
@@ -77,7 +72,7 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public ScenarioImage CalculateEffectiveSymbol(Player player)
         {
-            var symbol = Mapper.Map<Player, ScenarioImage>(player);
+            var symbol = player.Map<Player, ScenarioImage>();
 
             foreach (var symbolTemplate in player.Alteration
                                                  .GetAlterations()
@@ -86,7 +81,7 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 //Full symbol
                 if (symbolTemplate.IsFullSymbolDelta)
-                    return Mapper.Map<SymbolDetailsTemplate, ScenarioImage>(symbolTemplate);
+                    return symbolTemplate.Map<SymbolDetailsTemplate, ScenarioImage>();
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
@@ -196,7 +191,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             return true;
         }
-        public void ApplyAlterationCost(Player player, AlterationCost alterationCost)
+        public void ApplyAlterationCost(Player player, string spellId, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -212,10 +207,10 @@ namespace Rogue.NET.Core.Logic.Content
             }
             else if (alterationCost.Type == AlterationCostType.PerStep)
             {
-                player.Alteration.PerStepAlterationCosts.Add(alterationCost);
+                player.Alteration.PerStepAlterationCosts.Add(spellId, alterationCost);
             }
         }
-        public void ApplyAlterationCost(Enemy enemy, AlterationCost alterationCost)
+        public void ApplyAlterationCost(Enemy enemy, string spellId, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -228,7 +223,7 @@ namespace Rogue.NET.Core.Logic.Content
             }
             else if (alterationCost.Type == AlterationCostType.PerStep)
             {
-                enemy.Alteration.PerStepAlterationCosts.Add(alterationCost);
+                enemy.Alteration.PerStepAlterationCosts.Add(spellId, alterationCost);
             }
         }
         public void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect)
@@ -301,13 +296,13 @@ namespace Rogue.NET.Core.Logic.Content
             if (player.AuraRadiusBase + effect.AuraRadius < 0)
                 return false;
 
-            if (_playerProcessor.GetAttackBase(player) + effect.Attack < 0)
+            if (player.GetAttackBase() + effect.Attack < 0)
                 return false;
 
-            if (_playerProcessor.GetDefenseBase(player) + effect.Defense < 0)
+            if (player.GetDefenseBase() + effect.Defense < 0)
                 return false;
 
-            if (_characterProcessor.GetMagicBlockBase(player) + effect.MagicBlockProbability < 0)
+            if (player.GetMagicBlockBase() + effect.MagicBlockProbability < 0)
                 return false;
 
             //if (p.Dodge + this.DodgeProbability < 0)

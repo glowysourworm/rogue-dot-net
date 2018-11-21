@@ -4,10 +4,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class ProbabilityConsumableTemplateViewModel : TemplateViewModel
     {
-        private TemplateViewModel _theTemplate;
+        private ConsumableTemplateViewModel _theTemplate;
         private double _generationProbability;
 
-        public TemplateViewModel TheTemplate
+        public ConsumableTemplateViewModel TheTemplate
         {
             get { return _theTemplate; }
             set { this.RaiseAndSetIfChanged(ref _theTemplate, value); }

@@ -10,13 +10,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/ItemGrid.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGrid.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ImageButton.xaml"/>
                 <ResourceDictionary>
                     <scenarioConverter:ItemGridButtonVisibilityConverter x:Key="ItemGridButtonVisibilityConverter" />
                     <scenarioConverter:ItemGridRowButtonVisibilitiyConverter x:Key="ItemGridRowButtonVisibilitiyConverter" />
-
+                    <scenarioConverter:ItemGridRowImageSourceConverter x:Key="ItemGridRowImageSourceConverter" />
+                    
                     <!-- Collection View Source Binding to DataContext -->
                     <CollectionViewSource x:Key='SortedItemsSource' Source="{Binding}">
                         <CollectionViewSource.SortDescriptions>
@@ -118,20 +119,12 @@
                                             </Grid.RowDefinitions>
                                             <StackPanel Grid.ColumnSpan="2">
                                                 <StackPanel Orientation="Horizontal" Margin="4">
-                                                    <Image Width="20" Height="30" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                        <Image.Source>
-                                                            <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                                                <Binding Path="RogueName" />
-                                                                <Binding Path="CharacterSymbol" />
-                                                                <Binding Path="CharacterColor" />
-                                                                <Binding Path="Icon" />
-                                                                <Binding Path="SmileyMood" />
-                                                                <Binding Path="SmileyBodyColor" />
-                                                                <Binding Path="SmileyLineColor" />
-                                                                <Binding Path="SmileyAuraColor" />
-                                                                <Binding Path="SymbolType" />
-                                                            </MultiBinding>
-                                                        </Image.Source>
+                                                    <Image Width="20" 
+                                                           Height="30" 
+                                                           Margin="0" 
+                                                           Source="{Binding Converter={StaticResource ItemGridRowImageSourceConverter}}"
+                                                           VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Center">
                                                     </Image>
                                                     <TextBlock Text="{Binding RogueName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
                                                 </StackPanel>

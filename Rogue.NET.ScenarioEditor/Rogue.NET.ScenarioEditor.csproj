@@ -238,6 +238,9 @@
   <ItemGroup>
     <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
     <Compile Include="Controller\ScenarioAssetController.cs" />
+    <Compile Include="Converter\SymbolDetailsImageSourceConverter.cs" />
+    <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
+    <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddAttackAttributeEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
@@ -489,6 +492,10 @@
     <Compile Include="Views\ScenarioDifficultyChart.xaml.cs">
       <DependentUpon>ScenarioDifficultyChart.xaml</DependentUpon>
     </Compile>
+    <Page Include="Resources\Dictionaries\Converter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Dictionaries\Editor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

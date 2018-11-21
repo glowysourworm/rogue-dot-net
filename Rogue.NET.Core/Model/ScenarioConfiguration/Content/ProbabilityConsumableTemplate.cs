@@ -6,10 +6,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class ProbabilityConsumableTemplate : Template
     {
-        private Template _theTemplate;
+        private ConsumableTemplate _theTemplate;
         private double _generationProbability;
 
-        public Template TheTemplate
+        public ConsumableTemplate TheTemplate
         {
             get { return _theTemplate; }
             set

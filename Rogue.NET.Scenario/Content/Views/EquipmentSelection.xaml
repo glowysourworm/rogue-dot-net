@@ -21,7 +21,7 @@
                         <local:DungeonEncyclopediaAttackAttributeCtrl Visibility="{Binding Converter={StaticResource AttackAttributeVisibilityCollapsedConverter}}">
                         </local:DungeonEncyclopediaAttackAttributeCtrl>
                     </DataTemplate>
-                    <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
+                    <converter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageSourceConverter" />
                 </ResourceDictionary>                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

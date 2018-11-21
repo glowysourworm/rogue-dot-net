@@ -16,6 +16,7 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -24,7 +25,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     public class PlayerViewModel : ScenarioImageViewModel
     {
         readonly IModelService _modelService;
-        readonly ICharacterProcessor _characterProcessor;
         readonly IPlayerProcessor _playerProcessor;
 
         #region (private) Backing Fields
@@ -328,11 +328,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public PlayerViewModel(
             IEventAggregator eventAggregator, 
             IModelService modelService,
-            IPlayerProcessor playerProcessor,
-            ICharacterProcessor characterProcessor)
+            IPlayerProcessor playerProcessor)
         {
             _modelService = modelService;
-            _characterProcessor = characterProcessor;
             _playerProcessor = playerProcessor;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
@@ -387,8 +385,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Class = player.Class;
             this.Experience = player.Experience;
             this.ExperienceNext = _playerProcessor.CalculateExperienceNext(player);
-            this.Haul = _characterProcessor.GetHaul(player);
-            this.HaulMax = _characterProcessor.GetHaulMax(player);
+            this.Haul = player.GetHaul();
+            this.HaulMax = player.GetHaulMax();
             this.Hp = player.Hp;
             this.HpMax = player.HpMax;
             this.Hunger = player.Hunger;
@@ -405,28 +403,28 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SmileyLineColor = player.SmileyLineColor;
             this.SymbolType = player.SymbolType;
 
-            this.Agility = _characterProcessor.GetAgility(player);
+            this.Agility = player.GetAgility();
             this.AgilityBase = player.AgilityBase;
-            this.Attack = _playerProcessor.GetAttack(player);
-            this.AttackBase = _playerProcessor.GetAttackBase(player);
-            this.AuraRadius = _characterProcessor.GetAuraRadius(player);
+            this.Attack = player.GetAttack();
+            this.AttackBase = player.GetAttackBase();
+            this.AuraRadius = player.GetAuraRadius();
             this.AuraRadiusBase = player.AuraRadiusBase;
-            this.CriticalHitProbability = _playerProcessor.GetCriticalHitProbability(player);
-            this.Defense = _playerProcessor.GetDefense(player);
-            this.DefenseBase = _playerProcessor.GetDefenseBase(player);
-            this.Dodge = _characterProcessor.GetDodge(player);
-            this.DodgeBase = _characterProcessor.GetDodgeBase(player);
-            this.FoodUsagePerTurn = _playerProcessor.GetFoodUsagePerTurn(player);
+            this.CriticalHitProbability = player.GetCriticalHitProbability();
+            this.Defense = player.GetDefense();
+            this.DefenseBase = player.GetDefenseBase();
+            this.Dodge = player.GetDodge();
+            this.DodgeBase = player.GetDodgeBase();
+            this.FoodUsagePerTurn = player.GetFoodUsagePerTurn();
             this.FoodUsagePerTurnBase = player.FoodUsagePerTurnBase;
-            this.HpRegen = _characterProcessor.GetHpRegen(player, true);
+            this.HpRegen = player.GetHpRegen(true);
             this.HpRegenBase = player.HpRegenBase;
-            this.Intelligence = _characterProcessor.GetIntelligence(player);
+            this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;
-            this.MagicBlock = _characterProcessor.GetMagicBlock(player);
-            this.MagicBlockBase = _characterProcessor.GetMagicBlockBase(player);
-            this.MpRegen = _characterProcessor.GetMpRegen(player);
+            this.MagicBlock = player.GetMagicBlock();
+            this.MagicBlockBase = player.GetMagicBlockBase();
+            this.MpRegen = player.GetMpRegen();
             this.MpRegenBase = player.MpRegenBase;
-            this.Strength = _characterProcessor.GetStrength(player);
+            this.Strength = player.GetStrength();
             this.StrengthBase = player.StrengthBase;
 
             var constructor = new Func<Equipment, EquipmentViewModel>(x => x == null ? null : new EquipmentViewModel(x));

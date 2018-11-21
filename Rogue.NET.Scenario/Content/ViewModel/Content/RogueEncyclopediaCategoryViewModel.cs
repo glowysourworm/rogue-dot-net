@@ -7,10 +7,11 @@ using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using Rogue.NET.Core.Service.Interface;
 using System.Windows.Media;
+using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class RogueEncyclopediaCategoryViewModel : Image, INotifyPropertyChanged
+    public class RogueEncyclopediaCategoryViewModel : ContentPresenter, INotifyPropertyChanged
     {
         string _categoryName;
         string _categoryDescription;
@@ -54,7 +55,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Items = new ObservableCollection<ScenarioMetaDataViewModel>();
 
             // Initialize the category as not known
-            this.Source = scenarioResourceService.GetImage("?", Colors.White.ToString());
+            this.Content = scenarioResourceService.GetFrameworkElement(new ScenarioImage("", "?", Colors.White.ToString()));
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 PropertyChanged(this, new PropertyChangedEventArgs("IsObjectiveCategory"));
             }
 
-            this.Source = this.Items.FirstOrDefault(x => x.IsIdentified)?.Source ?? this.Source;
+            this.Content = this.Items.FirstOrDefault(x => x.IsIdentified)?.Content ?? this.Content;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

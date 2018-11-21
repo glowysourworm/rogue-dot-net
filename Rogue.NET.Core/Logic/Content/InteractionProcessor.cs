@@ -2,7 +2,7 @@
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
-
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -13,17 +13,14 @@ namespace Rogue.NET.Core.Logic.Content
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IPlayerProcessor _playerProcessor;
-        readonly ICharacterProcessor _characterProcessor;
 
         [ImportingConstructor]
         public InteractionProcessor(
             IRandomSequenceGenerator randomSequenceGenerator,
-            IPlayerProcessor playerProcessor,
-            ICharacterProcessor characterProcessor)
+            IPlayerProcessor playerProcessor)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _playerProcessor = playerProcessor;
-            _characterProcessor = characterProcessor;
         }
 
         public double CalculateAttackAttributeMelee(Character character, AttackAttribute offenseAttribute)
@@ -59,7 +56,7 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public double CalculatePlayerHit(Player player, Enemy enemy)
         {
-            double baseAttk = _playerProcessor.GetAttack(player);
+            double baseAttk = player.GetAttack();
             double attk = _randomSequenceGenerator.Get() * (baseAttk - (enemy.StrengthBase / 5.0D));
 
             //Attack attributes (TODO)
@@ -70,8 +67,8 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public double CalculateEnemyHit(Player player, Enemy enemy)
         {
-            double baseDef = _playerProcessor.GetDefenseBase(player);
-            double attk = _randomSequenceGenerator.Get() * (_characterProcessor.GetStrength(enemy) - baseDef);
+            double baseDef = player.GetDefenseBase();
+            double attk = _randomSequenceGenerator.Get() * (enemy.GetStrength() - baseDef);
 
             //Attack attributes (TODO)
             //foreach (AttackAttribute attrib in e.MeleeAttackAttributes)
@@ -85,8 +82,8 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public bool CalculateSpellBlock(Character character, bool physicalBlock)
         {
-            return physicalBlock ? _randomSequenceGenerator.Get() < _characterProcessor.GetDodge(character) :
-                                   _randomSequenceGenerator.Get() < _characterProcessor.GetMagicBlock(character);
+            return physicalBlock ? _randomSequenceGenerator.Get() < character.GetDodge() :
+                                   _randomSequenceGenerator.Get() < character.GetMagicBlock();
         }
     }
 }

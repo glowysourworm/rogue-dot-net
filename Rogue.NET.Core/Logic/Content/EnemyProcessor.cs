@@ -107,29 +107,5 @@ namespace Rogue.NET.Core.Logic.Content
                     break;
             }
         }
-
-        protected void ApplyLimits(Enemy enemy)
-        {
-            if (enemy.Mp < 0)
-                enemy.Mp = 0;
-
-            if (enemy.Hp > enemy.HpMax)
-                enemy.Hp = enemy.HpMax;
-
-            if (enemy.Mp > enemy.MpMax)
-                enemy.Mp = enemy.MpMax;
-
-            if (enemy.SpeedBase < ModelConstants.MIN_SPEED)
-                enemy.SpeedBase = ModelConstants.MIN_SPEED;
-
-            if (enemy.StrengthBase < 0)
-                enemy.StrengthBase = 0;
-
-            if (enemy.AgilityBase < 0)
-                enemy.AgilityBase = 0;
-
-            if (enemy.IntelligenceBase < 0)
-                enemy.IntelligenceBase = 0;
-        }
     }
 }

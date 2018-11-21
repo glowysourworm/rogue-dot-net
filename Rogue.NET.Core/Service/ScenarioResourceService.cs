@@ -1,24 +1,26 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Utility;
+﻿using Rogue.NET.Common.Utility;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ResourceCache;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.View;
+using Rogue.NET.Core.Extension;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.Core.Service
 {
@@ -26,194 +28,177 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(IScenarioResourceService))]
     public class ScenarioResourceService : IScenarioResourceService
     {
-        const string SAVED_GAMES_DIR = "..\\save";
-        const string CMD_PREFS_FILE = "CommandPreferences.rcp";
-        const string SCENARIO_EXTENSION = "rdn";
-        const string SCENARIO_CONFIG_EXTENSION = "rdns";
-        const string SCENARIOS_DIR = "..\\scenarios";
-        const string EMBEDDED_SCENARIOS_DIR = "..\\..\\..\\Rogue.NET.Common\\Resource\\Configuration";
+        readonly IScenarioFileService _scenarioFileService;
+
         const int DPI = 96;
 
-        IList<ScenarioConfigurationContainer> _scenarioConfigurations;
+        IDictionary<string, ScenarioConfigurationContainer> _scenarioConfigurations;
+        IDictionary<string, object> _scenarioImageCache;
+        IEnumerable<ColorViewModel> _colors;
 
         [ImportingConstructor]
-        public ScenarioResourceService(IEventAggregator eventAggregator)
+        public ScenarioResourceService(IScenarioFileService scenarioFileService)
         {
-            if (!Directory.Exists(SAVED_GAMES_DIR))
-                Directory.CreateDirectory(SAVED_GAMES_DIR);
+            _scenarioFileService = scenarioFileService;
 
-            if (!Directory.Exists(SCENARIOS_DIR))
-                Directory.CreateDirectory(SCENARIOS_DIR);
-
-            _scenarioConfigurations = new List<ScenarioConfigurationContainer>();
+            _scenarioConfigurations = new Dictionary<string, ScenarioConfigurationContainer>();
+            _scenarioImageCache = new Dictionary<string, object>();
+            _colors = ColorUtility.CreateColors();
         }
 
-        public void LoadScenarioConfiguration(ConfigResources configResource)
+        #region (public) Methods
+        public void LoadAllConfigurations()
         {
-            _scenarioConfigurations.Add(GetEmbeddedScenarioConfiguration(configResource));
-        }
+            var customScenarioConfigurations = Directory.GetFiles(ResourceConstants.ScenarioDirectory, "*." + ResourceConstants.ScenarioConfigurationExtension, SearchOption.TopDirectoryOnly);
 
-        public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()
-        {
-            return _scenarioConfigurations;
-        }
-
-        public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()
-        {
-            var scenarioFiles = Directory.GetFiles(SAVED_GAMES_DIR);
-            var scenarioHeaders = new Dictionary<string, ScenarioFileHeader>();
-            foreach (var file in scenarioFiles)
+            // Load Custom Scenario Configurations
+            foreach (var file in customScenarioConfigurations)
             {
-                var header = ScenarioFile.OpenHeader(File.ReadAllBytes(file));
-                var name = Path.GetFileNameWithoutExtension(file);
-                if (header != null)
-                    scenarioHeaders.Add(name, header);
+                var configuration = _scenarioFileService.OpenConfiguration(Path.GetFileName(file));
+                if (configuration != null)
+                    _scenarioConfigurations.Add(Path.GetFileNameWithoutExtension(file), configuration);
             }
 
-            return scenarioHeaders;
+            // Load Built-In Scenario Configurations
+            GetScenarioConfiguration(ConfigResources.Fighter);
+            GetScenarioConfiguration(ConfigResources.Paladin);
+            GetScenarioConfiguration(ConfigResources.Witch);
+            GetScenarioConfiguration(ConfigResources.Sorcerer);
         }
-
-        public ScenarioConfigurationContainer GetEmbeddedScenarioConfiguration(ConfigResources configResource)
+        public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()
         {
+            return _scenarioConfigurations.Values;
+        }
+        public ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource)
+        {
+            if (_scenarioConfigurations.ContainsKey(configResource.ToString()))
+                return _scenarioConfigurations[configResource.ToString()];
+
             var name = configResource.ToString();
             var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
-            var location = "Rogue.NET.Common.Resource.Configuration." + name.ToString() + "." + SCENARIO_CONFIG_EXTENSION;
+            var location = "Rogue.NET.Common.Resource.Configuration." + name.ToString() + "." + ResourceConstants.ScenarioConfigurationExtension;
             using (var stream = assembly.GetManifestResourceStream(location))
             {
                 var memoryStream = new MemoryStream();
                 stream.CopyTo(memoryStream);
-                return (ScenarioConfigurationContainer)Deserialize(memoryStream.GetBuffer());
+                _scenarioConfigurations.Add(configResource.ToString(), (ScenarioConfigurationContainer)BinarySerializer.Deserialize(memoryStream.GetBuffer()));
             }
-        }
 
-        public ScenarioConfigurationContainer OpenScenarioConfigurationFile(string file)
-        {
-            var path = Path.Combine(SCENARIOS_DIR, file);
-            return (ScenarioConfigurationContainer)DeserializeFromFile(path);
+            return _scenarioConfigurations[configResource.ToString()];
         }
+        public ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName)
+        {
+            if (!_scenarioConfigurations.ContainsKey(configurationName))
+                throw new Exception("Configuration not found - " + configurationName);
 
-        public void SaveConfig(string name, ScenarioConfigurationContainer config)
-        {
-            var file = Path.Combine(SCENARIOS_DIR, name) + "." + SCENARIO_CONFIG_EXTENSION;
-            SerializeToFile(file, config);
+            return _scenarioConfigurations[configurationName];
         }
-        public void EmbedConfig(ConfigResources configResource, ScenarioConfigurationContainer config)
+        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails)
         {
-            var file = Path.Combine(EMBEDDED_SCENARIOS_DIR, configResource.ToString()) + "." + SCENARIO_CONFIG_EXTENSION;
-            SerializeToFile(file, config);
+            // Create cache image to retrieve cached BitmapSource or to store it
+            var cacheImage = new ScenarioCacheImage(symbolDetails);
+            var cacheKey = cacheImage.ToFingerprint();
+
+            // Check for cached image
+            if (_scenarioImageCache.ContainsKey(cacheKey))
+                return _scenarioImageCache[cacheKey] as BitmapSource;
+
+            BitmapSource result;
+
+            // Create a new BitmapSource
+            switch (cacheImage.SymbolType)
+            {
+                case SymbolTypes.Character:
+                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor, false);
+                    break;
+                case SymbolTypes.Smiley:
+                    result = GetImage(cacheImage.SmileyMood, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor, false);
+                    break;
+                case SymbolTypes.Image:
+                    result = GetImage(cacheImage.Icon);
+                    break;
+                default:
+                    throw new Exception("Unknown symbol type");
+            }
+
+            // Cache the result
+            _scenarioImageCache[cacheKey] = result;
+
+            return result;
         }
-        public BitmapSource GetImageSource(ScenarioImage scenarioImage)
+        public BitmapSource GetImageSource(ScenarioImage scenarioImage, bool blackBackground)
         {
+            // Create cache image to retrieve cached BitmapSource or to store it
+            var cacheImage = new ScenarioCacheImage(scenarioImage, blackBackground, ScenarioCacheImageType.ImageSource);
+            var cacheKey = cacheImage.ToFingerprint();
+            
+            // Check for cached image
+            if (_scenarioImageCache.ContainsKey(cacheKey))
+                return _scenarioImageCache[cacheKey] as BitmapSource;
+
+            BitmapSource result;
+
+            // Create a new BitmapSource
             switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    return GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
+                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, blackBackground);
+                    break;
                 case SymbolTypes.Smiley:
-                    return GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
+                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor, blackBackground);
+                    break;
                 case SymbolTypes.Image:
-                    return GetImage(scenarioImage.Icon);
+                    result = GetImage(scenarioImage.Icon);
+                    break;
                 default:
                     throw new Exception("Unknown symbol type");
             }
+
+            // Cache the result
+            _scenarioImageCache[cacheKey] = result;
+
+            return result;
         }
-        public BitmapSource GetImageSource(
-            string rogueName,
-            string symbol, 
-            string symbolColor, 
-            ImageResources icon, 
-            SmileyMoods smileyMood, 
-            string smileyBodyColor,
-            string smileyLineColor,
-            string smileyAuraColor,
-            SymbolTypes type)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage)
         {
-            switch (type)
+            // Create cache image to retrieve cached FrameworkElement or to store it
+            var cacheImage = new ScenarioCacheImage(scenarioImage, false, ScenarioCacheImageType.FrameworkElement);
+            var cacheKey = cacheImage.ToFingerprint();
+
+            // Check for cached FrameworkElement
+            if (_scenarioImageCache.ContainsKey(cacheKey))
+                return _scenarioImageCache[cacheKey] as FrameworkElement;
+
+            FrameworkElement result;
+
+            switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    return GetImage(symbol, symbolColor);
+                    result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
+                    break;
                 case SymbolTypes.Smiley:
-                    return GetImage(smileyMood, smileyBodyColor, smileyLineColor, smileyAuraColor);
+                    result = GetElement(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
+                    break;
                 case SymbolTypes.Image:
-                    return GetImage(icon);
+                    result = GetElement(scenarioImage.Icon);
+                    break;
                 default:
                     throw new Exception("Unknown symbol type");
             }
-        }
 
-        public void SaveScenarioFile(ScenarioFile scenarioFile, string playerName)
-        {
-            var buffer = scenarioFile.Save();
+            // Store the FrameworkElement
+            _scenarioImageCache[cacheKey] = result;
 
-            File.WriteAllBytes(SAVED_GAMES_DIR + "\\" + playerName + "." + SCENARIO_EXTENSION, buffer);
+            return result;
         }
-        public ScenarioFile OpenScenarioFile(string playerName)
+        public IEnumerable<ColorViewModel> GetColors()
         {
-            var buffer = File.ReadAllBytes(SAVED_GAMES_DIR + "\\" + playerName + "." + SCENARIO_EXTENSION);
-
-            return ScenarioFile.Open(buffer);
-        }
-
-        public void DeleteScenario(string name)
-        {
-            var path = Path.Combine(SAVED_GAMES_DIR, name + "." + SCENARIO_EXTENSION);
-
-            if (File.Exists(path))
-                File.Delete(path);
-        }
-
-        #region Serialization
-        private byte[] Serialize(object obj)
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, obj);
-                return stream.GetBuffer();
-            }
-        }
-        private bool SerializeToFile(string file, object obj)
-        {
-            try
-            {
-                if (File.Exists(file))
-                    File.Delete(file);
-
-                using (FileStream fileStream = File.OpenWrite(file))
-                {
-                    var bytes = Serialize(obj);
-                    fileStream.Write(bytes, 0, bytes.Length);
-                }
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        private object Deserialize(byte[] buffer)
-        {
-            var formatter = new BinaryFormatter();
-            using (var stream = new MemoryStream(buffer))
-            {
-                return formatter.Deserialize(stream);
-            }
-        }
-        private object DeserializeFromFile(string file)
-        {
-            try
-            {
-                var bytes = File.ReadAllBytes(file);
-                return Deserialize(bytes);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return _colors;
         }
         #endregion
 
-        #region Image and Color Resources
-        public BitmapSource GetImage(ImageResources img)
+        #region (private) Methods
+        private BitmapSource GetImage(ImageResources img)
         {
             if (img == ImageResources.WellYellowCopy)
                 img = ImageResources.WellYellow;
@@ -224,7 +209,43 @@ namespace Rogue.NET.Core.Service
             var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             return decoder.Frames[0];
         }
-        public BitmapSource GetImage(string symbol, string symbolColor)
+        private BitmapSource GetImage(string symbol, string symbolColor, bool blackBackground)
+        {
+            var text = GetElement(symbol, symbolColor);
+            text.Background = blackBackground ? new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)) : Brushes.Transparent;
+            text.Measure(new Size(text.Width, text.Height));
+            text.Arrange(new Rect(text.DesiredSize));
+
+            var bmp = new RenderTargetBitmap((int)(ModelConstants.CELLWIDTH), (int)(ModelConstants.CELLHEIGHT), DPI, DPI, PixelFormats.Default);
+            bmp.Render(text);
+            return bmp;
+        }
+        private BitmapSource GetImage(SmileyMoods mood, string bodyColor, string lineColor, string auraColor, bool blackBackground)
+        {
+            var ctrl = GetElement(mood, bodyColor, lineColor, auraColor);
+            ctrl.Background = blackBackground ? new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)) : Brushes.Transparent;
+            ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
+            ctrl.Arrange(new Rect(ctrl.DesiredSize));
+            RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
+            var bmp = new RenderTargetBitmap(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT, DPI, DPI, PixelFormats.Default);
+
+            bmp.Render(ctrl);
+            return bmp;
+        }
+
+        private Image GetElement(ImageResources imageResource)
+        {
+            if (imageResource == ImageResources.WellYellowCopy)
+                imageResource = ImageResources.WellYellow;
+
+            var result = new Image();
+            result.Width = ModelConstants.CELLWIDTH;
+            result.Height = ModelConstants.CELLHEIGHT;
+            result.Source = GetImage(imageResource);
+
+            return result;
+        }
+        private TextBlock GetElement(string symbol, string symbolColor)
         {
             var text = new TextBlock();
             var foregroundColor = (Color)ColorConverter.ConvertFromString(symbolColor);
@@ -238,14 +259,10 @@ namespace Rogue.NET.Core.Service
             text.Margin = new Thickness(0);
             text.Height = ModelConstants.CELLHEIGHT;
             text.Width = ModelConstants.CELLWIDTH;
-            text.Measure(new Size(text.Width, text.Height));
-            text.Arrange(new Rect(text.DesiredSize));
 
-            var bmp = new RenderTargetBitmap((int)(ModelConstants.CELLWIDTH), (int)(ModelConstants.CELLHEIGHT), DPI, DPI, PixelFormats.Default);
-            bmp.Render(text);
-            return bmp;
+            return text;
         }
-        private BitmapSource GetImage(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
+        private Smiley GetElement(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
         {
             var ctrl = new Smiley();
             ctrl.SmileyColor = (Color)ColorConverter.ConvertFromString(bodyColor);
@@ -254,18 +271,7 @@ namespace Rogue.NET.Core.Service
             ctrl.SmileyRadius = 2;
             ctrl.Width = ModelConstants.CELLWIDTH;
             ctrl.Height = ModelConstants.CELLHEIGHT;
-            ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
-            ctrl.Arrange(new Rect(ctrl.DesiredSize));
-            RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
-            var bmp = new RenderTargetBitmap(ModelConstants.CELLWIDTH, ModelConstants.CELLHEIGHT, DPI, DPI, PixelFormats.Default);
-
-            bmp.Render(ctrl);
-            return bmp;
-        }
-
-        public IEnumerable<ColorViewModel> GetColors()
-        {
-            return ColorUtility.CreateColors();
+            return ctrl;
         }
         #endregion
     }

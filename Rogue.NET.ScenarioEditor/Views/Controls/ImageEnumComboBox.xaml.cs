@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
@@ -48,7 +49,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             List<ImageItem> list = new List<ImageItem>();
             foreach (ImageResources r in resources)
             {
-                ImageItem item = new ImageItem((BitmapSource)_scenarioResourceService.GetImage(r), r.ToString(), r);
+                ImageItem item = new ImageItem(_scenarioResourceService.GetImageSource(new ScenarioImage("", r), false), r.ToString(), r);
                 list.Add(item);
             }
             this.TheComboBox.ItemsSource = list;

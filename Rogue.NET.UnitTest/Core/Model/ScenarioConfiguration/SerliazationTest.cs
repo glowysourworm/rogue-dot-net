@@ -4,7 +4,6 @@ using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Model.Enums;
 
-using ExpressMapper;
 using Moq;
 using Prism.Events;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,21 +18,21 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
     {
         IScenarioResourceService _scenarioResourceService;
 
+        Mock<IScenarioFileService> _scenarioFileServiceMock;
         Mock<IEventAggregator> _eventAggregatorMock;
 
         [TestInitialize]
         public void Initialize()
         {
             _eventAggregatorMock = new Mock<IEventAggregator>();
-            _scenarioResourceService = new ScenarioResourceService(_eventAggregatorMock.Object);
-
-            Mapper.Compile();
+            _scenarioFileServiceMock = new Mock<IScenarioFileService>();
+            _scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
         }
 
         private IScenarioGenerator CreateScenarioGenerator(int seed)
         {
 
-            var scenarioResourceService = new ScenarioResourceService(_eventAggregatorMock.Object);
+            var scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
             var randomSequenceGenerator = new RandomSequenceGenerator();
             randomSequenceGenerator.Reseed(seed);
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
@@ -73,7 +72,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         [TestMethod]
         public void DeserializeConfiguration()
         {
-            var configurationFromModel = _scenarioResourceService.GetEmbeddedScenarioConfiguration(ConfigResources.Fighter);
+            var configurationFromModel = _scenarioResourceService.GetScenarioConfiguration(ConfigResources.Fighter);
 
             Assert.IsNotNull(configurationFromModel);
         }
@@ -81,7 +80,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         [TestMethod]
         public void CreateScenarioFromConfiguration()
         {
-            var configuration = _scenarioResourceService.GetEmbeddedScenarioConfiguration(Rogue.NET.Core.Model.Enums.ConfigResources.Fighter);
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(Rogue.NET.Core.Model.Enums.ConfigResources.Fighter);
 
             Assert.IsNotNull(configuration);
 
@@ -93,7 +92,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         [TestMethod]
         public void Create10000ScenarioFromConfiguration()
         {
-            var configuration = _scenarioResourceService.GetEmbeddedScenarioConfiguration(Rogue.NET.Core.Model.Enums.ConfigResources.Fighter);
+            var configuration = _scenarioResourceService.GetScenarioConfiguration(Rogue.NET.Core.Model.Enums.ConfigResources.Fighter);
 
             Assert.IsNotNull(configuration);
 

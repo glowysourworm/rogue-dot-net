@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="TextBox">
@@ -43,21 +44,9 @@
                             </RadialGradientBrush>
                         </Border.Background>
                         <Image VerticalAlignment="Center" 
-                           HorizontalAlignment="Center" 
-                           Stretch="None">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                    <Binding Path="Name" />
-                                    <Binding Path="SymbolDetails.CharacterSymbol" />
-                                    <Binding Path="SymbolDetails.CharacterColor" />
-                                    <Binding Path="SymbolDetails.Icon" />
-                                    <Binding Path="SymbolDetails.SmileyMood" />
-                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                    <Binding Path="SymbolDetails.SmileyLineColor" />
-                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                    <Binding Path="SymbolDetails.Type" />
-                                </MultiBinding>
-                            </Image.Source>
+                               HorizontalAlignment="Center" 
+                               Source="{Binding Path=SymbolDetails, Converter={StaticResource SymbolDetailsImageSourceConverter}}"
+                               Stretch="None">
                         </Image>
                     </Border>
                 </Grid>

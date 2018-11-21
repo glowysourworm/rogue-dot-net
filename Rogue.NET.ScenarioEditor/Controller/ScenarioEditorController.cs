@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -23,7 +24,8 @@ namespace Rogue.NET.Controller.ScenarioEditor
     {
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
-        readonly IScenarioResourceService _resourceService;
+        readonly IScenarioResourceService _scenarioResourceService;
+        readonly IScenarioFileService _scenarioFileService;
 
         ScenarioConfigurationContainerViewModel _config;
 
@@ -31,11 +33,13 @@ namespace Rogue.NET.Controller.ScenarioEditor
         public ScenarioEditorController(
             IEventAggregator eventAggregator,
             IScenarioConfigurationUndoService rogueUndoService,
-            IScenarioResourceService scenarioResourceService)
+            IScenarioResourceService scenarioResourceService,
+            IScenarioFileService scenarioFileService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
-            _resourceService = scenarioResourceService;
+            _scenarioResourceService = scenarioResourceService;
+            _scenarioFileService = scenarioFileService;
 
             Initialize();
         }
@@ -99,12 +103,12 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Open the Scenario Configuration from file
             ScenarioConfigurationContainer config;
             if (builtIn)
-                config = _resourceService.GetEmbeddedScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
+                config = _scenarioResourceService.GetScenarioConfiguration((ConfigResources)Enum.Parse(typeof(ConfigResources), name));
             else
-                config = _resourceService.OpenScenarioConfigurationFile(name);
+                config = _scenarioFileService.OpenConfiguration(name);
 
             // Map to the view model
-            _config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
+            _config = config.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>();
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
@@ -137,13 +141,13 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
 
             // Map back to the model namespace
-            var config = ExpressMapper.Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
+            var config = _config.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>();
 
             // Save the configuration
             if (builtInScenario)
-                _resourceService.EmbedConfig(builtInScenarioType, config);
+                _scenarioFileService.EmbedConfiguration(builtInScenarioType, config);
             else
-                _resourceService.SaveConfig(_config.DungeonTemplate.Name, config);
+                _scenarioFileService.SaveConfiguration(_config.DungeonTemplate.Name, config);
 
             // Clear the Undo stack
             _rogueUndoService.Clear();

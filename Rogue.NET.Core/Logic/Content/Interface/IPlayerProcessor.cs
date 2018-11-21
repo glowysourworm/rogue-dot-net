@@ -6,14 +6,6 @@ namespace Rogue.NET.Core.Logic.Content.Interface
 {
     public interface IPlayerProcessor
     {
-        // Calculate state
-        double GetAttackBase(Player player);
-        double GetDefenseBase(Player player);
-        double GetAttack(Player player);
-        double GetDefense(Player player);
-        double GetFoodUsagePerTurn(Player player);
-        double GetCriticalHitProbability(Player player);
-
         // Calculate Level Gains / Experience
         double CalculateExperienceNext(Player player);
         void CalculateLevelGains(Player player);
@@ -26,6 +18,5 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         // Process Turn for Player
         void ApplyEndOfTurn(Player player, bool regenerate);
         void ProcessSkillLearning(Player player);
-        void ApplyLimits(Player player);
     }
 }

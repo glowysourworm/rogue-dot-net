@@ -15,10 +15,6 @@ using System.ComponentModel.Composition.Hosting;
 using Microsoft.Practices.ServiceLocation;
 
 using Rogue.NET.Scenario.Views;
-using Rogue.NET.Intro.Views;
-using Rogue.NET.Scenario.Intro.Views.GameSetup;
-using Rogue.NET.Scenario.Outro.Views;
-using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Common.Extension.Prism;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.ViewModel.ItemGrid;

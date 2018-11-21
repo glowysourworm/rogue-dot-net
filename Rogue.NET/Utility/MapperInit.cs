@@ -8,7 +8,9 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.ViewModel.ItemGrid;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System;
@@ -36,52 +38,59 @@ namespace Rogue.NET.Utility
             Mapper.Register<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>();
             Mapper.Register<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>();
 
-            // Probability Consumable -> Probability Consumable View Model
-            Mapper.RegisterCustom<ProbabilityConsumableTemplate, ProbabilityConsumableTemplateViewModel>(model =>
-            {
-                return new ProbabilityConsumableTemplateViewModel()
-                {
-                    GenerationProbability = model.GenerationProbability,
-                    Guid = model.Guid,
-                    Name = model.Name,
-                    TheTemplate = Mapper.Map<ConsumableTemplate, ConsumableTemplateViewModel>(model.TheTemplate as ConsumableTemplate)
-                };
-            });
-            // Probability Equipment -> Probability Equipment View Model
-            Mapper.RegisterCustom<ProbabilityEquipmentTemplate, ProbabilityEquipmentTemplateViewModel>(model =>
-            {
-                return new ProbabilityEquipmentTemplateViewModel()
-                {
-                    GenerationProbability = model.GenerationProbability,
-                    Guid = model.Guid,
-                    Name = model.Name,
-                    TheTemplate = Mapper.Map<EquipmentTemplate, EquipmentTemplateViewModel>(model.TheTemplate as EquipmentTemplate)
-                };
-            });
-            // Probability Consumable View Model -> Probability Consumable
-            Mapper.RegisterCustom<ProbabilityConsumableTemplateViewModel, ProbabilityConsumableTemplate>(viewModel =>
-            {
-                return new ProbabilityConsumableTemplate()
-                {
-                    GenerationProbability = viewModel.GenerationProbability,
-                    Guid = viewModel.Guid,
-                    Name = viewModel.Name,
-                    TheTemplate = Mapper.Map<ConsumableTemplateViewModel, ConsumableTemplate>(viewModel.TheTemplate as ConsumableTemplateViewModel)
-                };
-            });
-            // Probability Equipment View Model -> Probability Equipment
-            Mapper.RegisterCustom<ProbabilityEquipmentTemplateViewModel, ProbabilityEquipmentTemplate>(viewModel =>
-            {
-                return new ProbabilityEquipmentTemplate()
-                {
-                    GenerationProbability = viewModel.GenerationProbability,
-                    Guid = viewModel.Guid,
-                    Name = viewModel.Name,
-                    TheTemplate = Mapper.Map<EquipmentTemplateViewModel, EquipmentTemplate>(viewModel.TheTemplate as EquipmentTemplateViewModel)
-                };
-            });
+            //// Probability Consumable -> Probability Consumable View Model
+            //Mapper.RegisterCustom<ProbabilityConsumableTemplate, ProbabilityConsumableTemplateViewModel>(model =>
+            //{
+            //    return new ProbabilityConsumableTemplateViewModel()
+            //    {
+            //        GenerationProbability = model.GenerationProbability,
+            //        Guid = model.Guid,
+            //        Name = model.Name,
+            //        TheTemplate = Mapper.Map<ConsumableTemplate, ConsumableTemplateViewModel>(model.TheTemplate as ConsumableTemplate)
+            //    };
+            //});
+            //// Probability Equipment -> Probability Equipment View Model
+            //Mapper.RegisterCustom<ProbabilityEquipmentTemplate, ProbabilityEquipmentTemplateViewModel>(model =>
+            //{
+            //    return new ProbabilityEquipmentTemplateViewModel()
+            //    {
+            //        GenerationProbability = model.GenerationProbability,
+            //        Guid = model.Guid,
+            //        Name = model.Name,
+            //        TheTemplate = Mapper.Map<EquipmentTemplate, EquipmentTemplateViewModel>(model.TheTemplate as EquipmentTemplate)
+            //    };
+            //});
+            //// Probability Consumable View Model -> Probability Consumable
+            //Mapper.RegisterCustom<ProbabilityConsumableTemplateViewModel, ProbabilityConsumableTemplate>(viewModel =>
+            //{
+            //    return new ProbabilityConsumableTemplate()
+            //    {
+            //        GenerationProbability = viewModel.GenerationProbability,
+            //        Guid = viewModel.Guid,
+            //        Name = viewModel.Name,
+            //        TheTemplate = Mapper.Map<ConsumableTemplateViewModel, ConsumableTemplate>(viewModel.TheTemplate as ConsumableTemplateViewModel)
+            //    };
+            //});
+            //// Probability Equipment View Model -> Probability Equipment
+            //Mapper.RegisterCustom<ProbabilityEquipmentTemplateViewModel, ProbabilityEquipmentTemplate>(viewModel =>
+            //{
+            //    return new ProbabilityEquipmentTemplate()
+            //    {
+            //        GenerationProbability = viewModel.GenerationProbability,
+            //        Guid = viewModel.Guid,
+            //        Name = viewModel.Name,
+            //        TheTemplate = Mapper.Map<EquipmentTemplateViewModel, EquipmentTemplate>(viewModel.TheTemplate as EquipmentTemplateViewModel)
+            //    };
+            //});
 
+            Mapper.Register<ProbabilityConsumableTemplate, ProbabilityConsumableTemplateViewModel>();
+            Mapper.Register<ProbabilityEquipmentTemplate, ProbabilityEquipmentTemplateViewModel>();
+            Mapper.Register<ProbabilityConsumableTemplateViewModel, ProbabilityConsumableTemplate>();
+            Mapper.Register<ProbabilityEquipmentTemplateViewModel, ProbabilityEquipmentTemplate>();
 
+            Mapper.Register<ScenarioImageViewModel, ScenarioImage>();
+            Mapper.Register<ItemGridRowViewModel, ScenarioImage>();
+            Mapper.Register<SymbolDetailsTemplateViewModel, SymbolDetailsTemplate>();
             Mapper.Register<AnimationTemplateViewModel, AnimationTemplate>();
 
             // Performance Problem - 1-2 minutes to compile... Maybe try the Emit Mapper?

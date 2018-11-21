@@ -3,7 +3,6 @@
                     xmlns:converter="clr-namespace:Rogue.NET.Core.Converter"
                     xmlns:converterAttackAttribute="clr-namespace:Rogue.NET.Core.Converter.AttackAttribute"
                     xmlns:converterItemGrid="clr-namespace:Rogue.NET.Core.Converter.ItemGrid"
-                    xmlns:converterScenarioEditor="clr-namespace:Rogue.NET.Core.Converter.ScenarioEditor"
                     xmlns:converterScenarioMetaData="clr-namespace:Rogue.NET.Core.Converter.ScenarioMetaData"
                     xmlns:converterSkillGrid="clr-namespace:Rogue.NET.Core.Converter.SkillGrid">
     <converter:BoolIntConverter x:Key="BoolIntConverter" />
@@ -16,6 +15,8 @@
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
+    <converter:ScenarioImageElementConverter x:Key="ScenarioImageElementConverter" />
+    <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
@@ -24,9 +25,6 @@
     <converterItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="ItemGridRowDetailsVisibilityConverter" />
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
-    <converterScenarioEditor:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
-    <converterScenarioEditor:SymbolDetailsToImageSourceMultiConverter x:Key="SymbolDetailsToImageSourceMultiConverter" />
-    <converterScenarioEditor:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
     <converterScenarioMetaData:ScenarioMetaDataTextConverter x:Key="ScenarioMetaDataTextConverter" />
     <converterSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="SkillGridLevelLearnedTooltipConverter" />

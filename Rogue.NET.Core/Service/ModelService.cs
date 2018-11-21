@@ -13,6 +13,7 @@ using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.IO;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Core.Service
 {
@@ -22,7 +23,6 @@ namespace Rogue.NET.Core.Service
     {
         readonly ILayoutEngine _layoutEngine;
         readonly IRayTracer _rayTracer;
-        readonly ICharacterProcessor _characterProcessor;
 
         // Explored location collection calculated each time the player moves; and kept up to date
         IEnumerable<CellPoint> _exploredLocations;
@@ -37,11 +37,10 @@ namespace Rogue.NET.Core.Service
         IList<Enemy> _targetedEnemies;
 
         [ImportingConstructor]
-        public ModelService(ILayoutEngine layoutEngine, IRayTracer rayTracer, ICharacterProcessor characterProcessor)
+        public ModelService(ILayoutEngine layoutEngine, IRayTracer rayTracer)
         {
             _layoutEngine = layoutEngine;
             _rayTracer = rayTracer;
-            _characterProcessor = characterProcessor;
 
             _exploredLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
@@ -165,7 +164,7 @@ namespace Rogue.NET.Core.Service
         }
         public void UpdateVisibleLocations()
         {
-            var lightRadius = _characterProcessor.GetAuraRadius(this.Player);
+            var lightRadius = this.Player.GetAuraRadius();
 
             // If blind - no visible locations
             var visibleLocations = this.Player.Alteration.GetStates().Any(z => z == CharacterStateType.Blind) ?

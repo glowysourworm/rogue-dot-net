@@ -121,19 +121,20 @@ namespace Rogue.NET.Core.Logic
             var alteration = _alterationGenerator.GenerateAlteration(spell);
 
             //Apply alteration cost
-            _alterationProcessor.ApplyAlterationCost(_modelService.Player, alteration.Cost);
+            _alterationProcessor.ApplyAlterationCost(_modelService.Player, spell.Id, alteration.Cost);
 
             // TODO: Apply stackable
             switch (alteration.Type)
             {
+                // TODO: HIDE THESE COLLECTIONS!!
                 case AlterationType.PassiveAura:
-                    player.Alteration.ActiveAuras.Add(alteration.AuraEffect);
+                    player.Alteration.ActiveAuras.Add(spell.Id, alteration.AuraEffect);
                     break;
                 case AlterationType.TemporarySource:
                     player.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
                     break;
                 case AlterationType.PassiveSource:
-                    player.Alteration.ActivePassiveEffects.Add(alteration.Effect);
+                    player.Alteration.ActivePassiveEffects.Add(spell.Id, alteration.Effect);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
@@ -180,6 +181,7 @@ namespace Rogue.NET.Core.Logic
             //TODO - apply stackable
             switch (alteration.Type)
             {
+                // TODO: HIDE THESE COLLECTIONS
                 case AlterationType.PassiveAura:
                     // Not supported for Enemy
                     break;
@@ -187,7 +189,7 @@ namespace Rogue.NET.Core.Logic
                     enemy.Alteration.ActiveTemporaryEffects.Add(alteration.Effect);
                     break;
                 case AlterationType.PassiveSource:
-                    enemy.Alteration.ActivePassiveEffects.Add(alteration.Effect);
+                    enemy.Alteration.ActivePassiveEffects.Add(spell.Id, alteration.Effect);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
@@ -347,11 +349,12 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
+                // TODO: HIDE THESE COLLECTIONS
                 case AlterationAttackAttributeType.Imbue:
                     SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Imbue });
                     break;
                 case AlterationAttackAttributeType.Passive:
-                    _modelService.Player.Alteration.AttackAttributePassiveEffects.Add(alteration.Effect);
+                    _modelService.Player.Alteration.AttackAttributePassiveEffects.Add(alteration.Id, alteration.Effect);
                     break;
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                     _modelService.Player.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);
@@ -417,11 +420,12 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
+                // TODO: HIDE THESE COLLECTIONS
                 case AlterationAttackAttributeType.Imbue:
                     // Not supported for Enemy
                     break;
                 case AlterationAttackAttributeType.Passive:
-                    enemy.Alteration.AttackAttributePassiveEffects.Add(alteration.Effect);
+                    enemy.Alteration.AttackAttributePassiveEffects.Add(alteration.Id, alteration.Effect);
                     break;
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                     enemy.Alteration.AttackAttributeTemporaryFriendlyEffects.Add(alteration.Effect);

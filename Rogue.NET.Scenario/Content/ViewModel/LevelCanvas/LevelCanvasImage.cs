@@ -13,5 +13,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             get { return (int)GetValue(ZIndexProperty); }
             set { SetValue(ZIndexProperty, value); }
         }
+
+        public LevelCanvasImage()
+        {
+        }
     }
 }

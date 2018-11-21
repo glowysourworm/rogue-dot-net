@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
                     xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
-                    xmlns:converter="clr-namespace:Rogue.NET.Core.Converter.ScenarioEditor;assembly=Rogue.NET.Core">
-    <converter:SymbolDetailsToImageSourceMultiConverter x:Key="SymbolDetailsToImageSourceMultiConverter" />
+                    xmlns:converter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
+    <converter:SymbolDetailsImageSourceConverter x:Key="SymbolDetailsImageSourceConverter" />
     <DataTemplate x:Key="PlacementItemTemplate">
         <Grid HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
@@ -14,21 +14,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Height="15" Width="10" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                        <Binding Path="Name" />
-                        <Binding Path="SymbolDetails.CharacterSymbol" />
-                        <Binding Path="SymbolDetails.CharacterColor" />
-                        <Binding Path="SymbolDetails.Icon" />
-                        <Binding Path="SymbolDetails.SmileyMood" />
-                        <Binding Path="SymbolDetails.SmileyBodyColor" />
-                        <Binding Path="SymbolDetails.SmileyLineColor" />
-                        <Binding Path="SymbolDetails.SmileyAuraColor" />
-                        <Binding Path="SymbolDetails.Type" />
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
+            <Image Grid.Column="0" Source="{Binding Path=SymbolDetails, Converter={StaticResource SymbolDetailsImageSourceConverter}}" Height="15" Width="10" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
             <TextBlock Grid.Column="1" FontSize="18" Text="{Binding Template.Name}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
             <TextBlock Grid.Column="2" FontSize="18" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <controls:Range DataContext="{Binding Template.Level}" FontSize="18" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />

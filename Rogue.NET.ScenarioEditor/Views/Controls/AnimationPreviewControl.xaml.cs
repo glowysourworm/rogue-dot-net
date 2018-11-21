@@ -1,4 +1,5 @@
 ﻿using ExpressMapper;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
@@ -31,7 +32,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
             this.AnimationSlider.Maximum = viewModel.AnimationTime / 1000.0;
 
-            var model = Mapper.Map<AnimationTemplateViewModel, AnimationTemplate>(viewModel);
+            var model = viewModel.Map<AnimationTemplateViewModel, AnimationTemplate>();
 
             _animation = CreateNewAnimation(model);
             StartAnimation();

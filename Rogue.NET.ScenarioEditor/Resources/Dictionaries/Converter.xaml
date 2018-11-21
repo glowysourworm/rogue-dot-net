@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
+    <scenarioEditorConverter:SymbolDetailsImageSourceConverter x:Key="SymbolDetailsImageSourceConverter" />
+    <scenarioEditorConverter:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
+    <scenarioEditorConverter:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
+</ResourceDictionary>

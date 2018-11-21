@@ -28,6 +28,7 @@ using System;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Scenario.Service.Interface;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -37,7 +38,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
-        readonly ICharacterProcessor _characterProcessor;
         readonly IAnimationGenerator _animationGenerator;
 
         // Identifies the layout entry in the content dictionary
@@ -62,14 +62,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
             IAnimationGenerator animationGenerator,
-            ICharacterProcessor characterProcessor,
             IModelService modelService)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _resourceService = resourceService;
             _modelService = modelService;
             _animationGenerator = animationGenerator;
-            _characterProcessor = characterProcessor;
 
             this.Contents = new ObservableCollection<FrameworkElement>();
             _contentDict = new Dictionary<string, FrameworkElement>();
@@ -382,7 +380,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
         {
             var image = new LevelCanvasImage();
-            image.Source = _resourceService.GetImageSource(scenarioObject);
+            image.Source = _resourceService.GetImageSource(scenarioObject, scenarioObject is Enemy);
             image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
             if (scenarioObject is DoodadBase)
@@ -413,7 +411,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 scenarioObject.SymbolType == SymbolTypes.Smiley)
             {
                 // TODO: Put transform somewhere else
-                var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
+                var character = scenarioObject as Character;
+                var auraRadiusUI = character.GetAuraRadius() * ModelConstants.CELLHEIGHT;
                 var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
 
                 // Make the full size of the level - then apply the level opacity mask drawing
@@ -450,7 +449,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             if (_contentDict.ContainsKey(scenarioObject.Id + AURA_EXT))
             {
                 // TODO: Put transform somewhere else
-                var auraRadiusUI = _characterProcessor.GetAuraRadius(scenarioObject as Character) * ModelConstants.CELLHEIGHT;
+                var auraRadiusUI = (scenarioObject as Character).GetAuraRadius() * ModelConstants.CELLHEIGHT;
                 var cellOffset = new Point(ModelConstants.CELLWIDTH / 2, ModelConstants.CELLHEIGHT / 2);
 
                 var aura = _contentDict[scenarioObject.Id + AURA_EXT] as Rectangle;

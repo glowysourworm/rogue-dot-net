@@ -33,6 +33,7 @@ namespace Rogue.NET.Scenario
         readonly IScenarioController _scenarioController;
         readonly IGameController _gameController;
         readonly IScenarioResourceService _scenarioResourceService;
+        readonly IScenarioFileService _scenarioFileService;
 
         [ImportingConstructor]
         public ScenarioModule(
@@ -40,13 +41,15 @@ namespace Rogue.NET.Scenario
             IEventAggregator eventAggregator,
             IScenarioController scenarioController,
             IGameController gameController,
-            IScenarioResourceService scenarioResourceService)
+            IScenarioResourceService scenarioResourceService,
+            IScenarioFileService scenarioFileService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioController = scenarioController;
             _gameController = gameController;
             _scenarioResourceService = scenarioResourceService;
+            _scenarioFileService = scenarioFileService;
 
             // Halt back end threads on application exit
             Application.Current.Exit += (sender, e) => { _scenarioController.Stop(); };
@@ -127,7 +130,7 @@ namespace Rogue.NET.Scenario
                 if (result == MessageBoxResult.Yes || result == MessageBoxResult.OK)
                 {
                     // Delete the file
-                    _scenarioResourceService.DeleteScenario(e.ScenarioName);
+                    _scenarioFileService.DeleteScenario(e.ScenarioName);
 
                     // Notify listeners
                     _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();

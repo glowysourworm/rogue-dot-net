@@ -4,11 +4,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class ProbabilityEquipmentTemplateViewModel : TemplateViewModel
     {
-        private TemplateViewModel _theTemplate;
+        private EquipmentTemplateViewModel _theTemplate;
         private double _generationProbability;
         private bool _equipOnStartup;
 
-        public TemplateViewModel TheTemplate
+        public EquipmentTemplateViewModel TheTemplate
         {
             get { return _theTemplate; }
             set { this.RaiseAndSetIfChanged(ref _theTemplate, value); }

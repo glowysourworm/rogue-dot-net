@@ -16,6 +16,7 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -29,7 +30,6 @@ namespace Rogue.NET.Core.Logic
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IInteractionProcessor _interactionProcessor;
-        readonly ICharacterProcessor _characterProcessor;
         readonly IPlayerProcessor _playerProcessor;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
@@ -48,7 +48,6 @@ namespace Rogue.NET.Core.Logic
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
             IInteractionProcessor interactionProcessor,
-            ICharacterProcessor characterProcessor,
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,
             IRandomSequenceGenerator randomSequenceGenerator)
@@ -59,7 +58,6 @@ namespace Rogue.NET.Core.Logic
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _interactionProcessor = interactionProcessor;
-            _characterProcessor = characterProcessor;
             _playerProcessor = playerProcessor;
             _alterationProcessor = alterationProcessor;
             _randomSequenceGenerator = randomSequenceGenerator;
@@ -159,6 +157,20 @@ namespace Rogue.NET.Core.Logic
             // Update player stats
             QueueLevelUpdate(LevelUpdateType.PlayerStats, player.Id);
 
+            // TODO: Move this - Process skill learning
+            foreach (var skillSet in player.SkillSets)
+            {
+                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
+                {
+                    _modelService.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
+                    skillSet.IsLearned = true;
+
+                    _scenarioMessageService.UnBlock(false);
+                    _scenarioMessageService.Publish(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
+                    _scenarioMessageService.Block();
+                }
+            }
+
             //I'm Not DEEEAD! (TODO: Make event message specific to what happened)
             if (player.Hunger >= 100 || player.Hp <= 0.1)
                 QueueScenarioPlayerDeath("Had a rough day");
@@ -213,14 +225,14 @@ namespace Rogue.NET.Core.Logic
                 // Enemy gets hit OR dodges
                 var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, enemy);
 
-                if (hit <= 0 || _randomSequenceGenerator.Get() < _characterProcessor.GetDodge(enemy))
+                if (hit <= 0 || _randomSequenceGenerator.Get() < enemy.GetDodge())
                     _scenarioMessageService.Publish(player.RogueName + " Misses");
 
                 // Enemy hit
                 else
                 {
                     //Critical hit
-                    if (_randomSequenceGenerator.Get() < _playerProcessor.GetCriticalHitProbability(player))
+                    if (_randomSequenceGenerator.Get() < player.GetCriticalHitProbability())
                     {
                         hit *= 2;
                         _scenarioMessageService.Publish(player.RogueName + " scores a critical hit!");
@@ -443,13 +455,13 @@ namespace Rogue.NET.Core.Logic
 
                 // Player Misses
                 var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, targetedEnemy);
-                if (hit <= 0 || _randomSequenceGenerator.Get() < _characterProcessor.GetDodge(targetedEnemy))
+                if (hit <= 0 || _randomSequenceGenerator.Get() < targetedEnemy.GetDodge())
                     _scenarioMessageService.Publish(_modelService.Player.RogueName + " Misses");
 
                 // Player Hits Targeted Enemy
                 else
                 {
-                    if (_randomSequenceGenerator.Get() < _playerProcessor.GetCriticalHitProbability(_modelService.Player))
+                    if (_randomSequenceGenerator.Get() < _modelService.Player.GetCriticalHitProbability())
                     {
                         _scenarioMessageService.Publish("You fire your " + rangeWeapon.RogueName + " for a critical hit!");
                         targetedEnemy.Hp -= hit * 2;

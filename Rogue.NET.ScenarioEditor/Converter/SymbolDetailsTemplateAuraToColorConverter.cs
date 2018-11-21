@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Converter.ScenarioEditor
+namespace Rogue.NET.ScenarioEditor.Converter
 {
     public class SymbolDetailsTemplateAuraToColorConverter : IMultiValueConverter
     {

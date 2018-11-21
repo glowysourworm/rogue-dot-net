@@ -3,7 +3,7 @@ using System;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Rogue.NET.Core.Converter.ScenarioEditor
+namespace Rogue.NET.ScenarioEditor.Converter
 {
     public class SymbolEditorVisibilityConverter : IValueConverter
     {

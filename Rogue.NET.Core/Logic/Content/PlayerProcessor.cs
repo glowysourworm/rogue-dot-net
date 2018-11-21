@@ -10,118 +10,27 @@ using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Core.Logic.Content
 {
     [Export(typeof(IPlayerProcessor))]
     public class PlayerProcessor : IPlayerProcessor
     {
-        readonly ICharacterProcessor _characterProcessor;
+        readonly IAlterationProcessor _alterationProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         [ImportingConstructor]
         public PlayerProcessor(
-            ICharacterProcessor characterProcessor, 
+            IAlterationProcessor alterationProcessor,
             IScenarioMessageService scenarioMessageService,
             IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _characterProcessor = characterProcessor;
+            _alterationProcessor = alterationProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
-        }
-
-        public double GetAttackBase(Player player)
-        {
-            return player.StrengthBase;
-        }
-        public double GetDefenseBase(Player player)
-        {
-            return player.StrengthBase / 5.0D;
-        }
-        public double GetAttack(Player player)
-        {
-            double a = _characterProcessor.GetStrength(player);
-
-            foreach (var equipment in player.Equipment.Values.Where(x => x.IsEquipped))
-            {
-                switch (equipment.Type)
-                {
-                    case EquipmentType.OneHandedMeleeWeapon:
-                        a += ((equipment.Class + 1) * equipment.Quality);
-                        break;
-                    case EquipmentType.TwoHandedMeleeWeapon:
-                        a += ((equipment.Class + 1) * equipment.Quality) * 2;
-                        break;
-                    case EquipmentType.RangeWeapon:
-                        a += ((equipment.Class + 1) * equipment.Quality) / 2;
-                        break;
-                }
-            }
-
-            // TODO
-            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
-            //    a += alt.Attack;
-
-            return Math.Max(0, a);
-        }
-        public double GetDefense(Player player)
-        {
-            double defense = _characterProcessor.GetStrength(player) / 5.0D;
-
-            foreach (var equipment in player.Equipment.Values.Where(x => x.IsEquipped))
-            {
-                switch (equipment.Type)
-                {
-                    case EquipmentType.Armor:
-                        defense += ((equipment.Class + 1) * equipment.Quality);
-                        break;
-                    case EquipmentType.Shoulder:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                    case EquipmentType.Boots:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
-                        break;
-                    case EquipmentType.Gauntlets:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
-                        break;
-                    case EquipmentType.Belt:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 8);
-                        break;
-                    case EquipmentType.Shield:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                    case EquipmentType.Helmet:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                }
-            }
-
-            // TODO
-            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
-            //    defense += alt.Defense;
-
-            return Math.Max(0, defense);
-        }
-        public double GetFoodUsagePerTurn(Player player)
-        {
-            double d = player.FoodUsagePerTurnBase + (_characterProcessor.GetHaul(player) / ModelConstants.HAUL_FOOD_USAGE_DIVISOR);
-
-            // TODO
-            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
-            //    d += alt.FoodUsagePerTurn;
-
-            return Math.Max(0, d);
-        }
-        public double GetCriticalHitProbability(Player player)
-        {
-            double d = ModelConstants.CRITICAL_HIT_BASE;
-
-            // TODO
-            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
-            //    d += alt.CriticalHit;
-
-            return Math.Max(0, d);
         }
 
         public double CalculateExperienceNext(Player player)
@@ -188,15 +97,11 @@ namespace Rogue.NET.Core.Logic.Content
 
         public void ApplyEndOfTurn(Player player, bool regenerate)
         {
-            // TODO
-            //this.MalignAuraEffects.Clear();
-            //this.MalignAuraEffects.AddRange(passiveAuraEffects);
-
             //Normal turn stuff
-            player.Hp += _characterProcessor.GetHpRegen(player, regenerate);
-            player.Mp += _characterProcessor.GetMpRegen(player);
+            player.Hp += player.GetHpRegen(regenerate);
+            player.Mp += player.GetMpRegen();
 
-            player.Hunger += GetFoodUsagePerTurn(player);
+            player.Hunger += player.GetFoodUsagePerTurn();
 
             if (player.Experience >= CalculateExperienceNext(player))
             {
@@ -207,89 +112,61 @@ namespace Rogue.NET.Core.Logic.Content
                 player.Mp = player.MpMax;
             }
 
-            // TODO
-            ////Normal temporary effects
-            //for (int i = this.ActiveTemporaryEffects.Count - 1; i >= 0; i--)
-            //{
-            //    //Check temporary event time
-            //    this.ActiveTemporaryEffects[i].EventTime--;
-            //    if (this.ActiveTemporaryEffects[i].EventTime < 0)
-            //    {
-            //        msgs.Add(new LevelMessageEventArgs(this.ActiveTemporaryEffects[i].PostEffectString));
-            //        this.ActiveTemporaryEffects.RemoveAt(i);
-            //    }
-            //}
+            //Normal temporary effects
+            UpdateAlterationEffectCollection(player.Alteration.ActiveTemporaryEffects);
+            UpdateAlterationEffectCollection(player.Alteration.AttackAttributeTemporaryFriendlyEffects);
+            UpdateAlterationEffectCollection(player.Alteration.AttackAttributeTemporaryMalignEffects);
 
-            ////Attack attribute temporary effects
-            //for (int i = this.AttackAttributeTemporaryFriendlyEffects.Count - 1; i >= 0; i--)
-            //{
-            //    this.AttackAttributeTemporaryFriendlyEffects[i].EventTime--;
-            //    if (this.AttackAttributeTemporaryFriendlyEffects[i].EventTime < 0)
-            //    {
-            //        msgs.Add(new LevelMessageEventArgs(this.AttackAttributeTemporaryFriendlyEffects[i].PostEffectString));
-            //        this.AttackAttributeTemporaryFriendlyEffects.RemoveAt(i);
-            //    }
-            //}
-            //for (int i = this.AttackAttributeTemporaryMalignEffects.Count - 1; i >= 0; i--)
-            //{
-            //    this.AttackAttributeTemporaryMalignEffects[i].EventTime--;
-            //    if (this.AttackAttributeTemporaryMalignEffects[i].EventTime < 0)
-            //    {
-            //        msgs.Add(new LevelMessageEventArgs(this.AttackAttributeTemporaryMalignEffects[i].PostEffectString));
-            //        this.AttackAttributeTemporaryMalignEffects.RemoveAt(i);
-            //    }
-            //}
+            //Apply per step alteration costs
+            foreach (AlterationCost alt in player.Alteration.PerStepAlterationCosts.Values)
+            {
+                player.AgilityBase -= alt.Agility;
+                player.AuraRadiusBase -= alt.AuraRadius;
+                player.Experience -= alt.Experience;
+                player.FoodUsagePerTurnBase += alt.FoodUsagePerTurn;
+                player.Hp -= alt.Hp;
+                player.Hunger += alt.Hunger;
+                player.IntelligenceBase -= alt.Intelligence;
+                player.Mp -= alt.Mp;
+                player.StrengthBase -= alt.Strength;
+            }
 
-            ////Apply per step alteration costs
-            //foreach (AlterationCost alt in this.PerStepAlterationCosts)
-            //{
-            //    this.AgilityBase -= alt.Agility;
-            //    this.AuraRadiusBase -= alt.AuraRadius;
-            //    this.Experience -= alt.Experience;
-            //    this.FoodUsagePerTurnBase += alt.FoodUsagePerTurn;
-            //    this.Hp -= alt.Hp;
-            //    this.Hunger += alt.Hunger;
-            //    this.IntelligenceBase -= alt.Intelligence;
-            //    this.Mp -= alt.Mp;
-            //    this.StrengthBase -= alt.Strength;
-            //}
+            //Maintain Passive Effects
+            foreach (var skillSet in player.SkillSets)
+            {
+                // Skill set is turned on; but can't afford the cost
+                if (skillSet.IsTurnedOn && 
+                    !_alterationProcessor.CalculatePlayerMeetsAlterationCost(player, skillSet.GetCurrentSkill().Cost))
+                {
+                    skillSet.IsTurnedOn = false;
 
-            //Maintain aura effects
-            //foreach (SkillSet s in this.Player.Skills)
-            //{
-            //    //Maintain aura effects
-            //    LevelMessageEventArgs args = null;
-            //    if (s.IsTurnedOn && !Calculator.CalculatePlayerMeetsAlterationCost(s.CurrentSkill.Cost, this.Player, out args))
-            //    {
-            //        s.IsTurnedOn = false;
-            //        PublishScenarioMessage(args.Message);
-            //        PublishScenarioMessage("Deactivating " + s.RogueName);
+                    _scenarioMessageService.Publish("Deactivating " + skillSet.RogueName);
 
-            //        if (s.CurrentSkill.Type == AlterationType.PassiveAura)
-            //            this.Player.DeactivatePassiveAura(s.CurrentSkill.Id);
+                    var currentSkill = skillSet.GetCurrentSkill();
 
-            //        else
-            //            this.Player.DeactivatePassiveEffect(s.CurrentSkill.Id);
-            //    }
-            //}
+                    // Remove Per Step Alteration Cost
+                    if (currentSkill.Cost.Type == AlterationCostType.PerStep)
+                        player.Alteration.PerStepAlterationCosts.Remove(currentSkill.Id);
 
-            //Identify new skills
-            //foreach (SkillSet s in this.Player.Skills)
-            //{
-            //    //Check for new learned skills
-            //    if (this.Player.Level >= s.LevelLearned && !s.IsLearned)
-            //    {
-            //        this.Encyclopedia[s.RogueName].IsIdentified = true;
-            //        s.IsLearned = true;
-            //        //OnPlayerAdvancementEvent(this, new PlayerAdvancementEventArgs(this.Player.Rogue2Name + " Has Learned A New Skill!", new string[]{s.Rogue2Name}));
-            //    }
-            //}
+                    // Current turned on skill is a Passive Aura (PLAYER ONLY)
+                    if (currentSkill.Type == AlterationType.PassiveAura)
+                        player.Alteration.ActiveAuras.Remove(currentSkill.Id);
 
-            ////Message for effects that player can't support
-            //foreach (AlterationEffect effect in this.Alterations.Where(alt => !alt.ProjectCharacterCanSupport(this)))
-            //    msgs.Add(new LevelMessageEventArgs(effect.PostEffectString));
+                    // Current turned on skill is a Passive Source (Active Passive Effect)
+                    else if (currentSkill.Type == AlterationType.PassiveSource)
+                        player.Alteration.ActivePassiveEffects.Remove(currentSkill.Id);
 
-            ApplyLimits(player);
+                    // Current turned on skill is a Passive Attack Attribute Effect
+                    else if (currentSkill.Type == AlterationType.AttackAttribute &&
+                             currentSkill.AttackAttributeType == AlterationAttackAttributeType.Passive)
+                        player.Alteration.AttackAttributePassiveEffects.Remove(currentSkill.Id);
+
+                    else
+                        throw new Exception("Trying to Deactivate Unknown Passive Effect Type");
+                }
+            }
+
+            player.ApplyLimits();
         }
         public void ProcessSkillLearning(Player player)
         {
@@ -338,40 +215,22 @@ namespace Rogue.NET.Core.Logic.Content
                 }
             }
         }
-        public void ApplyLimits(Player player)
+
+        private void UpdateAlterationEffectCollection(IList<AlterationEffect> collection)
         {
-            if (player.Hp < 0)
-                player.Hp = 0;
+            for (int i = collection.Count - 1; i >= 0; i--)
+            {
+                //Check temporary event time
+                collection[i].EventTime--;
+                if (collection[i].EventTime <= 0)
+                {
+                    // Publish message after effect wears off
+                    _scenarioMessageService.Publish(collection[i].PostEffectString);
 
-            if (player.Mp < 0)
-                player.Mp = 0;
-
-            if (player.Hp > player.HpMax)
-                player.Hp = player.HpMax;
-
-            if (player.Mp > player.MpMax)
-                player.Mp = player.MpMax;
-
-            if (player.Hunger < 0)
-                player.Hunger = 0;
-
-            if (player.StrengthBase < 0)
-                player.StrengthBase = 0;
-
-            if (player.AgilityBase < 0)
-                player.AgilityBase = 0;
-
-            if (player.IntelligenceBase < 0)
-                player.IntelligenceBase = 0;
-
-            if (player.AuraRadiusBase < 0)
-                player.AuraRadiusBase = 0;
-
-            if (player.FoodUsagePerTurnBase < 0)
-                player.FoodUsagePerTurnBase = 0;
-
-            if (player.Experience < 0)
-                player.Experience = 0;
+                    // Remove the effect
+                    collection.RemoveAt(i);
+                }
+            }
         }
     }
 }

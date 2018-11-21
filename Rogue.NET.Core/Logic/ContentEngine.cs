@@ -10,6 +10,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using System;
@@ -28,7 +29,6 @@ namespace Rogue.NET.Core.Logic
         readonly ISpellEngine _spellEngine;
         readonly IEnemyProcessor _enemyProcessor;
         readonly IPlayerProcessor _playerProcessor;        
-        readonly ICharacterProcessor _characterProcessor;
         readonly IInteractionProcessor _interactionProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
@@ -48,7 +48,6 @@ namespace Rogue.NET.Core.Logic
             ISpellEngine spellEngine,
             IEnemyProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
-            ICharacterProcessor characterProcessor,
             IInteractionProcessor interactionProcessor,
             IScenarioMessageService scenarioMessageService,
             IRandomSequenceGenerator randomSequenceGenerator,
@@ -60,7 +59,6 @@ namespace Rogue.NET.Core.Logic
             _spellEngine = spellEngine;
             _enemyProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
-            _characterProcessor = characterProcessor;
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
@@ -71,8 +69,8 @@ namespace Rogue.NET.Core.Logic
         public void StepOnItem(Character character, ItemBase item)
         {
             var level = _modelService.Level;
-            var haulMax = _characterProcessor.GetHaulMax(character);
-            var projectedHaul = item.Weight + _characterProcessor.GetHaul(character);
+            var haulMax = character.GetHaulMax();
+            var projectedHaul = item.Weight + character.GetHaul();
 
             if (haulMax >= projectedHaul)
             {
@@ -608,7 +606,7 @@ namespace Rogue.NET.Core.Logic
         {
             var player = _modelService.Player;
             var hit = _interactionProcessor.CalculateEnemyHit(player, enemy);
-            var dodge = _randomSequenceGenerator.Get() <= _characterProcessor.GetDodge(player);
+            var dodge = _randomSequenceGenerator.Get() <= player.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CurrentBehavior.CriticalRatio;
 
             if (hit > 0 && !dodge)

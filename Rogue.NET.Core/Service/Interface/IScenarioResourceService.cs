@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -11,46 +11,13 @@ namespace Rogue.NET.Core.Service.Interface
 {
     public interface IScenarioResourceService
     {
-        /// <summary>
-        /// Tells service to load and cache specified configuration.
-        /// </summary>
-        void LoadScenarioConfiguration(ConfigResources configResource);
-
+        void LoadAllConfigurations();
         IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations();
-
-        IDictionary<string, ScenarioFileHeader> GetScenarioHeaders();
-
-        ScenarioConfigurationContainer GetEmbeddedScenarioConfiguration(ConfigResources configResource);
-
-        ScenarioConfigurationContainer OpenScenarioConfigurationFile(string file);
-
-        void SaveConfig(string name, ScenarioConfigurationContainer config);
-
-        void SaveScenarioFile(ScenarioFile scenarioFile, string playerName);
-
-        ScenarioFile OpenScenarioFile(string playerName);
-
-        void DeleteScenario(string name);
-
-        void EmbedConfig(ConfigResources configResource, ScenarioConfigurationContainer config);
-
-        BitmapSource GetImageSource(ScenarioImage scenarioImage);
-
-        BitmapSource GetImageSource(
-                string rogueName,
-                string symbol,
-                string symbolColor,
-                ImageResources icon,
-                SmileyMoods smileyMood,
-                string smileyBodyColor,
-                string smileyLineColor,
-                string smileyAuraColor,
-                SymbolTypes type);
-
-        BitmapSource GetImage(ImageResources imageResources);
-
-        BitmapSource GetImage(string characterSymbol, string characterSymbolColor);
-
+        ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource);
+        ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
+        BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails);
+        BitmapSource GetImageSource(ScenarioImage scenarioImage, bool blackBackground);
+        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage);
         IEnumerable<ColorViewModel> GetColors();
     }
 }

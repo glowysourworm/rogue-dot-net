@@ -46,10 +46,15 @@ namespace Rogue.NET.Core.IO
             return (T)Deserialize(buffer);
         }
 
-        public static object Copy(object obj)
+        public static void SerializeToFile(string file, object obj)
         {
-            var buffer = Serialize(obj);
-            return Deserialize(buffer);
+            File.WriteAllBytes(file, Serialize(obj));
+        }
+
+        public static object DeserializeFromFile(string file)
+        {
+            var bytes = File.ReadAllBytes(file);
+            return Deserialize(bytes);
         }
     }
 }

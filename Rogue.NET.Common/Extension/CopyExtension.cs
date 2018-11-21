@@ -6,6 +6,11 @@ namespace Rogue.NET.Common.Extension
 {
     public static class CopyExtension
     {
+        public static TDest Map<TSource, TDest>(this TSource source)
+        {
+            return Mapper.Map<TSource, TDest>(source);
+        }
+
         public static T Copy<T>(this T source)
         {
             var constructor = typeof(T).GetConstructor(new Type[] { });

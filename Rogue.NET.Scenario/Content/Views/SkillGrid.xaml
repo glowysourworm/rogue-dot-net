@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:commonviews="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
@@ -10,11 +11,13 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/ItemGrid.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary>
+                    <scenarioConverter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
+
                     <Style x:Key="ButtonFocusVisual">
                         <Setter Property="Control.Template">
                             <Setter.Value>
@@ -52,20 +55,8 @@
                     <coreView:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
                     <DataTemplate x:Key="ImageCellTemplate">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <Image VerticalAlignment="Center">
-                                <Image.Source>
-                                    <MultiBinding Converter="{StaticResource SymbolDetailsToImageSourceMultiConverter}">
-                                        <Binding Path="RogueName" />
-                                        <Binding Path="CharacterSymbol" />
-                                        <Binding Path="CharacterColor" />
-                                        <Binding Path="Icon" />
-                                        <Binding Path="SmileyMood"/>
-                                        <Binding Path="SmileyBodyColor" />
-                                        <Binding Path="SmileyLineColor" />
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="SymbolType" />
-                                    </MultiBinding>
-                                </Image.Source>
+                            <Image VerticalAlignment="Center"
+                                   Source="{Binding ScenarioImageViewModelSourceConverter}">
                             </Image>
                         </Grid>
                     </DataTemplate>

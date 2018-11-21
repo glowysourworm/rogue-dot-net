@@ -6,11 +6,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class ProbabilityEquipmentTemplate : Template
     {
-        private Template _theTemplate;
+        private EquipmentTemplate _theTemplate;
         private double _generationProbability;
         private bool _equipOnStartup;
 
-        public Template TheTemplate
+        public EquipmentTemplate TheTemplate
         {
             get { return _theTemplate; }
             set

@@ -87,12 +87,11 @@
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\RadioButtonEnumConverter.cs" />
-    <Compile Include="Converter\ScenarioEditor\SymbolDetailsToImageSourceMultiConverter.cs" />
-    <Compile Include="Converter\ScenarioEditor\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Converter\ScenarioImageElementConverter.cs" />
+    <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
-    <Compile Include="Converter\ScenarioEditor\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\StringColorConverter.cs" />
     <Compile Include="Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Event\ExitEvent.cs" />
@@ -124,6 +123,9 @@
     <Compile Include="Event\Scenario\Event\RemoveScenarioObjectEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="Extension\SerializerExtension.cs" />
+    <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
+    <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
     <Compile Include="IO\BinarySerializer.cs" />
     <Compile Include="Logic\Content\Interface\IItemProcessor.cs" />
@@ -153,11 +155,9 @@
     <Compile Include="Logic\Processing\LevelUpdate.cs" />
     <Compile Include="Logic\Processing\Enum\LevelUpdateType.cs" />
     <Compile Include="Logic\Content\AlterationProcessor.cs" />
-    <Compile Include="Logic\Content\CharacterProcessor.cs" />
     <Compile Include="Logic\Content\EnemyProcessor.cs" />
     <Compile Include="Logic\Content\InteractionProcessor.cs" />
     <Compile Include="Logic\Content\Interface\IAlterationProcessor.cs" />
-    <Compile Include="Logic\Content\Interface\ICharacterProcessor.cs" />
     <Compile Include="Logic\Content\Interface\IEnemyProcessor.cs" />
     <Compile Include="Logic\Content\Interface\IInteractionProcessor.cs" />
     <Compile Include="Logic\Content\Interface\IPlayerProcessor.cs" />
@@ -244,6 +244,9 @@
     <Compile Include="Model\Scenario\Character\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\BehaviorDetails.cs" />
     <Compile Include="Model\Scenario\Character\Character.cs" />
+    <Compile Include="Model\Scenario\Character\Extension\CharacterExtension.cs" />
+    <Compile Include="Model\Scenario\Character\Extension\EnemyExtension.cs" />
+    <Compile Include="Model\Scenario\Character\Extension\PlayerExtension.cs" />
     <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
     <Compile Include="Model\Scenario\Character\Enemy.cs" />
     <Compile Include="Model\Scenario\Character\Player.cs" />
@@ -272,10 +275,12 @@
     <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Interface\IModelService.cs" />
+    <Compile Include="Service\Interface\IScenarioFileService.cs" />
     <Compile Include="Service\Interface\IScenarioResourceService.cs" />
     <Compile Include="Service\Interface\IScenarioMessageService.cs" />
     <Compile Include="Service\Interface\IScenarioService.cs" />
     <Compile Include="Service\ModelService.cs" />
+    <Compile Include="Service\ScenarioFileService.cs" />
     <Compile Include="Service\ScenarioResourceService.cs" />
     <Compile Include="Service\ScenarioMessageService.cs" />
     <Compile Include="Service\ScenarioService.cs" />
@@ -298,11 +303,6 @@
     <Page Include="Resource\Converter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resource\ItemGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="Resource\ShinySmileyButton.xaml">
       <Generator>MSBuild:Compile</Generator>

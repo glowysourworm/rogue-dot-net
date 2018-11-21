@@ -1,30 +1,27 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Scenario.Character;
+﻿using Rogue.NET.Core.Model.Enums;
 using System;
-using System.ComponentModel.Composition;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Rogue.NET.Core.Logic.Content
+namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
-    [Export(typeof(ICharacterProcessor))]
-    public class CharacterProcessor : ICharacterProcessor
+    public static class CharacterExtension
     {
-        public CharacterProcessor() { }
-
-        public double GetMagicBlockBase(Character character)
+        public static double GetMagicBlockBase(this Character character)
         {
             return character.IntelligenceBase / 100;
         }
-        public double GetDodgeBase(Character character)
+        public static double GetDodgeBase(this Character character)
         {
             return character.AgilityBase / 100;
         }
-        public double GetHaulMax(Character character)
+        public static double GetHaulMax(this Character character)
         {
-            return character.StrengthBase * ModelConstants.HAUL_STRENGTH_MULTIPLIER;
+            return character.StrengthBase * ModelConstants.HaulMaxStrengthMultiplier;
         }
-        public double GetMpRegen(Character character)
+        public static double GetMpRegen(this Character character)
         {
             var result = character.MpRegenBase;
 
@@ -34,7 +31,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             return result;
         }
-        public double GetHpRegen(Character character, bool regenerate)
+        public static double GetHpRegen(this Character character, bool regenerate)
         {
             double d = regenerate ? character.HpRegenBase : 0;
 
@@ -75,7 +72,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             return d;
         }
-        public double GetStrength(Character character)
+        public static double GetStrength(this Character character)
         {
             double result = character.StrengthBase;
 
@@ -84,7 +81,11 @@ namespace Rogue.NET.Core.Logic.Content
 
             return Math.Max(0.1, result);
         }
-        public double GetAgility(Character character)
+        public static double GetStrengthBase(this Character character)
+        {
+            return character.StrengthBase;
+        }
+        public static double GetAgility(this Character character)
         {
             double d = character.AgilityBase;
 
@@ -93,7 +94,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             return Math.Max(0.1, d);
         }
-        public double GetIntelligence(Character character)
+        public static double GetIntelligence(this Character character)
         {
             double d = character.IntelligenceBase;
 
@@ -102,7 +103,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             return Math.Max(0.1, d);
         }
-        public double GetAuraRadius(Character character)
+        public static double GetAuraRadius(this Character character)
         {
             double d = character.AuraRadiusBase;
 
@@ -111,28 +112,112 @@ namespace Rogue.NET.Core.Logic.Content
 
             return Math.Max(0, d);
         }
-        public double GetMagicBlock(Character character)
+        public static double GetMagicBlock(this Character character)
         {
-            double d = this.GetIntelligence(character) / 100;
+            double d = GetIntelligence(character) / 100;
 
             //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
             //    d += alt.MagicBlockProbability;
 
             return Math.Max(Math.Min(1, d), 0);
         }
-        public double GetDodge(Character character)
+        public static double GetDodge(this Character character)
         {
-            double d = this.GetAgility(character) / 100;
+            double d = GetAgility(character) / 100;
 
             //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
             //    d += alt.DodgeProbability;
 
             return Math.Max(Math.Min(1, d), 0);
         }
-        public double GetHaul(Character character)
+        public static double GetHaul(this Character character)
         {
             return character.Equipment.Values.Sum(x => x.Weight) +
                    character.Consumables.Values.Sum(x => x.Weight);
+        }
+
+        public static double GetAttack(this Character character)
+        {
+            double a = character.GetStrength();
+
+            foreach (var equipment in character.Equipment.Values.Where(x => x.IsEquipped))
+            {
+                switch (equipment.Type)
+                {
+                    case EquipmentType.OneHandedMeleeWeapon:
+                        a += ((equipment.Class + 1) * equipment.Quality);
+                        break;
+                    case EquipmentType.TwoHandedMeleeWeapon:
+                        a += ((equipment.Class + 1) * equipment.Quality) * 2;
+                        break;
+                    case EquipmentType.RangeWeapon:
+                        a += ((equipment.Class + 1) * equipment.Quality) / 2;
+                        break;
+                }
+            }
+
+            // TODO
+            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
+            //    a += alt.Attack;
+
+            return Math.Max(0, a);
+        }
+        public static double GetAttackBase(this Character character)
+        {
+            return character.StrengthBase;
+        }
+        public static double GetDefense(this Character character)
+        {
+            double defense = character.GetStrength() / 5.0D;
+
+            foreach (var equipment in character.Equipment.Values.Where(x => x.IsEquipped))
+            {
+                switch (equipment.Type)
+                {
+                    case EquipmentType.Armor:
+                        defense += ((equipment.Class + 1) * equipment.Quality);
+                        break;
+                    case EquipmentType.Shoulder:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
+                        break;
+                    case EquipmentType.Boots:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
+                        break;
+                    case EquipmentType.Gauntlets:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
+                        break;
+                    case EquipmentType.Belt:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 8);
+                        break;
+                    case EquipmentType.Shield:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
+                        break;
+                    case EquipmentType.Helmet:
+                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
+                        break;
+                }
+            }
+
+            // TODO
+            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
+            //    defense += alt.Defense;
+
+            return Math.Max(0, defense);
+        }
+        public static double GetDefenseBase(this Character character)
+        {
+            return character.GetStrengthBase() / 5.0D;
+        }
+
+        public static double GetCriticalHitProbability(this Character character)
+        {
+            double d = ModelConstants.CRITICAL_HIT_BASE;
+
+            // TODO
+            //foreach (AlterationEffect alt in this.Alterations.Where(alt => alt.ProjectCharacterCanSupport(this)))
+            //    d += alt.CriticalHit;
+
+            return Math.Max(0, d);
         }
 
         // TODO

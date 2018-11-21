@@ -17,7 +17,8 @@ namespace Rogue.NET.Intro.ViewModel
     [Export]
     public class GameSetupViewModel : NotifyViewModel
     {
-        readonly IScenarioResourceService _resourceService;
+        readonly IScenarioResourceService _scenarioResourceService;
+        readonly IScenarioFileService _scenarioFileService;
         readonly IEventAggregator _eventAggregator;
 
         #region Nested Classes
@@ -167,9 +168,10 @@ namespace Rogue.NET.Intro.ViewModel
         #endregion
 
         [ImportingConstructor]
-        public GameSetupViewModel(IScenarioResourceService resourceService, IEventAggregator eventAggregator)
+        public GameSetupViewModel(IScenarioResourceService scenarioResourceService, IScenarioFileService scenarioFileService, IEventAggregator eventAggregator)
         {
-            _resourceService = resourceService;
+            _scenarioFileService = scenarioFileService;
+            _scenarioResourceService = scenarioResourceService;
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe(() =>
@@ -195,7 +197,7 @@ namespace Rogue.NET.Intro.ViewModel
             this.Scenarios.Clear();
             this.Configs.Clear();
 
-            foreach (var header in _resourceService.GetScenarioHeaders())
+            foreach (var header in _scenarioFileService.GetScenarioHeaders())
             {
                 this.Scenarios.Add(new ScenarioSelectionViewModel(_eventAggregator)
                 {
@@ -205,7 +207,7 @@ namespace Rogue.NET.Intro.ViewModel
                 });
             }
 
-            foreach (var config in _resourceService.GetScenarioConfigurations())
+            foreach (var config in _scenarioResourceService.GetScenarioConfigurations())
             {
                 this.Configs.Add(new ScenarioSelectionViewModel(_eventAggregator)
                 {

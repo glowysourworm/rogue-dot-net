@@ -8,8 +8,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     public class PlayerAlteration : CharacterAlteration
     {
         /// <summary>
-        /// List of all active auras (PLAYER ONLY)
+        /// List of all active auras (PLAYER ONLY) - managed via Spell.Id
         /// </summary>
-        public List<AlterationEffect> ActiveAuras { get; set; }
+        public IDictionary<string, AlterationEffect> ActiveAuras { get; set; }
+
+        public PlayerAlteration() : base()
+        {
+            this.ActiveAuras = new Dictionary<string, AlterationEffect>();
+        }
     }
 }

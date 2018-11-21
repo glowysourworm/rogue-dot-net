@@ -198,8 +198,9 @@
     <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
+    <Compile Include="Converter\ItemGridRowImageSourceConverter.cs" />
     <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
-    <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
+    <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />
@@ -320,6 +321,11 @@
     <Page Include="Outro\Views\Outro.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Dictionaries\ItemGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Resource Include="Resources\Dictionaries\Game.xaml">
       <Generator>MSBuild:Compile</Generator>

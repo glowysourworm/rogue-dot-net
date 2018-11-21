@@ -27,7 +27,8 @@ namespace Rogue.NET.Scenario.Controller
     [Export(typeof(IGameController))]
     public class GameController : IGameController
     {
-        readonly IScenarioResourceService _resourceService;
+        readonly IScenarioResourceService _scenarioResourceService;
+        readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioStatisticsService _statisticsService;
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
@@ -41,6 +42,7 @@ namespace Rogue.NET.Scenario.Controller
         [ImportingConstructor]
         public GameController(
             IScenarioResourceService resourceService,
+            IScenarioFileService scenarioFileService,
             IScenarioStatisticsService scenarioStatisticsService,
             IEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
@@ -48,7 +50,8 @@ namespace Rogue.NET.Scenario.Controller
             IModelService modelService)
         {
             _statisticsService = scenarioStatisticsService;
-            _resourceService = resourceService;
+            _scenarioFileService = scenarioFileService;
+            _scenarioResourceService = resourceService;
             _eventAggregator = eventAggregator;
             _scenarioGenerator = scenarioGenerator;
             _scenarioController = scenarioController;
@@ -71,7 +74,7 @@ namespace Rogue.NET.Scenario.Controller
             // New
             _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
             {
-                var config = _resourceService.GetScenarioConfigurations().FirstOrDefault(c => c.DungeonTemplate.Name == e.ScenarioName);
+                var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
                     New(config, e.RogueName, e.Seed, e.SurvivorMode);
             }, true);
@@ -211,7 +214,7 @@ namespace Rogue.NET.Scenario.Controller
             }
 
             //Read dungeon file - TODO: Handle exceptions
-            _scenarioFile = _resourceService.OpenScenarioFile(playerName);
+            _scenarioFile = _scenarioFileService.OpenScenarioFile(playerName);
 
             if (_scenarioFile == null)
                 return;
@@ -244,7 +247,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioFile.Update(_scenarioContainer);
 
             // Save scenario file to disk
-            _resourceService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player1.RogueName);
+            _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player1.RogueName);
 
             // Hide Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
