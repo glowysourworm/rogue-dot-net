@@ -1,5 +1,4 @@
-﻿using ExpressMapper;
-using Prism.Events;
+﻿using Prism.Events;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -9,6 +8,7 @@ using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.ComponentModel.Composition;
@@ -24,6 +24,8 @@ namespace Rogue.NET.Controller.ScenarioEditor
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
 
+        readonly ScenarioConfigurationMapper _configurationMapper;
+
         ScenarioConfigurationContainerViewModel _config;
 
         [ImportingConstructor]
@@ -37,6 +39,8 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _rogueUndoService = rogueUndoService;
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
+
+            _configurationMapper = new ScenarioConfigurationMapper();
 
             Initialize();
         }
@@ -105,7 +109,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 config = _scenarioFileService.OpenConfiguration(name);
 
             // Map to the view model
-            _config = Mapper.Map<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(config);
+            _config = _configurationMapper.Map(config);
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
@@ -138,7 +142,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
 
             // Map back to the model namespace
-            var config = Mapper.Map<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(_config);
+            var config = _configurationMapper.MapBack(_config);
 
             // Save the configuration
             if (builtInScenario)

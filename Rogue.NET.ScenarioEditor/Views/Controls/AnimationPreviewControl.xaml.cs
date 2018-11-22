@@ -1,5 +1,4 @@
-﻿using ExpressMapper;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;

@@ -31,11 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AgileObjects.AgileMapper, Version=0.28.0.0, Culture=neutral, PublicKeyToken=40b730fcfbe52fee, processorArchitecture=MSIL">
+      <HintPath>..\packages\AgileObjects.AgileMapper.0.28.0\lib\net40\AgileObjects.AgileMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AgileObjects.NetStandardPolyfills, Version=1.4.0.0, Culture=neutral, PublicKeyToken=06131ac1c008ad4e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AgileObjects.NetStandardPolyfills.1.4.0\lib\net40\AgileObjects.NetStandardPolyfills.dll</HintPath>
+    </Reference>
+    <Reference Include="AgileObjects.ReadableExpressions, Version=1.12.1.0, Culture=neutral, PublicKeyToken=9f54ad81db69da8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\AgileObjects.ReadableExpressions.1.12.1\lib\net40\AgileObjects.ReadableExpressions.dll</HintPath>
+    </Reference>
     <Reference Include="Dotway.WPF.Effects">
       <HintPath>..\Dependencies\Dotway.WPF.Effects.dll</HintPath>
-    </Reference>
-    <Reference Include="ExpressMapper, Version=1.9.1.0, Culture=neutral, PublicKeyToken=ac363faa09311ba0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Expressmapper.1.9.1\lib\net45\ExpressMapper.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -163,7 +169,7 @@
     <Compile Include="Extension\Prism\Transition.cs" />
     <Compile Include="Extension\Prism\TransitionPresenter.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
-    <Compile Include="Extension\CopyExtension.cs" />
+    <Compile Include="Extension\MapperExtension.cs" />
     <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\ConstantStrings.cs" />
     <Compile Include="Utility\ResourceConstants.cs" />

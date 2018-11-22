@@ -10,13 +10,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using System;
-using ExpressMapper;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -473,7 +473,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
                 // Update
                 else
-                    Mapper.Map<TSource, TDest>(item, destItem);
+                    item.Update(destItem);
             }
             for (int i = destCollection.Count - 1; i >= 0; i--)
             {

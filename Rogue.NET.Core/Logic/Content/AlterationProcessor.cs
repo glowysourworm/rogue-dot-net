@@ -1,5 +1,4 @@
-﻿using ExpressMapper;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;

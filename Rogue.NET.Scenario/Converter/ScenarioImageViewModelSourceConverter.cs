@@ -1,16 +1,9 @@
-﻿using ExpressMapper;
-using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Converter;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Rogue.NET.Scenario.Converter
@@ -23,7 +16,18 @@ namespace Rogue.NET.Scenario.Converter
             if (viewModel == null)
                 return null;
 
-            var model = viewModel.Map<ScenarioImageViewModel, ScenarioImage>();
+            var model = new ScenarioImage()
+            {
+                CharacterColor = viewModel.CharacterColor,
+                CharacterSymbol = viewModel.CharacterSymbol,
+                Icon = viewModel.Icon,
+                SmileyMood = viewModel.SmileyMood,
+                SmileyBodyColor = viewModel.SmileyBodyColor,
+                SmileyLineColor = viewModel.SmileyLineColor,
+                SmileyAuraColor = viewModel.SmileyAuraColor,
+                SymbolType = viewModel.SymbolType,
+                RogueName = viewModel.RogueName
+            };
             var converter = new ScenarioImageSourceConverter();
             return converter.Convert(model, targetType, parameter, culture);
         }
