@@ -26,7 +26,20 @@
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <Image Margin="10" Source="{Binding Path=SymbolDetails, Converter={StaticResource SymbolDetailsImageSourceConverter}}" />
+            <Image Margin="10">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                        <Binding Path="SymbolDetails.CharacterSymbol" />
+                        <Binding Path="SymbolDetails.CharacterColor" />
+                        <Binding Path="SymbolDetails.Icon" />
+                        <Binding Path="SymbolDetails.SmileyMood" />
+                        <Binding Path="SymbolDetails.SmileyBodyColor" />
+                        <Binding Path="SymbolDetails.SmileyLineColor" />
+                        <Binding Path="SymbolDetails.SmileyAuraColor" />
+                        <Binding Path="SymbolDetails.Type" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
             <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="18" />
         </StackPanel>
         <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />

@@ -66,8 +66,19 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Background="Transparent">
-                                                <Image HorizontalAlignment="Left"
-                                                       Source="{Binding SymbolDetails, Converter={StaticResource SymbolDetailsImageSourceConverter}}">
+                                                <Image HorizontalAlignment="Left">
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                                            <Binding Path="SymbolDetails.Icon" />
+                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                            <Binding Path="SymbolDetails.Type" />
+                                                        </MultiBinding>
+                                                    </Image.Source>
                                                 </Image>
                                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="36,0,0,0" />
                                             </Grid>

@@ -245,6 +245,7 @@
     <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
     <Compile Include="Controller\ScenarioAssetController.cs" />
     <Compile Include="Converter\SymbolDetailsImageSourceConverter.cs" />
+    <Compile Include="Converter\SymbolDetailsMultiConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />

@@ -4,4 +4,5 @@
     <scenarioEditorConverter:SymbolDetailsImageSourceConverter x:Key="SymbolDetailsImageSourceConverter" />
     <scenarioEditorConverter:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <scenarioEditorConverter:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
+    <scenarioEditorConverter:SymbolDetailsMultiConverter x:Key="SymbolDetailsMultiConverter" />
 </ResourceDictionary>
