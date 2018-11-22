@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Interface
 {

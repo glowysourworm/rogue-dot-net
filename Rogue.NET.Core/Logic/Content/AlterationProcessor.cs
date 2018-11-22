@@ -230,8 +230,6 @@ namespace Rogue.NET.Core.Logic.Content
             player.AgilityBase += alterationEffect.Agility;
             player.AuraRadiusBase += alterationEffect.AuraRadius;
             player.FoodUsagePerTurnBase += alterationEffect.FoodUsagePerTurn;
-
-            //Blockable - if negative then block a fraction of the amount (TODO)
             player.Experience += alterationEffect.Experience;
             player.Hunger += alterationEffect.Hunger;
             player.Hp += alterationEffect.Hp;

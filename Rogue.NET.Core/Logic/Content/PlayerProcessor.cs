@@ -123,7 +123,7 @@ namespace Rogue.NET.Core.Logic.Content
             // Normal temporary effects
             var effectsFinished = player.Alteration.DecrementEventTimes();
 
-            // Display PostEffect Messages - TODO: Calculate reverse effect
+            // Display PostEffect Messages
             foreach (var effect in effectsFinished)
                 _scenarioMessageService.Publish(effect.PostEffectString);
 

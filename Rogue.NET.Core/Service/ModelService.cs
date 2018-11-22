@@ -36,6 +36,9 @@ namespace Rogue.NET.Core.Service
         // Collection of targeted enemies
         IList<Enemy> _targetedEnemies;
 
+        // Enemy to have slain the player
+        private Enemy _finalEnemy;
+
         [ImportingConstructor]
         public ModelService(ILayoutEngine layoutEngine, IRayTracer rayTracer)
         {
@@ -115,6 +118,14 @@ namespace Rogue.NET.Core.Service
         public void ClearTargetedEnemies()
         {
             _targetedEnemies.Clear();
+        }
+        public Enemy GetFinalEnemy()
+        {
+            return _finalEnemy;
+        }
+        public void SetFinalEnemy(Enemy enemy)
+        {
+            _finalEnemy = enemy;
         }
         public IEnumerable<Enemy> GetVisibleEnemies()
         {

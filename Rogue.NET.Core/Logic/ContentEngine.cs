@@ -631,6 +631,9 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(enemy.RogueName + " attacks");
 
                 player.Hp -= hit;
+
+                if (player.Hp <= 0)
+                    _modelService.SetFinalEnemy(enemy);
             }
             else
                 _scenarioMessageService.Publish(enemy.RogueName + " Misses");
@@ -713,11 +716,8 @@ namespace Rogue.NET.Core.Logic
                 // Can open the door where the enemy is at
                 else
                 {
-                    // Open the door
+                    // Open the door -> Notifies UI listeners
                     _layoutEngine.ToggleDoor(_modelService.Level.Grid, moveDirection, enemy.Location);
-
-                    // Notify listener queue
-                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
                 }
             }
             else if (!throughDoor &&

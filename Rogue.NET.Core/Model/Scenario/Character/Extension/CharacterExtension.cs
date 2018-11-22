@@ -49,14 +49,5 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             else
                 return (character as Player).GetAuraRadius();
         }
-
-        // TODO
-        //public bool IsMuted
-        //{
-        //    get
-        //    {
-        //        return this.States.Any(z => z == CharacterStateType.Silenced);
-        //    }
-        //}
     }
 }

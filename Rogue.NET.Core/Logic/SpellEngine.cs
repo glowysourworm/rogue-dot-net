@@ -12,6 +12,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Service.Interface;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -86,7 +87,6 @@ namespace Rogue.NET.Core.Logic
 
             return LevelContinuationAction.ProcessTurn;
         }
-        //Used for item throw effects
         public LevelContinuationAction QueueEnemyMagicSpell(Enemy enemy, Spell spell)
         {
             // Cost will be applied on turn - after animations are processed
@@ -181,7 +181,7 @@ namespace Rogue.NET.Core.Logic
                 return;
             }
 
-            //TBD - Show Stackable Alterations when NOT applied
+            //TBD - Show Stackable Alterations (in Dialog) when NOT applied
             switch (alteration.Type)
             {
                 case AlterationType.PassiveAura:
@@ -226,6 +226,9 @@ namespace Rogue.NET.Core.Logic
                     ProcessEnemyAttackAttributeEffect(enemy, alteration);
                     break;
             }
+
+            if (_modelService.Player.Hp <= 0)
+                _modelService.SetFinalEnemy(enemy);
         }
         private void ProcessPlayerTargetAlteration(AlterationContainer alteration)
         {

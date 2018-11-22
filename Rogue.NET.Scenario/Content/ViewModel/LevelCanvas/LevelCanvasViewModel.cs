@@ -191,6 +191,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     // TODO
                     break;
                 case LevelUpdateType.LayoutTopology:
+                    // TODO: Find better place for these. Design issue!
+                    _modelService.UpdateVisibleLocations();
+                    _modelService.UpdateContents();
+
                     DrawLayout();
                     UpdateLayoutVisibility();
                     break;
@@ -266,7 +270,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             doorsPath.Data = doorsGeometry;
             doorsPath.Fill = Brushes.Transparent;
             doorsPath.Stroke = Brushes.Magenta;
-            doorsPath.StrokeThickness = 2;
+            doorsPath.StrokeThickness = 3;
 
             // Update collections
             UpdateOrAddContent(WALLS_KEY, wallsPath);

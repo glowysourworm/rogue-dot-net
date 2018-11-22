@@ -28,7 +28,8 @@ namespace Rogue.NET.Core.Logic
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
-        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, IScenarioMessageService scenarioMessageService)
+        public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, 
+                            IScenarioMessageService scenarioMessageService)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _scenarioMessageService = scenarioMessageService;

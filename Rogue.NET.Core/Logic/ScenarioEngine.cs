@@ -158,9 +158,15 @@ namespace Rogue.NET.Core.Logic
             // Update player stats
             QueueLevelUpdate(LevelUpdateType.PlayerStats, player.Id);
 
-            //I'm Not DEEEAD! (TODO: Make event message specific to what happened)
+            //I'm Not DEEEAD!
             if (player.Hunger >= 100 || player.Hp <= 0.1)
-                QueueScenarioPlayerDeath("Had a rough day");
+            {
+                var finalEnemy = _modelService.GetFinalEnemy();
+                if (finalEnemy != null)
+                    QueueScenarioPlayerDeath("Killed by a(n) " + finalEnemy.RogueName);
+                else
+                    QueueScenarioPlayerDeath("Had a rough day");
+            }
 
             // Apply End-Of-Turn for the Level content
             _contentEngine.ApplyEndOfTurn();
@@ -228,16 +234,6 @@ namespace Rogue.NET.Core.Logic
                         _scenarioMessageService.Publish(player.RogueName + " attacks");
 
                     enemy.Hp -= hit;
-
-                    // TODO - process alterations attached to the player's equipment
-                    //IEnumerable<Equipment> magicWeapons = this.Player.EquipmentInventory.Where(eq => eq.HasAttackSpell && eq.IsEquiped);
-                    //foreach (Equipment eq in magicWeapons)
-                    //{
-                    //    //Set target so the enemy is processed with the spell
-                    //    //e.IsTargeted = true;
-
-                    //    ProcessPlayerMagicSpell(eq.AttackSpell);
-                    //}
                 }
 
                 // Enemy counter-attacks
@@ -533,26 +529,21 @@ namespace Rogue.NET.Core.Logic
             if (!isActive && !activate)
                 return;
 
-            //Good measure - set non active for all skill sets
+            // Good measure - set non active for all skill sets
             foreach (var playerSkillSet in _modelService.Player.SkillSets)
                 playerSkillSet.IsActive = false;
 
-            //Shut off aura effects
-            foreach (var s in _modelService.Player.SkillSets)
+            // Maintain Passive Effects
+            foreach (var skillSets in _modelService.Player.SkillSets)
             {
-                //Maintain aura effects
-                if (s.IsTurnedOn)
+                if (skillSets.IsTurnedOn)
                 {
 
-                    s.IsTurnedOn = false;
-                    _scenarioMessageService.Publish("Deactivating " + s.RogueName);
+                    skillSets.IsTurnedOn = false;
+                    _scenarioMessageService.Publish("Deactivating " + skillSets.RogueName);
 
-                    // TODO
-                    //if (s.CurrentSkill.Type == AlterationType.PassiveAura)
-                    //    this.Player.DeactivatePassiveAura(s.CurrentSkill.Id);
-
-                    //else
-                    //    this.Player.DeactivatePassiveEffect(s.CurrentSkill.Id);
+                    // Pass-Through method is Safe to call
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSets.GetCurrentSkill().Id);
                 }
             }
 
@@ -592,7 +583,7 @@ namespace Rogue.NET.Core.Logic
             if (activeSkillSet == null)
             {
                 _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
-                return LevelContinuationAction.ProcessTurn;
+                return LevelContinuationAction.DoNothing;
             }
 
             // No Current Skill (Could throw Exception)
@@ -600,18 +591,21 @@ namespace Rogue.NET.Core.Logic
             if (currentSkill == null)
             {
                 _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
-                return LevelContinuationAction.ProcessTurn;
+                return LevelContinuationAction.DoNothing;
             }
 
             var enemyTargeted = _modelService.GetTargetedEnemies().FirstOrDefault();
 
             // Requires Target
             if (_alterationProcessor.CalculateSpellRequiresTarget(activeSkillSet.GetCurrentSkill()) && enemyTargeted == null)
+            {
                 _scenarioMessageService.Publish(activeSkillSet.RogueName + " requires a targeted enemy");
+                return LevelContinuationAction.DoNothing;
+            }
 
             // Meets Alteration Cost?
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, currentSkill.Cost))
-                return LevelContinuationAction.ProcessTurn;
+                return LevelContinuationAction.DoNothing;
 
             // For passives - work with IsTurnedOn flag
             if (activeSkillSet.GetCurrentSkill().Type == AlterationType.PassiveAura ||
@@ -621,8 +615,10 @@ namespace Rogue.NET.Core.Logic
                 if (activeSkillSet.IsTurnedOn)
                 {
                     _scenarioMessageService.Publish("Deactivating - " + activeSkillSet.RogueName);
-                    // TODO
-                    //this.Player.DeactivatePassiveEffect(activeSkillSet.CurrentSkill.Id);
+
+                    // Pass - through method is safe
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(activeSkillSet.GetCurrentSkill().Id);
+
                     activeSkillSet.IsTurnedOn = false;
                 }
                 // Turn on the passive and queue processing

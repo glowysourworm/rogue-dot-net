@@ -80,6 +80,16 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<Enemy> GetTargetedEnemies();
 
         /// <summary>
+        /// Returns enemy to have slain the Player
+        /// </summary>
+        Enemy GetFinalEnemy();
+
+        /// <summary>
+        /// Sets enemy to have slain the Player
+        /// </summary>
+        void SetFinalEnemy(Enemy enemy);
+
+        /// <summary>
         /// Sets enemy targeted
         /// </summary>
         void SetTargetedEnemy(Enemy enemy);

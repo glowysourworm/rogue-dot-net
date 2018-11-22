@@ -170,23 +170,6 @@ namespace Rogue.NET.Scenario.Content.Views
             base.OnPreviewMouseLeftButtonUp(e);
             _mouseDownWithControl = false;
         }
-
-        //protected override void OnMouseWheel(MouseWheelEventArgs e)
-        //{
-        //    base.OnMouseWheel(e);
-
-        //    var scale = (e.Delta > 0) ? 1.05 : 0.95;
-
-        //    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-        //    {
-        //        _scaleXform.ScaleX *= scale;
-        //        _scaleXform.ScaleY *= scale;
-
-        //        // TODO
-        //        //_translateXform.X += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Width);
-        //        //_translateXform.Y += (scale > 1 ? 1 : -1) * (scale * 0.05 * this.RenderSize.Height);
-        //    }
-        //}
     }
 }
 

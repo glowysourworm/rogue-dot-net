@@ -27,10 +27,6 @@ namespace Rogue.NET.Core.Model.Generator
 
             for (int i = 0; i < configuration.DungeonTemplate.NumberOfLevels; i++)
             {
-                // TODO Update progress
-                //progress = (double)i / (double)config.DungeonTemplate.NumberOfLevels / 2.0D;
-                //base.PublishLoadingMessage("Generating Scenario Level Layouts", progress);
-
                 var levelNumber = i + 1;
 
                 // Layout templates in range
