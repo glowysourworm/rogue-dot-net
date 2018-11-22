@@ -38,7 +38,6 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var equipment in configuration.EquipmentTemplates)
             {
                 equipment.AmmoTemplate.AmmoSpellTemplate = MatchByName(collection, equipment.AmmoTemplate.AmmoSpellTemplate);
-                equipment.AttackSpell = MatchByName(collection, equipment.AttackSpell);
                 equipment.CurseSpell = MatchByName(collection, equipment.CurseSpell);
                 equipment.EquipSpell = MatchByName(collection, equipment.EquipSpell);
             }

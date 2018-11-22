@@ -15,12 +15,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _quality;
         private EquipmentType _type;
         private SpellTemplateViewModel _equipSpell;
-        private SpellTemplateViewModel _attackSpell;
         private SpellTemplateViewModel _curseSpell;
         private ConsumableTemplateViewModel _ammoTemplate;
         private double _weight;
         private bool _hasEquipSpell;
-        private bool _hasAttackSpell;
         private bool _hasCurseSpell;
 
         public RangeViewModel<int> Class
@@ -48,11 +46,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _equipSpell; }
             set { this.RaiseAndSetIfChanged(ref _equipSpell, value); }
         }
-        public SpellTemplateViewModel AttackSpell
-        {
-            get { return _attackSpell; }
-            set { this.RaiseAndSetIfChanged(ref _attackSpell, value); }
-        }
         public SpellTemplateViewModel CurseSpell
         {
             get { return _curseSpell; }
@@ -68,11 +61,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasEquipSpell; }
             set { this.RaiseAndSetIfChanged(ref _hasEquipSpell, value); }
         }
-        public bool HasAttackSpell
-        {
-            get { return _hasAttackSpell; }
-            set { this.RaiseAndSetIfChanged(ref _hasAttackSpell, value); }
-        }
         public bool HasCurseSpell
         {
             get { return _hasCurseSpell; }
@@ -86,7 +74,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.Quality = new RangeViewModel<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplateViewModel();
-            this.AttackSpell = new SpellTemplateViewModel();
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
@@ -98,7 +85,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.Quality = new RangeViewModel<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplateViewModel();
-            this.AttackSpell = new SpellTemplateViewModel();
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();

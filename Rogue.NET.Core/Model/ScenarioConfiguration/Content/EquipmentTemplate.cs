@@ -15,12 +15,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _quality;
         private EquipmentType _type;
         private SpellTemplate _equipSpell;
-        private SpellTemplate _attackSpell;
         private SpellTemplate _curseSpell;
         private ConsumableTemplate _ammoTemplate;
         private double _weight;
         private bool _hasEquipSpell;
-        private bool _hasAttackSpell;
         private bool _hasCurseSpell;
 
         public Range<int> Class
@@ -83,18 +81,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public SpellTemplate AttackSpell
-        {
-            get { return _attackSpell; }
-            set
-            {
-                if (_attackSpell != value)
-                {
-                    _attackSpell = value;
-                    OnPropertyChanged("AttackSpell");
-                }
-            }
-        }
         public SpellTemplate CurseSpell
         {
             get { return _curseSpell; }
@@ -131,18 +117,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasAttackSpell
-        {
-            get { return _hasAttackSpell; }
-            set
-            {
-                if (_hasAttackSpell != value)
-                {
-                    _hasAttackSpell = value;
-                    OnPropertyChanged("HasAttackSpell");
-                }
-            }
-        }
         public bool HasCurseSpell
         {
             get { return _hasCurseSpell; }
@@ -163,7 +137,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
-            this.AttackSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
@@ -175,7 +148,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
-            this.AttackSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();

@@ -33,9 +33,6 @@ namespace Rogue.NET.Core.Model.Generator
                 throw new Exception("Trying to generate a Unique item twice");
 
             Equipment equipment = new Equipment();
-            if (equipmentTemplate.HasAttackSpell)
-                equipment.AttackSpell = _spellGenerator.GenerateSpell(equipmentTemplate.AttackSpell);
-
             if (equipmentTemplate.HasEquipSpell)
                 equipment.EquipSpell = _spellGenerator.GenerateSpell(equipmentTemplate.EquipSpell);
 
@@ -51,7 +48,6 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.SmileyMood = equipmentTemplate.SymbolDetails.SmileyMood;
             equipment.SymbolType = equipmentTemplate.SymbolDetails.Type;
 
-            equipment.HasAttackSpell = equipmentTemplate.HasAttackSpell;
             equipment.HasEquipSpell = equipmentTemplate.HasEquipSpell;
             equipment.HasCurseSpell = equipmentTemplate.HasCurseSpell;
             equipment.Type = equipmentTemplate.Type;

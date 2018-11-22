@@ -16,10 +16,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public bool IsEquipped { get; set; }
         public bool IsCursed { get; set; }
 
-        public bool HasAttackSpell { get; set; }
         public bool HasEquipSpell { get; set; }
         public bool HasCurseSpell { get; set; }
-        public Spell AttackSpell { get; set; }
         public Spell EquipSpell { get; set; }
         public Spell CurseSpell { get; set; }
         public string AmmoName { get; set; }
@@ -30,7 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         {
             this.IsEquipped = false;
             this.Type = EquipmentType.Armor;
-            this.AttackSpell = new Spell();
             this.EquipSpell = new Spell();
             this.CurseSpell = new Spell();
             this.AmmoName = "";
@@ -40,7 +37,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         {
             this.Type = type;
             this.IsEquipped = false;
-            this.AttackSpell = new Spell();
             this.EquipSpell = new Spell();
             this.CurseSpell = new Spell();
             this.AmmoName = "";
