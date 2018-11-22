@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using System;
 using System.Collections.Generic;
@@ -14,23 +15,50 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     [Serializable]
     public class CharacterAlteration //: ISerializable
     {
+        #region (protected) Nested Dictionary Key Sub-Class
+        protected class SpellReference
+        {
+            public string SpellId { get; set; }
+            public string SpellRogueName { get; set; }
+
+            public SpellReference(AlterationContainer container)
+            {
+                this.SpellId = container.GeneratingSpellId;
+                this.SpellRogueName = container.GeneratingSpellName;
+            }
+
+            public override int GetHashCode()
+            {
+                return this.SpellId.GetHashCode();
+            }
+            public override bool Equals(object obj)
+            {
+                if (obj is SpellReference)
+                {
+                    return (obj as SpellReference).SpellId == this.SpellId;
+                }
+                return false;
+            }
+        }
+        #endregion
+
         #region (Passives / Per Step Costs) Managed via AlterationContainer.Id
         /// <summary>
         /// Keeps a list of alteration costs for the character - applied on turn. The key is the
         /// Spell.Id that is it's parent
         /// </summary>
-        protected IDictionary<string, AlterationCost> PerStepAlterationCosts { get; set; }
+        protected IDictionary<SpellReference, AlterationCost> PerStepAlterationCosts { get; set; }
 
         /// <summary>
         /// Active passive effects on the character. The key is the Id for the Spell.Id
         /// </summary>
-        protected IDictionary<string, AlterationEffect> ActivePassiveEffects { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> ActivePassiveEffects { get; set; }
 
         /// <summary>
         /// List that holds set of passive attack attribute alterations - THESE ARE APPLIED WITH 
         /// AN EQUIPMENT ITEM. The key is the Id for the Spell
         /// </summary>
-        protected IDictionary<string, AlterationEffect> AttackAttributePassiveEffects { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> AttackAttributePassiveEffects { get; set; }
         #endregion
 
         #region Aura Effects - Managed by Container! (SET ON ENEMY END OF TURN)
@@ -45,61 +73,33 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// <summary>
         /// Active temporary effects on the character
         /// </summary>
-        protected IDictionary<string, AlterationEffect> ActiveTemporaryEffects { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> ActiveTemporaryEffects { get; set; }
 
         /// <summary>
         /// List of temporary friendly effects using attack attributes only (Means that defense
         /// is calculated per turn of melee for this character)
         /// </summary>
-        protected IDictionary<string, AlterationEffect> AttackAttributeTemporaryFriendlyEffects { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> AttackAttributeTemporaryFriendlyEffects { get; set; }
 
         /// <summary>
         /// List of temporary malign effects using attack attributes only (Means that an attack is
         /// calculated per step on the character for the specified attack attribute(s))
         /// </summary>
-        protected IDictionary<string, AlterationEffect> AttackAttributeTemporaryMalignEffects { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> AttackAttributeTemporaryMalignEffects { get; set; }
         #endregion
 
         public CharacterAlteration()
         {
-            this.ActivePassiveEffects = new Dictionary<string, AlterationEffect>();
-            this.AttackAttributePassiveEffects = new Dictionary<string, AlterationEffect>();
-            this.PerStepAlterationCosts = new Dictionary<string, AlterationCost>();
+            this.ActivePassiveEffects = new Dictionary<SpellReference, AlterationEffect>();
+            this.AttackAttributePassiveEffects = new Dictionary<SpellReference, AlterationEffect>();
+            this.PerStepAlterationCosts = new Dictionary<SpellReference, AlterationCost>();
 
             this.ActiveAuraEffects = new List<AlterationEffect>();
 
-            this.ActiveTemporaryEffects = new Dictionary<string, AlterationEffect>();
-            this.AttackAttributeTemporaryFriendlyEffects = new Dictionary<string, AlterationEffect>();
-            this.AttackAttributeTemporaryMalignEffects = new Dictionary<string, AlterationEffect>();
+            this.ActiveTemporaryEffects = new Dictionary<SpellReference, AlterationEffect>();
+            this.AttackAttributeTemporaryFriendlyEffects = new Dictionary<SpellReference, AlterationEffect>();
+            this.AttackAttributeTemporaryMalignEffects = new Dictionary<SpellReference, AlterationEffect>();
         }
-
-        #region Serialization
-        //public CharacterAlteration(SerializationInfo info, StreamingContext context)
-        //{
-        //    this.ActivePassiveEffects = (Dictionary<string, AlterationEffect>)info.GetValue("ActivePassiveEffects", typeof(Dictionary<string, AlterationEffect>));
-        //    this.AttackAttributePassiveEffects = (Dictionary<string, AlterationEffect>)info.GetValue("AttackAttributePassiveEffects", typeof(Dictionary<string, AlterationEffect>));
-        //    this.PerStepAlterationCosts = (Dictionary<string, AlterationCost>)info.GetValue("PerStepAlterationCosts", typeof(Dictionary<string, AlterationCost>));
-
-        //    this.ActiveAuraEffects = (List<AlterationEffect>)info.GetValue("ActiveAuraEffects", typeof(List<AlterationEffect>));
-
-        //    this.ActiveTemporaryEffects = (Dictionary<string, AlterationEffect>)info.GetValue("ActiveTemporaryEffects", typeof(Dictionary<string, AlterationEffect>));
-        //    this.AttackAttributeTemporaryFriendlyEffects = (Dictionary<string, AlterationEffect>)info.GetValue("AttackAttributeTemporaryFriendlyEffects", typeof(Dictionary<string, AlterationEffect>));
-        //    this.AttackAttributeTemporaryMalignEffects = (Dictionary<string, AlterationEffect>)info.GetValue("AttackAttributeTemporaryMalignEffects", typeof(Dictionary<string, AlterationEffect>));
-        //}
-
-        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    info.AddValue("ActivePassiveEffects", this.ActivePassiveEffects, typeof(Dictionary<string, AlterationEffect>));
-        //    info.AddValue("AttackAttributePassiveEffects", this.AttackAttributePassiveEffects, typeof(Dictionary<string, AlterationEffect>));
-        //    info.AddValue("PerStepAlterationCosts", this.PerStepAlterationCosts, typeof(Dictionary<string, AlterationCost>));
-
-        //    info.AddValue("ActiveAuraEffects", this.ActiveAuraEffects, typeof(List<AlterationEffect>));
-
-        //    info.AddValue("ActiveTemporaryEffects", this.ActiveTemporaryEffects, typeof(List<AlterationEffect>));
-        //    info.AddValue("AttackAttributeTemporaryFriendlyEffects", this.AttackAttributeTemporaryFriendlyEffects, typeof(List<AlterationEffect>));
-        //    info.AddValue("AttackAttributeTemporaryMalignEffects", this.AttackAttributeTemporaryMalignEffects, typeof(List<AlterationEffect>));
-        //}
-        #endregion
 
         #region (public) Methods
         /// <summary>
@@ -128,13 +128,19 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public virtual IEnumerable<string> GetStackableSpellIds()
         {
             // These collections should be taken into account when calculating IsStackable
-            return this.ActivePassiveEffects.Keys
-                  .Union(this.AttackAttributePassiveEffects.Keys)
-                  .Union(this.ActiveTemporaryEffects.Keys)
-                  .Union(this.AttackAttributeTemporaryFriendlyEffects.Keys)
-                  .Union(this.AttackAttributeTemporaryMalignEffects.Keys);
+            return this.ActivePassiveEffects
+                  .Union(this.AttackAttributePassiveEffects)
+                  .Union(this.ActiveTemporaryEffects)
+                  .Union(this.AttackAttributeTemporaryFriendlyEffects)
+                  .Union(this.AttackAttributeTemporaryMalignEffects)
+                  .Select(x => x.Key.SpellId)
+                  .ToList();
         }
 
+        /// <summary>
+        /// Sets all Aura Effects that act ON THE CHARACTER (ENEMY ONLY!!!)
+        /// </summary>
+        /// <param name="auraEffects">Effectcs that are generated by the Player</param>
         public void SetAuraEffects(IEnumerable<AlterationEffect> auraEffects)
         {
             this.ActiveAuraEffects.Clear();
@@ -176,19 +182,19 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
         public virtual void DeactivatePassiveAlteration(string spellId)
         {
-            if (this.PerStepAlterationCosts.ContainsKey(spellId))
-                this.PerStepAlterationCosts.Remove(spellId);
+            // Per Step Costs
+            this.PerStepAlterationCosts.Filter(x => x.Key.SpellId == spellId);
 
-            if (this.ActivePassiveEffects.ContainsKey(spellId))
-                this.ActivePassiveEffects.Remove(spellId);
+            // Passive Effets
+            this.ActivePassiveEffects.Filter(x => x.Key.SpellId == spellId);
 
-            if (this.AttackAttributePassiveEffects.ContainsKey(spellId))
-                this.AttackAttributePassiveEffects.Remove(spellId);
+            // Passive Attack Attribute Effeccts
+            this.AttackAttributePassiveEffects.Filter(x => x.Key.SpellId == spellId);
         }
 
         public IEnumerable<AlterationEffect> DecrementEventTimes()
         {
-            var updateFunction = new Func<IDictionary<string, AlterationEffect>, IEnumerable<AlterationEffect>>(dictionary =>
+            var updateFunction = new Func<IDictionary<SpellReference, AlterationEffect>, IEnumerable<AlterationEffect>>(dictionary =>
             {
                 var finishedEffects = new List<AlterationEffect>();
                 for (int i = dictionary.Count - 1; i >= 0; i--)
@@ -220,31 +226,21 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
         public IEnumerable<AlterationEffect> ApplyRemedy(string remediedSpellName)
         {
-            // TODO
-            //// Gather all effects that are remedied
-            //var result =
-            //    this.ActiveTemporaryEffects.Values.Where(x => x.RogueName == remediedSpellName)
-            //        .Union(this.AttackAttributeTemporaryFriendlyEffects.Where(x => x.RogueName == remediedSpellName))
-            //        .Union(this.AttackAttributeTemporaryMalignEffects.Where(x => x.RogueName == remediedSpellName))
-            //        .ToList();
+            // Gather all effects that are remedied
+            var result =
+                this.ActiveTemporaryEffects.Where(x => x.Key.SpellRogueName == remediedSpellName)
+                    .Union(this.AttackAttributeTemporaryFriendlyEffects.Where(x => x.Key.SpellRogueName == remediedSpellName))
+                    .Union(this.AttackAttributeTemporaryMalignEffects.Where(x => x.Key.SpellRogueName == remediedSpellName))
+                    .Select(x => x.Value)
+                    .ToList();
 
-            //// Remove these results from the lists
-            //foreach (var effect in result)
-            //{
-            //    if (this.ActiveTemporaryEffects.Contains(effect))
-            //        this.ActiveTemporaryEffects.Remove(effect);
-
-            //    else if (this.AttackAttributeTemporaryFriendlyEffects.Contains(effect))
-            //        this.AttackAttributeTemporaryFriendlyEffects.Remove(effect);
-
-            //    else if (this.AttackAttributeTemporaryMalignEffects.Contains(effect))
-            //        this.AttackAttributeTemporaryMalignEffects.Remove(effect);
-            //}
+            // Remove these results from the lists
+            this.ActiveTemporaryEffects.Filter(x => result.Contains(x.Value));
+            this.AttackAttributeTemporaryFriendlyEffects.Filter(x => result.Contains(x.Value));
+            this.AttackAttributeTemporaryMalignEffects.Filter(x => result.Contains(x.Value));
 
             // Return the remedied alteration effects
-            // return result;
-
-            throw new NotImplementedException();
+            return result;
         }
         #endregion
 
@@ -256,26 +252,27 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         {
             // Apply Cost (MUST APPLY ONE-TIME EXTERNALLY)
             if (alteration.Cost.Type == AlterationCostType.PerStep)
-                this.PerStepAlterationCosts.Add(alteration.GeneratingSpellId, alteration.Cost);
+                this.PerStepAlterationCosts.Add(new SpellReference(alteration), alteration.Cost);
 
             // Apply Effect
             switch (alteration.Type)
             {
                 case AlterationType.PassiveSource:
-                    this.ActivePassiveEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                    this.ActivePassiveEffects.Add(new SpellReference(alteration), alteration.Effect);
                     break;
                 case AlterationType.PassiveAura:
                     // PlayerAlteration will handle (CONSIDER RE-WRITE)
                     // throw new Exception("Passive Aura NOT SUPPORTED FOR ENEMIES");
                     break;
                 case AlterationType.TemporarySource:
-                    this.ActiveTemporaryEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                    this.ActiveTemporaryEffects.Add(new SpellReference(alteration), alteration.Effect);
                     break;
                 // These types are handled for the target CharacterAlteration
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
                     break;
                 // These types aren't supported here - but should be applied externally
+                case AlterationType.Remedy:
                 case AlterationType.PermanentSource:
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
@@ -298,13 +295,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                             case AlterationAttackAttributeType.Imbue:
                                 throw new Exception("Attack Attribute Alteration Type not supported here");
                             case AlterationAttackAttributeType.Passive:
-                                this.AttackAttributePassiveEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                                this.AttackAttributePassiveEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.TemporaryFriendlySource:
-                                this.AttackAttributeTemporaryFriendlyEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                                this.AttackAttributeTemporaryFriendlyEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.TemporaryMalignSource:
-                                this.AttackAttributeTemporaryMalignEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                                this.AttackAttributeTemporaryMalignEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             default:
                                 throw new Exception("Unhandled Attack Attribute Alteration Type");
@@ -334,9 +331,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
-                    this.ActiveTemporaryEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                    this.ActiveTemporaryEffects.Add(new SpellReference(alteration), alteration.Effect);
                     break;
                 // These types aren't supported here - but should be applied externally
+                case AlterationType.Remedy:
                 case AlterationType.PermanentSource:
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
@@ -352,10 +350,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                         switch (alteration.AttackAttributeType)
                         {
                             case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                                this.AttackAttributeTemporaryFriendlyEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                                this.AttackAttributeTemporaryFriendlyEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
-                                this.AttackAttributeTemporaryMalignEffects.Add(alteration.GeneratingSpellId, alteration.Effect);
+                                this.AttackAttributeTemporaryMalignEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.MeleeTarget:
                             case AlterationAttackAttributeType.Imbue:

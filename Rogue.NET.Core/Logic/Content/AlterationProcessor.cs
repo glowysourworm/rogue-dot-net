@@ -236,16 +236,6 @@ namespace Rogue.NET.Core.Logic.Content
             player.Hunger += alterationEffect.Hunger;
             player.Hp += alterationEffect.Hp;
             player.Mp += alterationEffect.Mp;
-
-            //Apply remedies
-            //foreach (var remediedSpellName in alterationEffect.RemediedSpellNames)
-            //{
-            //    // Alteration applies remedy to remove or modify internal collections
-            //    var remediedEffects = player.Alteration.ApplyRemedy(remediedSpellName);
-
-            //    foreach (var effect in remediedEffects)
-            //        _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
-            //}
         }
         public void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)
         {
@@ -255,6 +245,22 @@ namespace Rogue.NET.Core.Logic.Content
             enemy.AuraRadiusBase += alterationEffect.AuraRadius;
             enemy.Hp += alterationEffect.Hp;
             enemy.Mp += alterationEffect.Mp;
+        }
+        public void ApplyRemedy(Player player, AlterationEffect alterationEffect)
+        {
+            // Alteration applies remedy to remove or modify internal collections
+            var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
+
+            foreach (var effect in remediedEffects)
+                _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
+        }
+        public void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
+        {
+            // Alteration applies remedy to remove or modify internal collections
+            var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
+
+            foreach (var effect in remediedEffects)
+                _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
         }
 
         private bool ProjectPlayerCanSupportAlterationEffect(Player player, AlterationEffect effect)

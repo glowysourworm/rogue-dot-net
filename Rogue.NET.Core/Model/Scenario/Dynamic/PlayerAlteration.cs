@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic
 {
@@ -13,24 +14,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// <summary>
         /// List of all active auras (PLAYER ONLY) - managed via AlterationContainer.Id
         /// </summary>
-        protected IDictionary<string, AlterationEffect> ActiveAuras { get; set; }
+        protected IDictionary<SpellReference, AlterationEffect> ActiveAuras { get; set; }
 
         public PlayerAlteration() : base()
         {
-            this.ActiveAuras = new Dictionary<string, AlterationEffect>();
+            this.ActiveAuras = new Dictionary<SpellReference, AlterationEffect>();
         }
-
-        //public PlayerAlteration(SerializationInfo info, StreamingContext context) : base(info, context)
-        //{
-        //    this.ActiveAuras = (Dictionary<string, AlterationEffect>)info.GetValue("ActiveAuras", typeof(Dictionary<string, AlterationEffect>));
-        //}
-
-        //public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    base.GetObjectData(info, context);
-
-        //    info.AddValue("ActiveAuras", this.ActiveAuras, typeof(Dictionary<string, AlterationEffect>));
-        //}
 
         /// <summary>
         /// Returns active aura effects - PLAYER ONLY
@@ -41,9 +30,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             return this.ActiveAuras.Values;
         }
 
+        /// <summary>
+        /// Returns list of all spell id's involved with stackable calculations
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<string> GetStackableSpellIds()
         {
-            return base.GetStackableSpellIds().Union(this.ActiveAuras.Keys);
+            return base.GetStackableSpellIds().Union(this.ActiveAuras.Keys.Select(x => x.SpellId));
         }
 
         // NOTE*** DO NOTHING HERE BECAUSE AURA'S AREN'T SUPPORTED FOR ENEMIES. Aura EFFECTS
@@ -62,7 +55,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             switch (alteration.Type)
             {
                 case AlterationType.PassiveAura:
-                    this.ActiveAuras.Add(alteration.GeneratingSpellId, alteration.AuraEffect);
+                    this.ActiveAuras.Add(new SpellReference(alteration), alteration.AuraEffect);
                     break;
             }
         }
@@ -71,8 +64,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         {
             base.DeactivatePassiveAlteration(spellId);
 
-            if (this.ActiveAuras.ContainsKey(spellId))
-                this.ActiveAuras.Remove(spellId);
+            // Active Auras
+            this.ActiveAuras.Filter(x => x.Key.SpellId == spellId);
         }
     }
 }

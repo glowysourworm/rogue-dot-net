@@ -135,6 +135,9 @@ namespace Rogue.NET.Core.Logic
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
                     break;
+                case AlterationType.Remedy:
+                    _alterationProcessor.ApplyRemedy(_modelService.Player, alteration.Effect);
+                    break;
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
                 case AlterationType.TemporaryTarget:
@@ -190,6 +193,9 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
+                    break;
+                case AlterationType.Remedy:
+                    _alterationProcessor.ApplyRemedy(enemy, alteration.Effect);
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:

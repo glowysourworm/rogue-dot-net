@@ -53,6 +53,10 @@
         TeleportAllTargets,
         OtherMagicEffect,
         AttackAttribute,
+
+        /// <summary>
+        /// Remedies spell temporary effects - SOURCE ONLY
+        /// </summary>
         Remedy
     }
     public enum AlterationAttackAttributeType

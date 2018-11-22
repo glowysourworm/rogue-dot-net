@@ -19,5 +19,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost);
         void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect);
         void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect);
+        void ApplyRemedy(Player player, AlterationEffect alterationEffect);
+        void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect);
     }
 }
