@@ -31,6 +31,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private Range<double> _mpRange;
         private Range<double> _criticalHit;
         private bool _isSilence;
+        private string _remediedSpellName;
 
         public SymbolDetailsTemplate SymbolAlteration
         {
@@ -89,6 +90,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _postEffectText = value;
                     OnPropertyChanged("PostEffectText");
+                }
+            }
+        }
+        public string RemediedSpellName
+        {
+            get { return _remediedSpellName; }
+            set
+            {
+                if (_remediedSpellName != value)
+                {
+                    _remediedSpellName = value;
+                    OnPropertyChanged("RemediedSpellName");
                 }
             }
         }
@@ -298,7 +311,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         }
 
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        public List<SpellTemplate> RemediedSpells { get; set; }
 
         public AlterationEffectTemplate()
         {
@@ -324,7 +336,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.CriticalHit = new Range<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.RemediedSpells = new List<SpellTemplate>();
+            this.RemediedSpellName = "";
         }
     }
 }

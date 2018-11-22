@@ -43,9 +43,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public IList<AttackAttribute> AttackAttributes { get; set; }
 
         /// <summary>
-        /// List of spells that are removed via this alteration effect - permanent alterations only
+        /// Spell RogueName that is removed via this alteration effect - permanent alterations only
         /// </summary>
-        public virtual List<string> RemediedSpellNames { get; set; }
+        public string RemediedSpellName { get; set; }
 
         public AlterationEffect() { this.AttackAttributes = new List<AttackAttribute>(); }
     }

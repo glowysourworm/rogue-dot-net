@@ -238,14 +238,14 @@ namespace Rogue.NET.Core.Logic.Content
             player.Mp += alterationEffect.Mp;
 
             //Apply remedies
-            foreach (var remediedSpellName in alterationEffect.RemediedSpellNames)
-            {
-                // Alteration applies remedy to remove or modify internal collections
-                var remediedEffects = player.Alteration.ApplyRemedy(remediedSpellName);
+            //foreach (var remediedSpellName in alterationEffect.RemediedSpellNames)
+            //{
+            //    // Alteration applies remedy to remove or modify internal collections
+            //    var remediedEffects = player.Alteration.ApplyRemedy(remediedSpellName);
 
-                foreach (var effect in remediedEffects)
-                    _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
-            }
+            //    foreach (var effect in remediedEffects)
+            //        _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
+            //}
         }
         public void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)
         {

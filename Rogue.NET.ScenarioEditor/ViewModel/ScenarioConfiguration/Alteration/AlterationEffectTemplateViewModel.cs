@@ -30,6 +30,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private RangeViewModel<double> _mpRange;
         private RangeViewModel<double> _criticalHit;
         private bool _isSilence;
+        private string _remediedSpellName;
 
         public SymbolDetailsTemplateViewModel SymbolAlteration
         {
@@ -55,6 +56,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _postEffectText; }
             set { this.RaiseAndSetIfChanged(ref _postEffectText, value); }
+        }
+        public string RemediedSpellName
+        {
+            get { return _remediedSpellName; }
+            set { this.RaiseAndSetIfChanged(ref _remediedSpellName, value); }
         }
         public RangeViewModel<double> StrengthRange
         {
@@ -143,7 +149,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
-        public ObservableCollection<SpellTemplateViewModel> RemediedSpells { get; set; }
+
 
         public AlterationEffectTemplateViewModel()
         {
@@ -169,7 +175,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.RemediedSpells = new ObservableCollection<SpellTemplateViewModel>();
+            this.RemediedSpellName = "";
         }
     }
 }

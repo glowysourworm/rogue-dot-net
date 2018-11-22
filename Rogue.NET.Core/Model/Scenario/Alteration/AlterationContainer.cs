@@ -25,6 +25,11 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public string GeneratingSpellId { get; set; }
 
         /// <summary>
+        /// Spell RogueName used as a reference for lookup (Remedies)
+        /// </summary>
+        public string GeneratingSpellName { get; set; }
+
+        /// <summary>
         /// Enemy created as an effect of the alteration
         /// </summary>
         public string CreateMonsterEnemy { get; set; }

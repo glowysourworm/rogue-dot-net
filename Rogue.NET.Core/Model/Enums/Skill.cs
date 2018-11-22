@@ -52,7 +52,8 @@
         TeleportTarget,
         TeleportAllTargets,
         OtherMagicEffect,
-        AttackAttribute
+        AttackAttribute,
+        Remedy
     }
     public enum AlterationAttackAttributeType
     {

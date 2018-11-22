@@ -50,6 +50,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.BlockType = spell.BlockType;
             alterationContainer.Type = spell.Type;
             alterationContainer.GeneratingSpellId = spell.Id;
+            alterationContainer.GeneratingSpellName = spell.RogueName;
             alterationContainer.IsStackable = spell.IsStackable;
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
@@ -84,8 +85,8 @@ namespace Rogue.NET.Core.Model.Generator
             alterationEffect.DisplayName = spellDisplayName;
             alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
 
-            //Store list of remedied spells
-            alterationEffect.RemediedSpellNames = alterationEffectTemplate.RemediedSpells.Select(z => z.Name).ToList();
+            //Store remedied spell name
+            alterationEffect.RemediedSpellName = alterationEffectTemplate.RemediedSpellName;
 
             //Attack Attributes
             alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes
