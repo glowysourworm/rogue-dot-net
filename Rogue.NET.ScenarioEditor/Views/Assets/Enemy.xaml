@@ -19,7 +19,7 @@
                 <enemy:EnemyParameters />
             </TabItem>
             <TabItem Header="Behavior">
-                <enemy:EnemyBehavior />
+                <ContentControl prism:RegionManager.RegionName="EnemyBehaviorRegion" />
             </TabItem>
             <TabItem Header="Attack Attributes">
                 <enemy:EnemyAttackAttributes />

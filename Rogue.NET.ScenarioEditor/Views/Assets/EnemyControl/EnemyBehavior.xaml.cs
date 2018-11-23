@@ -1,15 +1,23 @@
-﻿using System.Windows.Controls;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
+using System.ComponentModel.Composition;
+using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 {
-    /// <summary>
-    /// Interaction logic for EnemyBehavior.xaml
-    /// </summary>
+    [Export]
     public partial class EnemyBehavior : UserControl
     {
-        public EnemyBehavior()
+        [ImportingConstructor]
+        public EnemyBehavior(IEventAggregator eventAggregator)
         {
             InitializeComponent();
+
+            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
+            {
+                this.PrimaryAttackSkillCB.ItemsSource = configuration.MagicSpells;
+                this.SecondaryAttackSkillCB.ItemsSource = configuration.MagicSpells;
+            });
         }
     }
 }

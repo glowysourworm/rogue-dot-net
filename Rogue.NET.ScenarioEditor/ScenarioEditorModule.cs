@@ -85,6 +85,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Doodad));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Enemy));
             _regionManager.RegisterViewWithRegion("EnemyItemsRegion", typeof(EnemyItems));
+            _regionManager.RegisterViewWithRegion("EnemyBehaviorRegion", typeof(EnemyBehavior));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Equipment));
             _regionManager.RegisterViewWithRegion("EquipmentParametersRegion", typeof(EquipmentParameters));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));

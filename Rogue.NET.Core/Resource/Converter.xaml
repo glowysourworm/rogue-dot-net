@@ -14,6 +14,7 @@
     <converter:NonNullVisibilityConverter x:Key="NonNullVisibilityConverter" />
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
+    <converter:ParameterVisibilityVisibleConverter x:Key="ParameterVisibilityVisibleConverter" />
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
     <converter:ScenarioImageElementConverter x:Key="ScenarioImageElementConverter" />
     <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />

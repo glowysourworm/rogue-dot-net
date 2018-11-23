@@ -6,10 +6,19 @@
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter"
              Background="Black"
              mc:Ignorable="d" FontSize="14">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary>
+                    <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
+                    <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <TabControl Background="Black">
         <TabItem Header="Primary Behavior">
@@ -36,13 +45,22 @@
                             <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.DisengageRadius, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
                         </Grid>
-                        <Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="0" Increment="0.01" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
-                        <Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                        </Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
+                            <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
+                            <ComboBox x:Name="PrimaryAttackSkillCB" 
+                                        SelectedItem="{Binding BehaviorDetails.PrimaryBehavior.EnemySpell}" 
+                                        SelectedValue="{Binding BehaviorDetails.PrimaryBehavior.EnemySpell.Name}"
+                                        SelectedValuePath="Name"
+                                        DisplayMemberPath="Name" 
+                                        HorizontalAlignment="Right" Height="24" Width="200" />
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -72,14 +90,23 @@
                             <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
                         </Grid>
-                        <Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
                             <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
                         </Grid>
-                        <Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
                             <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
                             <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
+                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
+                            <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
+                            <ComboBox x:Name="SecondaryAttackSkillCB" 
+                                        SelectedItem="{Binding BehaviorDetails.SecondaryBehavior.EnemySpell}" 
+                                        SelectedValue="{Binding BehaviorDetails.SecondaryBehavior.EnemySpell.Name}"
+                                        SelectedValuePath="Name"
+                                        DisplayMemberPath="Name" 
+                                        HorizontalAlignment="Right" Height="24" Width="200" />
+                        </Grid>                        
                     </StackPanel>
                 </ScrollViewer>
             </Grid>
@@ -91,7 +118,7 @@
                         <TextBlock Foreground="White" Text="Secondary Behavior Invoke Reason" VerticalAlignment="Center" Margin="10" />
                         <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
                     </Grid>
-                    <Grid Margin="10,0,10,0">
+                    <Grid Margin="10,0,10,0" Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.Random}}">
                         <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" Increment="0.01" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
                         <TextBlock Foreground="White" Text="Secondary Invoke Probability" VerticalAlignment="Center" Margin="10" />
                     </Grid>
