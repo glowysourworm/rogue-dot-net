@@ -206,7 +206,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             _performingUndo = false;
 
-            UndoChangedEvent(this, property.Name + " of type " + type.Name + " was changed to " + undoChange.OldValue?.ToString() ?? " (Null)");
+            UndoChangedEvent(this, property.Name + " was changed to " + (undoChange.OldValue?.ToString() ?? " (Null)"));
         }
         private void RedoProperty(UndoChange redoChange)
         {
@@ -219,7 +219,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             _performingUndo = false;
 
-            UndoChangedEvent(this, property.Name + " of type " + type.Name + " was changed to " + redoChange.NewValue?.ToString() ?? " (Null)");
+            UndoChangedEvent(this, property.Name + " was changed to " + (redoChange.NewValue?.ToString() ?? " (Null)"));
         }
         private void UndoCollection(UndoChange undoChange)
         {
@@ -256,7 +256,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             _performingUndo = false;
 
-            UndoChangedEvent(this, "Element " + (undoChange.CollectionChangeAction == NotifyCollectionChangedAction.Remove ? " added to " : " removed from ") + undoChange.CollectionNode.GetType().Name);
+            UndoChangedEvent(this, "Element " + (undoChange.CollectionChangeAction == NotifyCollectionChangedAction.Remove ? " added" : " removed"));
         }
         private void RedoCollection(UndoChange redoChange)
         {
@@ -294,7 +294,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             _performingUndo = false;
 
-            UndoChangedEvent(this, "Element " + (redoChange.CollectionChangeAction == NotifyCollectionChangedAction.Add ? " added to " : " removed from ") + redoChange.CollectionNode.GetType().Name);
+            UndoChangedEvent(this, "Element " + (redoChange.CollectionChangeAction == NotifyCollectionChangedAction.Add ? " added" : " removed"));
         }
         #endregion
 
@@ -324,7 +324,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
             _pendingChangeDict.Remove(undoEventArgs.PropertyChangingEventId);
 
             // Notify listeners
-            UndoChangedEvent(this, property.Name + " of type " + type.Name + " was changed to " + propertyValue?.ToString() ?? " (Null)");
+            UndoChangedEvent(this, property.Name + " was changed to " + (propertyValue?.ToString() ?? " (Null)"));
         }
 
         // Sent before change
@@ -394,7 +394,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
                 _redoAccumulator.Clear();
 
                 // Notify listeners
-                UndoChangedEvent(this, "Element " + (e.Action == NotifyCollectionChangedAction.Add ? " added to " : " removed from ") + sender.GetType().Name);
+                UndoChangedEvent(this, "Element " + (e.Action == NotifyCollectionChangedAction.Add ? " added" : " removed"));
             }
         }
         #endregion
