@@ -343,7 +343,15 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid Margin="0,0,8,8">
-                <coreView:Smiley x:Name="smileyCtrl" Margin="8,0,8,8" SmileyMood="Happy"  SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}" SmileyRadius="8" Width="50" Height="75" d:LayoutOverrides="Width" HorizontalAlignment="Left" SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}" Cursor="Hand"/>
+                <coreView:Smiley x:Name="smileyCtrl" 
+                                 Margin="8,0,8,8" 
+                                 SmileyMood="{Binding SmileyMood}"  
+                                 SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}" 
+                                 SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}" 
+                                 SmileyRadius="8" 
+                                 Width="50" 
+                                 Height="75" 
+                                 HorizontalAlignment="Left" />
                 <StackPanel Margin="80,0,0,0">
                     <TextBlock Width="Auto" Height="Auto" Text="{Binding RogueName}" TextWrapping="Wrap" Foreground="#FFFFE56E" Margin="8,8,0,0" FontFamily="Century" FontSize="14"/>
                     <StackPanel Orientation="Horizontal">

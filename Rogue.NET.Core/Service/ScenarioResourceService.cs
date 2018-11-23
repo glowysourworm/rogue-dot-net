@@ -109,10 +109,10 @@ namespace Rogue.NET.Core.Service
             switch (cacheImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor, false);
+                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetImage(cacheImage.SmileyMood, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor, false);
+                    result = GetImage(cacheImage.SmileyMood, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor);
                     break;
                 case SymbolTypes.Image:
                     result = GetImage(cacheImage.Icon);
@@ -126,10 +126,10 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
-        public BitmapSource GetImageSource(ScenarioImage scenarioImage, bool blackBackground)
+        public BitmapSource GetImageSource(ScenarioImage scenarioImage)
         {
             // Create cache image to retrieve cached BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, blackBackground, ScenarioCacheImageType.ImageSource);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource);
             var cacheKey = cacheImage.ToFingerprint();
             
             // Check for cached image
@@ -142,10 +142,10 @@ namespace Rogue.NET.Core.Service
             switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, blackBackground);
+                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor, blackBackground);
+                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
                     break;
                 case SymbolTypes.Image:
                     result = GetImage(scenarioImage.Icon);
@@ -162,7 +162,7 @@ namespace Rogue.NET.Core.Service
         public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage)
         {
             // Create cache image to retrieve cached FrameworkElement or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, false, ScenarioCacheImageType.FrameworkElement);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.FrameworkElement);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement
@@ -209,10 +209,10 @@ namespace Rogue.NET.Core.Service
             var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             return decoder.Frames[0];
         }
-        private BitmapSource GetImage(string symbol, string symbolColor, bool blackBackground)
+        private BitmapSource GetImage(string symbol, string symbolColor)
         {
             var text = GetElement(symbol, symbolColor);
-            text.Background = blackBackground ? new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)) : Brushes.Transparent;
+            text.Background = Brushes.Transparent;
             text.Measure(new Size(text.Width, text.Height));
             text.Arrange(new Rect(text.DesiredSize));
 
@@ -220,10 +220,10 @@ namespace Rogue.NET.Core.Service
             bmp.Render(text);
             return bmp;
         }
-        private BitmapSource GetImage(SmileyMoods mood, string bodyColor, string lineColor, string auraColor, bool blackBackground)
+        private BitmapSource GetImage(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
         {
             var ctrl = GetElement(mood, bodyColor, lineColor, auraColor);
-            ctrl.Background = blackBackground ? new SolidColorBrush(Color.FromArgb(100, 0, 0, 0)) : Brushes.Transparent;
+            ctrl.Background = Brushes.Transparent;
             ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
             ctrl.Arrange(new Rect(ctrl.DesiredSize));
             RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);

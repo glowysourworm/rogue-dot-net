@@ -39,6 +39,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
         readonly IAnimationGenerator _animationGenerator;
+        readonly IAlterationProcessor _alterationProcessor;
 
         // Identifies the layout entry in the content dictionary
         const string WALLS_KEY = "Layout";
@@ -62,12 +63,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
             IAnimationGenerator animationGenerator,
-            IModelService modelService)
+            IModelService modelService,
+            IAlterationProcessor alterationProcessor)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _resourceService = resourceService;
             _modelService = modelService;
             _animationGenerator = animationGenerator;
+            _alterationProcessor = alterationProcessor;
 
             this.Contents = new ObservableCollection<FrameworkElement>();
             _contentDict = new Dictionary<string, FrameworkElement>();
@@ -384,7 +387,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
         {
             var image = new LevelCanvasImage();
-            image.Source = _resourceService.GetImageSource(scenarioObject, scenarioObject is Enemy);
+
+            // Calculate effective symbol
+            var effectiveSymbol = (ScenarioImage)scenarioObject;
+
+            if (scenarioObject is Enemy)
+                effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
+
+            else if (scenarioObject is Player)
+                effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
+
+            image.Source = _resourceService.GetImageSource(effectiveSymbol);
             image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
             if (scenarioObject is DoodadBase)
@@ -424,7 +437,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 aura.Height = this.LevelHeight;
                 aura.Width = this.LevelWidth;
 
-                var brush = new RadialGradientBrush(ColorUtility.Convert(scenarioObject.SmileyAuraColor), Colors.Transparent);
+                var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyAuraColor), Colors.Transparent);
                 brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
                 brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
                 brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
@@ -446,6 +459,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             content.Visibility = scenarioObject.IsPhysicallyVisible ? Visibility.Visible : Visibility.Hidden;
 
+            // Calculate effective symbol
+            var effectiveSymbol = (ScenarioImage)scenarioObject;
+
+            // Update Effective Symbol
+            if (content is LevelCanvasImage &&
+               (scenarioObject is Enemy ||
+                scenarioObject is Player))
+            {
+                if (scenarioObject is Enemy)
+                    effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
+
+                else if (scenarioObject is Player)
+                    effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
+
+                (content as LevelCanvasImage).Source = _resourceService.GetImageSource(effectiveSymbol);
+            }
+
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);
             
@@ -465,7 +495,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
                 brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
                 brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
-                //brush.GradientStops[0] = TODO
+                brush.GradientStops[0].Color = ColorUtility.Convert(effectiveSymbol.SmileyAuraColor);
             }
         }
 

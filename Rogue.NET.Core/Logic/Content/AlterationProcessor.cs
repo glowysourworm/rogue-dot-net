@@ -29,24 +29,42 @@ namespace Rogue.NET.Core.Logic.Content
 
         public ScenarioImage CalculateEffectiveSymbol(Enemy enemy)
         {
-            var symbol = enemy.Map<Enemy, ScenarioImage>();
+            var symbol = new ScenarioImage();
+
+            // Map properties onto the symbol
+            enemy.Update(symbol);
+
+            bool firstAlteration = true;
 
             foreach (var symbolTemplate in enemy.Alteration
-                                                .GetAlterations()
-                                                .Where(x => x.IsSymbolAlteration)
-                                                .Select(x => x.SymbolAlteration))
+                                                 .GetSymbolAlteringEffects()
+                                                 .Select(x => x.SymbolAlteration))
             {
                 //Full symbol
                 if (symbolTemplate.IsFullSymbolDelta)
-                    return symbolTemplate.Map<SymbolDetailsTemplate, ScenarioImage>();
+                    return new ScenarioImage()
+                    {
+                        CharacterColor = symbolTemplate.CharacterColor,
+                        CharacterSymbol = symbolTemplate.SmileyAuraColor,
+                        Icon = symbolTemplate.Icon,
+                        SmileyAuraColor = symbolTemplate.SmileyAuraColor,
+                        SmileyBodyColor = symbolTemplate.SmileyBodyColor,
+                        SmileyLineColor = symbolTemplate.SmileyLineColor,
+                        SmileyMood = symbolTemplate.SmileyMood,
+                        SymbolType = symbolTemplate.Type
+                    };
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
-                    symbol.SmileyAuraColor = ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
+                    symbol.SmileyAuraColor = firstAlteration ?
+                                                symbolTemplate.SmileyAuraColor :
+                                                ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
 
                 //Body
                 if (symbolTemplate.IsBodyDelta)
-                    symbol.SmileyBodyColor = ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
+                    symbol.SmileyBodyColor = firstAlteration ?
+                                                symbolTemplate.SmileyBodyColor :
+                                                ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
 
                 //Character symbol
                 if (symbolTemplate.IsCharacterDelta)
@@ -54,7 +72,9 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Character delta
                 if (symbolTemplate.IsColorDelta)
-                    symbol.CharacterColor = ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
+                    symbol.CharacterColor = firstAlteration ?
+                                                symbolTemplate.CharacterColor :
+                                                ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
 
                 //Image
                 if (symbolTemplate.IsImageDelta)
@@ -62,7 +82,9 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Line
                 if (symbolTemplate.IsLineDelta)
-                    symbol.SmileyLineColor = ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
+                    symbol.SmileyLineColor = firstAlteration ?
+                                                symbolTemplate.SmileyLineColor :
+                                                ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
 
                 //Mood
                 if (symbolTemplate.IsMoodDelta)
@@ -72,24 +94,42 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public ScenarioImage CalculateEffectiveSymbol(Player player)
         {
-            var symbol = player.Map<Player, ScenarioImage>();
+            var symbol = new ScenarioImage();
+
+            // Map properties onto the symbol
+            player.Update(symbol);
+
+            bool firstAlteration = true;
 
             foreach (var symbolTemplate in player.Alteration
-                                                 .GetAlterations()
-                                                 .Where(x => x.IsSymbolAlteration)
+                                                 .GetSymbolAlteringEffects()
                                                  .Select(x => x.SymbolAlteration))
             {
                 //Full symbol
                 if (symbolTemplate.IsFullSymbolDelta)
-                    return symbolTemplate.Map<SymbolDetailsTemplate, ScenarioImage>();
+                    return new ScenarioImage()
+                    {
+                        CharacterColor = symbolTemplate.CharacterColor,
+                        CharacterSymbol = symbolTemplate.SmileyAuraColor,
+                        Icon = symbolTemplate.Icon,
+                        SmileyAuraColor = symbolTemplate.SmileyAuraColor,
+                        SmileyBodyColor = symbolTemplate.SmileyBodyColor,
+                        SmileyLineColor = symbolTemplate.SmileyLineColor,
+                        SmileyMood = symbolTemplate.SmileyMood,
+                        SymbolType = symbolTemplate.Type
+                    };
 
                 //Aura
                 if (symbolTemplate.IsAuraDelta)
-                    symbol.SmileyAuraColor = ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
+                    symbol.SmileyAuraColor = firstAlteration ?
+                                                symbolTemplate.SmileyAuraColor :
+                                                ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
 
                 //Body
                 if (symbolTemplate.IsBodyDelta)
-                    symbol.SmileyBodyColor = ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
+                    symbol.SmileyBodyColor = firstAlteration ?
+                                                symbolTemplate.SmileyBodyColor :
+                                                ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
 
                 //Character symbol
                 if (symbolTemplate.IsCharacterDelta)
@@ -97,7 +137,9 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Character delta
                 if (symbolTemplate.IsColorDelta)
-                    symbol.CharacterColor = ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
+                    symbol.CharacterColor = firstAlteration ?
+                                                symbolTemplate.CharacterColor :
+                                                ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
 
                 //Image
                 if (symbolTemplate.IsImageDelta)
@@ -105,7 +147,9 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Line
                 if (symbolTemplate.IsLineDelta)
-                    symbol.SmileyLineColor = ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
+                    symbol.SmileyLineColor = firstAlteration ?
+                                                symbolTemplate.SmileyLineColor :
+                                                ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
 
                 //Mood
                 if (symbolTemplate.IsMoodDelta)

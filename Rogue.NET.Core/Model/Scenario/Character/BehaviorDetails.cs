@@ -23,6 +23,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double SecondaryProbability { get; set; }
         public bool IsSecondaryBehavior { get; set; }
 
-        public BehaviorDetails() { }
+        public BehaviorDetails()
+        {
+            this.PrimaryBehavior = new Behavior();
+            this.SecondaryBehavior = new Behavior();
+        }
     }
 }

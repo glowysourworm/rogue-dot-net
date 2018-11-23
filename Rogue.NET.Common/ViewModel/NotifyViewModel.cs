@@ -12,7 +12,11 @@ namespace Rogue.NET.Common.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
 
-        protected virtual void RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
+        /// <summary>
+        /// Raised INotifyPropertyChanged event if there's a change to the property. Returns true if there was
+        /// a change
+        /// </summary>
+        protected virtual bool RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
         {
             var changed = false;
             if (field == null)
@@ -27,6 +31,8 @@ namespace Rogue.NET.Common.ViewModel
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs(memberName));
             }
+
+            return changed;
         }
     }
 }

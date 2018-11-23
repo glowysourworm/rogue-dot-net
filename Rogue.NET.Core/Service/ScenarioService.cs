@@ -220,12 +220,6 @@ namespace Rogue.NET.Core.Service
                 case LevelAction.ActivateSkill:
                     {
                         _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, true);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelAction.DeactivateSkill:
-                    {
-                        _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, false);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;

@@ -529,7 +529,7 @@ namespace Rogue.NET.Core.Logic
             if (!isActive && !activate)
                 return;
 
-            // Good measure - set non active for all skill sets
+            // Set non active for all skill sets
             foreach (var playerSkillSet in _modelService.Player.SkillSets)
                 playerSkillSet.IsActive = false;
 
@@ -547,8 +547,14 @@ namespace Rogue.NET.Core.Logic
                 }
             }
 
+            // Activate
             if (skillSet != null)
-                skillSet.IsActive = !isActive;
+            {
+                skillSet.IsActive = !isActive || activate;
+
+                if (skillSet.IsActive)
+                    _scenarioMessageService.Publish("Activating " + skillSet.RogueName);
+            }
 
             // Queue update for all skill sets
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.SkillSets.Select(x => x.Id).ToArray());
@@ -597,7 +603,7 @@ namespace Rogue.NET.Core.Logic
             var enemyTargeted = _modelService.GetTargetedEnemies().FirstOrDefault();
 
             // Requires Target
-            if (_alterationProcessor.CalculateSpellRequiresTarget(activeSkillSet.GetCurrentSkill()) && enemyTargeted == null)
+            if (_alterationProcessor.CalculateSpellRequiresTarget(currentSkill) && enemyTargeted == null)
             {
                 _scenarioMessageService.Publish(activeSkillSet.RogueName + " requires a targeted enemy");
                 return LevelContinuationAction.DoNothing;
@@ -608,16 +614,16 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
 
             // For passives - work with IsTurnedOn flag
-            if (activeSkillSet.GetCurrentSkill().Type == AlterationType.PassiveAura ||
-                activeSkillSet.GetCurrentSkill().Type == AlterationType.PassiveSource)
+            if (currentSkill.Type == AlterationType.PassiveAura ||
+                currentSkill.Type == AlterationType.PassiveSource)
             {
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)
                 {
-                    _scenarioMessageService.Publish("Deactivating - " + activeSkillSet.RogueName);
+                    _scenarioMessageService.Publish("Deactivating - " + currentSkill.RogueName);
 
                     // Pass - through method is safe
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(activeSkillSet.GetCurrentSkill().Id);
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
 
                     activeSkillSet.IsTurnedOn = false;
                 }
@@ -625,6 +631,8 @@ namespace Rogue.NET.Core.Logic
                 else
                 {
                     activeSkillSet.IsTurnedOn = true;
+
+                    _scenarioMessageService.Publish("Invoking - " + currentSkill.RogueName);
 
                     // Queue processing -> Animation -> Process parameters (backend)
                     return  _spellEngine.QueuePlayerMagicSpell(currentSkill);
@@ -634,7 +642,7 @@ namespace Rogue.NET.Core.Logic
             else
             {
                 // Publish message
-                _scenarioMessageService.Publish("Invoking - " + activeSkillSet.RogueName);
+                _scenarioMessageService.Publish("Invoking - " + currentSkill.RogueName);
 
                 // Queue processing -> Animation -> Process parameters (backend)
                 return _spellEngine.QueuePlayerMagicSpell(currentSkill);

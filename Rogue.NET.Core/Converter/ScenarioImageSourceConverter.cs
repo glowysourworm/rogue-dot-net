@@ -22,9 +22,7 @@ namespace Rogue.NET.Core.Converter
             if (scenarioImage == null)
                 return Binding.DoNothing;
 
-            var blackBackground = parameter == null ? false : (bool)parameter;
-
-            return _scenarioResourceService.GetImageSource(scenarioImage, blackBackground);
+            return _scenarioResourceService.GetImageSource(scenarioImage);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

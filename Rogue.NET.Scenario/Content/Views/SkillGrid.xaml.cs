@@ -24,46 +24,5 @@ namespace Rogue.NET.Scenario.Views
 
             InitializeComponent();
         }
-
-        private void UpButton_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < this.TheGrid.Items.Count; i++)
-            {
-                var s = this.TheGrid.Items[i] as SkillSet;
-                if (s.Emphasis < 3 && s.RogueName == ((Button)sender).Content.ToString())
-                    s.Emphasis++;
-            }
-        }
-
-        private void DownButton_Click(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < this.TheGrid.Items.Count; i++)
-            {
-                var s = this.TheGrid.Items[i] as SkillSet;
-                if (s.Emphasis > 0 && s.RogueName == ((Button)sender).Content.ToString())
-                    s.Emphasis--;
-            }
-        }
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < this.TheGrid.Items.Count; i++)
-            {
-                var skillSet = this.TheGrid.Items[i] as SkillSet;
-                var radioButton = sender as RadioButton;
-
-                if (radioButton.Tag.ToString() == skillSet.RogueName)
-                {
-                    _eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                        new LevelCommandEventArgs(
-                                radioButton.IsChecked.Value ? 
-                                    LevelAction.ActivateSkill : 
-                                    LevelAction.DeactivateSkill,
-                            Compass.Null,
-                            skillSet.Id));
-                    break;
-                }
-            }
-        }
     }
 }

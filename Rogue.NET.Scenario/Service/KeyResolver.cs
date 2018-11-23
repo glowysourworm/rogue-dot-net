@@ -65,7 +65,7 @@ namespace Rogue.NET.Scenario.Service
                 return new LevelCommandEventArgs(LevelAction.Target, Compass.E, "");
             //Skill Usage
             else if (key == _preferences.Skill)
-                return new LevelCommandEventArgs(shift ? LevelAction.CycleActiveSkill : LevelAction.InvokeSkill, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelAction.InvokeSkill, Compass.Null, "");
             //Doodad Usage
             else if (key == _preferences.Doodad)
                 return new LevelCommandEventArgs(LevelAction.InvokeDoodad, Compass.Null, "");

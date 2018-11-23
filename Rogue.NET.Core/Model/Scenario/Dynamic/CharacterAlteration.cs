@@ -16,11 +16,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     public class CharacterAlteration //: ISerializable
     {
         #region (protected) Nested Dictionary Key Sub-Class
+        [Serializable]
         protected class SpellReference
         {
             public string SpellId { get; set; }
             public string SpellRogueName { get; set; }
 
+            public SpellReference() { }
             public SpellReference(AlterationContainer container)
             {
                 this.SpellId = container.GeneratingSpellId;
@@ -103,13 +105,26 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
         #region (public) Methods
         /// <summary>
-        /// Convienence method to get all magic (non-attack attribute) effects acting on the character
+        /// Method to get all magic (non-attack attribute) effects acting on the character
         /// </summary>
         public IEnumerable<AlterationEffect> GetAlterations()
         {
             return this.ActiveTemporaryEffects.Values
                        .Union(this.ActivePassiveEffects.Values)
                        .Union(this.ActiveAuraEffects);
+        }
+        /// <summary>
+        /// Returns all AlterationEffects that have a potential to modify the character symbol
+        /// </summary>
+        public virtual IEnumerable<AlterationEffect> GetSymbolAlteringEffects()
+        {
+            return this.ActiveTemporaryEffects.Values
+                       .Union(this.ActivePassiveEffects.Values)
+                       .Union(this.ActiveAuraEffects)
+                       .Union(this.AttackAttributePassiveEffects.Values)
+                       .Union(this.AttackAttributeTemporaryFriendlyEffects.Values)
+                       .Union(this.AttackAttributeTemporaryMalignEffects.Values)
+                       .Where(x => x.IsSymbolAlteration);
         }
         public IEnumerable<AlterationEffect> GetTemporaryAttackAttributeAlterations(bool friendly)
         {

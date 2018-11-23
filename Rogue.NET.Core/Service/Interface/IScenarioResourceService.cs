@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Service.Interface
         ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource);
         ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
         BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails);
-        BitmapSource GetImageSource(ScenarioImage scenarioImage, bool blackBackground);
+        BitmapSource GetImageSource(ScenarioImage scenarioImage);
         FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage);
         IEnumerable<ColorViewModel> GetColors();
     }

@@ -31,6 +31,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         }
 
         /// <summary>
+        /// Returns all Alteration Effects that alter the character symbol
+        /// </summary>
+        public override IEnumerable<AlterationEffect> GetSymbolAlteringEffects()
+        {
+            var result = base.GetSymbolAlteringEffects();
+
+            return result.Union(this.ActiveAuras.Values)
+                         .Where(x => x.IsSymbolAlteration);
+        }
+
+        /// <summary>
         /// Returns list of all spell id's involved with stackable calculations
         /// </summary>
         /// <returns></returns>

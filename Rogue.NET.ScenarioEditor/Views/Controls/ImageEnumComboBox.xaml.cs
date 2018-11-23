@@ -49,7 +49,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             List<ImageItem> list = new List<ImageItem>();
             foreach (ImageResources r in resources)
             {
-                ImageItem item = new ImageItem(_scenarioResourceService.GetImageSource(new ScenarioImage("", r), false), r.ToString(), r);
+                ImageItem item = new ImageItem(_scenarioResourceService.GetImageSource(new ScenarioImage("", r)), r.ToString(), r);
                 list.Add(item);
             }
             this.TheComboBox.ItemsSource = list;

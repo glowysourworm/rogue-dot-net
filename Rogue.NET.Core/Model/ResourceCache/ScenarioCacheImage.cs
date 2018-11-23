@@ -16,13 +16,10 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public string CharacterColor { get; set; }
         public ImageResources Icon { get; set; }
 
-        // Black Background Specification
-        public bool BlackBackground { get; set; }
-
         // Output Format
         public ScenarioCacheImageType OutputType { get; set; }
 
-        public ScenarioCacheImage(ScenarioImage scenarioImage, bool blackBackground, ScenarioCacheImageType outputType)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType)
         {
             this.SymbolType = scenarioImage.SymbolType;
             this.SmileyMood = scenarioImage.SmileyMood;
@@ -32,8 +29,6 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.Icon = scenarioImage.Icon;
-
-            this.BlackBackground = blackBackground;
 
             this.OutputType = outputType;
         }
@@ -51,8 +46,6 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
             this.Icon = symbolDetails.Icon;
-
-            this.BlackBackground = false;
 
             this.OutputType = ScenarioCacheImageType.ImageSource;
         }

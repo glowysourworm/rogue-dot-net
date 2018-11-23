@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class ScenarioMetaDataViewModel : ContentPresenter, INotifyPropertyChanged
+    public class ScenarioMetaDataViewModel : Image, INotifyPropertyChanged
     {
         string _id;
         string _rogueName;
@@ -107,10 +107,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.ObjectType = metaData.ObjectType;
 
             if (metaData.IsIdentified)
-                this.Content = scenarioResourceService.GetFrameworkElement(metaData);
+                this.Source = scenarioResourceService.GetImageSource(metaData);
 
             else
-                this.Content = scenarioResourceService.GetFrameworkElement(new ScenarioImage("", "?", Colors.White.ToString()));
+                this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("", "?", Colors.White.ToString()));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

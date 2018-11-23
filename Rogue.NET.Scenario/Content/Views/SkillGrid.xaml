@@ -81,8 +81,8 @@
                     <DataTemplate x:Key="UpDownColumnTemplate">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <StackPanel>
-                                <Button x:Name="UpButton" Content="{Binding RogueName}" Click="UpButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/UpArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
-                                <Button x:Name="DownButton" Content="{Binding RogueName}" Click="DownButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/DownArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
+                                <Button x:Name="UpButton" Command="{Binding EmphasizeSkillUpCommand}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/UpArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
+                                <Button x:Name="DownButton" Command="{Binding EmphasizeSkillDownCommand}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/DownArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
@@ -214,7 +214,7 @@
                 <DataGridTemplateColumn Header=""  HeaderStyle="{StaticResource HeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <RadioButton Tag="{Binding RogueName}" Style="{StaticResource RadioButtonStyle}" IsChecked="{Binding IsActive}" Checked="RadioButton_Checked" Cursor="Hand" GroupName="SkillRadioButtons" Height="18" Width="18" />
+                            <RadioButton Style="{StaticResource RadioButtonStyle}" Command="{Binding ActivateSkillCommand}" IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" GroupName="SkillRadioButtons" Height="18" Width="18" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

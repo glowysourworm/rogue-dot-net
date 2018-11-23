@@ -26,6 +26,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     {
         readonly IModelService _modelService;
         readonly IPlayerProcessor _playerProcessor;
+        readonly IAlterationProcessor _alterationProcessor;
+        readonly IEventAggregator _eventAggregator;
 
         #region (private) Backing Fields
         int _level;
@@ -328,10 +330,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public PlayerViewModel(
             IEventAggregator eventAggregator, 
             IModelService modelService,
-            IPlayerProcessor playerProcessor)
+            IPlayerProcessor playerProcessor,
+            IAlterationProcessor alterationProcessor)
         {
             _modelService = modelService;
             _playerProcessor = playerProcessor;
+            _alterationProcessor = alterationProcessor;
+            _eventAggregator = eventAggregator;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
@@ -374,12 +379,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Base Collections
-            SynchronizeCollection(player.SkillSets, this.SkillSets, x => new SkillSetViewModel(x));
+            SynchronizeCollection(player.SkillSets, this.SkillSets, x => new SkillSetViewModel(x, _eventAggregator));
 
             // Active Skill
             var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
 
-            this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet);
+            this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, _eventAggregator);
 
             this.Level = player.Level;
             this.Class = player.Class;
@@ -394,14 +399,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MpMax = player.MpMax;
             this.RogueName = player.RogueName;
 
-            this.CharacterColor = player.CharacterColor;
-            this.CharacterSymbol = player.CharacterSymbol;
-            this.Icon = player.Icon;
-            this.SmileyMood = player.SmileyMood;
-            this.SmileyAuraColor = player.SmileyAuraColor;
-            this.SmileyBodyColor = player.SmileyBodyColor;
-            this.SmileyLineColor = player.SmileyLineColor;
-            this.SymbolType = player.SymbolType;
+            // Update Effective Symbol
+            var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
+
+            this.CharacterColor = symbol.CharacterColor;
+            this.CharacterSymbol = symbol.CharacterSymbol;
+            this.Icon = symbol.Icon;
+            this.SmileyMood = symbol.SmileyMood;
+            this.SmileyAuraColor = symbol.SmileyAuraColor;
+            this.SmileyBodyColor = symbol.SmileyBodyColor;
+            this.SmileyLineColor = symbol.SmileyLineColor;
+            this.SymbolType = symbol.SymbolType;
 
             this.Agility = player.GetAgility();
             this.AgilityBase = player.AgilityBase;

@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Utility
     {
         public static Color Convert(string colorString)
         {
-            return (Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+            return (Color)ColorConverter.ConvertFromString(colorString);
         }
         public static string ConvertBack(Color color)
         {
@@ -19,8 +19,14 @@ namespace Rogue.NET.Core.Utility
         {
             var color1 = Convert(colorString1);
             var color2 = Convert(colorString2);
-            
-            return Color.Add(color1, color2).ToString();
+
+            var result = new Color();
+            result.A = System.Convert.ToByte(color1.A + color2.A / 2.0D);
+            result.R = System.Convert.ToByte(color1.R + color2.R / 2.0D);
+            result.G = System.Convert.ToByte(color1.G + color2.G / 2.0D);
+            result.B = System.Convert.ToByte(color1.B + color2.B / 2.0D);
+
+            return result.ToString();
         }
         public static IEnumerable<ColorViewModel> CreateColors()
         {
