@@ -23,13 +23,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             {
                 this.ConsumablesLB.SourceItemsSource = configuration.ConsumableTemplates;
                 this.EquipmentLB.SourceItemsSource = configuration.EquipmentTemplates;
+                this.SkillsLB.SourceItemsSource = configuration.SkillTemplates;
             });
 
             this.ConsumablesLB.AddEvent += OnAddConsumable;
             this.EquipmentLB.AddEvent += OnAddEquipment;
+            this.SkillsLB.AddEvent += OnAddSkill;
 
             this.ConsumablesLB.RemoveEvent += OnRemoveConsumable;
             this.EquipmentLB.RemoveEvent += OnRemoveEquipment;
+            this.SkillsLB.RemoveEvent += OnRemoveSkill;
         }
         private void OnAddConsumable(object sender, object consumable)
         {
@@ -51,6 +54,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 TheTemplate = equipmentTemplate
             });
         }
+        private void OnAddSkill(object sender, object skill)
+        {
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
+            var skillSetTemplate = skill as SkillSetTemplateViewModel;
+            player.Skills.Add(skillSetTemplate);
+        }
         private void OnRemoveConsumable(object sender, object consumable)
         {
             var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
@@ -62,6 +71,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
             var probabilityEquipmentTemplate = equipment as ProbabilityEquipmentTemplateViewModel;
             player.StartingEquipment.Remove(probabilityEquipmentTemplate);
+        }
+        private void OnRemoveSkill(object sender, object skill)
+        {
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
+            var skillSetTemplate = skill as SkillSetTemplateViewModel;
+            player.Skills.Remove(skillSetTemplate);
         }
     }
 }

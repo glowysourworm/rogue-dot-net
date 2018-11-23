@@ -64,7 +64,9 @@
                                     Foreground="White" 
                                     Click="Character_Click"
                                     extension:ButtonExtension.DialogResult="True"
-                                    Style="{DynamicResource ShinyTextButtonStyle}" Tag="{Binding}" />
+                                    Style="{DynamicResource ShinyTextButtonStyle}" 
+                                    Content="{Binding}"
+                                    Tag="{Binding}" />
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

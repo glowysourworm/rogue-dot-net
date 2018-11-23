@@ -33,12 +33,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         private void CharacterSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             var view = new CharacterMap();
-            var viewModel = this.DataContext as DungeonObjectTemplateViewModel;
+            var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
             view.DataContext = this.DataContext;
             view.Width = 600;
 
             if (DialogWindowFactory.Show(view, "Rogue UTF-8 Character Map"))
-                viewModel.SymbolDetails.CharacterSymbol = view.SelectedCharacter;
+                viewModel.CharacterSymbol = view.SelectedCharacter;
         }
     }
 }

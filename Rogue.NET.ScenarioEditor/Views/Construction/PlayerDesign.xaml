@@ -21,7 +21,7 @@
                     <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
                 </TabItem>
                 <TabItem Header="Player Stats">
-                    <Grid Height="220" VerticalAlignment="Top">
+                    <Grid Background="Black">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition Width="3*" />
@@ -50,13 +50,16 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Player Skills">
-                    <StackPanel>
+                    <StackPanel Background="Black">
                         <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select Skill Sets that the player will learn while gaining experience" />
-                        <controls:ListBuilder x:Name="SkillsLB" Height="100" Margin="10" />
+                        <controls:ListBuilder x:Name="SkillsLB" 
+                                              DestinationItemsSource="{Binding Skills}"
+                                              Height="100" 
+                                              Margin="10" />
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Player Items">
-                    <StackPanel>
+                    <StackPanel Background="Black">
                         <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select items that the player will have when starting the scenario" />
                         <GroupBox Header="Consumables" Margin="10">
                             <controls:ListBuilder x:Name="ConsumablesLB" 
