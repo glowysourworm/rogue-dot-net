@@ -66,7 +66,8 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
-        <TabItem Header="Secondary Behavior">
+        <TabItem Header="Secondary Behavior" 
+                 Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityVisibleConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.SecondaryNotInvoked}}">
             <Grid Margin="10">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
