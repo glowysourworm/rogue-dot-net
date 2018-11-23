@@ -19,6 +19,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             }
         }
 
+        public bool SymbolDeltaMode
+        {
+            get { return this.SymbolDeltaParametersGB.Visibility == Visibility.Visible; }
+            set { this.SymbolDeltaParametersGB.Visibility = (value ? Visibility.Visible : Visibility.Collapsed); }
+        }
+
         public SymbolEditor()
         {
             InitializeComponent();

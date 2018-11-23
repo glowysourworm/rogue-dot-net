@@ -5,6 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
     <Grid>
-        <controls:SymbolEditor />
+        <controls:SymbolEditor  DataContext="{Binding SymbolDetails}"/>
     </Grid>
 </UserControl>

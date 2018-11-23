@@ -29,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
         {
             var view = new SymbolEditor();
-            view.DataContext = this.DataContext;
+            view.DataContext = (this.DataContext as DoodadTemplateViewModel).SymbolDetails;
             view.WindowMode = true;
             view.Width = 600;
 

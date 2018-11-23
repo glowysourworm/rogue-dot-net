@@ -244,6 +244,9 @@
                     </Grid>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="Symbol Change">
+                <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding SymbolAlteration}" />
+            </TabItem>
         </TabControl> 
     </Grid>
 </UserControl>

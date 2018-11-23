@@ -25,8 +25,8 @@
                             <GradientStop Offset="0">
                                 <GradientStop.Color>
                                     <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                        <Binding Path="SymbolDetails.Type" />
+                                        <Binding Path="SmileyAuraColor" />
+                                        <Binding Path="Type" />
                                     </MultiBinding>
                                 </GradientStop.Color>
                             </GradientStop>
@@ -38,14 +38,14 @@
                            Stretch="None">
                         <Image.Source>
                             <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                <Binding Path="SymbolDetails.CharacterSymbol" />
-                                <Binding Path="SymbolDetails.CharacterColor" />
-                                <Binding Path="SymbolDetails.Icon" />
-                                <Binding Path="SymbolDetails.SmileyMood" />
-                                <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                <Binding Path="SymbolDetails.SmileyLineColor" />
-                                <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                <Binding Path="SymbolDetails.Type" />
+                                <Binding Path="CharacterSymbol" />
+                                <Binding Path="CharacterColor" />
+                                <Binding Path="Icon" />
+                                <Binding Path="SmileyMood" />
+                                <Binding Path="SmileyBodyColor" />
+                                <Binding Path="SmileyLineColor" />
+                                <Binding Path="SmileyAuraColor" />
+                                <Binding Path="Type" />
                             </MultiBinding>
                         </Image.Source>
                     </Image>
@@ -53,50 +53,87 @@
             </Grid>            
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Type" />
-                <views:EnumComboBox EnumValue="{Binding SymbolDetails.Type, Mode=TwoWay}"  EnumType="{x:Type coreModelEnums:SymbolTypes}" Width="200" HorizontalAlignment="Right" Height="24" />
+                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}"  EnumType="{x:Type coreModelEnums:SymbolTypes}" Width="200" HorizontalAlignment="Right" Height="24" />
             </Grid>
-            <GroupBox Visibility="{Binding SymbolDetails.Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Smiley}}"  Margin="10" Header="Smiley Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Smiley}}"  Margin="10" Header="Smiley Parameters">
                 <StackPanel>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Body Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding SymbolDetails.SmileyBodyColor, Mode=TwoWay}"  Width="200" HorizontalAlignment="Right" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyBodyColor, Mode=TwoWay}"  Width="200" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Line Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding SymbolDetails.SmileyLineColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyLineColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Aura Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding SymbolDetails.SmileyAuraColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyAuraColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Mood" />
-                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyMoods}"  EnumValue="{Binding SymbolDetails.SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyMoods}"  EnumValue="{Binding SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>                    
                 </StackPanel>
             </GroupBox>
-            <GroupBox Visibility="{Binding SymbolDetails.Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Character}}" Margin="10" Header="UTF-8 Character Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Character}}" Margin="10" Header="UTF-8 Character Parameters">
                 <StackPanel>
                     <Grid Margin="10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button x:Name="CharacterSymbolButton" Click="CharacterSymbolButton_Click" Content="View Symbol Map" HorizontalAlignment="Right" Padding="10,2,10,2" />
                             <Border BorderBrush="White" BorderThickness="1" CornerRadius="3" Margin="10,0,0,0">
-                                <TextBlock x:Name="CharacterTB"  Text="{Binding SymbolDetails.CharacterSymbol}" Foreground="White" FontSize="14" Margin="8,4,8,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <TextBlock x:Name="CharacterTB"  Text="{Binding CharacterSymbol}" Foreground="White" FontSize="14" Margin="8,4,8,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Border>
                         </StackPanel>
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding SymbolDetails.CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <controls:ColorComboBox SelectedValue="{Binding CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Visibility="{Binding SymbolDetails.Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.Image}}" Margin="10" Header="Icon Parameters">
                 <Grid Margin="10">
                     <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Image" />
-                    <controls:ImageEnumComboBox Value="{Binding SymbolDetails.Icon, Mode=TwoWay}" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  />
+                    <controls:ImageEnumComboBox Value="{Binding Icon, Mode=TwoWay}" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  />
                 </Grid>
             </GroupBox>
+            <!-- Symbol Delta Parameters -->
+            <GroupBox x:Name="SymbolDeltaParametersGB" Visibility="Collapsed" Margin="10" Header="Symbol Change Parameters">
+                <StackPanel>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Full Symbol Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsFullSymbolDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Image Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsImageDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Mood Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsMoodDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Body Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsBodyDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Line Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsLineDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Aura Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsAuraDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Character Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsCharacterDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsColorDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>            
             <Grid x:Name="ButtonGrid" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Margin="10" Padding="5" Width="80" Content="OK" extension:ButtonExtension.DialogResult="True" />
