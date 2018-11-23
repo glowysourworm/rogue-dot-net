@@ -46,7 +46,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         private void OnAddEquipment(object sender, object equipment)
         {
-            var player = this.DataContext as PlayerTemplateViewModel;
+            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
             var equipmentTemplate = equipment as EquipmentTemplateViewModel;
             player.StartingEquipment.Add(new ProbabilityEquipmentTemplateViewModel()
             {

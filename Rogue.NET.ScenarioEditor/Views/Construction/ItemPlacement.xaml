@@ -20,9 +20,9 @@
 
         <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding ConsumableTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
 
-        <TextBlock Text="Equipment Item Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" />
+        <TextBlock Text="Equipment Item Placement" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="8" Grid.Row="2" />
 
-        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding EquipmentTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="1" Background="Black" />
+        <ListBox HorizontalContentAlignment="Stretch" ItemsSource="{Binding EquipmentTemplates}"  ItemTemplate="{DynamicResource PlacementItemTemplate}" Grid.Row="3" Background="Black" />
 
     </Grid>
 </UserControl>

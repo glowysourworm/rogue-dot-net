@@ -33,7 +33,7 @@
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
-                            <TextBlock Foreground="White" Text="{Binding Name}" VerticalAlignment="Center" Margin="4" />
+                            <TextBlock Foreground="White" Text="{Binding Name}" FontSize="16" VerticalAlignment="Center" Margin="4" />
                         </StackPanel>
                         <CheckBox IsChecked="{Binding IsObjectiveItem, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
@@ -46,7 +46,7 @@
             <TextBlock FontSize="18" Foreground="White" Text="Objective Design" Margin="10" />
             <Grid Grid.Row="1">
                 <StackPanel>
-                    <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="20" Text="The objectives selected here must be met before the player may exit the dungeon and complete the scenario" />
+                    <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="16" Text="The objectives selected here must be met before the player may exit the dungeon and complete the scenario" />
                     <GroupBox Margin="10" Header="Enemy Objectives">
                         <StackPanel>
                             <TextBlock Foreground="White" TextWrapping="Wrap" Margin="10" FontSize="18" Text="Enemies set as objectives must be slain before the player may exit the dungeon." />

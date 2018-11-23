@@ -30,11 +30,11 @@
                     </MultiBinding>
                 </Image.Source>
             </Image>
-            <TextBlock Grid.Column="1" FontSize="18" Text="{Binding Template.Name}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <TextBlock Grid.Column="2" FontSize="18" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <controls:Range DataContext="{Binding Template.Level}" FontSize="18" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
-            <TextBlock Grid.Column="4" FontSize="18" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <common:Slider SliderValue="{Binding Template.GenerationRate, Mode=TwoWay}" FontSize="18" SliderMax="10" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+            <TextBlock Grid.Column="1" FontSize="16" Text="{Binding Name}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="2" FontSize="16" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding Level}" FontSize="16" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="4" FontSize="16" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <common:Slider SliderValue="{Binding GenerationRate, Delay=300, Mode=TwoWay}" FontSize="16" SliderMax="10" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="LayoutItemTemplate">
@@ -47,11 +47,11 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="1" Text="{Binding Template.Name}" FontSize="18" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <TextBlock Grid.Column="2" Text="will be generated between levels" FontSize="18"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <controls:Range DataContext="{Binding Template.Level}" Grid.Column="3" FontSize="18" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
-            <TextBlock Grid.Column="4" Text="with generation rate" FontSize="18"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <common:Slider SliderValue="{Binding Template.GenerationRate, Mode=TwoWay}" FontSize="18" SliderMax="1" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="16" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Grid.Column="2" Text="will be generated between levels" FontSize="16"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <controls:Range DataContext="{Binding Level}" Grid.Column="3" FontSize="16" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
+            <TextBlock Grid.Column="4" Text="with generation rate" FontSize="16"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <common:Slider SliderValue="{Binding GenerationRate, Delay=300, Mode=TwoWay}" FontSize="16" SliderMax="1" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
