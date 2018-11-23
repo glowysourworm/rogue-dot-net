@@ -24,7 +24,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
-                this.AttackSpellCB.ItemsSource = configuration.MagicSpells;
                 this.CurseSpellCB.ItemsSource = configuration.MagicSpells;
                 this.EquipSpellCB.ItemsSource = configuration.MagicSpells;
                 this.AmmoTemplateCB.ItemsSource = configuration.ConsumableTemplates.Where(a => a.SubType == ConsumableSubType.Ammo);

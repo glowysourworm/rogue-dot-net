@@ -20,14 +20,6 @@
     <Grid>
         <StackPanel>
             <Grid Margin="10,5,10,0">
-                <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Type" Margin="10" VerticalAlignment="Center" />
-                <views:EnumComboBox HorizontalAlignment="Right" Height="24" Width="400" Grid.Column="1" EnumType="{x:Type coreModelEnums:ConsumableType}" EnumValue="{Binding Type}" />
-            </Grid>
-            <Grid Margin="10,5,10,0">
-                <TextBlock Grid.Row="1" Foreground="White" Text="Sub Type" Margin="10" VerticalAlignment="Center" />
-                <views:EnumComboBox HorizontalAlignment="Right" Height="24"  Width="400"  Grid.Column="1" Grid.Row="1" EnumType="{x:Type coreModelEnums:ConsumableSubType}" EnumValue="{Binding SubType}" />
-            </Grid>
-            <Grid Margin="10,5,10,0">
                 <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
                 <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="2" />
             </Grid>
@@ -61,7 +53,7 @@
                           SelectedValuePath="Name"                          
                           DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
             </Grid>
-            <Grid Margin="10,5,10,0">
+            <Grid Margin="10,5,10,0" Visibility="{Binding SubType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Ammo}}">
                 <TextBlock Grid.Row="8" Foreground="White" Text="Ammo Spell" Margin="10" VerticalAlignment="Center" />
                 <ComboBox x:Name="AmmoSpellCB" 
                           SelectedItem="{Binding AmmoSpellTemplate}" 

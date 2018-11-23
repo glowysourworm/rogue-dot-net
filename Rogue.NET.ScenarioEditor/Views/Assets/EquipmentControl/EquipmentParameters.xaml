@@ -10,7 +10,11 @@
              mc:Ignorable="d" Background="Black" FontSize="14"
              d:DesignHeight="500" d:DesignWidth="550">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -30,8 +34,8 @@
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" Margin="10" VerticalAlignment="Center" />
                 <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
-            </Grid>            
-            <Grid>
+            </Grid>
+            <Grid Visibility="{Binding HasEquipSpell, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <ComboBox x:Name="EquipSpellCB" DisplayMemberPath="Name" 
                           SelectedItem="{Binding EquipSpell}"
                           SelectedValue="{Binding EquipSpell.Name}"
@@ -39,15 +43,7 @@
                           HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="1" />
                 <TextBlock Grid.Row="1" Foreground="White" Text="Equip Spell" Margin="10" VerticalAlignment="Center" />
             </Grid>
-            <Grid>
-                <ComboBox x:Name="AttackSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding AttackSpell}" 
-                          SelectedValue="{Binding AttackSpell.Name}" 
-                          SelectedValuePath="Name"
-                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="2" />
-                <TextBlock Grid.Row="2" Foreground="White" Text="Attack Spell" Margin="10" VerticalAlignment="Center" />
-            </Grid>
-            <Grid>
+            <Grid Visibility="{Binding HasCurseSpell, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <ComboBox x:Name="CurseSpellCB" DisplayMemberPath="Name" 
                           SelectedItem="{Binding CurseSpell}" 
                           SelectedValue="{Binding CurseSpell.Name}" 
@@ -55,7 +51,7 @@
                           HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="3" />
                 <TextBlock Grid.Row="3" Foreground="White" Text="Curse Spell" Margin="10" VerticalAlignment="Center" />
             </Grid>
-            <Grid>
+            <Grid Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:EquipmentType.RangeWeapon}}">
                 <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 
                           SelectedItem="{Binding AmmoTemplate}" 
                           SelectedValue="{Binding AmmoTemplate.Name}" 

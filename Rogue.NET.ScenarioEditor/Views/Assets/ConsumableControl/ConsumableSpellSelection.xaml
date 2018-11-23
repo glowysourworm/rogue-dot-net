@@ -17,11 +17,12 @@
             <RowDefinition Height="48" />
         </Grid.RowDefinitions>
         <StackPanel Grid.ColumnSpan="2">
-            <Viewbox MaxWidth="500">
-                <TextBlock Margin="10" TextWrapping="Wrap" 
+            <TextBlock Margin="10" 
+                       Width="500"
+                       HorizontalAlignment="Left"
+                       TextWrapping="Wrap" 
                        Text="You can add a use spell, projectile spell, and/or a learned skill to the consumable. For example, a special piece of food that also acts as a grenade would have a use spell and a projectile spell." 
                        Foreground="White" />
-            </Viewbox>
         </StackPanel>
         <TextBlock Grid.Row="1" Foreground="White" Text="Has Use Spell" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="2" Foreground="White" Text="Has Projectile Spell" Margin="10" VerticalAlignment="Center" />

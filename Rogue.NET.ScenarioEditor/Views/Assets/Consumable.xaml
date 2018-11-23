@@ -21,11 +21,11 @@
             <TabItem Header="Rogue-Encyclopedia Entry">
                 <consumable:ConsumableMetadata />
             </TabItem>
-            <TabItem Header="Parameters">
-                <ContentControl prism:RegionManager.RegionName="ConsumableParametersRegion" />
-            </TabItem>
             <TabItem Header="Consumable Effect">
                 <consumable:ConsumableSpellSelection />
+            </TabItem>
+            <TabItem Header="Parameters">
+                <ContentControl prism:RegionManager.RegionName="ConsumableParametersRegion" />
             </TabItem>
         </TabControl>
     </Grid>
