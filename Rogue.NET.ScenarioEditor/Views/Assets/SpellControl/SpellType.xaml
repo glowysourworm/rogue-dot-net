@@ -24,9 +24,15 @@
                         <TextBlock  TextWrapping="Wrap"
                                     Text="Passive:  Spell that is activated / deactivated by the Character or can be used as an Equip Spell" />
                     </RadioButton.Content>
+                    <RadioButton.IsChecked>
+                        <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                        </MultiBinding>
+                    </RadioButton.IsChecked>
                 </RadioButton>
                 <StackPanel x:Name="PassiveGroupRadioStack" 
-                            Margin="20, 0,0,0"
+                            Margin="40, 0,0,0"
                             Visibility="{Binding ElementName=PassiveRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding Type, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveSource}, Converter={StaticResource RadioButtonEnumConverter}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
@@ -47,9 +53,16 @@
                         <TextBlock  TextWrapping="Wrap"
                                     Text="Temporary:  Spell that has a timed effect" />
                     </RadioButton.Content>
+                    <RadioButton.IsChecked>
+                        <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                        </MultiBinding>
+                    </RadioButton.IsChecked>                    
                 </RadioButton>
                 <StackPanel x:Name="TemporaryGroupRadioStack"
-                            Margin="20,0,0,0"
+                            Margin="40,0,0,0"
                             Visibility="{Binding ElementName=TemporaryRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporarySource}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
@@ -76,9 +89,16 @@
                         <TextBlock  TextWrapping="Wrap"
                                     Text="Permanent:  Spell that has a permanent effect" />
                     </RadioButton.Content>
+                    <RadioButton.IsChecked>
+                        <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentSource}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentTarget}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
+                        </MultiBinding>
+                    </RadioButton.IsChecked>
                 </RadioButton>
                 <StackPanel x:Name="PermanentGroupRadioStack"
-                            Margin="20,0,0,0"
+                            Margin="40,0,0,0"
                             Visibility="{Binding ElementName=PermanentRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentSource}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
@@ -100,14 +120,21 @@
                     </RadioButton>
                 </StackPanel>
                 <!-- Teleport -->
-                <RadioButton GroupName="TypeGroup" x:Name="TeleportRB" Foreground="White">
+                <RadioButton GroupName="TypeGroup" x:Name="TeleportRB" Foreground="White" Margin="8">
                     <RadioButton.Content>
                         <TextBlock  TextWrapping="Wrap"
                             Text="Teleport:  Allows a character to teleport" />
                     </RadioButton.Content>
+                    <RadioButton.IsChecked>
+                        <MultiBinding Converter="{StaticResource BoolORMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TeleportSelf}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TeleportTarget}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TeleportAllTargets}" />
+                        </MultiBinding>
+                    </RadioButton.IsChecked>                    
                 </RadioButton>
                 <StackPanel x:Name="TeleportGroupRadioStack"
-                            Margin="20,0,0,0"
+                            Margin="40,0,0,0"
                             Visibility="{Binding ElementName=TeleportRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportSelf}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
@@ -142,14 +169,18 @@
                     </RadioButton.Content>
                 </RadioButton>
                 <!-- Attack Attribute -->
-                <RadioButton GroupName="TypeGroup" x:Name="AttackAttributeRB" Foreground="White" Margin="8">
+                <RadioButton GroupName="TypeGroup" 
+                             x:Name="AttackAttributeRB" 
+                             IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}"
+                             Foreground="White" 
+                             Margin="8">
                     <RadioButton.Content>
                         <TextBlock  TextWrapping="Wrap"
                                     Text="Attack Attribute: Alterations that have an effect on special attack attributes (See Scenario Design -> General -> Attack Attributes)" />
                     </RadioButton.Content>
                 </RadioButton>
                 <StackPanel x:Name="AttackAttributeGroupRadioStack"
-                            Margin="20,0,0,0"
+                            Margin="40,0,0,0"
                             Visibility="{Binding ElementName=AttackAttributeRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Imbue}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
@@ -204,7 +235,7 @@
                     </RadioButton.Content>
                 </RadioButton>
                 <StackPanel x:Name="OtherGroupRadioStack"
-                            Margin="20,0,0,0"
+                            Margin="40,0,0,0"
                             Visibility="{Binding ElementName=OtherRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.ChangeLevelRandomUp}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
