@@ -4,10 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:spell="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SpellControl"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:prism="http://www.codeplex.com/prism"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+            <Style TargetType="{x:Type controls:Range}">
+                <Setter Property="Width" Value="400" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+        </Grid.Resources>
         <TabControl TabStripPlacement="Left">
             <TabItem Header="Spell Type">
                 <spell:SpellType />
@@ -15,6 +36,53 @@
             <TabItem Header="(Primary) Parameters">
                 <ContentControl prism:RegionManager.RegionName="SpellParametersRegion" />
             </TabItem>
+            <TabItem Header="Spell Cost">
+                <spell:SpellCost />
+            </TabItem>
+            <TabItem Header="Spell Effect">
+                <TabItem.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentSource}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentTarget}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
+                    </MultiBinding>
+                </TabItem.Visibility>
+                <spell:SpellEffect DataContext="{Binding Effect}" />
+            </TabItem>
+            <TabItem Header="Spell Aura Effect"
+                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+                <spell:SpellEffect DataContext="{Binding AuraEffect}" />
+            </TabItem>
+            <TabItem Header="Effect Symbol Change">
+                <TabItem.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    </MultiBinding>
+                </TabItem.Visibility>                
+                <StackPanel>
+                    <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
+                               Text="This symbol change effects the primary target of the Alteration" />
+                    <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding Effect.SymbolAlteration}" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Aura Effect Symbol Change"
+                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+                <StackPanel>
+                    <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
+                           Text="This symbol change effects any Character within the Aura Effect Range" />
+                    <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding AuraEffect.SymbolAlteration}" />
+                </StackPanel>
+            </TabItem>            
         </TabControl>
     </Grid>
 </UserControl>

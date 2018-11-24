@@ -15,277 +15,56 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Grid.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontSize" Value="16" />
-            </Style>
-            <Style TargetType="{x:Type controls:Range}">
-                <Setter Property="Width" Value="400" />
-                <Setter Property="HorizontalAlignment" Value="Right" />
-            </Style>
-        </Grid.Resources>
-        <TabControl Background="Black">
-            <TabItem Header="General">
-                <StackPanel>
-                    <Grid Margin="10">
-                        <TextBlock Text="Display Name" Foreground="White" />
-                        <extension:UpdatingTextBox Width="150" Text="{Binding DisplayName, Mode=TwoWay}" HorizontalAlignment="Right" />
-                    </Grid>
-                    <Grid Margin="10">
-                        <Grid.Visibility>
-                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
-                                <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.Passive}" />
-                                <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
-                                <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
-                                <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
-                                <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
-                            </MultiBinding>
-                        </Grid.Visibility>                        
-                        <TextBlock Text="Stackable" Foreground="White" />
-                        <CheckBox IsChecked="{Binding Stackable, Mode=TwoWay}" HorizontalAlignment="Right" />
-                    </Grid>
-                    <Grid Margin="10">
-                        <Grid.Visibility>
-                            <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
-                                <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
-                                <Binding Path="OtherEffectType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}" />
-                            </MultiBinding>
-                        </Grid.Visibility>
-                        <TextBlock Text="Create Monster Enemy" Foreground="White" />
-                        <ComboBox x:Name="CreateMonsterCB" 
+    <StackPanel>
+        <Grid Margin="10">
+            <TextBlock Text="Display Name" Foreground="White" />
+            <extension:UpdatingTextBox Width="150" Text="{Binding DisplayName, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.Passive}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Text="Stackable" Foreground="White" />
+            <CheckBox IsChecked="{Binding Stackable, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
+                    <Binding Path="OtherEffectType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Text="Create Monster Enemy" Foreground="White" />
+            <ComboBox x:Name="CreateMonsterCB" 
                                   SelectedItem="{Binding CreateMonsterEnemy, Mode=TwoWay}" 
                                   SelectedValue="{Binding CreateMonsterEnemy.Name}"
                                   DisplayMemberPath="Name"
                                   SelectedValuePath="Name"
                                   Width="150" HorizontalAlignment="Right"/>
-                    </Grid>
-                    <Grid Margin="10"
-                          Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
-                        <TextBlock Text="Effect Range" Foreground="White" />
-                        <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
-                    </Grid>                    
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="Cost">
-                <StackPanel>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Type" />
-                        <views:EnumComboBox EnumValue="{Binding Cost.Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:AlterationCostType}" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Strength" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Strength, Mode=TwoWay}" Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Agility" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Agility, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Intelligence" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Intelligence}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Food Usage (per turn)" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.FoodUsagePerTurn, Mode=TwoWay}" Increment="0.01"  AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Aura Radius" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.AuraRadius, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Experience" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Experience, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hunger" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Hunger, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hp" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Hp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" VerticalAlignment="Center" Text="Mp" />
-                        <toolkit:DoubleUpDown Value="{Binding Cost.Mp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-                    </Grid>                 
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="Effect">
-                <StackPanel>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Strength" />
-                        <controls:Range DataContext="{Binding Effect.StrengthRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Agility" />
-                        <controls:Range DataContext="{Binding Effect.AgilityRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Intelligence" />
-                        <controls:Range DataContext="{Binding Effect.IntelligenceRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Aura Radius" />
-                        <controls:Range DataContext="{Binding Effect.AuraRadiusRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Food Usage Per Turn" />
-                        <controls:Range DataContext="{Binding Effect.FoodUsagePerTurnRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Hp Per Step" />
-                        <controls:Range DataContext="{Binding Effect.HpPerStepRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Mp Per Step" />
-                        <controls:Range DataContext="{Binding Effect.MpPerStepRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Hp Per Step" />
-                        <controls:Range DataContext="{Binding Effect.HpPerStepRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Attack" />
-                        <controls:Range DataContext="{Binding Effect.AttackRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Defense" />
-                        <controls:Range DataContext="{Binding Effect.DefenseRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Magic Block Probability" />
-                        <controls:Range DataContext="{Binding Effect.MagicBlockProbabilityRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Dodge Probability" />
-                        <controls:Range DataContext="{Binding Effect.DodgeProbabilityRange}" />
-                    </Grid>
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Experience" />
-                        <controls:Range DataContext="{Binding Effect.ExperienceRange}" />
-                    </Grid>
-
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Hunger" />
-                        <controls:Range DataContext="{Binding Effect.HungerRange}" />
-                    </Grid>
-
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Mp" />
-                        <controls:Range DataContext="{Binding Effect.MpRange}" />
-                    </Grid>
-
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Hp" />
-                        <controls:Range DataContext="{Binding Effect.HpRange}" />
-                    </Grid>
-
-                    <Grid Margin="10,5,10,5">
-                        <TextBlock Foreground="White" Text="Critical Hit" />
-                        <controls:Range DataContext="{Binding Effect.CriticalHit}" />
-                    </Grid>                    
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="Aura Effect"
-                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
-                <StackPanel>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Strength" />
-                            <controls:Range DataContext="{Binding AuraEffect.StrengthRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Agility" />
-                            <controls:Range DataContext="{Binding AuraEffect.AgilityRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Intelligence" />
-                            <controls:Range DataContext="{Binding AuraEffect.IntelligenceRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Aura Radius" />
-                            <controls:Range DataContext="{Binding AuraEffect.AuraRadiusRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Food Usage Per Turn" />
-                            <controls:Range DataContext="{Binding AuraEffect.FoodUsagePerTurnRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Hp Per Step" />
-                            <controls:Range DataContext="{Binding AuraEffect.HpPerStepRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Mp Per Step" />
-                            <controls:Range DataContext="{Binding AuraEffect.MpPerStepRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Hp Per Step" />
-                            <controls:Range DataContext="{Binding AuraEffect.HpPerStepRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Attack" />
-                            <controls:Range DataContext="{Binding AuraEffect.AttackRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Defense" />
-                            <controls:Range DataContext="{Binding AuraEffect.DefenseRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Magic Block Probability" />
-                            <controls:Range DataContext="{Binding AuraEffect.MagicBlockProbabilityRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Dodge Probability" />
-                            <controls:Range DataContext="{Binding AuraEffect.DodgeProbabilityRange}" />
-                        </Grid>
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Experience" />
-                            <controls:Range DataContext="{Binding AuraEffect.ExperienceRange}" />
-                        </Grid>
-
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Hunger" />
-                            <controls:Range DataContext="{Binding AuraEffect.HungerRange}" />
-                        </Grid>
-
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Mp" />
-                            <controls:Range DataContext="{Binding AuraEffect.MpRange}" />
-                        </Grid>
-
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Hp" />
-                            <controls:Range DataContext="{Binding AuraEffect.HpRange}" />
-                        </Grid>
-
-                        <Grid Margin="10,5,10,5">
-                            <TextBlock Foreground="White" Text="Critical Hit" />
-                            <controls:Range DataContext="{Binding AuraEffect.CriticalHit}" />
-                        </Grid>
-                    </StackPanel>
-            </TabItem>
-            <TabItem Header="Effect Symbol Change">
-                <StackPanel>
-                    <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
-                               Text="This symbol change effects the primary target of the Alteration" />
-                    <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding Effect.SymbolAlteration}" />
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="Aura Effect Symbol Change"
-                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
-                <StackPanel>
-                    <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
-                           Text="This symbol change effects any Character within the Aura Effect Range" />
-                    <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding AuraEffect.SymbolAlteration}" />
-                </StackPanel>
-            </TabItem>
-        </TabControl> 
-    </Grid>
+        </Grid>
+        <Grid Margin="10" 
+              Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Remedy}}">
+            <TextBlock Foreground="White" Text="Remedied Effect" />
+            <ComboBox x:Name="RemediedSpellCB" 
+                        SelectedValue="{Binding Effect.RemediedSpellName}"
+                        SelectedValuePath="Name"                          
+                        DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
+        </Grid>        
+        <Grid Margin="10"
+              Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+            <TextBlock Text="Effect Range" Foreground="White" />
+            <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
+        </Grid>
+    </StackPanel>
 </UserControl>
