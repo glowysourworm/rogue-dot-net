@@ -421,6 +421,9 @@
     <Compile Include="Views\Assets\Spell.xaml.cs">
       <DependentUpon>Spell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Assets\SpellControl\SpellAttackAttributes.xaml.cs">
+      <DependentUpon>SpellAttackAttributes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SpellControl\SpellCost.xaml.cs">
       <DependentUpon>SpellCost.xaml</DependentUpon>
     </Compile>
@@ -645,6 +648,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\Spell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SpellControl\SpellAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
