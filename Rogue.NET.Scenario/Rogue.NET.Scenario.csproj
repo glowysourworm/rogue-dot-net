@@ -214,6 +214,7 @@
     <Compile Include="Events\Content\GameUpdateEvent.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
+    <Compile Include="Events\OutroFinishedEvent.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
       <DependentUpon>ChooseParameters.xaml</DependentUpon>
     </Compile>

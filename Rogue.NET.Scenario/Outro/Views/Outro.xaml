@@ -2,7 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" VerticalAlignment="Center" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             VerticalAlignment="Center" 
+             KeyDown="UserControl_KeyDown"
+             PreviewMouseDown="UserControl_PreviewMouseDown"
              mc:Ignorable="d">
     <StackPanel>
         <TextBlock x:Name="MainTextBlock" Text="Congratulations! You've just finished Rogue.NET!" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Foreground="Beige" />
@@ -17,7 +20,7 @@
                 </LinearGradientBrush>
             </Border.BorderBrush>
             <StackPanel x:Name="GameStatsPanel" HorizontalAlignment="Center">
-
+                <!-- TODO -->
             </StackPanel>
         </Border>
     </StackPanel>

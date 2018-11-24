@@ -270,7 +270,28 @@ namespace Rogue.NET.Scenario.Controller
         }
         private void LoadLevel(int levelNumber, PlayerStartLocation location)
         {
-            if (levelNumber <= _scenarioContainer.StoredConfig.DungeonTemplate.NumberOfLevels && levelNumber > 0)
+            if (levelNumber < 0)
+                throw new ApplicationException("Trying to load level " + levelNumber.ToString());
+
+            else if (levelNumber > _scenarioContainer.StoredConfig.DungeonTemplate.NumberOfLevels)
+                throw new ApplicationException("Trying to load level " + levelNumber.ToString());
+
+            // Check for Scenario Completed
+            else if (levelNumber == 0)
+            {
+                // Player has WON! :)
+                if (_scenarioContainer.IsObjectiveAcheived())
+                {
+                    // Publish scenario completed event
+                    _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(new ScenarioUpdate()
+                    {
+                        ScenarioUpdateType = ScenarioUpdateType.ScenarioCompleted
+                    });
+                }
+            }
+
+            // Level number is valid
+            else
             {
                 // First halt processing of backend
                 _scenarioController.Stop();

@@ -38,6 +38,11 @@
         /// <summary>
         /// Occurs when doodad has been used and stats need to be updated
         /// </summary>
-        StatisticsDoodadUsed
+        StatisticsDoodadUsed,
+
+        /// <summary>
+        /// Occurs when scenario is completed with objective acheived
+        /// </summary>
+        ScenarioCompleted
     }
 }

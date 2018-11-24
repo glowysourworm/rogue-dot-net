@@ -22,6 +22,7 @@ using Rogue.NET.Scenario.Views;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Linq;
+using Rogue.NET.Scenario.Outro;
 
 namespace Rogue.NET.Scenario
 {
@@ -85,6 +86,17 @@ namespace Rogue.NET.Scenario
 
                     _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
                 }
+                else if (update.ScenarioUpdateType == ScenarioUpdateType.ScenarioCompleted)
+                {
+                    // TODO!  Opacity needs to be reset!!!
+                    (_regionManager.Regions["MainRegion"]
+                                   .Views
+                                   .FirstOrDefault(x => x.GetType() == typeof(OutroDisplay)) as OutroDisplay)
+                                   .Opacity = 1;
+
+                    _regionManager.RequestNavigate("MainRegion", "OutroDisplay");
+                }
+
             }, ThreadOption.UIThread, true);
 
             _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
@@ -108,6 +120,11 @@ namespace Rogue.NET.Scenario
             _eventAggregator.GetEvent<GameSetupDisplayFinished>().Subscribe((e) =>
             {
                 _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
+            });
+
+            _eventAggregator.GetEvent<OutroFinishedEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("MainRegion", "IntroView");
             });
 
             _eventAggregator.GetEvent<RequestNavigateToLevelViewEvent>().Subscribe(() =>
@@ -148,6 +165,7 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
+            _regionManager.RegisterViewWithRegion("MainRegion", typeof(OutroDisplay));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
