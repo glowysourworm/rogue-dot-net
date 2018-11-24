@@ -12,7 +12,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     public class PlayerAlteration : CharacterAlteration
     {
         /// <summary>
-        /// List of all active auras (PLAYER ONLY) - managed via AlterationContainer.Id
+        /// List of all active auras (PLAYER ONLY) - These DO NOT EFFECT THE PLAYER; but DO
+        /// effect any Enemies in range.
         /// </summary>
         protected IDictionary<SpellReference, AlterationEffect> ActiveAuras { get; set; }
 
@@ -28,17 +29,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public IEnumerable<AlterationEffect> GetActiveAuras()
         {
             return this.ActiveAuras.Values;
-        }
-
-        /// <summary>
-        /// Returns all Alteration Effects that alter the character symbol
-        /// </summary>
-        public override IEnumerable<AlterationEffect> GetSymbolAlteringEffects()
-        {
-            var result = base.GetSymbolAlteringEffects();
-
-            return result.Union(this.ActiveAuras.Values)
-                         .Where(x => x.IsSymbolAlteration);
         }
 
         /// <summary>

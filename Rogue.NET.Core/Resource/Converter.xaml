@@ -9,6 +9,7 @@
     <converter:BoolInverseVisibilityHiddenConverter x:Key="BoolInverseVisibilityHiddenConverter" />
     <converter:BoolORMultiConverter x:Key="BoolORMultiConverter" />
     <converter:BoolORVisibilityMultiConverter x:Key="BoolORVisibilityMultiConverter" />
+    <converter:BoolANDVisibilityMultiConverter x:Key="BoolANDVisibilityMultiConverter" />
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
     <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />

@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// <summary>
         /// Returns all AlterationEffects that have a potential to modify the character symbol
         /// </summary>
-        public virtual IEnumerable<AlterationEffect> GetSymbolAlteringEffects()
+        public IEnumerable<AlterationEffect> GetSymbolAlteringEffects()
         {
             return this.ActiveTemporaryEffects.Values
                        .Union(this.ActivePassiveEffects.Values)
