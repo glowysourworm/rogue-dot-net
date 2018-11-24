@@ -36,13 +36,22 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             {
                 oldTemplate.PropertyChanged -= (obj, args) => OnBrushChanged();
                 oldTemplate.GradientStops.CollectionChanged -= (obj, args) => OnBrushChanged();
+
+                foreach (var gradientStop in oldTemplate.GradientStops)
+                    gradientStop.PropertyChanged -= (obj, args) => OnBrushChanged();
             }
 
             if (newTemplate != null)
             {
                 newTemplate.PropertyChanged += (obj, args) => OnBrushChanged();
                 newTemplate.GradientStops.CollectionChanged += (obj, args) => OnBrushChanged();
+
+                foreach (var gradientStop in newTemplate.GradientStops)
+                    gradientStop.PropertyChanged += (obj, args) => OnBrushChanged();
             }
+
+            if (newTemplate != null)
+                OnBrushChanged();
         }
 
         private void OnBrushChanged()
@@ -58,7 +67,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             if (template == null)
                 return;
 
-            template.GradientStops.Add(new GradientStopTemplateViewModel());
+            var gradientStop = new GradientStopTemplateViewModel();
+            gradientStop.PropertyChanged += (obj, args) => OnBrushChanged();
+
+            template.GradientStops.Add(gradientStop);
         }
         private void RemoveGradientStopButton_Click(object sender, RoutedEventArgs e)
         {
@@ -69,6 +81,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             for (int i = this.GradientStopListBox.SelectedItems.Count;i >= 0;i--)
             {
                 var item = this.GradientStopListBox.SelectedItems[i] as GradientStopTemplateViewModel;
+
+                item.PropertyChanged -= (obj, args) => OnBrushChanged();
 
                 template.GradientStops.Remove(item);
             }

@@ -463,7 +463,6 @@
     <Compile Include="Views\Controls\BrushEditorControl.xaml.cs">
       <DependentUpon>BrushEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\BrushPreviewCanvas.cs" />
     <Compile Include="Views\Controls\CharacterMap.xaml.cs">
       <DependentUpon>CharacterMap.xaml</DependentUpon>
     </Compile>
