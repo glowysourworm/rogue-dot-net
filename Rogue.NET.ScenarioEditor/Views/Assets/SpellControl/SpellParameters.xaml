@@ -66,5 +66,17 @@
             <TextBlock Text="Effect Range" Foreground="White" />
             <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
         </Grid>
+        <Grid Margin="10">
+            <GroupBox Header="Animation" FontSize="18">
+                <StackPanel>
+                    <TextBlock Text="These Animations will be played in the order they're shown here"
+                               HorizontalAlignment="Left"
+                               FontSize="16"
+                               Margin="8"
+                               Foreground="White"/>
+                    <controls:ListBuilder x:Name="AnimationsLB" DestinationItemsSource="{Binding Animations}" Margin="8" Height="200" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
     </StackPanel>
 </UserControl>

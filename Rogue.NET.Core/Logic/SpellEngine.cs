@@ -488,6 +488,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.SavePoint.IsRevealed = true;
             }
             _scenarioMessageService.Publish("You sense odd shrines near by...");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void RevealMonsters()
         {
@@ -495,6 +497,8 @@ namespace Rogue.NET.Core.Logic
                 enemy.IsRevealed = true;
 
             _scenarioMessageService.Publish("You hear growling in the distance...");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void RevealLevel()
         {
@@ -507,6 +511,8 @@ namespace Rogue.NET.Core.Logic
             RevealContent();
 
             _scenarioMessageService.Publish("Your senses are vastly awakened");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutReveal });
         }
         private void RevealStairs()
         {
@@ -517,6 +523,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.StairsUp.IsRevealed = true;
 
             _scenarioMessageService.Publish("You sense exits nearby");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void RevealItems()
         {
@@ -527,6 +535,8 @@ namespace Rogue.NET.Core.Logic
                 equipment.IsRevealed = true;
 
             _scenarioMessageService.Publish("You sense objects nearby");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void RevealContent()
         {
@@ -537,6 +547,8 @@ namespace Rogue.NET.Core.Logic
             }
 
             _scenarioMessageService.Publish("You sense objects nearby");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void RevealFood()
         {
@@ -544,6 +556,8 @@ namespace Rogue.NET.Core.Logic
                 consumable.IsRevealed = true;
 
             _scenarioMessageService.Publish("Hunger makes a good sauce.....  :)");
+
+            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {

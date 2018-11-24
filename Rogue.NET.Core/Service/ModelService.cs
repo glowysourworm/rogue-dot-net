@@ -33,6 +33,9 @@ namespace Rogue.NET.Core.Service
         // Effected locations between player moves (required for processing on the UI)
         IEnumerable<CellPoint> _effectedLocations;
 
+        // Revealed locations calculated on player move
+        IEnumerable<CellPoint> _revealedLocations;
+
         // Collection of targeted enemies
         IList<Enemy> _targetedEnemies;
 
@@ -96,6 +99,7 @@ namespace Rogue.NET.Core.Service
             _exploredLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
             _effectedLocations = new List<CellPoint>();
+            _revealedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
         }
 
@@ -147,6 +151,10 @@ namespace Rogue.NET.Core.Service
         {
             return _exploredLocations;
         }
+        public IEnumerable<CellPoint> GetRevealedLocations()
+        {
+            return _revealedLocations;
+        }
 
         public void SetTargetedEnemy(Enemy enemy)
         {
@@ -169,7 +177,7 @@ namespace Rogue.NET.Core.Service
                     // Set this based on whether the cell is physically visible. Once the cell is seen
                     // the IsRevealed flag gets reset. So, if it's set and the cell isn't visible then
                     // don't reset it just yet.
-                    scenarioObject.IsRevealed = scenarioObject.IsRevealed || !cell.IsPhysicallyVisible;
+                    scenarioObject.IsRevealed = scenarioObject.IsRevealed && !cell.IsPhysicallyVisible;
                 }
             }
         }
@@ -211,6 +219,14 @@ namespace Rogue.NET.Core.Service
                          .Where(x => x.IsExplored)
                          .Select(x => x.Location)
                          .ToList();
+
+            // Update Revealed locations
+            _revealedLocations = this.Level
+                                     .Grid
+                                     .GetCells()
+                                     .Where(x => x.IsRevealed)
+                                     .Select(x => x.Location)
+                                     .ToList();
         }
     }
 }

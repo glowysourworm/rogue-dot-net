@@ -16,10 +16,13 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public string CharacterColor { get; set; }
         public ImageResources Icon { get; set; }
 
+        // Gray-scale flag
+        public bool IsGrayScale { get; set; }
+
         // Output Format
         public ScenarioCacheImageType OutputType { get; set; }
 
-        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType, bool isGrayScale)
         {
             this.SymbolType = scenarioImage.SymbolType;
             this.SmileyMood = scenarioImage.SmileyMood;
@@ -30,13 +33,15 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.Icon = scenarioImage.Icon;
 
+            this.IsGrayScale = isGrayScale;
+
             this.OutputType = outputType;
         }
 
         /// <summary>
         /// Constructor that supports image sources only - no option for black background
         /// </summary>
-        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails)
+        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale)
         {
             this.SymbolType = symbolDetails.Type;
             this.SmileyMood = symbolDetails.SmileyMood;
@@ -46,6 +51,8 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
             this.Icon = symbolDetails.Icon;
+
+            this.IsGrayScale = grayScale;
 
             this.OutputType = ScenarioCacheImageType.ImageSource;
         }

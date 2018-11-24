@@ -64,5 +64,11 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// Updates Brush references on Animations
         /// </summary>
         void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
+        /// Processes reference matching in order of precedence. This will re-constitute references
+        /// that AREN'T SAVED BY THE SERIALIZER
+        /// </summary>
+        void UpdateAll(ScenarioConfigurationContainerViewModel configuration);
     }
 }

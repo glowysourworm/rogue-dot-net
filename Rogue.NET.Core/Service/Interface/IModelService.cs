@@ -65,6 +65,12 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<CellPoint> GetExploredLocations();
 
         /// <summary>
+        /// Statefully maintained collection of locations that are revealed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<CellPoint> GetRevealedLocations();
+
+        /// <summary>
         /// Statefully maintained collection of level contents visible to the Player
         /// </summary>
         IEnumerable<ScenarioObject> GetVisibleContents();

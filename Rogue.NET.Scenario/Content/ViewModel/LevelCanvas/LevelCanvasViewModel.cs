@@ -44,7 +44,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         // Identifies the layout entry in the content dictionary
         const string WALLS_KEY = "Layout";
         const string DOORS_KEY = "Doors";
+        const string REVEALED_KEY = "Revealed";
         const string AURA_EXT = "-Aura";
+
+        const int AURA_ZINDEX = 1;
+        const int DOODAD_ZINDEX = 2;
+        const int ITEM_ZINDEX = 3;
+        const int CHARACTER_ZINDEX = 4;
+        const int WALLS_ZINDEX = -2;
+        const int DOORS_ZINDEX = -1;
+        const int REVEALED_ZINDEX = 0;
 
         ObservableCollection<FrameworkElement> _content;
         int _levelWidth;
@@ -170,14 +179,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     UpdateLayoutVisibility(); // Opacity Mask for Auras
                     break;
                 case LevelUpdateType.ContentReveal:
-                    // TODO
+                    DrawContent();
                     break;
                 case LevelUpdateType.ContentRemove:
                     foreach (var contentId in levelUpdate.ContentIds)
                         RemoveContent(contentId);
                     break;
                 case LevelUpdateType.ContentAdd:
-                    // TODO
+                    DrawContent();
                     break;
                 case LevelUpdateType.ContentMove:
                     foreach (var contentId in levelUpdate.ContentIds)
@@ -191,7 +200,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.LayoutReveal:
-                    // TODO
+                    UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.LayoutTopology:
                     // TODO: Find better place for these. Design issue!
@@ -230,20 +239,31 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             var wallsGeometry = new StreamGeometry();
             var doorsGeometry = new StreamGeometry();
+            var revealedGeometry = new StreamGeometry();
 
             // Draw Walls
             using (var stream = wallsGeometry.Open())
             {
-                foreach (var cell in level.Grid.GetCells())
+                // Also Draw Revealed Walls
+                using (var revealedStream = revealedGeometry.Open())
                 {
-                    var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
-                    var invisibleDoors = cell.InVisibleDoors;
+                    foreach (var cell in level.Grid.GetCells())
+                    {
+                        var rect = _scenarioUIGeometryService.Cell2UIRect(cell.Location, false);
+                        var invisibleDoors = cell.InVisibleDoors;
 
-                    stream.BeginFigure(rect.TopLeft, false, false);
-                    stream.LineTo(rect.TopRight, (cell.Walls & Compass.N) != 0 || (invisibleDoors & Compass.N) != 0, true);
-                    stream.LineTo(rect.BottomRight, (cell.Walls & Compass.E) != 0 || (invisibleDoors & Compass.E) != 0, true);
-                    stream.LineTo(rect.BottomLeft, (cell.Walls & Compass.S) != 0 || (invisibleDoors & Compass.S) != 0, true);
-                    stream.LineTo(rect.TopLeft, (cell.Walls & Compass.W) != 0 || (invisibleDoors & Compass.W) != 0, true);
+                        stream.BeginFigure(rect.TopLeft, false, false);
+                        stream.LineTo(rect.TopRight, (cell.Walls & Compass.N) != 0 || (invisibleDoors & Compass.N) != 0, true);
+                        stream.LineTo(rect.BottomRight, (cell.Walls & Compass.E) != 0 || (invisibleDoors & Compass.E) != 0, true);
+                        stream.LineTo(rect.BottomLeft, (cell.Walls & Compass.S) != 0 || (invisibleDoors & Compass.S) != 0, true);
+                        stream.LineTo(rect.TopLeft, (cell.Walls & Compass.W) != 0 || (invisibleDoors & Compass.W) != 0, true);
+
+                        revealedStream.BeginFigure(rect.TopLeft, false, false);
+                        revealedStream.LineTo(rect.TopRight, (cell.Walls & Compass.N) != 0 || (invisibleDoors & Compass.N) != 0, true);
+                        revealedStream.LineTo(rect.BottomRight, (cell.Walls & Compass.E) != 0 || (invisibleDoors & Compass.E) != 0, true);
+                        revealedStream.LineTo(rect.BottomLeft, (cell.Walls & Compass.S) != 0 || (invisibleDoors & Compass.S) != 0, true);
+                        revealedStream.LineTo(rect.TopLeft, (cell.Walls & Compass.W) != 0 || (invisibleDoors & Compass.W) != 0, true);
+                    }
                 }
             }
             
@@ -275,9 +295,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             doorsPath.Stroke = Brushes.Magenta;
             doorsPath.StrokeThickness = 3;
 
+            var revealedPath = new Path();
+            revealedPath.Data = revealedGeometry;
+            revealedPath.Fill = Brushes.Transparent;
+            revealedPath.Stroke = Brushes.White;
+            revealedPath.StrokeThickness = 2;
+
+            Canvas.SetZIndex(wallsPath, WALLS_ZINDEX);
+            Canvas.SetZIndex(doorsPath, DOORS_ZINDEX);
+            Canvas.SetZIndex(revealedPath, REVEALED_ZINDEX);
+
             // Update collections
             UpdateOrAddContent(WALLS_KEY, wallsPath);
             UpdateOrAddContent(DOORS_KEY, doorsPath);
+            UpdateOrAddContent(REVEALED_KEY, revealedPath);
         }
 
         private void DrawContent()
@@ -324,9 +355,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var level = _modelService.Level;
             var exploredLocations = _modelService.GetExploredLocations();
             var visibleLocations = _modelService.GetVisibleLocations();
+            var revealedLocations = _modelService.GetRevealedLocations();
 
             var exploredLocationsOpacityMask = new StreamGeometry();
             var visibleLocationsOpacityMask = new StreamGeometry();
+            var revealedLocationsOpacityMask = new StreamGeometry();
 
             // Explored Locations
             using (var stream = exploredLocationsOpacityMask.Open())
@@ -356,10 +389,27 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 }
             }
 
+            // Revealed Locations
+            using (var stream = revealedLocationsOpacityMask.Open())
+            {
+                foreach (var cellPoint in revealedLocations)
+                {
+                    var rect = _scenarioUIGeometryService.Cell2UIRect(cellPoint, false);
+                    stream.BeginFigure(rect.TopLeft, true, true);
+                    stream.LineTo(rect.TopRight, true, false);
+                    stream.LineTo(rect.BottomRight, true, false);
+                    stream.LineTo(rect.BottomLeft, true, false);
+                    stream.LineTo(rect.TopLeft, true, false);
+                }
+            }
+
             var exploredDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), exploredLocationsOpacityMask);
             var visibleDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), visibleLocationsOpacityMask);
+            var revealedDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), revealedLocationsOpacityMask);
+
             var exploredDrawingBrush = new DrawingBrush(exploredDrawing);
             var visibleDrawingBrush = new DrawingBrush(visibleDrawing);
+            var revealedDrawingBrush = new DrawingBrush(revealedDrawing);
 
             exploredDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
             exploredDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
@@ -372,10 +422,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             visibleDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
             visibleDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-            
+
+            revealedDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            revealedDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
+
+            revealedDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            revealedDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
 
             _contentDict[WALLS_KEY].OpacityMask = exploredDrawingBrush;
             _contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
+            _contentDict[REVEALED_KEY].OpacityMask = revealedDrawingBrush;
 
             // Update Aura Opacity masks
             foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
@@ -397,17 +453,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             else if (scenarioObject is Player)
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
 
-            image.Source = _resourceService.GetImageSource(effectiveSymbol);
+            image.Source = scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
+                                                       _resourceService.GetImageSource(effectiveSymbol);
+
             image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
             if (scenarioObject is DoodadBase)
-                Canvas.SetZIndex(image, 2);
+                Canvas.SetZIndex(image, DOODAD_ZINDEX);
 
             else if (scenarioObject is ItemBase)
-                Canvas.SetZIndex(image, 3);
+                Canvas.SetZIndex(image, ITEM_ZINDEX);
 
             else if (scenarioObject is Character)
-                Canvas.SetZIndex(image, 4);
+                Canvas.SetZIndex(image, CHARACTER_ZINDEX);
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 
@@ -416,7 +474,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            image.Visibility = scenarioObject.IsPhysicallyVisible ? Visibility.Visible : Visibility.Hidden;
+            image.Visibility = scenarioObject.IsPhysicallyVisible || scenarioObject.IsRevealed ? Visibility.Visible : 
+                                                                                                 Visibility.Hidden;
 
             Canvas.SetLeft(image, point.X);
             Canvas.SetTop(image, point.Y);
@@ -444,7 +503,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
                 brush.Opacity = 0.3;
 
-                Canvas.SetZIndex(aura, 1);
+                Canvas.SetZIndex(aura, AURA_ZINDEX);
 
                 aura.Fill = brush;
                 aura.Stroke = null;
@@ -457,7 +516,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            content.Visibility = scenarioObject.IsPhysicallyVisible ? Visibility.Visible : Visibility.Hidden;
+            content.Visibility = scenarioObject.IsPhysicallyVisible || scenarioObject.IsRevealed ? Visibility.Visible : 
+                                                                                                   Visibility.Hidden;
 
             // Calculate effective symbol
             var effectiveSymbol = (ScenarioImage)scenarioObject;
@@ -472,9 +532,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                 else if (scenarioObject is Player)
                     effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
-
-                (content as LevelCanvasImage).Source = _resourceService.GetImageSource(effectiveSymbol);
             }
+
+            (content as LevelCanvasImage).Source =
+                scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
+                                            _resourceService.GetImageSource(effectiveSymbol);
 
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);

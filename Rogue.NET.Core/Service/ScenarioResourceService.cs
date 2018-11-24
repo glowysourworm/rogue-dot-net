@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Service
 {
@@ -96,7 +97,7 @@ namespace Rogue.NET.Core.Service
         public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails)
         {
             // Create cache image to retrieve cached BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(symbolDetails);
+            var cacheImage = new ScenarioCacheImage(symbolDetails, false);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -129,7 +130,7 @@ namespace Rogue.NET.Core.Service
         public BitmapSource GetImageSource(ScenarioImage scenarioImage)
         {
             // Create cache image to retrieve cached BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, false);
             var cacheKey = cacheImage.ToFingerprint();
             
             // Check for cached image
@@ -159,10 +160,29 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
+        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage)
+        {
+            // Create cache image to retrieve cached GrayScale BitmapSource or to store it
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, true);
+            var cacheKey = cacheImage.ToFingerprint();
+
+            // Check for cached image
+            if (_scenarioImageCache.ContainsKey(cacheKey))
+                return _scenarioImageCache[cacheKey] as BitmapSource;
+
+            // Create gray-scale image (also can use cache to get color image)
+            var bitmapSource = GetImageSource(scenarioImage);
+            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Gray8, BitmapPalettes.Gray256, 0.0);
+
+            // Cache the gray-scale image
+            _scenarioImageCache[cacheKey] = formatConvertedBitmap;
+
+            return formatConvertedBitmap;
+        }
         public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage)
         {
             // Create cache image to retrieve cached FrameworkElement or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.FrameworkElement);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.FrameworkElement, false);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement

@@ -20,6 +20,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
     public class ScenarioEditorController : IScenarioEditorController
     {
         readonly IEventAggregator _eventAggregator;
+        readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
@@ -31,12 +32,14 @@ namespace Rogue.NET.Controller.ScenarioEditor
         [ImportingConstructor]
         public ScenarioEditorController(
             IEventAggregator eventAggregator,
+            IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,
             IScenarioFileService scenarioFileService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
+            _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
 
@@ -110,6 +113,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             // Map to the view model
             _config = _configurationMapper.Map(config);
+
+            // Update all config references to match them by name
+            _scenarioAssetReferenceService.UpdateAll(_config);
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);

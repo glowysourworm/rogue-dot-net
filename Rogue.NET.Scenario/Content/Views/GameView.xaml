@@ -45,7 +45,7 @@
                 </Grid>
             </Border>
 
-            <Border x:Name="GameInfoRegion" prism:RegionManager.RegionName="GameInfoRegion" Grid.Row="1" Background="Transparent" Margin="260, 10, 250, 10" />
+            <Border x:Name="GameInfoRegion" prism:RegionManager.RegionName="GameInfoRegion" Grid.Row="1" Background="Transparent" Margin="10" />
             
             <Border x:Name="GameRegion" prism:RegionManager.RegionName="GameRegion" Grid.Row="2" Background="Transparent" ScrollViewer.CanContentScroll="True" />
 
