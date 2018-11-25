@@ -72,7 +72,6 @@ namespace Rogue.NET.Scenario
             {
                 _regionManager.RequestNavigate("MainRegion", "GameView");
                 _regionManager.RequestNavigate("GameRegion", "LevelView");
-                _regionManager.RequestNavigate("GameInfoRegion", "GameInfoView");
             }, true);
 
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
@@ -169,7 +168,6 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
-            _regionManager.RegisterViewWithRegion("GameInfoRegion", typeof(GameInfoView));
             _regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
             _regionManager.RegisterViewWithRegion("LevelCompassRegion", typeof(CompassCtrl));
             _regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));

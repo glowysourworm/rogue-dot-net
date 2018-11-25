@@ -6,6 +6,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
                 <ResourceDictionary>
                     <Style x:Key="CanvasBorderStyle" TargetType="Border">
@@ -50,6 +51,53 @@
                                 Margin="10"
                                 VerticalAlignment="Top" 
                                 HorizontalAlignment="Left" />
+                <Border HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="8"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Background="Black"
+                        >
+                    <StackPanel>
+                        <!-- {Scenario Name} Scenario (#{seed}) / Level {Level Number}" -->
+                        <TextBlock x:Name="GeneralInfoTB" Margin="8, 2, 8, 2" Foreground="Beige" FontSize="18" HorizontalAlignment="Left">
+                            <Run Text="{Binding ScenarioName}" />
+                            <Run Text=" Scenario" />
+                        </TextBlock>
+                        <TextBlock Visibility="{Binding IsSurvivorMode, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                   Margin="8, 2, 8, 2"
+                                   Text="SURVIVOR MODE"
+                                   Foreground="Fuchsia"
+                                   FontSize="16" />
+                        <TextBlock Margin="8, 2, 8, 2" Foreground="Beige" FontSize="16" HorizontalAlignment="Left">
+                            <Run Text="Game # " />
+                            <Run Text="{Binding Seed}" />
+                        </TextBlock>
+                        <TextBlock Margin="8, 2, 8, 2"
+                                   Foreground="Beige"
+                                   FontSize="16">
+                            <Run Text="Ticks: " />
+                            <Run Text="{Binding Ticks}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <TextBlock Visibility="{Binding IsObjectiveAcheived, Converter={StaticResource BoolVisibilityCollapseConverter}}" 
+                           Text="Objective Acheived! (Proceed to the Exit! Level 1!)" 
+                           FontSize="20" 
+                           Margin="8"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Bottom">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush>
+                            <GradientStop Color="Red" Offset="0" />
+                            <GradientStop Color="Orange" Offset="0.2" />
+                            <GradientStop Color="Yellow" Offset="0.4" />
+                            <GradientStop Color="Green" Offset="0.6" />
+                            <GradientStop Color="Blue" Offset="0.8" />
+                            <GradientStop Color="Purple" Offset="1" />
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+                </TextBlock>
             </Grid>
         </Border>
 

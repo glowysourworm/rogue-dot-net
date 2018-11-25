@@ -140,6 +140,10 @@
                 <Line X1="50" X2="50" Y1="45" Y2="55" Stroke="White" StrokeThickness="0.75" />
                 <Line X1="45" X2="55" Y1="50" Y2="50" Stroke="White" StrokeThickness="0.75" />
             </Canvas>
+            <TextBlock x:Name="LevelNumberText" FontSize="20" Grid.Column="1" Foreground="White" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Run Text="Level " />
+                <Run x:Name="LevelNumberRun" />
+            </TextBlock>                       
         </Grid>
     </Border>
 </UserControl>

@@ -41,6 +41,9 @@ namespace Rogue.NET.Scenario.Views
             // subscribe to events
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
+                // Update level number
+                this.LevelNumberRun.Text = modelService.Level.Number.ToString();
+
                 Update(modelService, scenarioUIGeometryService);
             }, ThreadOption.UIThread, true);
 
@@ -212,11 +215,13 @@ namespace Rogue.NET.Scenario.Views
             {
                 this.GlobeCanvas.Visibility = Visibility.Visible;
                 this.WidgetBorder.Visibility = Visibility.Visible;
+                this.LevelNumberText.Visibility = Visibility.Visible;
             }
             else
             {
                 this.WidgetBorder.Visibility = Visibility.Collapsed;
                 this.GlobeCanvas.Visibility = Visibility.Collapsed;
+                this.LevelNumberText.Visibility = Visibility.Collapsed;
             }
         }
     }

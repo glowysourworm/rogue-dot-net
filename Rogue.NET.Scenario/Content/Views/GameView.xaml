@@ -27,7 +27,6 @@
 		<Grid x:Name="LayoutRoot">
 			<Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
@@ -45,17 +44,15 @@
                 </Grid>
             </Border>
 
-            <Border x:Name="GameInfoRegion" prism:RegionManager.RegionName="GameInfoRegion" Grid.Row="1" Background="Transparent" Margin="10" />
-            
-            <Border x:Name="GameRegion" prism:RegionManager.RegionName="GameRegion" Grid.Row="2" Background="Transparent" ScrollViewer.CanContentScroll="True" />
+            <Border x:Name="GameRegion" prism:RegionManager.RegionName="GameRegion" Margin="0, 10, 0, 0" Grid.Row="1" Background="Transparent" ScrollViewer.CanContentScroll="True" />
 
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="3">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Row="2">
                 <common:DisappearingButton ImagePadding="10" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Normal.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="GameButton" Click="GameViewButton_Click" Foreground="White" FontSize="24"  HorizontalAlignment="Left" Margin="8" VerticalAlignment="Center" />
                 <common:DisappearingButton ImagePadding="10" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EquipmentGameDisplay.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="EquipmentButton" Click="EquipmentButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
                 <common:DisappearingButton ImagePadding="10" Height="64" Width="64" Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" Grid.Row="3" Cursor="Hand" Threshold="100000" x:Name="GameDictionaryButton" Click="GameDictionaryButton_Click" Foreground="White" FontSize="24" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Center" />
             </StackPanel>
 
-            <TextBlock x:Name="DialogTB" Text="{Binding DialogMessage, Delay=750, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:GameView}}}" Cursor="Hand" MouseDown="DialogTB_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Foreground="Beige" FontSize="24" />
+            <TextBlock x:Name="DialogTB" Text="{Binding DialogMessage, Delay=750, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:GameView}}}" Cursor="Hand" MouseDown="DialogTB_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Foreground="Beige" FontSize="24" />
 		</Grid>
 	</Border>
 </UserControl>

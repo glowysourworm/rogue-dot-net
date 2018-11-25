@@ -172,7 +172,7 @@ namespace Rogue.NET.Core.Service
 
             // Create gray-scale image (also can use cache to get color image)
             var bitmapSource = GetImageSource(scenarioImage);
-            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Gray8, BitmapPalettes.Gray256, 0.0);
+            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Gray16, BitmapPalettes.Gray16Transparent, 0.0);
 
             // Cache the gray-scale image
             _scenarioImageCache[cacheKey] = formatConvertedBitmap;
