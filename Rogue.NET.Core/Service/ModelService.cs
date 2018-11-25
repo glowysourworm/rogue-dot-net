@@ -14,6 +14,8 @@ using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 
 namespace Rogue.NET.Core.Service
 {
@@ -21,8 +23,8 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(IModelService))]
     public class ModelService : IModelService
     {
-        readonly ILayoutEngine _layoutEngine;
         readonly IRayTracer _rayTracer;
+        readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
         // Explored location collection calculated each time the player moves; and kept up to date
         IEnumerable<CellPoint> _exploredLocations;
@@ -43,10 +45,10 @@ namespace Rogue.NET.Core.Service
         private Enemy _finalEnemy;
 
         [ImportingConstructor]
-        public ModelService(ILayoutEngine layoutEngine, IRayTracer rayTracer)
+        public ModelService(IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator)
         {
-            _layoutEngine = layoutEngine;
             _rayTracer = rayTracer;
+            _randomSequenceGenerator = randomSequenceGenerator;
 
             _exploredLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
@@ -81,7 +83,7 @@ namespace Rogue.NET.Core.Service
                     player.Location = level.StairsDown.Location;
                     break;
                 case PlayerStartLocation.Random:
-                    player.Location = _layoutEngine.GetRandomLocation(level, true);
+                    player.Location = level.GetRandomLocation(true, _randomSequenceGenerator);
                     break;
             }
 
@@ -187,7 +189,7 @@ namespace Rogue.NET.Core.Service
 
             // If blind - no visible locations
             var visibleLocations = this.Player.Alteration.GetStates().Any(z => z == CharacterStateType.Blind) ?
-                                   _layoutEngine.GetAdjacentLocations(this.Level.Grid, this.Player.Location) : 
+                                   this.Level.Grid.GetAdjacentLocations(this.Player.Location) : 
                                    _rayTracer.GetVisibleLocations(this.Level.Grid, this.Player.Location, (int)lightRadius);
 
             // Reset flag for currently visible locations

@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
@@ -473,7 +474,7 @@ namespace Rogue.NET.Core.Logic
 
         private void TeleportRandom(Character character)
         {
-            character.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
+            character.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
             if (character is Player)
                 _scenarioMessageService.Publish("You were teleported!");
@@ -585,7 +586,7 @@ namespace Rogue.NET.Core.Logic
                 _scenarioMessageService.Publish("You hear growling in the distance");
 
                 var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
-                enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
+                enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
                 _modelService.Level.AddContent(enemy);
             }

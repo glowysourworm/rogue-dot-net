@@ -12,6 +12,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -20,6 +21,7 @@ namespace Rogue.NET.Core.Logic
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IScenarioMessageService _scenarioMessageService;
+        readonly IModelService _modelService;
 
         public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
         public event EventHandler<ISplashUpdate> SplashUpdateEvent;
@@ -29,10 +31,12 @@ namespace Rogue.NET.Core.Logic
 
         [ImportingConstructor]
         public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, 
-                            IScenarioMessageService scenarioMessageService)
+                            IScenarioMessageService scenarioMessageService,
+                            IModelService modelService)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _scenarioMessageService = scenarioMessageService;
+            _modelService = modelService;
         }
 
         #region (public) Player Action Methods
@@ -124,6 +128,8 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish("Door found!");
 
+                _modelService.UpdateVisibleLocations();
+
                 LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
             }
             else
@@ -147,6 +153,9 @@ namespace Rogue.NET.Core.Logic
 
                 characterCell.ToggleDoor(direction);
                 openingPositionCell.ToggleDoor(openingDirection2);
+
+                _modelService.UpdateVisibleLocations();
+                _modelService.UpdateContents();
 
                 LevelUpdateEvent(this, new LevelUpdate()
                 {
@@ -408,53 +417,11 @@ namespace Rogue.NET.Core.Logic
                     throw new Exception("Unhandled Compass type");
             }
         }
-        public CellPoint GetRandomLocation(Level level, bool excludeOccupiedLocations)
-        {
-            // Get cell array from the grid
-            var cells = level.Grid.GetCells();
-
-            // Slower operation
-            if (excludeOccupiedLocations)
-            {
-                var occupiedLocations = level.GetContents().Select(x => x.Location);
-
-                var freeCells = cells.Where(x => !occupiedLocations.Contains(x.Location));
-
-                // Return random cell
-                return freeCells.ElementAt(_randomSequenceGenerator.Get(0, freeCells.Count())).Location;
-            }
-            // O(1)
-            else
-            {
-                return cells[_randomSequenceGenerator.Get(0, cells.Length)].Location;
-            }
-        }
-        public CellPoint GetRandomLocation(Level level, IEnumerable<CellPoint> otherExcludedLocations, bool excludeOccupiedLocations)
-        {
-            var locations = level.Grid.GetCells()
-                                  .Select(x => x.Location)
-                                  .Except(otherExcludedLocations)
-                                  .ToList();
-
-            // Slower operation
-            if (excludeOccupiedLocations)
-            {
-                var occupiedLocations = level.GetContents().Select(x => x.Location);
-
-                var freeCells = locations.Except(occupiedLocations);
-
-                // Return random cell
-                return freeCells.ElementAt(_randomSequenceGenerator.Get(0, freeCells.Count()));
-            }
-            // O(1)
-            else
-            {
-                return locations[_randomSequenceGenerator.Get(0, locations.Count)];
-            }
-        }
         public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)
         {
-            var adjacentLocations = GetAdjacentLocations(level.Grid, location).
+            var adjacentLocations = level.
+                                    Grid.
+                                    GetAdjacentLocations(location).
                                     Where(x => !(excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
@@ -463,30 +430,15 @@ namespace Rogue.NET.Core.Logic
         }
         public IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location)
         {
-            var adjacentLocations = GetAdjacentLocations(level.Grid, location);
+            var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x, player.Location));
         }
         public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location)
         {
-            var adjacentLocations = GetAdjacentLocations(level.Grid, location);
+            var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
-        }
-        public IEnumerable<CellPoint> GetAdjacentLocations(LevelGrid grid, CellPoint location)
-        {
-            var n = grid[location.Column, location.Row - 1]?.Location ?? null;
-            var s = grid[location.Column, location.Row + 1]?.Location ?? null;
-            var e = grid[location.Column + 1, location.Row]?.Location ?? null;
-            var w = grid[location.Column - 1, location.Row - 1]?.Location ?? null;
-            var ne = grid[location.Column + 1, location.Row - 1]?.Location ?? null;
-            var nw = grid[location.Column - 1, location.Row - 1]?.Location ?? null;
-            var se = grid[location.Column + 1, location.Row + 1]?.Location ?? null;
-            var sw = grid[location.Column - 1, location.Row + 1]?.Location ?? null;
-
-            var result = new List<CellPoint>() { n, s, e, w, ne, nw, se, sw };
-
-            return result.Where(x => x != null);
         }
 
         public Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2)

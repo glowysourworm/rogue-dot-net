@@ -18,6 +18,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -327,7 +328,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case DoodadNormalType.TeleportRandom:
                     {
-                        character.Location = _layoutEngine.GetRandomLocation(_modelService.Level, true);
+                        character.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
                         if (character is Player)
                             _scenarioMessageService.Publish("Teleport!");
 
@@ -574,7 +575,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     case CharacterAttackType.Melee:
                         {
-                            var adjacentCells = _layoutEngine.GetAdjacentLocations(_modelService.Level.Grid, enemy.Location);
+                            var adjacentCells = _modelService.Level.Grid.GetAdjacentLocations(enemy.Location);
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
                             // Attack Conditions: location is non-null; AND enemy is not confused; OR enemy is confused and can strike
@@ -779,7 +780,7 @@ namespace Rogue.NET.Core.Logic
             var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
-            enemy.Location = _layoutEngine.GetRandomLocation(_modelService.Level, _modelService.GetVisibleLocations(), true);
+            enemy.Location = _modelService.Level.GetRandomLocation(_modelService.GetVisibleLocations(), true, _randomSequenceGenerator);
 
             // Add content to level
             _modelService.Level.AddContent(enemy);

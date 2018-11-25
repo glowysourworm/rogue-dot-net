@@ -203,10 +203,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.LayoutTopology:
-                    // TODO: Find better place for these. Design issue!
-                    _modelService.UpdateVisibleLocations();
-                    _modelService.UpdateContents();
-
                     DrawLayout();
                     UpdateLayoutVisibility();
                     break;
