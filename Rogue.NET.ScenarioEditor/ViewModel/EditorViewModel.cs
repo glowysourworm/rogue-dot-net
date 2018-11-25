@@ -11,6 +11,8 @@ using Prism.Commands;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using System;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -33,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ICommand NewCommand { get; private set; }
         public ICommand ShowDifficultyCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
+        public ICommand OpenCommand { get; private set; }
         public DelegateCommand UndoCommand { get; private set; }
         public DelegateCommand RedoCommand { get; private set; }
 
@@ -59,6 +62,20 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.SaveCommand = new DelegateCommand<string>((name) =>
             {
                 _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Publish();
+            });
+            this.OpenCommand = new DelegateCommand(() =>
+            {
+                var dialog = new OpenFileDialog();
+                dialog.Multiselect = false;
+
+                if (dialog.ShowDialog() == true)
+                {
+                    // Scenario name
+                    var scenarioName = Path.GetFileNameWithoutExtension(dialog.FileName);
+
+                    // Load the Scenario (event)
+                    _eventAggregator.GetEvent<LoadScenarioEvent>().Publish(scenarioName);
+                }
             });
             this.ShowDifficultyCommand = new DelegateCommand(() =>
             {

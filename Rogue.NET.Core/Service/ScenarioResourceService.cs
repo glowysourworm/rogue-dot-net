@@ -50,14 +50,14 @@ namespace Rogue.NET.Core.Service
         #region (public) Methods
         public void LoadAllConfigurations()
         {
-            var customScenarioConfigurations = Directory.GetFiles(ResourceConstants.ScenarioDirectory, "*." + ResourceConstants.ScenarioConfigurationExtension, SearchOption.TopDirectoryOnly);
+            var customScenarioConfigurationFiles = Directory.GetFiles(ResourceConstants.ScenarioDirectory, "*." + ResourceConstants.ScenarioConfigurationExtension, SearchOption.TopDirectoryOnly);
 
             // Load Custom Scenario Configurations
-            foreach (var file in customScenarioConfigurations)
+            foreach (var scenarioConfigurationName in customScenarioConfigurationFiles.Select(x => Path.GetFileNameWithoutExtension(x)))
             {
-                var configuration = _scenarioFileService.OpenConfiguration(Path.GetFileName(file));
+                var configuration = _scenarioFileService.OpenConfiguration(scenarioConfigurationName);
                 if (configuration != null)
-                    _scenarioConfigurations.Add(Path.GetFileNameWithoutExtension(file), configuration);
+                    _scenarioConfigurations.Add(scenarioConfigurationName, configuration);
             }
 
             // Load Built-In Scenario Configurations

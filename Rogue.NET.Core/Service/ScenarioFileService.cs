@@ -31,9 +31,9 @@ namespace Rogue.NET.Core.Service
 
             BinarySerializer.SerializeToFile(file, configuration);
         }
-        public ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationFile)
+        public ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName)
         {
-            var path = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationFile);
+            var path = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName + "." + ResourceConstants.ScenarioConfigurationExtension);
             return (ScenarioConfigurationContainer)BinarySerializer.DeserializeFromFile(path);
         }
         public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()

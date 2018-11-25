@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Service.Interface
     {
         void SaveConfiguration(string scenarioConfigurationName, ScenarioConfigurationContainer configuration);
         void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration);
-        ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationFile);
+        ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName);
 
         IDictionary<string, ScenarioFileHeader> GetScenarioHeaders();
         

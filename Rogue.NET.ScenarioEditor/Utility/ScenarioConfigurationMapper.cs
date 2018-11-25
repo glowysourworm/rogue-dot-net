@@ -46,7 +46,9 @@ namespace Rogue.NET.ScenarioEditor.Utility
             mapper.WhenMapping
                   .IgnoreTargetMembersOfType<IList>();
 
-            return MapRecurse<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, mapper);
+            var result = MapRecurse<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, mapper);
+
+            return FixReferences(result);
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)
         {
@@ -58,7 +60,9 @@ namespace Rogue.NET.ScenarioEditor.Utility
             mapper.WhenMapping
                   .IgnoreTargetMembersOfType<IList>();
 
-            return MapRecurse<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel, mapper);
+            var result = MapRecurse<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel, mapper);
+
+            return FixReferences(result);
         }
 
         public TDest MapRecurse<TSource, TDest>(TSource source, IMapper mapper)
@@ -139,6 +143,178 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 // Add to destination collection
                 destCollection.Add(destItem);
             }
+        }
+
+        /// <summary>
+        /// Mapping breaks references due to issues with this algorithm. This has to be run prior to returning the object.
+        /// </summary>
+        private ScenarioConfigurationContainer FixReferences(ScenarioConfigurationContainer configuration)
+        {
+            // Animations
+            foreach (var template in configuration.AnimationTemplates)
+            {
+                template.FillTemplate = Match(configuration.BrushTemplates, template.FillTemplate);
+                template.StrokeTemplate = Match(configuration.BrushTemplates, template.StrokeTemplate);
+            }
+
+            // Alterations
+            foreach (var template in configuration.MagicSpells)
+            {
+                MatchCollection(configuration.AnimationTemplates, template.Animations);
+            }
+
+            // Skill Sets
+            foreach (var template in configuration.SkillTemplates)
+            {
+                MatchCollection(configuration.MagicSpells, template.Spells);
+            }
+
+            // Doodads
+            foreach (var template in configuration.DoodadTemplates)
+            {
+                template.AutomaticMagicSpellTemplate = Match(configuration.MagicSpells, template.AutomaticMagicSpellTemplate);
+                template.InvokedMagicSpellTemplate = Match(configuration.MagicSpells, template.InvokedMagicSpellTemplate);
+            }
+
+            // Consumables
+            foreach (var template in configuration.ConsumableTemplates)
+            {
+                template.AmmoSpellTemplate = Match(configuration.MagicSpells, template.AmmoSpellTemplate);
+                template.LearnedSkill = Match(configuration.SkillTemplates, template.LearnedSkill);
+                template.ProjectileSpellTemplate = Match(configuration.MagicSpells, template.ProjectileSpellTemplate);
+                template.SpellTemplate = Match(configuration.MagicSpells, template.SpellTemplate);
+            }
+
+            // Equipment
+            foreach (var template in configuration.EquipmentTemplates)
+            {
+                template.AmmoTemplate = Match(configuration.ConsumableTemplates, template.AmmoTemplate);
+                template.CurseSpell = Match(configuration.MagicSpells, template.CurseSpell);
+                template.EquipSpell = Match(configuration.MagicSpells, template.EquipSpell);
+            }
+
+            // Enemies
+            foreach (var template in configuration.EnemyTemplates)
+            {
+                for (int i=0;i<template.StartingConsumables.Count;i++)
+                    template.StartingConsumables[i].TheTemplate = Match(configuration.ConsumableTemplates, template.StartingConsumables[i].TheTemplate);
+
+                for (int i = 0; i < template.StartingEquipment.Count; i++)
+                    template.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
+            }
+
+            // Player
+            MatchCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+
+            for (int i = 0; i < configuration.PlayerTemplate.StartingConsumables.Count; i++)
+                configuration.PlayerTemplate.StartingConsumables[i].TheTemplate = Match(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables[i].TheTemplate);
+
+            for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
+                configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
+
+            return configuration;
+        }
+
+        /// <summary>
+        /// Mapping breaks references due to issues with this algorithm. This has to be run prior to returning the object.
+        /// </summary>
+        private ScenarioConfigurationContainerViewModel FixReferences(ScenarioConfigurationContainerViewModel configuration)
+        {
+            // Animations
+            foreach (var template in configuration.AnimationTemplates)
+            {
+                template.FillTemplate = MatchVM(configuration.BrushTemplates, template.FillTemplate);
+                template.StrokeTemplate = MatchVM(configuration.BrushTemplates, template.StrokeTemplate);
+            }
+
+            // Alterations
+            foreach (var template in configuration.MagicSpells)
+            {
+                MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
+            }
+
+            // Skill Sets
+            foreach (var template in configuration.SkillTemplates)
+            {
+                MatchCollectionVM(configuration.MagicSpells, template.Spells);
+            }
+
+            // Doodads
+            foreach (var template in configuration.DoodadTemplates)
+            {
+                template.AutomaticMagicSpellTemplate = MatchVM(configuration.MagicSpells, template.AutomaticMagicSpellTemplate);
+                template.InvokedMagicSpellTemplate = MatchVM(configuration.MagicSpells, template.InvokedMagicSpellTemplate);
+            }
+
+            // Consumables
+            foreach (var template in configuration.ConsumableTemplates)
+            {
+                template.AmmoSpellTemplate = MatchVM(configuration.MagicSpells, template.AmmoSpellTemplate);
+                template.LearnedSkill = MatchVM(configuration.SkillTemplates, template.LearnedSkill);
+                template.ProjectileSpellTemplate = MatchVM(configuration.MagicSpells, template.ProjectileSpellTemplate);
+                template.SpellTemplate = MatchVM(configuration.MagicSpells, template.SpellTemplate);
+            }
+
+            // Equipment
+            foreach (var template in configuration.EquipmentTemplates)
+            {
+                template.AmmoTemplate = MatchVM(configuration.ConsumableTemplates, template.AmmoTemplate);
+                template.CurseSpell = MatchVM(configuration.MagicSpells, template.CurseSpell);
+                template.EquipSpell = MatchVM(configuration.MagicSpells, template.EquipSpell);
+            }
+
+            // Enemies
+            foreach (var template in configuration.EnemyTemplates)
+            {
+                for (int i = 0; i < template.StartingConsumables.Count; i++)
+                    template.StartingConsumables[i].TheTemplate = MatchVM(configuration.ConsumableTemplates, template.StartingConsumables[i].TheTemplate);
+
+                for (int i = 0; i < template.StartingEquipment.Count; i++)
+                    template.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
+            }
+
+            // Player
+            MatchCollectionVM(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+
+            for (int i = 0; i < configuration.PlayerTemplate.StartingConsumables.Count; i++)
+                configuration.PlayerTemplate.StartingConsumables[i].TheTemplate = MatchVM(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables[i].TheTemplate);
+
+            for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
+                configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
+
+            return configuration;
+        }
+
+        private T Match<T>(IList<T> source, T dest) where T : Template
+        {
+            var item = source.FirstOrDefault(x => x.Guid == dest.Guid);
+
+            // NOTE*** This will prevent null values in the configuration; but these are handled by 
+            //         boolean values to show whether they have valid data (and are even used). The reason
+            //         for this is to prevent "Null Reference" during mapping. (don't know why)
+            return item == null ? dest : item;
+        }
+
+        private void MatchCollection<T>(IList<T> source, IList<T> dest) where T : Template
+        {
+            for (int i=0;i< dest.Count;i++)
+                dest[i] = source.First(x => x.Guid == dest[i].Guid);
+        }
+
+        private T MatchVM<T>(IList<T> source, T dest) where T : TemplateViewModel
+        {
+            var item = source.FirstOrDefault(x => x.Guid == dest.Guid);
+
+            // NOTE*** This will prevent null values in the configuration; but these are handled by 
+            //         boolean values to show whether they have valid data (and are even used). The reason
+            //         for this is to prevent "Null Reference" during mapping. (don't know why)
+            return item == null ? dest : item;
+        }
+
+        private void MatchCollectionVM<T>(IList<T> source, IList<T> dest) where T : TemplateViewModel
+        {
+            for (int i = 0; i < dest.Count; i++)
+                dest[i] = source.First(x => x.Guid == dest[i].Guid);
         }
     }
 }

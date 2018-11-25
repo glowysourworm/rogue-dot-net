@@ -57,6 +57,11 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 Open(scenarioName, true);
             });
 
+            _eventAggregator.GetEvent<LoadScenarioEvent>().Subscribe((scenarioName) =>
+            {
+                Open(scenarioName, false);
+            });
+
             _eventAggregator.GetEvent<Rogue.NET.ScenarioEditor.Events.SaveScenarioEvent>().Subscribe(() =>
             {
                 Save();
@@ -113,9 +118,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             // Map to the view model
             _config = _configurationMapper.Map(config);
-
-            // Update all config references to match them by name
-            _scenarioAssetReferenceService.UpdateAll(_config);
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);

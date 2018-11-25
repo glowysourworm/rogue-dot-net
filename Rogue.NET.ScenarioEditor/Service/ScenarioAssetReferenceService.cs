@@ -5,6 +5,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -103,17 +106,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
         }
-
-        public void UpdateAll(ScenarioConfigurationContainerViewModel configuration)
-        {
-            UpdateBrushes(configuration);
-            UpdateAnimations(configuration);
-            UpdateAttackAttributes(configuration);
-            UpdateAlterations(configuration);
-            UpdateSkillSets(configuration);
-            UpdateItems(configuration);
-        }        
-        #endregion
+        #endregion      
 
         #region (private) Collection Methods
 
@@ -121,6 +114,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         {
             return source.FirstOrDefault(x => x.Name == dest.Name);
         }
+
         /// <summary>
         /// Removes items from the destination that don't exist in the source (BY NAME)
         /// </summary>
@@ -151,6 +145,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                     dest.RemoveAt(i);
             }
         }
+
         private void UpdateAttackAttributeCollection(IList<DungeonObjectTemplateViewModel> source, IList<AttackAttributeTemplateViewModel> dest)
         {
             // Create

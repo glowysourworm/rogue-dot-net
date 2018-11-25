@@ -256,6 +256,7 @@
     <Compile Include="Events\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadConstructionEvent.cs" />
+    <Compile Include="Events\LoadScenarioEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
     <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
