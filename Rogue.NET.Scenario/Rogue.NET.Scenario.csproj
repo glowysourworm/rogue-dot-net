@@ -190,7 +190,6 @@
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controller\FrontEndController.cs" />
     <Compile Include="Controller\Interface\IFrontEndController.cs" />
     <Compile Include="Controller\Interface\IGameController.cs" />
     <Compile Include="Controller\Interface\IScenarioController.cs" />

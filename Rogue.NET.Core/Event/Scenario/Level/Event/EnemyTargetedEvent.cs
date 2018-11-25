@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Scenario.Character;
 
 namespace Rogue.NET.Model.Events
@@ -9,7 +10,7 @@ namespace Rogue.NET.Model.Events
         public bool TargetingEnded { get; set; }
     }
 
-    public class EnemyTargetedEvent : PubSubEvent<EnemyTargetedEventArgs>
+    public class EnemyTargetedEvent : RogueEvent<EnemyTargetedEventArgs>
     {
 
     }

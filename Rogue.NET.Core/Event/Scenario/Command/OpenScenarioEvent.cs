@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Common.Events.Scenario
 {
@@ -6,7 +7,7 @@ namespace Rogue.NET.Common.Events.Scenario
     {
         public string ScenarioName { get; set; }
     }
-    public class OpenScenarioEvent : PubSubEvent<OpenScenarioEventArgs>
+    public class OpenScenarioEvent : RogueEvent<OpenScenarioEventArgs>
     {
         
     }

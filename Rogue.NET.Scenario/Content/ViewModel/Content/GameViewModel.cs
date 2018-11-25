@@ -58,7 +58,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 this.IsSurvivorMode = e.IsSurvivorMode;
                 this.ScenarioName = e.ScenarioName;
 
-            }, ThreadOption.UIThread, true);
+            });
         }
     }
 }

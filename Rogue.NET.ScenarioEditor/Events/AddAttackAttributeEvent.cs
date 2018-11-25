@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.ScenarioEditor.Events
@@ -9,7 +10,7 @@ namespace Rogue.NET.ScenarioEditor.Events
         public ImageResources Icon { get; set; }
     }
 
-    public class AddAttackAttributeEvent : PubSubEvent<AddAttackAttributeEventArgs>
+    public class AddAttackAttributeEvent : RogueEvent<AddAttackAttributeEventArgs>
     {
     }
 }

@@ -59,13 +59,13 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     default:
                         break;
                 }
-            }, ThreadOption.UIThread, true);
+            });
 
             // Level Loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 UpdateCollections(modelService, itemProcessor);
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         private void UpdateCollections(IModelService modelService, IItemProcessor itemProcessor)

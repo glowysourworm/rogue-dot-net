@@ -346,13 +346,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 // Filtered based on update type
                 OnLevelUpdate(update);
 
-            }, ThreadOption.UIThread, true);
+            });
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 // Unfiltered - processed on level loaded
                 ProcessUpdate();
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         private void OnLevelUpdate(ILevelUpdate update)

@@ -51,16 +51,12 @@ namespace Rogue.NET.Scenario
             _gameController = gameController;
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
-
-            // Halt back end threads on application exit
-            Application.Current.Exit += (sender, e) => { _scenarioController.Stop(); };
         }
 
         public void Initialize()
         {
             RegisterRegionViews();
 
-            _scenarioController.Initialize();
             _gameController.Initialize();
 
             _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
@@ -72,7 +68,7 @@ namespace Rogue.NET.Scenario
             {
                 _regionManager.RequestNavigate("MainRegion", "GameView");
                 _regionManager.RequestNavigate("GameRegion", "LevelView");
-            }, true);
+            });
 
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
@@ -96,7 +92,7 @@ namespace Rogue.NET.Scenario
                     _regionManager.RequestNavigate("MainRegion", "OutroDisplay");
                 }
 
-            }, ThreadOption.UIThread, true);
+            });
 
             _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
             {

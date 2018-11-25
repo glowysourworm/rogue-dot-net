@@ -2,6 +2,8 @@
 using Prism.Events;
 using Rogue.NET.Common.EventArgs;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
@@ -61,9 +63,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             set { this.RaiseAndSetIfChanged(ref _skillProgress, value); }
         }
 
-        public ICommand EmphasizeSkillUpCommand { get; set; }
-        public ICommand EmphasizeSkillDownCommand { get; set; }
-        public ICommand ActivateSkillCommand { get; set; }
+        public IAsyncCommand EmphasizeSkillUpCommand { get; set; }
+        public IAsyncCommand EmphasizeSkillDownCommand { get; set; }
+        public IAsyncCommand ActivateSkillCommand { get; set; }
 
         readonly IEventAggregator _eventAggregator;
 
@@ -80,34 +82,40 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.IsLearned = skillSet.IsLearned;
             this.SkillProgress = skillSet.SkillProgress;
 
+
             // Hook-up commands
-            this.EmphasizeSkillDownCommand = new DelegateCommand(() =>
+            this.EmphasizeSkillDownCommand = new AsyncCommand(async () =>
             {
-                eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new LevelCommandEventArgs(LevelAction.EmphasizeSkillDown, Compass.Null, this.Id));
+                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
+                    new UserCommandEventArgs(LevelAction.EmphasizeSkillDown, Compass.Null, this.Id));
 
             }, () => this.IsLearned && this.Emphasis > 0);
 
-            this.EmphasizeSkillUpCommand = new DelegateCommand(() =>
+            this.EmphasizeSkillUpCommand = new AsyncCommand(async () =>
             {
-                eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new LevelCommandEventArgs(LevelAction.EmphasizeSkillUp, Compass.Null, this.Id));
+                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
+                    new UserCommandEventArgs(LevelAction.EmphasizeSkillUp, Compass.Null, this.Id));
 
             }, () => this.IsLearned && this.Emphasis < 3);
 
-            this.ActivateSkillCommand = new DelegateCommand(() =>
+            this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
-                eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new LevelCommandEventArgs(LevelAction.ActivateSkill, Compass.Null, this.Id));
+                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
+                    new UserCommandEventArgs(LevelAction.ActivateSkill, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
         }
 
         private void InvalidateCommands()
         {
-            OnPropertyChanged("EmphasizeSkillDownCommand");
-            OnPropertyChanged("EmphasizeSkillUpCommand");
-            OnPropertyChanged("ActivateSkillCommand");
+            if (this.ActivateSkillCommand != null)
+                this.ActivateSkillCommand.RaiseCanExecuteChanged();
+
+            if (this.EmphasizeSkillDownCommand != null)
+                this.EmphasizeSkillDownCommand.RaiseCanExecuteChanged();
+
+            if (this.EmphasizeSkillUpCommand != null)
+                this.EmphasizeSkillUpCommand.RaiseCanExecuteChanged();
         }
     }
 }

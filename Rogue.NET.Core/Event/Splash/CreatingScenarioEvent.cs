@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using System.Windows.Media;
 
 namespace Rogue.NET.Common.Events.Splash
@@ -18,7 +19,7 @@ namespace Rogue.NET.Common.Events.Splash
             this.SmileyBodyColor = Colors.Transparent;
         }
     }
-    public class CreatingScenarioEvent : PubSubEvent<CreatingScenarioEventArgs>
+    public class CreatingScenarioEvent : RogueEvent<CreatingScenarioEventArgs>
     {
 
     }

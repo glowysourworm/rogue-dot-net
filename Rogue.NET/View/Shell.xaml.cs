@@ -17,6 +17,8 @@ namespace Rogue.NET.View
         readonly IEventAggregator _eventAggregator;
         readonly IKeyResolver _keyResolver;
 
+        bool _blockUserInput = false;
+
         [ImportingConstructor]
         public Shell(ShellViewModel viewModel, IEventAggregator eventAggregator, IKeyResolver keyResolver)
         {
@@ -58,9 +60,16 @@ namespace Rogue.NET.View
             SetFullScreenMode();
         }
 
-        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        protected override async void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
+
+            if (_blockUserInput)
+                return;
+
+            // Have to block user input here becasue OnPreviewKeyDown is not awaited by the calling
+            // thread.
+            _blockUserInput = true;
 
             if (e.Key == Key.Escape)
             {
@@ -79,8 +88,10 @@ namespace Rogue.NET.View
 
             if (levelCommand != null)
             {
-                _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+                await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
             }
+
+            _blockUserInput = false;
         }
     }
 }

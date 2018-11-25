@@ -30,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Views
                 {
                     Message = e.Message
                 });
-            }, true);
+            });
 
             this.MessageListBox.ItemsSource = collection;
         }

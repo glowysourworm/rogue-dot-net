@@ -12,18 +12,13 @@ namespace Rogue.NET.Scenario.Controller.Interface
     public interface IScenarioController
     {
         /// <summary>
-        /// Subscribes to user commands
-        /// </summary>
-        void Initialize();
-
-        /// <summary>
-        /// Starts primary worker process to accept user commands and process backend queues
-        /// </summary>
-        void Start();
-
-        /// <summary>
-        /// Stops primary worker process
+        /// Reset backend queues for loading new data model; and blocks user input events
         /// </summary>
         void Stop();
+
+        /// <summary>
+        /// Enables user input events
+        /// </summary>
+        void Start();
     }
 }

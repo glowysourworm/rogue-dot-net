@@ -60,12 +60,12 @@ namespace Rogue.NET.Scenario.Content.Views
                 if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
                     OnPlayerLocationChanged(viewModel);
 
-            }, ThreadOption.UIThread, true);
+            });
 
             eventAggregator.GetEvent<ShiftDisplayEvent>().Subscribe(type =>
             {
                 ShiftDisplay(type, viewModel);
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         public void OnPlayerLocationChanged(LevelCanvasViewModel viewModel)

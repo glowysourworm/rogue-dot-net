@@ -193,7 +193,6 @@
       <DependentUpon>RogueApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="RogueModule.cs" />
-    <Compile Include="Splash\SplashThread.cs" />
     <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
     <Compile Include="ViewModel\SplashViewModel.cs" />

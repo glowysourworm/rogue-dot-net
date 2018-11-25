@@ -60,24 +60,13 @@ namespace Rogue.NET.Scenario.Controller
 
         public void Initialize()
         {
-            //Make sure save directory exists
-            try
-            {
-                if (!Directory.Exists("..\\save"))
-                    Directory.CreateDirectory("..\\save");
-            }
-            catch (Exception)
-            {
-                _eventAggregator.GetEvent<MessageBoxEvent>().Publish("Error creating save directory - will not be able to save game progress");
-            }
-
             // New
             _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
                     New(config, e.RogueName, e.Seed, e.SurvivorMode);
-            }, true);
+            });
 
             // Open
             _eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
@@ -113,7 +102,7 @@ namespace Rogue.NET.Scenario.Controller
                         PublishGameUpdate();
                         break;
                 }
-            }, ThreadOption.UIThread, true);
+            });
 
             // Continue Scenario
             _eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
@@ -318,11 +307,11 @@ namespace Rogue.NET.Scenario.Controller
                     _scenarioContainer.ScenarioEncyclopedia, 
                     _scenarioContainer.StoredConfig);
 
-                // Enable processing of backend
-                _scenarioController.Start();
-
                 // Notify Listeners - Level Loaded -> Game Update
                 _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
+
+                // Enable backend processing
+                _scenarioController.Start();
 
                 PublishGameUpdate();
             }

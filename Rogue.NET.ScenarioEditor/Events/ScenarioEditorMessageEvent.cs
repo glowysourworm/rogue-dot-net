@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.Events
 {
@@ -6,7 +7,7 @@ namespace Rogue.NET.ScenarioEditor.Events
     {
         public string Message { get; set; }
     }
-    public class ScenarioEditorMessageEvent : PubSubEvent<ScenarioEditorMessageEventArgs>
+    public class ScenarioEditorMessageEvent : RogueEvent<ScenarioEditorMessageEventArgs>
     {
 
     }

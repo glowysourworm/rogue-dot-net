@@ -65,6 +65,7 @@
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
@@ -165,8 +166,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\EditableTextBlock.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />
     <Compile Include="Extension\Prism\BlurTransition.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\RogueAsyncEvent.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\RogueEvent.cs" />
+    <Compile Include="Extension\Prism\EventAggregator\RogueEventAggregator.cs" />
     <Compile Include="Extension\Prism\Transition.cs" />
     <Compile Include="Extension\Prism\TransitionPresenter.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />

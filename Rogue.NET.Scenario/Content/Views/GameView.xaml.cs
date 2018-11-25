@@ -43,7 +43,7 @@ namespace Rogue.NET.Scenario.Views
             {
                 this.DialogMessage = message;
 
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         private void GameViewButton_Click(object sender, RoutedEventArgs e)

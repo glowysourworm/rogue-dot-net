@@ -154,12 +154,12 @@ namespace Rogue.NET.Scenario.Views
             InvalidateVisual();
         }
 
-        private void SelectCheckBox_Click(object sender, RoutedEventArgs e)
+        private async void SelectCheckBox_Click(object sender, RoutedEventArgs e)
         {
             var itemViewModel = (sender as Button).Tag as ItemGridRowViewModel;
 
-            _eventAggregator.GetEvent<UserCommandEvent>()
-                            .Publish(new LevelCommandEventArgs(
+            await _eventAggregator.GetEvent<UserCommandEvent>()
+                            .Publish(new UserCommandEventArgs(
                                 (LevelAction)Enum.Parse(typeof(LevelAction), 
                                 this.IntendedAction.ToString()), Compass.Null, itemViewModel.Id));
 

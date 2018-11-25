@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Rogue.NET.Scenario.Events.Content
         CenterOnPlayer
     }
 
-    public class ShiftDisplayEvent : PubSubEvent<ShiftDisplayType>
+    public class ShiftDisplayEvent : RogueEvent<ShiftDisplayType>
     {
     }
 }

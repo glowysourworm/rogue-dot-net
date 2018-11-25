@@ -42,7 +42,10 @@ namespace Rogue.NET.PrismExtension
 
             regionManager.RequestNavigate("MainRegion", "IntroView");
         }
-
+        protected override void ConfigureContainer()
+        {
+            base.ConfigureContainer();
+        }
         protected override AggregateCatalog CreateAggregateCatalog()
         {
             var catalogs = new AssemblyCatalog[]

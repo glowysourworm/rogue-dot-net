@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 
 namespace Rogue.NET.ScenarioEditor.Events
@@ -10,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.Events
     }
 
     // Add Asset <Asset Type>
-    public class AddAssetEvent : PubSubEvent<AddAssetEventArgs>
+    public class AddAssetEvent : RogueEvent<AddAssetEventArgs>
     {
     }
 }

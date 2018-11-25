@@ -33,7 +33,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             {
                 UpdateOrAdd(modelService, scenarioResourceService, null);
 
-            }, ThreadOption.UIThread, true);
+            });
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 switch (update.LevelUpdateType)
@@ -44,7 +44,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         break;
                 }
 
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         private void CreateCategories(IScenarioResourceService scenarioResourceService)

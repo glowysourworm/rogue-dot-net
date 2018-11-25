@@ -106,12 +106,9 @@
     <Compile Include="Converter\StringColorConverter.cs" />
     <Compile Include="Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Event\ExitEvent.cs" />
-    <Compile Include="Event\Scenario\Level\Command\LevelCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelUpdateEvent.cs" />
-    <Compile Include="Event\Scenario\Level\Event\Player\PlayerAdvancementEventArgs.cs" />
     <Compile Include="Event\ScenarioEditor\ExitScenarioEditorEvent.cs" />
-    <Compile Include="Event\Scenario\Event\CommandPreferencesChangedEvent.cs" />
     <Compile Include="Event\Scenario\Command\ContinueScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\DeleteScenarioEvent.cs" />
     <Compile Include="Event\Scenario\Command\EditScenarioEvent.cs" />
@@ -126,12 +123,9 @@
     <Compile Include="Event\Splash\MessageBoxEvent.cs" />
     <Compile Include="Event\Splash\SplashEvent.cs" />
     <Compile Include="Event\Splash\SplashUpdateEvent.cs" />
-    <Compile Include="Event\Scenario\Event\AddScenarioObjectEvent.cs" />
-    <Compile Include="Event\Scenario\Level\Command\AnimationCompletedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\AnimationStartEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\EnemyTargetedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelLoadedEvent.cs" />
-    <Compile Include="Event\Scenario\Event\RemoveScenarioObjectEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />

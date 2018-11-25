@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Common.Events.Splash
 {
@@ -14,7 +15,7 @@ namespace Rogue.NET.Common.Events.Splash
         /// </summary>
         public double Progress { get; set; }
     }
-    public class SplashUpdateEvent : PubSubEvent<SplashUpdateEventArgs>
+    public class SplashUpdateEvent : RogueEvent<SplashUpdateEventArgs>
     {
 
     }

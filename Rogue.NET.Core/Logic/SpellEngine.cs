@@ -513,6 +513,9 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish("Your senses are vastly awakened");
 
+            _modelService.UpdateContents();
+            _modelService.UpdateVisibleLocations();
+
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutReveal });
         }
         private void RevealStairs()

@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Scenario;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Rogue.NET.Scenario.Events.Content
         public int Seed { get; set; }
         public int LevelNumber { get; set; }
     }
-    public class GameUpdateEvent : PubSubEvent<GameUpdateEventArgs>
+    public class GameUpdateEvent : RogueEvent<GameUpdateEventArgs>
     {
 
     }

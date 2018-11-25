@@ -45,13 +45,13 @@ namespace Rogue.NET.Scenario.Views
                 this.LevelNumberRun.Text = modelService.Level.Number.ToString();
 
                 Update(modelService, scenarioUIGeometryService);
-            }, ThreadOption.UIThread, true);
+            });
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
                     Update(modelService, scenarioUIGeometryService);
-            }, ThreadOption.UIThread, true);
+            });
         }
 
         private void Update(IModelService modelService, IScenarioUIGeometryService scenarioUIGeometryService)
