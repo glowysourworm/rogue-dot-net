@@ -113,20 +113,28 @@ namespace Rogue.NET.Scenario.Controller
                 while (_scenarioService.AnyAnimationEvents())
                     ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
 
-                // Second: Process all Scenario Events
-                while (_scenarioService.AnyScenarioEvents())
-                    ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
-
-                // Third: Process all Splash events
+                // Second: Process all Splash events
                 while (_scenarioService.AnySplashEvents())
                     ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
 
-                // Fourth: Process all UI events
+                // Third: Process all UI events
                 while (_scenarioService.AnyLevelEvents())
                     ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
 
+                // Fourth: Process all Scenario Events
+                //
+                // NOTE*** Level change events require unloading the backend. This will cause an
+                //         interrupt in the thread. To avoid a deadlock - must do this after processing
+                //         anything on the UI Thread - which waits during _backendThread.Join() until 
+                //         processing is finished (deadlock)
+                //
+                // UPDATE  Changed Invoke of the Dispatcher to BeginInvoke to avoid this issue. Appears to
+                //         be working fine. So, may not require such careful attention here.
+                while (_scenarioService.AnyScenarioEvents())
+                    ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+
                 // Finally: Process the next backend work item. (If processing finished - then allow user command)
-                if (!_scenarioService.ProcessBackend())
+                if (!_scenarioService.ProcessBackend() /*&& processing*/)
                 {
                     // Lock user command resource and wait to issue
                     lock (_userCommandLock)
@@ -168,6 +176,9 @@ namespace Rogue.NET.Scenario.Controller
                 // Safely join the thread
                 _backendThread.Join();
                 _backendThread = null;
+
+                // Also Safely set user command null
+                _userCommand = null;
             }
 
             // Second, clear and unload all backend queues. (This is safe because backend thread is halted)
@@ -206,6 +217,7 @@ namespace Rogue.NET.Scenario.Controller
         {
             InvokeDispatcher(() =>
             {
+                // NOTE*** Fire and forget
                 _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(update);
             });
         }
@@ -213,6 +225,7 @@ namespace Rogue.NET.Scenario.Controller
         {
             InvokeDispatcher(() =>
             {
+                // NOTE*** Fire and forget
                 _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(update);
             });
         }
@@ -235,7 +248,7 @@ namespace Rogue.NET.Scenario.Controller
 
         private void InvokeDispatcher(Action action)
         {
-            Application.Current.Dispatcher.Invoke(action);
+            Application.Current.Dispatcher.BeginInvoke(action);
         }
         #endregion
     }

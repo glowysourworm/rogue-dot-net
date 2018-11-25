@@ -329,6 +329,7 @@ namespace Rogue.NET.Core.Logic
 
                     // Queue an update for the skill sets
                     QueueLevelUpdate(LevelUpdateType.PlayerSkillSetAdd, string.Empty);
+                    QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, consumable.LearnedSkill.Id);
 
                     _scenarioMessageService.Publish(player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
                 }
@@ -372,6 +373,9 @@ namespace Rogue.NET.Core.Logic
                 QueuePlayerConsumableAddOrUpdate(itemId);
             else if (item is Equipment)
                 QueuePlayerEquipmentAddOrUpdate(itemId);
+
+            // Queue meta-data update
+            QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, itemId);
         }
         public void Enchant(string equipmentId)
         {
@@ -663,6 +667,9 @@ namespace Rogue.NET.Core.Logic
 
             //Sets identified
             _modelService.ScenarioEncyclopedia[doodad.RogueName].IsIdentified = true;
+
+            // Update meta-data UI
+            QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, doodad.Id);
 
             switch (doodad.Type)
             {

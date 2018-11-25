@@ -238,6 +238,7 @@ namespace Rogue.NET.Core.Logic
 
             // Publish Level update
             QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
+            QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, enemy.Id);
         }
         public void CalculateEnemyReactions()
         {
@@ -308,6 +309,9 @@ namespace Rogue.NET.Core.Logic
             {
                 metaData.IsIdentified = true;
                 doodad.IsHidden = false;
+
+                // Update metadata
+                QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, doodad.Id);
             }
 
             switch (doodad.NormalType)
@@ -417,6 +421,8 @@ namespace Rogue.NET.Core.Logic
 
                 // Set Curse Identified
                 metaData.IsCurseIdentified = true;
+
+                QueueLevelUpdate(LevelUpdateType.EncyclopediaCurseIdentify, equipment.Id);
 
                 return false;
             }

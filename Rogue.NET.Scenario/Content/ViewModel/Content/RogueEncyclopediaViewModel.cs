@@ -10,6 +10,8 @@ using System;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Common.ViewModel;
+using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -29,7 +31,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                UpdateOrAdd(modelService, scenarioResourceService);
+                UpdateOrAdd(modelService, scenarioResourceService, null);
 
             }, ThreadOption.UIThread, true);
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
@@ -38,7 +40,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 {
                     case LevelUpdateType.EncyclopediaCurseIdentify:
                     case LevelUpdateType.EncyclopediaIdentify:
-                        UpdateOrAdd(modelService, scenarioResourceService);
+                        UpdateOrAdd(modelService, scenarioResourceService, update.ContentIds);
                         break;
                 }
 
@@ -90,32 +92,43 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             });
         }
 
-        private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService)
+        private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService, IEnumerable<string> contentIds)
         {
-            foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
+            var metaDataCollection = (contentIds != null && contentIds.Any()) ?
+                                        modelService.ScenarioEncyclopedia.Values.Where(x => contentIds.Contains(x.Id)) :
+                                        modelService.ScenarioEncyclopedia.Values;
+
+            // To locate the ScenarioMetaDataViewModel -> find category by Type
+            foreach (var metaData in metaDataCollection)
             {
-                // To locate the ScenarioMetaDataViewModel -> find category by Type
-                var category = !metaData.IsObjective ? this.Categories.FirstOrDefault(x => x.CategoryName == metaData.Type) :
-                                                       this.Categories.First(x => x.CategoryName == OBJECTIVE_NAME);
+                // Update base category
+                UpdateCategory(this.Categories.FirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
 
-                if (category == null)
-                    throw new Exception("Unknown Scenario MetaData Type");
-
-                var item = category.Items.FirstOrDefault(x => x.RogueName == metaData.RogueName);
-
-                // Add
-                if (item == null)
-                    category.Items.Add(new ScenarioMetaDataViewModel(metaData, scenarioResourceService));
-
-                // Update
-                else
-                    item.Update(metaData, scenarioResourceService);
-
-                // Invalidate calculated category properties (percent complete / image source)
-                category.Invalidate();
+                // Update the objective category
+                if (metaData.IsObjective)
+                    UpdateCategory(this.Categories.First(x => x.CategoryName == OBJECTIVE_NAME), metaData, scenarioResourceService);
             }
 
             OnPropertyChanged("Categories");
+        }
+
+        private void UpdateCategory(RogueEncyclopediaCategoryViewModel category, ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
+        {
+            if (category == null)
+                throw new Exception("Unknown Scenario MetaData Type");
+
+            var item = category.Items.FirstOrDefault(x => x.RogueName == metaData.RogueName);
+
+            // Add
+            if (item == null)
+                category.Items.Add(new ScenarioMetaDataViewModel(metaData, scenarioResourceService));
+
+            // Update
+            else
+                item.Update(metaData, scenarioResourceService);
+
+            // Invalidate calculated category properties (percent complete / image source)
+            category.Invalidate();
         }
     }
 }
