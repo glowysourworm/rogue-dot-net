@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Controller.Interface
 {
@@ -7,8 +8,8 @@ namespace Rogue.NET.ScenarioEditor.Controller.Interface
         ScenarioConfigurationContainerViewModel CurrentConfig { get; }
 
         void New();
-        void Open(string name, bool builtIn);
-        void Save();
+        Task Open(string name, bool builtIn);
+        Task Save();
         void Validate();
     }
 }

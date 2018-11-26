@@ -3,6 +3,8 @@ using Rogue.NET.Common;
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.ViewModel;
 using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rogue.NET.Splash.ViewModel
 {
@@ -34,11 +36,18 @@ namespace Rogue.NET.Splash.ViewModel
         [ImportingConstructor]
         public SplashViewModel(IEventAggregator eventAggregator)
         {
-            eventAggregator.GetEvent<SplashUpdateEvent>().Subscribe((e) =>
+            eventAggregator.GetEvent<SplashUpdateEvent>().Subscribe(Update);
+        }
+
+        private async Task Update(SplashUpdateEventArgs e)
+        {
+            SynchronizationContext.Current.Send(new SendOrPostCallback((message) =>
             {
-                this.Message = e.Message;
-                this.Progress = e.Progress;
-            });
+                var update = (SplashUpdateEventArgs)message;
+
+                this.Message = update.Message;
+                this.Progress = update.Progress;
+            }), e);
         }
     }
 }

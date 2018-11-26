@@ -68,36 +68,36 @@ namespace Rogue.NET.Scenario.Views
             }
         }
 
-        private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
+        private async void ObjectiveButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Objective
             });
         }
 
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        private async void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Help
             });
         }
 
-        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
+        private async void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                  SplashAction = SplashAction.Show,
                  SplashType = SplashEventType.CommandPreferences
             });
         }
 
-        private void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Dialog

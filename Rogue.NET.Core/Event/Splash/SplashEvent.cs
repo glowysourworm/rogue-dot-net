@@ -4,7 +4,7 @@ using Rogue.NET.Core.Logic.Processing.Interface;
 
 namespace Rogue.NET.Core.Event.Splash
 {
-    public class SplashEvent : RogueEvent<ISplashUpdate>
+    public class SplashEvent : RogueAsyncEvent<ISplashUpdate>
     {
     }
 }

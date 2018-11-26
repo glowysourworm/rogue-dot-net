@@ -19,7 +19,7 @@ namespace Rogue.NET.Common.Events.Splash
             this.SmileyBodyColor = Colors.Transparent;
         }
     }
-    public class CreatingScenarioEvent : RogueEvent<CreatingScenarioEventArgs>
+    public class CreatingScenarioEvent : RogueAsyncEvent<CreatingScenarioEventArgs>
     {
 
     }

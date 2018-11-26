@@ -15,7 +15,7 @@ namespace Rogue.NET.Common.Events.Splash
         /// </summary>
         public double Progress { get; set; }
     }
-    public class SplashUpdateEvent : RogueEvent<SplashUpdateEventArgs>
+    public class SplashUpdateEvent : RogueAsyncEvent<SplashUpdateEventArgs>
     {
 
     }

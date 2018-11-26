@@ -2,7 +2,9 @@
 using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.ViewModel;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Rogue.NET.ViewModel
 {
@@ -56,17 +58,19 @@ namespace Rogue.NET.ViewModel
         [ImportingConstructor]
         public CreatingScenarioViewModel(IEventAggregator eventAggregator)
         {
-            eventAggregator.GetEvent<CreatingScenarioEvent>().Subscribe((e) =>
-            {
-                this.Message = e.Message;
-                this.Progress = e.Progress;
+            eventAggregator.GetEvent<CreatingScenarioEvent>().Subscribe(Update);
+        }
 
-                if (e.SmileyBodyColor != Colors.Transparent)
-                    this.SmileyBodyColor = e.SmileyBodyColor;
+        private async Task Update(CreatingScenarioEventArgs e)
+        {
+            this.Message = e.Message;
+            this.Progress = e.Progress;
 
-                if (e.SmileyLineColor != Colors.Transparent)
-                    this.SmileyLineColor = e.SmileyLineColor;
-            });
+            if (e.SmileyBodyColor != Colors.Transparent)
+                this.SmileyBodyColor = e.SmileyBodyColor;
+
+            if (e.SmileyLineColor != Colors.Transparent)
+                this.SmileyLineColor = e.SmileyLineColor;
         }
     }
 }

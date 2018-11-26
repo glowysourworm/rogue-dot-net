@@ -232,7 +232,6 @@
     <Compile Include="View\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ShellViewModel.cs" />
     <Compile Include="PrismExtension\TransitionalRegionAdapter.cs" />
     <Compile Include="View\SplashView.xaml.cs">
       <DependentUpon>SplashView.xaml</DependentUpon>

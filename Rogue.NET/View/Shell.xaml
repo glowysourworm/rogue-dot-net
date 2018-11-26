@@ -59,7 +59,9 @@
             </StackPanel>
             
         </Grid>
+        
         <ContentControl x:Name="MainRegion" Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
+
     </Grid>
 </Window>
 

@@ -12,6 +12,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 
 namespace Rogue.NET.Controller.ScenarioEditor
 {
@@ -96,10 +97,10 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Created Scenario " + _config.DungeonTemplate.Name);
         }
 
-        public void Open(string name, bool builtIn)
+        public async Task Open(string name, bool builtIn)
         {
             // Show Splash Screen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Open
@@ -126,7 +127,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
 
             // Hide Splash Screen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Open
@@ -135,13 +136,13 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Opened Scenario " + name);
         }
 
-        public void Save()
+        public async Task Save()
         {
-            Save(false);
+            await Save(false);
         }
-        public void Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
+        public async Task Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Save
@@ -163,7 +164,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             PublishOutputMessage("Save complete");
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Save
