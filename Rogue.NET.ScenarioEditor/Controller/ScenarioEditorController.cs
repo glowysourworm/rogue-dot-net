@@ -97,10 +97,10 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Created Scenario " + _config.DungeonTemplate.Name);
         }
 
-        public async Task Open(string name, bool builtIn)
+        public void Open(string name, bool builtIn)
         {
             // Show Splash Screen
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Open
@@ -127,7 +127,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
 
             // Hide Splash Screen
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Open
@@ -136,13 +136,13 @@ namespace Rogue.NET.Controller.ScenarioEditor
             PublishOutputMessage("Opened Scenario " + name);
         }
 
-        public async Task Save()
+        public void Save()
         {
-            await Save(false);
+            Save(false);
         }
-        public async Task Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
+        public void Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
         {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Save
@@ -164,7 +164,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             PublishOutputMessage("Save complete");
 
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Save

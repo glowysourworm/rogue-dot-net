@@ -194,8 +194,6 @@
     </Compile>
     <Compile Include="RogueModule.cs" />
     <Compile Include="Utility\MapperInit.cs" />
-    <Compile Include="ViewModel\CreatingScenarioViewModel.cs" />
-    <Compile Include="ViewModel\SplashViewModel.cs" />
     <Compile Include="View\CommandPreferencesView.xaml.cs">
       <DependentUpon>CommandPreferencesView.xaml</DependentUpon>
     </Compile>

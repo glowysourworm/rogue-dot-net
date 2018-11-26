@@ -11,6 +11,7 @@ using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
+using Rogue.NET.Model.Events;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -23,7 +24,7 @@ namespace Rogue.NET.Scenario.Content.Views
         bool _mouseDownWithControl = false;
         Point _mouseDownWithControlPoint = new Point();
 
-        const int SCREEN_BUFFER = 120;
+        const int SCREEN_BUFFER = 200;
         const int SHIFT_AMOUNT = 60;
 
         public static readonly DependencyProperty PrimaryTransformProperty =
@@ -53,6 +54,12 @@ namespace Rogue.NET.Scenario.Content.Views
             transform.Children.Add(_translateXform);
 
             this.TheItemsControl.RenderTransform = transform;
+
+            // subscribe to event to center screen when level loaded
+            eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
+            {
+                CenterOnLocation(viewModel.PlayerLocation);
+            });
 
             // subscribe to event to update RenderTransform on player move
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>

@@ -1,5 +1,4 @@
-﻿using Rogue.NET.ViewModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
 namespace Rogue.NET.View
@@ -8,11 +7,9 @@ namespace Rogue.NET.View
     public partial class CreatingScenarioView : UserControl
     {
         [ImportingConstructor]
-        public CreatingScenarioView(CreatingScenarioViewModel viewModel)
+        public CreatingScenarioView()
         {
             InitializeComponent();
-
-            this.DataContext = viewModel;
         }
     }
 }

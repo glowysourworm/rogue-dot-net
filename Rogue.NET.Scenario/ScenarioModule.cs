@@ -53,17 +53,12 @@ namespace Rogue.NET.Scenario
             _scenarioFileService = scenarioFileService;
         }
 
-        public async void Initialize()
+        public void Initialize()
         {
             RegisterRegionViews();
 
             _gameController.Initialize();
 
-            await _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            {
-                Message = "Loading Scenario Module...",
-                Progress = 50
-            });
             _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("MainRegion", "GameView");

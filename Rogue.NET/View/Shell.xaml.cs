@@ -5,20 +5,13 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Service.Interface;
-using Rogue.NET.Splash.ViewModel;
-using Rogue.NET.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace Rogue.NET.View
 {
@@ -28,8 +21,6 @@ namespace Rogue.NET.View
         readonly IEventAggregator _eventAggregator;
         readonly IKeyResolver _keyResolver;
 
-        // Splash Thread
-        Thread _splashThread;
         Window _splashWindow;
 
         bool _blockUserInput = false;
@@ -40,8 +31,12 @@ namespace Rogue.NET.View
             _eventAggregator = eventAggregator;
             _keyResolver = keyResolver;
 
+            _splashWindow = CreatePopupWindow();
+
             InitializeComponent();
             InitializeEvents();
+
+            Application.Current.Exit += (sender, args) => _splashWindow.Dispatcher.InvokeShutdown();
         }
 
         public void SetFullScreenMode()
@@ -68,15 +63,12 @@ namespace Rogue.NET.View
                 Application.Current.Shutdown();
             });
 
-            _eventAggregator.GetEvent<SplashEvent>().Subscribe(async (e) =>
+            _eventAggregator.GetEvent<SplashEvent>().Subscribe((e) =>
             {
-                await this.Dispatcher.InvokeAsync(() =>
-                {
-                    if (e.SplashAction == SplashAction.Hide)
-                        HideSplash();
-                    else
-                        ShowSplash(e.SplashType);
-                });
+                if (e.SplashAction == SplashAction.Hide)
+                    HideSplash();
+                else
+                    ShowSplash(e.SplashType);
             });
 
             _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
@@ -127,38 +119,13 @@ namespace Rogue.NET.View
 
         private void HideSplash()
         {
-            if (_splashThread != null)
-            {
-                _splashWindow.Dispatcher.InvokeShutdown();
-                _splashWindow = null;
-
-                _splashThread.Join();
-                _splashThread = null;
-            }
+            _splashWindow.Hide();
         }
 
         private void ShowSplash(SplashEventType type)
         {
-
-            _splashThread = new Thread(() =>
-            {
-                // Create the window here; but have handle from the other thread.. seems tricky but appears to
-                // work to allow us to call InvokeDispatcherShutdown()
-                _splashWindow = CreatePopupWindow();
-                _splashWindow.Content = CreateSplashView(type);
-
-                // Must set for objects that rely on synchronization context
-                SynchronizationContext.SetSynchronizationContext(
-                    new DispatcherSynchronizationContext(
-                        Dispatcher.CurrentDispatcher));
-
-                _splashWindow.Show();
-
-                // DON'T UNDERSTAND THIS CALL
-                System.Windows.Threading.Dispatcher.Run();
-            });
-            _splashThread.SetApartmentState(ApartmentState.STA);
-            _splashThread.Start();
+            _splashWindow.Content = CreateSplashView(type);
+            _splashWindow.Show();
         }
 
         private Window CreatePopupWindow()
@@ -186,9 +153,9 @@ namespace Rogue.NET.View
             switch (type)
             {
                 case SplashEventType.Splash:
-                    return new SplashView(new SplashViewModel(_eventAggregator));
+                    return new SplashView();
                 case SplashEventType.NewScenario:
-                    return new CreatingScenarioView(new CreatingScenarioViewModel(_eventAggregator));
+                    return new CreatingScenarioView();
                 case SplashEventType.Save:
                     return new SaveView();
                 case SplashEventType.Open:

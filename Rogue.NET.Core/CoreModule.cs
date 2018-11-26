@@ -26,25 +26,19 @@ namespace Rogue.NET.Core
             _scenarioResourceService = scenarioResourceService;
         }
 
-        public async void Initialize()
+        public void Initialize()
         {
             // Show the Splash Sceen
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Splash
             });
 
-            // Show progress 50%
-            await _eventAggregator.GetEvent<SplashUpdateEvent>().Publish(new SplashUpdateEventArgs()
-            {
-                Message = "Loading Scenario Configurations...",
-                Progress = 50
-            });
             _scenarioResourceService.LoadAllConfigurations();
 
             // Hide the Splash Sceen
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Splash

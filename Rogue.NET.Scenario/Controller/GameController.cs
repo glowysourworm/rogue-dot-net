@@ -62,11 +62,11 @@ namespace Rogue.NET.Scenario.Controller
         public void Initialize()
         {
             // New
-            _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe(async (e) =>
+            _eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
-                    await New(config, e.RogueName, e.Seed, e.SurvivorMode);
+                    New(config, e.RogueName, e.Seed, e.SurvivorMode);
             });
 
             // Open
@@ -115,21 +115,12 @@ namespace Rogue.NET.Scenario.Controller
             });
         }
 
-        public async Task New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode)
+        public void New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode)
         {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.NewScenario
-            });
-            // send character color and initialize display message
-            await _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
-            {
-                Message = "Creating " + configuration.DungeonTemplate.Name + " Scenario...",
-                Progress = 10,
-                ScenarioName = configuration.DungeonTemplate.Name,
-                SmileyBodyColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyBodyColor),
-                SmileyLineColor = ColorUtility.Convert(configuration.PlayerTemplate.SymbolDetails.SmileyLineColor)
             });
 
             // Unload current scenario container
@@ -157,20 +148,8 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioContainer.SurvivorMode = survivorMode;
             _scenarioContainer.Statistics.StartTime = DateTime.Now;
 
-            await _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
-            {
-                Message = "Compressing Scenario in Memory...",
-                Progress = 50
-            });
-
             //Compress to dungeon file
             _scenarioFile = ScenarioFile.Create(_scenarioContainer);
-
-            await _eventAggregator.GetEvent<CreatingScenarioEvent>().Publish(new CreatingScenarioEventArgs()
-            {
-                Message = "Loading First Level...",
-                Progress = 80
-            });
 
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
@@ -178,16 +157,16 @@ namespace Rogue.NET.Scenario.Controller
             // Loads level and fires event to listeners
             LoadCurrentLevel();
 
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.NewScenario
             });
         }
-        public async Task Open(string playerName)
+        public void Open(string playerName)
         {
             // Show Splash
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Open
@@ -212,7 +191,7 @@ namespace Rogue.NET.Scenario.Controller
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
 
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Open
@@ -220,10 +199,10 @@ namespace Rogue.NET.Scenario.Controller
 
             LoadCurrentLevel();
         }
-        public async Task Save()
+        public void Save()
         {
             // Splash Show
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Save
@@ -240,7 +219,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player1.RogueName);
 
             // Hide Splash
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Save

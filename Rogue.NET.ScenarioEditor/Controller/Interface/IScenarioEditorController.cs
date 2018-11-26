@@ -8,8 +8,8 @@ namespace Rogue.NET.ScenarioEditor.Controller.Interface
         ScenarioConfigurationContainerViewModel CurrentConfig { get; }
 
         void New();
-        Task Open(string name, bool builtIn);
-        Task Save();
+        void Open(string name, bool builtIn);
+        void Save();
         void Validate();
     }
 }
