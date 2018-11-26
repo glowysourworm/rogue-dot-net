@@ -68,39 +68,27 @@ namespace Rogue.NET.Scenario.Views
             }
         }
 
-        private async void ObjectiveButton_Click(object sender, RoutedEventArgs e)
+        private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
         {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
             {
-                SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Objective
+                Type = DialogEventType.Objective
             });
         }
 
-        private async void HelpButton_Click(object sender, RoutedEventArgs e)
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
             {
-                SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Help
+                Type = DialogEventType.Help
             });
         }
 
-        private async void PreferencesButton_Click(object sender, RoutedEventArgs e)
+        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
         {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
             {
-                 SplashAction = SplashAction.Show,
-                 SplashType = SplashEventType.CommandPreferences
-            });
-        }
-
-        private async void DialogTB_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            await _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
-            {
-                SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Dialog
+                 Type = DialogEventType.CommandPreferences
             });
         }
     }

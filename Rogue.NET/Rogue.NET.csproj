@@ -202,9 +202,6 @@
     <Compile Include="View\CreatingScenarioView.xaml.cs">
       <DependentUpon>CreatingScenarioView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DialogView.xaml.cs">
-      <DependentUpon>DialogView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\EnchantView.xaml.cs">
       <DependentUpon>EnchantView.xaml</DependentUpon>
     </Compile>
@@ -248,10 +245,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CreatingScenarioView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\DialogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

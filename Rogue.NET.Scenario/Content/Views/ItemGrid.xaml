@@ -4,6 +4,7 @@
              xmlns:viewModel="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid"
              xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:buttonExtension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              x:Class="Rogue.NET.Scenario.Views.ItemGrid" Background="Transparent" BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,6 +34,7 @@
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Right" 
                             Click="SelectCheckBox_Click"
+                            buttonExtension:ButtonExtension.DialogResult="True"
                             Style="{DynamicResource Rogue2ItemButton}" 
                             Margin="0" 
                             Cursor="Hand">

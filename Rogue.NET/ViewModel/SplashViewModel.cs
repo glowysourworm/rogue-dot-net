@@ -41,13 +41,8 @@ namespace Rogue.NET.Splash.ViewModel
 
         private async Task Update(SplashUpdateEventArgs e)
         {
-            SynchronizationContext.Current.Send(new SendOrPostCallback((message) =>
-            {
-                var update = (SplashUpdateEventArgs)message;
-
-                this.Message = update.Message;
-                this.Progress = update.Progress;
-            }), e);
+            this.Message = e.Message;
+            this.Progress = e.Progress;
         }
     }
 }

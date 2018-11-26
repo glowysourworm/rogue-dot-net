@@ -43,6 +43,7 @@ namespace Rogue.NET.Core.Service
         Queue<IAnimationUpdate> _animationQueue;
         Queue<IScenarioUpdate> _scenarioQueue;
         Queue<ISplashUpdate> _splashQueue;
+        Queue<IDialogUpdate> _dialogQueue;
         Queue<ILevelUpdate> _uiQueue;
         Queue<ILevelProcessingAction> _dataQueue;
 
@@ -67,6 +68,7 @@ namespace Rogue.NET.Core.Service
             _animationQueue = new Queue<IAnimationUpdate>();
             _scenarioQueue = new Queue<IScenarioUpdate>();
             _splashQueue = new Queue<ISplashUpdate>();
+            _dialogQueue = new Queue<IDialogUpdate>();
             _uiQueue = new Queue<ILevelUpdate>();
             _dataQueue = new Queue<ILevelProcessingAction>();
             
@@ -88,6 +90,10 @@ namespace Rogue.NET.Core.Service
                 engine.SplashUpdateEvent += (sender, update) =>
                 {
                     _splashQueue.Enqueue(update);
+                };
+                engine.DialogUpdateEvent += (sender, update) =>
+                {
+                    _dialogQueue.Enqueue(update);
                 };
 
                 // Actions
@@ -343,6 +349,7 @@ namespace Rogue.NET.Core.Service
             _dataQueue.Clear();
             _scenarioQueue.Clear();
             _splashQueue.Clear();
+            _dialogQueue.Clear();
             _uiQueue.Clear();
         }
 
@@ -362,6 +369,10 @@ namespace Rogue.NET.Core.Service
         {
             return _splashQueue.Any();
         }
+        public bool AnyDialogEvents()
+        {
+            return _dialogQueue.Any();
+        }
 
         public IScenarioUpdate DequeueScenarioUpdate()
         {
@@ -374,6 +385,13 @@ namespace Rogue.NET.Core.Service
         {
             if (_splashQueue.Any())
                 return _splashQueue.Dequeue();
+
+            return null;
+        }
+        public IDialogUpdate DequeueDialogUpdate()
+        {
+            if (_dialogQueue.Any())
+                return _dialogQueue.Dequeue();
 
             return null;
         }

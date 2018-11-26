@@ -78,6 +78,14 @@ namespace Rogue.NET.View
                         ShowSplash(e.SplashType);
                 });
             });
+
+            _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
+            {
+                var window = CreatePopupWindow();
+                window.Content = CreateDialogView(update.Type);
+
+                window.ShowDialog();
+            });
         }
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
@@ -136,7 +144,8 @@ namespace Rogue.NET.View
             {
                 // Create the window here; but have handle from the other thread.. seems tricky but appears to
                 // work to allow us to call InvokeDispatcherShutdown()
-                _splashWindow = CreateSplashWindow(type);
+                _splashWindow = CreatePopupWindow();
+                _splashWindow.Content = CreateSplashView(type);
 
                 // Must set for objects that rely on synchronization context
                 SynchronizationContext.SetSynchronizationContext(
@@ -152,7 +161,7 @@ namespace Rogue.NET.View
             _splashThread.Start();
         }
 
-        private Window CreateSplashWindow(SplashEventType type)
+        private Window CreatePopupWindow()
         {
             return new Window()
             {
@@ -166,8 +175,7 @@ namespace Rogue.NET.View
                 BorderThickness = new Thickness(0),
                 Margin = new Thickness(0),
                 FontFamily = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/CENTAUR.TTF#Centaur"), "Centaur"),
-                Topmost = true,
-                Content = CreateSplashView(type)
+                Topmost = true
             };
         }
 
@@ -181,28 +189,37 @@ namespace Rogue.NET.View
                     return new SplashView(new SplashViewModel(_eventAggregator));
                 case SplashEventType.NewScenario:
                     return new CreatingScenarioView(new CreatingScenarioViewModel(_eventAggregator));
-                case SplashEventType.CommandPreferences:
-                    return new CommandPreferencesView();
-                case SplashEventType.Help:
-                    return new HelpView();
-                case SplashEventType.Objective:
-                    return new ObjectiveView(_eventAggregator);
                 case SplashEventType.Save:
                     return new SaveView();
                 case SplashEventType.Open:
                     return new OpenScenarioView();
-                case SplashEventType.Identify:
+                default:
+                    throw new Exception("Unknwon Splash View Type");
+            }
+        }
+
+        private UserControl CreateDialogView(DialogEventType type)
+        {
+            // Passing these in to take care of dependency injection. Another way is to create
+            // multiple region managers and have a separate Shell window.
+            switch (type)
+            {
+                case DialogEventType.CommandPreferences:
+                    return new CommandPreferencesView();
+                case DialogEventType.Help:
+                    return new HelpView();
+                case DialogEventType.Objective:
+                    return new ObjectiveView(_eventAggregator);
+                case DialogEventType.Identify:
                     return new IdentifyView(_eventAggregator);
-                case SplashEventType.Uncurse:
+                case DialogEventType.Uncurse:
                     return new UncurseView(_eventAggregator);
-                case SplashEventType.EnchantArmor:
+                case DialogEventType.EnchantArmor:
                     return new EnchantView(_eventAggregator);
-                case SplashEventType.EnchantWeapon:
+                case DialogEventType.EnchantWeapon:
                     return new EnchantView(_eventAggregator);
-                case SplashEventType.Imbue:
+                case DialogEventType.Imbue:
                     return new ImbueView(_eventAggregator);
-                case SplashEventType.Dialog:
-                    return new DialogView();
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }

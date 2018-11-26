@@ -30,16 +30,22 @@ namespace Rogue.NET.Core.Service.Interface
         bool AnyAnimationEvents();
         bool AnyScenarioEvents();
         bool AnySplashEvents();
+        bool AnyDialogEvents();
 
         /// <summary>
-        /// Scenario Update Events are 2nd in priority (Animation -> Scenario -> Splash -> UI)
+        /// Scenario Update Events are 5th in priority (Animation -> Scenario -> Splash -> UI)
         /// </summary>
         IScenarioUpdate DequeueScenarioUpdate();
 
         /// <summary>
-        /// Splash Update Events are 3rd in priority (Animation -> Scenario -> Splash -> UI)
+        /// Splash Update Events are 2nd in priority (Animation -> Scenario -> Splash -> UI)
         /// </summary>
         ISplashUpdate DequeueSplashUpdate();
+
+        /// <summary>
+        /// Splash Update Events are 3rd in priority (Animation -> Scenario -> Splash -> UI)
+        /// </summary>
+        IDialogUpdate DequeueDialogUpdate();
 
         /// <summary>
         /// Level Update Events are 4th in priority (Animation -> Scenario -> Splash -> UI)

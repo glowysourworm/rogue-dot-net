@@ -35,6 +35,7 @@ namespace Rogue.NET.Core.Logic
 
         public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
         public event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
         public event EventHandler<ILevelUpdate> LevelUpdateEvent;
         public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
@@ -335,13 +336,13 @@ namespace Rogue.NET.Core.Logic
                     }
                     break;
                 case AlterationMagicEffectType.EnchantArmor:
-                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.EnchantArmor });
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.EnchantArmor });
                     break;
                 case AlterationMagicEffectType.EnchantWeapon:
-                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.EnchantWeapon });
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.EnchantWeapon });
                     break;
                 case AlterationMagicEffectType.Identify:
-                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Identify });
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Identify });
                     break;
                 case AlterationMagicEffectType.RevealFood:
                     RevealFood();
@@ -359,7 +360,7 @@ namespace Rogue.NET.Core.Logic
                     RevealSavePoint();
                     break;
                 case AlterationMagicEffectType.Uncurse:
-                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Uncurse });
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Uncurse });
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                     CreateMonster(alteration.CreateMonsterEnemy);
@@ -371,7 +372,7 @@ namespace Rogue.NET.Core.Logic
             switch (alteration.AttackAttributeType)
             {
                 case AlterationAttackAttributeType.Imbue:
-                    SplashUpdateEvent(this, new SplashUpdate() { SplashType = SplashEventType.Imbue });
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Imbue });
                     break;
                 case AlterationAttackAttributeType.Passive:
                 case AlterationAttackAttributeType.TemporaryFriendlySource:

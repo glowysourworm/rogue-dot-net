@@ -88,11 +88,15 @@ namespace Rogue.NET.Scenario.Controller
                 while (_scenarioService.AnySplashEvents())
                     await ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
 
-                // Third: Process all UI events
+                // Third: Process all Dialog events
+                while (_scenarioService.AnyDialogEvents())
+                    ProcessDialogUpdate(_scenarioService.DequeueDialogUpdate());
+
+                // Fourth: Process all UI events
                 while (_scenarioService.AnyLevelEvents())
                     ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
 
-                // Fourth: Process all Scenario Events
+                // Fifth: Process all Scenario Events
                 while (_scenarioService.AnyScenarioEvents())
                     ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
 
@@ -117,7 +121,13 @@ namespace Rogue.NET.Scenario.Controller
         }
         private async Task ProcessSplashUpdate(ISplashUpdate update)
         {
+            // Asynchronous events with splash updates provided by event aggregator
             await _eventAggregator.GetEvent<SplashEvent>().Publish(update);
+        }
+        private void ProcessDialogUpdate(IDialogUpdate update)
+        {
+            // Synchronous window.ShowDialog() events
+            _eventAggregator.GetEvent<DialogEvent>().Publish(update);
         }
         #endregion
     }

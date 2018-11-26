@@ -120,6 +120,7 @@
     <Compile Include="Event\Scenario\Level\Command\UserCommandEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioUpdateEvent.cs" />
     <Compile Include="Event\Splash\CreatingScenarioEvent.cs" />
+    <Compile Include="Event\Splash\DialogEvent.cs" />
     <Compile Include="Event\Splash\MessageBoxEvent.cs" />
     <Compile Include="Event\Splash\SplashEvent.cs" />
     <Compile Include="Event\Splash\SplashUpdateEvent.cs" />
@@ -129,6 +130,9 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
+    <Compile Include="Logic\Processing\DialogUpdate.cs" />
+    <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
+    <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />

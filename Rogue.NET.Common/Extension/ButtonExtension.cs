@@ -28,7 +28,7 @@ namespace Rogue.NET.Common.Extension
                 button.Loaded += (obj, ev) =>
                 {
                     var window = Window.GetWindow(button);
-                    if (window != null)
+                    if (window != null && System.Windows.Interop.ComponentDispatcher.IsThreadModal)
                     {
                         button.Click += (sender, eve) =>
                         {

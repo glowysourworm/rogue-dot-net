@@ -16,19 +16,6 @@
         		<RowDefinition Height="Auto"/>
         	</Grid.RowDefinitions>
             <ContentControl x:Name="ItemGridControl" Margin="10" prism:RegionManager.RegionName="IdentifyItemGridRegion" />
-            <Button x:Name="BackButton" 
-                    HorizontalContentAlignment="Center" 
-                    VerticalContentAlignment="Center" 
-                    HorizontalAlignment="Right" 
-                    Width="24" 
-                    Height="24"
-                    Margin="10" 
-                    Grid.Row="1" 
-                    FontFamily="{StaticResource FontAwesome}"
-                    Tag="&#xf054;"
-                     BorderBrush="White" Foreground="White" Background="Black"
-                    Style="{DynamicResource ShinyTextButtonStyle}" 
-                    />
         </Grid>
     </Border>
 </UserControl>

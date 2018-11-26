@@ -12,6 +12,7 @@ namespace Rogue.NET.Core.Logic.Interface
     {
         event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
         event EventHandler<ISplashUpdate> SplashUpdateEvent;
+        event EventHandler<IDialogUpdate> DialogUpdateEvent;
         event EventHandler<ILevelUpdate> LevelUpdateEvent;
         event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
         event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
