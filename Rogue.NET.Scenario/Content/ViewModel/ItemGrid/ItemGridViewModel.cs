@@ -54,6 +54,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     case LevelUpdateType.PlayerEquipmentRemove:
                     case LevelUpdateType.PlayerEquipmentAddOrUpdate:
                     case LevelUpdateType.PlayerAll:
+                    case LevelUpdateType.EncyclopediaCurseIdentify:
+                    case LevelUpdateType.EncyclopediaIdentify:
                         UpdateCollections(modelService, itemProcessor);
                         break;
                     default:

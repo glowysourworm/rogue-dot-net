@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Model;
+﻿using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Model;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,13 @@ namespace Rogue.NET.View
             InitializeComponent();
 
             this.DataContext = CommandPreferencesViewModel.GetDefaults();
+        }
+
+        public event EventHandler<UserCommandEventArgs> UserCommandRequestEvent;
+
+        public bool IsUserCommandRequired()
+        {
+            return false;
         }
 
         //private void Save()

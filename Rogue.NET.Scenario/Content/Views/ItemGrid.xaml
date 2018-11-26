@@ -4,7 +4,8 @@
              xmlns:viewModel="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid"
              xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             xmlns:buttonExtension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Rogue.NET.Scenario.Views.ItemGrid" Background="Transparent" BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -34,14 +35,29 @@
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Right" 
                             Click="SelectCheckBox_Click"
-                            buttonExtension:ButtonExtension.DialogResult="True"
                             Style="{DynamicResource Rogue2ItemButton}" 
                             Margin="0" 
                             Cursor="Hand">
-                            <Button.Visibility>
+                            <interactivity:Interaction.Triggers>
+                                <interactivity:EventTrigger EventName="Click">
+                                    <extension:EventPropertyTrigger 
+                                        TargetWindow="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+                                        TargetDialogResult="True"
+                                        IsEnabled="{Binding IsDialogMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
+                                        />
+                                </interactivity:EventTrigger>
+                            </interactivity:Interaction.Triggers>
+
+                                <Button.Visibility>
                                 <MultiBinding Converter="{StaticResource ItemGridRowButtonVisibilitiyConverter}">
-                                    <Binding Path="." NotifyOnSourceUpdated="True" />
                                     <Binding Path="IntendedAction" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}" />
+                                    <Binding Path="ConsumeEnable" />
+                                    <Binding Path="EquipEnable" />
+                                    <Binding Path="IdentifyEnable" />
+                                    <Binding Path="UncurseEnable" />
+                                    <Binding Path="EnchantEnable" />
+                                    <Binding Path="ThrowEnable" />
+                                    <Binding Path="DropEnable" />
                                 </MultiBinding>
                             </Button.Visibility>
                         </Button>

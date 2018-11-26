@@ -177,6 +177,16 @@ namespace Rogue.NET.Scenario.Content.Views
             base.OnPreviewMouseLeftButtonUp(e);
             _mouseDownWithControl = false;
         }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+
+            var viewModel = this.DataContext as LevelCanvasViewModel;
+
+            if (viewModel != null)
+                OnPlayerLocationChanged(viewModel);
+        }
     }
 }
 

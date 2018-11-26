@@ -18,22 +18,18 @@ namespace Rogue.NET.Scenario.Converter
             else if (values.Any(x => x == DependencyProperty.UnsetValue))
                 return Visibility.Collapsed;
 
-            else if (values.Length != 2)
+            else if (values.Length != 8)
                 return Visibility.Collapsed;
 
-            var item = values[0] as ItemGridRowViewModel;
-            var intendedAction = (ItemGridActions)values[1];
+            var intendedAction = (ItemGridActions)values[0];
 
-            if (item == null)
-                return Visibility.Collapsed;
-
-            return (item.ConsumeEnable && intendedAction == ItemGridActions.Consume ||
-                    item.EquipEnable && intendedAction == ItemGridActions.Equip ||
-                    item.IdentifyEnable && intendedAction == ItemGridActions.Identify ||
-                    item.UncurseEnable && intendedAction == ItemGridActions.Uncurse ||
-                    item.EnchantEnable && intendedAction == ItemGridActions.Enchant ||
-                    item.ThrowEnable && intendedAction == ItemGridActions.Throw ||
-                    item.DropEnable && intendedAction == ItemGridActions.Drop) ? Visibility.Visible : Visibility.Collapsed;
+            return ((bool)values[1] && intendedAction == ItemGridActions.Consume ||
+                    (bool)values[2] && intendedAction == ItemGridActions.Equip ||
+                    (bool)values[3] && intendedAction == ItemGridActions.Identify ||
+                    (bool)values[4] && intendedAction == ItemGridActions.Uncurse ||
+                    (bool)values[5] && intendedAction == ItemGridActions.Enchant ||
+                    (bool)values[6] && intendedAction == ItemGridActions.Throw ||
+                    (bool)values[7] && intendedAction == ItemGridActions.Drop) ? Visibility.Visible : Visibility.Collapsed;
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

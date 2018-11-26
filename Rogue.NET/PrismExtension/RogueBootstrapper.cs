@@ -81,6 +81,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Equipment;
                 view.IntendedAction = ItemGridActions.Equip;
+                view.IsDialogMode = false;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Equipment;
                 return view;
             });
@@ -90,6 +91,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Equipment;
                 view.IntendedAction = ItemGridActions.Equip;
+                view.IsDialogMode = false;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Equipment;
                 return view;
             });
@@ -99,6 +101,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Consumable;
                 view.IntendedAction = ItemGridActions.Consume;
+                view.IsDialogMode = false;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Consumables;
                 return view;
             });
@@ -108,6 +111,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Inventory;
                 view.IntendedAction = ItemGridActions.Drop;
+                view.IsDialogMode = false;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Inventory;
                 return view;
             });
@@ -117,6 +121,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Uncurse;
                 view.IntendedAction = ItemGridActions.Uncurse;
+                view.IsDialogMode = true;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.UncurseEquipment;
                 return view;
             });
@@ -125,6 +130,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Imbue;
                 view.IntendedAction = ItemGridActions.Imbue;
+                view.IsDialogMode = true;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.ImbueEquipment;
                 return view;
             });
@@ -133,6 +139,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Identify;
                 view.IntendedAction = ItemGridActions.Identify;
+                view.IsDialogMode = true;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.IdentifyInventory;
                 return view;
             });
@@ -141,6 +148,7 @@ namespace Rogue.NET.PrismExtension
                 var view = this.Container.GetExport<ItemGrid>().Value;
                 view.Mode = ItemGridModes.Enchant;
                 view.IntendedAction = ItemGridActions.Enchant;
+                view.IsDialogMode = true;
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantEquipment;
                 return view;
             });

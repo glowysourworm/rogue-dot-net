@@ -20,9 +20,14 @@ namespace Rogue.NET.Scenario.Views
     {
         readonly IEventAggregator _eventAggregator;
 
-        public static readonly DependencyProperty IntendedActionProperty = DependencyProperty.Register("IntendedAction", typeof(ItemGridActions), typeof(ItemGrid));
+        public static readonly DependencyProperty IntendedActionProperty = 
+            DependencyProperty.Register("IntendedAction", typeof(ItemGridActions), typeof(ItemGrid));
+
+        public static readonly DependencyProperty IsDialogModeProperty =
+            DependencyProperty.Register("IsDialogMode", typeof(bool), typeof(ItemGrid));
 
         ItemGridModes _mode = ItemGridModes.Consumable;
+        bool _isDialogMode = false;
 
         public ItemGridModes Mode
         {
@@ -137,7 +142,11 @@ namespace Rogue.NET.Scenario.Views
             get { return (ItemGridActions)GetValue(IntendedActionProperty); }
             set { SetValue(IntendedActionProperty, value); }
         }
-        public event EventHandler ActionSubmittedEvent;
+        public bool IsDialogMode
+        {
+            get { return (bool)GetValue(IsDialogModeProperty); }
+            set { SetValue(IsDialogModeProperty, value); }
+        }
 
         [ImportingConstructor]
         public ItemGrid(IEventAggregator eventAggregator)
@@ -162,9 +171,6 @@ namespace Rogue.NET.Scenario.Views
                             .Publish(new UserCommandEventArgs(
                                 (LevelAction)Enum.Parse(typeof(LevelAction), 
                                 this.IntendedAction.ToString()), Compass.Null, itemViewModel.Id));
-
-            if (ActionSubmittedEvent != null)
-                ActionSubmittedEvent(this, new EventArgs());
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

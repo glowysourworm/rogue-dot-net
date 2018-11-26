@@ -166,6 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Control\EditableTextBlock.cs" />
+    <Compile Include="Extension\ButtonExtension.cs" />
+    <Compile Include="Extension\EventPropertyTrigger.cs" />
     <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />
@@ -183,7 +185,6 @@
     <Compile Include="ViewModel\ColorViewModel.cs" />
     <Compile Include="ViewModel\NotifyViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extension\ButtonExtension.cs" />
     <Compile Include="Utility\EventBehaviorFactory.cs" />
     <Compile Include="Utility\Taskbar.cs" />
     <Compile Include="Utility\ZipEncoder.cs" />

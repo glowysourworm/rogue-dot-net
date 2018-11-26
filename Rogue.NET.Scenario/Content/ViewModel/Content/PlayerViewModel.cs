@@ -365,6 +365,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 case LevelUpdateType.PlayerSkillSetRefresh:
                 case LevelUpdateType.PlayerStats:
                 case LevelUpdateType.PlayerAll:
+                case LevelUpdateType.EncyclopediaCurseIdentify:
+                case LevelUpdateType.EncyclopediaIdentify:
                     ProcessUpdate();
                     break;
                 default:

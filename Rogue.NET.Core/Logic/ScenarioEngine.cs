@@ -157,7 +157,7 @@ namespace Rogue.NET.Core.Logic
             _playerProcessor.ApplyEndOfTurn(player, regenerate);
 
             // Update player stats
-            QueueLevelUpdate(LevelUpdateType.PlayerStats, player.Id);
+            QueueLevelUpdate(LevelUpdateType.PlayerAll, player.Id);
 
             //I'm Not DEEEAD!
             if (player.Hunger >= 100 || player.Hp <= 0.1)

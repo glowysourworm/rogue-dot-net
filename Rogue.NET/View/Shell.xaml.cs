@@ -2,6 +2,7 @@
 using Prism.Regions;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;

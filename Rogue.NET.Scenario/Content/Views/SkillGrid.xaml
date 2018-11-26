@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary>
                     <scenarioConverter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
+                    <scenarioConverter:SkillSetProgressConverter x:Key="SkillSetProgressConverter" />
 
                     <Style x:Key="ButtonFocusVisual">
                         <Setter Property="Control.Template">
@@ -62,7 +63,31 @@
                     </DataTemplate>
                     <DataTemplate x:Key="ProgressColumnTemplate">
                         <Grid Width="Auto" VerticalAlignment="Stretch" Height="32">
-                            <commonviews:ProgressBar Value="{Binding SkillProgress}" VerticalAlignment="Stretch" Value2="{Binding SkillProgress}" ValueMax="1" Width="75" ValueTextBrush="Pink" HeaderTextOn="False"  TextOn="False" TextFormat="F3" BarColor1="Purple" Margin="0" Height="32" />
+                            <commonviews:ProgressBar VerticalAlignment="Stretch" 
+                                                     ValueMax="1" 
+                                                     Width="75" 
+                                                     ValueTextBrush="Pink" 
+                                                     HeaderTextOn="False"  
+                                                     TextOn="False" 
+                                                     TextFormat="F3" 
+                                                     BarColor1="Purple" 
+                                                     Margin="0" 
+                                                     Height="32">
+                                <commonviews:ProgressBar.Value>
+                                    <MultiBinding Converter="{StaticResource SkillSetProgressConverter}">
+                                        <Binding Path="Level" />
+                                        <Binding Path="LevelMax" />
+                                        <Binding Path="SkillProgress" />
+                                    </MultiBinding>
+                                </commonviews:ProgressBar.Value>
+                                <commonviews:ProgressBar.Value2>
+                                    <MultiBinding Converter="{StaticResource SkillSetProgressConverter}">
+                                        <Binding Path="Level" />
+                                        <Binding Path="LevelMax" />
+                                        <Binding Path="SkillProgress" />
+                                    </MultiBinding>
+                                </commonviews:ProgressBar.Value2>
+                            </commonviews:ProgressBar>
                             <Grid Margin="0" Width="Auto">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="24.75"/>

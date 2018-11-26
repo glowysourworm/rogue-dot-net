@@ -5,6 +5,8 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Event.Scenario.Level.Event;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using System.Windows.Input;
@@ -14,6 +16,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     public class SkillSetViewModel : ScenarioImageViewModel
     {
         public int _level;
+        public int _levelMax;
         public int _displayLevel;
         public int _levelLearned;
         public int _emphasis;
@@ -25,7 +28,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public int Level
         {
             get { return _level; }
-            set { this.RaiseAndSetIfChanged(ref _level, value); }
+            set { this.RaiseAndSetIfChanged(ref _level, value); InvalidateCommands(); }
+        }
+        public int LevelMax
+        {
+            get { return _levelMax; }
+            set { this.RaiseAndSetIfChanged(ref _levelMax, value); }
         }
         public int DisplayLevel
         {
@@ -67,13 +75,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public IAsyncCommand EmphasizeSkillDownCommand { get; set; }
         public IAsyncCommand ActivateSkillCommand { get; set; }
 
-        readonly IEventAggregator _eventAggregator;
-
         public SkillSetViewModel(SkillSet skillSet, IEventAggregator eventAggregator) : base(skillSet)
         {
-            _eventAggregator = eventAggregator;
-
             this.Level = skillSet.Level;
+            this.LevelMax = skillSet.Skills.Count;
             this.DisplayLevel = skillSet.DisplayLevel;
             this.LevelLearned = skillSet.LevelLearned;
             this.Emphasis = skillSet.Emphasis;
@@ -89,14 +94,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.EmphasizeSkillDown, Compass.Null, this.Id));
 
-            }, () => this.IsLearned && this.Emphasis > 0);
+            }, () => this.IsLearned && this.Emphasis > 0 && this.Level < this.LevelMax);
 
             this.EmphasizeSkillUpCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.EmphasizeSkillUp, Compass.Null, this.Id));
 
-            }, () => this.IsLearned && this.Emphasis < 3);
+            }, () => this.IsLearned && this.Emphasis < 3 && this.Level < this.LevelMax);
 
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {

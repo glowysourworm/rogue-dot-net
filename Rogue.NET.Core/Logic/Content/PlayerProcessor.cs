@@ -48,33 +48,45 @@ namespace Rogue.NET.Core.Logic.Content
 
             string header = player.RogueName + " Has Reached Level " + (player.Level + 1).ToString() + "!";
 
-            //Hp Max
+            // Hp Max
             var d = (player.StrengthBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
             player.HpMax += d;
             messages.Add("Hp Increased By:  " + d.ToString("F3"));
 
-            //Mp Max
+            // Mp Max
             d = (player.IntelligenceBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
             player.MpMax += d;
             messages.Add("Mp Increased By:  " + d.ToString("F3"));
 
-            //Strength
+            // Strength
             d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.StrengthBase += (player.AttributeEmphasis == AttributeEmphasis.Strength) ? 3 * d : d;
             messages.Add("Strength Increased By:  " + d.ToString("F3"));
 
-            //Intelligence
+            // Intelligence
             d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.IntelligenceBase += (player.AttributeEmphasis == AttributeEmphasis.Intelligence) ? 3 * d : d;
             messages.Add("Intelligence Increased By:  " + d.ToString("F3"));
 
-            //Agility
+            // Agility
             d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
             player.AgilityBase += (player.AttributeEmphasis == AttributeEmphasis.Agility) ? 3 * d : d;
             messages.Add("Agility Increased By:  " + d.ToString("F3"));
 
-            //Level :)
+            // Level :)
             player.Level++;
+
+            // Skill Learning
+            // Process skill learning
+            foreach (var skillSet in player.SkillSets)
+            {
+                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
+                {
+                    skillSet.IsLearned = true;
+
+                    messages.Add(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
+                }
+            }
 
             _scenarioMessageService.PublishPlayerAdvancement(header, messages);
         }
@@ -84,7 +96,53 @@ namespace Rogue.NET.Core.Logic.Content
             player.Experience += slainEnemy.ExperienceGiven;
 
             // Skill Progress - Player gets boost on enemy death
-            ProcessSkillLearning(player);
+
+            // Foreach SkillSet that can still require learning (From slain enemy reward)
+            foreach (var skill in player.SkillSets.Where(x => x.Level < x.Skills.Count))
+            {
+                switch (skill.Emphasis)
+                {
+                    case 1:
+                        skill.SkillProgress += ModelConstants.SkillLowProgressIncrement;
+                        player.Hunger += ModelConstants.SkillLowHungerIncrement;
+                        break;
+                    case 2:
+                        skill.SkillProgress += ModelConstants.SkillMediumProgressIncrement;
+                        player.Hunger += ModelConstants.SkillMediumHungerIncrement;
+                        break;
+                    case 3:
+                        skill.SkillProgress += ModelConstants.SkillHighProgressIncrement;
+                        player.Hunger += ModelConstants.SkillHighHungerIncrement;
+                        break;
+                }
+                if (skill.SkillProgress >= 1)
+                {
+                    if (skill.Level < skill.Skills.Count)
+                    {
+                        //Deactivate if currently turned on
+                        if (skill.IsTurnedOn && (skill.GetCurrentSkill().Type == AlterationType.PassiveAura ||
+                                             skill.GetCurrentSkill().Type == AlterationType.PassiveSource))
+                        {
+                            _scenarioMessageService.Publish("Deactivating - " + skill.RogueName);
+
+                            // Deactive the passive alteration - referenced by Spell Id
+                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkill().Id);
+
+                            skill.IsTurnedOn = false;
+                        }
+
+                        skill.Level++;
+                        skill.SkillProgress = 0;
+
+                        _scenarioMessageService.PublishPlayerAdvancement("Player Skill Has Reached a New Level!", new string[]
+                        {
+                            skill.RogueName + " has reached Level " + (skill.Level + 1).ToString()
+                        });
+                    }
+                    else
+                        skill.SkillProgress = 1;
+                }
+            }
         }
 
         public Equipment GetEquippedType(Player player, EquipmentType type)
@@ -160,67 +218,6 @@ namespace Rogue.NET.Core.Logic.Content
             }
 
             player.ApplyLimits();
-        }
-
-        private void ProcessSkillLearning(Player player)
-        {
-            // Process skill learning
-            foreach (var skillSet in player.SkillSets)
-            {
-                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
-                {
-                    skillSet.IsLearned = true;
-
-                    _scenarioMessageService.Publish(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
-                }
-            }
-
-            // Foreach SkillSet that can still require learning (From slain enemy reward)
-            foreach (var skill in player.SkillSets.Where(x => x.Level < x.Skills.Count))
-            {
-                switch (skill.Emphasis)
-                {
-                    case 1:
-                        skill.SkillProgress += ModelConstants.SkillLowProgressIncrement;
-                        player.Hunger += ModelConstants.SkillLowHungerIncrement;
-                        break;
-                    case 2:
-                        skill.SkillProgress += ModelConstants.SkillMediumProgressIncrement;
-                        player.Hunger += ModelConstants.SkillMediumHungerIncrement;
-                        break;
-                    case 3:
-                        skill.SkillProgress += ModelConstants.SkillHighProgressIncrement;
-                        player.Hunger += ModelConstants.SkillHighHungerIncrement;
-                        break;
-                }
-                if (skill.SkillProgress >= 1)
-                {
-                    if (skill.Level < skill.Skills.Count)
-                    {
-                        //Deactivate if currently turned on
-                        if (skill.IsTurnedOn && (skill.GetCurrentSkill().Type == AlterationType.PassiveAura ||
-                                             skill.GetCurrentSkill().Type == AlterationType.PassiveSource))
-                        {
-                            _scenarioMessageService.Publish("Deactivating - " + skill.RogueName);
-
-                            // Deactive the passive alteration - referenced by Spell Id
-                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkill().Id);
-
-                            skill.IsTurnedOn = false;
-                        }
-
-                        skill.Level++;
-                        skill.SkillProgress = 0;
-
-                        _scenarioMessageService.PublishPlayerAdvancement("Player Skill Has Reached a New Level!", new string[]
-                        {
-                            skill.RogueName + " has reached Level " + (skill.Level + 1).ToString()
-                        });
-                    }
-                    else
-                        skill.SkillProgress = 1;
-                }
-            }
         }
     }
 }
