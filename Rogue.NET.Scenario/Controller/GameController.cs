@@ -120,7 +120,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.NewScenario
+                SplashType = SplashEventType.Loading
             });
 
             // Unload current scenario container
@@ -160,7 +160,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.NewScenario
+                SplashType = SplashEventType.Loading
             });
         }
         public void Open(string playerName)

@@ -197,9 +197,6 @@
     <Compile Include="View\CommandPreferencesView.xaml.cs">
       <DependentUpon>CommandPreferencesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CreatingScenarioView.xaml.cs">
-      <DependentUpon>CreatingScenarioView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\EnchantView.xaml.cs">
       <DependentUpon>EnchantView.xaml</DependentUpon>
     </Compile>
@@ -228,8 +225,8 @@
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
     <Compile Include="PrismExtension\TransitionalRegionAdapter.cs" />
-    <Compile Include="View\SplashView.xaml.cs">
-      <DependentUpon>SplashView.xaml</DependentUpon>
+    <Compile Include="View\LoadingView.xaml.cs">
+      <DependentUpon>LoadingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UncurseView.xaml.cs">
       <DependentUpon>UncurseView.xaml</DependentUpon>
@@ -239,10 +236,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CommandPreferencesView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\CreatingScenarioView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -310,7 +303,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SplashView.xaml">
+    <Page Include="View\LoadingView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

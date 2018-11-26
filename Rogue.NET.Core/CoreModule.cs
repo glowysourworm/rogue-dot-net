@@ -32,7 +32,7 @@ namespace Rogue.NET.Core
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Splash
+                SplashType = SplashEventType.Loading
             });
 
             _scenarioResourceService.LoadAllConfigurations();
@@ -41,7 +41,7 @@ namespace Rogue.NET.Core
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.Splash
+                SplashType = SplashEventType.Loading
             });
 
             // Notify listeners

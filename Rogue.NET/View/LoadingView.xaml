@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Rogue.NET.View.LoadingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
+             Background="Transparent">
+    <Border Background="Black" BorderBrush="Gray" BorderThickness="2" CornerRadius="10">
+        <Grid Background="Transparent">
+            <StackPanel HorizontalAlignment="Stretch">
+                <TextBlock Text="Rogue.NET" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" 
+                           Margin="16"  
+                           Foreground="White" 
+                           FontSize="42" />
+                <coreView:Smiley x:Name="SmileyCtrl"
+                                 Height="45" 
+                                 Width="30" 
+                                 SmileyLineBlur="1" 
+                                 SmileyLineThickness="2"  
+                                 SmileyColor="Blue" 
+                                 SmileyLineColor="Yellow"  
+                                 SmileyMood="Happy" 
+                                 SmileyRadius="5" />
+                <TextBlock x:Name="LoadingTB" 
+                           Text="Loading..." 
+                           FontSize="20"
+                           HorizontalAlignment="Center" 
+                           Foreground="Beige" 
+                           Margin="10"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

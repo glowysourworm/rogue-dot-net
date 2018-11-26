@@ -121,7 +121,7 @@ namespace Rogue.NET.Scenario.Controller
         }
         private void ProcessSplashUpdate(ISplashUpdate update)
         {
-            // Asynchronous events with splash updates provided by event aggregator
+            // Synchronous Show / Hide
             _eventAggregator.GetEvent<SplashEvent>().Publish(update);
         }
         private void ProcessDialogUpdate(IDialogUpdate update)

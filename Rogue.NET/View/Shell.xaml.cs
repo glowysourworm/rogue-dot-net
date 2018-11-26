@@ -35,8 +35,6 @@ namespace Rogue.NET.View
 
             InitializeComponent();
             InitializeEvents();
-
-            Application.Current.Exit += (sender, args) => _splashWindow.Dispatcher.InvokeShutdown();
         }
 
         public void SetFullScreenMode()
@@ -116,6 +114,12 @@ namespace Rogue.NET.View
 
             _blockUserInput = false;
         }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            _splashWindow.Close();
+        }
 
         private void HideSplash()
         {
@@ -152,10 +156,8 @@ namespace Rogue.NET.View
             // multiple region managers and have a separate Shell window.
             switch (type)
             {
-                case SplashEventType.Splash:
-                    return new SplashView();
-                case SplashEventType.NewScenario:
-                    return new CreatingScenarioView();
+                case SplashEventType.Loading:
+                    return new LoadingView();
                 case SplashEventType.Save:
                     return new SaveView();
                 case SplashEventType.Open:

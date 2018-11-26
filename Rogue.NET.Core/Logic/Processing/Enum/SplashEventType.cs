@@ -2,10 +2,9 @@
 {
     public enum SplashEventType
     {
-        NewScenario,
         Open,
         Save,
-        Splash
+        Loading
     }
 
     public enum SplashAction

@@ -15,6 +15,16 @@ namespace Rogue.NET.Core.Utility
         {
             return color.ToString();
         }
+        public static Color Inverse(Color color)
+        {
+            var result = new Color();
+            result.A = System.Convert.ToByte(255);
+            result.R = System.Convert.ToByte(255 - color.R);
+            result.G = System.Convert.ToByte(255 - color.G);
+            result.B = System.Convert.ToByte(255 - color.B);
+
+            return result;
+        }
         public static string Add(string colorString1, string colorString2)
         {
             var color1 = Convert(colorString1);
