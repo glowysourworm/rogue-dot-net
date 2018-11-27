@@ -15,6 +15,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     {
         string _id;
         string _rogueName;
+        string _displayName;
         string _type;
         string _description;
         string _longDescription;
@@ -34,9 +35,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public string RogueName
         {
             get { return _rogueName; }
-            private set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
+            set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
         }
-
+        public string DisplayName
+        {
+            get { return _displayName; }
+            set { this.RaiseAndSetIfChanged(ref _displayName, value); }
+        }
         public string Type
         {
             get { return _type; }
@@ -95,6 +100,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             this.Id = metaData.Id;
             this.RogueName = metaData.RogueName;
+            this.DisplayName = metaData.IsIdentified ? metaData.RogueName : "???";
             this.Type = metaData.Type;
             this.Description = metaData.Description;
             this.LongDescription = metaData.LongDescription;

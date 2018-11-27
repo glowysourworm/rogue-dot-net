@@ -145,14 +145,11 @@ namespace Rogue.NET.Scenario.Control
         private double CalculateScalingFactor(double offset)
         {
             // Interpolate based on these positions
-            if (offset < 0.25)
-                return offset + 0.75;
-
-            else if (offset < 0.75)
-                return (-1 * offset) + 1.25;
+            if (offset <= 0.5)
+                return 1 - offset;
 
             else
-                return offset - 0.25;
+                return offset;
         }
     }
 

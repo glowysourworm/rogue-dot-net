@@ -17,161 +17,6 @@
                     <DataTemplate x:Key="AttackAttributeTemplate">
                         <local:DungeonEncyclopediaAttackAttributeCtrl Background="Black" />
                     </DataTemplate>
-                    <Style x:Key="EntryTextBlockStyleName" TargetType="{x:Type TextBlock}">
-                        <Setter Property="Text" Value="{Binding Rogue2Name}" />
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Goldenrod" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </MultiDataTrigger>
-                            <DataTrigger Binding="{Binding IsIdentified}" Value="False">
-                                <Setter Property="Text" Value="???" />
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style x:Key="EntryTextBlockStyleShort" TargetType="{x:Type TextBlock}">
-                        <Setter Property="Text" Value="{Binding Description}" />
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Goldenrod" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </MultiDataTrigger>
-                            <DataTrigger Binding="{Binding IsIdentified}" Value="False">
-                                <Setter Property="Text" Value="???" />
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style x:Key="EntryTextBlockStyleLong" TargetType="{x:Type TextBlock}">
-                        <Setter Property="Text" Value="{Binding LongDescription}" />
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Goldenrod" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </MultiDataTrigger>
-                            <DataTrigger Binding="{Binding IsIdentified}" Value="False">
-                                <Setter Property="Text" Value="???" />
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                    <Style x:Key="EntryLabelTextBlockStyle" TargetType="{x:Type TextBlock}">
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="True" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Goldenrod" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="True" />
-                                    <Condition Binding="{Binding IsIdentified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="Cyan" />
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsUnique}" Value="False" />
-                                    <Condition Binding="{Binding IsObjective}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </MultiDataTrigger>
-                            <DataTrigger Binding="{Binding IsIdentified}" Value="False">
-                                <Setter Property="TextBlock.Foreground" Value="White" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
                     <Style x:Key="ButtonFocusVisual">
                         <Setter Property="Control.Template">
                             <Setter.Value>
@@ -205,82 +50,6 @@
                                         <Trigger Property="IsChecked" Value="true"/>
                                         <Trigger Property="IsEnabled" Value="false">
                                             <Setter Property="Foreground" Value="#ADADAD"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <ControlTemplate x:Key="RogueFilterButtonStyle" TargetType="{x:Type ButtonBase}">
-                        <Grid Height="Auto" Width="Auto">
-                            <Rectangle x:Name="rectangle1" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" RadiusX="4" RadiusY="4"/>
-                            <Rectangle x:Name="rectangle" Stroke="Black" Margin="8,4" StrokeThickness="0" RadiusX="4" RadiusY="4">
-                                <Rectangle.Fill>
-                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                        <GradientStop Color="#3EFFFFFF" Offset="0"/>
-                                        <GradientStop Offset="0.236"/>
-                                        <GradientStop Color="Transparent" Offset="0.799"/>
-                                        <GradientStop Offset="1" Color="#3EFFFFFF"/>
-                                    </LinearGradientBrush>
-                                </Rectangle.Fill>
-                            </Rectangle>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="ToggleButton.IsChecked" Value="True">
-                                <Setter Property="Fill" TargetName="rectangle">
-                                    <Setter.Value>
-                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                            <GradientStop Color="#8A00FF4A" Offset="0"/>
-                                            <GradientStop Offset="0.236"/>
-                                            <GradientStop Color="Transparent" Offset="0.776"/>
-                                            <GradientStop Color="#8500FF0F" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Stroke" TargetName="rectangle" Value="White"/>
-                                <Setter Property="StrokeThickness" TargetName="rectangle" Value="1"/>
-                                <Setter Property="OpacityMask" TargetName="rectangle1">
-                                    <Setter.Value>
-                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                            <GradientStop Color="#8C000000" Offset="0"/>
-                                            <GradientStop Color="#A0FFFFFF" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="StrokeThickness" TargetName="rectangle" Value="1"/>
-                                <Setter Property="Stroke" TargetName="rectangle" Value="White"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                    <Style x:Key="DungeonEncyclopediaToggleButtonStyle" TargetType="{x:Type ToggleButton}">
-                        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-                        <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Foreground" Value="White"/>
-                        <Setter Property="FontSize" Value="18"/>
-                        <Setter Property="Cursor" Value="Hand" />
-                        <Setter Property="Content" Value="Select" />
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="Padding" Value="1"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                    <Grid>
-                                        <Rectangle x:Name="rectangle" Stroke="White" Margin="0" RadiusX="4" RadiusY="4" Fill="Black"/>
-                                        <ContentPresenter x:Name="contentPresenter" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="StrokeThickness" TargetName="rectangle" Value="2"/>
-                                        </Trigger>
-                                        <Trigger Property="IsChecked" Value="true">
-                                            <Setter Property="Fill" TargetName="rectangle" Value="Blue"/>
-                                            <Setter Property="StrokeThickness" TargetName="rectangle" Value="2"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -456,26 +225,102 @@
                                             </Setter>
                                         </Trigger>
 
-                                        <DataTrigger Binding="{Binding IsObjective}" Value="True">
-                                            <DataTrigger.Setters>
-                                                <Setter TargetName="RefractionLayer" Property="Fill">
-                                                    <Setter.Value>
-                                                        <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
-                                                            <RadialGradientBrush.RelativeTransform>
-                                                                <TransformGroup>
-                                                                    <ScaleTransform CenterX="0.5" 
+                                        <!-- Objective -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
                                                                             CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
-                                                                    <TranslateTransform X="0.02" Y="0.3"/>
-                                                                </TransformGroup>
-                                                            </RadialGradientBrush.RelativeTransform>
-                                                            <GradientStop Offset="1" Color="#00000000"/>
-                                                            <GradientStop Offset="0.4" Color="Cyan"/>
-                                                        </RadialGradientBrush>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger.Setters>
-                                        </DataTrigger>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Cyan"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Cyan"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Cyan"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="True" />
+                                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Cyan"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
 
+
+                                        <!-- Objective Category -->
                                         <DataTrigger Binding="{Binding IsObjectiveCategory}" Value="True">
                                             <DataTrigger.Setters>
                                                 <Setter TargetName="RefractionLayer" Property="Fill">
@@ -495,11 +340,259 @@
                                                 </Setter>
                                             </DataTrigger.Setters>
                                         </DataTrigger>
+
+                                        <!-- Unique -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Goldenrod"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                                <Condition Binding="{Binding IsUnique}" Value="True" />
+                                                <Condition Binding="{Binding IsCursed}" Value="False" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                                <Setter.Value>
+                                                    <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                        <RadialGradientBrush.RelativeTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                                            </TransformGroup>
+                                                        </RadialGradientBrush.RelativeTransform>
+                                                        <GradientStop Offset="1" Color="#00000000"/>
+                                                        <GradientStop Offset="0.4" Color="Goldenrod"/>
+                                                    </RadialGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </MultiDataTrigger>
+
+                                        <!-- Cursed -->
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsObjective}" Value="False" />
+                                                <Condition Binding="{Binding IsUnique}" Value="False" />
+                                                <Condition Binding="{Binding IsCursed}" Value="True" />
+                                                <Condition Binding="{Binding IsIdentified}" Value="True" />
+                                                <Condition Binding="{Binding IsCurseIdentified}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter TargetName="RefractionLayer" Property="Fill">
+                                                    <Setter.Value>
+                                                        <RadialGradientBrush Opacity="0.8" GradientOrigin="0.5,1.0">
+                                                            <RadialGradientBrush.RelativeTransform>
+                                                                <TransformGroup>
+                                                                    <ScaleTransform CenterX="0.5" 
+                                                                            CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
+                                                                    <TranslateTransform X="0.02" Y="0.3"/>
+                                                                </TransformGroup>
+                                                            </RadialGradientBrush.RelativeTransform>
+                                                            <GradientStop Offset="1" Color="#00000000"/>
+                                                            <GradientStop Offset="0.4" Color="Red"/>
+                                                        </RadialGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
                     </Style>
+                    <Style x:Key="CategoryTextBlockStyle" TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="White" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentifiedCategory, ElementName=CategoryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjectiveCategory, ElementName=CategoryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style x:Key="CategoryEntryTextBlockStyle" TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="White" />
+                        <Style.Triggers>
+                            <!-- Objective -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>       
+                            
+                            <!-- Unique -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Cyan" />
+                            </MultiDataTrigger>
+                            
+                            <!-- Cursed -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursedIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="Red" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style x:Key="CategoryBorderStyle" TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush" Value="White" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=SelectedItem.IsObjectiveCategory, ElementName=CategoryLB}" Value="True" />
+                                    <Condition Binding="{Binding Path=SelectedItem.IsIdentifiedCategory, ElementName=CategoryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Cyan" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style x:Key="CategoryEntryBorderStyle" TargetType="{x:Type Border}">
+                        <Setter Property="BorderBrush" Value="White" />
+                        <Style.Triggers>
+                            <!-- Objective -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Cyan" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Cyan" />
+                            </MultiDataTrigger>    
+                            
+                            <!-- Unique -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Goldenrod" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Goldenrod" />
+                            </MultiDataTrigger>
+
+                            <!-- Cursed -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding SelectedItem.IsObjective, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="False" />
+                                    <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsCurseIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                    <Condition Binding="{Binding SelectedItem.IsIdentified, ElementName=CategoryEntryLB}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Red" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>                    
                 </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -518,8 +611,8 @@
         <Border Grid.ColumnSpan="1" 
                 DataContext="{Binding ElementName=CategoryLB, Path=SelectedItem}"
                 Margin="8" 
+                Style="{StaticResource CategoryBorderStyle}"
                 BorderThickness="1" 
-                BorderBrush="White" 
                 CornerRadius="10" >
             <Grid x:Name="DataGrid1" Margin="8">
                 <Grid.ColumnDefinitions>
@@ -531,73 +624,50 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Category" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20"/>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryName}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1"/>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Description" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Row="1"/>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryDescription}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="1"/>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Percent Discovered" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Row="2" />
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding PercentComplete, StringFormat=P0}" VerticalAlignment="Center" Foreground="White" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="2" />
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Category" VerticalAlignment="Center" Margin="8" FontSize="20"/>
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryDisplayName}" VerticalAlignment="Center" Margin="8" FontSize="20" Grid.Column="1"/>
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Description" VerticalAlignment="Center" Margin="8" FontSize="20" Grid.Row="1"/>
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding CategoryDescription}" VerticalAlignment="Center" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Percent Discovered" VerticalAlignment="Center" Margin="8" FontSize="20" Grid.Row="2" />
+                <TextBlock Style="{StaticResource CategoryTextBlockStyle}" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding PercentComplete, StringFormat=P0}" VerticalAlignment="Center" Margin="8" FontSize="20" Grid.Column="1" Grid.Row="2" />
             </Grid>
         </Border>
         <!-- Category Entry -->
         <Border x:Name="EntryBorder" 
                 DataContext="{Binding ElementName=CategoryEntryLB, Path=SelectedItem}"
+                Style="{StaticResource CategoryEntryBorderStyle}"
                 Margin="8" 
                 BorderThickness="1" 
                 CornerRadius="10" 
                 Grid.Column="1">
-            <Border.Style>
-                <Style TargetType="{x:Type Border}">
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsObjective}" Value="False" />
-                                <Condition Binding="{Binding IsUnique}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="White" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsObjective}" Value="False" />
-                                <Condition Binding="{Binding IsUnique}" Value="True" />
-                                <Condition Binding="{Binding IsIdentified}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="Goldenrod" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsObjective}" Value="True" />
-                                <Condition Binding="{Binding IsUnique}" Value="False" />
-                                <Condition Binding="{Binding IsIdentified}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="Cyan" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsObjective}" Value="True" />
-                                <Condition Binding="{Binding IsUnique}" Value="True" />
-                                <Condition Binding="{Binding IsIdentified}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="Cyan" />
-                        </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding IsIdentified}" Value="False">
-                            <Setter Property="BorderBrush" Value="White" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
             <Grid x:Name="DataGrid" Margin="8,8,8,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="165"/>
+                    <ColumnDefinition Width="140"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock Text="Name"  Margin="8" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource EntryTextBlockStyleName}"/>
-                    <TextBlock Text="(Unique)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
+                
+                <!-- Category Entry Image -->
+                <Image Source="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.Source}" Margin="8" Width="20" Height="30" HorizontalAlignment="Left" />
+
+                <!-- Category Entry Name -->
+                <TextBlock Style="{StaticResource CategoryEntryTextBlockStyle}" Grid.Column="1" Text="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.DisplayName}" Margin="8" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                <!-- Category Entry Attributes (Unique)(Objective)(Cursed)-->
+                <StackPanel Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="(Cursed)" FontSize="18" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
+                        <TextBlock.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                <Binding Path="IsIdentified" />
+                                <Binding Path="IsCurseIdentified" />
+                                <Binding Path="IsCursed" />
+                            </MultiBinding>
+                        </TextBlock.Visibility>
+                    </TextBlock>                    
+                    <TextBlock Text="(Unique)" Margin="8,0,0,0" FontSize="18" Foreground="Goldenrod" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
                             <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}">
                                 <Binding Path="IsIdentified" />
@@ -605,7 +675,7 @@
                             </MultiBinding>
                         </TextBlock.Visibility>
                     </TextBlock>
-                    <TextBlock Text="(Objective)" Style="{StaticResource EntryTextBlockStyleName}" Margin="8,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
+                    <TextBlock Text="(Objective)" Margin="8,0,0,0" FontSize="18" Foreground="Cyan" VerticalAlignment="Center" HorizontalAlignment="Left" FontStyle="Italic">
                         <TextBlock.Visibility>
                             <MultiBinding Converter="{StaticResource DualBoolVisibilityCollapsedConverter}">
                                 <Binding Path="IsIdentified" />
@@ -614,20 +684,28 @@
                         </TextBlock.Visibility>
                     </TextBlock>
                 </StackPanel>
-                <!--TextBlock Text="Attack Attributes" Foreground="Beige" 
-                           Visibility="{Binding Converter={StaticResource AttackAttributeVisibilityConverter}}"
-                           FontStyle="Italic" VerticalAlignment="Center" Margin="4" Grid.Column="2" /-->
 
-                <TextBlock Text="Description" Grid.Row="1" TextWrapping="Wrap" Style="{StaticResource EntryLabelTextBlockStyle}"  Margin="8" VerticalAlignment="Top" FontSize="20" />
-                <TextBlock Text="{Binding LongDescription}" TextWrapping="Wrap" Grid.Row="1" Grid.Column="1" Style="{StaticResource EntryTextBlockStyleLong}" Margin="8" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="20"/>
-
-                <ContentPresenter Margin="8" Width="20" Height="30" HorizontalAlignment="Left" />
+                <!-- Category Entry Description -->
+                <TextBlock Text="Description" Grid.Row="1" Style="{StaticResource CategoryEntryTextBlockStyle}" TextWrapping="Wrap" Margin="8" VerticalAlignment="Top" FontSize="20" />
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              Grid.Row="1" 
+                              Grid.Column="1" >
+                    <TextBlock Text="{Binding LongDescription}" 
+                               Style="{StaticResource CategoryEntryTextBlockStyle}"
+                               TextWrapping="Wrap" 
+                               Margin="8" 
+                               VerticalAlignment="Top" 
+                               HorizontalAlignment="Left" 
+                               FontSize="16"/>
+                </ScrollViewer>
             </Grid>
         </Border>
-        <Border Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10">
+        <Border Margin="8" Grid.Row="1" Style="{StaticResource CategoryBorderStyle}" BorderThickness="1" CornerRadius="10">
             <Grid>
                 <ListBox x:Name="CategoryLB"
                          Background="Black"
+                         BorderBrush="Transparent"
                          VirtualizingPanel.IsVirtualizing="False"
                          ItemContainerStyle="{StaticResource EllipseListBoxItemStyle}"
                          ItemsSource="{Binding Categories, Converter={StaticResource RogueMetaDataCategoryFilter}}">
@@ -637,12 +715,18 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-        	</Grid>
+                <TextBlock Text="{Binding Path=SelectedItem.CategoryDisplayName, ElementName=CategoryLB}"
+                           Style="{StaticResource CategoryTextBlockStyle}"
+                           FontSize="22"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />
+            </Grid>
         </Border>
-        <Border Grid.Column="1"  Margin="8" Grid.Row="1" BorderBrush="White" BorderThickness="1" CornerRadius="10" >
+        <Border Grid.Column="1" Style="{StaticResource CategoryEntryBorderStyle}" Margin="8" Grid.Row="1" BorderThickness="1" CornerRadius="10" >
         	<Grid>
                 <ListBox x:Name="CategoryEntryLB" 
                          Background="Black"
+                         BorderBrush="Transparent"
                          VirtualizingPanel.IsVirtualizing="False"
                          ItemContainerStyle="{StaticResource EllipseListBoxItemStyle}"
                          ItemsSource="{Binding ElementName=CategoryLB, Path=SelectedItem.Items}">
@@ -652,6 +736,11 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
+                <TextBlock Text="{Binding Path=SelectedItem.DisplayName, ElementName=CategoryEntryLB}"
+                           Style="{StaticResource CategoryEntryTextBlockStyle}"
+                           FontSize="22"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />                
         	</Grid>
         </Border>
     </Grid>

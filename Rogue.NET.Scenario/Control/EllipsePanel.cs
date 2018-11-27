@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Control
@@ -43,12 +44,12 @@ namespace Rogue.NET.Scenario.Control
             _animations = new List<EllipsePanelAnimation>();
             _ellipseGeometry = new PathGeometry();
         }
-        
+
         // Attach Animation Clocks
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-       
+
             // Remove
             var animationRemoved = _animations.FirstOrDefault(x => x.Element == visualRemoved);
             if (animationRemoved != null)
@@ -65,12 +66,16 @@ namespace Rogue.NET.Scenario.Control
         {
             base.OnRenderSizeChanged(sizeInfo);
 
+            var width = (this.RenderSize.Width / 2.0D) - PADDING;
+            var height = (this.RenderSize.Height / 2.0D) - PADDING;
+            var center = new Point((this.RenderSize.Width - ITEM_WIDTH) / 2.0D, (this.RenderSize.Height - ITEM_HEIGHT) / 2.0D);
+
             // Re-Calculate Ellipse Geometry
+            //
+            // Flip by 90 degrees and squish back down to give a starting point at the center position
             _ellipseGeometry =
-                new EllipseGeometry(
-                    new Point((this.RenderSize.Width - ITEM_WIDTH) / 2.0D, (this.RenderSize.Height - ITEM_HEIGHT) / 2.0D),
-                              (this.RenderSize.Width / 2.0D) - PADDING, (this.RenderSize.Height / 2.0D) - PADDING)
-                              .GetFlattenedPathGeometry();
+                new EllipseGeometry(center, height, width, new RotateTransform(90, center.X, center.Y))
+                        .GetFlattenedPathGeometry();
 
             Application.Current.Dispatcher.BeginInvoke(new VoidDelegate(Reset));
         }
@@ -109,14 +114,14 @@ namespace Rogue.NET.Scenario.Control
 
             // Either send elements back to starting place or center the selected element
             var delta = selectedAnimation == null ? 0 :
-                        selectedAnimation.Offset > 0.75 ? 1.25 - selectedAnimation.Offset : // Past the furthest back location
-                                                          0.25 - selectedAnimation.Offset;  // Before the furthest back location
+                        selectedAnimation.Offset > 0.5 ? 1 - selectedAnimation.Offset : // Past the furthest back location
+                                                         0 - selectedAnimation.Offset;  // Before the furthest back location
 
             // Animations each element from current (relative) offset -> next position (either current "Bump" or 
             // to "Select" the targeted element) -> Plays animation
             foreach (var animation in _animations)
             {
-                // Center the element by moving it to relative position 0.25;
+                // Center the element by moving it to relative position 0;
                 animation.Animate(_ellipseGeometry, animation.Offset + delta);
             }
 

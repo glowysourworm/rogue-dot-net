@@ -14,12 +14,7 @@ namespace Rogue.NET.Core.Converter.AttackAttribute
             if (value is int)
                 return (int)value <= 0 ? Visibility.Collapsed : Visibility.Visible;
 
-            var truncatedValue = Math.Floor((double)value);
-
-            if (truncatedValue <= 0)
-                return Visibility.Collapsed;
-
-            return Visibility.Visible;
+            return (double)value <= 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

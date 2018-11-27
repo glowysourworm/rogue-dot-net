@@ -19,7 +19,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public string CategoryDescription
         {
-            get { return _categoryDescription; }
+            get { return this.IsIdentifiedCategory ? _categoryDescription : "???"; }
             set { this.RaiseAndSetIfChanged(ref _categoryDescription, value); }
         }
         public string CategoryName
@@ -29,7 +29,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
         public string CategoryDisplayName
         {
-            get { return _categoryDisplayName; }
+            get { return this.IsIdentifiedCategory ? _categoryDisplayName : "???"; }
             set { this.RaiseAndSetIfChanged(ref _categoryDisplayName, value); }
         }
         public double PercentComplete
@@ -67,6 +67,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs("PercentComplete"));
+                PropertyChanged(this, new PropertyChangedEventArgs("CategoryDescription"));
+                PropertyChanged(this, new PropertyChangedEventArgs("CategoryDisplayName"));
                 PropertyChanged(this, new PropertyChangedEventArgs("IsIdentifiedCategory"));
                 PropertyChanged(this, new PropertyChangedEventArgs("IsObjectiveCategory"));
             }

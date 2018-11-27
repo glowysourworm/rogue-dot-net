@@ -108,7 +108,8 @@ namespace Rogue.NET.Core.Model.Generator
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(doodadTemplate.GenerationRate);
 
                 // If objective item (and hasn't been generated) - create at least one
-                for (var i = 0; i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated && i == 0); i++)
+                for (int i = 0; (i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated))
+                                            && !(doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated); i++)
                 {
                     level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate));
                 }
@@ -126,7 +127,8 @@ namespace Rogue.NET.Core.Model.Generator
 
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
 
-                for (int i = 0; i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated && i == 0); i++)
+                for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
+                                            && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
                     level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate));
                 }
@@ -145,7 +147,8 @@ namespace Rogue.NET.Core.Model.Generator
 
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
-                for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
+                for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
+                                            && !(template.IsUnique && template.HasBeenGenerated); i++)
                 {
                     level.AddContent(_itemGenerator.GenerateEquipment(template));
                 }
@@ -161,7 +164,8 @@ namespace Rogue.NET.Core.Model.Generator
                 {
                     int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
-                    for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
+                    for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
+                                                && !(template.IsUnique && template.HasBeenGenerated); i++)
                     {
                         level.AddContent(_itemGenerator.GenerateConsumable(template));
                     }
@@ -244,7 +248,8 @@ namespace Rogue.NET.Core.Model.Generator
 
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
-                for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
+                for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
+                                            && !(template.IsUnique && template.HasBeenGenerated); i++)
                 {
                     var location = GetRandomCellInRoom(partyRoomIndex, freeCells, freeRoomCells);
 
@@ -267,7 +272,8 @@ namespace Rogue.NET.Core.Model.Generator
                 {
                     int number = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationRate);
 
-                    for (int i = 0; i < number || (template.IsObjectiveItem && !template.HasBeenGenerated && i == 0); i++)
+                    for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
+                                                && !(template.IsUnique && template.HasBeenGenerated); i++)
                     {
                         var location = GetRandomCellInRoom(partyRoomIndex, freeCells, freeRoomCells);
 
@@ -288,7 +294,8 @@ namespace Rogue.NET.Core.Model.Generator
 
                 int number = _randomSequenceGenerator.CalculateGenerationNumber(enemyTemplate.GenerationRate);
 
-                for (int i = 0; i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated && i == 0); i++)
+                for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
+                                            && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
                     var location = GetRandomCellInRoom(partyRoomIndex, freeCells, freeRoomCells);
                     if (location != CellPoint.Empty)

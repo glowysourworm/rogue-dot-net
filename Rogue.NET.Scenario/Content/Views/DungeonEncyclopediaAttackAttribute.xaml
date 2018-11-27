@@ -3,50 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <converter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Image Source="{Binding SymbolInfo.SymbolImageSource}" Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" />
+            <Image Source="{Binding Converter={StaticResource ScenarioImageViewModelSourceConverter}}" 
+                   Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" />
             <TextBlock Text="{Binding RogueName}"  Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" VerticalAlignment="Center" FontSize="14" Foreground="Beige" Margin="4">
             </TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock Text="{Binding Attack, StringFormat=N0}" 
-                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
+            <TextBlock Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="Yellow" 
-                       Margin="0" />
-            <TextBlock Text="A" 
-                       VerticalAlignment="Center" 
-                       Visibility="{Binding Attack, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
-                       Foreground="Yellow" 
-                       Margin="0,4,4,4" />
-            <TextBlock Text="{Binding Resistance, StringFormat=N0}" 
-                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
+                       Margin="4">
+                <Run Text="{Binding Attack, StringFormat=F1}" />
+                <Run Text="A" />
+            </TextBlock>
+            <TextBlock Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="LightSteelBlue" 
-                       Margin="0" />
-            <TextBlock Text="R" 
-                       Foreground="LightSteelBlue" 
-                       Visibility="{Binding Resistance, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
-                       Margin="0,4,4,4" 
-                       VerticalAlignment="Center" />
-            <TextBlock Text="{Binding Weakness, StringFormat=N0}" 
-                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
+                       Margin="4">
+                <Run Text="{Binding Resistance, StringFormat=F1}" />
+                <Run Text="R" />
+            </TextBlock>
+            <TextBlock Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
                        VerticalAlignment="Center" 
                        FontSize="14" 
                        Foreground="Red" 
-                       Margin="0" />
-            <TextBlock Text="W" 
-                       Foreground="Red" 
-                       Margin="0,4,4,4" 
-                       Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
-                       VerticalAlignment="Center" />            
+                       Margin="4">
+                <Run Text="{Binding Weakness, StringFormat=N0}" />
+                <Run Text="W" />
+            </TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>
