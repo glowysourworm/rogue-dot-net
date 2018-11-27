@@ -31,7 +31,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                UpdateOrAdd(modelService, scenarioResourceService, null);
+                UpdateOrAdd(modelService, scenarioResourceService);
 
             });
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
@@ -40,7 +40,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 {
                     case LevelUpdateType.EncyclopediaCurseIdentify:
                     case LevelUpdateType.EncyclopediaIdentify:
-                        UpdateOrAdd(modelService, scenarioResourceService, update.ContentIds);
+                        UpdateOrAdd(modelService, scenarioResourceService);
                         break;
                 }
 
@@ -92,14 +92,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             });
         }
 
-        private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService, IEnumerable<string> contentIds)
+        private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
-            var metaDataCollection = (contentIds != null && contentIds.Any()) ?
-                                        modelService.ScenarioEncyclopedia.Values.Where(x => contentIds.Contains(x.Id)) :
-                                        modelService.ScenarioEncyclopedia.Values;
-
             // To locate the ScenarioMetaDataViewModel -> find category by Type
-            foreach (var metaData in metaDataCollection)
+            foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
             {
                 // Update base category
                 UpdateCategory(this.Categories.FirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);

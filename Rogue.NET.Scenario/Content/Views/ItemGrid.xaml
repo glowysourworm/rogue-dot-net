@@ -18,7 +18,7 @@
                 <ResourceDictionary>
                     <scenarioConverter:ItemGridButtonVisibilityConverter x:Key="ItemGridButtonVisibilityConverter" />
                     <scenarioConverter:ItemGridRowButtonVisibilitiyConverter x:Key="ItemGridRowButtonVisibilitiyConverter" />
-                    <scenarioConverter:ItemGridRowImageSourceConverter x:Key="ItemGridRowImageSourceConverter" />
+                    <scenarioConverter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
                     
                     <!-- Collection View Source Binding to DataContext -->
                     <CollectionViewSource x:Key='SortedItemsSource' Source="{Binding}">
@@ -140,11 +140,22 @@
                                                     <Image Width="20" 
                                                            Height="30" 
                                                            Margin="0" 
-                                                           Source="{Binding Converter={StaticResource ItemGridRowImageSourceConverter}}"
                                                            VerticalAlignment="Center" 
                                                            HorizontalAlignment="Center">
+                                                        <Image.Source>
+                                                            <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                                                <Binding Path="CharacterColor" />
+                                                                <Binding Path="CharacterSymbol" />
+                                                                <Binding Path="Icon" />
+                                                                <Binding Path="SmileyMood" />
+                                                                <Binding Path="SmileyAuraColor" />
+                                                                <Binding Path="SmileyBodyColor" />
+                                                                <Binding Path="SmileyLineColor" />
+                                                                <Binding Path="SymbolType" />
+                                                            </MultiBinding>
+                                                        </Image.Source>
                                                     </Image>
-                                                    <TextBlock Text="{Binding RogueName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
+                                                    <TextBlock Text="{Binding DisplayName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
                                                 </StackPanel>
                                                 <TextBlock Text="{Binding UsageDescription}" FontSize="14" VerticalAlignment="Center" Margin="4" HorizontalAlignment="Left" TextWrapping="Wrap" />
                                             </StackPanel>
@@ -152,7 +163,7 @@
                                                        Margin="4"
                                                        Grid.Column="1"
                                                        FontSize="18"
-                                                       VerticalAlignment="Center"
+                                                       VerticalAlignment="Top"
                                                        HorizontalAlignment="Right">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
@@ -181,7 +192,7 @@
                                                      Grid.Column="1"
                                                      Margin="4,0,0,0"
                                                      Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                                                     ItemsSource="{Binding AttackAttributes, NotifyOnSourceUpdated=True}" 
+                                                     ItemsSource="{Binding AttackAttributes}" 
                                                      HorizontalContentAlignment="Stretch" 
                                                      HorizontalAlignment="Stretch"
                                                      Style="{StaticResource DarkListBoxStyle}" 
@@ -304,7 +315,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="DataGridCell">
-                                        <TextBlock Text="{Binding RogueName}" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center"  />
+                                        <TextBlock Text="{Binding DisplayName}" Margin="0,0,4,0" HorizontalAlignment="Right" VerticalAlignment="Center"  />
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>

@@ -5,7 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
         <ResourceDictionary>
-            <scenarioConverter:ItemGridRowImageSourceConverter x:Key="ItemGridRowImageSourceConverter" />
+            <scenarioConverter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
     <LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
@@ -920,13 +920,24 @@
             </Grid.ColumnDefinitions>
             <Image VerticalAlignment="Center" 
                    Grid.Column="1" 
-                   HorizontalAlignment="Center"
-                   Source="{Binding Converter={StaticResource ItemGridRowImageSourceConverter}}">
+                   HorizontalAlignment="Center">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                        <Binding Path="CharacterColor" />
+                        <Binding Path="CharacterSymbol" />
+                        <Binding Path="Icon" />
+                        <Binding Path="SmileyMood" />
+                        <Binding Path="SmileyAuraColor" />
+                        <Binding Path="SmileyBodyColor" />
+                        <Binding Path="SmileyLineColor" />
+                        <Binding Path="SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
             </Image>
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="AttackAttributesCellTemplate">
-        <ItemsControl ItemsSource="{Binding AttackAttributes, NotifyOnSourceUpdated=True}"
+        <ItemsControl   ItemsSource="{Binding AttackAttributes}"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Width="Auto"
@@ -940,8 +951,19 @@
                 <DataTemplate>
                     <Image Margin="2,0,0,0" 
                            VerticalAlignment="Center" 
-                           HorizontalAlignment="Center"
-                           Source="{Binding Converter={StaticResource ItemGridRowImageSourceConverter}}">
+                           HorizontalAlignment="Center">
+                        <Image.Source>
+                            <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                <Binding Path="CharacterColor" />
+                                <Binding Path="CharacterSymbol" />
+                                <Binding Path="Icon" />
+                                <Binding Path="SmileyMood" />
+                                <Binding Path="SmileyAuraColor" />
+                                <Binding Path="SmileyBodyColor" />
+                                <Binding Path="SmileyLineColor" />
+                                <Binding Path="SymbolType" />
+                            </MultiBinding>
+                        </Image.Source>
                     </Image>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

@@ -265,8 +265,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || (isIdentify && identifyConsumable);
             bool throwEnable = consumable.HasProjectileSpell && consumable.SubType != ConsumableSubType.Ammo;
 
-            string quality = "N/A";
-            string classs = "N/A";
+            this.Quality = "N/A";
+            this.Class = "N/A";
 
             this.IsEquipment = false;
             this.IsConsumable = true;
@@ -301,9 +301,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.IsCursed = false;
             this.IsObjective = (metaData.IsObjective && metaData.IsIdentified);
             this.IsUnique = (metaData.IsUnique && metaData.IsIdentified);
-
-            this.Quality = quality;
-            this.Class = classs;
 
             if (!metaData.IsIdentified)
             {
@@ -378,6 +375,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                                                         .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
                                                         .Select(x => new AttackAttributeViewModel(x)));
 
+            // Fire PropertyChanged event for AttackAttributes to update bindings
+            OnPropertyChanged("AttackAttributes");
+
             this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
 
             this.EquipEnable = true;
@@ -404,19 +404,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.IsObjective = (metaData.IsObjective && metaData.IsIdentified);
             this.IsUnique = (metaData.IsUnique && metaData.IsIdentified);
 
-            this.Quality = quality;
-            this.Class = classs;
+            // For item specific parameters need to identify the item. For item type parameters
+            // need to identify the meta-data (have identified one)
+            this.Quality = !equipment.IsIdentified ? "?" : quality;
+            this.Class = !equipment.IsIdentified ? "?" : classs;
 
             if (!metaData.IsIdentified)
             {
                 this.DisplayName = metaData.IsIdentified ? this.RogueName : "???";
-                if (shouldShowClass)
-                {
-                    this.Quality = "?";
-                    this.Class = "?";
-                }
-                this.ShortDescription = "";
-                this.LongDescription = "";
+                this.ShortDescription = "???";
+                this.LongDescription = "???";
             }
             else
             {

@@ -126,8 +126,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             // Identify Inventory
             SynchronizeCollection<ItemBase, ItemGridRowViewModel>(
-                inventory.Where(x => !x.IsIdentified ||
-                                     !modelService.ScenarioEncyclopedia[x.RogueName].IsIdentified),
+                inventory.Where(x => (!x.IsIdentified && x is Equipment) ||
+                                      !modelService.ScenarioEncyclopedia[x.RogueName].IsIdentified),
                 this.IdentifyInventory,
                 item =>
                 {

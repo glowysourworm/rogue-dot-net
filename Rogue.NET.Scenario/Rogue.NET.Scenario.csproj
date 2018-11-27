@@ -200,7 +200,7 @@
     <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
-    <Compile Include="Converter\ItemGridRowImageSourceConverter.cs" />
+    <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
     <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\SkillSetProgressConverter.cs" />
