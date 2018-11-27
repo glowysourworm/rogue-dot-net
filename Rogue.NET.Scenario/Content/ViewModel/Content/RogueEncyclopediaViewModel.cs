@@ -15,6 +15,7 @@ using Rogue.NET.Core.Model.Scenario;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(RogueEncyclopediaViewModel))]
     public class RogueEncyclopediaViewModel : NotifyViewModel
     {

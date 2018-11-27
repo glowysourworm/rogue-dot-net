@@ -10,7 +10,7 @@ namespace Rogue.NET.View
     public partial class ImbueView : UserControl
     {
         [ImportingConstructor]
-        public ImbueView(IEventAggregator eventAggregator)
+        public ImbueView()
         {
             InitializeComponent();
         }

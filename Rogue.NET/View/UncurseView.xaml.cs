@@ -10,7 +10,7 @@ namespace Rogue.NET.View
     public partial class UncurseView : UserControl
     {
         [ImportingConstructor]
-        public UncurseView(IEventAggregator eventAggregator)
+        public UncurseView()
         {
             InitializeComponent();        
         }

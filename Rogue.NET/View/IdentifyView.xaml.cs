@@ -10,7 +10,7 @@ namespace Rogue.NET.View
     public partial class IdentifyView : UserControl
     {
         [ImportingConstructor]
-        public IdentifyView(IEventAggregator eventAggregator)
+        public IdentifyView()
         {
             InitializeComponent();
         }

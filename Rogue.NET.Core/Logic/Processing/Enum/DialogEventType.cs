@@ -8,13 +8,13 @@ namespace Rogue.NET.Core.Logic.Processing.Enum
 {
     public enum DialogEventType
     {
-        CommandPreferences,
         EnchantArmor,
         EnchantWeapon,
-        Help,
         Identify,
         Imbue,
         Uncurse,
+        Help,
+        Commands,
         Objective
     }
 }

@@ -11,7 +11,7 @@ namespace Rogue.NET.View
     public partial class EnchantView : UserControl
     {
         [ImportingConstructor]
-        public EnchantView(IEventAggregator eventAggregator)
+        public EnchantView()
         {
             InitializeComponent();
         }

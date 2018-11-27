@@ -1,74 +1,73 @@
 ﻿<UserControl x:Class="Rogue.NET.View.HelpView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:local="clr-namespace:Rogue.NET.View">
+             xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             Background="Transparent"
+             Height="450"
+             Width="700">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <local:KeyConverter x:Key="KeyConv" />
-                </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/EllipsePanel.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border BorderBrush="White" Background="Black" BorderThickness="3" CornerRadius="10">
-		<Grid Margin="8">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="0.222*"/>
-				<ColumnDefinition Width="0.135*"/>
-				<ColumnDefinition Width="0.302*"/>
-				<ColumnDefinition Width="0.341*"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-                <RowDefinition Height="0"/>
-				<RowDefinition Height="48"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-				<RowDefinition Height="40"/>
-                <RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" Margin="8,0" Foreground="#FFFFEA88" Text="Sequence" FontSize="18.667"/>
-            <TextBlock TextWrapping="Wrap" Text="Function" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Margin="8,0" Foreground="#FFC4EDFF" FontSize="18.667"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Margin="8,0" Foreground="#FFFFEA88" FontSize="18.667" Text="Key"/>
-			<TextBlock TextWrapping="Wrap" Text="North" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="North East" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="East" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="5" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="South East" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="South" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="7" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="South West" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="West" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="8" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="9" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="North West" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="{Binding North, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding NorthEast, Converter={StaticResource KeyConv}}" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding East, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding SouthEast, Converter={StaticResource KeyConv}}" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding South, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding SouthWest, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" Margin="0,0,8,0" Foreground="White" Text="{Binding West, Converter={StaticResource KeyConv}}" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding NorthWest, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="2" Grid.Row="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Attack" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="Open Door" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Column="2" Grid.Row="4" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Use Dungeon Object" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="Target Enemy" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="5" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="Use Active Skill" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="6" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Grid.Row="7" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" Text="Search" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="Shift Screen" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="8" Grid.Column="2" Margin="0,0,8,0" Foreground="DeepSkyBlue" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="CTRL + [Arrow Pad]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3" Grid.Row="8" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="SHIFT + [Direction]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3" Grid.Column="4" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Grid.Row="4" Grid.Column="3" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Doodad, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" FontSize="16"/>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Column="3" Grid.Row="7" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Search, Converter={StaticResource KeyConv}}" FontSize="16"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding Skill, Converter={StaticResource KeyConv}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="3" Grid.Row="6" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Grid.Row="5" Grid.Column="3" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="White" Text="{Binding Target, Converter={StaticResource KeyConv}}" FontSize="16"/>
-			<TextBlock TextWrapping="Wrap" Text="Direction" HorizontalAlignment="Right" Grid.Row="1" VerticalAlignment="Center" Margin="8,0" Foreground="#FFC4EDFF" FontSize="18.667"/>
-			<TextBlock TextWrapping="Wrap" Text="CTRL + [Direction]" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Margin="0,0,8,0" Foreground="White" FontSize="16"/>
-            <Button x:Name="BackButton" Cursor="Hand" Width="70" Style="{DynamicResource ShinyTextButtonStyle}" Grid.Row="10" Click="BackButton_Click" Height="32" Content="Back" Grid.Column="3" Background="Black" Tag="OK" Foreground="White" HorizontalAlignment="Right" Margin="8" />
-		</Grid>
-	</Border>
+    <Border BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="10">
+        <Grid>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="18" />
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.ColumnSpan="2" Background="Black" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Margin="8" Text="Welcome to Rogue.NET! Here are some simple maneuvers to help get you started" />
+                <TextBlock Margin="8" Text="(See &quot;Controls&quot; for a full list of commands)" />
+                <TextBlock Margin="20, 8, 8, 8"
+                           Text="Example 1: To Attack South-East: Press &quot;/&quot; while holding CTRL" />
+                <TextBlock Margin="20, 8, 8, 8"
+                           Text="Example 2: To Open a Door South: Press &quot;.&quot; while holding SHIFT" />
+                <TextBlock Margin="20, 8, 8, 8">
+                    <Run xml:space="preserve" Text="Example 3: To Fire a Range Weapon (REQUIRES AMMUNITION)&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;1) Equip Range Weapon&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;2) Press &quot;T&quot; to Target an Enemy&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;3) Press &quot;F&quot; to Fire" />
+                </TextBlock>
+                <TextBlock Margin="20, 8, 8, 8">
+                    <Run xml:space="preserve" Text="Example 4: To Use a Skill (SKILL LEARNING REQUIRES PLAYER MIN LEVEL)&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;1) Find Skills Tab to the right of the main Level area&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;2) Ensure that your Player has learned one of their skills&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;3) Press Button next to skill to Activate&#x0d;&#x0a;" />
+                    <Run xml:space="preserve" Text="&#x09;4) Press &quot;X&quot; to invoke the Skill (MAY REQUIRE TARGET)" />
+                </TextBlock>
+            </StackPanel>
+            <Button Cursor="Hand" 
+                    Grid.Row="1" 
+                    Style="{StaticResource ShinyTextButtonStyle}" 
+                    FontFamily="{StaticResource FontAwesome}"
+                    Margin="8" 
+                    HorizontalAlignment="Right" 
+                    Content="&#xf00d;" 
+                    Width="28" Height="28" 
+                    BorderBrush="White" 
+                    Foreground="White" 
+                    Background="Black">
+                <interactivity:Interaction.Triggers>
+                    <interactivity:EventTrigger EventName="Click">
+                        <extension:EventPropertyTrigger 
+                                TargetWindow="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                TargetDialogResult="True"
+                                IsEnabled="True" />
+                    </interactivity:EventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Button>
+        </Grid>
+    </Border>
 </UserControl>

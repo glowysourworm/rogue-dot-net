@@ -194,8 +194,8 @@
     </Compile>
     <Compile Include="RogueModule.cs" />
     <Compile Include="Utility\MapperInit.cs" />
-    <Compile Include="View\CommandPreferencesView.xaml.cs">
-      <DependentUpon>CommandPreferencesView.xaml</DependentUpon>
+    <Compile Include="View\CommandsView.xaml.cs">
+      <DependentUpon>CommandsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EnchantView.xaml.cs">
       <DependentUpon>EnchantView.xaml</DependentUpon>
@@ -235,9 +235,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CommandPreferencesView.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="View\CommandsView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnchantView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -256,8 +256,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ObjectiveView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\OpenScenarioView.xaml">
       <Generator>MSBuild:Compile</Generator>

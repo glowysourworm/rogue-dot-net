@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
 using Prism.Events;
@@ -10,8 +8,6 @@ using Prism.Regions;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Common.View;
-using System;
 using Rogue.NET.Scenario.Events.Content;
 
 namespace Rogue.NET.Scenario.Views
@@ -68,14 +64,6 @@ namespace Rogue.NET.Scenario.Views
             }
         }
 
-        private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
-        {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
-            {
-                Type = DialogEventType.Objective
-            });
-        }
-
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
             _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
@@ -84,11 +72,19 @@ namespace Rogue.NET.Scenario.Views
             });
         }
 
-        private void PreferencesButton_Click(object sender, RoutedEventArgs e)
+        private void CommandsButton_Click(object sender, RoutedEventArgs e)
         {
             _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
             {
-                 Type = DialogEventType.CommandPreferences
+                Type = DialogEventType.Commands
+            });
+        }
+
+        private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
+            {
+                Type = DialogEventType.Objective
             });
         }
     }

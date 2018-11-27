@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Microsoft.Practices.ServiceLocation;
+using Prism.Events;
 using Prism.Regions;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
@@ -6,6 +7,7 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Service.Interface;
 using System;
 using System.ComponentModel.Composition;
@@ -174,25 +176,30 @@ namespace Rogue.NET.View
             // multiple region managers and have a separate Shell window.
             switch (type)
             {
-                case DialogEventType.CommandPreferences:
-                    return new CommandPreferencesView();
                 case DialogEventType.Help:
                     return new HelpView();
+                case DialogEventType.Commands:
+                    return new CommandsView();
                 case DialogEventType.Objective:
-                    return new ObjectiveView(_eventAggregator);
+                    return new ObjectiveView(GetInstance<RogueEncyclopediaViewModel>());
                 case DialogEventType.Identify:
-                    return new IdentifyView(_eventAggregator);
+                    return new IdentifyView();
                 case DialogEventType.Uncurse:
-                    return new UncurseView(_eventAggregator);
+                    return new UncurseView();
                 case DialogEventType.EnchantArmor:
-                    return new EnchantView(_eventAggregator);
+                    return new EnchantView();
                 case DialogEventType.EnchantWeapon:
-                    return new EnchantView(_eventAggregator);
+                    return new EnchantView();
                 case DialogEventType.Imbue:
-                    return new ImbueView(_eventAggregator);
+                    return new ImbueView();
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }
+        }
+
+        private T GetInstance<T>()
+        {
+            return ServiceLocator.Current.GetInstance<T>();
         }
     }
 }

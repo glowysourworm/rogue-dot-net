@@ -1,7 +1,5 @@
-﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,15 +15,10 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.View
 {
-    [Export]
-    public partial class ObjectiveView : UserControl
+    public partial class CommandsView : UserControl
     {
-        [ImportingConstructor]
-        public ObjectiveView(RogueEncyclopediaViewModel viewModel)
+        public CommandsView()
         {
-            // TODO - move category name to constant
-            this.DataContext = viewModel.Categories.First(x => x.CategoryName == "Objective");
-
             InitializeComponent();
         }
     }
