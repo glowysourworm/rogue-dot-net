@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,19 +14,21 @@ namespace Rogue.NET.Scenario.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            var viewModel = value as ObjectiveViewModel;
+
+            if (viewModel == null)
                 return Binding.DoNothing;
 
-            switch ((DungeonMetaDataObjectTypes)value)
+            switch (viewModel.ObjectType)
             {
                 case DungeonMetaDataObjectTypes.Doodad:
-                    return "Seek out and use this special object once...";
+                    return string.Format("Seek Out and Use \"{0}\" Once...", viewModel.RogueName);
 
                 case DungeonMetaDataObjectTypes.Enemy:
-                    return "Find and destroy this enemy...";
+                    return string.Format("Find and Destroy this Enemy \"{0}\"...", viewModel.RogueName);
 
                 case DungeonMetaDataObjectTypes.Item:
-                    return "Find and keep this item with you...";
+                    return string.Format("Find and Keep this Item \"{0}\"...", viewModel.RogueName);
 
                 case DungeonMetaDataObjectTypes.Skill:
                 default:

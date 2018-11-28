@@ -23,7 +23,6 @@ namespace Rogue.NET.View
         [ImportingConstructor]
         public ObjectiveView(GameViewModel viewModel)
         {
-            // TODO - move category name to constant
             this.DataContext = viewModel;
 
             InitializeComponent();

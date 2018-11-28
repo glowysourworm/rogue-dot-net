@@ -175,21 +175,21 @@ namespace Rogue.NET.View
             switch (type)
             {
                 case DialogEventType.Help:
-                    return new HelpView();
+                    return GetInstance<HelpView>();
                 case DialogEventType.Commands:
-                    return new CommandsView();
+                    return GetInstance<CommandsView>();
                 case DialogEventType.Objective:
-                    return new ObjectiveView(GetInstance<GameViewModel>());
+                    return GetInstance<ObjectiveView>();
                 case DialogEventType.Identify:
-                    return new IdentifyView();
+                    return GetInstance<IdentifyView>();
                 case DialogEventType.Uncurse:
-                    return new UncurseView();
+                    return GetInstance<UncurseView>();
                 case DialogEventType.EnchantArmor:
-                    return new EnchantView();
+                    return GetInstance<EnchantView>();
                 case DialogEventType.EnchantWeapon:
-                    return new EnchantView();
+                    return GetInstance<EnchantView>();
                 case DialogEventType.Imbue:
-                    return new ImbueView();
+                    return GetInstance<ImbueView>();
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }

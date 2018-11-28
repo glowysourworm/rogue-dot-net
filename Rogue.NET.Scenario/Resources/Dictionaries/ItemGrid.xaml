@@ -1331,9 +1331,6 @@
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="BorderBrush" Value="Transparent" />
             </Trigger>
-            <DataTrigger Binding="{Binding IsMarkedForTrade}" Value="True">
-                <Setter Property="Background" Value="#1C00ef5f" />
-            </DataTrigger>
         </Style.Triggers>
     </Style>
 </ResourceDictionary>

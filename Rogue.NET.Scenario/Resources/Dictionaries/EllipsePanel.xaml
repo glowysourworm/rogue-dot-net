@@ -368,7 +368,7 @@
                                         </TransformGroup>
                                     </RadialGradientBrush.RelativeTransform>
                                     <GradientStop Offset="1" Color="#00000000"/>
-                                    <GradientStop x:Name="RefractionGradient" Offset="0.4" Color="#FFFFFFFF"/>
+                                    <GradientStop x:Name="RefractionGradient" Offset="0.4" Color="LightSteelBlue"/>
                                 </RadialGradientBrush>
                             </Ellipse.Fill>
                         </Ellipse>
@@ -499,28 +499,16 @@
                         </Trigger>
                         
                         <!-- Objective Acheived -->
-                        <Trigger Property="IsCompleted" Value="True">
+                        <DataTrigger Binding="{Binding IsCompleted}" Value="True">
                             <Setter TargetName="RefractionLayer" Property="Fill">
                                 <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1.0">
-                                        <RadialGradientBrush.RelativeTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
-                                                                                ScaleX="1.5" ScaleY="1.5"/>
-                                                <TranslateTransform X="0.02" Y="0.3"/>
-                                            </TransformGroup>
-                                        </RadialGradientBrush.RelativeTransform>
+                                    <RadialGradientBrush GradientOrigin="0.5,1.0" RadiusX="1.2">
                                         <GradientStop Offset="1" Color="#00000000"/>
-                                        <GradientStop Offset="0.1" Color="Red"/>
-                                        <GradientStop Offset="0.2" Color="Orange"/>
-                                        <GradientStop Offset="0.3" Color="Yellow"/>
-                                        <GradientStop Offset="0.4" Color="Green"/>
-                                        <GradientStop Offset="0.5" Color="Blue"/>
-                                        <GradientStop Offset="0.6" Color="Purple"/>
+                                        <GradientStop Offset="0.3" Color="Cyan"/>
                                     </RadialGradientBrush>
                                 </Setter.Value>
-                            </Setter>                            
-                        </Trigger>
+                            </Setter>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
