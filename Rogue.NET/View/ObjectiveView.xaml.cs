@@ -21,10 +21,10 @@ namespace Rogue.NET.View
     public partial class ObjectiveView : UserControl
     {
         [ImportingConstructor]
-        public ObjectiveView(RogueEncyclopediaViewModel viewModel)
+        public ObjectiveView(GameViewModel viewModel)
         {
             // TODO - move category name to constant
-            this.DataContext = viewModel.Categories.First(x => x.CategoryName == "Objective");
+            this.DataContext = viewModel;
 
             InitializeComponent();
         }

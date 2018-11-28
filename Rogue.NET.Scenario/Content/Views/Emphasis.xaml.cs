@@ -1,8 +1,10 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [Export]
     public partial class Emphasis : UserControl
     {
         public static readonly DependencyProperty ValueProperty =
@@ -33,6 +35,7 @@ namespace Rogue.NET.Scenario.Views
                 this.PurpleOrb.Margin = new Thickness(value);
             }
         }
+        [ImportingConstructor]
         public Emphasis()
         {
             InitializeComponent();

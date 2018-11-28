@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -6,6 +7,7 @@ using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.View
 {
+    [Export]
     public partial class Smiley : UserControl
     {
         public static readonly DependencyProperty SmileyRadiusProperty;
@@ -63,6 +65,7 @@ namespace Rogue.NET.Core.View
             Smiley.SmileyLineBlurProperty = DependencyProperty.Register("SmileyLineBlur", typeof(double), typeof(Smiley), lineBlurMeta);
             Smiley.SmileyLineThicknessProperty = DependencyProperty.Register("SmileyLineThickness", typeof(double), typeof(Smiley), lineThicknessMeta);
         }
+        [ImportingConstructor]
         public Smiley()
         {
             InitializeComponent();

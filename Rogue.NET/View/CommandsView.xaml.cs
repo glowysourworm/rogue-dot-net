@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,10 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.View
 {
+    [Export]
     public partial class CommandsView : UserControl
     {
+        [ImportingConstructor]
         public CommandsView()
         {
             InitializeComponent();

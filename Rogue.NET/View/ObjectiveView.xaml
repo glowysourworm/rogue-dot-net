@@ -4,6 +4,8 @@
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:scenarioControl="clr-namespace:Rogue.NET.Scenario.Control;assembly=Rogue.NET.Scenario"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
+             xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter;assembly=Rogue.NET.Scenario"
              Width="800" Height="600" Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -11,28 +13,83 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/EllipsePanel.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary>
+                    <scenarioConverter:ScenarioObjectiveTypeCompletionConverter x:Key="ScenarioObjectiveTypeCompletionConverter" />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>    
     <Border BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="10">
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock FontSize="24" Foreground="Goldenrod">
+                    <Run Text="{Binding ScenarioName}" />
+                    <Run Text=" Scenario" />
+                </TextBlock>
+                <FlowDocumentScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
+                    <FlowDocument>
+                        <BlockUIContainer>
+                            <coreView:Smiley SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
+                                             SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
+                                             SmileyLineThickness="2"
+                                             SmileyMood="Happy"
+                                             SmileyRadius="10"
+                                             Width="100"
+                                             Height="150" />
+                        </BlockUIContainer>
+                        <Paragraph>
+                            <Run Text="{Binding ScenarioDescription}" />
+                        </Paragraph>
+                    </FlowDocument>
+                </FlowDocumentScrollViewer>
+            </StackPanel>
             <ListBox x:Name="ObjectiveLB"
-                             Background="Black"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Stretch"
-                             BorderBrush="Transparent"
-                             ItemContainerStyle="{StaticResource ObjectiveEllipseListBoxItemStyle}"
-                             ItemsSource="{Binding Items}">
+                     Grid.Column="1"
+                        Background="Black"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        BorderBrush="Transparent"
+                        ItemContainerStyle="{StaticResource ObjectiveEllipseListBoxItemStyle}"
+                        ItemsSource="{Binding Objectives}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <scenarioControl:EllipsePanel SelectedItem="{Binding ElementName=ObjectiveLB, Path=SelectedItem}" IsItemsHost="True" Background="Black" />
+                        <scenarioControl:EllipsePanel SelectedItem="{Binding ElementName=ObjectiveLB, Path=SelectedItem}" 
+                                                      ItemWidth="100"
+                                                      ItemHeight="150"
+                                                      ItemPadding="150"                                                      
+                                                      IsItemsHost="True" Background="Black" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
             </ListBox>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Foreground="LightSteelBlue"
+                           FontSize="22"
+                           Margin="8"
+                           Text="{Binding SelectedItem.RogueName, ElementName=ObjectiveLB}" />
+                <TextBlock Foreground="AntiqueWhite"
+                           FontSize="18"
+                           Text="(Completed)"
+                           Visibility="{Binding IsCompleted, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                <TextBlock Foreground="Fuchsia"
+                           FontSize="18"
+                           Text="(Not Completed)"
+                           Visibility="{Binding IsCompleted, Converter={StaticResource BoolInverseVisibilityHiddenConverter}}" />                
+            </StackPanel>
+            <TextBlock Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                       Margin="8"
+                       FontSize="24"
+                       Foreground="LightSteelBlue"
+                       Text="{Binding Path=SelectedItem.Type, ElementName=ObjectiveLB, Converter={StaticResource ScenarioObjectiveTypeCompletionConverter}}" />
+
             <!--TextBlock Text="{Binding Path=SelectedItem.CategoryDisplayName, ElementName=CategoryLB}"
                            Style="{StaticResource CategoryTextBlockStyle}"
                            FontSize="22"
@@ -40,6 +97,7 @@
                            HorizontalAlignment="Center" /-->
             <Button Cursor="Hand" 
                     Grid.Row="1" 
+                    Grid.Column="1"
                     Style="{StaticResource ShinyTextButtonStyle}" 
                     FontFamily="{StaticResource FontAwesome}"
                     Margin="8" 

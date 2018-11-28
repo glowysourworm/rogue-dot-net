@@ -9,6 +9,7 @@ using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Service
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IKeyResolver))]
     public class KeyResolver : IKeyResolver
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,10 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
-    /// <summary>
-    /// Interaction logic for RenameControl.xaml
-    /// </summary>
+    [Export]
     public partial class RenameControl : UserControl
     {
+        [ImportingConstructor]
         public RenameControl()
         {
             InitializeComponent();

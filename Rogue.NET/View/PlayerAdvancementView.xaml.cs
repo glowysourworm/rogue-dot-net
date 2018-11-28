@@ -8,6 +8,7 @@ namespace Rogue.NET.View
     [Export]
     public partial class PlayerAdvancementView : UserControl
     {
+        [ImportingConstructor]
         public PlayerAdvancementView()
         {
             InitializeComponent();

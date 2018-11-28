@@ -1,10 +1,12 @@
 ﻿using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class SymbolEditor : UserControl
     {
         public bool WindowMode
@@ -25,6 +27,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             set { this.SymbolDeltaParametersGB.Visibility = (value ? Visibility.Visible : Visibility.Collapsed); }
         }
 
+        [ImportingConstructor]
         public SymbolEditor()
         {
             InitializeComponent();

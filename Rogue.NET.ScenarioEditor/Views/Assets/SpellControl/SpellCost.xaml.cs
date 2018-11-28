@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,10 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
 {
-    /// <summary>
-    /// Interaction logic for SpellCost.xaml
-    /// </summary>
+    [Export]
     public partial class SpellCost : UserControl
     {
+        [ImportingConstructor]
         public SpellCost()
         {
             InitializeComponent();

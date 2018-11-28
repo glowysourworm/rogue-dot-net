@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -7,12 +8,14 @@ using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class CharacterMap : UserControl
     {
         const int _NUMBER = 150;
 
         public string SelectedCharacter { get; private set; }
 
+        [ImportingConstructor]
         public CharacterMap()
         {
             InitializeComponent();

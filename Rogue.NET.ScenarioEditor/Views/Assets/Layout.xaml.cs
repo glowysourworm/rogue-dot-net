@@ -10,6 +10,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     [Export]
     public partial class Layout : UserControl
     {
+        [ImportingConstructor]
         public Layout()
         {
             InitializeComponent();

@@ -6,6 +6,7 @@ namespace Rogue.NET.ScenarioEditor.Views
     [Export]
     public partial class ScenarioDifficultyChart : UserControl
     {
+        [ImportingConstructor]
         public ScenarioDifficultyChart()
         {
             InitializeComponent();

@@ -7,13 +7,11 @@ using System.Windows;
 
 namespace Rogue.NET
 {
-    [ModuleExport("Rogue", typeof(RogueModule))]
+    [ModuleExport("RogueModule", typeof(RogueModule))]
     public class RogueModule : IModule
     {
         readonly IEventAggregator _eventAggregator;
         readonly IRegionManager _regionManager;
-
-        Window _splashWindow;
 
         [ImportingConstructor]
         public RogueModule(IEventAggregator eventAggregator, IRegionManager regionManager)

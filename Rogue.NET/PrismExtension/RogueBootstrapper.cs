@@ -18,6 +18,10 @@ using Rogue.NET.Scenario.Views;
 using Rogue.NET.Common.Extension.Prism;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.ViewModel.ItemGrid;
+using System.Windows.Threading;
+using System;
+using Prism.Modularity;
+using System.Collections.Generic;
 
 namespace Rogue.NET.PrismExtension
 {
@@ -32,6 +36,13 @@ namespace Rogue.NET.PrismExtension
         {
             RegisterViewsUsingContainer();
 
+            var moduleManager = this.Container.GetExport<IModuleManager>().Value;
+
+            moduleManager.LoadModuleCompleted += (obj, args) =>
+            {
+
+            };
+
             base.InitializeModules();
 
             Application.Current.MainWindow = this.Shell as Shell;
@@ -40,7 +51,12 @@ namespace Rogue.NET.PrismExtension
             // Request Navigate
             var regionManager = this.Container.GetExport<IRegionManager>().Value;
 
-            regionManager.RequestNavigate("MainRegion", "IntroView");
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                regionManager.RequestNavigate("MainRegion", "IntroView");
+
+            }), DispatcherPriority.ApplicationIdle);
+            
         }
         protected override void ConfigureContainer()
         {
@@ -67,6 +83,33 @@ namespace Rogue.NET.PrismExtension
             mappings.RegisterMapping(typeof(TransitionPresenter), this.Container.GetExportedValue<TransitionPresenterRegionAdapater>());
 
             return mappings;
+        }
+
+        protected override IModuleCatalog CreateModuleCatalog()
+        {
+            return new ModuleCatalog(new List<ModuleInfo>()
+            {
+                new ModuleInfo("ScenarioModule", "ScenarioModule")
+                {
+                    InitializationMode = InitializationMode.WhenAvailable,
+                    Ref = new Uri(typeof(ScenarioModule).Assembly.Location, UriKind.RelativeOrAbsolute).AbsoluteUri
+                },
+                new ModuleInfo("CoreModule", "CoreModule")
+                {
+                    InitializationMode = InitializationMode.WhenAvailable,
+                    Ref = new Uri(typeof(CoreModule).Assembly.Location, UriKind.RelativeOrAbsolute).AbsoluteUri
+                },
+                new ModuleInfo("RogueModule", "RogueModule")
+                {
+                    InitializationMode = InitializationMode.WhenAvailable,
+                    Ref = new Uri(typeof(RogueModule).Assembly.Location, UriKind.RelativeOrAbsolute).AbsoluteUri
+                },
+                new ModuleInfo("ScenarioEditorModule", "ScenarioEditorModule")
+                {
+                    InitializationMode = InitializationMode.WhenAvailable,
+                    Ref = new Uri(typeof(ScenarioEditorModule).Assembly.Location, UriKind.RelativeOrAbsolute).AbsoluteUri
+                }
+            });
         }
 
         // Couldn't figure out an easy way to do this with injection.. or to call the container in the code

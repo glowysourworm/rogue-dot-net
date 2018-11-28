@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,10 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class BrushEditorControl : UserControl
     {
+        [ImportingConstructor]
         public BrushEditorControl()
         {
             InitializeComponent();

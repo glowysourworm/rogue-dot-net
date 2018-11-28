@@ -6,6 +6,7 @@ namespace Rogue.NET.View
     [Export]
     public partial class OpenScenarioView : UserControl
     {
+        [ImportingConstructor]
         public OpenScenarioView()
         {
             InitializeComponent();

@@ -19,6 +19,7 @@ namespace Rogue.NET.ScenarioEditor.Views
     [Export]
     public partial class EditorInstructions : UserControl
     {
+        [ImportingConstructor]
         public EditorInstructions()
         {
             InitializeComponent();

@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Rogue.NET.Common.View
 {
+    [Export]
     public partial class DisappearingButton : UserControl
     {
         public static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(DisappearingButton));
 
+       
         public event RoutedEventHandler Click 
         {
             add { AddHandler(ClickEvent, value); }
@@ -43,6 +46,7 @@ namespace Rogue.NET.Common.View
 
         public int ImagePadding { get; set; }
 
+        [ImportingConstructor]
         public DisappearingButton()
         {
             InitializeComponent();

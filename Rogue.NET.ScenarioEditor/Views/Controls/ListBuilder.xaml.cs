@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class ListBuilder : UserControl
     {
         public static readonly DependencyProperty SourceItemsSourceProperty =
@@ -27,6 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         public event EventHandler<object> AddEvent;
         public event EventHandler<object> RemoveEvent;
 
+        [ImportingConstructor]
         public ListBuilder()
         {
             InitializeComponent();

@@ -19,7 +19,6 @@ namespace Rogue.NET.Intro.Views
 
         Timer _timer = null;
         Storyboard _currentStoryboard = null;
-        bool _finished = false;
         int _ctr = 0;
 
         [ImportingConstructor]

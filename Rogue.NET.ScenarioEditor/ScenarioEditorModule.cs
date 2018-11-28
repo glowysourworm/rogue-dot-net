@@ -29,7 +29,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor
 {
-    [ModuleExport("ScenarioEditor", typeof(ScenarioEditorModule))]
+    [ModuleExport("ScenarioEditorModule", typeof(ScenarioEditorModule))]
     public class ScenarioEditorModule : IModule
     {
         readonly IEventAggregator _eventAggregator;

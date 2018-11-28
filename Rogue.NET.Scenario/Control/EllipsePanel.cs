@@ -16,10 +16,6 @@ namespace Rogue.NET.Scenario.Control
     /// </summary>
     public class EllipsePanel : Canvas
     {
-        const int PADDING = 60;
-        const int ITEM_HEIGHT = 60;
-        const int ITEM_WIDTH = 40;
-
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register(
                 "SelectedItem", 
@@ -38,6 +34,10 @@ namespace Rogue.NET.Scenario.Control
             get { return (DependencyObject)GetValue(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
         }
+
+        public int ItemWidth { get; set; }
+        public int ItemHeight { get; set; }
+        public int ItemPadding { get; set; }
 
         public EllipsePanel()
         {
@@ -66,9 +66,9 @@ namespace Rogue.NET.Scenario.Control
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            var width = (this.RenderSize.Width / 2.0D) - PADDING;
-            var height = (this.RenderSize.Height / 2.0D) - PADDING;
-            var center = new Point((this.RenderSize.Width - ITEM_WIDTH) / 2.0D, (this.RenderSize.Height - ITEM_HEIGHT) / 2.0D);
+            var width = (this.RenderSize.Width / 2.0D) - this.ItemPadding;
+            var height = (this.RenderSize.Height / 2.0D) - this.ItemPadding;
+            var center = new Point((this.RenderSize.Width - this.ItemWidth) / 2.0D, (this.RenderSize.Height - this.ItemHeight) / 2.0D);
 
             // Re-Calculate Ellipse Geometry
             //

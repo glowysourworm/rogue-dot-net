@@ -166,6 +166,7 @@
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\RogueEncyclopediaCategoryViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\RogueEncyclopediaViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
     <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
+    <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
     <Compile Include="Converter\SkillSetProgressConverter.cs" />
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
@@ -233,6 +235,7 @@
       <DependentUpon>IntroView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service\Interface\IKeyResolver.cs" />
+    <Compile Include="Service\Interface\IScenarioObjectiveService.cs" />
     <Compile Include="Service\Interface\IScenarioStatisticsService.cs" />
     <Compile Include="Service\Interface\IScenarioUIGeometryService.cs" />
     <Compile Include="Service\KeyResolver.cs" />
@@ -270,6 +273,7 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Service\ScenarioObjectiveService.cs" />
     <Compile Include="Service\ScenarioStatisticsService.cs" />
     <Compile Include="Service\ScenarioUIGeometryService.cs" />
   </ItemGroup>

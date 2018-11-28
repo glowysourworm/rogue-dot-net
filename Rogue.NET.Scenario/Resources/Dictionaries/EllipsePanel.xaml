@@ -348,8 +348,8 @@
         </Setter>
     </Style>
     <Style x:Key="ObjectiveEllipseListBoxItemStyle" TargetType="ListBoxItem">
-        <Setter Property="Width" Value="60" />
-        <Setter Property="Height" Value="90" />
+        <Setter Property="Width" Value="100" />
+        <Setter Property="Height" Value="150" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -496,6 +496,30 @@
                                     </RadialGradientBrush>
                                 </Setter.Value>
                             </Setter>
+                        </Trigger>
+                        
+                        <!-- Objective Acheived -->
+                        <Trigger Property="IsCompleted" Value="True">
+                            <Setter TargetName="RefractionLayer" Property="Fill">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1.0">
+                                        <RadialGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterX="0.5" CenterY="0.5" 
+                                                                                ScaleX="1.5" ScaleY="1.5"/>
+                                                <TranslateTransform X="0.02" Y="0.3"/>
+                                            </TransformGroup>
+                                        </RadialGradientBrush.RelativeTransform>
+                                        <GradientStop Offset="1" Color="#00000000"/>
+                                        <GradientStop Offset="0.1" Color="Red"/>
+                                        <GradientStop Offset="0.2" Color="Orange"/>
+                                        <GradientStop Offset="0.3" Color="Yellow"/>
+                                        <GradientStop Offset="0.4" Color="Green"/>
+                                        <GradientStop Offset="0.5" Color="Blue"/>
+                                        <GradientStop Offset="0.6" Color="Purple"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>                            
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

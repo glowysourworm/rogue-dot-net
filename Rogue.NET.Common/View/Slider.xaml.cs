@@ -1,10 +1,12 @@
-﻿using System.Windows;
+﻿using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
 namespace Rogue.NET.Common.View
 {
+    [Export]
     public partial class Slider : UserControl
     {
         public static readonly DependencyProperty SliderValueProperty =
@@ -55,6 +57,8 @@ namespace Rogue.NET.Common.View
             set { this.TheSlider.LargeChange = value; }
         }
         public string TextFormat { get; set; }
+
+        [ImportingConstructor]
         public Slider()
         {
             InitializeComponent();

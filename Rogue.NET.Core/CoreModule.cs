@@ -11,7 +11,7 @@ using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core
 {
-    [ModuleExport("Core", typeof(CoreModule))]
+    [ModuleExport("CoreModule", typeof(CoreModule))]
     public class CoreModule : IModule
     {
         readonly IEventAggregator _eventAggregator;

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Rogue.NET.Common.View
 {
+    [Export]
     public partial class ProgressBar : UserControl
     {
         public static readonly DependencyProperty Value1Property;
@@ -79,6 +81,7 @@ namespace Rogue.NET.Common.View
             ProgressBar.ValueMaxProperty = DependencyProperty.Register("ValueMax", typeof(double), typeof(ProgressBar), m2);
             ProgressBar.BarColor1Property = DependencyProperty.Register("BarColor1", typeof(Color), typeof(ProgressBar), m3);
         }
+        [ImportingConstructor]
         public ProgressBar()
         {
             InitializeComponent();

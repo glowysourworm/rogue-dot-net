@@ -35,40 +35,6 @@ namespace Rogue.NET.Core.Model.Scenario
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();
         }
-
-        /// <summary>
-        /// Calculates whether or not the objective is acheived. This can change with player inventory.
-        /// </summary>
-        /// <returns></returns>
-        public bool IsObjectiveAcheived()
-        {
-            return this.ScenarioEncyclopedia
-                       .Values
-                       .Where(x => x.IsObjective)
-                       .All(metaData =>
-            {
-                switch (metaData.ObjectType)
-                {
-                    // Must have used one doodad
-                    case DungeonMetaDataObjectTypes.Doodad:
-                        return metaData.IsIdentified;
-
-                    // Must have slain one enemy
-                    case DungeonMetaDataObjectTypes.Enemy:
-                        return this.Statistics.EnemyStatistics.Any(enemy => enemy.RogueName == metaData.RogueName);
-
-                    // Must have one in Player inventory
-                    case DungeonMetaDataObjectTypes.Item:
-                        return this.Player1.Inventory.Values.Any(item => item.RogueName == metaData.RogueName);
-
-                    case DungeonMetaDataObjectTypes.Skill:
-                        throw new Exception("Skill sets should not support ScenarioMetaData.IsObjective");
-
-                    default:
-                        return false;
-                }
-            });
-        }
     }
 }
 

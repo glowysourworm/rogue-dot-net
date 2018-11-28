@@ -27,7 +27,6 @@ namespace Rogue.NET.Scenario.Views
             DependencyProperty.Register("IsDialogMode", typeof(bool), typeof(ItemGrid));
 
         ItemGridModes _mode = ItemGridModes.Consumable;
-        bool _isDialogMode = false;
 
         public ItemGridModes Mode
         {

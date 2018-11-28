@@ -6,6 +6,7 @@ namespace Rogue.NET.ScenarioEditor.Views.DesignRegion
     [Export]
     public partial class AssetContainerControl : UserControl
     {
+        [ImportingConstructor]
         public AssetContainerControl()
         {
             InitializeComponent();

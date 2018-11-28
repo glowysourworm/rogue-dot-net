@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
-{
-    /// <summary>
-    /// Interaction logic for DialogView.xaml
-    /// </summary>
+{   
+    [Export]
     public partial class DialogView : UserControl
     {
+        [ImportingConstructor]
         public DialogView()
         {
             InitializeComponent();

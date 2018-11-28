@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ using Rogue.NET.Core.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class ImageEnumComboBox : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
@@ -36,6 +38,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 this.ImgRes = res;
             }
         }
+        [ImportingConstructor]
         public ImageEnumComboBox()
         {
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();

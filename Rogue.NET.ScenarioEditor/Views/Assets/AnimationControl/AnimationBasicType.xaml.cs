@@ -18,6 +18,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl
             set { SetValue(IsProjectileAnimationTypeProperty, value); }
         }
 
+        [ImportingConstructor]
         public AnimationBasicType()
         {
             InitializeComponent();

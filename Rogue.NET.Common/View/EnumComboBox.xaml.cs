@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Common.View
 {
+    [Export]
     public partial class EnumComboBox : UserControl
     {
         public static readonly DependencyProperty EnumTypeProperty = DependencyProperty.Register(
@@ -40,6 +42,7 @@ namespace Rogue.NET.Common.View
             remove { RemoveHandler(EnumValueChangedEvent, value); }
         }
 
+        [ImportingConstructor]
         public EnumComboBox()
         {
             InitializeComponent();

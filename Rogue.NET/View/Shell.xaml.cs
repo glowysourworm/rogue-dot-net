@@ -1,9 +1,7 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Prism.Events;
-using Prism.Regions;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -181,7 +179,7 @@ namespace Rogue.NET.View
                 case DialogEventType.Commands:
                     return new CommandsView();
                 case DialogEventType.Objective:
-                    return new ObjectiveView(GetInstance<RogueEncyclopediaViewModel>());
+                    return new ObjectiveView(GetInstance<GameViewModel>());
                 case DialogEventType.Identify:
                     return new IdentifyView();
                 case DialogEventType.Uncurse:

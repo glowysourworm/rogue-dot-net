@@ -13,6 +13,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Service.Interface;
@@ -31,6 +32,7 @@ namespace Rogue.NET.Scenario.Controller
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioStatisticsService _statisticsService;
+        readonly IScenarioObjectiveService _scenarioObjectiveService;
         readonly IEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
         readonly IScenarioController _scenarioController;
@@ -45,12 +47,14 @@ namespace Rogue.NET.Scenario.Controller
             IScenarioResourceService resourceService,
             IScenarioFileService scenarioFileService,
             IScenarioStatisticsService scenarioStatisticsService,
+            IScenarioObjectiveService scenarioObjectiveService,
             IEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
             IScenarioController scenarioController,
             IModelService modelService)
         {
             _statisticsService = scenarioStatisticsService;
+            _scenarioObjectiveService = scenarioObjectiveService;
             _scenarioFileService = scenarioFileService;
             _scenarioResourceService = resourceService;
             _eventAggregator = eventAggregator;
@@ -249,7 +253,7 @@ namespace Rogue.NET.Scenario.Controller
             else if (levelNumber == 0)
             {
                 // Player has WON! :)
-                if (_scenarioContainer.IsObjectiveAcheived())
+                if (_scenarioObjectiveService.IsObjectiveAcheived(_scenarioContainer))
                 {
                     // Publish scenario completed event
                     _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(new ScenarioUpdate()
@@ -301,12 +305,12 @@ namespace Rogue.NET.Scenario.Controller
         {
             _eventAggregator.GetEvent<GameUpdateEvent>().Publish(new GameUpdateEventArgs()
             {
-                ScenarioName = _scenarioContainer.StoredConfig.DungeonTemplate.Name,
-                IsObjectiveAcheived = _scenarioContainer.IsObjectiveAcheived(),
+                IsObjectiveAcheived = _scenarioObjectiveService.IsObjectiveAcheived(_scenarioContainer),
                 IsSurvivorMode = _scenarioContainer.SurvivorMode,
                 Statistics = _scenarioContainer.Statistics,
                 Seed = _scenarioContainer.Seed,
-                LevelNumber = _scenarioContainer.CurrentLevel
+                LevelNumber = _scenarioContainer.CurrentLevel,
+                ScenarioObjectiveUpdates = _scenarioObjectiveService.GetScenarioObjectiveUpdates(_scenarioContainer),
             });
         }
     }

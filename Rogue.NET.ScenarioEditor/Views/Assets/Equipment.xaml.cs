@@ -6,6 +6,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     [Export]
     public partial class Equipment : UserControl
     {
+        [ImportingConstructor]
         public Equipment()
         {
             InitializeComponent();

@@ -6,6 +6,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     [Export]
     public partial class Brush : UserControl
     {
+        [ImportingConstructor]
         public Brush()
         {
             InitializeComponent();

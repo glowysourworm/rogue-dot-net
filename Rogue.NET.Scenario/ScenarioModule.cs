@@ -26,7 +26,7 @@ using Rogue.NET.Scenario.Outro;
 
 namespace Rogue.NET.Scenario
 {
-    [ModuleExport("Scenario", typeof(ScenarioModule))]
+    [ModuleExport("ScenarioModule", typeof(ScenarioModule), InitializationMode = InitializationMode.WhenAvailable)]
     public class ScenarioModule : IModule
     {
         readonly IRegionManager _regionManager;

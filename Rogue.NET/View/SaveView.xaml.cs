@@ -6,6 +6,7 @@ namespace Rogue.NET.View
     [Export]
     public partial class SaveView : UserControl
     {
+        [ImportingConstructor]
         public SaveView()
         {
             InitializeComponent();

@@ -8,7 +8,6 @@ namespace Rogue.NET.Scenario.Views
     [Export]
 	public partial class EquipmentSelectionCtrl : UserControl
 	{
-        readonly IScenarioResourceService _resourceService;
 
         [ImportingConstructor]
 		public EquipmentSelectionCtrl(PlayerViewModel playerViewModel)

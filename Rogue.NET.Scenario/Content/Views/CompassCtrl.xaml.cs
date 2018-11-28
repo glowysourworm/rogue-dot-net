@@ -27,7 +27,6 @@ namespace Rogue.NET.Scenario.Views
 
         List<Rectangle> _canvasPoints = new List<Rectangle>();
         List<Line> _canvasLines = new List<Line>();
-        int currentLevelNumber = -1;
 
         [ImportingConstructor]
         public CompassCtrl(IEventAggregator eventAggregator, IScenarioUIGeometryService scenarioUIGeometryService, IModelService modelService, PlayerViewModel playerViewModel)

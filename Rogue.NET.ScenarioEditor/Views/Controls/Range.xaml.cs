@@ -1,12 +1,15 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [Export]
     public partial class Range : UserControl
     {
+        [ImportingConstructor]
         public Range()
         {
             InitializeComponent();

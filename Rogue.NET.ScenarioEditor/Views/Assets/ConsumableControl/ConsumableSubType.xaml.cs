@@ -1,9 +1,12 @@
-﻿using System.Windows.Controls;
+﻿using System.ComponentModel.Composition;
+using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 {
+    [Export]
     public partial class ConsumableSubType : UserControl
     {
+        [ImportingConstructor]
         public ConsumableSubType()
         {
             InitializeComponent();
