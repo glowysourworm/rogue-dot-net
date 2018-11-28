@@ -62,6 +62,12 @@
         
         <ContentControl x:Name="MainRegion" Grid.Row="1" prism:RegionManager.RegionName="MainRegion"/>
 
+        <Popup x:Name="PopupDialog"
+               AllowsTransparency="True"
+               IsOpen="{Binding IsOpen}"
+               Placement="Center">
+            
+        </Popup>
     </Grid>
 </Window>
 

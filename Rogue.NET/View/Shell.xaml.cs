@@ -2,6 +2,7 @@
 using Prism.Events;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -24,6 +25,8 @@ namespace Rogue.NET.View
 
         Window _splashWindow;
 
+        CustomDialogContext _dialogContext;
+
         bool _blockUserInput = false;
 
         [ImportingConstructor]
@@ -31,6 +34,9 @@ namespace Rogue.NET.View
         {
             _eventAggregator = eventAggregator;
             _keyResolver = keyResolver;
+            _dialogContext = new CustomDialogContext();
+
+            this.DataContext = _dialogContext;
 
             _splashWindow = CreatePopupWindow();
 
@@ -72,10 +78,9 @@ namespace Rogue.NET.View
 
             _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
             {
-                var window = CreatePopupWindow();
-                window.Content = CreateDialogView(update.Type);
+                this.PopupDialog.Child = CreateDialogView(update.Type);
 
-                window.ShowDialog();
+                _dialogContext.IsOpen = true;
             });
         }
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)

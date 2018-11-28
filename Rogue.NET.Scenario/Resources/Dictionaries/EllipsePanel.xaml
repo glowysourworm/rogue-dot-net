@@ -431,7 +431,7 @@
                         <ContentPresenter Content="{Binding}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <!--Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="RefractionLayer" Property="Fill">
                                 <Setter.Value>
                                     <RadialGradientBrush GradientOrigin="0.5,1.0">
@@ -463,8 +463,8 @@
                                     </RadialGradientBrush>
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
+                        </-->
+                        <!--Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="RefractionLayer" Property="Fill">
                                 <Setter.Value>
                                     <RadialGradientBrush GradientOrigin="0.5,1.0">
@@ -496,7 +496,7 @@
                                     </RadialGradientBrush>
                                 </Setter.Value>
                             </Setter>
-                        </Trigger>
+                        </-->
                         
                         <!-- Objective Acheived -->
                         <DataTrigger Binding="{Binding IsCompleted}" Value="True">

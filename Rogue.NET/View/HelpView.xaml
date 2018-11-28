@@ -152,9 +152,8 @@
                     Background="Black">
                 <interactivity:Interaction.Triggers>
                     <interactivity:EventTrigger EventName="Click">
-                        <extension:EventPropertyTrigger 
+                        <extension:CustomDialogResultTrigger 
                                 TargetWindow="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                TargetDialogResult="True"
                                 IsEnabled="True" />
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>

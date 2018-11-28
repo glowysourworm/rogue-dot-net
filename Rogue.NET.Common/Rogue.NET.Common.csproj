@@ -167,7 +167,8 @@
   <ItemGroup>
     <Compile Include="Control\EditableTextBlock.cs" />
     <Compile Include="Extension\ButtonExtension.cs" />
-    <Compile Include="Extension\EventPropertyTrigger.cs" />
+    <Compile Include="Extension\CustomDialogResultTrigger.cs" />
+    <Compile Include="Extension\CustomDialogContext.cs" />
     <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />
