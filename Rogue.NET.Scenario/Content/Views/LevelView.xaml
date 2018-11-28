@@ -56,48 +56,64 @@
                         Margin="8"
                         BorderBrush="White"
                         BorderThickness="1"
-                        Background="Black"
-                        >
-                    <StackPanel>
-                        <!-- {Scenario Name} Scenario (#{seed}) / Level {Level Number}" -->
-                        <TextBlock x:Name="GeneralInfoTB" Margin="8, 2, 8, 2" Foreground="Beige" FontSize="18" HorizontalAlignment="Left">
+                        Background="Black">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <!-- {Scenario Name} Scenario (#{seed}) / Level {Level Number}" -->
+                            <TextBlock x:Name="GeneralInfoTB" Margin="8, 2, 8, 2" Foreground="Beige" FontSize="18" HorizontalAlignment="Left">
                             <Run Text="{Binding ScenarioName}" />
                             <Run Text=" Scenario" />
-                        </TextBlock>
-                        <TextBlock Visibility="{Binding IsSurvivorMode, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                            </TextBlock>
+                            <TextBlock Visibility="{Binding IsSurvivorMode, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                                    Margin="8, 2, 8, 2"
                                    Text="SURVIVOR MODE"
                                    Foreground="Fuchsia"
                                    FontSize="16" />
-                        <TextBlock Margin="8, 2, 8, 2" Foreground="Beige" FontSize="16" HorizontalAlignment="Left">
+                            <TextBlock Margin="8, 2, 8, 2" Foreground="Beige" FontSize="16" HorizontalAlignment="Left">
                             <Run Text="Game # " />
                             <Run Text="{Binding Seed}" />
-                        </TextBlock>
-                        <TextBlock Margin="8, 2, 8, 2"
+                            </TextBlock>
+                            <TextBlock Margin="8, 2, 8, 2"
                                    Foreground="Beige"
                                    FontSize="16">
                             <Run Text="Ticks: " />
                             <Run Text="{Binding Ticks}" />
-                        </TextBlock>
-                    </StackPanel>
+                            </TextBlock>
+                        </StackPanel>
+                        <Button x:Name="HelpButton" 
+                                Grid.Column="1"
+                                Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" 
+                                Background="Black" 
+                                BorderBrush="White" 
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Right" 
+                                Width="28" Style="{DynamicResource ShinyButtonStyle}" 
+                                Height="28" Margin="0, 4, 4, 0" Cursor="Hand" ToolTip="Help"/>
+                    </Grid>
                 </Border>
-                <TextBlock Visibility="{Binding IsObjectiveAcheived, Converter={StaticResource BoolVisibilityCollapseConverter}}" 
-                           Text="Objective Acheived! (Proceed to the Exit! Level 1!)" 
-                           FontSize="20" 
-                           Margin="8"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Bottom">
-                    <TextBlock.Foreground>
-                        <LinearGradientBrush>
-                            <GradientStop Color="Red" Offset="0" />
-                            <GradientStop Color="Orange" Offset="0.2" />
-                            <GradientStop Color="Yellow" Offset="0.4" />
-                            <GradientStop Color="Green" Offset="0.6" />
-                            <GradientStop Color="Blue" Offset="0.8" />
-                            <GradientStop Color="Purple" Offset="1" />
-                        </LinearGradientBrush>
-                    </TextBlock.Foreground>
-                </TextBlock>
+                <Border Visibility="{Binding IsObjectiveAcheived, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Bottom"
+                        Background="Black"
+                        Margin="8">
+                    <TextBlock Text="Objective Acheived! (Proceed to the Exit! Level 1!)" 
+                           FontSize="20" >
+                        <TextBlock.Foreground>
+                            <LinearGradientBrush>
+                                <GradientStop Color="Red" Offset="0" />
+                                <GradientStop Color="Orange" Offset="0.2" />
+                                <GradientStop Color="Yellow" Offset="0.4" />
+                                <GradientStop Color="Green" Offset="0.6" />
+                                <GradientStop Color="Blue" Offset="0.8" />
+                                <GradientStop Color="Purple" Offset="1" />
+                            </LinearGradientBrush>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </Border>
             </Grid>
         </Border>
 
