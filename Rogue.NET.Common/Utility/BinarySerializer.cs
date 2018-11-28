@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Rogue.NET.Core.IO
+namespace Rogue.NET.Common.Utility
 {
     /// <summary>
     /// Use for cloning object graphs. Binding straight to the model graph is causing

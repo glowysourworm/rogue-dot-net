@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.IO;
+﻿using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

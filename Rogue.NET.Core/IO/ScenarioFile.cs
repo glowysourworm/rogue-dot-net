@@ -12,6 +12,7 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Common.Utility;
 
 namespace Rogue.NET.Core.IO
 {

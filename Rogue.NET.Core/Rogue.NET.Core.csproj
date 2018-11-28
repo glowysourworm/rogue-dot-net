@@ -137,7 +137,6 @@
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
-    <Compile Include="IO\BinarySerializer.cs" />
     <Compile Include="Logic\Content\Interface\IItemProcessor.cs" />
     <Compile Include="Logic\Content\ItemProcessor.cs" />
     <Compile Include="Logic\Interface\IRogueEngine.cs" />

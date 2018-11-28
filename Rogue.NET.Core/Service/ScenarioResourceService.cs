@@ -85,14 +85,16 @@ namespace Rogue.NET.Core.Service
                 _scenarioConfigurations.Add(configResource.ToString(), (ScenarioConfigurationContainer)BinarySerializer.Deserialize(memoryStream.GetBuffer()));
             }
 
-            return _scenarioConfigurations[configResource.ToString()];
+            // Have to copy configuration because of the HasBeenGenerated flags in memory
+            return _scenarioConfigurations[configResource.ToString()].Copy();
         }
         public ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName)
         {
             if (!_scenarioConfigurations.ContainsKey(configurationName))
                 throw new Exception("Configuration not found - " + configurationName);
 
-            return _scenarioConfigurations[configurationName];
+            // Have to copy configuration because of the HasBeenGenerated flags in memory
+            return _scenarioConfigurations[configurationName].Copy();
         }
         public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails)
         {

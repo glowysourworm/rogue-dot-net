@@ -179,6 +179,7 @@
     <Compile Include="Extension\Prism\TransitionPresenter.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
     <Compile Include="Extension\MapperExtension.cs" />
+    <Compile Include="Utility\BinarySerializer.cs" />
     <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\ConstantStrings.cs" />
     <Compile Include="Utility\ResourceConstants.cs" />
