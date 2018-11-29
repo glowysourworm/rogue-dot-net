@@ -162,7 +162,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.Effect = new AlterationEffectTemplate();
             this.AuraEffect = new AlterationEffectTemplate();
 
-            //Causes circular reference. Have to lazy load
             this.CreateMonsterEnemy = "";
             this.DisplayName = "";
         }
