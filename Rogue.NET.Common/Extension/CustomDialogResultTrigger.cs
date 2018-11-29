@@ -28,9 +28,10 @@ namespace Rogue.NET.Common.Extension
             if (this.TargetWindow != null)
             {
                 var window = this.TargetWindow as Window;
-                var context = window.DataContext as CustomDialogContext;
-                if (context != null)
-                    context.IsOpen = false;
+                window.Hide();
+
+                // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
+                Application.Current.MainWindow.IsEnabled = true;
             }
         }
     }

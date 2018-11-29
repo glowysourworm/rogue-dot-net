@@ -6,7 +6,11 @@
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
-             x:Class="Rogue.NET.Scenario.Views.ItemGrid" Background="Transparent" BorderBrush="Black">
+             x:Class="Rogue.NET.Scenario.Views.ItemGrid" 
+             HorizontalContentAlignment="Stretch"
+             HorizontalAlignment="Stretch"
+             Background="Transparent" 
+             BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -64,6 +68,8 @@
 
                     <!-- Resources that reference local classes -->
                     <Style x:Key="RogueItemGridRowStyle" TargetType="{x:Type DataGridRow}">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
                         <Setter Property="Foreground" Value="{Binding IsSelected, Converter={StaticResource ItemGridSelectionColorConverter}}"/>
                         <Setter Property="SnapsToDevicePixels" Value="true"/>
@@ -79,6 +85,7 @@
                             <Setter.Value>
                                 <ToolTip Background="Black"
                                          BorderThickness="1"
+                                         Visibility="{Binding IsDialogMode, Converter={StaticResource BoolVisibilityCollapseConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
                                          ToolTipService.HasDropShadow="True"
                                          ToolTipService.ShowDuration="30000"
                                          StaysOpen="True"
@@ -216,9 +223,16 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridRow}">
                                     <Border x:Name="DGR_Border" 
+                                            HorizontalAlignment="Stretch"
+                                            Background="Transparent"
                                             BorderThickness="{TemplateBinding BorderThickness}" 
                                             SnapsToDevicePixels="True">
-                                        <SelectiveScrollingGrid>
+                                        <DataGridCellsPresenter x:Name="dataGridCellsPresenter" 
+                                                                HorizontalAlignment="Stretch" 
+                                                                HorizontalContentAlignment="Stretch" 
+                                                                ItemsPanel="{TemplateBinding ItemsPanel}" 
+                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            <!--SelectiveScrollingGrid HorizontalAlignment="Stretch">
                                             <SelectiveScrollingGrid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -227,10 +241,10 @@
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="Auto"/>
                                             </SelectiveScrollingGrid.RowDefinitions>
-                                            <DataGridCellsPresenter x:Name="dataGridCellsPresenter" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                            <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
+                                            <DataGridCellsPresenter x:Name="dataGridCellsPresenter" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
                                             <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                                        </SelectiveScrollingGrid>
+                                        </-->
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -305,12 +319,13 @@
                 <DataGridTextColumn x:Name="QuantityColumn" Header="#" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Quantity}" />
                 <DataGridTextColumn x:Name="ClassColumn" Width="Auto" Header="Class" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Class}" />
                 <DataGridTextColumn x:Name="WeightColumn" Header="Weight" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding Weight}" />
-                <DataGridTemplateColumn x:Name="AttackAttributeColumn" Header="Attack Attributes" Width="Auto" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource AttackAttributesCellTemplate}" />
+                <DataGridTemplateColumn x:Name="AttackAttributeColumn" Header="Attack Attributes" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource AttackAttributesCellTemplate}" />
                 <DataGridTextColumn Header="" Width="0" SortDirection="Ascending" Visibility="Collapsed"  Binding="{Binding Type}" />
                 <DataGridTextColumn x:Name="NameColumn" Width="*" Header="" SortDirection="Ascending" Binding="{Binding DisplayName}">
                     <DataGridTextColumn.CellStyle>
                         <Style BasedOn="{StaticResource DataGridCellStyle}" TargetType="DataGridCell">
                             <Setter Property="FrameworkElement.HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="DataGridCell">
@@ -320,13 +335,6 @@
                             </Setter>
                         </Style>
                     </DataGridTextColumn.CellStyle>
-                    <DataGridTextColumn.HeaderStyle>
-                        <Style BasedOn="{StaticResource HeaderStyle}" TargetType="{x:Type DataGridColumnHeader}">
-                            <Setter Property="FrameworkElement.HorizontalAlignment" Value="Right" />
-                            <Setter Property="Padding" Value="2,8,0,8" />
-                            <Setter Property="Margin" Value="0" />
-                        </Style>
-                    </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
             </DataGrid.Columns>
             <DataGrid.HorizontalGridLinesBrush>

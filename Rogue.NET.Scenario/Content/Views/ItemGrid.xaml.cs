@@ -176,7 +176,8 @@ namespace Rogue.NET.Scenario.Views
         {
             base.OnRenderSizeChanged(sizeInfo);
 
-            this.TheGrid.Height = sizeInfo.NewSize.Height - 60;
+            this.TheGrid.Width += 1;
+            this.TheGrid.Width -= 1;
         }
     }
 }
