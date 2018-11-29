@@ -183,6 +183,7 @@
     <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\ConstantStrings.cs" />
     <Compile Include="Utility\ResourceConstants.cs" />
+    <Compile Include="Utility\WpfHelper.cs" />
     <Compile Include="ViewModel\ColorViewModel.cs" />
     <Compile Include="ViewModel\NotifyViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

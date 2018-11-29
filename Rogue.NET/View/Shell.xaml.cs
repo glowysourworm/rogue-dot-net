@@ -24,7 +24,6 @@ namespace Rogue.NET.View
         readonly IKeyResolver _keyResolver;
 
         Window _splashWindow;
-        Window _dialogWindow;
 
         bool _blockUserInput = false;
 
@@ -35,7 +34,6 @@ namespace Rogue.NET.View
             _keyResolver = keyResolver;
 
             _splashWindow = CreatePopupWindow();
-            _dialogWindow = CreatePopupWindow();
 
             InitializeComponent();
             InitializeEvents();
@@ -75,11 +73,12 @@ namespace Rogue.NET.View
 
             _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
             {
-                _dialogWindow.Content = CreateDialogView(update.Type);
-                _dialogWindow.Show();
-
+                var window = CreatePopupWindow();
                 // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
-                this.IsEnabled = false;
+                Application.Current.MainWindow.Tag = window;
+
+                window.Content = CreateDialogView(update.Type);
+                window.ShowDialog();
             });
         }
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)

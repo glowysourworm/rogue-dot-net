@@ -117,7 +117,7 @@
                 <interactivity:Interaction.Triggers>
                     <interactivity:EventTrigger EventName="Click">
                         <extension:CustomDialogResultTrigger 
-                                TargetWindow="{Binding NotifyOnSourceUpdated=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                DialogResult="True"                                
                                 IsEnabled="True" />
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>

@@ -44,10 +44,10 @@
                             Cursor="Hand">
                             <interactivity:Interaction.Triggers>
                                 <interactivity:EventTrigger EventName="Click">
-                                    <extension:CustomDialogResultTrigger 
-                                        TargetWindow="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
-                                        IsEnabled="{Binding IsDialogMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
-                                        />
+                                    <extension:CustomDialogResultTrigger
+                                        DialogResult="True"
+                                        IsEnabled="{Binding IsDialogMode, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}">
+                                    </extension:CustomDialogResultTrigger>
                                 </interactivity:EventTrigger>
                             </interactivity:Interaction.Triggers>
 
