@@ -4,6 +4,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
@@ -46,6 +47,12 @@ namespace Rogue.NET.Core.Service
         Queue<IDialogUpdate> _dialogQueue;
         Queue<ILevelUpdate> _uiQueue;
         Queue<ILevelProcessingAction> _dataQueue;
+
+        /// <summary>
+        /// ***ATTACK ATTRIBUTES INTERCEPTED FROM THE DIALOG QUEUE AND STORED FOR A ONE-OFF
+        /// IMBUE ALTERATION. 
+        /// </summary>
+        IEnumerable<AttackAttribute> _imbueAttackAttributes;
 
         [ImportingConstructor]
         public ScenarioService(
@@ -93,6 +100,11 @@ namespace Rogue.NET.Core.Service
                 };
                 engine.DialogUpdateEvent += (sender, update) =>
                 {
+                    // ONE OFF FOR IMBUE ONLY!
+                    if (update.Type == DialogEventType.ImbueArmor ||
+                        update.Type == DialogEventType.ImbueWeapon)
+                        _imbueAttackAttributes = update.ImbueAttackAttributes;
+
                     _dialogQueue.Enqueue(update);
                 };
 
@@ -193,10 +205,29 @@ namespace Rogue.NET.Core.Service
                             nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.Enchant:
+                case LevelAction.EnchantArmor:
+                case LevelAction.EnchantWeapon:
                     {
                         _scenarioEngine.Enchant(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.ProcessTurn;
+                    }
+                    break;
+                case LevelAction.ImbueArmor:
+                    {
+                        _scenarioEngine.ImbueArmor(command.ScenarioObjectId, _imbueAttackAttributes);
+                        nextAction = LevelContinuationAction.ProcessTurn;
+
+                        // *** SET TO NULL TO INDICATE USED
+                        _imbueAttackAttributes = null;
+                    }
+                    break;
+                case LevelAction.ImbueWeapon:
+                    {
+                        _scenarioEngine.ImbueWeapon(command.ScenarioObjectId, _imbueAttackAttributes);
+                        nextAction = LevelContinuationAction.ProcessTurn;
+
+                        // *** SET TO NULL TO INDICATE USED
+                        _imbueAttackAttributes = null;
                     }
                     break;
                 case LevelAction.Identify:

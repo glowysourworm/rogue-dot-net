@@ -197,8 +197,11 @@
     <Compile Include="View\CommandsView.xaml.cs">
       <DependentUpon>CommandsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\EnchantView.xaml.cs">
-      <DependentUpon>EnchantView.xaml</DependentUpon>
+    <Compile Include="View\EnchantWeaponView.xaml.cs">
+      <DependentUpon>EnchantWeaponView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EnchantArmorView.xaml.cs">
+      <DependentUpon>EnchantArmorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\HelpView.xaml.cs">
       <DependentUpon>HelpView.xaml</DependentUpon>
@@ -206,8 +209,11 @@
     <Compile Include="View\IdentifyView.xaml.cs">
       <DependentUpon>IdentifyView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImbueView.xaml.cs">
-      <DependentUpon>ImbueView.xaml</DependentUpon>
+    <Compile Include="View\ImbueWeaponView.xaml.cs">
+      <DependentUpon>ImbueWeaponView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImbueArmorView.xaml.cs">
+      <DependentUpon>ImbueArmorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ObjectiveView.xaml.cs">
       <DependentUpon>ObjectiveView.xaml</DependentUpon>
@@ -239,7 +245,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\EnchantView.xaml">
+    <Page Include="View\EnchantWeaponView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\EnchantArmorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -251,7 +261,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ImbueView.xaml">
+    <Page Include="View\ImbueWeaponView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ImbueArmorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

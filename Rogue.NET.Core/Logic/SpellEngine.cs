@@ -371,8 +371,11 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
-                case AlterationAttackAttributeType.Imbue:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Imbue });
+                case AlterationAttackAttributeType.ImbueArmor:
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueArmor, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
+                    break;
+                case AlterationAttackAttributeType.ImbueWeapon:
+                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueWeapon, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
                     break;
                 case AlterationAttackAttributeType.Passive:
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
@@ -450,7 +453,8 @@ namespace Rogue.NET.Core.Logic
         {
             switch (alteration.AttackAttributeType)
             {
-                case AlterationAttackAttributeType.Imbue:
+                case AlterationAttackAttributeType.ImbueArmor:
+                case AlterationAttackAttributeType.ImbueWeapon:
                     // Not supported for Enemy
                     break;
                 case AlterationAttackAttributeType.Passive:

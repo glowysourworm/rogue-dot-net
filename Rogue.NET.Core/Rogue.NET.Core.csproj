@@ -137,8 +137,6 @@
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
-    <Compile Include="Logic\Content\Interface\IItemProcessor.cs" />
-    <Compile Include="Logic\Content\ItemProcessor.cs" />
     <Compile Include="Logic\Interface\IRogueEngine.cs" />
     <Compile Include="Logic\Processing\AnimationUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\IAnimationUpdate.cs" />
@@ -258,6 +256,7 @@
     <Compile Include="Model\Scenario\Character\Extension\PlayerExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
+    <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
     <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
     <Compile Include="Model\Scenario\Character\Enemy.cs" />
     <Compile Include="Model\Scenario\Character\Player.cs" />

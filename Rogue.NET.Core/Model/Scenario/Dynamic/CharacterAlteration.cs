@@ -307,7 +307,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
                                 break;
                             case AlterationAttackAttributeType.MeleeTarget:
-                            case AlterationAttackAttributeType.Imbue:
+                            case AlterationAttackAttributeType.ImbueArmor:
+                            case AlterationAttackAttributeType.ImbueWeapon:
                                 throw new Exception("Attack Attribute Alteration Type not supported here");
                             case AlterationAttackAttributeType.Passive:
                                 this.AttackAttributePassiveEffects.Add(new SpellReference(alteration), alteration.Effect);
@@ -371,7 +372,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                                 this.AttackAttributeTemporaryMalignEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.MeleeTarget:
-                            case AlterationAttackAttributeType.Imbue:
+                            case AlterationAttackAttributeType.ImbueArmor:
+                            case AlterationAttackAttributeType.ImbueWeapon:
                             case AlterationAttackAttributeType.Passive:
                                 throw new Exception("Attack Attribute Alteration Type not supported here");
 

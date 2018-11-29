@@ -6,6 +6,7 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
@@ -27,22 +28,25 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         public ObservableCollection<ItemGridRowViewModel> Equipment { get; set; }
         public ObservableCollection<ItemGridRowViewModel> IdentifyInventory { get; set; }
         public ObservableCollection<ItemGridRowViewModel> UncurseEquipment { get; set; }
-        public ObservableCollection<ItemGridRowViewModel> EnchantEquipment { get; set; }
-        public ObservableCollection<ItemGridRowViewModel> ImbueEquipment { get; set; }
+        public ObservableCollection<ItemGridRowViewModel> EnchantArmorEquipment { get; set; }
+        public ObservableCollection<ItemGridRowViewModel> EnchantWeaponEquipment { get; set; }
+        public ObservableCollection<ItemGridRowViewModel> ImbueWeaponEquipment { get; set; }
+        public ObservableCollection<ItemGridRowViewModel> ImbueArmorEquipment { get; set; }
 
         [ImportingConstructor]
         public ItemGridViewModel(
             IEventAggregator eventAggregator, 
-            IModelService modelService,
-            IItemProcessor itemProcessor)
+            IModelService modelService)
         {
             this.Inventory = new ObservableCollection<ItemGridRowViewModel>();
             this.Consumables = new ObservableCollection<ItemGridRowViewModel>();
             this.Equipment = new ObservableCollection<ItemGridRowViewModel>();
             this.IdentifyInventory = new ObservableCollection<ItemGridRowViewModel>();
             this.UncurseEquipment = new ObservableCollection<ItemGridRowViewModel>();
-            this.EnchantEquipment = new ObservableCollection<ItemGridRowViewModel>();
-            this.ImbueEquipment = new ObservableCollection<ItemGridRowViewModel>();
+            this.EnchantArmorEquipment = new ObservableCollection<ItemGridRowViewModel>();
+            this.EnchantWeaponEquipment = new ObservableCollection<ItemGridRowViewModel>();
+            this.ImbueWeaponEquipment = new ObservableCollection<ItemGridRowViewModel>();
+            this.ImbueArmorEquipment = new ObservableCollection<ItemGridRowViewModel>();
 
             // Player Events
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
@@ -56,7 +60,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     case LevelUpdateType.PlayerAll:
                     case LevelUpdateType.EncyclopediaCurseIdentify:
                     case LevelUpdateType.EncyclopediaIdentify:
-                        UpdateCollections(modelService, itemProcessor);
+                        UpdateCollections(modelService);
                         break;
                     default:
                         break;
@@ -66,11 +70,11 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Level Loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                UpdateCollections(modelService, itemProcessor);
+                UpdateCollections(modelService);
             });
         }
 
-        private void UpdateCollections(IModelService modelService, IItemProcessor itemProcessor)
+        private void UpdateCollections(IModelService modelService)
         {
             var encyclopedia = modelService.ScenarioEncyclopedia;
             var consumables = modelService.Player.Consumables.Values;
@@ -154,20 +158,33 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
                 (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
 
-            // Enchant Equipment
+            // Enchant Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
-                modelService.Player.Equipment.Values.Where(x => itemProcessor.ClassApplies(x.Type)),
-                this.EnchantEquipment,
+                modelService.Player.Equipment.Values.Where(x => x.IsWeaponType()),
+                this.EnchantWeaponEquipment,
                 item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
                 (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
 
-            // Imbue Equipment (set to enchant for now)
+            // Enchant Armor Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
-                modelService.Player.Equipment.Values.Where(x => itemProcessor.ClassApplies(x.Type)),
-                this.ImbueEquipment,
+                modelService.Player.Equipment.Values.Where(x => x.IsArmorType()),
+                this.EnchantArmorEquipment,
                 item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
                 (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
 
+            // Imbue Weapon Equipment
+            SynchronizeCollection<Equipment, ItemGridRowViewModel>(
+                modelService.Player.Equipment.Values.Where(x => x.IsWeaponType() && x.CanImbue()),
+                this.ImbueWeaponEquipment,
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+
+            // Imbue Weapon Equipment
+            SynchronizeCollection<Equipment, ItemGridRowViewModel>(
+                modelService.Player.Equipment.Values.Where(x => x.IsArmorType() && x.CanImbue()),
+                this.ImbueArmorEquipment,
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
         }
 
         private void SynchronizeCollection<TSource, TDest>(

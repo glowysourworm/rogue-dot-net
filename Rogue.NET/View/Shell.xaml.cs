@@ -8,6 +8,7 @@ using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Service.Interface;
+using Rogue.NET.Scenario.Views;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -188,11 +189,13 @@ namespace Rogue.NET.View
                 case DialogEventType.Uncurse:
                     return GetInstance<UncurseView>();
                 case DialogEventType.EnchantArmor:
-                    return GetInstance<EnchantView>();
+                    return GetInstance<EnchantArmorView>();
                 case DialogEventType.EnchantWeapon:
-                    return GetInstance<EnchantView>();
-                case DialogEventType.Imbue:
-                    return GetInstance<ImbueView>();
+                    return GetInstance<EnchantWeaponView>();
+                case DialogEventType.ImbueArmor:
+                    return GetInstance<ImbueArmorView>();
+                case DialogEventType.ImbueWeapon:
+                    return GetInstance<ImbueWeaponView>();
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }

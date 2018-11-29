@@ -8,10 +8,10 @@ using System.Windows.Controls;
 namespace Rogue.NET.View
 {
     [Export]
-    public partial class EnchantView : UserControl
+    public partial class EnchantWeaponView : UserControl
     {
         [ImportingConstructor]
-        public EnchantView()
+        public EnchantWeaponView()
         {
             InitializeComponent();
         }

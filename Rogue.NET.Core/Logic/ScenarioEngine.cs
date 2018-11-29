@@ -18,6 +18,8 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Logic.Static;
+using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -388,11 +390,34 @@ namespace Rogue.NET.Core.Logic
             // Queue update
             QueuePlayerEquipmentAddOrUpdate(equipmentId);
         }
-        public void Imbue(string equipmentId)
+        public void ImbueArmor(string equipmentId, IEnumerable<AttackAttribute> attackAttributes)
         {
-            var equipment = _modelService.Player.Equipment[equipmentId];
+            var armor = _modelService.Player.Equipment[equipmentId];
 
-            // TODO: Figure out a way to pass imbue data along with request...
+            // Update Resistance Attribute
+            foreach (var attackAttribute in attackAttributes)
+            {
+                var armorAttribute = armor.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
+
+                // Increment Resistance
+                armorAttribute.Resistance += attackAttribute.Resistance;
+            }
+
+            // Queue update
+            QueuePlayerEquipmentAddOrUpdate(equipmentId);
+        }
+        public void ImbueWeapon(string equipmentId, IEnumerable<AttackAttribute> attackAttributes)
+        {
+            var weapon = _modelService.Player.Equipment[equipmentId];
+
+            // Update Resistance Attribute
+            foreach (var attackAttribute in attackAttributes)
+            {
+                var weaponAttribute = weapon.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
+
+                // Increment Attack
+                weaponAttribute.Attack += attackAttribute.Attack;
+            }
 
             // Queue update
             QueuePlayerEquipmentAddOrUpdate(equipmentId);

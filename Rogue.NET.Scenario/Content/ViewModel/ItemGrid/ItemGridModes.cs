@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 {
+    /// <summary>
+    /// Each mode relates the Item Grid to a different collection of items
+    /// </summary>
     public enum ItemGridModes
     {
         Inventory,
@@ -13,17 +16,25 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         Equipment,
         Identify,
         Uncurse,
-        Enchant,
-        Imbue
+        EnchantArmor,
+        EnchantWeapon,
+        ImbueArmor,
+        ImbueWeapon
     }
+
+    /// <summary>
+    /// Each Intended action relates to a back-end supported process
+    /// </summary>
     public enum ItemGridActions
     {
         Consume,
         Drop,
-        Enchant,
+        EnchantWeapon,
+        EnchantArmor,
         Equip,
         Identify,
-        Imbue,
+        ImbueArmor,
+        ImbueWeapon,
         Throw,
         Uncurse
     }

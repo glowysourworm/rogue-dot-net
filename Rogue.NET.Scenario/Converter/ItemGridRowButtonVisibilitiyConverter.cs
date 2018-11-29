@@ -18,7 +18,7 @@ namespace Rogue.NET.Scenario.Converter
             else if (values.Any(x => x == DependencyProperty.UnsetValue))
                 return Visibility.Collapsed;
 
-            else if (values.Length != 8)
+            else if (values.Length != 11)
                 return Visibility.Collapsed;
 
             var intendedAction = (ItemGridActions)values[0];
@@ -27,9 +27,12 @@ namespace Rogue.NET.Scenario.Converter
                     (bool)values[2] && intendedAction == ItemGridActions.Equip ||
                     (bool)values[3] && intendedAction == ItemGridActions.Identify ||
                     (bool)values[4] && intendedAction == ItemGridActions.Uncurse ||
-                    (bool)values[5] && intendedAction == ItemGridActions.Enchant ||
-                    (bool)values[6] && intendedAction == ItemGridActions.Throw ||
-                    (bool)values[7] && intendedAction == ItemGridActions.Drop) ? Visibility.Visible : Visibility.Collapsed;
+                    (bool)values[5] && intendedAction == ItemGridActions.EnchantArmor ||
+                    (bool)values[6] && intendedAction == ItemGridActions.EnchantWeapon ||
+                    (bool)values[7] && intendedAction == ItemGridActions.ImbueArmor ||
+                    (bool)values[8] && intendedAction == ItemGridActions.ImbueWeapon ||
+                    (bool)values[9] && intendedAction == ItemGridActions.Throw ||
+                    (bool)values[10] && intendedAction == ItemGridActions.Drop) ? Visibility.Visible : Visibility.Collapsed;
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

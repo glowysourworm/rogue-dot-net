@@ -168,13 +168,22 @@ namespace Rogue.NET.PrismExtension
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.UncurseEquipment;
                 return view;
             });
-            regionManager.RegisterViewWithRegion("ImbueItemGridRegion", () =>
+            regionManager.RegisterViewWithRegion("ImbueArmorItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
-                view.Mode = ItemGridModes.Imbue;
-                view.IntendedAction = ItemGridActions.Imbue;
+                view.Mode = ItemGridModes.ImbueArmor;
+                view.IntendedAction = ItemGridActions.ImbueArmor;
                 view.IsDialogMode = true;
-                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.ImbueEquipment;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.ImbueArmorEquipment;
+                return view;
+            });
+            regionManager.RegisterViewWithRegion("ImbueWeaponItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.ImbueWeapon;
+                view.IntendedAction = ItemGridActions.ImbueWeapon;
+                view.IsDialogMode = true;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.ImbueWeaponEquipment;
                 return view;
             });
             regionManager.RegisterViewWithRegion("IdentifyItemGridRegion", () =>
@@ -186,13 +195,22 @@ namespace Rogue.NET.PrismExtension
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.IdentifyInventory;
                 return view;
             });
-            regionManager.RegisterViewWithRegion("EnchantItemGridRegion", () =>
+            regionManager.RegisterViewWithRegion("EnchantArmorItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;
-                view.Mode = ItemGridModes.Enchant;
-                view.IntendedAction = ItemGridActions.Enchant;
+                view.Mode = ItemGridModes.EnchantArmor;
+                view.IntendedAction = ItemGridActions.EnchantArmor;
                 view.IsDialogMode = true;
-                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantEquipment;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantArmorEquipment;
+                return view;
+            });
+            regionManager.RegisterViewWithRegion("EnchantWeaponItemGridRegion", () =>
+            {
+                var view = this.Container.GetExport<ItemGrid>().Value;
+                view.Mode = ItemGridModes.EnchantWeapon;
+                view.IntendedAction = ItemGridActions.EnchantWeapon;
+                view.IsDialogMode = true;
+                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantWeaponEquipment;
                 return view;
             });
         }

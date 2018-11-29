@@ -7,10 +7,10 @@ using System.Windows.Controls;
 namespace Rogue.NET.View
 {
     [Export]
-    public partial class ImbueView : UserControl
+    public partial class ImbueArmorView : UserControl
     {
         [ImportingConstructor]
-        public ImbueView()
+        public ImbueArmorView()
         {
             InitializeComponent();
         }

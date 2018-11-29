@@ -182,12 +182,18 @@
                 <StackPanel x:Name="AttackAttributeGroupRadioStack"
                             Margin="40,0,0,0"
                             Visibility="{Binding ElementName=AttackAttributeRB, Path=IsChecked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Imbue}}" Foreground="White" Margin="8">
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.ImbueArmor}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
-                                Text="Imbue: Permanently alters the attack attributes of an item" />
+                                Text="Imbue: Permanently alters the attack attributes of a suit of Armor" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.ImbueWeapon}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                Text="Imbue: Permanently alters the attack attributes of a One-Handed or Two-Handed Weapon" />
+                        </RadioButton.Content>
+                    </RadioButton>                    
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Passive}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"

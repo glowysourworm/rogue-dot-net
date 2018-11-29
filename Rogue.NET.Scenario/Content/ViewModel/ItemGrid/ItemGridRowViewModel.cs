@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
@@ -26,7 +27,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _selectEnable;
         bool _detailsEnable;
         bool _throwEnable;
-        bool _enchantEnable;
+        bool _enchantArmorEnable;
+        bool _enchantWeaponEnable;
+        bool _imbueArmorEnable;
+        bool _imbueWeaponEnable;
         bool _isEquiped;
         bool _isCursed;
         bool _isObjective;
@@ -103,10 +107,25 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _throwEnable; }
             set { this.RaiseAndSetIfChanged(ref _throwEnable, value); }
         }
-        public bool EnchantEnable
+        public bool EnchantArmorEnable
         {
-            get { return _enchantEnable; }
-            set { this.RaiseAndSetIfChanged(ref _enchantEnable, value); }
+            get { return _enchantArmorEnable; }
+            set { this.RaiseAndSetIfChanged(ref _enchantArmorEnable, value); }
+        }
+        public bool EnchantWeaponEnable
+        {
+            get { return _enchantWeaponEnable; }
+            set { this.RaiseAndSetIfChanged(ref _enchantWeaponEnable, value); }
+        }
+        public bool ImbueArmorEnable
+        {
+            get { return _imbueArmorEnable; }
+            set { this.RaiseAndSetIfChanged(ref _imbueArmorEnable, value); }
+        }
+        public bool ImbueWeaponEnable
+        {
+            get { return _imbueWeaponEnable; }
+            set { this.RaiseAndSetIfChanged(ref _imbueWeaponEnable, value); }
         }
         public bool IsEquiped
         {
@@ -283,7 +302,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.DropEnable = true;
             this.SelectEnable = true;
             this.ThrowEnable = throwEnable;
-            this.EnchantEnable = false;
+            this.EnchantArmorEnable = false;
+            this.EnchantWeaponEnable = false;
+            this.ImbueArmorEnable = false;
+            this.ImbueWeaponEnable = false;
 
             this.UsageDescription = CreateConsumableUsageDescription(consumable.SubType, throwEnable, consumeEnable, this.Quantity, this.Uses);
 
@@ -336,7 +358,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             bool shouldShowClass = false;
             bool consumeEnable = false;
-            bool enchantEnable = false;
             bool uncurseEnable = false;
             bool throwEnable = false;
             bool isEquiped = false;
@@ -348,13 +369,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.IsEquipment = true;
             this.IsConsumable = false;
 
-            shouldShowClass = equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.Boots
-                || equipment.Type == EquipmentType.Gauntlets || equipment.Type == EquipmentType.Helmet
-                || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.Shield
-                || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.Shoulder
-                || equipment.Type == EquipmentType.TwoHandedMeleeWeapon || equipment.Type == EquipmentType.Belt;
+            shouldShowClass = equipment.ClassApplies();
 
-            enchantEnable = equipment.Type == EquipmentType.Belt || equipment.Type == EquipmentType.Shoulder || equipment.Type == EquipmentType.Armor || equipment.Type == EquipmentType.OneHandedMeleeWeapon || equipment.Type == EquipmentType.RangeWeapon || equipment.Type == EquipmentType.TwoHandedMeleeWeapon;
             uncurseEnable = equipment.IsCursed;
             isEquiped = equipment.IsEquipped;
             isCursed = equipment.IsCursed && metaData.IsCurseIdentified;
@@ -387,7 +403,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.DropEnable = true;
             this.SelectEnable = true;
             this.ThrowEnable = throwEnable;
-            this.EnchantEnable = enchantEnable;
+            this.EnchantArmorEnable = equipment.ClassApplies() && equipment.IsArmorType();
+            this.EnchantWeaponEnable = equipment.ClassApplies() && equipment.IsWeaponType();
+            this.ImbueArmorEnable = equipment.CanImbue() && equipment.IsArmorType();
+            this.ImbueWeaponEnable = equipment.CanImbue() && equipment.IsWeaponType();
 
             // Symbol Details
             this.CharacterSymbol = equipment.CharacterSymbol;

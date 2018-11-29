@@ -62,9 +62,14 @@
     public enum AlterationAttackAttributeType
     {
         /// <summary>
-        /// Permanent alteration to an Equipment item
+        /// Permanent alteration to an Armor item
         /// </summary>
-        Imbue,
+        ImbueArmor,
+
+        /// <summary>
+        /// Permanent alteration to a Weapon item
+        /// </summary>
+        ImbueWeapon,
 
         /// <summary>
         /// Applied with an equipped item
