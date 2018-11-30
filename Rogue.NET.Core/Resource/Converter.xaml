@@ -6,6 +6,7 @@
                     xmlns:converterScenarioMetaData="clr-namespace:Rogue.NET.Core.Converter.ScenarioMetaData"
                     xmlns:converterSkillGrid="clr-namespace:Rogue.NET.Core.Converter.SkillGrid">
     <converter:BoolIntConverter x:Key="BoolIntConverter" />
+    <converter:BoolInverseConverter x:Key="BoolInverseConverter" />
     <converter:BoolInverseVisibilityHiddenConverter x:Key="BoolInverseVisibilityHiddenConverter" />
     <converter:BoolORMultiConverter x:Key="BoolORMultiConverter" />
     <converter:BoolORVisibilityMultiConverter x:Key="BoolORVisibilityMultiConverter" />

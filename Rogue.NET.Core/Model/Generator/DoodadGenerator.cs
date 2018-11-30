@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using System;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator
@@ -18,6 +19,9 @@ namespace Rogue.NET.Core.Model.Generator
 
         public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate)
         {
+            if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
+                throw new Exception("Trying to generate a unique Doodad twice");
+
             var doodad = new DoodadMagic();
 
             if (doodadTemplate.IsAutomatic)

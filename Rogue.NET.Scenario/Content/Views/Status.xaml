@@ -368,7 +368,7 @@
             <commonView:ProgressBar Grid.Row="5" BarColor1="Cyan" ValueMax="{Binding ExperienceNext}" Value="{Binding Experience}" Margin="8,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Height="16"  Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Experience}"/>
             <commonView:ProgressBar Grid.Row="6" BarColor1="Goldenrod" ValueMax="{Binding HaulMax}" Value="{Binding Haul}" Margin="8,2,8,2" x:Name="HaulBar" VerticalAlignment="Stretch"  Height="16" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Haul}"/>
             <Grid x:Name="ActiveSkillGrid" 
-                  Visibility="{Binding ActiveSkill, Converter={StaticResource NonNullVisibilityConverter}}" 
+                  Visibility="{Binding ActiveSkillSet, Converter={StaticResource NonNullVisibilityConverter}}" 
                   VerticalAlignment="Top"
                   Grid.Row="7" Margin="8,2">
                 <Grid.ColumnDefinitions>
@@ -377,8 +377,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Active Skill" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="#FFFFDE87" Margin="0,4,2,4" FontSize="14.667"/>
-                <TextBlock Text="{Binding ActiveSkill.RogueName}" TextWrapping="Wrap" Foreground="White" Margin="0,4" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
-                <local:Emphasis x:Name="ActiveSkillEmphasisCtrl" Width="42" RedOrbHeight="16" OrbMargin="2" HorizontalAlignment="Right" Margin="0" Grid.Column="2" Value="{Binding ActiveSkill.Emphasis}"/>
+                <TextBlock Text="{Binding ActiveSkillSet.RogueName}" TextWrapping="Wrap" Foreground="White" Margin="0,4" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1"/>
+                <local:Emphasis x:Name="ActiveSkillEmphasisCtrl" Width="42" RedOrbHeight="16" OrbMargin="2" HorizontalAlignment="Right" Margin="0" Grid.Column="2" Value="{Binding ActiveSkillSet.Emphasis}"/>
             </Grid>
         </Grid>
     </Grid>

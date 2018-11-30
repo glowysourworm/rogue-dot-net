@@ -79,6 +79,7 @@
     <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
     <Compile Include="Converter\BoolIntConverter.cs" />
+    <Compile Include="Converter\BoolInverseConverter.cs" />
     <Compile Include="Converter\BoolInverseVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\BoolANDVisibilityMultiConverter.cs" />
     <Compile Include="Converter\BoolORVisibilityMultiConverter.cs" />

@@ -697,6 +697,9 @@ namespace Rogue.NET.Core.Logic
             // Update meta-data UI
             QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, doodad.Id);
 
+            // Update statistics
+            QueueStatisticsUpdate(ScenarioUpdateType.StatisticsDoodadUsed, doodad.RogueName);
+
             switch (doodad.Type)
             {
                 case DoodadType.Magic:
@@ -818,6 +821,14 @@ namespace Rogue.NET.Core.Logic
             ScenarioUpdateEvent(this, new ScenarioUpdate()
             {
                 ScenarioUpdateType = ScenarioUpdateType.StatisticsTick
+            });
+        }
+        private void QueueStatisticsUpdate(ScenarioUpdateType type, string contentRogueName)
+        {
+            ScenarioUpdateEvent(this, new ScenarioUpdate()
+            {
+                ScenarioUpdateType = ScenarioUpdateType.StatisticsDoodadUsed,
+                ContentRogueName = contentRogueName
             });
         }
         #endregion

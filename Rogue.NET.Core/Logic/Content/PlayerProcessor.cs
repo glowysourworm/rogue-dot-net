@@ -98,7 +98,7 @@ namespace Rogue.NET.Core.Logic.Content
             // Skill Progress - Player gets boost on enemy death
 
             // Foreach SkillSet that can still require learning (From slain enemy reward)
-            foreach (var skill in player.SkillSets.Where(x => x.Level < x.Skills.Count))
+            foreach (var skill in player.SkillSets.Where(x => (x.Level < x.Skills.Count) && x.IsActive))
             {
                 switch (skill.Emphasis)
                 {

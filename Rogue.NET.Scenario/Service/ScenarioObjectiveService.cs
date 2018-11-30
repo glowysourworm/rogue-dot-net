@@ -41,7 +41,7 @@ namespace Rogue.NET.Scenario.Service
             {
                 // Must have used one doodad
                 case DungeonMetaDataObjectTypes.Doodad:
-                    return metaData.IsIdentified;
+                    return scenarioContainer.Statistics.DoodadStatistics.Any(doodad => doodad.RogueName == metaData.RogueName);
 
                 // Must have slain one enemy
                 case DungeonMetaDataObjectTypes.Enemy:

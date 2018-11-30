@@ -89,9 +89,6 @@
                             <Setter.Value>
                                 <ToolTip Background="Black"
                                          BorderThickness="1"
-                                         Visibility="{Binding IsDialogMode, Converter={StaticResource BoolVisibilityCollapseConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
-                                         ToolTipService.HasDropShadow="True"
-                                         ToolTipService.ShowDuration="30000"
                                          StaysOpen="True"
                                          Width="350">
                                     <ToolTip.Style>

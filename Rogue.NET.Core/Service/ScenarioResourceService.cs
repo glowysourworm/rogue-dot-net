@@ -173,8 +173,9 @@ namespace Rogue.NET.Core.Service
                 return _scenarioImageCache[cacheKey] as BitmapSource;
 
             // Create gray-scale image (also can use cache to get color image)
+            // TODO: figure out why transparency doesn't work; and fix the gray scale image
             var bitmapSource = GetImageSource(scenarioImage);
-            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Gray16, BitmapPalettes.Gray16Transparent, 0.0);
+            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Pbgra32, BitmapPalettes.WebPaletteTransparent, 100);
 
             // Cache the gray-scale image
             _scenarioImageCache[cacheKey] = formatConvertedBitmap;
