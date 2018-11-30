@@ -172,6 +172,12 @@
     <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaDataViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\AttributeChangeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioAlterationMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioEnemyAlterationMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioMeleeMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridModes.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />
@@ -179,6 +185,9 @@
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridRowViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasImage.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioNormalMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioPlayerAdvancementMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioSkillAdvancementMessageViewModel.cs" />
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>

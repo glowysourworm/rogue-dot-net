@@ -245,6 +245,15 @@
     <Compile Include="Model\ScenarioConfiguration\Layout\DungeonTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\LayoutTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\ScenarioConfigurationContainer.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\AlterationMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\EnemyAlterationMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\MeleeMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\NormalMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\PlayerAdvancementMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\Message\SkillAdvancementMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\ScenarioMessage.cs" />
+    <Compile Include="Model\ScenarioMessage\ScenarioMessagePriority.cs" />
+    <Compile Include="Model\ScenarioMessage\ScenarioMessageType.cs" />
     <Compile Include="Model\Scenario\Alteration\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\AlterationCost.cs" />
     <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />

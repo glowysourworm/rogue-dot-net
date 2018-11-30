@@ -11,6 +11,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -179,7 +180,7 @@ namespace Rogue.NET.Core.Logic
             // Spell blocked by Player
             if (_interactionProcessor.CalculateSpellBlock(_modelService.Player, alteration.BlockType == AlterationBlockType.Physical))
             {
-                _scenarioMessageService.Publish(_modelService.Player + " has blocked the spell!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.Player + " has blocked the spell!");
                 return;
             }
 
@@ -209,7 +210,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.RunAway:
                     _modelService.Level.RemoveContent(enemy);
-                    _scenarioMessageService.Publish(_modelService.GetDisplayName(enemy.RogueName) + " has run away!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has run away!");
                     break;
                 case AlterationType.Steal:
                     ProcessEnemyStealAlteration(enemy, alteration);
@@ -244,7 +245,7 @@ namespace Rogue.NET.Core.Logic
             {
                 bool blocked = _interactionProcessor.CalculateSpellBlock(enemy, alteration.BlockType == AlterationBlockType.Physical);
                 if (blocked)
-                    _scenarioMessageService.Publish(enemy.RogueName + " blocked the spell!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " blocked the spell!");
 
                 else
                 {
@@ -265,7 +266,7 @@ namespace Rogue.NET.Core.Logic
             var enemy = _modelService.GetTargetedEnemies().First();
             var enemyInventory = enemy.Inventory;
             if (!enemyInventory.Any())
-                _scenarioMessageService.Publish(_modelService.GetDisplayName(enemy.RogueName) + " has nothing to steal");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has nothing to steal");
 
             else
             {
@@ -294,7 +295,7 @@ namespace Rogue.NET.Core.Logic
                     _modelService.Player.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
                     enemy.Consumables.Remove(itemStolen.Key);
                 }
-                _scenarioMessageService.Publish("You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value.RogueName));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value.RogueName));
             }
         }
         private void ProcessPlayerOtherMagicEffect(AlterationContainer alteration)
@@ -438,7 +439,7 @@ namespace Rogue.NET.Core.Logic
             var enemyDisplayName = _modelService.GetDisplayName(enemy.RogueName);
             var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value.RogueName);
 
-            _scenarioMessageService.Publish("The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
         }
         private void ProcessEnemyOtherMagicEffect(Enemy enemy, AlterationContainer alteration)
         {
@@ -482,10 +483,10 @@ namespace Rogue.NET.Core.Logic
             character.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
             if (character is Player)
-                _scenarioMessageService.Publish("You were teleported!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You were teleported!");
 
             else
-                _scenarioMessageService.Publish(_modelService.GetDisplayName(character.RogueName) + " was teleported!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character.RogueName) + " was teleported!");
         }
         private void RevealSavePoint()
         {
@@ -493,7 +494,7 @@ namespace Rogue.NET.Core.Logic
             {
                 _modelService.Level.SavePoint.IsRevealed = true;
             }
-            _scenarioMessageService.Publish("You sense odd shrines near by...");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense odd shrines near by...");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -502,7 +503,7 @@ namespace Rogue.NET.Core.Logic
             foreach (var enemy in _modelService.Level.Enemies)
                 enemy.IsRevealed = true;
 
-            _scenarioMessageService.Publish("You hear growling in the distance...");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -516,7 +517,7 @@ namespace Rogue.NET.Core.Logic
             RevealMonsters();
             RevealContent();
 
-            _scenarioMessageService.Publish("Your senses are vastly awakened");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your senses are vastly awakened");
 
             _modelService.UpdateContents();
             _modelService.UpdateVisibleLocations();
@@ -531,7 +532,7 @@ namespace Rogue.NET.Core.Logic
             if (_modelService.Level.HasStairsUp)
                 _modelService.Level.StairsUp.IsRevealed = true;
 
-            _scenarioMessageService.Publish("You sense exits nearby");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense exits nearby");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -543,7 +544,7 @@ namespace Rogue.NET.Core.Logic
             foreach (var equipment in _modelService.Level.Equipment)
                 equipment.IsRevealed = true;
 
-            _scenarioMessageService.Publish("You sense objects nearby");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -555,7 +556,7 @@ namespace Rogue.NET.Core.Logic
                 scenarioObject.IsRevealed = true;
             }
 
-            _scenarioMessageService.Publish("You sense objects nearby");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -564,7 +565,7 @@ namespace Rogue.NET.Core.Logic
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
-            _scenarioMessageService.Publish("Hunger makes a good sauce.....  :)");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Hunger makes a good sauce.....  :)");
 
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
         }
@@ -591,7 +592,7 @@ namespace Rogue.NET.Core.Logic
 
             if (enemyTemplate != null)
             {
-                _scenarioMessageService.Publish("You hear growling in the distance");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
 
                 var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
                 enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);

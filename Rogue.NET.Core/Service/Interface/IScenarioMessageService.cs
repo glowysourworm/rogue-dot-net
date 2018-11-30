@@ -1,24 +1,36 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.ScenarioMessage;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Service.Interface
 {
     public interface IScenarioMessageService
     {
-        /// <summary>
-        /// Blocks message forwarding to the UI
-        /// </summary>
-        void Block();
+        void Publish(ScenarioMessagePriority priority, string message);
 
-        /// <summary>
-        /// Unblocks message forwarding to the UI
-        /// </summary>
-        /// <param name="send">Option to send saved messages</param>
-        void UnBlock(bool send);
+        void Publish(ScenarioMessagePriority priority, string message, params string[] formatArgs);
 
-        void Publish(string message);
+        void PublishAlterationMessage(
+                ScenarioMessagePriority priority,
+                string alterationDisplayName,
+                string effectedAttributeName,
+                double effect,
+                bool isCausedByAttackAttributes = false,
+                IDictionary<string, double> attackAttributeEffect = null);
 
-        void Publish(string message, params string[] format);
+        void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string enemyDisplayName, string alterationDisplayName);
 
-        void PublishPlayerAdvancement(string header, IEnumerable<string> messages);
+        void PublishMeleeMessage(
+                ScenarioMessagePriority priority,
+                string actor,
+                string actee,
+                double baseHit,
+                bool isCriticalHit,
+                bool anyAttackAttributes = false,
+                IDictionary<string, double> attackAttributeHits = null);
+
+        void PublishPlayerAdvancement(ScenarioMessagePriority priority, IDictionary<string, double> attributesChanged);
+
+        void PublishSkillAdvancement(ScenarioMessagePriority priority, string skillSetName, int skillLevel);
+
     }
 }

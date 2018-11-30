@@ -8,6 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using System;
@@ -187,49 +188,49 @@ namespace Rogue.NET.Core.Logic.Content
         {
             if (player.AgilityBase - cost.Agility < 0)
             {
-                _scenarioMessageService.Publish("Not enough agility left");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Agility");
                 return false;
             }
 
             if (player.Hp - cost.Hp < 0)
             {
-                _scenarioMessageService.Publish("Not enough HP");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
                 return false;
             }
 
             if (player.IntelligenceBase - cost.Intelligence < 0)
             {
-                _scenarioMessageService.Publish("Not enough intelligence left");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Intelligence");
                 return false;
             }
 
             if (player.Mp - cost.Mp < 0)
             {
-                _scenarioMessageService.Publish("Not enough MP");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
                 return false;
             }
 
             if (player.StrengthBase - cost.Strength < 0)
             {
-                _scenarioMessageService.Publish("Not enough strength left");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Strength");
                 return false;
             }
 
             if (player.AuraRadiusBase - cost.AuraRadius < 0)
             {
-                _scenarioMessageService.Publish("Not enough aura left");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Will go Blind!");
                 return false;
             }
 
             if (player.Experience - cost.Experience < 0)
             {
-                _scenarioMessageService.Publish("Not enough experience points");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Experience");
                 return false;
             }
 
             if (player.Hunger + cost.Hunger > 100)
             {
-                _scenarioMessageService.Publish("You'll starve! (This is making you Hungry!)");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You'll starve! (This is making you Hungry!)");
                 return false;
             }
 
@@ -294,7 +295,7 @@ namespace Rogue.NET.Core.Logic.Content
             var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
 
             foreach (var effect in remediedEffects)
-                _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, effect.DisplayName + " has been cured!");
         }
         public void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
         {
@@ -302,7 +303,7 @@ namespace Rogue.NET.Core.Logic.Content
             var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
 
             foreach (var effect in remediedEffects)
-                _scenarioMessageService.Publish(effect.DisplayName + " has been cured!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " has cured " + effect.DisplayName);
         }
 
         private bool ProjectPlayerCanSupportAlterationEffect(Player player, AlterationEffect effect)

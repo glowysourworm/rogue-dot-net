@@ -12,6 +12,7 @@ using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.ScenarioMessage;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -44,34 +45,32 @@ namespace Rogue.NET.Core.Logic.Content
         }
         public void CalculateLevelGains(Player player)
         {
-            var messages = new List<string>();
-
-            string header = player.RogueName + " Has Reached Level " + (player.Level + 1).ToString() + "!";
+            var attributesChanged = new Dictionary<string, double>();
 
             // Hp Max
-            var d = (player.StrengthBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
-            player.HpMax += d;
-            messages.Add("Hp Increased By:  " + d.ToString("F3"));
+            var change = (player.StrengthBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
+            player.HpMax += change;
+            attributesChanged.Add("HP", change);
 
             // Mp Max
-            d = (player.IntelligenceBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
-            player.MpMax += d;
-            messages.Add("Mp Increased By:  " + d.ToString("F3"));
+            change = (player.IntelligenceBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
+            player.MpMax += change;
+            attributesChanged.Add("MP", change);
 
             // Strength
-            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.StrengthBase += (player.AttributeEmphasis == AttributeEmphasis.Strength) ? 3 * d : d;
-            messages.Add("Strength Increased By:  " + d.ToString("F3"));
+            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
+            player.StrengthBase += (player.AttributeEmphasis == AttributeEmphasis.Strength) ? 3 * change : change;
+            attributesChanged.Add("Strength", change);
 
             // Intelligence
-            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.IntelligenceBase += (player.AttributeEmphasis == AttributeEmphasis.Intelligence) ? 3 * d : d;
-            messages.Add("Intelligence Increased By:  " + d.ToString("F3"));
+            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
+            player.IntelligenceBase += (player.AttributeEmphasis == AttributeEmphasis.Intelligence) ? 3 * change : change;
+            attributesChanged.Add("Intelligence", change);
 
             // Agility
-            d = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.AgilityBase += (player.AttributeEmphasis == AttributeEmphasis.Agility) ? 3 * d : d;
-            messages.Add("Agility Increased By:  " + d.ToString("F3"));
+            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
+            player.AgilityBase += (player.AttributeEmphasis == AttributeEmphasis.Agility) ? 3 * change : change;
+            attributesChanged.Add("Agility", change);
 
             // Level :)
             player.Level++;
@@ -84,11 +83,11 @@ namespace Rogue.NET.Core.Logic.Content
                 {
                     skillSet.IsLearned = true;
 
-                    messages.Add(player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
                 }
             }
 
-            _scenarioMessageService.PublishPlayerAdvancement(header, messages);
+            _scenarioMessageService.PublishPlayerAdvancement(ScenarioMessagePriority.Good, attributesChanged);
         }
         public void CalculateEnemyDeathGains(Player player, Enemy slainEnemy)
         {
@@ -123,7 +122,7 @@ namespace Rogue.NET.Core.Logic.Content
                         if (skill.IsTurnedOn && (skill.GetCurrentSkill().Type == AlterationType.PassiveAura ||
                                              skill.GetCurrentSkill().Type == AlterationType.PassiveSource))
                         {
-                            _scenarioMessageService.Publish("Deactivating - " + skill.RogueName);
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skill.RogueName);
 
                             // Deactive the passive alteration - referenced by Spell Id
                             player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkill().Id);
@@ -134,10 +133,7 @@ namespace Rogue.NET.Core.Logic.Content
                         skill.Level++;
                         skill.SkillProgress = 0;
 
-                        _scenarioMessageService.PublishPlayerAdvancement("Player Skill Has Reached a New Level!", new string[]
-                        {
-                            skill.RogueName + " has reached Level " + (skill.Level + 1).ToString()
-                        });
+                        _scenarioMessageService.PublishSkillAdvancement(ScenarioMessagePriority.Good, skill.RogueName, skill.Level + 1);
                     }
                     else
                         skill.SkillProgress = 1;
@@ -183,7 +179,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             // Display PostEffect Messages
             foreach (var effect in effectsFinished)
-                _scenarioMessageService.Publish(effect.PostEffectString);
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, effect.DisplayName + " has worn off");
 
             //Apply per step alteration costs
             foreach (AlterationCost alterationCost in player.Alteration.GetAlterationCosts())
@@ -208,7 +204,7 @@ namespace Rogue.NET.Core.Logic.Content
                 {
                     skillSet.IsTurnedOn = false;
 
-                    _scenarioMessageService.Publish("Deactivating " + skillSet.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
 
                     var currentSkill = skillSet.GetCurrentSkill();
 

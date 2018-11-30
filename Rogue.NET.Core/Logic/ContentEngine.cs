@@ -19,6 +19,7 @@ using System.Linq;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using Rogue.NET.Core.Model.ScenarioMessage;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -98,7 +99,7 @@ namespace Rogue.NET.Core.Logic
                 if (character is Player)
                 {
                     // Publish message
-                    _scenarioMessageService.Publish("Found " + _modelService.GetDisplayName(item.RogueName));
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Found " + _modelService.GetDisplayName(item.RogueName));
 
                     if (item is Consumable)
                         LevelUpdateEvent(this, new LevelUpdate()
@@ -118,7 +119,7 @@ namespace Rogue.NET.Core.Logic
                 }
             }
             else if (character is Player)
-                _scenarioMessageService.Publish("Too much weight in your inventory");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too much weight in your inventory");
         }
         public void StepOnDoodad(Character character, DoodadBase doodad)
         {
@@ -161,7 +162,7 @@ namespace Rogue.NET.Core.Logic
 
             if (dropLocation == null)
             {
-                _scenarioMessageService.Publish("Cannot drop item here");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Cannot drop item here");
                 return;
             }
 
@@ -208,7 +209,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Publish message
-            _scenarioMessageService.Publish(displayName + " Dropped");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Dropped");
         }
         public void EnemyDeath(Enemy enemy)
         {
@@ -233,7 +234,7 @@ namespace Rogue.NET.Core.Logic
             QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName);
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
 
-            _scenarioMessageService.Publish(enemy.RogueName + " Slayed");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Slayed");
 
             //Set enemy identified
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
@@ -324,14 +325,14 @@ namespace Rogue.NET.Core.Logic
                     if (character is Player)
                     {
                         var doodadTitle = TextUtility.CamelCaseToTitleCase(doodad.NormalType.ToString());
-                        _scenarioMessageService.Publish(doodadTitle + " (Press \"D\" to Use)");
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, doodadTitle + " (Press \"D\" to Use)");
                     }
                     break;
                 case DoodadNormalType.TeleportRandom:
                     {
                         character.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
                         if (character is Player)
-                            _scenarioMessageService.Publish("Teleport!");
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
 
                         // Update Content Visibility
                         _modelService.UpdateContents();
@@ -366,7 +367,7 @@ namespace Rogue.NET.Core.Logic
                         // Enemy is trying to teleport in where Player is
                         else if (character is Enemy && character.Location == _modelService.Player.Location)
                         {
-                            _scenarioMessageService.Publish("Enemy is trying to use your teleporter!");
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Enemy is trying to use your teleporter!");
                             break;
                         }
 
@@ -380,7 +381,7 @@ namespace Rogue.NET.Core.Logic
                         QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
 
                         if (character is Player)
-                            _scenarioMessageService.Publish("Teleport!");
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
 
                         break;
                     }
@@ -406,10 +407,10 @@ namespace Rogue.NET.Core.Logic
                         _spellEngine.QueuePlayerMagicSpell(doodad.AutomaticSpell);
                     }
                     else
-                        _scenarioMessageService.Publish(displayName + " Press \"D\" to Use");
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Press \"D\" to Use");
                 }
                 else
-                    _scenarioMessageService.Publish(displayName + " seems to be inactive");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " seems to be inactive");
             }
         }
         private bool UnEquip(Equipment equipment)
@@ -419,7 +420,7 @@ namespace Rogue.NET.Core.Logic
             if (equipment.IsCursed)
             {
                 // Publish message
-                _scenarioMessageService.Publish(_modelService.GetDisplayName(equipment.RogueName) + " is Cursed!!!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, _modelService.GetDisplayName(equipment.RogueName) + " is Cursed!!!");
 
                 // Set Curse Identified
                 metaData.IsCurseIdentified = true;
@@ -434,7 +435,7 @@ namespace Rogue.NET.Core.Logic
                 equipment.IsEquipped = false;
 
                 // Publish Message
-                _scenarioMessageService.Publish("Un-Equipped " + (metaData.IsIdentified ? equipment.RogueName : "???"));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Un-Equipped " + (metaData.IsIdentified ? equipment.RogueName : "???"));
 
                 // If equip spell is present - make sure it's deactivated and removed
                 if (equipment.HasEquipSpell)
@@ -460,7 +461,7 @@ namespace Rogue.NET.Core.Logic
                         var equippedItem = _playerProcessor.GetEquippedType(_modelService.Player, equipment.Type);
                         if (equippedItem != null)
                         {
-                            _scenarioMessageService.Publish("Must first un-equip " + _modelService.GetDisplayName(equippedItem.RogueName));
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equippedItem.RogueName));
 
                             return false;
                         }
@@ -475,7 +476,7 @@ namespace Rogue.NET.Core.Logic
 
                         if (((equipment.Type == EquipmentType.TwoHandedMeleeWeapon || equipment.Type == EquipmentType.RangeWeapon) && handsFree < 2) || handsFree < 1)
                         {
-                            _scenarioMessageService.Publish("Must first free up a hand");
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first free up a hand");
                             return false;
                         }
                     }
@@ -487,7 +488,7 @@ namespace Rogue.NET.Core.Logic
 
                         if (ring != null && numberEquipped >= 2)
                         {
-                            _scenarioMessageService.Publish("Must first un-equip " + _modelService.GetDisplayName(equipment.RogueName));
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equipment.RogueName));
 
                             return false;
                         }
@@ -499,7 +500,7 @@ namespace Rogue.NET.Core.Logic
 
             equipment.IsEquipped = true;
 
-            _scenarioMessageService.Publish("Equipped " + _modelService.GetDisplayName(equipment.RogueName));
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Equipped " + _modelService.GetDisplayName(equipment.RogueName));
 
             // Fire equip spell -> This will activate any passive effects after animating
             if (equipment.HasEquipSpell)
@@ -584,7 +585,7 @@ namespace Rogue.NET.Core.Logic
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
-                                    OnEnemyMeleeAttack(enemy);
+                                    _interactionProcessor.CalculateEnemyHit(_modelService.Player, enemy);
                                     actionTaken = true;
                                 }
                             }
@@ -620,31 +621,6 @@ namespace Rogue.NET.Core.Logic
                 // Apply end-of-turn behavior for enemy
                 _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, actionTaken);
             }
-        }
-        private void OnEnemyMeleeAttack(Enemy enemy)
-        {
-            var player = _modelService.Player;
-            var hit = _interactionProcessor.CalculateEnemyHit(player, enemy);
-            var dodge = _randomSequenceGenerator.Get() <= player.GetDodge();
-            var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CurrentBehavior.CriticalRatio;
-
-            if (hit > 0 && !dodge)
-            {
-                if (criticalHit)
-                {
-                    hit *= 2;
-                    _scenarioMessageService.Publish(enemy.RogueName + " attacks for a critical hit!");
-                }
-                else
-                    _scenarioMessageService.Publish(enemy.RogueName + " attacks");
-
-                player.Hp -= hit;
-
-                if (player.Hp <= 0)
-                    _modelService.SetFinalEnemy(enemy);
-            }
-            else
-                _scenarioMessageService.Publish(enemy.RogueName + " Misses");
         }
         private CellPoint CalculateEnemyMoveLocation(Enemy enemy, CellPoint desiredLocation)
         {

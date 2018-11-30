@@ -13,6 +13,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using Rogue.NET.Core.Model.ScenarioMessage;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -127,14 +128,14 @@ namespace Rogue.NET.Core.Logic
 
             if (topologyChange)
             {
-                _scenarioMessageService.Publish("Door found!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Door found!");
 
                 _modelService.UpdateVisibleLocations();
 
                 LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
             }
             else
-                _scenarioMessageService.Publish("Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
         }
         public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
         {

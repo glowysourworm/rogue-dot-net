@@ -37,7 +37,7 @@ namespace Rogue.NET.Scenario.Views
 
             eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
-                this.DialogMessage = message;
+                //this.DialogMessage = message;
 
             });
         }

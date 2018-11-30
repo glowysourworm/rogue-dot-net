@@ -20,6 +20,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Logic.Static;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.ScenarioMessage;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -78,21 +79,21 @@ namespace Rogue.NET.Core.Logic
                 //Sleeping
                 if (states.Any(z => z == CharacterStateType.Sleeping))
                 {
-                    _scenarioMessageService.Publish(player.RogueName + " is asleep!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is asleep!");
                     return LevelContinuationAction.ProcessTurn;
                 }
 
                 //Paralyzed
                 else if (states.Any(z => z == CharacterStateType.Paralyzed))
                 {
-                    _scenarioMessageService.Publish(player.RogueName + " is paralyzed!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is paralyzed!");
                     return LevelContinuationAction.ProcessTurn;
                 }
 
                 //Confused
                 else if (states.Any(z => z == CharacterStateType.Confused))
                 {
-                    _scenarioMessageService.Publish(player.RogueName + " is confused!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is confused!");
                     var obj = MoveRandom();
 
                     if (obj is Consumable || obj is Equipment)
@@ -152,9 +153,6 @@ namespace Rogue.NET.Core.Logic
             var level = _modelService.Level;
             var player = _modelService.Player;
 
-            // Block Scenario Message Processing to prevent sending UI messages
-            _scenarioMessageService.Block();
-
             // Player: End-Of-Turn
             _playerProcessor.ApplyEndOfTurn(player, regenerate);
 
@@ -188,9 +186,6 @@ namespace Rogue.NET.Core.Logic
             // QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
             QueueLevelUpdate(LevelUpdateType.ContentVisible, string.Empty);
 
-            // Allow passing of messages back to the UI
-            _scenarioMessageService.UnBlock(false);
-
             // Fire a tick event to update level ticks
             QueueScenarioTick();
         }
@@ -219,32 +214,7 @@ namespace Rogue.NET.Core.Logic
                 enemy.IsEngaged = true;
 
                 // Enemy gets hit OR dodges
-                var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, enemy);
-
-                if (hit <= 0 || _randomSequenceGenerator.Get() < enemy.GetDodge())
-                    _scenarioMessageService.Publish(player.RogueName + " Misses");
-
-                // Enemy hit
-                else
-                {
-                    //Critical hit
-                    if (_randomSequenceGenerator.Get() < player.GetCriticalHitProbability())
-                    {
-                        hit *= 2;
-                        _scenarioMessageService.Publish(player.RogueName + " scores a critical hit!");
-                    }
-                    else
-                        _scenarioMessageService.Publish(player.RogueName + " attacks");
-
-                    enemy.Hp -= hit;
-                }
-
-                // Enemy counter-attacks
-                if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CurrentBehavior.CounterAttackProbability)
-                {
-                    player.Hp -= _interactionProcessor.CalculateEnemyHit(player, enemy);
-                    _scenarioMessageService.Publish(enemy.RogueName + " counter attacks");
-                }
+                _interactionProcessor.CalculatePlayerMeleeHit(_modelService.Player, enemy);
             }
         }
         public LevelContinuationAction Throw(string itemId)
@@ -334,7 +304,7 @@ namespace Rogue.NET.Core.Logic
                     QueueLevelUpdate(LevelUpdateType.PlayerSkillSetAdd, string.Empty);
                     QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, consumable.LearnedSkill.Id);
 
-                    _scenarioMessageService.Publish(player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
                 }
             }
 
@@ -345,11 +315,11 @@ namespace Rogue.NET.Core.Logic
                                                  .FirstOrDefault();
 
                 if (_alterationProcessor.CalculateSpellRequiresTarget(consumable.Spell) && targetedEnemy == null)
-                    _scenarioMessageService.Publish("Must first target an enemy");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
 
                 else
                 {
-                    _scenarioMessageService.Publish("Using " + displayName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + displayName);
                     
                     // Queue processing of spell
                     return _spellEngine.QueuePlayerMagicSpell((consumable.SubType == ConsumableSubType.Ammo) ? 
@@ -369,7 +339,7 @@ namespace Rogue.NET.Core.Logic
             metaData.IsCurseIdentified = true;
             item.IsIdentified = true;
 
-            _scenarioMessageService.Publish(item.RogueName + " Identified");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
 
             // Queue an update
             if (item is Consumable)
@@ -385,7 +355,7 @@ namespace Rogue.NET.Core.Logic
             var equipment = _modelService.Player.Equipment[equipmentId];
             equipment.Class++;
 
-            _scenarioMessageService.Publish("Your " + _modelService.GetDisplayName(equipment.RogueName) + " starts to glow!");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + _modelService.GetDisplayName(equipment.RogueName) + " starts to glow!");
 
             // Queue update
             QueuePlayerEquipmentAddOrUpdate(equipmentId);
@@ -427,10 +397,10 @@ namespace Rogue.NET.Core.Logic
             var equipment = _modelService.Player.Equipment[itemId];
             equipment.IsCursed = false;
 
-            _scenarioMessageService.Publish(_modelService.GetDisplayName(equipment.RogueName) + " Uncursed");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment.RogueName) + " Uncursed");
 
             if (equipment.HasCurseSpell)
-                _scenarioMessageService.Publish("Your " + equipment.RogueName + " is now safe to use (with caution...)");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + equipment.RogueName + " is now safe to use (with caution...)");
 
             if (equipment.IsEquipped)
                 _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
@@ -448,13 +418,13 @@ namespace Rogue.NET.Core.Logic
             var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
 
             if (rangeWeapon == null)
-                _scenarioMessageService.Publish("No Range Weapons are equipped");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Range Weapons are equipped");
 
             else if (targetedEnemy == null)
-                _scenarioMessageService.Publish("Must first target an enemy");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
 
             else if (Calculator.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
-                _scenarioMessageService.Publish("Too close to fire your weapon");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
 
             else
             {
@@ -462,7 +432,7 @@ namespace Rogue.NET.Core.Logic
                 var ammo = _modelService.Player.Consumables.Values.FirstOrDefault(z => z.RogueName == rangeWeapon.AmmoName);
                 if (ammo == null)
                 {
-                    _scenarioMessageService.Publish("No Ammunition for your weapon");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Ammunition for your weapon");
                     return LevelContinuationAction.ProcessTurn;
                 }
 
@@ -472,27 +442,11 @@ namespace Rogue.NET.Core.Logic
                 // Queue update
                 QueuePlayerConsumableRemove(ammo.Id);
 
-                // Player Misses
-                var hit = _interactionProcessor.CalculatePlayerHit(_modelService.Player, targetedEnemy);
-                if (hit <= 0 || _randomSequenceGenerator.Get() < targetedEnemy.GetDodge())
-                    _scenarioMessageService.Publish(_modelService.Player.RogueName + " Misses");
+                // Calculate hit - if enemy hit then queue Ammunition spell
+                var enemyHit = _interactionProcessor.CalculatePlayerRangeHit(_modelService.Player, targetedEnemy);
 
-                // Player Hits Targeted Enemy
-                else
-                {
-                    if (_randomSequenceGenerator.Get() < _modelService.Player.GetCriticalHitProbability())
-                    {
-                        _scenarioMessageService.Publish("You fire your " + rangeWeapon.RogueName + " for a critical hit!");
-                        targetedEnemy.Hp -= hit * 2;
-                    }
-                    else
-                    {
-                        _scenarioMessageService.Publish("You hit the " + targetedEnemy.RogueName + " using your " + rangeWeapon.RogueName);
-                        targetedEnemy.Hp -= hit;
-                    }
-
+                if (enemyHit)
                     return _spellEngine.QueuePlayerMagicSpell(ammo.AmmoSpell);
-                }
             }
             return LevelContinuationAction.ProcessTurn;
         }
@@ -570,7 +524,7 @@ namespace Rogue.NET.Core.Logic
                 {
 
                     skillSets.IsTurnedOn = false;
-                    _scenarioMessageService.Publish("Deactivating " + skillSets.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSets.RogueName);
 
                     // Pass-Through method is Safe to call
                     _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSets.GetCurrentSkill().Id);
@@ -583,7 +537,7 @@ namespace Rogue.NET.Core.Logic
                 skillSet.IsActive = !isActive || activate;
 
                 if (skillSet.IsActive)
-                    _scenarioMessageService.Publish("Activating " + skillSet.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Activating " + skillSet.RogueName);
             }
 
             // Queue update for all skill sets
@@ -618,7 +572,7 @@ namespace Rogue.NET.Core.Logic
             // No Active Skill Set
             if (activeSkillSet == null)
             {
-                _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
                 return LevelContinuationAction.DoNothing;
             }
 
@@ -626,7 +580,7 @@ namespace Rogue.NET.Core.Logic
             var currentSkill = activeSkillSet.GetCurrentSkill();
             if (currentSkill == null)
             {
-                _scenarioMessageService.Publish("No Active Skill - (See Skills Panel to Set)");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
                 return LevelContinuationAction.DoNothing;
             }
 
@@ -635,7 +589,7 @@ namespace Rogue.NET.Core.Logic
             // Requires Target
             if (_alterationProcessor.CalculateSpellRequiresTarget(currentSkill) && enemyTargeted == null)
             {
-                _scenarioMessageService.Publish(activeSkillSet.RogueName + " requires a targeted enemy");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, activeSkillSet.RogueName + " requires a targeted enemy");
                 return LevelContinuationAction.DoNothing;
             }
 
@@ -650,7 +604,7 @@ namespace Rogue.NET.Core.Logic
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)
                 {
-                    _scenarioMessageService.Publish("Deactivating - " + currentSkill.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + currentSkill.RogueName);
 
                     // Pass - through method is safe
                     _modelService.Player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
@@ -662,7 +616,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     activeSkillSet.IsTurnedOn = true;
 
-                    _scenarioMessageService.Publish("Invoking - " + currentSkill.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.RogueName);
 
                     // Queue processing -> Animation -> Process parameters (backend)
                     return  _spellEngine.QueuePlayerMagicSpell(currentSkill);
@@ -672,7 +626,7 @@ namespace Rogue.NET.Core.Logic
             else
             {
                 // Publish message
-                _scenarioMessageService.Publish("Invoking - " + currentSkill.RogueName);
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.RogueName);
 
                 // Queue processing -> Animation -> Process parameters (backend)
                 return _spellEngine.QueuePlayerMagicSpell(currentSkill);
@@ -686,7 +640,7 @@ namespace Rogue.NET.Core.Logic
             var doodad = _modelService.Level.GetAtPoint<DoodadBase>(player.Location);
             if (doodad == null)
             {
-                _scenarioMessageService.Publish("Nothing here to use! (Requires Scenario Object)");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing here to use! (Requires Scenario Object)");
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -705,10 +659,10 @@ namespace Rogue.NET.Core.Logic
                 case DoodadType.Magic:
                     {
                         if (doodad.IsOneUse && doodad.HasBeenUsed || !((DoodadMagic)doodad).IsInvoked)
-                            _scenarioMessageService.Publish("Nothing Happens");
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens");
                         else
                         {
-                            _scenarioMessageService.Publish("Using " + doodad.RogueName);
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + doodad.RogueName);
 
                             var doodadMagic = (DoodadMagic)doodad;
                             doodadMagic.HasBeenUsed = true;
