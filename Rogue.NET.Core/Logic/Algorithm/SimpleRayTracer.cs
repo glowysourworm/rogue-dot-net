@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
         [ImportingConstructor]
         public SimpleRayTracer() { }
 
-        public IEnumerable<CellPoint> GetVisibleLocations(LevelGrid grid, CellPoint location, int maxCellRadius)
+        public IEnumerable<CellPoint> CalculateVisibility(LevelGrid grid, CellPoint location, int lightRadius, out IEnumerable<CellPoint> lineOfSightLocations)
         {
             var result = new Dictionary<int, Cell>();
             var locationCell = grid.GetCell(location);
@@ -59,7 +59,6 @@ namespace Rogue.NET.Core.Logic.Algorithm
 
                 while (xIndex < verticalGridLines.Count() &&
                        yIndex < horizontalGridLines.Count() &&
-                       Math.Pow(xIndex, 2) + Math.Pow(yIndex, 2) < Math.Pow(maxCellRadius, 2) &&
                        !hitWall)
                 {
                     var nextVerticalX = verticalGridLines[xIndex] * ModelConstants.CellWidth;
@@ -75,7 +74,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                     {
                         // Pick the 2 involved cells - cell 2 is the one "advanced to" or the destination
                         var cellY1 = (angle < 180) ? horizontalGridLines[yIndex] - 1 : horizontalGridLines[yIndex];
-                        var cellY2 = (angle < 180) ? horizontalGridLines[yIndex] : horizontalGridLines[yIndex] - 1;                        
+                        var cellY2 = (angle < 180) ? horizontalGridLines[yIndex] : horizontalGridLines[yIndex] - 1;
                         var cellX = (int)Math.Floor(nextHorizontalX / ModelConstants.CellWidth); // truncate to get location
 
                         var cell1 = grid.GetCell(cellX, cellY1);
@@ -147,7 +146,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
 
                             if (angle < 90 || angle > 270) // cell2 is further East
                             {
-                                hitWall= (cell2.Walls & Compass.W) != 0 ||
+                                hitWall = (cell2.Walls & Compass.W) != 0 ||
                                           (cell2.Doors & Compass.W) != 0 ||
                                           (cell1.Walls & Compass.E) != 0 ||
                                           (cell1.Doors & Compass.E) != 0;
@@ -174,7 +173,20 @@ namespace Rogue.NET.Core.Logic.Algorithm
                 angle += 5;
             }
 
-            return result.Values.Select(x => x.Location);
+            // Calculate Line-Of-Sight / Visibility Radius
+            var visibleLocations = result.Values.Where(x =>
+            {
+                var deltaX = x.Location.Column - location.Column;
+                var deltaY = x.Location.Row - location.Row;
+
+                return Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2) < Math.Pow(lightRadius, 2);
+            })
+            .Select(x => x.Location)
+            .ToList();
+
+            lineOfSightLocations = result.Values.Select(x => x.Location).ToList();
+
+            return visibleLocations;
         }
         public PointF TransformToPhysicalLayout(CellPoint p)
         {

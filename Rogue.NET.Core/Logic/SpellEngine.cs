@@ -96,7 +96,7 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, spell.Cost))
                 return LevelContinuationAction.ProcessTurn;
 
-            //Run animations before applying effects
+            // Queue animations
             if (spell.Animations.Count > 0)
             {
                 AnimationUpdateEvent(this, new AnimationUpdate()
@@ -105,10 +105,8 @@ namespace Rogue.NET.Core.Logic
                     SourceLocation = enemy.Location,
                     TargetLocations = new CellPoint[] { _modelService.Player.Location }
                 });
-
-                return LevelContinuationAction.DoNothing;
             }
-            //No animations - just apply effects
+            // Then queue effect processing
             LevelProcessingActionEvent(this, new LevelProcessingAction()
             {
                 Type = LevelProcessingActionType.EnemySpell,

@@ -595,12 +595,15 @@ namespace Rogue.NET.Core.Logic
                         if (!enemy.IsConfused())
                         {
                             // Must have line of sight to player
-                            var isLineOfSight = _modelService.GetVisibleEnemies().Any(x => x.Id == enemy.Id);
+                            var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
 
                             // Queue Enemy Magic Spell -> Animation -> Post Animation Processing
-                            _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);
+                            if (isLineOfSight)
+                            {
+                                _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);
 
-                            actionTaken = true;
+                                actionTaken = true;
+                            }
                         }
                         break;
                     case CharacterAttackType.None:

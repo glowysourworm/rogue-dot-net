@@ -6,7 +6,17 @@ namespace Rogue.NET.Core.Logic.Algorithm.Interface
 {
     public interface IRayTracer
     {
-        IEnumerable<CellPoint> GetVisibleLocations(LevelGrid grid, CellPoint cell, int lightRadius);
-        Point Transform(CellPoint p);
+        /// <summary>
+        /// Calculates visibility from the vantage point of the input location. This is defined as two sets: The return value is
+        /// the set of locations that are within the lightRadius from the input location. The other set is the line-of-sight
+        /// collection of locations that are directly vantaged from the input location; but are NOT within the light radius of
+        /// that location. 
+        /// </summary>
+        /// <param name="grid">The level grid</param>
+        /// <param name="location">The input location</param>
+        /// <param name="lightRadius">The input location light radius</param>
+        /// <param name="lineOfSightLocations">The output set of line-of-sight locations</param>
+        /// <returns></returns>
+        IEnumerable<CellPoint> CalculateVisibility(LevelGrid grid, CellPoint location, int lightRadius, out IEnumerable<CellPoint> lineOfSightLocations);
     }
 }

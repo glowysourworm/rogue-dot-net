@@ -26,14 +26,14 @@ namespace Rogue.NET.Core.Service
         readonly IRayTracer _rayTracer;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
+        // Line of sight collection calculated each time player moves. This is used for enemy calculations.
+        IEnumerable<CellPoint> _lineOfSightLocations;
+
         // Explored location collection calculated each time the player moves; and kept up to date
         IEnumerable<CellPoint> _exploredLocations;
 
         // Visible location collection calculated each time the player moves
         IEnumerable<CellPoint> _visibleLocations;
-
-        // Effected locations between player moves (required for processing on the UI)
-        IEnumerable<CellPoint> _effectedLocations;
 
         // Revealed locations calculated on player move
         IEnumerable<CellPoint> _revealedLocations;
@@ -50,9 +50,10 @@ namespace Rogue.NET.Core.Service
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
 
+            _lineOfSightLocations = new List<CellPoint>();
             _exploredLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
-            _effectedLocations = new List<CellPoint>();
+            _revealedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
         }
 
@@ -99,8 +100,8 @@ namespace Rogue.NET.Core.Service
             this.ScenarioEncyclopedia = null;
 
             _exploredLocations = new List<CellPoint>();
+            _lineOfSightLocations = new List<CellPoint>();
             _visibleLocations = new List<CellPoint>();
-            _effectedLocations = new List<CellPoint>();
             _revealedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
         }
@@ -153,6 +154,10 @@ namespace Rogue.NET.Core.Service
         {
             return _exploredLocations;
         }
+        public IEnumerable<CellPoint> GetLineOfSightLocations()
+        {
+            return _lineOfSightLocations;
+        }
         public IEnumerable<CellPoint> GetRevealedLocations()
         {
             return _revealedLocations;
@@ -165,32 +170,37 @@ namespace Rogue.NET.Core.Service
         }
         public void UpdateContents()
         {
-            foreach (var location in _effectedLocations)
+            foreach (var scenarioObject in this.Level.GetContents())
             {
-                var scenarioObject = this.Level.GetAtPoint<ScenarioObject>(location);
+                var cell = this.Level.Grid.GetCell(scenarioObject.Location);
 
-                if (scenarioObject != null)
-                {
-                    var cell = this.Level.Grid.GetCell(location);
+                scenarioObject.IsExplored = cell.IsPhysicallyVisible;
+                scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible;
 
-                    scenarioObject.IsExplored = cell.IsPhysicallyVisible;
-                    scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible;
-
-                    // Set this based on whether the cell is physically visible. Once the cell is seen
-                    // the IsRevealed flag gets reset. So, if it's set and the cell isn't visible then
-                    // don't reset it just yet.
-                    scenarioObject.IsRevealed = scenarioObject.IsRevealed && !cell.IsPhysicallyVisible;
-                }
+                // Set this based on whether the cell is physically visible. Once the cell is seen
+                // the IsRevealed flag gets reset. So, if it's set and the cell isn't visible then
+                // don't reset it just yet.
+                scenarioObject.IsRevealed = scenarioObject.IsRevealed && !cell.IsPhysicallyVisible;
             }
         }
         public void UpdateVisibleLocations()
         {
             var lightRadius = this.Player.GetAuraRadius();
 
-            // If blind - no visible locations
-            var visibleLocations = this.Player.Alteration.GetStates().Any(z => z == CharacterStateType.Blind) ?
-                                   this.Level.Grid.GetAdjacentLocations(this.Player.Location) : 
-                                   _rayTracer.GetVisibleLocations(this.Level.Grid, this.Player.Location, (int)lightRadius);
+            // Perform Visibility Calculation - if player is blind then use light radius of 1.
+            IEnumerable<CellPoint> lineOfSightLocations = null;
+            IEnumerable<CellPoint> visibleLocations = 
+                _rayTracer.CalculateVisibility(
+                    this.Level.Grid, 
+                    this.Player.Location, 
+                    this.Player.IsBlind() ? 1 : (int)lightRadius, 
+                    out lineOfSightLocations);
+
+            // Reset flag for line of sight locations
+            foreach (var cell in _lineOfSightLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
+            {
+                cell.IsLineOfSight = false;
+            }
 
             // Reset flag for currently visible locations
             foreach (var cell in _visibleLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
@@ -208,11 +218,17 @@ namespace Rogue.NET.Core.Service
                 cell.IsRevealed = false;
             }
 
-            // Update all effected cell locations
-            _effectedLocations = visibleLocations.Union(_visibleLocations).Distinct();
+            // Set flags for newly calculated line of sight locations
+            foreach (var cell in lineOfSightLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
+            {
+                cell.IsLineOfSight = true;
+            }
 
             // Update visible cell locations
             _visibleLocations = visibleLocations;
+
+            // Update line of sight locations
+            _lineOfSightLocations = lineOfSightLocations;
 
             // Update Explored locations
             _exploredLocations = this.Level

@@ -8,7 +8,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     {
         public bool IsExplored { get; set; }
         public bool IsRevealed { get; set; }
+
+        /// <summary>
+        /// Set to "True" if Cell is also marked "IsLineOfSight"; and it's within the light radius of the
+        /// Player. 
+        /// </summary>
         public bool IsPhysicallyVisible { get; set; }
+
+        /// <summary>
+        /// Set to "True" if Cell is directly in the path from a ray originating from the Player. It will not be
+        /// visible unless it's within the player's light radius. (Or, TBD - the light radius of another Doodad.. or potentially
+        /// another character)
+        /// </summary>
+        public bool IsLineOfSight { get; set; }
         public bool IsDoor
         {
             get { return this.Doors != Compass.Null; }

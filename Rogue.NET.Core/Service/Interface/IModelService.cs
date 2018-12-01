@@ -60,6 +60,11 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<CellPoint> GetVisibleLocations();
 
         /// <summary>
+        /// Statefully maintained collection of locations in the Player's line of sight
+        /// </summary>
+        IEnumerable<CellPoint> GetLineOfSightLocations();
+
+        /// <summary>
         /// Statefully maintained collection of locations that player has explored
         /// </summary>
         IEnumerable<CellPoint> GetExploredLocations();
