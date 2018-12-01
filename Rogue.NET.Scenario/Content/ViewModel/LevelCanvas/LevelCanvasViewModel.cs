@@ -186,7 +186,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     DrawContent();
                     break;
                 case LevelUpdateType.ContentMove:
-                    foreach (var contentId in levelUpdate.ContentIds)
+                    foreach (var contentId in levelUpdate.ContentIds.Where(x => _contentDict.ContainsKey(x)))
                         UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
                         break;
                 case LevelUpdateType.LayoutAll:
@@ -204,6 +204,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.PlayerLocation:
+                    if (!_contentDict.ContainsKey(_modelService.Player.Id))
+                        throw new Exception("Level Canvas View Model doens't contain player Id");
+
                     UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
                     UpdateLayoutVisibility();
                     break;
@@ -557,7 +560,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         // Updates an entry in the dictionary along with the observable collection
         private void UpdateOrAddContent(string key, FrameworkElement newElement)
         {
-            if (_contentDict.Any(x => x.Key == key))
+            // Do a search for the key first - (performance hit; but a safe removal)
+            if (_contentDict.ContainsKey(key))
             {
                 var existingElement = _contentDict[key];
 
@@ -576,7 +580,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         // Removes an entry from the dictionary
         private void RemoveContent(string key)
         {
-            if (_contentDict.Any(x => x.Key == key))
+            // Do a search for the key first - (performance hit; but a safe removal)
+            if (_contentDict.ContainsKey(key))
             {
                 var content = _contentDict[key];
 
@@ -584,7 +589,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 this.Contents.Remove(content);
             }
 
-            if (_contentDict.Any(x => x.Key == key + AURA_EXT))
+            if (_contentDict.ContainsKey(key + AURA_EXT))
             {
                 var contentAura = _contentDict[key + AURA_EXT];
 
@@ -609,26 +614,28 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             //Create animations
             var animations = animationData.Animations.Select(x =>
             {
-                return _animationGenerator.CreateAnimation(x, bounds, source, targets);
+                return new { AnimationGroup = _animationGenerator.CreateAnimation(x, bounds, source, targets), AnimationTemplate = x };
             });
 
             foreach (var animation in animations)
             {
                 // Start
-                foreach (var graphic in animation.GetGraphics())
+                foreach (var graphic in animation.AnimationGroup.GetGraphics())
                 {
                     Canvas.SetZIndex(graphic, 100);
                     this.Contents.Add(graphic);
                 }
 
-                animation.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
-                animation.Start();
+                animation.AnimationGroup.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
+                animation.AnimationGroup.Start();
+
+                // Wait for completion
+                var waitTime = animation.AnimationTemplate.AnimationTime *
+                               animation.AnimationTemplate.RepeatCount * 
+                              (animation.AnimationTemplate.AutoReverse ? 2 : 1);
+
+                await Task.Delay(waitTime);
             }
-
-            // Wait for completion
-            var waitTime = animationData.Animations.Sum(x => x.AnimationTime * x.RepeatCount * (x.AutoReverse ? 2 : 1));
-
-            await Task.Delay(waitTime);
         }
         private void OnAnimationTimerElapsed(ITimedGraphic sender)
         {
