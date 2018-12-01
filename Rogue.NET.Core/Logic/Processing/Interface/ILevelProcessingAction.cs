@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
@@ -17,5 +18,9 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
 
         // Animation Processing Related
         Spell PlayerSpell { get; set; }
+
+        Spell EnemySpell { get; set; }
+
+        Enemy Enemy { get; set; }
     }
 }

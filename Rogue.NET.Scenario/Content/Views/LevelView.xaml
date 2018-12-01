@@ -16,7 +16,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="350" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -132,6 +132,7 @@
                         Grid.Column="2"
                         Grid.Row="1"
                         Margin="8"
+                        Background="#AF000000"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch" 

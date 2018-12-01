@@ -13,25 +13,15 @@
     </UserControl.Resources>
     <Border BorderBrush="#AFFFFFFF" Background="Transparent" BorderThickness="1" CornerRadius="3">
         <Grid>
-            <ItemsControl ItemTemplateSelector="{StaticResource ScenarioMessageItemTemplateSelector}"
-                          ItemsSource="{Binding ScenarioMessages}"
-                          Background="Transparent">
-                <!--ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Style.Setters>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <Border Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style.Setters>
-                    </Style>
-                </-->
-            </ItemsControl>
+            <ListBox Template="{StaticResource ScenarioMessageListBoxTemplate}"
+                     ItemTemplateSelector="{StaticResource ScenarioMessageItemTemplateSelector}"
+                     ItemContainerStyle="{StaticResource ScenarioMessageItemContainerStyle}"
+                     ItemsSource="{Binding ScenarioMessages}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                     ScrollViewer.CanContentScroll="False"
+                     Background="Transparent">
+            </ListBox>
         </Grid>
     </Border>
 </UserControl>

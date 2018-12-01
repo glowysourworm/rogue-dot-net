@@ -24,6 +24,11 @@ namespace Rogue.NET.Core.Model.ScenarioMessage
         Bad,
 
         /// <summary>
+        /// Message that something unique has happened - or a unique item or enemy has been encountered
+        /// </summary>
+        Unique,
+
+        /// <summary>
         /// Message that the player has acheived an objective (VERY GOOD)
         /// </summary>
         Objective

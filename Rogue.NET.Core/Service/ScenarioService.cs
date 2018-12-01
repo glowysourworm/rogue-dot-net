@@ -370,6 +370,9 @@ namespace Rogue.NET.Core.Service
                 case LevelProcessingActionType.PlayerSpell:
                     _spellEngine.ProcessPlayerMagicSpell(workItem.PlayerSpell);
                     break;
+                case LevelProcessingActionType.EnemySpell:
+                    _spellEngine.ProcessEnemyMagicSpell(workItem.Enemy, workItem.EnemySpell);
+                    break;
             }
             return true;
         }

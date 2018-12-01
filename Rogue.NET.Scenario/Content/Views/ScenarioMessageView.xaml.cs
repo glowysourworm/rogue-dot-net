@@ -133,7 +133,9 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             var viewModel = new ScenarioPlayerAdvancementMessageViewModel()
             {
-                Priority = message.Priority
+                Priority = message.Priority,
+                PlayerLevel = message.PlayerLevel,
+                PlayerName = message.PlayerName
             };
             viewModel.AttributeChanges.AddRange(message.AttributeChanges.Select(x => new AttributeChangeViewModel()
             {

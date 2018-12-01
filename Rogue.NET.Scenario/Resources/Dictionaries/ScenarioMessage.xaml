@@ -19,12 +19,18 @@
         <Style.Triggers>
             <DataTrigger Binding="{Binding Priority}" Value="Good">
                 <DataTrigger.Setters>
-                    <Setter Property="Foreground" Value="YellowGreen" />
+                    <Setter Property="Foreground" Value="GreenYellow" />
                 </DataTrigger.Setters>
             </DataTrigger>
             <DataTrigger Binding="{Binding Priority}" Value="Bad">
                 <DataTrigger.Setters>
                     <Setter Property="Foreground" Value="Red" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Priority}" Value="Unique">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="Goldenrod" />
+                    <Setter Property="FontStyle" Value="Italic" />
                 </DataTrigger.Setters>
             </DataTrigger>
             <DataTrigger Binding="{Binding Priority}" Value="Objective">
@@ -33,6 +39,32 @@
                     <Setter Property="FontStyle" Value="Italic" />
                 </DataTrigger.Setters>
             </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <ControlTemplate x:Key="ScenarioMessageListBoxTemplate" TargetType="{x:Type ListBox}">
+        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}" 
+                            Padding="1" 
+                            SnapsToDevicePixels="true">
+            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}">
+                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+            </ScrollViewer>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="ScenarioMessageItemContainerStyle" TargetType="ListBoxItem">
+        <Style.Setters>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="ToolTip" Value="{Binding Content}" />
+        </Style.Setters>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Background" Value="DarkSlateBlue" />
+                </Trigger.Setters>
+            </Trigger>
         </Style.Triggers>
     </Style>
 
@@ -135,8 +167,19 @@
                 <Run Text=" has attacked " />
                 <Run Text="{Binding ActeeDisplayName}" />
                 <Run Text=" for a critical hit! HP = " />
-                <Run Text="{Binding BaseHit}" />
+                <Run Text="{Binding BaseHit, StringFormat=F1}" />
             </TextBlock>
+
+            <!-- Base Hit -->
+            <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
+                       Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <Run Text="{Binding ActorDisplayName}" />
+                <Run Text=" has attacked " />
+                <Run Text="{Binding ActeeDisplayName}" />
+                <Run Text=" for HP = " />
+                <Run Text="{Binding BaseHit, StringFormat=F1}" />
+            </TextBlock>
+
             <!-- Attack Attributes -->
             <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
             <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"

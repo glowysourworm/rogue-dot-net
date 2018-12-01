@@ -109,12 +109,14 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
             //No animations - just apply effects
-            else
+            LevelProcessingActionEvent(this, new LevelProcessingAction()
             {
-                ProcessEnemyMagicSpell(enemy, spell);
+                Type = LevelProcessingActionType.EnemySpell,
+                EnemySpell = spell,
+                Enemy = enemy
+            });
 
-                return LevelContinuationAction.ProcessTurn;
-            }
+            return LevelContinuationAction.ProcessTurn;
         }
         public void ProcessPlayerMagicSpell(Spell spell)
         {

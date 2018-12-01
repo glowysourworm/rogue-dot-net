@@ -13,6 +13,11 @@
         PlayerSpell,
 
         /// <summary>
+        /// Process Enemy Magic spell (happens after enemy reaction)
+        /// </summary>
+        EnemySpell,
+
+        /// <summary>
         /// Primary End-Of-Turn for Scenario. { Player End-Of-Turn, Content End-Of-Turn }
         /// </summary>
         EndOfTurn,
