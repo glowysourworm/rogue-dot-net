@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,6 @@ namespace Rogue.NET.Core.Model.ScenarioMessage.Message
         public bool IsCriticalHit { get; set; }
         public bool AnyAttackAttributes { get; set; }
 
-        public IDictionary<string, double> AttackAttributeHit { get; set; }
+        public IDictionary<AttackAttribute, double> AttackAttributeHit { get; set; }
     }
 }

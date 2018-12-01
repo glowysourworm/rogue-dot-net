@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Class="Rogue.NET.Scenario.Views.StatusCtrl"
-    Background="Black"
+    Background="Transparent"
     Height="Auto" mc:Ignorable="d" Width="250">
 	<UserControl.Resources>
         <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml">
@@ -344,7 +344,7 @@
             </Grid.RowDefinitions>
             <Grid Margin="0,0,8,8">
                 <coreView:Smiley x:Name="smileyCtrl" 
-                                 Margin="8,0,8,8" 
+                                 Margin="0,0,8,8" 
                                  SmileyMood="{Binding SmileyMood}"  
                                  SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}" 
                                  SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}" 
@@ -362,15 +362,15 @@
                     <TextBlock Width="Auto" Height="Auto" Text="Mood:  Happy" TextWrapping="Wrap" Foreground="#FFFFE56E" Margin="8,8,0,0" FontFamily="Century" FontSize="14"/>
                 </StackPanel>
             </Grid>
-            <commonView:ProgressBar Grid.Row="2" BarColor1="Red" ValueMax="{Binding HpMax}" Value="{Binding Hp}" Margin="8,2" x:Name="HPBar" VerticalAlignment="Stretch" Height="16" ValueTextBrush="#FFFFFFAA" Value2="{Binding Hp}"/>
-            <commonView:ProgressBar Grid.Row="3" BarColor1="Blue" ValueMax="{Binding MpMax}" Value="{Binding Mp}" Margin="8,2" x:Name="MPBar" VerticalAlignment="Stretch" Height="16"  Header="MP" ValueTextBrush="#FFCCCCFF" Value2="{Binding Mp}"/>
-            <commonView:ProgressBar Grid.Row="4" BarColor1="DarkGreen" ValueMax="100" Value="{Binding Hunger}" Margin="8,2" x:Name="HungerBar" VerticalAlignment="Stretch" Height="16" Header="Hunger" ValueTextBrush="#FF9AFFA0" Value2="{Binding Hunger}"/>
-            <commonView:ProgressBar Grid.Row="5" BarColor1="Cyan" ValueMax="{Binding ExperienceNext}" Value="{Binding Experience}" Margin="8,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Height="16"  Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Experience}"/>
-            <commonView:ProgressBar Grid.Row="6" BarColor1="Goldenrod" ValueMax="{Binding HaulMax}" Value="{Binding Haul}" Margin="8,2,8,2" x:Name="HaulBar" VerticalAlignment="Stretch"  Height="16" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Haul}"/>
+            <commonView:ProgressBar Grid.Row="2" BarColor1="Red" ValueMax="{Binding HpMax}" Value="{Binding Hp}" Margin="0,2" x:Name="HPBar" VerticalAlignment="Stretch" Height="16" ValueTextBrush="#FFFFFFAA" Value2="{Binding Hp}"/>
+            <commonView:ProgressBar Grid.Row="3" BarColor1="Blue" ValueMax="{Binding MpMax}" Value="{Binding Mp}" Margin="0,2" x:Name="MPBar" VerticalAlignment="Stretch" Height="16"  Header="MP" ValueTextBrush="#FFCCCCFF" Value2="{Binding Mp}"/>
+            <commonView:ProgressBar Grid.Row="4" BarColor1="DarkGreen" ValueMax="100" Value="{Binding Hunger}" Margin="0,2" x:Name="HungerBar" VerticalAlignment="Stretch" Height="16" Header="Hunger" ValueTextBrush="#FF9AFFA0" Value2="{Binding Hunger}"/>
+            <commonView:ProgressBar Grid.Row="5" BarColor1="Cyan" ValueMax="{Binding ExperienceNext}" Value="{Binding Experience}" Margin="0,2" x:Name="ExperienceBar" VerticalAlignment="Stretch" Height="16"  Header="Exp" ValueTextBrush="#FF00838E" Value2="{Binding Experience}"/>
+            <commonView:ProgressBar Grid.Row="6" BarColor1="Goldenrod" ValueMax="{Binding HaulMax}" Value="{Binding Haul}" Margin="0,2" x:Name="HaulBar" VerticalAlignment="Stretch"  Height="16" Header="Haul" ValueTextBrush="#FF9E6300" Value2="{Binding Haul}"/>
             <Grid x:Name="ActiveSkillGrid" 
                   Visibility="{Binding ActiveSkillSet, Converter={StaticResource NonNullVisibilityConverter}}" 
                   VerticalAlignment="Top"
-                  Grid.Row="7" Margin="8,2">
+                  Grid.Row="7" Margin="0,2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition/>

@@ -1,0 +1,204 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="ScenarioMessageTextBlockStyle" TargetType="TextBlock">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="Beige" />
+            <Setter Property="FontSize" Value="14" />
+        </Style.Setters>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Priority}" Value="Good">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="YellowGreen" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Priority}" Value="Bad">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="Red" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Priority}" Value="Objective">
+                <DataTrigger.Setters>
+                    <Setter Property="Foreground" Value="Cyan" />
+                    <Setter Property="FontStyle" Value="Italic" />
+                </DataTrigger.Setters>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate x:Key="AttackAttributeHitDataTemplate">
+        <StackPanel Orientation="Horizontal" Margin="2, 0, 0, 0">
+            <TextBlock Text="{Binding Hit, StringFormat=F1}" Style="{StaticResource ScenarioMessageTextBlockStyle}" />
+            <Image Margin="2,0,0,0" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                        <Binding Path="CharacterColor" />
+                        <Binding Path="CharacterSymbol" />
+                        <Binding Path="Icon" />
+                        <Binding Path="SmileyMood" />
+                        <Binding Path="SmileyAuraColor" />
+                        <Binding Path="SmileyBodyColor" />
+                        <Binding Path="SmileyLineColor" />
+                        <Binding Path="SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="AlterationMessageDataTemplate">
+        <StackPanel Orientation="Horizontal">
+
+            <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <TextBlock>
+                    <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                        <Binding Path="IsCausedByAttackAttributes" Converter="{StaticResource BoolInverseConverter}" />
+                        <Binding Path="Effect" Converter="{StaticResource GreaterThanZeroConverter}" />
+                    </MultiBinding>
+                </TextBlock>
+                <Run Text="{Binding AlterationDisplayName}" />
+                <Run Text=" has caused a " />
+                <Run Text=" gain of " />
+                <Run Text="{Binding Effect}" />
+                <Run Text=" " />
+                <Run Text="{Binding EffectedAttributeName}" />
+            </TextBlock>
+
+            <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <TextBlock>
+                    <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                        <Binding Path="IsCausedByAttackAttributes" Converter="{StaticResource BoolInverseConverter}" />
+                        <Binding Path="Effect" Converter="{StaticResource LessThanZeroConverter}" />
+                    </MultiBinding>
+                </TextBlock>
+                <Run Text="{Binding AlterationDisplayName}" />
+                <Run Text=" has caused a " />
+                <Run Text=" loss of " />
+                <Run Text="{Binding Effect}" />
+                <Run Text=" " />
+                <Run Text="{Binding EffectedAttributeName}" />
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal" Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                    <Run Text="{Binding AlterationDisplayName}" />
+                    <Run Text=" has caused a loss of HP = " />
+                </TextBlock>
+                <ItemsControl 
+                        ItemsSource="{Binding AttackAttributeHits}"
+                        ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        Width="Auto"
+                        Height="Auto">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+            
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="EnemyAlterationMessageDataTemplate">
+        <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+            <Run Text="{Binding EnemyDisplayName}" />
+            <Run Text=" has used " />
+            <Run Text="{Binding AlterationDisplayName}" />
+            <Run Text=" on " />
+            <Run Text="{Binding PlayerName}" />
+        </TextBlock>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MeleeMessageDataTemplate">
+
+        <StackPanel Orientation="Horizontal" Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <!-- Critical Hit -->
+            <!-- Base Hit -->
+            <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                       Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <Run Text="{Binding ActorDisplayName}" />
+                <Run Text=" has attacked " />
+                <Run Text="{Binding ActeeDisplayName}" />
+                <Run Text=" for a critical hit! HP = " />
+                <Run Text="{Binding BaseHit}" />
+            </TextBlock>
+            <!-- Attack Attributes -->
+            <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+            <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                            ItemsSource="{Binding AttackAttributeHits}"
+                            ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Stretch"
+                            Width="Auto"
+                            Height="Auto">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </StackPanel>
+        
+    </DataTemplate>
+    
+    <DataTemplate x:Key="NormalMessageDataTemplate">
+        <TextBlock Text="{Binding Message}"  Style="{StaticResource ScenarioMessageTextBlockStyle}" />
+    </DataTemplate>
+    
+    <DataTemplate x:Key="PlayerAdvancementMessageDataTemplate">
+        <StackPanel>
+            <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <Run Text="{Binding PlayerName}" />
+                <Run Text=" has reached level " />
+                <Run Text="{Binding PlayerLevel}" />
+                <Run Text="!" />
+            </TextBlock>
+
+            <ItemsControl ItemsSource="{Binding AttributeChanges}"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Stretch"
+                          Width="Auto"
+                          Height="Auto">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                            <Run Text="{Binding AttributeName}" Foreground="{Binding Color, Converter={StaticResource ColorBrushConverter}}" />
+                            <Run Text=" has changed by " />
+                            <Run Text="{Binding Change, StringFormat=F2}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="SkillAdvancementMessageDataTemplate">
+        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+            <Run Text="{Binding SkillDisplayName}" />
+            <Run Text=" has reached Level " />
+            <Run Text="{Binding SkillLevel}" />
+        </TextBlock>
+    </DataTemplate>
+</ResourceDictionary>
+                    

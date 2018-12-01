@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,6 @@ namespace Rogue.NET.Core.Model.ScenarioMessage.Message
         /// <summary>
         /// Calculated attack-attribute effect
         /// </summary>
-        public IDictionary<string, double> AttackAttributeEffect { get; set; }
+        public IDictionary<AttackAttribute, double> AttackAttributeEffect { get; set; }
     }
 }

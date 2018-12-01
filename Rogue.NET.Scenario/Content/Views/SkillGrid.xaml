@@ -6,8 +6,7 @@
              xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
-             Margin="8">
+             xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

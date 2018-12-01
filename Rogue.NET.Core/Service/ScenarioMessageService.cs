@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.ScenarioMessage.Message;
 using Rogue.NET.Core.Service.Interface;
@@ -6,6 +7,7 @@ using Rogue.NET.Model.Events;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Service
 {
@@ -43,7 +45,7 @@ namespace Rogue.NET.Core.Service
                 string effectedAttributeName, 
                 double effect, 
                 bool isCausedByAttackAttributes = false, 
-                IDictionary<string, double> attackAttributeEffect = null)
+                IDictionary<AttackAttribute, double> attackAttributeEffect = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new AlterationMessage(priority)
             {
@@ -55,10 +57,11 @@ namespace Rogue.NET.Core.Service
             });
         }
 
-        public void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string enemyDisplayName, string alterationDisplayName)
+        public void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string playerName, string enemyDisplayName, string alterationDisplayName)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new EnemyAlterationMessage(priority)
             {
+                PlayerName = playerName,
                 AlterationDisplayName = alterationDisplayName,
                 EnemyDisplayName = enemyDisplayName                
             });
@@ -71,7 +74,7 @@ namespace Rogue.NET.Core.Service
                 double baseHit, 
                 bool isCriticalHit, 
                 bool anyAttackAttributes = false, 
-                IDictionary<string, double> attackAttributeHits = null)
+                IDictionary<AttackAttribute, double> attackAttributeHits = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new MeleeMessage(priority)
             {
@@ -84,10 +87,12 @@ namespace Rogue.NET.Core.Service
             });
         }
 
-        public void PublishPlayerAdvancement(ScenarioMessagePriority priority, IDictionary<string, double> attributesChanged)
+        public void PublishPlayerAdvancement(ScenarioMessagePriority priority, string playerName, int playerLevel, IList<Tuple<string, double, Color>> attributesChanged)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new PlayerAdvancementMessage(priority)
             {
+                PlayerName = playerName,
+                PlayerLevel = playerLevel,
                 AttributeChanges = attributesChanged
             });
         }

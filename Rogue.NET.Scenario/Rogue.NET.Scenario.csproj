@@ -191,6 +191,7 @@
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\ItemTemplateSelector\ScenarioMessageItemTemplateSelector.cs" />
     <Compile Include="Content\Views\LevelCanvas.xaml.cs">
       <DependentUpon>LevelCanvas.xaml</DependentUpon>
     </Compile>
@@ -199,6 +200,9 @@
     </Compile>
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\ScenarioMessageView.xaml.cs">
+      <DependentUpon>ScenarioMessageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controller\Interface\IFrontEndController.cs" />
     <Compile Include="Controller\Interface\IGameController.cs" />
@@ -303,6 +307,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Content\Views\ScenarioMessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Intro\Views\GameSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -335,6 +343,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\Dictionaries\ScenarioMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="Resources\Dictionaries\EllipsePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -360,11 +372,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Dictionaries\ScenarioEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Dictionaries\Shop.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

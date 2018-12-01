@@ -8,6 +8,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Message
 {
     public class ScenarioEnemyAlterationMessageViewModel : ScenarioMessageViewModel
     {
+        string _playerName;
         string _enemyDisplayName;
         string _alterationDisplayName;
 
@@ -16,6 +17,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Message
             get { return _enemyDisplayName; }
             set { this.RaiseAndSetIfChanged(ref _enemyDisplayName, value); }
         }
+
+        public string PlayerName
+        {
+            get { return _playerName; }
+            set { this.RaiseAndSetIfChanged(ref _playerName, value); }
+        }
+
         public string AlterationDisplayName
         {
             get { return _alterationDisplayName; }

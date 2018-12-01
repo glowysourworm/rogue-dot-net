@@ -198,6 +198,14 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 result.Add(new AttackAttribute()
                 {
                     RogueName = baseAttribute.RogueName,
+                    CharacterColor = baseAttribute.CharacterColor,
+                    CharacterSymbol = baseAttribute.CharacterSymbol,
+                    Icon = baseAttribute.Icon,
+                    SmileyAuraColor = baseAttribute.SmileyAuraColor,
+                    SmileyBodyColor = baseAttribute.SmileyBodyColor,
+                    SmileyLineColor = baseAttribute.SmileyLineColor,
+                    SmileyMood = baseAttribute.SmileyMood,
+                    SymbolType = baseAttribute.SymbolType,
                     Resistance = 0,
                     Weakness = 0,
                     Attack = 0

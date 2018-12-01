@@ -21,6 +21,11 @@ namespace Rogue.NET.Core.Model.ScenarioMessage.Message
         public string EnemyDisplayName { get; set; }
 
         /// <summary>
+        /// Player RogueName
+        /// </summary>
+        public string PlayerName { get; set; }
+
+        /// <summary>
         /// Display name of the alteration effect cast on the player
         /// </summary>
         public string AlterationDisplayName { get; set; }

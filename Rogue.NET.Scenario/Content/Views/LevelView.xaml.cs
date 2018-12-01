@@ -13,9 +13,13 @@ namespace Rogue.NET.Scenario.Views
     [Export]
     public partial class LevelView : UserControl
     {
+        readonly IEventAggregator _eventAggregator;
+
         [ImportingConstructor]
         public LevelView(GameViewModel viewModel, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
             this.DataContext = viewModel;
 
             InitializeComponent();
@@ -28,5 +32,35 @@ namespace Rogue.NET.Scenario.Views
                 });
             };
         }
-   }
+
+        private void CenterButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void UpButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void DownButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void LeftButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void RightButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void CollapseButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+    }
 }

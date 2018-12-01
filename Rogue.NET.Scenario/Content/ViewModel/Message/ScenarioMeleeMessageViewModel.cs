@@ -37,5 +37,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Message
         }
 
         public ObservableCollection<AttackAttributeHitViewModel> AttackAttributeHits { get; set; }
+
+        public ScenarioMeleeMessageViewModel()
+        {
+            this.AttackAttributeHits = new ObservableCollection<AttackAttributeHitViewModel>();
+        }
     }
 }

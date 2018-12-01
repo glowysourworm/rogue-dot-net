@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://www.codeplex.com/prism"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-             Background="Black" Width="250">
+             Background="Transparent" Width="250">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

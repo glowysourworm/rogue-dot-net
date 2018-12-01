@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.ScenarioMessage.Message
 {
@@ -12,9 +10,13 @@ namespace Rogue.NET.Core.Model.ScenarioMessage.Message
         {
         }
 
+        public string PlayerName { get; set; }
+
+        public int PlayerLevel { get; set; }
+
         /// <summary>
         /// Set of changes to player attributes (Example: HPMax, 0.5)
         /// </summary>
-        public IDictionary<string, double> AttributeChanges { get; set; }
+        public IList<Tuple<string, double, Color>> AttributeChanges { get; set; }
     }
 }

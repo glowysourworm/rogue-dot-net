@@ -165,6 +165,7 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("PlayerSubpanelSkillsRegion", typeof(SkillGrid));
             _regionManager.RegisterViewWithRegion("PlayerSubpanelStatsRegion", typeof(StatsControl));
             _regionManager.RegisterViewWithRegion("StatusCtrlRegion", typeof(StatusCtrl));
+            _regionManager.RegisterViewWithRegion("ScenarioMessageRegion", typeof(ScenarioMessageView));
         }
     }
 }

@@ -14,9 +14,12 @@
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
     <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />
+    <converter:ColorBrushConverter x:Key="ColorBrushConverter" />
     <converter:DualBoolVisibilityCollapsedConverter x:Key="DualBoolVisibilityCollapsedConverter" />
     <converter:NonNullVisibilityConverter x:Key="NonNullVisibilityConverter" />
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
+    <converter:LessThanZeroConverter x:Key="LessThanZeroConverter" />
+    <converter:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
     <converter:ParameterEqualityBoolConverter x:Key="ParameterEqualityBoolConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityVisibleConverter x:Key="ParameterVisibilityVisibleConverter" />
@@ -24,6 +27,7 @@
     <converter:ScenarioImageElementConverter x:Key="ScenarioImageElementConverter" />
     <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
+    <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
     <converterItemGrid:ItemGridFontStyleConverter x:Key="ItemGridFontStyleConverter" />

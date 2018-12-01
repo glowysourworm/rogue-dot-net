@@ -1,13 +1,11 @@
 ﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
              x:Class="Rogue.NET.Scenario.Views.StatsControl" 
-             mc:Ignorable="d" Margin="8" BorderBrush="Black"
-             d:DesignHeight="349" d:DesignWidth="300">
+             BorderBrush="Transparent">
     <UserControl.Resources>
         <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
             <Setter Property="Foreground" Value="White" />
@@ -56,7 +54,7 @@
     	</DataTemplate>
     	<DataTemplate x:Key="ProgressBarTemplate">
     		<Grid>
-    			<common:ProgressBar Margin="0,0,-0.001,-0.001" d:LayoutOverrides="Width" 
+    			<common:ProgressBar Margin="0,0,-0.001,-0.001" 
                                             BarColor1="{Binding DataContext.CalculatedColor}" 
                                             TextFormat="F2" 
                                             Value="{Binding DataContext.TheValue}" 
@@ -116,17 +114,17 @@
     		<RowDefinition Height="*"/>
     		<RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
-        <common:ProgressBar x:Name="Strength" d:LayoutOverrides="Width" BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
-        <common:ProgressBar x:Name="Agility" d:LayoutOverrides="Width" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
-        <common:ProgressBar x:Name="Intelligence" d:LayoutOverrides="Width" Grid.Row="2" Header="Intelligence" BarColor1="#FF350097" Value="{Binding IntelligenceBase}" ValueMax="100" TextFormat="F2" Margin="0,2,0,2" ValueTextBrush="#FFC1BFFF" Value2="{Binding Intelligence}"/>
-        <common:ProgressBar x:Name="HpRegen" d:LayoutOverrides="Width" Grid.Row="3" BarColor1="#FD830000" Value="{Binding HpRegenBase}" TextFormat="F2" Header="Hp Regen" ValueMax="10" Margin="0,2,0,2" ValueTextBrush="#FFFFB8B8" Value2="{Binding HpRegen}"/>
-        <common:ProgressBar x:Name="MpRegen" d:LayoutOverrides="Width" Grid.Row="4" BarColor1="#FF00007C" TextFormat="F2" ValueMax="10" Value="{Binding MpRegenBase}" Header="Mp Regen" Margin="0,2,0,2" ValueTextBrush="#FFBDB4FF" Value2="{Binding MpRegen}"/>
-        <common:ProgressBar x:Name="FoodUsage" d:LayoutOverrides="Width" Grid.Row="5" BarColor1="#FF5C4800" TextFormat="F3" Value="{Binding FoodUsagePerTurnBase}" ValueMax="5" Header="Food Usage" Margin="0,2,0,2" ValueTextBrush="#FFF8FFB6" Value2="{Binding FoodUsagePerTurn}" Invert="True"/>
-        <common:ProgressBar x:Name="Aura" d:LayoutOverrides="Width" Grid.Row="6" BarColor1="White" Header="Aura" TextFormat="N0" ValueMax="25" Value2="{Binding AuraRadius}" Value="{Binding AuraRadiusBase}" Margin="0,2,0,2" ValueTextBrush="Gray"/>
-        <common:ProgressBar x:Name="Attack" d:LayoutOverrides="Width" Grid.Row="7" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="100" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
-        <common:ProgressBar x:Name="Defense" d:LayoutOverrides="Width" Grid.Row="8" BarColor1="#FF813B00" Header="Defense" TextFormat="F2" Value="{Binding DefenseBase}" ValueMax="100" Margin="0,2,0,2" Value2="{Binding Defense}"/>
-        <common:ProgressBar x:Name="Dodge" d:LayoutOverrides="Width" Grid.Row="11" BarColor1="#FD007A89" ValueMax="1" Value="{Binding DodgeBase}" TextFormat="F3" Header="Dodge" Margin="0,2,0,2" ValueTextBrush="#FFEAE3FF" Value2="{Binding Dodge}"/>
-        <common:ProgressBar x:Name="MagicBlock" d:LayoutOverrides="Width" Grid.Row="10" Header="Magic Block" Margin="0,2,0,2" BarColor1="#FF6500FF" ValueMax="1" Value="{Binding MagicBlockBase}" Value2="{Binding MagicBlock}" TextFormat="F3" />
-        <common:ProgressBar x:Name="CriticalHit" d:LayoutOverrides="Width" Grid.Row="9" Header="Critical Hit" Margin="0,2,0,2" BarColor1="#FFFFaa00" ValueMax="1" Value="{Binding CriticalHitProbability}" Value2="{Binding CriticalHitProbability}" TextFormat="F3" />
+        <common:ProgressBar x:Name="Strength" BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
+        <common:ProgressBar x:Name="Agility" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
+        <common:ProgressBar x:Name="Intelligence" Grid.Row="2" Header="Intelligence" BarColor1="#FF350097" Value="{Binding IntelligenceBase}" ValueMax="100" TextFormat="F2" Margin="0,2,0,2" ValueTextBrush="#FFC1BFFF" Value2="{Binding Intelligence}"/>
+        <common:ProgressBar x:Name="HpRegen" Grid.Row="3" BarColor1="#FD830000" Value="{Binding HpRegenBase}" TextFormat="F2" Header="Hp Regen" ValueMax="10" Margin="0,2,0,2" ValueTextBrush="#FFFFB8B8" Value2="{Binding HpRegen}"/>
+        <common:ProgressBar x:Name="MpRegen" Grid.Row="4" BarColor1="#FF00007C" TextFormat="F2" ValueMax="10" Value="{Binding MpRegenBase}" Header="Mp Regen" Margin="0,2,0,2" ValueTextBrush="#FFBDB4FF" Value2="{Binding MpRegen}"/>
+        <common:ProgressBar x:Name="FoodUsage" Grid.Row="5" BarColor1="#FF5C4800" TextFormat="F3" Value="{Binding FoodUsagePerTurnBase}" ValueMax="5" Header="Food Usage" Margin="0,2,0,2" ValueTextBrush="#FFF8FFB6" Value2="{Binding FoodUsagePerTurn}" Invert="True"/>
+        <common:ProgressBar x:Name="Aura" Grid.Row="6" BarColor1="White" Header="Aura" TextFormat="N0" ValueMax="25" Value2="{Binding AuraRadius}" Value="{Binding AuraRadiusBase}" Margin="0,2,0,2" ValueTextBrush="Gray"/>
+        <common:ProgressBar x:Name="Attack" Grid.Row="7" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="100" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
+        <common:ProgressBar x:Name="Defense" Grid.Row="8" BarColor1="#FF813B00" Header="Defense" TextFormat="F2" Value="{Binding DefenseBase}" ValueMax="100" Margin="0,2,0,2" Value2="{Binding Defense}"/>
+        <common:ProgressBar x:Name="Dodge" Grid.Row="11" BarColor1="#FD007A89" ValueMax="1" Value="{Binding DodgeBase}" TextFormat="F3" Header="Dodge" Margin="0,2,0,2" ValueTextBrush="#FFEAE3FF" Value2="{Binding Dodge}"/>
+        <common:ProgressBar x:Name="MagicBlock" Grid.Row="10" Header="Magic Block" Margin="0,2,0,2" BarColor1="#FF6500FF" ValueMax="1" Value="{Binding MagicBlockBase}" Value2="{Binding MagicBlock}" TextFormat="F3" />
+        <common:ProgressBar x:Name="CriticalHit" Grid.Row="9" Header="Critical Hit" Margin="0,2,0,2" BarColor1="#FFFFaa00" ValueMax="1" Value="{Binding CriticalHitProbability}" Value2="{Binding CriticalHitProbability}" TextFormat="F3" />
     </Grid>
 </UserControl>

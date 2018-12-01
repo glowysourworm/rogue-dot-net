@@ -105,11 +105,19 @@ namespace Rogue.NET.Core.Logic.Content
             var attackBase = attack;
             var dodge = _randomSequenceGenerator.Get() < enemy.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= player.GetCriticalHitProbability();
-            var attackAttributeHitDict = new Dictionary<string, double>();
+            var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
             var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
             {
+                CharacterColor = x.CharacterColor,
+                CharacterSymbol = x.CharacterSymbol,
+                Icon = x.Icon,
+                SmileyAuraColor = x.SmileyAuraColor,
+                SmileyBodyColor = x.SmileyBodyColor,
+                SmileyLineColor = x.SmileyLineColor,
+                SmileyMood = x.SmileyMood,
+                SymbolType = x.SymbolType,
                 RogueName = x.RogueName,
                 Attack = 0,
                 Resistance = 0, 
@@ -134,7 +142,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 // Store attack attribute hits for broadcasting
                 if (attackAttributeHit > 0)
-                    attackAttributeHitDict.Add(playerAttribute.RogueName, attackAttributeHit);
+                    attackAttributeHitDict.Add(playerAttribute, attackAttributeHit);
             }
 
             if (attack <= 0 || dodge)
@@ -175,11 +183,19 @@ namespace Rogue.NET.Core.Logic.Content
             var attackBase = attack;
             var dodge = _randomSequenceGenerator.Get() < targetedEnemy.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= player.GetCriticalHitProbability();
-            var attackAttributeHitDict = new Dictionary<string, double>();
+            var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
             var baseAttributes = targetedEnemy.AttackAttributes.Values.Select(x => new AttackAttribute()
             {
+                CharacterColor = x.CharacterColor,
+                CharacterSymbol = x.CharacterSymbol,
+                Icon = x.Icon,
+                SmileyAuraColor = x.SmileyAuraColor,
+                SmileyBodyColor = x.SmileyBodyColor,
+                SmileyLineColor = x.SmileyLineColor,
+                SmileyMood = x.SmileyMood,
+                SymbolType = x.SymbolType,
                 RogueName = x.RogueName,
                 Attack = 0,
                 Resistance = 0,
@@ -204,7 +220,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 // Store attack attribute details for publishing
                 if (attackAttributeHit > 0)
-                    attackAttributeHitDict.Add(playerAttribute.RogueName, attackAttributeHit);
+                    attackAttributeHitDict.Add(playerAttribute, attackAttributeHit);
             }
 
             if (attack <= 0 || dodge)
@@ -241,11 +257,19 @@ namespace Rogue.NET.Core.Logic.Content
             var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CurrentBehavior.CriticalRatio;
 
             // Store attack attribute interaction
-            var attackAttributeHitDict = new Dictionary<string, double>();
+            var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
             var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
             {
+                CharacterColor = x.CharacterColor,
+                CharacterSymbol = x.CharacterSymbol,
+                Icon = x.Icon,
+                SmileyAuraColor = x.SmileyAuraColor,
+                SmileyBodyColor = x.SmileyBodyColor,
+                SmileyLineColor = x.SmileyLineColor,
+                SmileyMood = x.SmileyMood,
+                SymbolType = x.SymbolType,
                 RogueName = x.RogueName,
                 Attack = 0,
                 Resistance = 0,
@@ -268,7 +292,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 // If there is an effect, then store the attack attribute for use with the output message
                 if (attackAttributeHit > 0)
-                    attackAttributeHitDict.Add(playerAttribute.RogueName, attackAttributeHit);
+                    attackAttributeHitDict.Add(playerAttribute, attackAttributeHit);
 
                 attack += attackAttributeHit;
             }

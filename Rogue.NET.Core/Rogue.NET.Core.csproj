@@ -80,6 +80,7 @@
     <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
     <Compile Include="Converter\BoolIntConverter.cs" />
     <Compile Include="Converter\BoolInverseConverter.cs" />
+    <Compile Include="Converter\BoolInverseVisibilityCollapseConverter.cs" />
     <Compile Include="Converter\BoolInverseVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\BoolANDVisibilityMultiConverter.cs" />
     <Compile Include="Converter\BoolORVisibilityMultiConverter.cs" />
@@ -87,13 +88,16 @@
     <Compile Include="Converter\BoolVisibilityCollapseConverter.cs" />
     <Compile Include="Converter\BoolVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\CollectionNonEmptyVisibilityConverter.cs" />
+    <Compile Include="Converter\ColorBrushConverter.cs" />
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
+    <Compile Include="Converter\GreaterThanZeroConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
+    <Compile Include="Converter\LessThanZeroConverter.cs" />
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
     <Compile Include="Converter\ParameterEqualityBoolConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityVisibleConverter.cs" />
