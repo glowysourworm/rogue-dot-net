@@ -103,7 +103,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Open
+                SplashType = SplashEventType.Loading
             });
 
             // Have to keep Undo Service in sync with the configuration
@@ -130,7 +130,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.Open
+                SplashType = SplashEventType.Loading
             });
 
             PublishOutputMessage("Opened Scenario " + name);
@@ -145,7 +145,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Save
+                SplashType = SplashEventType.Loading
             });
 
             PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
@@ -167,7 +167,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.Save
+                SplashType = SplashEventType.Loading
             });
 
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);

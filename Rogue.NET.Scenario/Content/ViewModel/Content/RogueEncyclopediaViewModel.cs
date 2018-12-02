@@ -41,6 +41,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 {
                     case LevelUpdateType.EncyclopediaCurseIdentify:
                     case LevelUpdateType.EncyclopediaIdentify:
+                    case LevelUpdateType.PlayerSkillSetAdd:
                         UpdateOrAdd(modelService, scenarioResourceService);
                         break;
                 }

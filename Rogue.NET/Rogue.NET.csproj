@@ -218,15 +218,6 @@
     <Compile Include="View\ObjectiveView.xaml.cs">
       <DependentUpon>ObjectiveView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OpenScenarioView.xaml.cs">
-      <DependentUpon>OpenScenarioView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PlayerAdvancementView.xaml.cs">
-      <DependentUpon>PlayerAdvancementView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\SaveView.xaml.cs">
-      <DependentUpon>SaveView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
@@ -272,18 +263,6 @@
     <Page Include="View\ObjectiveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\OpenScenarioView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\PlayerAdvancementView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\SaveView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Shell.xaml">
       <SubType>Designer</SubType>

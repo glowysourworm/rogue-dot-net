@@ -129,7 +129,6 @@
     <Compile Include="Event\Splash\DialogEvent.cs" />
     <Compile Include="Event\Splash\MessageBoxEvent.cs" />
     <Compile Include="Event\Splash\SplashEvent.cs" />
-    <Compile Include="Event\Splash\SplashUpdateEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\AnimationStartEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\EnemyTargetedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelLoadedEvent.cs" />

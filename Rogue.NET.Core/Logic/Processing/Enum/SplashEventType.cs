@@ -2,8 +2,6 @@
 {
     public enum SplashEventType
     {
-        Open,
-        Save,
         Loading
     }
 

@@ -173,7 +173,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Open
+                SplashType = SplashEventType.Loading
             });
 
             // Unload current scenario container
@@ -198,7 +198,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.Open
+                SplashType = SplashEventType.Loading
             });
 
             LoadCurrentLevel();
@@ -209,7 +209,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Show,
-                SplashType = SplashEventType.Save
+                SplashType = SplashEventType.Loading
             });
 
             // Update the Save Level
@@ -226,7 +226,7 @@ namespace Rogue.NET.Scenario.Controller
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
                 SplashAction = SplashAction.Hide,
-                SplashType = SplashEventType.Save
+                SplashType = SplashEventType.Loading
             });
 
             // Notify listeners

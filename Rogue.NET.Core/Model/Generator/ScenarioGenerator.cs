@@ -83,10 +83,7 @@ namespace Rogue.NET.Core.Model.Generator
             //Identify player skills / equipment / consumables
             foreach (var skillSet in scenario.Player1.SkillSets)
             {
-                if (skillSet.LevelLearned <= scenario.Player1.Level)
-                {
-                    scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
-                }
+                scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
             }
 
             foreach (var equipment in scenario.Player1.Equipment.Values)

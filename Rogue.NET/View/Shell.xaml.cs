@@ -163,10 +163,6 @@ namespace Rogue.NET.View
             {
                 case SplashEventType.Loading:
                     return new LoadingView();
-                case SplashEventType.Save:
-                    return new SaveView();
-                case SplashEventType.Open:
-                    return new OpenScenarioView();
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }
