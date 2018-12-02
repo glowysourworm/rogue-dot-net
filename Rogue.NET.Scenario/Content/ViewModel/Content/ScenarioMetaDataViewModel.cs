@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Linq;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -25,7 +26,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         bool _isUnique;
         bool _isCurseIdentified;
         DungeonMetaDataObjectTypes _objectType;
-        ObservableCollection<AttackAttributeViewModel> AttackAttributes { get; set; }
+        
 
         public string Id
         {
@@ -88,10 +89,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             set { this.RaiseAndSetIfChanged(ref _objectType, value); }
         }
 
+        public ObservableCollection<ScenarioMetaDataAttackAttributeViewModel> AttackAttributes { get; set; }
+
         public ScenarioMetaDataViewModel(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
         {
             this.Height = ModelConstants.CellHeight * 2;
             this.Width = ModelConstants.CellWidth * 2;
+
+            this.AttackAttributes = new ObservableCollection<ScenarioMetaDataAttackAttributeViewModel>(
+                                            metaData.AttackAttributes
+                                                    .Where(x => x.Attack.IsSet() || x.Weakness.IsSet() || x.Resistance.IsSet())
+                                                    .Select(x => new ScenarioMetaDataAttackAttributeViewModel(x)));
 
             Update(metaData, scenarioResourceService);
         }

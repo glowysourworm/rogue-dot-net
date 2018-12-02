@@ -16,20 +16,17 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="270" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
 
+        <!-- Level Canvas -->
         <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion"
                         Grid.ColumnSpan="3"
-                        Grid.RowSpan="2"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch" />
 
-        <Grid Grid.Column="0" Grid.RowSpan="2" Background="#AF000000">
+        <!-- (LHS) Player Status / Player Sub-panel -->
+        <Grid x:Name="LeftHandSideControls" Grid.Column="0" Background="#AF000000">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -42,23 +39,22 @@
                             Margin="8" />
         </Grid>
 
-        <!-- Control Panel -->
-        <Border x:Name="ControlPanelBorder"
-                Grid.ColumnSpan="3"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Right"
+        <!-- (RHS) Control Panel / Dialog Messages -->
+        <Border x:Name="RightHandSideControls"
+                Grid.Column="2"
                 Background="#AF000000"
                 Margin="0, 0, 8, 8"
-                BorderBrush="White"
+                BorderBrush="#AFFFFFFF"
                 BorderThickness="1"
                 CornerRadius="3">
             <StackPanel>
+                <!-- General Info Text -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <!-- Scenario Name (# Seed) / Survivor Mode -->
                     <TextBlock x:Name="GeneralInfoTB" 
                                Foreground="Beige" 
                                Margin="8"
-                               FontSize="18" 
+                               FontSize="20" 
                                HorizontalAlignment="Left">
                         <Run Text="{Binding ScenarioName}" />
                         <Run Text=" Scenario (# " />
@@ -66,77 +62,77 @@
                         <Run Text=")" />
                     </TextBlock>
 
-                    <TextBlock HorizontalAlignment="Right"
+                    <!--TextBlock HorizontalAlignment="Right"
                                Margin="8"
                                Foreground="Beige"
-                               FontSize="16">
+                               FontSize="14">
                            <Run Text="Ticks: " />
                            <Run Text="{Binding Ticks}" />
-                    </TextBlock>
+                    </-->
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="CenterButton" 
+
+                <!-- Button Panel -->
+                <Border>
+                    <Border.Background>
+                        <SolidColorBrush Color="DarkBlue" Opacity="0.3" />
+                    </Border.Background>
+                    <StackPanel Orientation="Horizontal" Opacity="1" Margin="4">
+                        <Button x:Name="CenterButton" 
                         Background="Black"
                         BorderBrush="White"
-                        HorizontalAlignment="Center" 
                         Click="CenterButton_Click" 
                         Margin="4" 
                         Width="28" 
                         Style="{DynamicResource ShinyTextButtonStyle}" 
                         Cursor="Hand" Height="28" ToolTip="Center on Player">
-                        <Button.Content>
-                            <coreView:Smiley Height="15" Width="10"
+                            <Button.Content>
+                                <coreView:Smiley Height="15" Width="10"
                                          SmileyLineThickness="1"
                                          SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                                          SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
                                          SmileyMood="{Binding PlayerScenarioImage.SmileyMood}" 
                                          SmileyRadius="2" />
-                        </Button.Content>
-                    </Button>
-                    <Button x:Name="UpButton"     Content="&#xf062;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="UpButton_Click" Margin="2" Style="{DynamicResource ShinyTextButtonStyle}" Width="28" Cursor="Hand" ToolTip="Shift Display Up" Height="28" />
-                    <Button x:Name="DownButton"   Content="&#xf063;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="DownButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="2" Cursor="Hand" ToolTip="Shift Display Down"/>
-                    <Button x:Name="LeftButton"   Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="LeftButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="2" Cursor="Hand" ToolTip="Shift Display Left" />
-                    <Button x:Name="RightButton"  Content="&#xf061;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="RightButton_Click" Margin="2" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="28" ToolTip="Shift Display Right"/>
-                    <Button x:Name="CollapseButton" 
-                        Background="Black"
-                        BorderBrush="White"
-                        Foreground="White"
-                        Content="&#xf146;" 
-                        FontFamily="{StaticResource FontAwesome}" 
-                        HorizontalAlignment="Center" 
-                        Click="CollapseButton_Click" 
-                        Margin="4" 
-                        Width="28" 
-                        Style="{DynamicResource ShinyTextButtonStyle}" 
-                        Cursor="Hand" Height="28" ToolTip="Collapse the Compass"/>
-                    <Button x:Name="HelpButton" 
-                                Grid.Column="1"
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="UpButton"     Content="&#xf062;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="UpButton_Click" Margin="4" Style="{DynamicResource ShinyTextButtonStyle}" Width="28" Cursor="Hand" ToolTip="Shift Display Up" Height="28" />
+                        <Button x:Name="DownButton"   Content="&#xf063;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="DownButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Down"/>
+                        <Button x:Name="LeftButton"   Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="LeftButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Left" />
+                        <Button x:Name="RightButton"  Content="&#xf061;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="RightButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="28" ToolTip="Shift Display Right"/>
+                        <Button x:Name="ObjectivesButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Scroll.png" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="ObjectivesButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="28" ToolTip="Scenario Objectives"/>
+                        <Button x:Name="HelpButton" 
                                 Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" 
                                 Background="Black" 
                                 BorderBrush="White" 
-                                VerticalAlignment="Top"
-                                HorizontalAlignment="Right" 
-                                Width="28" Style="{DynamicResource ShinyButtonStyle}" 
+                                Click="HelpButton_Click"
+                                Width="28" 
+                                Style="{DynamicResource ShinyButtonStyle}" 
                                 Height="28" Margin="4" Cursor="Hand" ToolTip="Help"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
 
-        <!--ContentControl prism:RegionManager.RegionName="LevelCompassRegion" 
-                        Grid.Column="2"
-                        Grid.Row="0"
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Right" /-->
+                    </StackPanel>
+                </Border>
 
-        <ContentControl prism:RegionManager.RegionName="ScenarioMessageRegion"
-                        Grid.Column="2"
-                        Grid.Row="1"
-                        Margin="8"
-                        Background="#AF000000"
+                <!-- Dialog Messages -->
+                <ContentControl prism:RegionManager.RegionName="ScenarioMessageRegion"
+                        Margin="4"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch" 
                         VerticalContentAlignment="Stretch"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- (LHS) Collapsed Controls -->
+        <Border x:Name="LeftHandSideCollapsedControls" 
+                Visibility="Collapsed"
+                Grid.ColumnSpan="3" 
+                Margin="8,0,0,0"
+                Background="#AF000000"
+                BorderBrush="#AFFFFFFF"
+                BorderThickness="0.75"
+                VerticalAlignment="Top" 
+                HorizontalAlignment="Left">
+            <ContentControl prism:RegionManager.RegionName="PlayerStatusSmallPanelRegion" />
+        </Border>
 
         <!-- Survivor Mode -->
         <Border Visibility="{Binding IsSurvivorMode, Converter={StaticResource BoolVisibilityCollapseConverter}}"

@@ -10,6 +10,7 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Scenario.Events;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -51,38 +52,6 @@ namespace Rogue.NET.Scenario.Views
                 _currentLevel = modelService.Level.Number;
 
                 SetViewText();
-            });
-        }
-
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to exit?", "Exit current scenario?", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
-            {
-                _eventAggregator.GetEvent<ExitScenarioEvent>().Publish();
-            }
-        }
-
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
-            {
-                Type = DialogEventType.Help
-            });
-        }
-
-        private void CommandsButton_Click(object sender, RoutedEventArgs e)
-        {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
-            {
-                Type = DialogEventType.Commands
-            });
-        }
-
-        private void ObjectiveButton_Click(object sender, RoutedEventArgs e)
-        {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
-            {
-                Type = DialogEventType.Objective
             });
         }
 
@@ -148,6 +117,46 @@ namespace Rogue.NET.Scenario.Views
                 default:
                     break;
             }
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to exit?", "Exit current scenario?", MessageBoxButton.YesNoCancel) == MessageBoxResult.Yes)
+            {
+                _eventAggregator.GetEvent<ExitScenarioEvent>().Publish();
+            }
+        }
+
+        private void CommandsButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
+            {
+                Type = DialogEventType.Commands
+            });
+        }
+
+        private void CollapseALLButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ToggleLevelViewControlsEvent>().Publish(new ToggleLevelViewControlsEventArgs()
+            {
+                Type = ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.All
+            });
+        }
+
+        private void CollapseLHSButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ToggleLevelViewControlsEvent>().Publish(new ToggleLevelViewControlsEventArgs()
+            {
+                Type = ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.LeftHandSide
+            });
+        }
+
+        private void CollapseRHSButton_Click(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<ToggleLevelViewControlsEvent>().Publish(new ToggleLevelViewControlsEventArgs()
+            {
+                Type = ToggleLevelViewControlsEventArgs.ToggleLevelViewControlsType.RightHandSide
+            });
         }
     }
 }

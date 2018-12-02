@@ -11,7 +11,7 @@
             <itemTemlpateSelector:ScenarioMessageItemTemplateSelector x:Key="ScenarioMessageItemTemplateSelector" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border BorderBrush="#AFFFFFFF" Background="Transparent" BorderThickness="1" CornerRadius="3">
+    <Border BorderBrush="Transparent" Background="Transparent" BorderThickness="0" CornerRadius="3">
         <Grid>
             <ListBox Template="{StaticResource ScenarioMessageListBoxTemplate}"
                      ItemTemplateSelector="{StaticResource ScenarioMessageItemTemplateSelector}"

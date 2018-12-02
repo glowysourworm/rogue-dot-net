@@ -170,6 +170,7 @@
     <Compile Include="Content\ViewModel\Content\RogueEncyclopediaCategoryViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\RogueEncyclopediaViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioImageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ScenarioMetaDataAttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaDataViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
@@ -197,6 +198,9 @@
     </Compile>
     <Compile Include="Content\Views\LevelView.xaml.cs">
       <DependentUpon>LevelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\PlayerStatusSmallPanel.xaml.cs">
+      <DependentUpon>PlayerStatusSmallPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
@@ -227,6 +231,7 @@
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
     <Compile Include="Events\OutroFinishedEvent.cs" />
+    <Compile Include="Events\ToggleLevelViewControlsEvent.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
       <DependentUpon>ChooseParameters.xaml</DependentUpon>
     </Compile>
@@ -300,6 +305,10 @@
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="Content\Views\LevelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\PlayerStatusSmallPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

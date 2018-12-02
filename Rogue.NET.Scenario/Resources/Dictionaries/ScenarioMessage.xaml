@@ -43,8 +43,8 @@
     </Style>
 
     <ControlTemplate x:Key="ScenarioMessageListBoxTemplate" TargetType="{x:Type ListBox}">
-        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
+        <Border x:Name="Bd" BorderBrush="Transparent" 
+                            BorderThickness="0" 
                             Background="{TemplateBinding Background}" 
                             Padding="1" 
                             SnapsToDevicePixels="true">
@@ -57,7 +57,6 @@
     <Style x:Key="ScenarioMessageItemContainerStyle" TargetType="ListBoxItem">
         <Style.Setters>
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="ToolTip" Value="{Binding Content}" />
         </Style.Setters>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -91,7 +90,7 @@
     </DataTemplate>
     
     <DataTemplate x:Key="AlterationMessageDataTemplate">
-        <StackPanel Orientation="Horizontal">
+        <Grid>
 
             <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <TextBlock>
@@ -123,27 +122,34 @@
                 <Run Text="{Binding EffectedAttributeName}" />
             </TextBlock>
 
-            <StackPanel Orientation="Horizontal" Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
-                    <Run Text="{Binding AlterationDisplayName}" />
-                    <Run Text=" has caused a loss of HP = " />
-                </TextBlock>
-                <ItemsControl 
+            <StackPanel Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                        <Run Text="{Binding AlterationDisplayName}" />
+                        <Run Text=" has caused a loss of " />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}" Text="HP = " />
+                    <ItemsControl 
                         ItemsSource="{Binding AttackAttributeHits}"
                         ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Width="Auto"
                         Height="Auto">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
             </StackPanel>
             
-        </StackPanel>
+        </Grid>
     </DataTemplate>
     
     <DataTemplate x:Key="EnemyAlterationMessageDataTemplate">
@@ -158,43 +164,53 @@
 
     <DataTemplate x:Key="MeleeMessageDataTemplate">
 
-        <StackPanel Orientation="Horizontal" Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-            <!-- Critical Hit -->
-            <!-- Base Hit -->
+        <StackPanel>
+            
+            <!-- Critical Hit Base Text -->
             <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <Run Text="{Binding ActorDisplayName}" />
                 <Run Text=" has attacked " />
                 <Run Text="{Binding ActeeDisplayName}" />
-                <Run Text=" for a critical hit! HP = " />
-                <Run Text="{Binding BaseHit, StringFormat=F1}" />
+                <Run Text=" for a critical hit!" />
             </TextBlock>
 
-            <!-- Base Hit -->
+            <!-- Non Critical Hit Base Text -->
             <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <Run Text="{Binding ActorDisplayName}" />
                 <Run Text=" has attacked " />
                 <Run Text="{Binding ActeeDisplayName}" />
-                <Run Text=" for HP = " />
-                <Run Text="{Binding BaseHit, StringFormat=F1}" />
             </TextBlock>
 
-            <!-- Attack Attributes -->
-            <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
-            <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+            <!-- Attack Calculation -->
+            <StackPanel Orientation="Horizontal">
+
+                <!-- Base Hit -->
+                <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                    <Run Text="HP = " />
+                    <Run Text="{Binding BaseHit, StringFormat=F1}" />
+                </TextBlock>
+
+                <!-- + Attack Attributes... -->
+                <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+
+                <!-- Attack Attributes -->
+                <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                             ItemsSource="{Binding AttackAttributeHits}"
                             ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Width="Auto"
                             Height="Auto">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+            </StackPanel>
         </StackPanel>
         
     </DataTemplate>

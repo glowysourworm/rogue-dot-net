@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace Rogue.NET.Common.Utility
 {
-    public static class WpfHelper
+    public static class RogueVisualTreeHelper
     {
         public static T FindAncestor<T>(DependencyObject dependencyObject) where T : DependencyObject
         {

@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.PlayerStatusSmallPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+
+        <coreView:Smiley Height="15" Width="10"
+                                 Margin="4"
+                                         SmileyLineThickness="1"
+                                         SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
+                                         SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}"
+                                         SmileyMood="{Binding SmileyMood}" 
+                                         SmileyRadius="2" />
+
+        <TextBlock Foreground="Red" FontSize="16" Margin="4">
+                    <Run Text="HP: " />
+                    <Run Text="{Binding Hp, StringFormat=F1}" />
+                    <Run Text=" / " />
+                    <Run Text="{Binding HpMax, StringFormat=F1}" />
+        </TextBlock>
+
+        <TextBlock Foreground="Blue" FontSize="16" Margin="4">
+                    <Run Text="MP: " />
+                    <Run Text="{Binding Mp, StringFormat=F1}" />
+                    <Run Text=" / " />
+                    <Run Text="{Binding MpMax, StringFormat=F1}" />
+        </TextBlock>
+
+        <TextBlock Foreground="LawnGreen" FontSize="16" Margin="4">
+                    <Run Text="Hunger: " />
+                    <Run Text="{Binding Hunger, StringFormat=F1}" />
+                    <Run Text=" / " />
+                    <Run Text="100" />
+        </TextBlock>
+
+        <TextBlock Foreground="Cyan" FontSize="16" Margin="4">
+                    <Run Text="Exp: " />
+                    <Run Text="{Binding Experience, StringFormat=N0}" />
+                    <Run Text=" / " />
+                    <Run Text="{Binding ExperienceNext, StringFormat=N0}" />
+        </TextBlock>
+
+        <TextBlock Foreground="LightGoldenrodYellow" FontSize="16" Margin="4">
+                    <Run Text="Haul: " />
+                    <Run Text="{Binding Haul, StringFormat=F1}" />
+                    <Run Text=" / " />
+                    <Run Text="{Binding HaulMax, StringFormat=F1}" />
+        </TextBlock>
+
+    </StackPanel>
+</UserControl>

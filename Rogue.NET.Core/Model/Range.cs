@@ -83,6 +83,14 @@ namespace Rogue.NET.Core.Model
 
             return true;
         }
+        /// <summary>
+        /// returns true if either the High or Low values are set away from zero (default(T))
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSet()
+        {
+            return this.High.CompareTo(default(T)) != 0 || this.Low.CompareTo(default(T)) != 0;
+        }
         public override string ToString()
         {
             return "From " + this.Low + " To " + this.High;

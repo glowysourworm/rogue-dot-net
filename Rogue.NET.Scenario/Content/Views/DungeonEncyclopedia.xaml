@@ -15,6 +15,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/EllipsePanel.xaml" />
                 <ResourceDictionary>
                     <converter:RogueMetaDataCategoryFilter x:Key="RogueMetaDataCategoryFilter" />
+                    <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
                     <Style x:Key="CategoryTextBlockStyle" TargetType="TextBlock">
                         <Setter Property="Foreground" Value="White" />
                         <Style.Triggers>
@@ -186,7 +187,86 @@
                                 <Setter Property="BorderBrush" Value="Red" />
                             </MultiDataTrigger>
                         </Style.Triggers>
-                    </Style>                    
+                    </Style>
+
+                    <DataTemplate x:Key="AttackAttributeDataTemplate">
+                        <StackPanel Orientation="Horizontal" Margin="2, 0, 0, 0">
+                            <Image Margin="2,0,0,0" 
+                                   Width="20"
+                                   Height="30"
+                                    VerticalAlignment="Center" 
+                                    HorizontalAlignment="Center">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                        <Binding Path="CharacterColor" />
+                                        <Binding Path="CharacterSymbol" />
+                                        <Binding Path="Icon" />
+                                        <Binding Path="SmileyMood" />
+                                        <Binding Path="SmileyAuraColor" />
+                                        <Binding Path="SmileyBodyColor" />
+                                        <Binding Path="SmileyLineColor" />
+                                        <Binding Path="SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                        </StackPanel>
+                    </DataTemplate>
+
+                    <Style x:Key="AttackAttributeContainerStyle" TargetType="ContentPresenter">
+                        <Style.Setters>
+                            <Setter Property="ToolTip">
+                                <Setter.Value>
+                                    <ToolTip Background="Transparent" BorderBrush="Transparent">
+                                        <Border Background="Black" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0.75" 
+                                                Padding="2"
+                                                CornerRadius="3">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Margin="2" 
+                                                       Width="20"
+                                                       Height="30"
+                                                       VerticalAlignment="Center" 
+                                                       HorizontalAlignment="Center">
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                                            <Binding Path="CharacterColor" />
+                                                            <Binding Path="CharacterSymbol" />
+                                                            <Binding Path="Icon" />
+                                                            <Binding Path="SmileyMood" />
+                                                            <Binding Path="SmileyAuraColor" />
+                                                            <Binding Path="SmileyBodyColor" />
+                                                            <Binding Path="SmileyLineColor" />
+                                                            <Binding Path="SymbolType" />
+                                                        </MultiBinding>
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Margin="2" Foreground="Yellow" FontSize="18" Visibility="{Binding IsAttackSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="{Binding AttackLow, StringFormat=F1}" />
+                                                    <Run Text=" - " />
+                                                    <Run Text="{Binding AttackHigh, StringFormat=F1}" />
+                                                    <Run Text="A" />
+                                                </TextBlock>
+                                                <TextBlock Margin="2" Foreground="LightSteelBlue" FontSize="18" Visibility="{Binding IsResistanceSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="{Binding ResistanceLow, StringFormat=F1}" />
+                                                    <Run Text=" - " />
+                                                    <Run Text="{Binding ResistanceHigh, StringFormat=F1}" />
+                                                    <Run Text="R" />
+                                                </TextBlock>
+                                                <TextBlock Margin="2" Foreground="Red" FontSize="18" Visibility="{Binding IsWeaknessSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="{Binding WeaknessLow, StringFormat=F1}" />
+                                                    <Run Text=" - " />
+                                                    <Run Text="{Binding WeaknessHigh, StringFormat=F1}" />
+                                                    <Run Text="W" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </ToolTip>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>
+                    </Style>
+
                 </ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -247,8 +327,22 @@
                 <!-- Category Entry Image -->
                 <Image Source="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.Source}" Margin="8" Width="20" Height="30" HorizontalAlignment="Left" />
 
-                <!-- Category Entry Name -->
-                <TextBlock Style="{StaticResource CategoryEntryTextBlockStyle}" Grid.Column="1" Text="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.DisplayName}" Margin="8" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <!-- Category Entry Name -->                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1">
+                    <TextBlock Style="{StaticResource CategoryEntryTextBlockStyle}" Text="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.DisplayName}" Margin="8" FontSize="20" VerticalAlignment="Center" />
+
+                    <!-- Category Entry Attack Attributes -->
+                    <ItemsControl ItemsSource="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.AttackAttributes}"
+                                  ItemTemplate="{StaticResource AttackAttributeDataTemplate}"
+                                  ItemContainerStyle="{StaticResource AttackAttributeContainerStyle}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+                
 
                 <!-- Category Entry Attributes (Unique)(Objective)(Cursed)-->
                 <StackPanel Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right">

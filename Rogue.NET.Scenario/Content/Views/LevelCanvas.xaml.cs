@@ -12,6 +12,8 @@ using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Common.Utility;
+using Rogue.NET.Scenario.Views;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -24,7 +26,7 @@ namespace Rogue.NET.Scenario.Content.Views
         bool _mouseDownWithControl = false;
         Point _mouseDownWithControlPoint = new Point();
 
-        const int SCREEN_BUFFER = 200;
+        const int SCREEN_BUFFER = 300;
         const int SHIFT_AMOUNT = 60;
 
         public static readonly DependencyProperty PrimaryTransformProperty =
@@ -55,17 +57,22 @@ namespace Rogue.NET.Scenario.Content.Views
 
             this.TheItemsControl.RenderTransform = transform;
 
+            this.Loaded += (sender, args) =>
+            {
+                CenterOnLocation(viewModel.PlayerLocation);
+            };
+
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
                 CenterOnLocation(viewModel.PlayerLocation);
             });
-
+            
             // subscribe to event to update RenderTransform on player move
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
-                    OnPlayerLocationChanged(viewModel);
+                    CenterOnLocation(viewModel.PlayerLocation);
 
             });
 
@@ -74,44 +81,23 @@ namespace Rogue.NET.Scenario.Content.Views
                 ShiftDisplay(type, viewModel);
             });
         }
-
-        public void OnPlayerLocationChanged(LevelCanvasViewModel viewModel)
-        {
-            // Offset of this control relative to ContentControl parent
-            var offset = this.TheItemsControl.RenderTransform.Transform(new Point(0, 0));
-
-            // Add offset to bounds and player location
-            var location = Point.Add(viewModel.PlayerLocation, new Vector(offset.X, offset.Y));
-            var bounds = new Rect((this.Parent as ContentControl).RenderSize);
-
-            // recenter display if player is off screen
-            if (!bounds.Contains(location))
-            {
-                CenterOnLocation(viewModel.PlayerLocation);
-            }
-
-            else if ((bounds.Bottom - location.Y) < SCREEN_BUFFER)
-                _translateXform.Y -= SCREEN_BUFFER - (bounds.Bottom - location.Y);
-
-            else if (location.Y < SCREEN_BUFFER)
-                _translateXform.Y += SCREEN_BUFFER - location.Y;
-
-            else if ((bounds.Right - location.X) < SCREEN_BUFFER)
-                _translateXform.X -= SCREEN_BUFFER - (bounds.Right - location.X);
-
-            else if (location.X < SCREEN_BUFFER)
-                _translateXform.X += SCREEN_BUFFER - location.X;
-        }
         public void CenterOnLocation(Point location)
         {
-            // Offset of this control relative to ContentControl parent
-            var offset = this.TheItemsControl.RenderTransform.Transform(new Point(0, 0));
+            if (!this.IsLoaded)
+                return;
 
-            var bounds = new Rect((this.Parent as ContentControl).RenderSize);
+            // Make measurements relative to the LevelView
+            var window = Window.GetWindow(this);
+
+            // Offset of this control relative to ContentControl parent
+            var offsetLocation = this.PointToScreen(location);
+
+            // Add offset to bounds and player location
+            var bounds = new Rect(window.RenderSize);
             var midpt = new Point(bounds.Width / 2.0D, bounds.Height / 2.0D);
 
-            _translateXform.X += midpt.X - (location.X + offset.X);
-            _translateXform.Y += midpt.Y - (location.Y + offset.Y);
+            _translateXform.X = midpt.X - (offsetLocation.X);
+            _translateXform.Y = midpt.Y - (offsetLocation.Y);
         }
 
         private void ShiftDisplay(ShiftDisplayType type, LevelCanvasViewModel viewModel)
@@ -185,7 +171,7 @@ namespace Rogue.NET.Scenario.Content.Views
             var viewModel = this.DataContext as LevelCanvasViewModel;
 
             if (viewModel != null)
-                OnPlayerLocationChanged(viewModel);
+                CenterOnLocation(viewModel.PlayerLocation);
         }
     }
 }
