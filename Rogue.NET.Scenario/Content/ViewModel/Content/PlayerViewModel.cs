@@ -17,6 +17,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -464,6 +465,33 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                                                             .Skip(1)
                                                                                             .FirstOrDefault());
             this.EquippedShoulder = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Shoulder));
+
+            // Attack Attributes
+            var attackAttributes = equippedItems.
+            Aggregate(new List<AttackAttributeViewModel>(), (aggregate, equipment) =>
+            {
+                // Initialize Aggregate
+                if (aggregate.Count == 0)
+                    aggregate.AddRange(equipment.AttackAttributes.Select(x => new AttackAttributeViewModel(x)));
+
+                // Aggregate Attack Attribute Quantities
+                else
+                {
+                    foreach (var attackAttribute in aggregate)
+                    {
+                        var equipmentAttribute = equipment.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
+                        attackAttribute.Attack += equipmentAttribute.Attack;
+                        attackAttribute.Resistance += equipmentAttribute.Resistance;
+                        attackAttribute.Weakness += equipmentAttribute.Weakness;
+                    }
+                }
+
+                return aggregate;
+            }).
+            Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0);
+
+            this.MeleeAttackAttributes.Clear();
+            this.MeleeAttackAttributes.AddRange(attackAttributes);
         }
 
 

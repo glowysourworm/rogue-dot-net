@@ -192,8 +192,8 @@
                     <DataTemplate x:Key="AttackAttributeDataTemplate">
                         <StackPanel Orientation="Horizontal" Margin="2, 0, 0, 0">
                             <Image Margin="2,0,0,0" 
-                                   Width="20"
-                                   Height="30"
+                                   Width="15"
+                                   Height="22.5"
                                     VerticalAlignment="Center" 
                                     HorizontalAlignment="Center">
                                 <Image.Source>
@@ -224,8 +224,8 @@
                                                 CornerRadius="3">
                                             <StackPanel Orientation="Horizontal">
                                                 <Image Margin="2" 
-                                                       Width="20"
-                                                       Height="30"
+                                                       Width="15"
+                                                       Height="22.5"
                                                        VerticalAlignment="Center" 
                                                        HorizontalAlignment="Center">
                                                     <Image.Source>
@@ -241,6 +241,7 @@
                                                         </MultiBinding>
                                                     </Image.Source>
                                                 </Image>
+                                                <TextBlock Text="{Binding RogueName}" Margin="2" Foreground="White" FontSize="18" />
                                                 <TextBlock Margin="2" Foreground="Yellow" FontSize="18" Visibility="{Binding IsAttackSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                     <Run Text="{Binding AttackLow, StringFormat=F1}" />
                                                     <Run Text=" - " />

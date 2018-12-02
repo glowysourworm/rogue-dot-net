@@ -75,6 +75,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.IsResistanceSet = template.Resistance.IsSet();
             this.IsWeaknessSet = template.Weakness.IsSet();
 
+            this.RogueName = template.Name;
+
             this.CharacterColor = template.SymbolDetails.CharacterColor;
             this.CharacterSymbol = template.SymbolDetails.CharacterSymbol;
             this.Icon = template.SymbolDetails.Icon;

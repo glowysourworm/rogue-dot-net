@@ -20,6 +20,7 @@
     <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:LessThanZeroConverter x:Key="LessThanZeroConverter" />
     <converter:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+    <converter:GreaterThanZeroVisibilityConverter x:Key="GreaterThanZeroVisibilityConverter" />
     <converter:ParameterEqualityBoolConverter x:Key="ParameterEqualityBoolConverter" />
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityVisibleConverter x:Key="ParameterVisibilityVisibleConverter" />

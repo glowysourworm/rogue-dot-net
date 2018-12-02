@@ -92,6 +92,7 @@
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroConverter.cs" />
+    <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
