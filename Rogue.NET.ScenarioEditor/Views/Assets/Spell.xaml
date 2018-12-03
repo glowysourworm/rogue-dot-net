@@ -53,7 +53,7 @@
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
                     </MultiBinding>
                 </TabItem.Visibility>
-                <spell:SpellEffect DataContext="{Binding Effect}" />
+                <ContentControl prism:RegionManager.RegionName="SpellEffectRegion" DataContext="{Binding Effect}" />
             </TabItem>
             <TabItem Header="Spell Attack Attributes" 
                      Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}">
@@ -61,7 +61,7 @@
             </TabItem>
             <TabItem Header="Spell Aura Effect" Background="Black"
                      Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
-                <spell:SpellEffect DataContext="{Binding AuraEffect}" />
+                <ContentControl prism:RegionManager.RegionName="SpellAuraEffectRegion" DataContext="{Binding AuraEffect}" />
             </TabItem>
             <TabItem Header="Effect Symbol Change">
                 <TabItem.Visibility>

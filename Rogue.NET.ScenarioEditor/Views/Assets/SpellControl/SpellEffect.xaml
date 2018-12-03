@@ -2,6 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -12,6 +14,19 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
+        <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" Text="Altered State" HorizontalAlignment="Left" />
+            <commonView:EnumComboBox EnumValue="{Binding StateType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterStateType}" Width="250" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" Text="Remedied Alteration" />
+            <ComboBox x:Name="RemediedSpellNameCB" 
+                      SelectedValue="{Binding RemediedSpellName}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>
+
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Strength" />
             <controls:Range DataContext="{Binding StrengthRange}" />

@@ -81,7 +81,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             if (template == null)
                 return;
 
-            for (int i = this.GradientStopListBox.SelectedItems.Count;i >= 0;i--)
+            for (int i = this.GradientStopListBox.SelectedItems.Count - 1;i >= 0;i--)
             {
                 var item = this.GradientStopListBox.SelectedItems[i] as GradientStopTemplateViewModel;
 

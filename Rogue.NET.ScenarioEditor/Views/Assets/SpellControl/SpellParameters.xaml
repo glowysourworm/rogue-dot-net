@@ -40,6 +40,42 @@
         </Grid>
         <Grid Margin="10">
             <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentTarget}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Foreground="White" Text="Is Effect Symbol Alteration" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding Effect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+        <Grid Margin="10" Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+            <TextBlock Foreground="White" Text="Is Aura Effect Symbol Alteration" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding AuraEffect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>        
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
+                </MultiBinding>                
+            </Grid.Visibility>
+            <TextBlock Foreground="White" Text="Event Time" />
+            <controls:Range DataContext="{Binding Effect.EventTime}" />
+        </Grid>        
+        <Grid Margin="10">
+            <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
                     <Binding Path="OtherEffectType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.CreateMonster}" />

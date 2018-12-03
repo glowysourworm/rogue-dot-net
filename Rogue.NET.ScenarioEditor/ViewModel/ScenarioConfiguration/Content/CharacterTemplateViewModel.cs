@@ -53,8 +53,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
             this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
             this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
-            this.Hp = new RangeViewModel<double>(1, 10, 20, 100);
-            this.Mp = new RangeViewModel<double>(1, 2, 5, 100);
+            this.Hp = new RangeViewModel<double>(1, 10, 20, 10000);
+            this.Mp = new RangeViewModel<double>(1, 2, 5, 10000);
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();
@@ -65,8 +65,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
             this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
             this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
-            this.Hp = new RangeViewModel<double>(1, 10, 20, 100);
-            this.Mp = new RangeViewModel<double>(1, 2, 5, 100);
+            this.Hp = new RangeViewModel<double>(1, 10, 20, 10000);
+            this.Mp = new RangeViewModel<double>(1, 2, 5, 10000);
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();

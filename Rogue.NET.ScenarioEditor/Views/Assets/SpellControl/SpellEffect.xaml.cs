@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -20,9 +22,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
     public partial class SpellEffect : UserControl
     {
         [ImportingConstructor]
-        public SpellEffect()
+        public SpellEffect(IEventAggregator eventAggregator)
         {
             InitializeComponent();
+
+            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
+            {
+                this.RemediedSpellNameCB.ItemsSource = configuration.MagicSpells;
+            });
         }
     }
 }
