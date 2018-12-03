@@ -111,6 +111,13 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return Math.Max(Math.Min(1, result), 0);
         }
+        public static double GetSpeed(this Enemy enemy)
+        {
+            var speed = enemy.SpeedBase + enemy.Alteration.GetAlterations().Sum(x => x.Speed);
+
+            // 0.1 < speed < 1
+            return Math.Max(Math.Min(1, speed), 0.1);
+        }
 
         public static double GetAttack(this Enemy enemy)
         {
@@ -279,6 +286,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             if (enemy.SpeedBase < ModelConstants.MinSpeed)
                 enemy.SpeedBase = ModelConstants.MinSpeed;
+
+            if (enemy.SpeedBase > ModelConstants.MaxSpeed)
+                enemy.SpeedBase = ModelConstants.MaxSpeed;
 
             if (enemy.StrengthBase < 0)
                 enemy.StrengthBase = 0;

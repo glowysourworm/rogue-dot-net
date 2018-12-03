@@ -18,6 +18,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private SpellTemplateViewModel _curseSpell;
         private ConsumableTemplateViewModel _ammoTemplate;
         private double _weight;
+        private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
 
@@ -30,6 +31,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _weight; }
             set { this.RaiseAndSetIfChanged(ref _weight, value); }
+        }
+        public int LevelRequired
+        {
+            get { return _levelRequired; }
+            set { this.RaiseAndSetIfChanged(ref _levelRequired, value); }
         }
         public RangeViewModel<double> Quality
         {

@@ -38,6 +38,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Intelligence);
             player.StrengthBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Strength);
             player.AgilityBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Agility);
+            player.SpeedBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Speed); // TODO
             player.HpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Hp);
             player.MpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Mp);
             player.Hp = player.HpMax;
@@ -53,8 +54,6 @@ namespace Rogue.NET.Core.Model.Generator
             player.SmileyLineColor = playerTemplate.SymbolDetails.SmileyLineColor;
             player.SymbolType = playerTemplate.SymbolDetails.Type;
 
-            // Replace Agility for speed calculation
-            player.SpeedBase = ModelConstants.MaxSpeed; // TODO
 
             player.Class = playerTemplate.Class;
             player.Experience = 0;
@@ -121,6 +120,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.RogueName = enemyTemplate.Name;
             enemy.StrengthBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Strength);
             enemy.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Intelligence);
+            enemy.SpeedBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Speed);
             enemy.Icon = enemyTemplate.SymbolDetails.Icon;
             enemy.CharacterSymbol = enemyTemplate.SymbolDetails.CharacterSymbol;
             enemy.CharacterColor = enemyTemplate.SymbolDetails.CharacterColor;
@@ -129,8 +129,6 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.SmileyBodyColor = enemyTemplate.SymbolDetails.SmileyBodyColor;
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
-
-            enemy.SpeedBase = ModelConstants.MaxSpeed; // TODO
 
             enemy.BehaviorDetails = new BehaviorDetails();
             enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);

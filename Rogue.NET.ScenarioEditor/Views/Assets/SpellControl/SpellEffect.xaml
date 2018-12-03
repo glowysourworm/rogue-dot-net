@@ -25,6 +25,10 @@
             <controls:Range DataContext="{Binding IntelligenceRange}" />
         </Grid>
         <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" Text="Speed" />
+            <controls:Range DataContext="{Binding SpeedRange}" />
+        </Grid>        
+        <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Aura Radius" />
             <controls:Range DataContext="{Binding AuraRadiusRange}" />
         </Grid>

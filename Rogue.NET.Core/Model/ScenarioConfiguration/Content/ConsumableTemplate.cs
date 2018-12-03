@@ -12,6 +12,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private ConsumableType _type;
         private ConsumableSubType _subType;
         private double _weight;
+        private int _levelRequired;
         private Range<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasSpell;
@@ -54,6 +55,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _weight = value;
                     OnPropertyChanged("Weight");
+                }
+            }
+        }
+        public int LevelRequired
+        {
+            get { return _levelRequired; }
+            set
+            {
+                if (_levelRequired != value)
+                {
+                    _levelRequired = value;
+                    OnPropertyChanged("LevelRequired");
                 }
             }
         }

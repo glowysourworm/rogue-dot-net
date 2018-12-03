@@ -11,6 +11,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private double _strength;
         private double _intelligence;
         private double _agility;
+        private double _speed;
         private double _foodUsagePerTurn;
         private double _auraRadius;
         private double _experience;
@@ -66,6 +67,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _agility = value;
                     OnPropertyChanged("Agility");
+                }
+            }
+        }
+        public double Speed
+        {
+            get { return _speed; }
+            set
+            {
+                if (_speed != value)
+                {
+                    _speed = value;
+                    OnPropertyChanged("Speed");
                 }
             }
         }

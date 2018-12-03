@@ -23,6 +23,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public double Strength { get; set; }
         public double Intelligence { get; set; }
         public double Agility { get; set; }
+        public double Speed { get; set; }
         public double AuraRadius { get; set; }
         public double FoodUsagePerTurn { get; set; }
         public double HpPerStep { get; set; }

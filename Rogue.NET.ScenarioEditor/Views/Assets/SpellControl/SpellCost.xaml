@@ -34,6 +34,10 @@
             <toolkit:DoubleUpDown Value="{Binding Cost.Intelligence}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
         <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Speed" />
+            <toolkit:DoubleUpDown Value="{Binding Cost.Speed}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
+        </Grid>        
+        <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" VerticalAlignment="Center" Text="Food Usage (per turn)" />
             <toolkit:DoubleUpDown Value="{Binding Cost.FoodUsagePerTurn, Mode=TwoWay}" Increment="0.01"  AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>

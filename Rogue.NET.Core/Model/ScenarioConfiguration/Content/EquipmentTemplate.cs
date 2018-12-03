@@ -18,6 +18,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SpellTemplate _curseSpell;
         private ConsumableTemplate _ammoTemplate;
         private double _weight;
+        private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
 
@@ -42,6 +43,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _weight = value;
                     OnPropertyChanged("Weight");
+                }
+            }
+        }
+        public int LevelRequired
+        {
+            get { return _levelRequired; }
+            set
+            {
+                if (_levelRequired != value)
+                {
+                    _levelRequired = value;
+                    OnPropertyChanged("LevelRequired");
                 }
             }
         }

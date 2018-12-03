@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             alterationCost.Type = spell.Cost.Type;
             alterationCost.Agility = spell.Cost.Agility;
+            alterationCost.Speed = spell.Cost.Speed;
             alterationCost.AuraRadius = spell.Cost.AuraRadius;
             alterationCost.Experience = spell.Cost.Experience;
             alterationCost.FoodUsagePerTurn = spell.Cost.FoodUsagePerTurn;
@@ -78,6 +79,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationEffect.MpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
             alterationEffect.PostEffectString = alterationEffectTemplate.PostEffectText;
             alterationEffect.RogueName = alterationEffectTemplate.Name;
+            alterationEffect.Speed = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
             alterationEffect.State = alterationEffectTemplate.StateType;
             alterationEffect.Strength = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
             alterationEffect.SymbolAlteration = alterationEffectTemplate.SymbolAlteration;

@@ -11,6 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         /// </summary>
         public bool IsIdentified { get; set; }
         public double Weight { get; set; }
+        public int LevelRequired { get; set; }
 
         public ItemBase()
         {

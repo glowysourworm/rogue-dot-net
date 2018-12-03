@@ -9,6 +9,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private ConsumableType _type;
         private ConsumableSubType _subType;
         private double _weight;
+        private int _levelRequired;
         private RangeViewModel<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasSpell;
@@ -32,6 +33,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _weight; }
             set { this.RaiseAndSetIfChanged(ref _weight, value); }
+        }
+        public int LevelRequired
+        {
+            get { return _levelRequired; }
+            set { this.RaiseAndSetIfChanged(ref _levelRequired, value); }
         }
         public RangeViewModel<int> UseCount
         {

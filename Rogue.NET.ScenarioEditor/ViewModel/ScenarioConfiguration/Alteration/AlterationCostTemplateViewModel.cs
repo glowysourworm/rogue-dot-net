@@ -9,6 +9,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private double _strength;
         private double _intelligence;
         private double _agility;
+        private double _speed;
         private double _foodUsagePerTurn;
         private double _auraRadius;
         private double _experience;
@@ -38,6 +39,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _agility; }
             set { this.RaiseAndSetIfChanged(ref _agility, value); }
+        }
+        public double Speed
+        {
+            get { return _speed; }
+            set { this.RaiseAndSetIfChanged(ref _speed, value); }
         }
         public double FoodUsagePerTurn
         {

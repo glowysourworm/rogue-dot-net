@@ -33,19 +33,22 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <controls:Range DataContext="{Binding Strength}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" />
                         <controls:Range DataContext="{Binding Agility}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" />
                         <controls:Range DataContext="{Binding Intelligence}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" />
-                        <controls:Range DataContext="{Binding Hp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
-                        <controls:Range DataContext="{Binding Mp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
+                        <controls:Range DataContext="{Binding Speed}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
+                        <controls:Range DataContext="{Binding Hp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
+                        <controls:Range DataContext="{Binding Mp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" />
 
                         <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
                         <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
                         <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="3" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="4" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="3" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="4" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="5" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
 
                     </Grid>
                 </TabItem>

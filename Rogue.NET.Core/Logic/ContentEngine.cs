@@ -142,6 +142,13 @@ namespace Rogue.NET.Core.Logic
             var equipment = _modelService.Player.Equipment[equipId];
             var result = false;
 
+            // Check that item has level requirement met (ALSO DONE ON FRONT END)
+            if (equipment.LevelRequired > _modelService.Player.Level)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", equipment.LevelRequired.ToString());
+                return false;
+            }
+
             // Process the update
             if (equipment.IsEquipped)
                 result = UnEquip(equipment);

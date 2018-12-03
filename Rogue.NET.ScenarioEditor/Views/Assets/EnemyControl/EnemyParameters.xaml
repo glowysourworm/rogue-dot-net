@@ -22,21 +22,24 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" DataContext="{Binding Strength}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" DataContext="{Binding Agility}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" DataContext="{Binding Intelligence}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" DataContext="{Binding Hp}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" DataContext="{Binding Mp}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" DataContext="{Binding ExperienceGiven}" />
+        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" DataContext="{Binding Speed}" />        
+        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" DataContext="{Binding Hp}" />
+        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" DataContext="{Binding Mp}" />
+        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" DataContext="{Binding ExperienceGiven}" />
 
         <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="3" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="4" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Foreground="White" Text="Experience Given (On Death)" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="3" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="4" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="5" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Foreground="White" Text="Experience Given (On Death)" Margin="10" VerticalAlignment="Center" />
         
     </Grid>
 </UserControl>

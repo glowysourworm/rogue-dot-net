@@ -13,6 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _strength;
         private Range<double> _agility;
         private Range<double> _intelligence;
+        private Range<double> _speed;
         private Range<double> _hp;
         private Range<double> _mp;
 
@@ -52,6 +53,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<double> Speed
+        {
+            get { return _speed; }
+            set
+            {
+                if (_speed != value)
+                {
+                    _speed = value;
+                    OnPropertyChanged("Speed");
+                }
+            }
+        }
         public Range<double> Hp
         {
             get { return _hp; }
@@ -82,6 +95,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Strength = new Range<double>(1, 3, 5, 100);
             this.Agility = new Range<double>(1, 4, 5, 100);
             this.Intelligence = new Range<double>(1, 2, 3, 100);
+            this.Speed = new Range<double>(0.1, 0.5, 0.5, 1);       // Exclude 0 because Paralyzed altered state
             this.Hp = new Range<double>(1, 10, 20, 100);
             this.Mp = new Range<double>(1, 2, 5, 100);
 
@@ -93,6 +107,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Strength = new Range<double>(1, 3, 5, 100);
             this.Agility = new Range<double>(1, 4, 5, 100);
             this.Intelligence = new Range<double>(1, 2, 3, 100);
+            this.Speed = new Range<double>(0.1, 0.5, 0.5, 1);
             this.Hp = new Range<double>(1, 10, 20, 100);
             this.Mp = new Range<double>(1, 2, 5, 100);
 

@@ -16,6 +16,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private RangeViewModel<double> _strengthRange;
         private RangeViewModel<double> _intelligenceRange;
         private RangeViewModel<double> _agilityRange;
+        private RangeViewModel<double> _speedRange;
         private RangeViewModel<double> _auraRadiusRange;
         private RangeViewModel<double> _foodUsagePerTurnRange;
         private RangeViewModel<double> _hpPerStepRange;
@@ -76,6 +77,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _agilityRange; }
             set { this.RaiseAndSetIfChanged(ref _agilityRange, value); }
+        }
+        public RangeViewModel<double> SpeedRange
+        {
+            get { return _speedRange; }
+            set { this.RaiseAndSetIfChanged(ref _speedRange, value); }
         }
         public RangeViewModel<double> AuraRadiusRange
         {
@@ -170,6 +176,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
+            this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);
             this.StrengthRange = new RangeViewModel<double>(-100, 0, 0, 100);
 
             this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);

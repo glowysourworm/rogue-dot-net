@@ -228,6 +228,13 @@ namespace Rogue.NET.Core.Logic
 
             var thrownItem = player.Consumables[itemId];
 
+            // Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
+            if (thrownItem.LevelRequired > player.Level)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
+                return LevelContinuationAction.DoNothing;
+            }
+
             // TBD: Create general consumable for projectiles that has melee parameters
             if (thrownItem.HasProjectileSpell)
             {
@@ -251,6 +258,13 @@ namespace Rogue.NET.Core.Logic
             var consumable = player.Consumables[itemId];
             var meetsAlterationCost = _alterationProcessor.CalculatePlayerMeetsAlterationCost(player, consumable.Spell.Cost);
             var displayName = _modelService.GetDisplayName(consumable.RogueName);
+
+            // Check that item has level requirement met (ALSO DONE ON FRONT END)
+            if (consumable.LevelRequired > player.Level)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", consumable.LevelRequired.ToString());
+                return LevelContinuationAction.DoNothing;
+            }
 
             // Check for removal of item
             switch (consumable.Type)

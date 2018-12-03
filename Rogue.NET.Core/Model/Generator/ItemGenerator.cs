@@ -57,6 +57,7 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.RogueName = equipmentTemplate.Name;
             equipment.AmmoName = equipmentTemplate.AmmoTemplate == null ? "" : equipmentTemplate.AmmoTemplate.Name;
             equipment.Weight = equipmentTemplate.Weight;
+            equipment.LevelRequired = equipmentTemplate.LevelRequired;
             equipment.Quality = _randomSequenceGenerator.GetRandomValue(equipmentTemplate.Quality);
 
             equipment.AttackAttributes = equipmentTemplate.AttackAttributes
@@ -93,6 +94,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.Type = consumableTemplate.Type;
             consumable.SubType = consumableTemplate.SubType;
             consumable.Weight = consumableTemplate.Weight;
+            consumable.LevelRequired = consumableTemplate.LevelRequired;
             consumable.Uses = _randomSequenceGenerator.GetRandomValue(consumableTemplate.UseCount);
             consumableTemplate.HasBeenGenerated = true;
 

@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -179,6 +180,7 @@ namespace Rogue.NET.Core.Logic.Content
         public bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost)
         {
             return (enemy.AgilityBase - cost.Agility) >= 0 &&
+                   (enemy.SpeedBase - cost.Speed) >= ModelConstants.MinSpeed &&
                    (enemy.Hp - cost.Hp) >= 0 &&
                    (enemy.IntelligenceBase - cost.Intelligence) >= 0 &&
                    (enemy.Mp - cost.Mp) >= 0 &&
@@ -189,6 +191,12 @@ namespace Rogue.NET.Core.Logic.Content
             if (player.AgilityBase - cost.Agility < 0)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Agility");
+                return false;
+            }
+
+            if (player.SpeedBase - cost.Speed < ModelConstants.MinSpeed)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Speed");
                 return false;
             }
 
@@ -249,6 +257,7 @@ namespace Rogue.NET.Core.Logic.Content
                 player.Hunger += alterationCost.Hunger;
                 player.IntelligenceBase -= alterationCost.Intelligence;
                 player.Mp -= alterationCost.Mp;
+                player.SpeedBase -= alterationCost.Speed;
                 player.StrengthBase -= alterationCost.Strength;
             }
             else
@@ -260,6 +269,7 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 enemy.AgilityBase -= alterationCost.Agility;
                 enemy.AuraRadiusBase -= alterationCost.AuraRadius;
+                enemy.SpeedBase -= alterationCost.Speed;
                 enemy.Hp -= alterationCost.Hp;
                 enemy.IntelligenceBase -= alterationCost.Intelligence;
                 enemy.Mp -= alterationCost.Mp;
@@ -273,6 +283,7 @@ namespace Rogue.NET.Core.Logic.Content
             player.StrengthBase += alterationEffect.Strength;
             player.IntelligenceBase += alterationEffect.Intelligence;
             player.AgilityBase += alterationEffect.Agility;
+            player.SpeedBase += alterationEffect.Speed;
             player.AuraRadiusBase += alterationEffect.AuraRadius;
             player.FoodUsagePerTurnBase += alterationEffect.FoodUsagePerTurn;
             player.Experience += alterationEffect.Experience;
@@ -285,6 +296,7 @@ namespace Rogue.NET.Core.Logic.Content
             enemy.StrengthBase += alterationEffect.Strength;
             enemy.IntelligenceBase += alterationEffect.Intelligence;
             enemy.AgilityBase += alterationEffect.Agility;
+            enemy.SpeedBase += alterationEffect.Speed;
             enemy.AuraRadiusBase += alterationEffect.AuraRadius;
             enemy.Hp += alterationEffect.Hp;
             enemy.Mp += alterationEffect.Mp;
@@ -304,69 +316,6 @@ namespace Rogue.NET.Core.Logic.Content
 
             foreach (var effect in remediedEffects)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " has cured " + effect.DisplayName);
-        }
-
-        private bool ProjectPlayerCanSupportAlterationEffect(Player player, AlterationEffect effect)
-        {
-            if (player.StrengthBase + effect.Strength < 0)
-                return false;
-
-            if (player.IntelligenceBase + effect.Intelligence < 0)
-                return false;
-
-            if (player.AgilityBase + effect.Agility < 0)
-                return false;
-
-            if (player.AuraRadiusBase + effect.AuraRadius < 0)
-                return false;
-
-            if (player.GetAttackBase() + effect.Attack < 0)
-                return false;
-
-            if (player.GetDefenseBase() + effect.Defense < 0)
-                return false;
-
-            if (player.GetMagicBlockBase() + effect.MagicBlockProbability < 0)
-                return false;
-
-            //if (p.Dodge + this.DodgeProbability < 0)
-            //    return false;
-
-            if (player.Experience + effect.Experience < 0)
-                return false;
-
-            if (player.Hunger + effect.Hunger > 100)
-                return false;
-
-            if (player.Hp + effect.Hp <= 0)
-                return false;
-
-            if (player.Mp + effect.Mp <= 0)
-                return false;
-
-            return true;
-        }
-        private bool ProjectEnemyCanSupportAlterationEffect(Enemy enemy, AlterationEffect effect)
-        {
-            if (enemy.StrengthBase + effect.Strength < 0)
-                return false;
-
-            if (enemy.IntelligenceBase + effect.Intelligence < 0)
-                return false;
-
-            if (enemy.AgilityBase + effect.Agility < 0)
-                return false;
-
-            if (enemy.AuraRadiusBase + effect.AuraRadius < 0)
-                return false;
-
-            if (enemy.Hp + effect.Hp <= 0)
-                return false;
-
-            if (enemy.Mp + effect.Mp <= 0)
-                return false;
-
-            return true;
         }
     }
 }

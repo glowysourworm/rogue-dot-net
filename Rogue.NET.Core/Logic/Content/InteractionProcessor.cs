@@ -95,8 +95,7 @@ namespace Rogue.NET.Core.Logic.Content
 
         public double CalculateEnemyTurn(Player player, Enemy enemy)
         {
-            // TODO: Calculate this based on total speed
-            return enemy.SpeedBase / player.SpeedBase;
+            return enemy.GetSpeed() / player.GetSpeed();
         }
         public void CalculatePlayerMeleeHit(Player player, Enemy enemy)
         {

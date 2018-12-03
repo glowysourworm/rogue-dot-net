@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private Range<double> _strengthRange;
         private Range<double> _intelligenceRange;
         private Range<double> _agilityRange;
+        private Range<double> _speedRange;
         private Range<double> _auraRadiusRange;
         private Range<double> _foodUsagePerTurnRange;
         private Range<double> _hpPerStepRange;
@@ -138,6 +139,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _agilityRange = value;
                     OnPropertyChanged("AgilityRange");
+                }
+            }
+        }
+        public Range<double> SpeedRange
+        {
+            get { return _speedRange; }
+            set
+            {
+                if (_speedRange != value)
+                {
+                    _speedRange = value;
+                    OnPropertyChanged("SpeedRange");
                 }
             }
         }
@@ -318,6 +331,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.EventTime = new Range<int>(0, 20, 30, 1000);
 
             this.AgilityRange = new Range<double>(-100, 0, 0, 100);
+            this.SpeedRange = new Range<double>(-1, 0, 0, 1);
             this.AttackRange = new Range<double>(-100, 0, 0, 100);
             this.AuraRadiusRange = new Range<double>(-25, 0, 0, 25);
             this.DefenseRange = new Range<double>(-100, 0, 0, 100);

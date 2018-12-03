@@ -12,6 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _strength;
         private RangeViewModel<double> _agility;
         private RangeViewModel<double> _intelligence;
+        private RangeViewModel<double> _speed;
         private RangeViewModel<double> _hp;
         private RangeViewModel<double> _mp;
 
@@ -30,6 +31,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _intelligence; }
             set { this.RaiseAndSetIfChanged(ref _intelligence, value); }
         }
+        public RangeViewModel<double> Speed
+        {
+            get { return _speed; }
+            set { this.RaiseAndSetIfChanged(ref _speed, value); }
+        }
         public RangeViewModel<double> Hp
         {
             get { return _hp; }
@@ -46,6 +52,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Strength = new RangeViewModel<double>(1, 3, 5, 100);
             this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
             this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
+            this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
             this.Hp = new RangeViewModel<double>(1, 10, 20, 100);
             this.Mp = new RangeViewModel<double>(1, 2, 5, 100);
 
@@ -57,6 +64,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Strength = new RangeViewModel<double>(1, 3, 5, 100);
             this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
             this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
+            this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
             this.Hp = new RangeViewModel<double>(1, 10, 20, 100);
             this.Mp = new RangeViewModel<double>(1, 2, 5, 100);
 
