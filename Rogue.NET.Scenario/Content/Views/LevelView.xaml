@@ -138,11 +138,12 @@
         <Border Visibility="{Binding IsSurvivorMode, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
+                Grid.ColumnSpan="3"
                 Background="#AF000000">
             <TextBlock 
                 Margin="8"
                 Text="SURVIVOR MODE"
-                Foreground="Maroon"
+                Foreground="DarkRed"
                 FontSize="24" />
         </Border>
         

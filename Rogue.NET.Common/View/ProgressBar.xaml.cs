@@ -13,6 +13,7 @@ namespace Rogue.NET.Common.View
         public static readonly DependencyProperty Value2Property;
         public static readonly DependencyProperty ValueMaxProperty;
         public static readonly DependencyProperty BarColor1Property;
+        public static readonly DependencyProperty HeaderAsteriskProperty;
 
         public Color BarColor1
         {
@@ -25,6 +26,12 @@ namespace Rogue.NET.Common.View
             get { return this.HeaderText.Text; }
             set { this.HeaderText.Text = value; }
         }
+        public bool HeaderAsterisk
+        {
+            get { return (bool)GetValue(HeaderAsteriskProperty); }
+            set { SetValue(HeaderAsteriskProperty, value); }
+        }
+
         public Brush ValueTextBrush
         {
             get { return this.ValueText.Foreground; }
@@ -75,11 +82,13 @@ namespace Rogue.NET.Common.View
             PropertyMetadata m1 = new PropertyMetadata(1.0, new PropertyChangedCallback(OnValue2Changed));
             PropertyMetadata m2 = new PropertyMetadata(1.0, new PropertyChangedCallback(OnValueMaxChanged));
             PropertyMetadata m3 = new PropertyMetadata(new PropertyChangedCallback(OnBarColor1Changed));
+            PropertyMetadata m4 = new PropertyMetadata(false, new PropertyChangedCallback(OhHeaderAsteriskPropertyChanged));
 
             ProgressBar.Value1Property = DependencyProperty.Register("Value", typeof(double), typeof(ProgressBar), m0);
             ProgressBar.Value2Property = DependencyProperty.Register("Value2", typeof(double), typeof(ProgressBar), m1);
             ProgressBar.ValueMaxProperty = DependencyProperty.Register("ValueMax", typeof(double), typeof(ProgressBar), m2);
             ProgressBar.BarColor1Property = DependencyProperty.Register("BarColor1", typeof(Color), typeof(ProgressBar), m3);
+            ProgressBar.HeaderAsteriskProperty = DependencyProperty.Register("HeaderAsterisk", typeof(bool), typeof(ProgressBar), m4);
         }
         [ImportingConstructor]
         public ProgressBar()
@@ -110,6 +119,14 @@ namespace Rogue.NET.Common.View
         {
             ProgressBar b = o as ProgressBar;
             SetBarWidths(b);
+        }
+        private static void OhHeaderAsteriskPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
+        {
+            ProgressBar b = o as ProgressBar;
+            if (e.NewValue != null)
+            {
+                b.HeaderTextAsterisk.Text = (bool)e.NewValue ? "*" : "";
+            }
         }
         private static void SetBarWidths(ProgressBar b)
         {

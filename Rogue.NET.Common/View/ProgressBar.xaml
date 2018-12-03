@@ -13,7 +13,10 @@
             <ColumnDefinition x:Name="MiddleColumn" Width="*"/>
         </Grid.ColumnDefinitions>
         <Rectangle x:Name="BarBackground" RadiusX="4" RadiusY="4" Grid.Column="1" Margin="0" HorizontalAlignment="Left"/>
-        <TextBlock Text="HP" TextWrapping="Wrap" x:Name="HeaderText" Foreground="#FFFFFFFF" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" Margin="4,0,0,0"/>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="HP" TextWrapping="Wrap" x:Name="HeaderText" Foreground="#FFFFFFFF" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" Margin="4,0,0,0"/>
+            <TextBlock Text="" TextWrapping="Wrap" x:Name="HeaderTextAsterisk" Foreground="#FFFFFFFF" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" Margin="1,0,0,0"/>
+        </StackPanel>
         <Rectangle x:Name="Bar1" RadiusX="4" RadiusY="4" Grid.Column="1" Margin="0" HorizontalAlignment="Left">
             <Rectangle.Fill>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

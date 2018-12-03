@@ -70,7 +70,7 @@ namespace Rogue.NET.Scenario.Controller
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
-                    New(config, e.RogueName, e.Seed, e.SurvivorMode);
+                    New(config, e.RogueName, e.Seed, e.SurvivorMode, e.AttributeEmphasis);
             });
 
             // Open
@@ -119,7 +119,7 @@ namespace Rogue.NET.Scenario.Controller
             });
         }
 
-        public void New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode)
+        public void New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode, AttributeEmphasis attributeEmphasis)
         {
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
@@ -148,6 +148,7 @@ namespace Rogue.NET.Scenario.Controller
 
             _scenarioContainer.Seed = seed;
             _scenarioContainer.Player1.RogueName = characterName;
+            _scenarioContainer.Player1.AttributeEmphasis = attributeEmphasis;
             _scenarioContainer.StoredConfig = configuration;
             _scenarioContainer.SurvivorMode = survivorMode;
             _scenarioContainer.Statistics.StartTime = DateTime.Now;

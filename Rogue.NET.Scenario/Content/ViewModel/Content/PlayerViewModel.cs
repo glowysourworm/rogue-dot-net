@@ -78,7 +78,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         EquipmentViewModel _equippedRightHandWeapon;
         EquipmentViewModel _equippedRightRing;
         EquipmentViewModel _equippedShoulder;
-
+        AttributeEmphasis _attributeEmphasis;
         #endregion
 
         #region (public) Properties
@@ -252,7 +252,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _magicBlockBase; }
             set { this.RaiseAndSetIfChanged(ref _magicBlockBase, value); }
         }
-
+        public AttributeEmphasis AttributeEmphasis
+        {
+            get { return _attributeEmphasis; }
+            set { this.RaiseAndSetIfChanged(ref _attributeEmphasis, value); }
+        }
         public SkillSetViewModel ActiveSkillSet
         {
             get { return _activeSkillSet; }
@@ -401,6 +405,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Mp = player.Mp;
             this.MpMax = player.MpMax;
             this.RogueName = player.RogueName;
+
+            // Attribute Emphasis
+            this.AttributeEmphasis = player.AttributeEmphasis;
 
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);

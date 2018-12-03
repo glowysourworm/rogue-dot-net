@@ -3,98 +3,105 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
              x:Class="Rogue.NET.Scenario.Views.StatsControl" 
              BorderBrush="Transparent">
     <UserControl.Resources>
-        <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{TemplateBinding Content}" Background="Black" Foreground="LightBlue" FontSize="16" Padding="2,8,8,8" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    	<Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">
-    		<Setter Property="Width" Value="8"/>
-    		<Setter Property="Background" Value="Transparent"/>
-    		<Setter Property="Cursor" Value="SizeWE"/>
-    		<Setter Property="Template">
-    			<Setter.Value>
-    				<ControlTemplate TargetType="{x:Type Thumb}">
-    					<Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
-    	<Style x:Key="Rogue2DataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-    		<Setter Property="VerticalContentAlignment" Value="Center"/>
-    		<Setter Property="Template">
-    			<Setter.Value>
-    				<ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-    					<Grid>
-    						<Microsoft_Windows_Themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsClickable="{TemplateBinding CanUserSort}" IsPressed="{TemplateBinding IsPressed}" IsHovered="{TemplateBinding IsMouseOver}" Padding="{TemplateBinding Padding}" SortDirection="{TemplateBinding SortDirection}" SeparatorBrush="{TemplateBinding SeparatorBrush}" SeparatorVisibility="{TemplateBinding SeparatorVisibility}" Background="Black">
-    							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-    						</Microsoft_Windows_Themes:DataGridHeaderBorder>
-    						<Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}"/>
-    						<Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}"/>
-    					</Grid>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
-    	<DataTemplate x:Key="ImageColTemplate">
-    		<Grid Width="36" Height="36">
-    			<Image Source="{Binding Source}"/>
-    		</Grid>
-    	</DataTemplate>
-    	<DataTemplate x:Key="ProgressBarTemplate">
-    		<Grid>
-    			<common:ProgressBar Margin="0,0,-0.001,-0.001" 
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{TemplateBinding Content}" Background="Black" Foreground="LightBlue" FontSize="16" Padding="2,8,8,8" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">
+                <Setter Property="Width" Value="8"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Cursor" Value="SizeWE"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="Rogue2DataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                            <Grid>
+                                <Microsoft_Windows_Themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsClickable="{TemplateBinding CanUserSort}" IsPressed="{TemplateBinding IsPressed}" IsHovered="{TemplateBinding IsMouseOver}" Padding="{TemplateBinding Padding}" SortDirection="{TemplateBinding SortDirection}" SeparatorBrush="{TemplateBinding SeparatorBrush}" SeparatorVisibility="{TemplateBinding SeparatorVisibility}" Background="Black">
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Microsoft_Windows_Themes:DataGridHeaderBorder>
+                                <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}"/>
+                                <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <DataTemplate x:Key="ImageColTemplate">
+                <Grid Width="36" Height="36">
+                    <Image Source="{Binding Source}"/>
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="ProgressBarTemplate">
+                <Grid>
+                    <common:ProgressBar Margin="0,0,-0.001,-0.001" 
                                             BarColor1="{Binding DataContext.CalculatedColor}" 
                                             TextFormat="F2" 
                                             Value="{Binding DataContext.TheValue}" 
                                             ValueMax="{Binding DataContext.Max}" 
                                             Height="24"/>
-    		</Grid>
-    	</DataTemplate>
-    	<Style x:Key="Rogue2DataGridRowStyle" TargetType="{x:Type DataGridRow}">
-    		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-    		<Setter Property="SnapsToDevicePixels" Value="true"/>
-    		<Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
-    		<Setter Property="ValidationErrorTemplate">
-    			<Setter.Value>
-    				<ControlTemplate>
-    					<TextBlock Foreground="Red" Margin="2,0,0,0" Text="!" VerticalAlignment="Center"/>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    		<Setter Property="Template">
-    			<Setter.Value>
-    				<ControlTemplate TargetType="{x:Type DataGridRow}">
-    					<Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-    						<SelectiveScrollingGrid>
-    							<SelectiveScrollingGrid.ColumnDefinitions>
-    								<ColumnDefinition Width="Auto"/>
-    								<ColumnDefinition Width="*"/>
-    							</SelectiveScrollingGrid.ColumnDefinitions>
-    							<SelectiveScrollingGrid.RowDefinitions>
-    								<RowDefinition Height="*"/>
-    								<RowDefinition Height="Auto"/>
-    							</SelectiveScrollingGrid.RowDefinitions>
-    							<DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-    							<DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
-    							<DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-    						</SelectiveScrollingGrid>
-    					</Border>
-    				</ControlTemplate>
-    			</Setter.Value>
-    		</Setter>
-    	</Style>
+                </Grid>
+            </DataTemplate>
+            <Style x:Key="Rogue2DataGridRowStyle" TargetType="{x:Type DataGridRow}">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                <Setter Property="SnapsToDevicePixels" Value="true"/>
+                <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+                <Setter Property="ValidationErrorTemplate">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBlock Foreground="Red" Margin="2,0,0,0" Text="!" VerticalAlignment="Center"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridRow}">
+                            <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                <SelectiveScrollingGrid>
+                                    <SelectiveScrollingGrid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </SelectiveScrollingGrid.ColumnDefinitions>
+                                    <SelectiveScrollingGrid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </SelectiveScrollingGrid.RowDefinitions>
+                                    <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
+                                    <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+                                </SelectiveScrollingGrid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+
     </UserControl.Resources>
     <Grid>
     	<Grid.ColumnDefinitions>
@@ -114,9 +121,9 @@
     		<RowDefinition Height="*"/>
     		<RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
-        <common:ProgressBar x:Name="Strength" BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
-        <common:ProgressBar x:Name="Agility" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
-        <common:ProgressBar x:Name="Intelligence" Grid.Row="2" Header="Intelligence" BarColor1="#FF350097" Value="{Binding IntelligenceBase}" ValueMax="100" TextFormat="F2" Margin="0,2,0,2" ValueTextBrush="#FFC1BFFF" Value2="{Binding Intelligence}"/>
+        <common:ProgressBar x:Name="Strength" HeaderAsterisk="{Binding AttributeEmphasis, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Strength}}"  BarColor1="#FF876900" Header="Strength" TextFormat="F2" Value="{Binding StrengthBase}" ValueMax="100" ValueTextBrush="#FFFFC8C8" Margin="0,2,0,2" Value2="{Binding Strength}"/>
+        <common:ProgressBar x:Name="Agility" HeaderAsterisk="{Binding AttributeEmphasis, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Agility}}" Grid.Row="1" BarColor1="#FF0A8300" Header="Agility" TextFormat="F2" ValueMax="100" Value="{Binding AgilityBase}" Margin="0,2,0,2" ValueTextBrush="#FFC1FFC8" Value2="{Binding Agility}"/>
+        <common:ProgressBar x:Name="Intelligence" HeaderAsterisk="{Binding AttributeEmphasis, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Intelligence}}" Grid.Row="2" Header="Intelligence" BarColor1="#FF350097" Value="{Binding IntelligenceBase}" ValueMax="100" TextFormat="F2" Margin="0,2,0,2" ValueTextBrush="#FFC1BFFF" Value2="{Binding Intelligence}"/>
         <common:ProgressBar x:Name="HpRegen" Grid.Row="3" BarColor1="#FD830000" Value="{Binding HpRegenBase}" TextFormat="F2" Header="Hp Regen" ValueMax="10" Margin="0,2,0,2" ValueTextBrush="#FFFFB8B8" Value2="{Binding HpRegen}"/>
         <common:ProgressBar x:Name="MpRegen" Grid.Row="4" BarColor1="#FF00007C" TextFormat="F2" ValueMax="10" Value="{Binding MpRegenBase}" Header="Mp Regen" Margin="0,2,0,2" ValueTextBrush="#FFBDB4FF" Value2="{Binding MpRegen}"/>
         <common:ProgressBar x:Name="FoodUsage" Grid.Row="5" BarColor1="#FF5C4800" TextFormat="F3" Value="{Binding FoodUsagePerTurnBase}" ValueMax="5" Header="Food Usage" Margin="0,2,0,2" ValueTextBrush="#FFF8FFB6" Value2="{Binding FoodUsagePerTurn}" Invert="True"/>

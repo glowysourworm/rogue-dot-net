@@ -37,7 +37,8 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
                 RogueName = viewModel.RogueName,
                 ScenarioName = viewModel.ScenarioName,
                 Seed = viewModel.Seed,
-                SurvivorMode = viewModel.SurvivorMode
+                SurvivorMode = viewModel.SurvivorMode,
+                AttributeEmphasis = viewModel.AttributeEmphasis
             });
         }
     }
