@@ -46,14 +46,6 @@ namespace Rogue.NET.Scenario.Views
             set { SetValue(IsDialogModeProperty, value); }
         }
 
-        /// <summary>
-        /// REQUIRED*** This is a set of Attack Attributes for Imbue processing. This was NOT 
-        ///             how I wanted this to work; but it had to be done either here - or a one-off
-        ///             queue on the backend which I didn't want. This was safer... and it's basically
-        ///             the last thing I needed to complete the full functionality so I said.. meh :)
-        /// </summary>
-        public IEnumerable<AttackAttribute> ImbueAttackAttributes { get; set; }
-
         [ImportingConstructor]
         public ItemGrid(IEventAggregator eventAggregator)
         {

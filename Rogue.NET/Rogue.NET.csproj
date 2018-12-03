@@ -324,11 +324,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="Project Documents\fighter-scenario-config-backup.xml" />
     <None Include="packages.config" />
     <None Include="Project Documents\bugs-enhancements-backlog.xlsx" />
-    <None Include="Project Documents\license.lic" />
-    <None Include="Project Documents\scenario-editor.docx" />
     <None Include="Project Documents\scenario-editor-wireframe.xlsx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -344,9 +341,6 @@
     <Resource Include="Project Documents\ddn-original.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Project Documents\ddn-prism.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
