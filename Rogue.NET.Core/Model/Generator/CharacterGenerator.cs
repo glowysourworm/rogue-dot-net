@@ -135,6 +135,11 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior);
             enemy.BehaviorDetails.SecondaryProbability = enemyTemplate.BehaviorDetails.SecondaryProbability;
             enemy.BehaviorDetails.SecondaryReason = enemyTemplate.BehaviorDetails.SecondaryReason;
+            enemy.BehaviorDetails.CanOpenDoors = enemyTemplate.BehaviorDetails.CanOpenDoors;
+            enemy.BehaviorDetails.CounterAttackProbability = enemyTemplate.BehaviorDetails.CounterAttackProbability;
+            enemy.BehaviorDetails.CriticalRatio = enemyTemplate.BehaviorDetails.CriticalRatio;
+            enemy.BehaviorDetails.DisengageRadius = enemyTemplate.BehaviorDetails.DisengageRadius;
+            enemy.BehaviorDetails.EngageRadius = enemyTemplate.BehaviorDetails.EngageRadius;
 
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                    .ToDictionary(x => x.RogueName);

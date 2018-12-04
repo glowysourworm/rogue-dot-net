@@ -12,14 +12,17 @@ namespace Rogue.NET.Core.Model.Generator
     {
         private readonly IRandomSequenceGenerator _randomSequenceGenerator;
         private readonly IAttackAttributeGenerator _attackAttributeGenerator;
+        private readonly IAlteredStateGenerator _alteredStateGenerator;
 
         [ImportingConstructor]
         public AlterationGenerator(
             IRandomSequenceGenerator randomSequenceGenerator, 
-            IAttackAttributeGenerator attackAttributeGenerator)
+            IAttackAttributeGenerator attackAttributeGenerator,
+            IAlteredStateGenerator alteredStateGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
+            _alteredStateGenerator = alteredStateGenerator;
         }
 
         public AlterationContainer GenerateAlteration(Spell spell)
@@ -77,18 +80,17 @@ namespace Rogue.NET.Core.Model.Generator
             alterationEffect.MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
             alterationEffect.Mp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
             alterationEffect.MpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
-            alterationEffect.PostEffectString = alterationEffectTemplate.PostEffectText;
             alterationEffect.RogueName = alterationEffectTemplate.Name;
             alterationEffect.Speed = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
-            alterationEffect.State = alterationEffectTemplate.StateType;
+            alterationEffect.State = _alteredStateGenerator.GenerateAlteredState(alterationEffectTemplate.AlteredState);
             alterationEffect.Strength = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
             alterationEffect.SymbolAlteration = alterationEffectTemplate.SymbolAlteration;
             alterationEffect.RogueName = spellName;
             alterationEffect.DisplayName = spellDisplayName;
             alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
 
-            //Store remedied spell name
-            alterationEffect.RemediedSpellName = alterationEffectTemplate.RemediedSpellName;
+            //Store remedied state name
+            alterationEffect.RemediedStateName = alterationEffectTemplate.RemediedState.Name;
 
             //Attack Attributes
             alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes

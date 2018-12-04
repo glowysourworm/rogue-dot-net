@@ -11,8 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private SymbolDetailsTemplateViewModel _symbolAlteration;
         private bool _isSymbolAlteration;
         private RangeViewModel<int> _eventTime;
-        private CharacterStateType _stateType;
-        private string _postEffectText;
+        private AlteredCharacterStateTemplateViewModel _alteredState;
+        private AlteredCharacterStateTemplateViewModel _remediedState;
         private RangeViewModel<double> _strengthRange;
         private RangeViewModel<double> _intelligenceRange;
         private RangeViewModel<double> _agilityRange;
@@ -30,8 +30,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private RangeViewModel<double> _hpRange;
         private RangeViewModel<double> _mpRange;
         private RangeViewModel<double> _criticalHit;
-        private bool _isSilence;
-        private string _remediedSpellName;
 
         public SymbolDetailsTemplateViewModel SymbolAlteration
         {
@@ -48,20 +46,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _eventTime; }
             set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
         }
-        public CharacterStateType StateType
+        public AlteredCharacterStateTemplateViewModel AlteredState
         {
-            get { return _stateType; }
-            set { this.RaiseAndSetIfChanged(ref _stateType, value); }
+            get { return _alteredState; }
+            set { this.RaiseAndSetIfChanged(ref _alteredState, value); }
         }
-        public string PostEffectText
+        public AlteredCharacterStateTemplateViewModel RemediedState
         {
-            get { return _postEffectText; }
-            set { this.RaiseAndSetIfChanged(ref _postEffectText, value); }
-        }
-        public string RemediedSpellName
-        {
-            get { return _remediedSpellName; }
-            set { this.RaiseAndSetIfChanged(ref _remediedSpellName, value); }
+            get { return _remediedState; }
+            set { this.RaiseAndSetIfChanged(ref _remediedState, value); }
         }
         public RangeViewModel<double> StrengthRange
         {
@@ -148,11 +141,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _criticalHit; }
             set { this.RaiseAndSetIfChanged(ref _criticalHit, value); }
         }
-        public bool IsSilence
-        {
-            get { return _isSilence; }
-            set { this.RaiseAndSetIfChanged(ref _isSilence, value); }
-        }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
@@ -182,7 +170,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.RemediedSpellName = "";
+            this.AlteredState = new AlteredCharacterStateTemplateViewModel();
+            this.RemediedState = new AlteredCharacterStateTemplateViewModel();
         }
     }
 }

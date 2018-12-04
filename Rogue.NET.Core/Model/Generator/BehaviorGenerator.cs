@@ -21,12 +21,7 @@ namespace Rogue.NET.Core.Model.Generator
         {
             Behavior behavior = new Behavior();
             behavior.AttackType = behaviorTemplate.AttackType;
-            behavior.CanOpenDoors = behaviorTemplate.CanOpenDoors;
-            behavior.CounterAttackProbability = behaviorTemplate.CounterAttackProbability;
-            behavior.CriticalRatio = behaviorTemplate.CriticalRatio;
-            behavior.DisengageRadius = behaviorTemplate.DisengageRadius;
             behavior.EnemySkill = _spellGenerator.GenerateSpell(behaviorTemplate.EnemySpell);
-            behavior.EngageRadius = behaviorTemplate.EngageRadius;
             behavior.MovementType = behaviorTemplate.MovementType;
             return behavior;
         }

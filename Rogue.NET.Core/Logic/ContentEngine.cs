@@ -286,10 +286,10 @@ namespace Rogue.NET.Core.Logic
             var distance = Calculator.RoguianDistance(enemy.Location, player.Location);
 
             //Check for engaged
-            if (distance < enemy.BehaviorDetails.CurrentBehavior.EngageRadius)
+            if (distance < enemy.BehaviorDetails.EngageRadius)
                 enemy.IsEngaged = true;
 
-            if (distance > enemy.BehaviorDetails.CurrentBehavior.DisengageRadius)
+            if (distance > enemy.BehaviorDetails.DisengageRadius)
                 enemy.IsEngaged = false;
 
             if (!enemy.IsEngaged)
@@ -567,16 +567,12 @@ namespace Rogue.NET.Core.Logic
             {
                 //Check altered states
 
-                //Sleeping
-                if (enemy.IsSleeping())
-                    continue;
-
-                //Paralyzed
-                else if (enemy.IsParalyzed())
+                // Can't Move (Is sleeping, paralyzed, etc..)
+                if (enemy.Is(CharacterStateType.CantMove))
                     continue;
 
                 //Confused - check during calculate character move
-                var willConfusedStrikeMelee = _randomSequenceGenerator.Get() <= ModelConstants.ConfusedStrikeProbability;
+                var willRandomStrikeMelee = _randomSequenceGenerator.Get() <= ModelConstants.RandomStrikeProbability;
 
                 var actionTaken = false;
 
@@ -588,7 +584,7 @@ namespace Rogue.NET.Core.Logic
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
                             // Attack Conditions: location is non-null; AND enemy is not confused; OR enemy is confused and can strike
-                            if (attackLocation != null && (!enemy.IsConfused() || (enemy.IsConfused() && willConfusedStrikeMelee)))
+                            if (attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly) || (enemy.Is(CharacterStateType.MovesRandomly) && willRandomStrikeMelee)))
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
@@ -599,7 +595,7 @@ namespace Rogue.NET.Core.Logic
                         }
                         break;
                     case CharacterAttackType.Skill:
-                        if (!enemy.IsConfused())
+                        if (!enemy.Is(CharacterStateType.MovesRandomly))
                         {
                             // Must have line of sight to player
                             var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
@@ -635,7 +631,7 @@ namespace Rogue.NET.Core.Logic
         private CellPoint CalculateEnemyMoveLocation(Enemy enemy, CellPoint desiredLocation)
         {
             //Return random if confused
-            if (enemy.IsConfused())
+            if (enemy.Is(CharacterStateType.MovesRandomly))
                 return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
 
             switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
@@ -651,7 +647,7 @@ namespace Rogue.NET.Core.Logic
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
-                    var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.CurrentBehavior.DisengageRadius);
+                    var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.DisengageRadius);
                     return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault();
@@ -688,7 +684,7 @@ namespace Rogue.NET.Core.Logic
                                 out shouldMoveToOpeningPosition1);
 
             // Behavior allows opening of doors
-            if (enemy.BehaviorDetails.CurrentBehavior.CanOpenDoors && throughDoor)
+            if (enemy.BehaviorDetails.CanOpenDoors && throughDoor)
             {
                 // If have to move into position first then move
                 if (shouldMoveToOpeningPosition1)

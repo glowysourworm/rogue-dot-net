@@ -10,11 +10,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public CharacterMovementType MovementType { get; set; }
         public CharacterAttackType AttackType { get; set; }
         public Spell EnemySkill { get; set; }
-        public bool CanOpenDoors { get; set; }
-        public double EngageRadius { get; set; }
-        public double DisengageRadius { get; set; }
-        public double CriticalRatio { get; set; }
-        public double CounterAttackProbability { get; set; }
 
         public Behavior()
         {

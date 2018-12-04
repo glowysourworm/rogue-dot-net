@@ -256,25 +256,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return result;
         }
 
-        public static bool IsConfused(this Player player)
+        public static bool Is(this Player player, CharacterStateType characterStateType)
         {
-            return player.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Confused);
-        }
-        public static bool IsMuted(this Player player)
-        {
-            return player.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Silenced);
-        }
-        public static bool IsParalyzed(this Player player)
-        {
-            return player.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Paralyzed);
-        }
-        public static bool IsBlind(this Player player)
-        {
-            return player.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Blind);
-        }
-        public static bool IsSleeping(this Player player)
-        {
-            return player.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Sleeping);
+            return player.Alteration.GetAlterations().Any(x => x.State.BaseType == characterStateType);
         }
 
         public static void ApplyLimits(this Player player)

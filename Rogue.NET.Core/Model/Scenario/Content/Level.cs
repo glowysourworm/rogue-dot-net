@@ -29,6 +29,9 @@ namespace Rogue.NET.Core.Model.Scenario
         public DoodadNormal StairsDown { get; protected set; }
         public DoodadNormal SavePoint { get; protected set; }
 
+        public string WallColor { get; protected set; }
+        public string DoorColor { get; protected set; }
+
         IList<Enemy> _enemies;
         IList<Equipment> _equipment;
         IList<Consumable> _consumables;
@@ -75,11 +78,13 @@ namespace Rogue.NET.Core.Model.Scenario
         }
 
         public Level() { } 
-        public Level(LevelGrid grid, LayoutType layoutType, int number)
+        public Level(LevelGrid grid, LayoutType layoutType, int number, string wallColor, string doorColor)
         {
             this.Type = layoutType;
             this.Grid = grid;
             this.Number = number;
+            this.WallColor = wallColor;
+            this.DoorColor = doorColor;
 
             this.StairsDown = null;
             this.StairsUp = null;

@@ -14,6 +14,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private double _generationRatio;
         private LayoutType _type;
         private RangeViewModel<int> _levelRange;
+        private string _wallColor;
+        private string _doorColor;
 
         public int NumberRoomRows
         {
@@ -59,6 +61,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _levelRange; }
             set { this.RaiseAndSetIfChanged(ref _levelRange, value); }
+        }
+        public string WallColor
+        {
+            get { return _wallColor; }
+            set { this.RaiseAndSetIfChanged(ref _wallColor, value); }
+        }
+        public string DoorColor
+        {
+            get { return _doorColor; }
+            set { this.RaiseAndSetIfChanged(ref _doorColor, value); }
         }
 
         public LayoutTemplateViewModel() : base()

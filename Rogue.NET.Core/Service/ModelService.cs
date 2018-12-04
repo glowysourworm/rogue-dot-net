@@ -193,7 +193,7 @@ namespace Rogue.NET.Core.Service
                 _rayTracer.CalculateVisibility(
                     this.Level.Grid, 
                     this.Player.Location, 
-                    this.Player.IsBlind() ? 1 : (int)lightRadius, 
+                    this.Player.Is(CharacterStateType.Blind) ? 1 : (int)lightRadius, 
                     out lineOfSightLocations);
 
             // Reset flag for line of sight locations

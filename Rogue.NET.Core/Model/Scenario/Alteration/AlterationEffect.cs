@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 
@@ -11,13 +10,13 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public SymbolDetailsTemplate SymbolAlteration { get; set; }
         public bool IsSymbolAlteration { get; set; }
 
-        public string PostEffectString { get; set; }
         public string DisplayName { get; set; }
 
         //Passive Aura's only: Copied to aura effect from alteration
         public double EffectRange { get; set; }
 
-        public CharacterStateType State { get; set; }
+        public AlteredCharacterState State { get; set; }
+        public string RemediedStateName { get; set; }
         public int EventTime { get; set; }
 
         public double Strength { get; set; }
@@ -43,11 +42,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
 
         public IList<AttackAttribute> AttackAttributes { get; set; }
 
-        /// <summary>
-        /// Spell RogueName that is removed via this alteration effect - permanent alterations only
-        /// </summary>
-        public string RemediedSpellName { get; set; }
-
-        public AlterationEffect() { this.AttackAttributes = new List<AttackAttribute>(); }
+        public AlterationEffect()
+        {
+            this.AttackAttributes = new List<AttackAttribute>();
+            this.State = new AlteredCharacterState();
+        }
     }
 }

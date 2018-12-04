@@ -7,10 +7,9 @@ namespace Rogue.NET.Core.Model.Enums
         //No turn impedement
         Normal = 0,
         Blind = 1,
-        Paralyzed = 2,
-        Sleeping = 4,
-        Confused = 8,
-        Silenced = 16
+        CantMove = 2,
+        MovesRandomly = 4,
+        CantUseSkills = 8
     }
     /// <summary>
     /// Specifies character movement

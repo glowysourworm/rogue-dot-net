@@ -12,8 +12,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private SymbolDetailsTemplate _symbolAlteration;
         private bool _isSymbolAlteration;
         private Range<int> _eventTime;
-        private CharacterStateType _stateType;
-        private string _postEffectText;
+        private AlteredCharacterStateTemplate _alteredState;
+        private AlteredCharacterStateTemplate _remediedState;
         private Range<double> _strengthRange;
         private Range<double> _intelligenceRange;
         private Range<double> _agilityRange;
@@ -30,9 +30,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private Range<double> _hungerRange;
         private Range<double> _hpRange;
         private Range<double> _mpRange;
-        private Range<double> _criticalHit;
-        private bool _isSilence;
-        private string _remediedSpellName;
+        private Range<double> _criticalHit;        
 
         public SymbolDetailsTemplate SymbolAlteration
         {
@@ -70,39 +68,27 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public CharacterStateType StateType
+        public AlteredCharacterStateTemplate AlteredState
         {
-            get { return _stateType; }
+            get { return _alteredState; }
             set
             {
-                if (_stateType != value)
+                if (_alteredState != value)
                 {
-                    _stateType = value;
-                    OnPropertyChanged("StateType");
+                    _alteredState = value;
+                    OnPropertyChanged("AlteredState");
                 }
             }
         }
-        public string PostEffectText
+        public AlteredCharacterStateTemplate RemediedState
         {
-            get { return _postEffectText; }
+            get { return _remediedState; }
             set
             {
-                if (_postEffectText != value)
+                if (_remediedState != value)
                 {
-                    _postEffectText = value;
-                    OnPropertyChanged("PostEffectText");
-                }
-            }
-        }
-        public string RemediedSpellName
-        {
-            get { return _remediedSpellName; }
-            set
-            {
-                if (_remediedSpellName != value)
-                {
-                    _remediedSpellName = value;
-                    OnPropertyChanged("RemediedSpellName");
+                    _remediedState = value;
+                    OnPropertyChanged("RemediedState");
                 }
             }
         }
@@ -310,24 +296,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public bool IsSilence
-        {
-            get { return _isSilence; }
-            set
-            {
-                if (_isSilence != value)
-                {
-                    _isSilence = value;
-                    OnPropertyChanged("IsSilence");
-                }
-            }
-        }
 
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
         public AlterationEffectTemplate()
         {
             this.SymbolAlteration = new SymbolDetailsTemplate();
+            this.AlteredState = new AlteredCharacterStateTemplate(); // Creates a state of "Normal"
             this.EventTime = new Range<int>(0, 20, 30, 1000);
 
             this.AgilityRange = new Range<double>(-100, 0, 0, 100);
@@ -350,7 +325,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.CriticalHit = new Range<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.RemediedSpellName = "";
+            this.RemediedState = new AlteredCharacterStateTemplate();
         }
     }
 }

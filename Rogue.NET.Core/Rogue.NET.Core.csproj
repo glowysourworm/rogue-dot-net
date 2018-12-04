@@ -139,6 +139,8 @@
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
+    <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
@@ -229,6 +231,7 @@
     <Compile Include="Model\ScenarioConfiguration\Abstract\Template.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCostTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SpellTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationTemplate.cs" />
@@ -261,6 +264,7 @@
     <Compile Include="Model\Scenario\Alteration\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\AlterationCost.cs" />
     <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\AttackAttribute.cs" />
     <Compile Include="Model\Scenario\Character\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\BehaviorDetails.cs" />

@@ -167,7 +167,7 @@ namespace Rogue.NET.Core.Logic.Content
             }
 
             // Enemy counter-attacks
-            if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CurrentBehavior.CounterAttackProbability)
+            if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CounterAttackProbability)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, enemy.RogueName + " counter attacks");
 
@@ -253,7 +253,7 @@ namespace Rogue.NET.Core.Logic.Content
             var attackBase = _randomSequenceGenerator.Get() * (enemy.GetAttack() - player.GetDefense());
             var attack = attackBase;
             var dodge = _randomSequenceGenerator.Get() <= player.GetDodge();
-            var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CurrentBehavior.CriticalRatio;
+            var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CriticalRatio;
 
             // Store attack attribute interaction
             var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();

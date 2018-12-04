@@ -304,6 +304,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SkillSetTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\SpellTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationTemplateViewModel.cs" />

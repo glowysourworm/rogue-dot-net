@@ -22,6 +22,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public SecondaryBehaviorInvokeReason SecondaryReason { get; set; }
         public double SecondaryProbability { get; set; }
         public bool IsSecondaryBehavior { get; set; }
+        public bool CanOpenDoors { get; set; }
+        public double EngageRadius { get; set; }
+        public double DisengageRadius { get; set; }
+        public double CriticalRatio { get; set; }
+        public double CounterAttackProbability { get; set; }
 
         public BehaviorDetails()
         {

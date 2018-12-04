@@ -304,7 +304,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void ApplyRemedy(Player player, AlterationEffect alterationEffect)
         {
             // Alteration applies remedy to remove or modify internal collections
-            var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
+            var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);
 
             foreach (var effect in remediedEffects)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Good, effect.DisplayName + " has been cured!");
@@ -312,7 +312,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
         {
             // Alteration applies remedy to remove or modify internal collections
-            var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedSpellName);
+            var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);
 
             foreach (var effect in remediedEffects)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " has cured " + effect.DisplayName);

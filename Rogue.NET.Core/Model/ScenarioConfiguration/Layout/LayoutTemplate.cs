@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 {
@@ -16,6 +17,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private double _generationRatio;
         private LayoutType _type;
         private Range<int> _levelRange;
+        private string _wallColor;
+        private string _doorColor;
 
         public int NumberRoomRows
         {
@@ -125,6 +128,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public string WallColor
+        {
+            get { return _wallColor; }
+            set
+            {
+                if (_wallColor != value)
+                {
+                    _wallColor = value;
+                    OnPropertyChanged("WallColor");
+                }
+            }
+        }
+        public string DoorColor
+        {
+            get { return _doorColor; }
+            set
+            {
+                if (_doorColor != value)
+                {
+                    _doorColor = value;
+                    OnPropertyChanged("DoorColor");
+                }
+            }
+        }
 
         public LayoutTemplate() : base()
         {
@@ -137,6 +164,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.NumberExtraWallRemovals = 200;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
+
+            this.WallColor = Colors.Blue.ToString();
+            this.DoorColor = Colors.Fuchsia.ToString();
         }
     }
 }

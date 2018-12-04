@@ -167,7 +167,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// <summary>
         /// Returns accumulated character state enums from all active (non-attack attribute) alterations.
         /// </summary>
-        public IEnumerable<CharacterStateType> GetStates()
+        public IEnumerable<AlteredCharacterState> GetStates()
         {
             return GetAlterations().Select(x => x.State);
         }
@@ -239,13 +239,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             return result;
         }
 
-        public IEnumerable<AlterationEffect> ApplyRemedy(string remediedSpellName)
+        public IEnumerable<AlterationEffect> ApplyRemedy(string remediedStateName)
         {
             // Gather all effects that are remedied
             var result =
-                this.ActiveTemporaryEffects.Where(x => x.Key.SpellRogueName == remediedSpellName)
-                    .Union(this.AttackAttributeTemporaryFriendlyEffects.Where(x => x.Key.SpellRogueName == remediedSpellName))
-                    .Union(this.AttackAttributeTemporaryMalignEffects.Where(x => x.Key.SpellRogueName == remediedSpellName))
+                this.ActiveTemporaryEffects.Where(x => x.Value.State.RogueName == remediedStateName)
+                    .Union(this.AttackAttributeTemporaryFriendlyEffects.Where(x => x.Value.State.RogueName == remediedStateName))
+                    .Union(this.AttackAttributeTemporaryMalignEffects.Where(x => x.Value.State.RogueName == remediedStateName))
                     .Select(x => x.Value)
                     .ToList();
 

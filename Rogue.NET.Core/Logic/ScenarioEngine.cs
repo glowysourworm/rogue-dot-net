@@ -72,28 +72,20 @@ namespace Rogue.NET.Core.Logic
         public LevelContinuationAction ProcessAlteredPlayerState()
         {
             var player = _modelService.Player;
-            var states = player.Alteration.GetStates();
 
-            if (states.Any(z => z != CharacterStateType.Normal))
-            {
-                //Sleeping
-                if (states.Any(z => z == CharacterStateType.Sleeping))
+            foreach (var alteredState in player.Alteration.GetStates())
+            { 
+                // Can't Move
+                if (alteredState.BaseType == CharacterStateType.CantMove)
                 {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is asleep!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is " + alteredState.RogueName);
                     return LevelContinuationAction.ProcessTurn;
                 }
 
-                //Paralyzed
-                else if (states.Any(z => z == CharacterStateType.Paralyzed))
+                // Moves Randomly
+                else if (alteredState.BaseType == CharacterStateType.MovesRandomly)
                 {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is paralyzed!");
-                    return LevelContinuationAction.ProcessTurn;
-                }
-
-                //Confused
-                else if (states.Any(z => z == CharacterStateType.Confused))
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is confused!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is " + alteredState.RogueName);
                     var obj = MoveRandom();
 
                     if (obj is Consumable || obj is Equipment)

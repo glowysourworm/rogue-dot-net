@@ -252,25 +252,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return result;
         }
 
-        public static bool IsConfused(this Enemy enemy)
+        public static bool Is(this Enemy enemy, CharacterStateType characterStateType)
         {
-            return enemy.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Confused);
-        }
-        public static bool IsMuted(this Enemy enemy)
-        {
-            return enemy.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Silenced);
-        }
-        public static bool IsParalyzed(this Enemy enemy)
-        {
-            return enemy.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Paralyzed);
-        }
-        public static bool IsBlind(this Enemy enemy)
-        {
-            return enemy.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Blind);
-        }
-        public static bool IsSleeping(this Enemy enemy)
-        {
-            return enemy.Alteration.GetAlterations().Any(x => x.State == CharacterStateType.Sleeping);
+            return enemy.Alteration.GetAlterations().Any(x => x.State.BaseType == characterStateType);
         }
 
         public static void ApplyLimits(this Enemy enemy)

@@ -115,7 +115,7 @@ namespace Rogue.NET.Core.Model.Generator
                     }
                     break;
             }
-            return new Level(grid, template.Type, levelNumber);
+            return new Level(grid, template.Type, levelNumber, template.WallColor, template.DoorColor);
         }
         private void CreateRoomGrid(LevelGrid grid, LayoutTemplate template)
         {
