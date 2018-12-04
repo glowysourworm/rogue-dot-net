@@ -87,11 +87,13 @@
         </Grid>
         <Grid Margin="10" 
               Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Remedy}}">
-            <TextBlock Foreground="White" Text="Remedied Effect" />
-            <ComboBox x:Name="RemediedSpellCB" 
-                        SelectedValue="{Binding Effect.RemediedSpellName}"
-                        SelectedValuePath="Name"                          
-                        DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
+            <TextBlock Foreground="White" Text="Remedied Altered State" />
+            <ComboBox x:Name="RemediedStateCB" 
+                      SelectedItem="{Binding Effect.RemediedState}"
+                      SelectedValue="{Binding Effect.RemediedState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
         </Grid>        
         <Grid Margin="10"
               Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">

@@ -6,6 +6,8 @@
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -88,6 +90,50 @@
                             </GroupBox>
                         </StackPanel>
                     </TabItem>
+                    <TabItem Header="Altered Character States">
+                        <StackPanel x:Name="AlteredStateStack">
+                            <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Altered Character States are altered states that you can define here; and are available to attach to alterations. They are based on types supported by Rogue.NET such as &quot;Can't Move&quot; (Paralyzed) or &quot;Moves Randomly&quot; (Confused). Use these to define an array of special types to attach to your Alterations. NOTE*** These types support Remedies - which are applied to remove Alteration Effects with these altered types." />
+                            <Grid Margin="10,0,10,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <TextBlock Margin="8" VerticalAlignment="Top" Text="New Altered State: " Foreground="White" />
+                                    <extension:UpdatingTextBox x:Name="AlteredStateTB" VerticalAlignment="Top" Margin="8" Width="100" />
+                                    <controls:ImageEnumComboBox x:Name="AlteredStateSymbolCB" VerticalAlignment="Top" Margin="8" Width="140" />
+                                    <commonView:EnumComboBox x:Name="AlteredStateEnumCB" EnumType="{x:Type coreModelEnums:CharacterStateType}" VerticalAlignment="Top" Margin="8" Width="140" />
+                                    <Button x:Name="AddAlteredStateButton" ToolTip="Add" Click="AddAlteredStateButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                    <Button x:Name="RemoveAlteredStateButton" ToolTip="Remove" Click="RemoveAlteredStateButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                </StackPanel>
+                            </Grid>
+                            <GroupBox Header="Altered State List" Margin="10">
+                                <ListBox x:Name="AlteredStateLB" ItemsSource="{Binding AlteredCharacterStates}" SelectionChanged="AlteredStateLB_SelectionChanged" MaxHeight="180" SelectionMode="Single">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image HorizontalAlignment="Left">
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                                            <Binding Path="SymbolDetails.Icon" />
+                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                            <Binding Path="SymbolDetails.Type" />
+                                                        </MultiBinding>
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock VerticalAlignment="Center" FontSize="14" Margin="10,0,0,0">
+                                                    <Run Text="(Base Type) " />
+                                                    <Run Text="{Binding BaseType}" />
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </GroupBox>
+                        </StackPanel>
+                    </TabItem>                    
                 </TabControl>
             </Grid>
         </Grid>

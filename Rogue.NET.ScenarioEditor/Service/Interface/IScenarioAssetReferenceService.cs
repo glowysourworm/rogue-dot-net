@@ -42,6 +42,12 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
+        /// Updates Altered Character State references on Alterations. This will set dangling references
+        /// to default (new AlteredCharacterStateTemplate) - which will be a "Normal" Base Type.
+        /// </summary>
+        void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
         /// Updates Item references on Enemies, and Player
         /// </summary>
         void UpdateItems(ScenarioConfigurationContainerViewModel configuration);

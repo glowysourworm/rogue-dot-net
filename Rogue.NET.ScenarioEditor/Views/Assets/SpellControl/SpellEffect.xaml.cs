@@ -28,7 +28,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
-                this.RemediedSpellNameCB.ItemsSource = configuration.MagicSpells;
+                this.AlteredStateCB.ItemsSource = configuration.AlteredCharacterStates;
             });
         }
     }

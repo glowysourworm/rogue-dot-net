@@ -4,12 +4,40 @@ namespace Rogue.NET.Core.Model.Enums
     [Flags]
     public enum CharacterStateType : uint
     {
-        //No turn impedement
+        /// <summary>
+        /// No turn impedement - no abnormal state
+        /// </summary>
         Normal = 0,
+
+        /// <summary>
+        /// Impedes vision - light radius calculation of 1.
+        /// </summary>
         Blind = 1,
+
+        /// <summary>
+        /// Impedes character movement
+        /// </summary>
         CantMove = 2,
+
+        /// <summary>
+        /// Causes character to move randomly
+        /// </summary>
         MovesRandomly = 4,
-        CantUseSkills = 8
+
+        /// <summary>
+        /// Impedes character skill use
+        /// </summary>
+        CantUseSkills = 8,
+
+        /// <summary>
+        /// Character not engaged by enemies - enemies will have a visibility calculation that is different.
+        /// </summary>
+        Invisible = 16,
+
+        /// <summary>
+        /// Considered Abnormal; but does not require any support from the game engine.
+        /// </summary>
+        Abnormal
     }
     /// <summary>
     /// Specifies character movement

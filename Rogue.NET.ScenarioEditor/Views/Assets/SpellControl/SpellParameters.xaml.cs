@@ -18,7 +18,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
             {
                 this.CreateMonsterCB.ItemsSource = configuration.EnemyTemplates;
-                this.RemediedSpellCB.ItemsSource = configuration.MagicSpells;
+                this.RemediedStateCB.ItemsSource = configuration.AlteredCharacterStates;
                 this.AnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
             });
 

@@ -8,6 +8,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -73,6 +74,27 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
+        }
+
+        public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
+        {
+            // Alterations
+            foreach (var spell in configuration.MagicSpells)
+            {
+                // Fix for initializing existing scenarios
+                spell.Effect.AlteredState = spell.Effect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
+                spell.AuraEffect.AlteredState = spell.AuraEffect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
+
+                // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
+                //         should not interfere with operation because references aren't kept strongly (there's allowance for
+                //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
+                //         character operation).
+                spell.Effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.Effect.AlteredState) ??
+                                            new AlteredCharacterStateTemplateViewModel();
+
+                spell.AuraEffect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.AuraEffect.AlteredState) ??
+                                            new AlteredCharacterStateTemplateViewModel();
+            }
         }
 
         public void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration)

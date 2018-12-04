@@ -119,6 +119,17 @@
                         </RadioButton.Content>
                     </RadioButton>
                 </StackPanel>
+                <!-- Remedy -->
+                <RadioButton GroupName="TypeGroup" 
+                             x:Name="RemedyRB" 
+                             IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Remedy}}"
+                             Foreground="White" 
+                             Margin="8">
+                    <RadioButton.Content>
+                        <TextBlock  TextWrapping="Wrap"
+                                    Text="Remedy:  Spell that removes an Altered State from a character" />
+                    </RadioButton.Content>
+                </RadioButton>                
                 <!-- Teleport -->
                 <RadioButton GroupName="TypeGroup" x:Name="TeleportRB" Foreground="White" Margin="8">
                     <RadioButton.Content>
@@ -185,13 +196,13 @@
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.ImbueArmor}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
-                                Text="Imbue: Permanently alters the attack attributes of a suit of Armor" />
+                                Text="Imbue Armor: Permanently alters the attack attributes of a suit of Armor" />
                         </RadioButton.Content>
                     </RadioButton>
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.ImbueWeapon}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
-                                Text="Imbue: Permanently alters the attack attributes of a One-Handed or Two-Handed Weapon" />
+                                Text="Imbue Weapon: Permanently alters the attack attributes of a One-Handed or Two-Handed Weapon" />
                         </RadioButton.Content>
                     </RadioButton>                    
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.Passive}}" Foreground="White" Margin="8">

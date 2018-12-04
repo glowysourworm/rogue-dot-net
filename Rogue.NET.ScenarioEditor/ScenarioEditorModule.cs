@@ -13,6 +13,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl;
@@ -209,6 +210,54 @@ namespace Rogue.NET.ScenarioEditor
 
                 // Update Scenario object references
                 _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
+                LoadConstruction("General");
+            });
+
+            _eventAggregator.GetEvent<AddAlteredCharacterStateEvent>().Subscribe((e) =>
+            {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Add Attack Attribute to the scenario
+                _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Add(new AlteredCharacterStateTemplateViewModel()
+                {
+                    Name = e.Name,
+                    SymbolDetails = new SymbolDetailsTemplateViewModel()
+                    {
+                        Type = SymbolTypes.Image,
+                        Icon = e.Icon
+                    },
+                    BaseType = e.BaseType
+                });
+
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
+                LoadConstruction("General");
+            });
+            _eventAggregator.GetEvent<RemoveAlteredCharacterStateEvent>().Subscribe((e) =>
+            {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Remove Attack Attribute from the scenario
+                _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Remove(e);
+
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();

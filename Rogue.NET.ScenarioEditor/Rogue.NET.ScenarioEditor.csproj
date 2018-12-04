@@ -250,6 +250,7 @@
     <Compile Include="Converter\SymbolDetailsMultiConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
+    <Compile Include="Events\AddAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddAttackAttributeEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
@@ -258,6 +259,7 @@
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\LoadScenarioEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
+    <Compile Include="Events\RemoveAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
     <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />

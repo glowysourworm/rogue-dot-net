@@ -16,6 +16,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -38,78 +39,42 @@ namespace Rogue.NET.ScenarioEditor.Utility
     {
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
         {
-            // Create an instance mapper and ignore collections (have to be done by hand - not clear support
-            // for generics - need to specify mapping between List <--> ObservableCollection
-            var mapper = Mapper.CreateNew();
-
-            // IGNORE COLLECTIONS
-            mapper.WhenMapping
-                  .IgnoreTargetMembersOfType<IList>();
-
-            var result = MapRecurse<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, mapper);
+            var result = MapObject<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model);
 
             return FixReferences(result);
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)
         {
-            // Create an instance mapper and ignore collections (have to be done by hand - not clear support
-            // for generics - need to specify mapping between List <--> ObservableCollection
-            var mapper = Mapper.CreateNew();
-
-            // IGNORE COLLECTIONS
-            mapper.WhenMapping
-                  .IgnoreTargetMembersOfType<IList>();
-
-            var result = MapRecurse<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel, mapper);
+            var result = MapObject<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel);
 
             return FixReferences(result);
         }
 
-        public TDest MapRecurse<TSource, TDest>(TSource source, IMapper mapper)
+        public TDest MapObject<TSource, TDest>(TSource source)
         {
             // Map base ignoring collections
-            var dest = mapper.Map(source).ToANew<TDest>();
+            var dest = Construct<TDest>();
 
             // Map collection properties separately
             var destProperties = typeof(TDest).GetProperties()
-                                                        .ToDictionary(x => x.Name, x => x);
+                                              .ToDictionary(x => x.Name, x => x);
 
             var sourceProperties = typeof(TSource).GetProperties()
-                                                            .ToDictionary(x => x.Name, x => x);
+                                                  .ToDictionary(x => x.Name, x => x);
 
             foreach (var sourceProperty in sourceProperties)
             {
-                // Can skip value types
-                if (sourceProperty.Value.PropertyType.IsValueType)
+                // Source Object
+                var sourcePropertyValue = sourceProperty.Value.GetValue(source);
+
+                // Skip Null Source Properties
+                if (sourcePropertyValue == null)
                     continue;
 
-                // HAVE TO SKIP NULL PROPERTIES (TBD)
-                if (sourceProperty.Value.GetValue(source) == null)
-                    continue;
-
-                // Non-Collection Complext Types
-                if (!typeof(IList).IsAssignableFrom(sourceProperty.Value.PropertyType))
+                // Have to check collections first
+                if (typeof(IList).IsAssignableFrom(sourceProperty.Value.PropertyType))
                 {
-                    // Source property to recurse
-                    var sourceObject = sourceProperty.Value.GetValue(source);
-
-                    // Source / Dest property types
-                    var sourceObjectType = sourceProperty.Value.PropertyType;
-                    var destObjectType = destProperties[sourceProperty.Key].PropertyType;
-
-                    // Create method call to MapBack<TSource, TDest> using reflection
-                    var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapRecurse");
-                    var genericMethodInfo = methodInfo.MakeGenericMethod(sourceObjectType, destObjectType);
-
-                    var destObject = genericMethodInfo.Invoke(this, new object[] { sourceObject, mapper });
-
-                    // Set Dest property
-                    destProperties[sourceProperty.Key].SetValue(dest, destObject);
-                }
-                // Collection
-                else
-                {
-                    var sourceList = (IList)sourceProperty.Value.GetValue(source);
+                    var sourceList = (IList)sourcePropertyValue;
 
                     if (sourceList.Count <= 0)
                         continue;
@@ -121,24 +86,54 @@ namespace Rogue.NET.ScenarioEditor.Utility
                     var destItemType = destProperties[sourceProperty.Key].PropertyType.GetGenericArguments().First();
 
                     // Call method to map collection items -> Recurses Map<,>
-                    MapCollection(sourceList, destList, sourceItemType, destItemType, mapper);
+                    MapCollectionInit(sourceList, destList, sourceItemType, destItemType);
+                }
+
+                // Next, Check for Value Types
+                else if (IsValueType(sourceProperty.Value.PropertyType))
+                    destProperties[sourceProperty.Key].SetValue(dest, sourcePropertyValue);
+
+                // Non-Collection Complex Types
+                else
+                {
+                    // Source / Dest property types
+                    var sourcePropertyType = sourceProperty.Value.PropertyType;
+                    var destPropertyType = destProperties[sourceProperty.Key].PropertyType;
+
+                    // Create method call to MapBack<TSource, TDest> using reflection
+                    var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapObject");
+                    var genericMethodInfo = methodInfo.MakeGenericMethod(sourcePropertyType, destPropertyType);
+
+                    var destObject = genericMethodInfo.Invoke(this, new object[] { sourcePropertyValue });
+
+                    // Set Dest property
+                    destProperties[sourceProperty.Key].SetValue(dest, destObject);
                 }
             }
 
             return dest;
         }
 
-        public void MapCollection(IList sourceCollection, IList destCollection, Type sourceItemType, Type destItemType, IMapper mapper)
+        public void MapCollectionInit(IList sourceCollection, IList destCollection, Type sourceItemType, Type destItemType)
         {
             // Create method call to MapBack<TSource, TDest> using reflection
-            var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapRecurse");
+            var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapCollection");
             var genericMethodInfo = methodInfo.MakeGenericMethod(sourceItemType, destItemType);
+
+            genericMethodInfo.Invoke(this, new object[] { sourceCollection, destCollection });
+        }
+
+        public void MapCollection<TSource, TDest>(IList<TSource> sourceCollection, IList<TDest> destCollection)
+        {
+            // Create method call to MapBack<TSource, TDest> using reflection
+            var methodInfo = typeof(ScenarioConfigurationMapper).GetMethod("MapObject");
+            var genericMethodInfo = methodInfo.MakeGenericMethod(typeof(TSource), typeof(TDest));
 
             // Use Recursion to map back object graph
             foreach (var sourceItem in sourceCollection)
             {
                 // Create destination item recursively
-                var destItem = genericMethodInfo.Invoke(this, new object[] { sourceItem, mapper });
+                var destItem = (TDest)genericMethodInfo.Invoke(this, new object[] { sourceItem });
 
                 // Add to destination collection
                 destCollection.Add(destItem);
@@ -161,6 +156,12 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.MagicSpells)
             {
                 MatchCollection(configuration.AnimationTemplates, template.Animations);
+
+                Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+                Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+
+                Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+                Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
             }
 
             // Skill Sets
@@ -196,7 +197,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
             {
-                for (int i=0;i<template.StartingConsumables.Count;i++)
+                for (int i = 0; i < template.StartingConsumables.Count; i++)
                     template.StartingConsumables[i].TheTemplate = Match(configuration.ConsumableTemplates, template.StartingConsumables[i].TheTemplate);
 
                 for (int i = 0; i < template.StartingEquipment.Count; i++)
@@ -231,6 +232,12 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.MagicSpells)
             {
                 MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
+
+                MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+                MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+
+                MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+                MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
             }
 
             // Skill Sets
@@ -297,7 +304,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         private void MatchCollection<T>(IList<T> source, IList<T> dest) where T : Template
         {
-            for (int i=0;i< dest.Count;i++)
+            for (int i = 0; i < dest.Count; i++)
                 dest[i] = source.First(x => x.Guid == dest[i].Guid);
         }
 
@@ -315,6 +322,21 @@ namespace Rogue.NET.ScenarioEditor.Utility
         {
             for (int i = 0; i < dest.Count; i++)
                 dest[i] = source.First(x => x.Guid == dest[i].Guid);
+        }
+
+        /// <summary>
+        /// Creates a new instance of type T using the default constructor
+        /// </summary>
+        private T Construct<T>()
+        {
+            var constructor = typeof(T).GetConstructor(new Type[] { });
+
+            return (T)(constructor == null ? default(T) : constructor.Invoke(new object[] { }));
+        }
+
+        private bool IsValueType(Type type)
+        {
+            return type.GetConstructor(new Type[] { }) == null;
         }
     }
 }

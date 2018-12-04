@@ -21,7 +21,41 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl Background="Black">
-        <TabItem Header="Primary Behavior">
+        <TabItem Header="Behavior">
+            <Grid>
+                <StackPanel>
+                    <Grid Margin="10,10,10,0">
+                        <TextBlock Foreground="White" Text="Secondary Behavior Invoke Reason" VerticalAlignment="Center" Margin="10" />
+                        <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
+                    </Grid>
+                    <Grid Margin="10,0,10,0" Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.Random}}">
+                        <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" Increment="0.01" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
+                        <TextBlock Foreground="White" Text="Secondary Invoke Probability" VerticalAlignment="Center" Margin="10" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
+                        <CheckBox IsChecked="{Binding BehaviorDetails.CanOpenDoors, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
+                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.EngageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
+                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
+                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
+                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </TabItem>        
+        <TabItem Header="Primary Behavior Selection">
             <Grid Margin="10">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
@@ -32,26 +66,6 @@
                         <Grid>
                             <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
                             <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
-                            <CheckBox IsChecked="{Binding BehaviorDetails.PrimaryBehavior.CanOpenDoors, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.EngageRadius, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.DisengageRadius, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
-                        </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
-                            <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CriticalRatio, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Minimum="0" Increment="0.01" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
-                        </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
-                            <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.PrimaryBehavior.CounterAttackProbability, Mode=TwoWay}"  AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
                         </Grid>
                         <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
                             <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
@@ -66,7 +80,7 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
-        <TabItem Header="Secondary Behavior" 
+        <TabItem Header="Secondary Behavior Selection" 
                  Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityVisibleConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.SecondaryNotInvoked}}">
             <Grid Margin="10">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -79,26 +93,6 @@
                             <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
                             <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
                         </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
-                            <CheckBox IsChecked="{Binding BehaviorDetails.SecondaryBehavior.CanOpenDoors, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.EngageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
-                        </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
-                            <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
-                        </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeMeleeVisibilityConverter}}">
-                            <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.SecondaryBehavior.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
-                        </Grid>
                         <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
                             <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
                             <ComboBox x:Name="SecondaryAttackSkillCB" 
@@ -107,23 +101,9 @@
                                         SelectedValuePath="Name"
                                         DisplayMemberPath="Name" 
                                         HorizontalAlignment="Right" Height="24" Width="200" />
-                        </Grid>                        
+                        </Grid>
                     </StackPanel>
                 </ScrollViewer>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Behavior Selection">
-            <Grid>
-                <StackPanel>
-                    <Grid Margin="10,10,10,0">
-                        <TextBlock Foreground="White" Text="Secondary Behavior Invoke Reason" VerticalAlignment="Center" Margin="10" />
-                        <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
-                    </Grid>
-                    <Grid Margin="10,0,10,0" Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.Random}}">
-                        <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" Increment="0.01" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
-                        <TextBlock Foreground="White" Text="Secondary Invoke Probability" VerticalAlignment="Center" Margin="10" />
-                    </Grid>
-                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>
