@@ -321,7 +321,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 var replaceItem = source.First(x => x.Guid == dest[i].Guid);
                 dest.RemoveAt(i);
                 dest.Insert(i, replaceItem);
-                //dest[i] = source.First(x => x.Guid == dest[i].Guid);
             }
         }
 
@@ -346,8 +345,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 var replaceItem = source.First(x => x.Guid == dest[i].Guid);
                 dest.RemoveAt(i);
                 dest.Insert(i, replaceItem);
-
-                //dest[i] = source.First(x => x.Guid == dest[i].Guid);
             }
         }
 
