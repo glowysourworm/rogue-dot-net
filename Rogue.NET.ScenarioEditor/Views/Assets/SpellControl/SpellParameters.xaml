@@ -20,6 +20,7 @@
             <TextBlock Text="Display Name" Foreground="White" />
             <extension:UpdatingTextBox Width="150" Text="{Binding DisplayName, Mode=TwoWay}" HorizontalAlignment="Right" />
         </Grid>
+        <!-- Stackable -->
         <Grid Margin="10">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
@@ -38,6 +39,8 @@
             <TextBlock Text="Stackable" Foreground="White" />
             <CheckBox IsChecked="{Binding Stackable, Mode=TwoWay}" HorizontalAlignment="Right" />
         </Grid>
+        
+        <!-- Is Symbol Alteration -->
         <Grid Margin="10">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
@@ -51,10 +54,14 @@
             <TextBlock Foreground="White" Text="Is Effect Symbol Alteration" HorizontalAlignment="Left" />
             <CheckBox IsChecked="{Binding Effect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
         </Grid>
+
+        <!-- Is Aura Symbol Alteration -->
         <Grid Margin="10" Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
             <TextBlock Foreground="White" Text="Is Aura Effect Symbol Alteration" HorizontalAlignment="Left" />
             <CheckBox IsChecked="{Binding AuraEffect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
         </Grid>        
+        
+        <!-- Effect Event Time -->
         <Grid Margin="10">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
@@ -69,7 +76,9 @@
             </Grid.Visibility>
             <TextBlock Foreground="White" Text="Event Time" />
             <controls:Range DataContext="{Binding Effect.EventTime}" />
-        </Grid>        
+        </Grid>
+
+        <!-- Create Monster -->
         <Grid Margin="10">
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
@@ -79,12 +88,54 @@
             </Grid.Visibility>
             <TextBlock Text="Create Monster Enemy" Foreground="White" />
             <ComboBox x:Name="CreateMonsterCB" 
-                                  SelectedItem="{Binding CreateMonsterEnemy, Mode=TwoWay}" 
-                                  SelectedValue="{Binding CreateMonsterEnemy.Name}"
+                                  SelectedValue="{Binding CreateMonsterEnemy}"
                                   DisplayMemberPath="Name"
                                   SelectedValuePath="Name"
                                   Width="150" HorizontalAlignment="Right"/>
         </Grid>
+
+        <!-- Effect Altered State -->
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.Passive}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Foreground="White" Text="Effect Altered State" HorizontalAlignment="Left" />
+            <ComboBox x:Name="AlteredStateCB" 
+                      SelectedItem="{Binding Effect.AlteredState}"
+                      SelectedValue="{Binding Effect.AlteredState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>
+
+        <!-- Aura Effect Altered State -->
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Foreground="White" Text="Effect Altered State" HorizontalAlignment="Left" />
+            <ComboBox x:Name="AlteredStateAuraCB" 
+                      SelectedItem="{Binding AuraEffect.AlteredState}"
+                      SelectedValue="{Binding AuraEffect.AlteredState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>        
+        
+        <!-- Remedied Altered State -->
         <Grid Margin="10" 
               Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Remedy}}">
             <TextBlock Foreground="White" Text="Remedied Altered State" />
@@ -94,12 +145,16 @@
                       SelectedValuePath="Name"
                       DisplayMemberPath="Name" 
                       HorizontalAlignment="Right" Height="24"  Width="250" />
-        </Grid>        
+        </Grid>
+
+        <!-- Effect Range -->
         <Grid Margin="10"
               Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
             <TextBlock Text="Effect Range" Foreground="White" />
             <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
         </Grid>
+
+        <!-- Animations -->
         <Grid Margin="10">
             <GroupBox Header="Animation" FontSize="18">
                 <StackPanel>

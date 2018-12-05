@@ -254,6 +254,7 @@
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddAttackAttributeEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
+    <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadConstructionEvent.cs" />

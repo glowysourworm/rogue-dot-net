@@ -128,13 +128,14 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
         }
+
         #endregion      
 
         #region (private) Collection Methods
 
         private T MatchByName<T>(IList<T> source, T dest) where T : TemplateViewModel
         {
-            return source.FirstOrDefault(x => x.Name == dest.Name);
+            return (dest == null) ? dest : source.FirstOrDefault(x => x.Name == dest.Name);
         }
 
         /// <summary>

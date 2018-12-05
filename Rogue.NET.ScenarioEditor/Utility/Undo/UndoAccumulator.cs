@@ -355,7 +355,7 @@ namespace Rogue.NET.ScenarioEditor.Utility.Undo
 
             var collection = sender as IList;
 
-            // Hook / Unhook changed items
+            // Hook / Unhook changed items - EVEN WHEN BLOCKED (this supports add / remove undo events)
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:

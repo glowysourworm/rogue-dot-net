@@ -74,6 +74,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 asset.RemoveAssetEvent += OnRemoveAsset;
                 asset.RenameAssetEvent -= OnRenameAsset;
                 asset.RenameAssetEvent += OnRenameAsset;
+                asset.CopyAssetEvent -= OnCopyAsset;
+                asset.CopyAssetEvent += OnCopyAsset;
             }
         }
 
@@ -110,6 +112,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         private void OnRenameAsset(object sender, IScenarioAssetViewModel asset)
         {
             _eventAggregator.GetEvent<RenameAssetEvent>().Publish(asset);
+        }
+        private void OnCopyAsset(object sender, IScenarioAssetViewModel asset)
+        {
+            var uniqueName = NameGenerator.Get(this.Assets.Select(z => z.Name), asset.Name + " - Copy");
+
+            _eventAggregator.GetEvent<CopyAssetEvent>().Publish(new CopyAssetEventArgs()
+            {
+                AssetName = asset.Name,
+                AssetNewName = uniqueName,
+                AssetType = asset.Type
+            });
         }
     }
 }

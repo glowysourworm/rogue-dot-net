@@ -3,6 +3,7 @@ using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
@@ -165,6 +166,14 @@ namespace Rogue.NET.ScenarioEditor
 
                 // Reload Asset
                 LoadAsset(e);
+            });
+            _eventAggregator.GetEvent<CopyAssetEvent>().Subscribe((e) =>
+            {
+                // Create a copy of the asset
+                _scenarioAssetController.CopyAsset(e.AssetName, e.AssetNewName, e.AssetType);
+
+                // Publish a special event to update source lists for specific views
+                PublishScenarioUpdate();
             });
 
             // Construction Events

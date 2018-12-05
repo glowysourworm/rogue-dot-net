@@ -19,6 +19,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
             {
                 this.CreateMonsterCB.ItemsSource = configuration.EnemyTemplates;
                 this.RemediedStateCB.ItemsSource = configuration.AlteredCharacterStates;
+                this.AlteredStateCB.ItemsSource = configuration.AlteredCharacterStates;
+                this.AlteredStateAuraCB.ItemsSource = configuration.AlteredCharacterStates;
                 this.AnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
             });
 

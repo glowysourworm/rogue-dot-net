@@ -15,16 +15,6 @@
     </UserControl.Resources>
     <StackPanel>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Altered State" HorizontalAlignment="Left" />
-            <ComboBox x:Name="AlteredStateCB" 
-                      SelectedItem="{Binding AlteredState}"
-                      SelectedValue="{Binding AlteredState.Name}"
-                      SelectedValuePath="Name"
-                      DisplayMemberPath="Name" 
-                      HorizontalAlignment="Right" Height="24"  Width="250" />
-        </Grid>
-
-        <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Strength" />
             <controls:Range DataContext="{Binding StrengthRange}" />
         </Grid>

@@ -1,5 +1,6 @@
 ﻿using AgileObjects.AgileMapper;
 using KellermanSoftware.CompareNetObjects;
+using NClone;
 using Rogue.NET.Common.Utility;
 using System;
 
@@ -23,6 +24,9 @@ namespace Rogue.NET.Common.Extension
             return Mapper.Map<TSource>(source).Over<TDest>(dest);
         }
 
+        /// <summary>
+        /// Creates a copy using the BinaryFormatted
+        /// </summary>
         public static T Copy<T>(this T source)
         {
             // Didn't work for ScenarioConfgiurationContainer
@@ -30,6 +34,14 @@ namespace Rogue.NET.Common.Extension
 
             var buffer = BinarySerializer.Serialize(source);
             return (T)BinarySerializer.Deserialize(buffer);
+        }
+
+        /// <summary>
+        /// Creates a copy using the Agile Mapper
+        /// </summary>
+        public static T DeepClone<T>(this T source)
+        {
+            return Clone.ObjectGraph<T>(source);
         }
 
         public static bool DeepEquals(this object source, object dest)

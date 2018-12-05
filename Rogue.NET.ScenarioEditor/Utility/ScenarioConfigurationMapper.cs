@@ -143,7 +143,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
         /// <summary>
         /// Mapping breaks references due to issues with this algorithm. This has to be run prior to returning the object.
         /// </summary>
-        private ScenarioConfigurationContainer FixReferences(ScenarioConfigurationContainer configuration)
+        public ScenarioConfigurationContainer FixReferences(ScenarioConfigurationContainer configuration)
         {
             // Animations
             foreach (var template in configuration.AnimationTemplates)
@@ -202,6 +202,10 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 for (int i = 0; i < template.StartingEquipment.Count; i++)
                     template.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
+
+                // Behavior Skills
+                template.BehaviorDetails.PrimaryBehavior.EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.PrimaryBehavior.EnemySpell);
+                template.BehaviorDetails.SecondaryBehavior.EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.SecondaryBehavior.EnemySpell);
             }
 
             // Player
@@ -219,7 +223,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
         /// <summary>
         /// Mapping breaks references due to issues with this algorithm. This has to be run prior to returning the object.
         /// </summary>
-        private ScenarioConfigurationContainerViewModel FixReferences(ScenarioConfigurationContainerViewModel configuration)
+        public ScenarioConfigurationContainerViewModel FixReferences(ScenarioConfigurationContainerViewModel configuration)
         {
             // Animations
             foreach (var template in configuration.AnimationTemplates)
@@ -278,6 +282,10 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 for (int i = 0; i < template.StartingEquipment.Count; i++)
                     template.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
+
+                // Behavior Skills
+                template.BehaviorDetails.PrimaryBehavior.EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.PrimaryBehavior.EnemySpell);
+                template.BehaviorDetails.SecondaryBehavior.EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.SecondaryBehavior.EnemySpell);
             }
 
             // Player
@@ -294,6 +302,9 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         private T Match<T>(IList<T> source, T dest) where T : Template
         {
+            if (dest == null)
+                return dest;
+
             var item = source.FirstOrDefault(x => x.Guid == dest.Guid);
 
             // NOTE*** This will prevent null values in the configuration; but these are handled by 
@@ -305,11 +316,20 @@ namespace Rogue.NET.ScenarioEditor.Utility
         private void MatchCollection<T>(IList<T> source, IList<T> dest) where T : Template
         {
             for (int i = 0; i < dest.Count; i++)
-                dest[i] = source.First(x => x.Guid == dest[i].Guid);
+            {
+                // Doing this to avoid NotifyCollectionChanged.Replace
+                var replaceItem = source.First(x => x.Guid == dest[i].Guid);
+                dest.RemoveAt(i);
+                dest.Insert(i, replaceItem);
+                //dest[i] = source.First(x => x.Guid == dest[i].Guid);
+            }
         }
 
         private T MatchVM<T>(IList<T> source, T dest) where T : TemplateViewModel
         {
+            if (dest == null)
+                return dest;
+
             var item = source.FirstOrDefault(x => x.Guid == dest.Guid);
 
             // NOTE*** This will prevent null values in the configuration; but these are handled by 
@@ -321,7 +341,14 @@ namespace Rogue.NET.ScenarioEditor.Utility
         private void MatchCollectionVM<T>(IList<T> source, IList<T> dest) where T : TemplateViewModel
         {
             for (int i = 0; i < dest.Count; i++)
-                dest[i] = source.First(x => x.Guid == dest[i].Guid);
+            {
+                // Doing this to avoid NotifyCollectionChanged.Replace
+                var replaceItem = source.First(x => x.Guid == dest[i].Guid);
+                dest.RemoveAt(i);
+                dest.Insert(i, replaceItem);
+
+                //dest[i] = source.First(x => x.Guid == dest[i].Guid);
+            }
         }
 
         /// <summary>

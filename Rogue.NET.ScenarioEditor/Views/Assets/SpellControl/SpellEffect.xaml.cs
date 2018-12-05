@@ -25,11 +25,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
         public SpellEffect(IEventAggregator eventAggregator)
         {
             InitializeComponent();
-
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                this.AlteredStateCB.ItemsSource = configuration.AlteredCharacterStates;
-            });
         }
     }
 }

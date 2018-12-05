@@ -1,7 +1,9 @@
-﻿using Rogue.NET.ScenarioEditor.Controller.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
+using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
@@ -21,6 +23,9 @@ namespace Rogue.NET.ScenarioEditor.Controller
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
 
+        // TODO - Move to injection
+        readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
+
         [ImportingConstructor]
         public ScenarioAssetController(
             IScenarioEditorController scenarioEditorController, 
@@ -30,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.Controller
             _scenarioEditorController = scenarioEditorController;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _undoService = scenarioConfigurationUndoService;
+            _scenarioConfigurationMapper = new ScenarioConfigurationMapper();
         }
 
         /// <summary>
@@ -75,6 +81,57 @@ namespace Rogue.NET.ScenarioEditor.Controller
 
             // Update Asset References - (Example: Attack Attributes for enemy or alteration or other affected object)
             _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+
+            // Restore Undo Service
+            _undoService.UnBlock();
+        }
+        public void CopyAsset(string assetName, string assetNewName, string assetType)
+        {
+            var asset = GetAsset(assetName, assetType);
+            var assetCopy = asset.DeepClone();
+
+            // Have to give new identity to asset copy
+            assetCopy.Guid = Guid.NewGuid().ToString();
+            assetCopy.Name = assetNewName;
+
+            switch (assetType)
+            {
+                case AssetType.Layout:
+                    _scenarioEditorController.CurrentConfig.DungeonTemplate.LayoutTemplates.Add(assetCopy as LayoutTemplateViewModel);
+                    break;
+                case AssetType.Enemy:
+                    _scenarioEditorController.CurrentConfig.EnemyTemplates.Add(assetCopy as EnemyTemplateViewModel);
+                    break;
+                case AssetType.Equipment:
+                    _scenarioEditorController.CurrentConfig.EquipmentTemplates.Add(assetCopy as EquipmentTemplateViewModel);
+                    break;
+                case AssetType.Consumable:
+                    _scenarioEditorController.CurrentConfig.ConsumableTemplates.Add(assetCopy as ConsumableTemplateViewModel);
+                    break;
+                case AssetType.Doodad:
+                    _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(assetCopy as DoodadTemplateViewModel);
+                    break;
+                case AssetType.Spell:
+                    _scenarioEditorController.CurrentConfig.MagicSpells.Add(assetCopy as SpellTemplateViewModel);
+                    break;
+                case AssetType.SkillSet:
+                    _scenarioEditorController.CurrentConfig.SkillTemplates.Add(assetCopy as SkillSetTemplateViewModel);
+                    break;
+                case AssetType.Animation:
+                    _scenarioEditorController.CurrentConfig.AnimationTemplates.Add(assetCopy as AnimationTemplateViewModel);
+                    break;
+                case AssetType.Brush:
+                    _scenarioEditorController.CurrentConfig.BrushTemplates.Add(assetCopy as BrushTemplateViewModel);
+                    break;
+                default:
+                    throw new Exception("Unidentified new asset type");
+            }
+
+            // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
+            _undoService.Block();
+
+            // Fix Asset References - Uses the ScenarioConfigurationMapper to match by GUID
+            _scenarioConfigurationMapper.FixReferences(_scenarioEditorController.CurrentConfig);
 
             // Restore Undo Service
             _undoService.UnBlock();
