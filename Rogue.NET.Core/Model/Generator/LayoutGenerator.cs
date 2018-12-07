@@ -206,39 +206,23 @@ namespace Rogue.NET.Core.Model.Generator
             var roomHeight = template.RoomDivCellHeight;
             var bounds = grid.GetBounds();
 
-            // Choose random points to opposing rooms (one on either side)
-            for (int i = 0; i < grid.GetRoomGridWidth(); i++)
+            CellPoint lastPoint = CellPoint.Empty;
+
+            // Create random connected hallway using points in order
+            for (int i=0;i<template.NumberHallwayPoints; i++)
             {
-                var width1 =  i == 0 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) + 1 :
-                              i == grid.GetRoomGridHeight() - 1 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) - 1 :
-                                                                  (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth);
+                if (i == 0)
+                {
+                    lastPoint = new CellPoint(_randomSequenceGenerator.Get(bounds.Top + 1, bounds.Bottom - 1),
+                                              _randomSequenceGenerator.Get(bounds.Left + 1, bounds.Right - 1));
+                }
 
-                var width2 =  i == 0 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) + 1 :
-                              i == grid.GetRoomGridHeight() - 1 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) - 1 :
-                                                                  (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth);
+                var nextPoint = new CellPoint(_randomSequenceGenerator.Get(bounds.Top + 1, bounds.Bottom - 1),
+                                              _randomSequenceGenerator.Get(bounds.Left + 1, bounds.Right - 1));
 
-                // Pick random cells on top and bottom
-                var location1 = new CellPoint(bounds.Top + 1, width1);
-                var location2 = new CellPoint(bounds.Bottom - 2, width2);
+                CreateHall(grid, lastPoint, nextPoint);
 
-                CreateHall(grid, location1, location2);
-            }
-
-            for (int j = 0; j < grid.GetRoomGridHeight(); j++)
-            {
-                var height1 = j == 0 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) + 1 :
-                              j == grid.GetRoomGridHeight() - 1 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) - 1 :
-                                                                  (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight);
-
-                var height2 = j == 0 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) + 1 :
-                              j == grid.GetRoomGridHeight() - 1 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) - 1 :
-                                                                  (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight);
-
-                // Pick random cells on top and bottom
-                var location1 = new CellPoint(height1, bounds.Left + 1);
-                var location2 = new CellPoint(height2, bounds.Right - 2);
-
-                CreateHall(grid, location1, location2);
+                lastPoint = nextPoint;
             }
         }
         private void CreateHall(LevelGrid grid, CellPoint d1, CellPoint d2)

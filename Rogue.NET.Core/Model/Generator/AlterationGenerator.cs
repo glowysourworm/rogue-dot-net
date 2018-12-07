@@ -51,7 +51,6 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.EffectRange = spell.EffectRange;
             alterationContainer.OtherEffectType = spell.OtherEffectType;
             alterationContainer.AttackAttributeType = spell.AttackAttributeType;
-            alterationContainer.BlockType = spell.BlockType;
             alterationContainer.Type = spell.Type;
             alterationContainer.GeneratingSpellId = spell.Id;
             alterationContainer.GeneratingSpellName = spell.RogueName;

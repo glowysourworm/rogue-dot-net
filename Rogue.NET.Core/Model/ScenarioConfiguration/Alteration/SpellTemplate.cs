@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationEffectTemplate _effect;
         private AlterationEffectTemplate _auraEffect;
         private AlterationType _type;
-        private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
@@ -67,18 +66,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _type = value;
                     OnPropertyChanged("Type");
-                }
-            }
-        }
-        public AlterationBlockType BlockType
-        {
-            get { return _blockType; }
-            set
-            {
-                if (_blockType != value)
-                {
-                    _blockType = value;
-                    OnPropertyChanged("BlockType");
                 }
             }
         }

@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Logic
                 _alterationProcessor.ApplyOneTimeAlterationCost(enemy, alteration.Cost);
 
             // Spell blocked by Player
-            if (_interactionProcessor.CalculateSpellBlock(_modelService.Player, alteration.BlockType == AlterationBlockType.Physical))
+            if (_interactionProcessor.CalculateSpellBlock(_modelService.Player))
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.Player + " has blocked the spell!");
                 return;
@@ -245,7 +245,7 @@ namespace Rogue.NET.Core.Logic
 
             foreach (var enemy in _modelService.GetTargetedEnemies())
             {
-                bool blocked = _interactionProcessor.CalculateSpellBlock(enemy, alteration.BlockType == AlterationBlockType.Physical);
+                bool blocked = _interactionProcessor.CalculateSpellBlock(enemy);
                 if (blocked)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " blocked the spell!");
 

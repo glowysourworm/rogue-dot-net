@@ -13,7 +13,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public AlterationEffect Effect { get; set; }
         public AlterationEffect AuraEffect { get; set; }
         public AlterationType Type { get; set; }
-        public AlterationBlockType BlockType { get; set; }
         public AlterationMagicEffectType OtherEffectType { get; set; }
         public AlterationAttackAttributeType AttackAttributeType { get; set; }
         public double EffectRange { get; set; }

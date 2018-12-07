@@ -27,20 +27,29 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
                     {
                         this.HiddenDoorGB.Visibility = Visibility.Visible;
                         this.MazeGB.Visibility = Visibility.Collapsed;
+                        this.HallGB.Visibility = Visibility.Collapsed;
                     }
                     break;
                 case LayoutType.Maze:
                     {
                         this.HiddenDoorGB.Visibility = Visibility.Collapsed;
                         this.MazeGB.Visibility = Visibility.Visible;
+                        this.HallGB.Visibility = Visibility.Collapsed;
                     }
                     break;
                 case LayoutType.Teleport:
                 case LayoutType.TeleportRandom:
+                    {
+                        this.HiddenDoorGB.Visibility = Visibility.Collapsed;
+                        this.MazeGB.Visibility = Visibility.Collapsed;
+                        this.HallGB.Visibility = Visibility.Collapsed;
+                    }
+                    break;
                 case LayoutType.Hall:
                     {
                         this.HiddenDoorGB.Visibility = Visibility.Collapsed;
                         this.MazeGB.Visibility = Visibility.Collapsed;
+                        this.HallGB.Visibility = Visibility.Visible;
                     }
                     break;
             }

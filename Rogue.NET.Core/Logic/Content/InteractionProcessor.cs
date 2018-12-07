@@ -320,15 +320,13 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Misses");
         }
-        public bool CalculateSpellBlock(Enemy enemy, bool physicalBlock)
+        public bool CalculateSpellBlock(Enemy enemy)
         {
-            return physicalBlock ? _randomSequenceGenerator.Get() < enemy.GetDodge() :
-                                   _randomSequenceGenerator.Get() < enemy.GetMagicBlock();
+            return _randomSequenceGenerator.Get() < enemy.GetMagicBlock();
         }
-        public bool CalculateSpellBlock(Player player, bool physicalBlock)
+        public bool CalculateSpellBlock(Player player)
         {
-            return physicalBlock ? _randomSequenceGenerator.Get() < player.GetDodge() :
-                                   _randomSequenceGenerator.Get() < player.GetMagicBlock();
+            return _randomSequenceGenerator.Get() < player.GetMagicBlock();
         }
     }
 }

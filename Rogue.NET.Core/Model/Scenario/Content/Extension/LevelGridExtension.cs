@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
             var n = grid[location.Column, location.Row - 1]?.Location ?? null;
             var s = grid[location.Column, location.Row + 1]?.Location ?? null;
             var e = grid[location.Column + 1, location.Row]?.Location ?? null;
-            var w = grid[location.Column - 1, location.Row - 1]?.Location ?? null;
+            var w = grid[location.Column - 1, location.Row]?.Location ?? null;
             var ne = grid[location.Column + 1, location.Row - 1]?.Location ?? null;
             var nw = grid[location.Column - 1, location.Row - 1]?.Location ?? null;
             var se = grid[location.Column + 1, location.Row + 1]?.Location ?? null;

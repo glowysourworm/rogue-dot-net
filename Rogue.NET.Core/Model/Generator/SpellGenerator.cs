@@ -19,7 +19,6 @@ namespace Rogue.NET.Core.Model.Generator
             spell.Effect = spellTemplate.Effect;
             spell.AuraEffect = spellTemplate.AuraEffect;
             spell.Type = spellTemplate.Type;
-            spell.BlockType = spellTemplate.BlockType;
             spell.OtherEffectType = spellTemplate.OtherEffectType;
             spell.AttackAttributeType = spellTemplate.AttackAttributeType;
             spell.EffectRange = spellTemplate.EffectRange;

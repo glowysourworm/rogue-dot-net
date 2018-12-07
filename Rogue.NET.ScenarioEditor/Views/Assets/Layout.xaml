@@ -37,11 +37,26 @@
                 </StackPanel>
             </GroupBox>
 
+            <GroupBox x:Name="HallGB" Margin="10" Header="Hall Parameters">
+                <StackPanel>
+                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Hallway levels are created by randomly connecting points within the layout grid to create a single connected space. Choose the number of points to connect to create this hallway layout randomly." />
+                    <Grid Margin="10,5,10,5">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Number Hallway Points" />
+                        <toolkit:IntegerUpDown  Watermark="Enter a Value" 
+                                                Minimum="2" 
+                                                Maximum="1000" 
+                                                FormatString="F2" 
+                                                Foreground="White"
+                                                HorizontalContentAlignment="Left"
+                                                Value="{Binding NumberHallwayPoints, Mode=TwoWay}" 
+                                                Width="150" HorizontalAlignment="Right"  />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
             <GroupBox x:Name="MazeGB" Margin="10" Header="Maze Parameters">
                 <StackPanel>
-                    <Viewbox MaxWidth="500">
-                        <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap"  Text="Mazes are built using a recursive backtracking algorithm which has a chance to leave very few paths to the end. To make the maze easier you can remove walls at random. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
-                    </Viewbox>
+                    <TextBlock Margin="10" Foreground="White" TextWrapping="Wrap" Width="500" Text="Mazes are built using a recursive backtracking algorithm which has a chance to leave very few paths to the end. To make the maze easier you can remove walls at random. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario. It is recommended that you try different numbers and see the effect on the maze before uploading your scenario." />
                     <Grid Margin="10,5,10,5">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Extra Wall Removals" />
                         <toolkit:IntegerUpDown 

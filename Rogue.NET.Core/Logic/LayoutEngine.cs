@@ -415,8 +415,9 @@ namespace Rogue.NET.Core.Logic
                 case Compass.NW: return grid[cellPoint.Column - 1, cellPoint.Row - 1]?.Location ?? CellPoint.Empty;
                 case Compass.SW: return grid[cellPoint.Column - 1, cellPoint.Row + 1]?.Location ?? CellPoint.Empty;
                 case Compass.SE: return grid[cellPoint.Column + 1, cellPoint.Row + 1]?.Location ?? CellPoint.Empty;
+                case Compass.Null:
                 default:
-                    throw new Exception("Unhandled Compass type");
+                    return cellPoint;
             }
         }
         public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)

@@ -10,6 +10,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private int _roomDivCellHeight;
         private int _roomDivCellWidth;
         private int _numberExtraWallRemovals;
+        private int _numberHallwayPoints;
         private double _hiddenDoorProbability;
         private double _generationRatio;
         private LayoutType _type;
@@ -41,6 +42,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _numberExtraWallRemovals; }
             set { this.RaiseAndSetIfChanged(ref _numberExtraWallRemovals, value); }
+        }
+        public int NumberHallwayPoints
+        {
+            get { return _numberHallwayPoints; }
+            set { this.RaiseAndSetIfChanged(ref _numberHallwayPoints, value); }
         }
         public double HiddenDoorProbability
         {
@@ -82,6 +88,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.RoomDivCellHeight = 20;
             this.RoomDivCellWidth = 20;
             this.NumberExtraWallRemovals = 200;
+            this.NumberHallwayPoints = 10;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
         }
