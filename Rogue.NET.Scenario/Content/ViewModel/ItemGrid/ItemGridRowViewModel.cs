@@ -282,7 +282,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
 
             bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || (isIdentify && identifyConsumable);
-            bool throwEnable = consumable.HasProjectileSpell && consumable.SubType != ConsumableSubType.Ammo;
+            bool throwEnable = consumable.HasProjectileSpell;
 
             this.Quality = "N/A";
             this.Class = "N/A";

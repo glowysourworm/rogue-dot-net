@@ -584,7 +584,8 @@ namespace Rogue.NET.Core.Logic
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
                             // Attack Conditions: location is non-null; AND enemy is not confused; OR enemy is confused and can strike
-                            if (attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly) || (enemy.Is(CharacterStateType.MovesRandomly) && willRandomStrikeMelee)))
+                            if (attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
+                                                           (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
@@ -595,7 +596,7 @@ namespace Rogue.NET.Core.Logic
                         }
                         break;
                     case CharacterAttackType.Skill:
-                        if (!enemy.Is(CharacterStateType.MovesRandomly))
+                        if (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
                         {
                             // Must have line of sight to player
                             var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);

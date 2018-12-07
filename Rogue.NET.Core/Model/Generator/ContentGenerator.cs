@@ -50,8 +50,9 @@ namespace Rogue.NET.Core.Model.Generator
             // Create lists to know what cells are free
             var rooms = level.Grid.GetRooms().ToList();
             var freeCells = level.Grid.GetCells().Select(x => x.Location).ToList();
-            var freeRoomCells = freeCells.GroupBy(x => rooms.FindIndex(r => r.Contains(x)))
-                                         .ToDictionary(x => x.Key, y => y.ToList());
+            var freeRoomCells = rooms.Count > 0 ? freeCells.GroupBy(x => rooms.FindIndex(r => r.Contains(x)))
+                                                           .ToDictionary(x => x.Key, y => y.ToList())
+                                                : new Dictionary<int, List<CellPoint>>();
 
 
             //must have for each level (Except the last one)
@@ -334,7 +335,10 @@ namespace Rogue.NET.Core.Model.Generator
             // Create party room if there's a room to use and the rate is greater than U[0,1]
 
             if ((configurationContainer.DungeonTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) &&
-                (level.Grid.GetRoomGridHeight() * level.Grid.GetRoomGridWidth() > 0))
+                level.Type == LayoutType.BigRoom ||
+                level.Type == LayoutType.Normal ||
+                level.Type == LayoutType.Teleport ||
+                level.Type == LayoutType.TeleportRandom)
                 AddPartyRoomContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
         }
 

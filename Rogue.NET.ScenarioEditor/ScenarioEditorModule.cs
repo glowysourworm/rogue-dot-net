@@ -93,8 +93,6 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Spell));
-            _regionManager.RegisterViewWithRegion("SpellEffectRegion", typeof(SpellEffect));
-            _regionManager.RegisterViewWithRegion("SpellAuraEffectRegion", typeof(SpellEffect));
             _regionManager.RegisterViewWithRegion("SpellParametersRegion", typeof(SpellParameters));
 
 

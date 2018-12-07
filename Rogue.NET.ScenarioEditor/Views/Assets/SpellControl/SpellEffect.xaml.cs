@@ -22,7 +22,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
     public partial class SpellEffect : UserControl
     {
         [ImportingConstructor]
-        public SpellEffect(IEventAggregator eventAggregator)
+        public SpellEffect()
         {
             InitializeComponent();
         }

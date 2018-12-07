@@ -123,8 +123,9 @@ namespace Rogue.NET.Core.Logic
                 QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
             }
 
-            //See what the player stepped on...
-            return _modelService.Level.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
+            //See what the player stepped on... Prefer Items first
+            return _modelService.Level.GetAtPoint<ItemBase>(_modelService.Player.Location) ??
+                   _modelService.Level.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
         }
         public ScenarioObject MoveRandom()
         {

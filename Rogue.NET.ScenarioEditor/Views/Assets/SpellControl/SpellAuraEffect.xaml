@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SpellControl.SpellEffect"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SpellControl.SpellAuraEffect"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
@@ -11,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel DataContext="{Binding Effect}">
+    <StackPanel DataContext="{Binding AuraEffect}">
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Strength" />
             <controls:Range DataContext="{Binding StrengthRange}" />

@@ -70,12 +70,12 @@ namespace Rogue.NET.Core.Model.Generator
                         template.NumberRoomCols,
                         template.NumberRoomRows);
 
+            // ***This is (unfortunately) required to make the LevelGrid function (for now)
             CreateRoomGrid(grid, template);
             switch (template.Type)
             {
                 case LayoutType.Normal:
                     ConnectRooms(grid, true);
-                    //EdgeCells();
                     CreateRoomCells(grid);
                     EdgeCells(grid, true);
                     FinishDoors(grid, template);
@@ -87,32 +87,17 @@ namespace Rogue.NET.Core.Model.Generator
                     break;
                 case LayoutType.Maze:
                     CreateMaze(grid, template.NumberExtraWallRemovals);
-                    //EdgeCells(false);
                     break;
                 case LayoutType.Hall:
-                    {
-                        ConnectRooms(grid, true);
-                        Cell[] doors = grid.GetDoors();
-                        //Connect doors together
-                        for (int i = 0; i < doors.Length - 1; i++)
-                        {
-                            CreateHall(grid, doors[i].Location, doors[i + 1].Location);
-                            doors[i].Doors = Compass.Null;
-                            if (i == doors.Length - 2)
-                                doors[i + 1].Doors = Compass.Null;
-                        }
-                        EdgeCells(grid, false);
-                    }
+                    CreateHallwayLayout(grid, template);
+                    EdgeCells(grid, false);
                     break;
                 case LayoutType.BigRoom:
-                    {
-                        CreateBigRoom(grid);
-                        ConnectRooms(grid, true);
-                        //EdgeCells();
-                        CreateRoomCells(grid);
-                        EdgeCells(grid, true);
-                        FinishDoors(grid, template);
-                    }
+                    CreateBigRoom(grid);
+                    ConnectRooms(grid, true);
+                    CreateRoomCells(grid);
+                    EdgeCells(grid, true);
+                    FinishDoors(grid, template);
                     break;
             }
             return new Level(grid, template.Type, levelNumber, template.WallColor, template.DoorColor);
@@ -213,6 +198,47 @@ namespace Rogue.NET.Core.Model.Generator
                         door2.Doors |= Compass.E;
                     }
                 }
+            }
+        }
+        private void CreateHallwayLayout(LevelGrid grid, LayoutTemplate template)
+        {
+            var roomWidth = template.RoomDivCellWidth;
+            var roomHeight = template.RoomDivCellHeight;
+            var bounds = grid.GetBounds();
+
+            // Choose random points to opposing rooms (one on either side)
+            for (int i = 0; i < grid.GetRoomGridWidth(); i++)
+            {
+                var width1 =  i == 0 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) + 1 :
+                              i == grid.GetRoomGridHeight() - 1 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) - 1 :
+                                                                  (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth);
+
+                var width2 =  i == 0 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) + 1 :
+                              i == grid.GetRoomGridHeight() - 1 ? (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth) - 1 :
+                                                                  (i * roomWidth) + _randomSequenceGenerator.Get(0, roomWidth);
+
+                // Pick random cells on top and bottom
+                var location1 = new CellPoint(bounds.Top + 1, width1);
+                var location2 = new CellPoint(bounds.Bottom - 2, width2);
+
+                CreateHall(grid, location1, location2);
+            }
+
+            for (int j = 0; j < grid.GetRoomGridHeight(); j++)
+            {
+                var height1 = j == 0 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) + 1 :
+                              j == grid.GetRoomGridHeight() - 1 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) - 1 :
+                                                                  (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight);
+
+                var height2 = j == 0 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) + 1 :
+                              j == grid.GetRoomGridHeight() - 1 ? (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight) - 1 :
+                                                                  (j * roomHeight) + _randomSequenceGenerator.Get(0, roomHeight);
+
+                // Pick random cells on top and bottom
+                var location1 = new CellPoint(height1, bounds.Left + 1);
+                var location2 = new CellPoint(height2, bounds.Right - 2);
+
+                CreateHall(grid, location1, location2);
             }
         }
         private void CreateHall(LevelGrid grid, CellPoint d1, CellPoint d2)

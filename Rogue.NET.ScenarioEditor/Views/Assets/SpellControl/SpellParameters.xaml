@@ -126,7 +126,7 @@
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                 </MultiBinding>
             </Grid.Visibility>
-            <TextBlock Foreground="White" Text="Effect Altered State" HorizontalAlignment="Left" />
+            <TextBlock Foreground="White" Text="Aura Effect Altered State" HorizontalAlignment="Left" />
             <ComboBox x:Name="AlteredStateAuraCB" 
                       SelectedItem="{Binding AuraEffect.AlteredState}"
                       SelectedValue="{Binding AuraEffect.AlteredState.Name}"

@@ -2,9 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
                     xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+                    xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
                     xmlns:converter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate x:Key="PlacementItemTemplate">
         <Grid HorizontalAlignment="Stretch">
@@ -34,7 +36,7 @@
             <TextBlock Grid.Column="2" FontSize="16" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <controls:Range DataContext="{Binding Level}" FontSize="16" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
             <TextBlock Grid.Column="4" FontSize="16" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <common:Slider SliderValue="{Binding GenerationRate, Delay=300, Mode=TwoWay}" FontSize="16" SliderMax="10" SliderMin="0" SliderSmallChange="0.01" SliderLargeChange="1" Grid.Column="5" />
+            <toolkit:DoubleUpDown Grid.Column="5" Text="{Binding GenerationRate, StringFormat=F2}" Width="150" FontSize="16" Minimum="0" Maximum="10" Increment="0.01" HorizontalAlignment="Right" VerticalAlignment="Center" />
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="LayoutItemTemplate">

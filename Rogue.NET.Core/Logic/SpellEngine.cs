@@ -211,6 +211,8 @@ namespace Rogue.NET.Core.Logic
                 case AlterationType.RunAway:
                     _modelService.Level.RemoveContent(enemy);
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has run away!");
+
+                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentRemove, ContentIds = new string[] { enemy.Id } });
                     break;
                 case AlterationType.Steal:
                     ProcessEnemyStealAlteration(enemy, alteration);
