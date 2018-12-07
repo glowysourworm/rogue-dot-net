@@ -335,10 +335,10 @@ namespace Rogue.NET.Core.Model.Generator
             // Create party room if there's a room to use and the rate is greater than U[0,1]
 
             if ((configurationContainer.DungeonTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) &&
-                level.Type == LayoutType.BigRoom ||
+                (level.Type == LayoutType.BigRoom ||
                 level.Type == LayoutType.Normal ||
                 level.Type == LayoutType.Teleport ||
-                level.Type == LayoutType.TeleportRandom)
+                level.Type == LayoutType.TeleportRandom))
                 AddPartyRoomContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
         }
 

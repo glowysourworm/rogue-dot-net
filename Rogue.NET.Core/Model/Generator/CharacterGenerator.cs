@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Intelligence);
             player.StrengthBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Strength);
             player.AgilityBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Agility);
-            player.SpeedBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Speed); // TODO
+            player.SpeedBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Speed);
             player.HpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Hp);
             player.MpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Mp);
             player.Hp = player.HpMax;

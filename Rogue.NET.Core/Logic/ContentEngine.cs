@@ -295,7 +295,7 @@ namespace Rogue.NET.Core.Logic
             if (!enemy.IsEngaged)
                 return;
 
-            enemy.TurnCounter = _interactionProcessor.CalculateEnemyTurn(player, enemy);
+            enemy.TurnCounter += _interactionProcessor.CalculateEnemyTurn(player, enemy);
 
             if (enemy.TurnCounter >= 1)
                 OnEnemyReaction(enemy);

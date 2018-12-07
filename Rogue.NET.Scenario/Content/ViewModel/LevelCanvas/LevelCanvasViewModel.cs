@@ -282,13 +282,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var wallsPath = new Path();
             wallsPath.Data = wallsGeometry;
             wallsPath.Fill = Brushes.Transparent;
-            wallsPath.Stroke = Brushes.Blue;
+            wallsPath.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.WallColor));
             wallsPath.StrokeThickness = 2;
 
             var doorsPath = new Path();
             doorsPath.Data = doorsGeometry;
             doorsPath.Fill = Brushes.Transparent;
-            doorsPath.Stroke = Brushes.Magenta;
+            doorsPath.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.DoorColor));
             doorsPath.StrokeThickness = 3;
 
             var revealedPath = new Path();

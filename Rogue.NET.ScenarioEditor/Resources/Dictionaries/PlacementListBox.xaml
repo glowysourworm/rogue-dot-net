@@ -36,7 +36,7 @@
             <TextBlock Grid.Column="2" FontSize="16" Text="will be generated between levels"  Margin="8" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <controls:Range DataContext="{Binding Level}" FontSize="16" Grid.Column="3" Margin="4" VerticalAlignment="Center" Height="24" HorizontalAlignment="Stretch" />
             <TextBlock Grid.Column="4" FontSize="16" Text="with generation rate"  Margin="4" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            <toolkit:DoubleUpDown Grid.Column="5" Text="{Binding GenerationRate, StringFormat=F2}" Width="150" FontSize="16" Minimum="0" Maximum="10" Increment="0.01" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            <toolkit:DoubleUpDown Grid.Column="5" Value="{Binding GenerationRate, Mode=TwoWay, StringFormat=F2}" Width="150" FontSize="16" Minimum="0" Maximum="10" Increment="0.01" HorizontalAlignment="Right" VerticalAlignment="Center" />
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="LayoutItemTemplate">
