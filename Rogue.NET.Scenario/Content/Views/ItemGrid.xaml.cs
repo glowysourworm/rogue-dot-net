@@ -38,7 +38,7 @@ namespace Rogue.NET.Scenario.Views
         public ItemGridActions IntendedAction
         {
             get { return (ItemGridActions)GetValue(IntendedActionProperty); }
-            set { SetValue(IntendedActionProperty, value); }
+            set { SetValue(IntendedActionProperty, value); SetIntendedActionText(value); }
         }
         public bool IsDialogMode
         {
@@ -73,13 +73,15 @@ namespace Rogue.NET.Scenario.Views
                                 ItemId = itemViewModel.Id
                             });
         }
+
+        private void SetIntendedActionText(ItemGridActions action)
+        {
+            this.ModeTB.Text = TextUtility.CamelCaseToTitleCase(action.ToString());
+        }
         
         private void SetMode(ItemGridModes mode)
         {
             _mode = mode;
-
-            // Title for the Item Grid
-            this.ModeTB.Text = TextUtility.CamelCaseToTitleCase(mode.ToString());
 
             this.Consume.Visibility = mode == ItemGridModes.Consumable ? Visibility.Visible : Visibility.Collapsed;
             this.Equip.Visibility = mode == ItemGridModes.Equipment ? Visibility.Visible : Visibility.Collapsed;

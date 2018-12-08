@@ -19,5 +19,10 @@ namespace Rogue.NET.Core.Media.Interface
             Point[] targetPoints);
 
         IEnumerable<ITimedGraphic> CreateTargetingAnimation(Point[] points);
+
+        /// <summary>
+        /// Returns the total run-time in milli-seconds
+        /// </summary>
+        int CalculateRunTime(AnimationTemplate animationTemplate, Point sourcePoint, Point[] targetPoints);
     }
 }

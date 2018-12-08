@@ -189,6 +189,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     foreach (var contentId in levelUpdate.ContentIds.Where(x => _contentDict.ContainsKey(x)))
                         UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
                         break;
+                case LevelUpdateType.ContentUpdate:
+                    foreach (var contentId in levelUpdate.ContentIds.Where(x => _contentDict.ContainsKey(x)))
+                        UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
+                    break;
                 case LevelUpdateType.LayoutAll:
                     DrawLayout();
                     UpdateLayoutVisibility();
@@ -630,9 +634,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 animation.AnimationGroup.Start();
 
                 // Wait for completion
-                var waitTime = animation.AnimationTemplate.AnimationTime *
-                               animation.AnimationTemplate.RepeatCount * 
-                              (animation.AnimationTemplate.AutoReverse ? 2 : 1);
+                var waitTime = _animationGenerator.CalculateRunTime(animation.AnimationTemplate, source, targets);
 
                 await Task.Delay(waitTime);
             }

@@ -180,7 +180,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// <summary>
         /// Returns true if alteration applied. False if it is not applied because it's not stackable.
         /// </summary>
-        public bool ActiveAlteration(AlterationContainer alteration, bool isSource)
+        public bool ActivateAlteration(AlterationContainer alteration, bool isSource)
         {
             // CALCULATION FOR IS-STACKABLE
             if (!alteration.IsStackable && this.GetStackableSpellIds().Any(x => x == alteration.GeneratingSpellId))

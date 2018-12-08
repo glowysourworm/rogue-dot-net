@@ -20,7 +20,8 @@ namespace Rogue.NET.Scenario.Converter
             else if (values.Length != 3)
                 return Binding.DoNothing;
 
-            var level = (int)values[0];
+            // NOTE*** Skill levels are indexed starting at zero.
+            var level = (int)values[0] + 1;
             var levelMax = (int)values[1];
             var progress = (double)values[2];
 

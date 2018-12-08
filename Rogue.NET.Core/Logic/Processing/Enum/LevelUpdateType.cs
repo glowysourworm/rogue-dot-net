@@ -28,6 +28,11 @@
         ContentMove,
 
         /// <summary>
+        /// Occurs when content has updated - possibly a state change
+        /// </summary>
+        ContentUpdate,
+
+        /// <summary>
         /// Occurs when content is changed
         /// </summary>
         ContentAdd,

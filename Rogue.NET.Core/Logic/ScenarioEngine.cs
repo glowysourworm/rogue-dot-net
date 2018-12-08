@@ -501,6 +501,9 @@ namespace Rogue.NET.Core.Logic
                     target = enemiesInRange[0];
             }
 
+            // Clear targeted Enemies regardless of next target
+            _modelService.ClearTargetedEnemies();
+
             // Start targeting of Enemy
             if (target != null)
             {

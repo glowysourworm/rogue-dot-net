@@ -133,7 +133,7 @@ namespace Rogue.NET.Core.Logic
                 case AlterationType.PassiveAura:
                 case AlterationType.TemporarySource:
                 case AlterationType.PassiveSource:
-                    player.Alteration.ActiveAlteration(alteration, true);
+                    player.Alteration.ActivateAlteration(alteration, true);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
@@ -167,6 +167,10 @@ namespace Rogue.NET.Core.Logic
                     ProcessPlayerAttackAttributeEffect(alteration);
                     break;
             }
+
+            // Apply blanket update for player to ensure symbol alterations are processed
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
+            QueueLevelUpdate(LevelUpdateType.ContentUpdate, _modelService.GetTargetedEnemies().Select(x => x.Id).ToArray());
         }
         public void ProcessEnemyMagicSpell(Enemy enemy, Spell spell)
         {
@@ -192,7 +196,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.TemporarySource:
                 case AlterationType.PassiveSource:
-                    enemy.Alteration.ActiveAlteration(alteration, true);
+                    enemy.Alteration.ActivateAlteration(alteration, true);
                     break;
                 case AlterationType.PermanentSource:
                     _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
@@ -202,7 +206,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
-                    _modelService.Player.Alteration.ActiveAlteration(alteration, false);
+                    _modelService.Player.Alteration.ActivateAlteration(alteration, false);
                     break;
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
@@ -212,7 +216,7 @@ namespace Rogue.NET.Core.Logic
                     _modelService.Level.RemoveContent(enemy);
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has run away!");
 
-                    LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentRemove, ContentIds = new string[] { enemy.Id } });
+                    QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
                     break;
                 case AlterationType.Steal:
                     ProcessEnemyStealAlteration(enemy, alteration);
@@ -231,6 +235,10 @@ namespace Rogue.NET.Core.Logic
                     ProcessEnemyAttackAttributeEffect(enemy, alteration);
                     break;
             }
+
+            // Apply blanket update for player to ensure symbol alterations are processed
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
+            QueueLevelUpdate(LevelUpdateType.ContentUpdate, enemy.Id);
 
             if (_modelService.Player.Hp <= 0)
                 _modelService.SetFinalEnemy(enemy);
@@ -258,8 +266,11 @@ namespace Rogue.NET.Core.Logic
                     else if (alteration.Type == AlterationType.TeleportAllTargets)
                         TeleportRandom(enemy);
                     else
-                        enemy.Alteration.ActiveAlteration(alteration, false);
+                        enemy.Alteration.ActivateAlteration(alteration, false);
                 }
+
+                // Engage enemy after applying alteration effects
+                enemy.IsEngaged = true;
             }
         }
         private void ProcessPlayerStealAlteration(AlterationContainer alteration)
@@ -383,12 +394,17 @@ namespace Rogue.NET.Core.Logic
                 case AlterationAttackAttributeType.Passive:
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                 case AlterationAttackAttributeType.TemporaryMalignSource:
-                    _modelService.Player.Alteration.ActiveAlteration(alteration, true);
+                    _modelService.Player.Alteration.ActivateAlteration(alteration, true);
                     break;
                 case AlterationAttackAttributeType.TemporaryMalignTarget:
                 case AlterationAttackAttributeType.TemporaryFriendlyTarget:
                     foreach (var enemy in _modelService.GetTargetedEnemies())
-                        enemy.Alteration.ActiveAlteration(alteration, false);
+                    {
+                        enemy.Alteration.ActivateAlteration(alteration, false);
+
+                        // Set Enemy Engaged
+                        enemy.IsEngaged = true;
+                    }
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     foreach (var enemy in _modelService.GetTargetedEnemies())
@@ -399,6 +415,9 @@ namespace Rogue.NET.Core.Logic
                             if (hit > 0)
                                 enemy.Hp -= hit;
                         }
+
+                        // Set Enemy Engaged
+                        enemy.IsEngaged = true;
                     }
                     break;
             }
@@ -463,11 +482,11 @@ namespace Rogue.NET.Core.Logic
                 case AlterationAttackAttributeType.Passive:
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                 case AlterationAttackAttributeType.TemporaryMalignSource:
-                    enemy.Alteration.ActiveAlteration(alteration, true);
+                    enemy.Alteration.ActivateAlteration(alteration, true);
                     break;
                 case AlterationAttackAttributeType.TemporaryMalignTarget:
                 case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                    _modelService.Player.Alteration.ActiveAlteration(alteration, false);
+                    _modelService.Player.Alteration.ActivateAlteration(alteration, false);
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     foreach (var attackAttribute in alteration.Effect.AttackAttributes)
@@ -488,7 +507,12 @@ namespace Rogue.NET.Core.Logic
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You were teleported!");
 
             else
+            {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character.RogueName) + " was teleported!");
+
+                // Set character engaged
+                (character as Enemy).IsEngaged = true;                
+            }
         }
         private void RevealSavePoint()
         {
@@ -498,7 +522,7 @@ namespace Rogue.NET.Core.Logic
             }
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense odd shrines near by...");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void RevealMonsters()
         {
@@ -507,7 +531,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void RevealLevel()
         {
@@ -524,7 +548,7 @@ namespace Rogue.NET.Core.Logic
             _modelService.UpdateContents();
             _modelService.UpdateVisibleLocations();
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutReveal });
+            QueueLevelUpdate(LevelUpdateType.LayoutReveal, "");
         }
         private void RevealStairs()
         {
@@ -536,7 +560,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense exits nearby");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void RevealItems()
         {
@@ -548,7 +572,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void RevealContent()
         {
@@ -560,7 +584,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void RevealFood()
         {
@@ -569,7 +593,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Hunger makes a good sauce.....  :)");
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentReveal });
+            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {
@@ -607,5 +631,24 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
+
+        #region (private) Event Update Methods
+        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = type,
+                ContentIds = new string[] { contentId }
+            });
+        }
+        private void QueueLevelUpdate(LevelUpdateType type, string[] contentIds)
+        {
+            LevelUpdateEvent(this, new LevelUpdate()
+            {
+                LevelUpdateType = type,
+                ContentIds = contentIds
+            });
+        }
+        #endregion
     }
 }

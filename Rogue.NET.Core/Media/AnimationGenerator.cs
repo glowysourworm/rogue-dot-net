@@ -16,7 +16,77 @@ namespace Rogue.NET.Core.Media
     [Export(typeof(IAnimationGenerator))]
     public class AnimationGenerator : IAnimationGenerator
     {
+        const int DEFAULT_VELOCITY = 150; // milli-seconds (if set to negative or zero value)
+
         public AnimationGenerator() { }
+
+        public int CalculateRunTime(AnimationTemplate animationTemplate, Point sourcePoint, Point[] targetPoints)
+        {
+            // First, check for non-constant velocity animations
+            if (!animationTemplate.ConstantVelocity)
+            {
+                return animationTemplate.AnimationTime *
+                       animationTemplate.RepeatCount *
+                      (animationTemplate.AutoReverse ? 2 : 1);
+            }
+
+            // Check target points
+            if (targetPoints.Length == 0)
+                return 0;
+
+            // Else, calculate total distance and then return total time
+            switch (animationTemplate.Type)
+            {
+                case AnimationType.ProjectileSelfToTarget:
+                case AnimationType.ProjectileTargetToSelf:
+                case AnimationType.ProjectileSelfToTargetsInRange:
+                case AnimationType.ProjectileTargetsInRangeToSelf:
+                    {
+                        // Calculate the max distance between source and target
+                        var maxDistance = targetPoints.Max(point =>
+                        {
+                            return Math.Sqrt(Math.Pow(point.X - sourcePoint.X, 2) + Math.Pow(point.Y - sourcePoint.Y, 2));
+                        });
+
+                        // Pixels per second
+                        var velocity = animationTemplate.Velocity;
+
+                        // x = vt - making sure to set defaults if bad parameters
+                        if (velocity <= 0)
+                            velocity = DEFAULT_VELOCITY;
+
+                        // Return total number of milliseconds
+                        return (int)(maxDistance / velocity) * 1000;
+                    }
+                case AnimationType.ChainSelfToTargetsInRange:
+                    {
+                        // Calculate total distance to determine constant velocity period
+                        var distance = 0D;
+                        var point1 = sourcePoint;
+
+                        for (int i = 0; i < targetPoints.Length - 1; i++)
+                        {
+                            var point2 = targetPoints[i];
+
+                            distance += Math.Sqrt(Math.Pow((point2.X - point1.X), 2) + Math.Pow((point2.Y - point1.Y), 2));
+
+                            point1 = point2;
+                        }
+
+                        // Pixels per second
+                        var velocity = animationTemplate.Velocity;
+
+                        // x = vt - making sure to set defaults if bad parameters
+                        if (velocity <= 0)
+                            velocity = DEFAULT_VELOCITY;
+
+                        // Return total number of milliseconds
+                        return (int)(distance / velocity) * 1000;
+                    }
+                default:
+                    throw new Exception("Tried to set constant velocity for animation type " + animationTemplate.Type.ToString());
+            }
+        }
 
         public IEnumerable<ITimedGraphic> CreateAnimation(IEnumerable<AnimationTemplate> animationTemplates, Rect bounds, Point sourcePoint, Point[] targetPoints)
         {

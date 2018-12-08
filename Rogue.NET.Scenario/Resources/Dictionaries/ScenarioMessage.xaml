@@ -57,11 +57,13 @@
     <Style x:Key="ScenarioMessageItemContainerStyle" TargetType="ListBoxItem">
         <Style.Setters>
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
         </Style.Setters>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Trigger.Setters>
-                    <Setter Property="Background" Value="DarkSlateBlue" />
+                    <Setter Property="Background" Value="Transparent" />
                 </Trigger.Setters>
             </Trigger>
         </Style.Triggers>
@@ -90,9 +92,10 @@
     </DataTemplate>
     
     <DataTemplate x:Key="AlterationMessageDataTemplate">
-        <Grid>
+        <Border Padding="2">
+            <Grid>
 
-            <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <TextBlock>
                     <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
                         <Binding Path="IsCausedByAttackAttributes" Converter="{StaticResource BoolInverseConverter}" />
@@ -107,7 +110,7 @@
                 <Run Text="{Binding EffectedAttributeName}" />
             </TextBlock>
 
-            <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <TextBlock>
                     <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
                         <Binding Path="IsCausedByAttackAttributes" Converter="{StaticResource BoolInverseConverter}" />
@@ -122,38 +125,39 @@
                 <Run Text="{Binding EffectedAttributeName}" />
             </TextBlock>
 
-            <StackPanel Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <StackPanel Visibility="{Binding IsCausedByAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
                         <Run Text="{Binding AlterationDisplayName}" />
                         <Run Text=" has caused a loss of " />
-                    </TextBlock>
-                </StackPanel>
+                        </TextBlock>
+                    </StackPanel>
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}" Text="HP = " />
-                    <ItemsControl 
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}" Text="HP = " />
+                        <ItemsControl 
                         ItemsSource="{Binding AttackAttributeHits}"
                         ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Stretch"
                         Width="Auto"
                         Height="Auto">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-            
-        </Grid>
+
+            </Grid>
+        </Border>
     </DataTemplate>
     
     <DataTemplate x:Key="EnemyAlterationMessageDataTemplate">
-        <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+        <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}" Padding="2">
             <Run Text="{Binding EnemyDisplayName}" />
             <Run Text=" has used " />
             <Run Text="{Binding AlterationDisplayName}" />
@@ -164,96 +168,99 @@
 
     <DataTemplate x:Key="MeleeMessageDataTemplate">
 
-        <StackPanel>
-            
-            <!-- Critical Hit Base Text -->
-            <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+        <Border Background="#2FFF0000" Padding="2">
+            <StackPanel>
+
+                <!-- Critical Hit Base Text -->
+                <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <Run Text="{Binding ActorDisplayName}" />
                 <Run Text=" has attacked " />
                 <Run Text="{Binding ActeeDisplayName}" />
                 <Run Text=" for a critical hit!" />
-            </TextBlock>
+                </TextBlock>
 
-            <!-- Non Critical Hit Base Text -->
-            <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
+                <!-- Non Critical Hit Base Text -->
+                <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <Run Text="{Binding ActorDisplayName}" />
                 <Run Text=" has attacked " />
                 <Run Text="{Binding ActeeDisplayName}" />
-            </TextBlock>
-
-            <!-- Attack Calculation -->
-            <StackPanel Orientation="Horizontal">
-
-                <!-- Base Hit -->
-                <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
-                    <Run Text="HP = " />
-                    <Run Text="{Binding BaseHit, StringFormat=F1}" />
                 </TextBlock>
 
-                <!-- + Attack Attributes... -->
-                <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                <!-- Attack Calculation -->
+                <StackPanel Orientation="Horizontal">
 
-                <!-- Attack Attributes -->
-                <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                    <!-- Base Hit -->
+                    <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                    <Run Text="HP = " />
+                    <Run Text="{Binding BaseHit, StringFormat=F1}" />
+                    </TextBlock>
+
+                    <!-- + Attack Attributes... -->
+                    <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+
+                    <!-- Attack Attributes -->
+                    <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                             ItemsSource="{Binding AttackAttributeHits}"
                             ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Stretch"
                             Width="Auto"
                             Height="Auto">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
 
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-        
+        </Border>
     </DataTemplate>
     
     <DataTemplate x:Key="NormalMessageDataTemplate">
-        <TextBlock Text="{Binding Message}"  Style="{StaticResource ScenarioMessageTextBlockStyle}" />
+        <TextBlock Text="{Binding Message}"  Style="{StaticResource ScenarioMessageTextBlockStyle}" Padding="2" />
     </DataTemplate>
     
     <DataTemplate x:Key="PlayerAdvancementMessageDataTemplate">
-        <StackPanel>
-            <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
+        <Border Background="#2F0000FF" Padding="2">
+            <StackPanel>
+                <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
                 <Run Text="{Binding PlayerName}" />
                 <Run Text=" has reached level " />
                 <Run Text="{Binding PlayerLevel}" />
                 <Run Text="!" />
-            </TextBlock>
+                </TextBlock>
 
-            <ItemsControl ItemsSource="{Binding AttributeChanges}"
+                <ItemsControl ItemsSource="{Binding AttributeChanges}"
                           VerticalAlignment="Center"
                           HorizontalAlignment="Stretch"
                           Width="Auto"
                           Height="Auto">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
                             <Run Text="{Binding AttributeName}" Foreground="{Binding Color, Converter={StaticResource ColorBrushConverter}}" />
                             <Run Text=" has changed by " />
                             <Run Text="{Binding Change, StringFormat=F2}" />
-                        </TextBlock>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            
-        </StackPanel>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </Border>
     </DataTemplate>
     
     <DataTemplate x:Key="SkillAdvancementMessageDataTemplate">
-        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}">
+        <TextBlock  Style="{StaticResource ScenarioMessageTextBlockStyle}" Padding="2">
             <Run Text="{Binding SkillDisplayName}" />
             <Run Text=" has reached Level " />
             <Run Text="{Binding SkillLevel}" />

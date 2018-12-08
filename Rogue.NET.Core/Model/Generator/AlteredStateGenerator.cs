@@ -17,11 +17,11 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new AlteredCharacterState()
             {
+                RogueName = template.Name,
                 BaseType = template.BaseType,
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Icon = template.SymbolDetails.Icon,
-                RogueName = template.SymbolDetails.Name,
                 SmileyAuraColor = template.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = template.SymbolDetails.SmileyLineColor,

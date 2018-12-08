@@ -115,6 +115,16 @@ namespace Rogue.NET.Core.Logic.Content
                         player.Hunger += ModelConstants.SkillHighHungerIncrement;
                         break;
                 }
+
+                if (skill.Emphasis > 0)
+                {
+                    _scenarioMessageService.Publish(
+                        ScenarioMessagePriority.Normal,
+                        "{0} has progressed to {1}",
+                        skill.RogueName,
+                        skill.SkillProgress.ToString("P1"));
+                }
+
                 if (skill.SkillProgress >= 1)
                 {
                     if (skill.Level < skill.Skills.Count)

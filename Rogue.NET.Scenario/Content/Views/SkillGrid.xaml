@@ -98,7 +98,8 @@
                         </Grid>
                     </DataTemplate>
                     <DataTemplate x:Key="EmphasisColumnTemplate">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                        <Grid VerticalAlignment="Stretch" 
+                              HorizontalAlignment="Center">
                             <local:Emphasis VerticalAlignment="Center" Value="{Binding Emphasis}" RedOrbHeight="16" />
                         </Grid>
                     </DataTemplate>

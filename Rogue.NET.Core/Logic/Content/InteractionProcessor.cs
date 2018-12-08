@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -100,7 +101,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void CalculatePlayerMeleeHit(Player player, Enemy enemy)
         {
             // Start with standard melee - randomized
-            var attack = _randomSequenceGenerator.Get() * (player.GetAttack() - enemy.GetDefense());
+            var attack = Math.Max(_randomSequenceGenerator.Get() * (player.GetAttack() - enemy.GetDefense()), 0);
             var attackBase = attack;
             var dodge = _randomSequenceGenerator.Get() < enemy.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= player.GetCriticalHitProbability();
@@ -169,7 +170,7 @@ namespace Rogue.NET.Core.Logic.Content
             // Enemy counter-attacks
             if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CounterAttackProbability)
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, enemy.RogueName + " counter attacks");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " counter attacks!");
 
                 // Calculate and publish counter attack
                 CalculateEnemyHit(player, enemy);
@@ -178,7 +179,7 @@ namespace Rogue.NET.Core.Logic.Content
         public bool CalculatePlayerRangeHit(Player player, Enemy targetedEnemy)
         {
             // Start with standard melee - randomized
-            var attack = _randomSequenceGenerator.Get() * (player.GetAttack() - targetedEnemy.GetDefense());
+            var attack = Math.Max(_randomSequenceGenerator.Get() * (player.GetAttack() - targetedEnemy.GetDefense()), 0);
             var attackBase = attack;
             var dodge = _randomSequenceGenerator.Get() < targetedEnemy.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= player.GetCriticalHitProbability();
@@ -250,7 +251,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void CalculateEnemyHit(Player player, Enemy enemy)
         {
             // Start with standard melee - randomized / calculate dodge / calculate critical hit
-            var attackBase = _randomSequenceGenerator.Get() * (enemy.GetAttack() - player.GetDefense());
+            var attackBase = Math.Max(_randomSequenceGenerator.Get() * (enemy.GetAttack() - player.GetDefense()), 0);
             var attack = attackBase;
             var dodge = _randomSequenceGenerator.Get() <= player.GetDodge();
             var criticalHit = _randomSequenceGenerator.Get() <= enemy.BehaviorDetails.CriticalRatio;
@@ -309,7 +310,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 // Publish detailed melee message
                 _scenarioMessageService.PublishMeleeMessage(
-                    ScenarioMessagePriority.Bad, 
+                    ScenarioMessagePriority.Normal, 
                     enemy.RogueName, 
                     player.RogueName, 
                     attackBase, 
