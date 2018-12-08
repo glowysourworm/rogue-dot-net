@@ -610,6 +610,9 @@ namespace Rogue.NET.Core.Logic
                 minion.Location = location;
 
                 _modelService.Level.AddContent(minion);
+
+                // Notify UI
+                QueueLevelUpdate(LevelUpdateType.ContentAdd, minion.Id);
             }
         }
         private void CreateMonster(string monsterName)
@@ -624,6 +627,9 @@ namespace Rogue.NET.Core.Logic
                 enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
                 _modelService.Level.AddContent(enemy);
+
+                // Notify UI
+                QueueLevelUpdate(LevelUpdateType.ContentAdd, enemy.Id);
             }
         }
 

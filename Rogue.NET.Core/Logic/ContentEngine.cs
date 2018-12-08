@@ -768,6 +768,9 @@ namespace Rogue.NET.Core.Logic
 
             // Add content to level
             _modelService.Level.AddContent(enemy);
+
+            // Queue level update for added content
+            QueueLevelUpdate(LevelUpdateType.ContentAdd, enemy.Id);
         }
         #endregion
 

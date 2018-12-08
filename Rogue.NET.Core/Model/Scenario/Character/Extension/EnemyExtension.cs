@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,63 +122,28 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
         public static double GetAttack(this Enemy enemy)
         {
-            double result = enemy.GetStrength();
+            var attackValue = enemy.Equipment
+                                   .Values
+                                   .Where(x => x.IsEquipped && x.IsWeaponType())
+                                   .Sum(x => x.GetAttackValue());
 
-            foreach (var equipment in enemy.Equipment.Values.Where(x => x.IsEquipped))
-            {
-                switch (equipment.Type)
-                {
-                    case EquipmentType.OneHandedMeleeWeapon:
-                        result += ((equipment.Class + 1) * equipment.Quality);
-                        break;
-                    case EquipmentType.TwoHandedMeleeWeapon:
-                        result += ((equipment.Class + 1) * equipment.Quality) * 2;
-                        break;
-                    case EquipmentType.RangeWeapon:
-                        result += ((equipment.Class + 1) * equipment.Quality) / 2;
-                        break;
-                }
-            }
-
-            result += enemy.Alteration.GetAlterations().Sum(x => x.Attack);
+            var result = (attackValue * enemy.GetStrength()) + 
+                          enemy.Alteration.GetAlterations().Sum(x => x.Attack);
 
             return Math.Max(0, result);
         }
         public static double GetDefense(this Enemy enemy)
         {
-            var defense = enemy.GetStrength() / 5.0D;
+            var baseStrengthMultiplier = enemy.GetStrength() / 5.0D;
+            var defenseValue = enemy.Equipment
+                                    .Values
+                                    .Where(x => x.IsEquipped && x.IsArmorType())
+                                    .Sum(x => x.GetDefenseValue());
 
-            foreach (var equipment in enemy.Equipment.Values.Where(x => x.IsEquipped))
-            {
-                switch (equipment.Type)
-                {
-                    case EquipmentType.Armor:
-                        defense += ((equipment.Class + 1) * equipment.Quality);
-                        break;
-                    case EquipmentType.Shoulder:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                    case EquipmentType.Boots:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
-                        break;
-                    case EquipmentType.Gauntlets:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 10);
-                        break;
-                    case EquipmentType.Belt:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 8);
-                        break;
-                    case EquipmentType.Shield:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                    case EquipmentType.Helmet:
-                        defense += (((equipment.Class + 1) * equipment.Quality) / 5);
-                        break;
-                }
-            }
+            var result = (defenseValue * baseStrengthMultiplier) +
+                          enemy.Alteration.GetAlterations().Sum(x => x.Defense);
 
-            defense += enemy.Alteration.GetAlterations().Sum(x => x.Defense);
-
-            return Math.Max(0, defense);
+            return Math.Max(0, result);
         }
 
         public static double GetCriticalHitProbability(this Enemy enemy)

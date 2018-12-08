@@ -28,6 +28,13 @@ namespace Rogue.NET.Scenario.Views
         public static readonly DependencyProperty IsDialogModeProperty =
             DependencyProperty.Register("IsDialogMode", typeof(bool), typeof(ItemGrid));
 
+        public static readonly DependencyProperty ShowDetailsProperty =
+            DependencyProperty.Register("ShowDetails", typeof(bool), typeof(ItemGrid));
+
+        // NOTE*** Using block to prevent multiple events for void -> async -> await. Should change
+        //         to ICommand invoke instead.
+        bool _executingTask = false;
+
         ItemGridModes _mode;
 
         public ItemGridModes Mode
@@ -38,12 +45,17 @@ namespace Rogue.NET.Scenario.Views
         public ItemGridActions IntendedAction
         {
             get { return (ItemGridActions)GetValue(IntendedActionProperty); }
-            set { SetValue(IntendedActionProperty, value); SetIntendedActionText(value); }
+            set { SetValue(IntendedActionProperty, value); }
         }
         public bool IsDialogMode
         {
             get { return (bool)GetValue(IsDialogModeProperty); }
             set { SetValue(IsDialogModeProperty, value); }
+        }
+        public bool ShowDetails
+        {
+            get { return (bool)GetValue(ShowDetailsProperty); }
+            set { SetValue(ShowDetailsProperty, value); }
         }
 
         [ImportingConstructor]
@@ -63,6 +75,13 @@ namespace Rogue.NET.Scenario.Views
 
         private async void SelectCheckBox_Click(object sender, RoutedEventArgs e)
         {
+            // Have to block here because this method doesn't return a Task to the calling
+            // thread. So, can't wait for task to finish. This prevents two executions for the same item
+            if (_executingTask)
+                return;
+
+            _executingTask = true;
+
             var itemViewModel = (sender as Button).Tag as ItemGridRowViewModel;
 
             await _eventAggregator.GetEvent<UserCommandEvent>()
@@ -72,11 +91,8 @@ namespace Rogue.NET.Scenario.Views
                                 Direction = Compass.Null,
                                 ItemId = itemViewModel.Id
                             });
-        }
 
-        private void SetIntendedActionText(ItemGridActions action)
-        {
-            this.ModeTB.Text = TextUtility.CamelCaseToTitleCase(action.ToString());
+            _executingTask = false;
         }
         
         private void SetMode(ItemGridModes mode)

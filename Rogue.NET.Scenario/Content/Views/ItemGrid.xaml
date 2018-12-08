@@ -7,6 +7,7 @@
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:itemGridModes="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid"
+             xmlns:itemTemplateSelector="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemTemplateSelector"
              x:Class="Rogue.NET.Scenario.Views.ItemGrid" 
              HorizontalContentAlignment="Stretch"
              HorizontalAlignment="Stretch"
@@ -20,11 +21,14 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGrid.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ImageButton.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml"/>
                 <ResourceDictionary>
                     <scenarioConverter:ItemGridButtonVisibilityConverter x:Key="ItemGridButtonVisibilityConverter" />
                     <scenarioConverter:ItemGridRowButtonVisibilitiyConverter x:Key="ItemGridRowButtonVisibilitiyConverter" />
                     <scenarioConverter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
-                    
+                    <scenarioConverter:ItemGridIntendedActionTextConverter x:Key="ItemGridIntendedActionTextConverter" />
+                    <itemTemplateSelector:RogueItemGridRowDetailsTemplateSelector x:Key="RogueItemGridRowDetailsTemplateSelector" />
+
                     <!-- Collection View Source Binding to DataContext -->
                     <CollectionViewSource x:Key='SortedItemsSource' Source="{Binding}">
                         <CollectionViewSource.SortDescriptions>
@@ -74,7 +78,7 @@
                     <Style x:Key="RogueItemGridRowStyle" TargetType="{x:Type DataGridRow}">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                        <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Foreground" Value="{Binding IsSelected, Converter={StaticResource ItemGridSelectionColorConverter}}"/>
                         <Setter Property="SnapsToDevicePixels" Value="true"/>
                         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
@@ -85,141 +89,6 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Setter Property="ToolTip">
-                            <Setter.Value>
-                                <ToolTip Background="Black"
-                                         BorderThickness="1"
-                                         StaysOpen="True"
-                                         Width="350">
-                                    <ToolTip.Style>
-                                        <Style TargetType="ToolTip">
-                                            <Setter Property="Foreground">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
-                                                        <Binding Path="IsEquiped" />
-                                                        <Binding Path="IsCursed" />
-                                                        <Binding Path="IsObjective" />
-                                                        <Binding Path="IsUnique" />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="BorderBrush">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
-                                                        <Binding Path="IsEquiped" />
-                                                        <Binding Path="IsCursed" />
-                                                        <Binding Path="IsObjective" />
-                                                        <Binding Path="IsUnique" />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>                                            
-                                            <Setter Property="FontStyle">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{StaticResource ItemGridFontStyleConverter}">
-                                                        <Binding Path="IsEquiped" />
-                                                        <Binding Path="IsCursed" />
-                                                        <Binding Path="IsObjective" />
-                                                        <Binding Path="IsUnique" />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </ToolTip.Style>
-                                    <Border BorderBrush="#00000000"
-                                            BorderThickness="0"
-                                            Width="340">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="100" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <StackPanel Grid.ColumnSpan="2">
-                                                <StackPanel Orientation="Horizontal" Margin="4">
-                                                    <Image Width="20" 
-                                                           Height="30" 
-                                                           Margin="0" 
-                                                           VerticalAlignment="Center" 
-                                                           HorizontalAlignment="Center">
-                                                        <Image.Source>
-                                                            <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
-                                                                <Binding Path="CharacterColor" />
-                                                                <Binding Path="CharacterSymbol" />
-                                                                <Binding Path="Icon" />
-                                                                <Binding Path="SmileyMood" />
-                                                                <Binding Path="SmileyAuraColor" />
-                                                                <Binding Path="SmileyBodyColor" />
-                                                                <Binding Path="SmileyLineColor" />
-                                                                <Binding Path="SymbolType" />
-                                                            </MultiBinding>
-                                                        </Image.Source>
-                                                    </Image>
-                                                    <TextBlock Text="{Binding DisplayName}" FontSize="18" VerticalAlignment="Center" Margin="8,0,0,0" />
-                                                </StackPanel>
-                                                <TextBlock Text="{Binding UsageDescription}" FontSize="14" VerticalAlignment="Center" Margin="4" HorizontalAlignment="Left" TextWrapping="Wrap" />
-                                            </StackPanel>
-                                            <TextBlock x:Name="SpecialAttributeTB"
-                                                       Margin="4"
-                                                       Grid.Column="1"
-                                                       FontSize="18"
-                                                       VerticalAlignment="Top"
-                                                       HorizontalAlignment="Right">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsCursed}" Value="True">
-                                                                <Setter Property="Text" Value="Cursed" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding IsObjective}" Value="True">
-                                                                <Setter Property="Text" Value="Objective" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding IsUnique}" Value="True">
-                                                                <Setter Property="Text" Value="Unique" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                            <TextBlock Text="Class" Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter }}" Grid.Row="1" Margin="4" />
-                                            <TextBlock Text="Quality" Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter}}" Grid.Row="2" Margin="4" />
-                                            <TextBlock Text="Weight" Grid.Row="3" Margin="4" />
-                                            <TextBlock Text="{Binding Class}" Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter}}" Grid.Row="1" Margin="4" HorizontalAlignment="Right" />
-                                            <TextBlock Text="{Binding Quality}" Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter}}" Grid.Row="2" Margin="4" HorizontalAlignment="Right" />
-                                            <TextBlock Text="{Binding Weight}" Grid.Row="3" Margin="4" HorizontalAlignment="Right" />
-                                            <ListBox Grid.Row="1"
-                                                     Grid.RowSpan="3"
-                                                     Grid.Column="1"
-                                                     Margin="4,0,0,0"
-                                                     Visibility="{Binding IsEquipment, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                                                     ItemsSource="{Binding AttackAttributes}" 
-                                                     HorizontalContentAlignment="Stretch" 
-                                                     HorizontalAlignment="Stretch"
-                                                     Style="{StaticResource DarkListBoxStyle}" 
-                                                     ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}" 
-                                                     Background="Black" 
-                                                     BorderThickness="0">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <local:DungeonEncyclopediaAttackAttributeCtrl />
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
-                                            <TextBlock Text="{Binding ShortDescription}" TextWrapping="Wrap" Grid.Row="4" Grid.ColumnSpan="2" Margin="4" />
-                                            <Separator Margin="4" Padding="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Row="5" Grid.ColumnSpan="2" />
-                                            <TextBlock Text="{Binding LongDescription}" TextWrapping="Wrap" Grid.Row="6" Grid.ColumnSpan="2" Margin="4" />
-                                        </Grid>
-                                    </Border>
-                                </ToolTip>
-                            </Setter.Value>
-                        </Setter>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type DataGridRow}">
@@ -228,12 +97,7 @@
                                             Background="Transparent"
                                             BorderThickness="{TemplateBinding BorderThickness}" 
                                             SnapsToDevicePixels="True">
-                                        <DataGridCellsPresenter x:Name="dataGridCellsPresenter" 
-                                                                HorizontalAlignment="Stretch" 
-                                                                HorizontalContentAlignment="Stretch" 
-                                                                ItemsPanel="{TemplateBinding ItemsPanel}" 
-                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                            <!--SelectiveScrollingGrid HorizontalAlignment="Stretch">
+                                        <SelectiveScrollingGrid HorizontalAlignment="Stretch">
                                             <SelectiveScrollingGrid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -245,7 +109,7 @@
                                             <DataGridCellsPresenter x:Name="dataGridCellsPresenter" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                             <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
                                             <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                                        </-->
+                                        </SelectiveScrollingGrid>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
@@ -256,7 +120,227 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                    <Condition Binding="{Binding ShowDetails, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
+                                               Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="DetailsVisibility" Value="Visible" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Trigger.Setters>
+                                    <Setter Property="DetailsVisibility" Value="Collapsed" />
+                                </Trigger.Setters>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
+
+                    <!-- Equipment Row Details Template -->
+                    <DataTemplate x:Key="RogueItemGridRowEquipmentDetailsTemplate">
+                        <Border Background="Black" BorderThickness="0.5">
+                            <Border.BorderBrush>
+                                <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
+                                    <Binding Path="IsEquiped" />
+                                    <Binding Path="IsCursed" />
+                                    <Binding Path="IsObjective" />
+                                    <Binding Path="IsUnique" />
+                                </MultiBinding>
+                            </Border.BorderBrush>
+                            <Border.Resources>
+                                <Style x:Key="EquipmentTextBlockBrush" TargetType="TextBlock">
+                                    <Setter Property="Foreground">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
+                                                <Binding Path="IsEquiped" />
+                                                <Binding Path="IsCursed" />
+                                                <Binding Path="IsObjective" />
+                                                <Binding Path="IsUnique" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="FontStyle">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource ItemGridFontStyleConverter}">
+                                                <Binding Path="IsEquiped" />
+                                                <Binding Path="IsCursed" />
+                                                <Binding Path="IsObjective" />
+                                                <Binding Path="IsUnique" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="FontSize" Value="14" />
+                                </Style>
+                            </Border.Resources>
+                            <StackPanel>
+                                <Grid Margin="4">
+                                    <TextBlock HorizontalAlignment="Left"
+                                               Style="{StaticResource EquipmentTextBlockBrush}">
+                                        <Run Text="Required Level " />
+                                        <Run Text="{Binding RequiredLevel}" />
+                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Visibility="{Binding IsCursed, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Cursed" />
+                                        </TextBlock>
+                                        <TextBlock Margin="2,0,0,0" Visibility="{Binding IsObjective, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Objective" />
+                                        </TextBlock>
+                                        <TextBlock Margin="2,0,0,0" Visibility="{Binding IsUnique, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Unique" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Class: " />
+                                            <Run Text="{Binding Class}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Quality: " />
+                                            <Run Text="{Binding Quality}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}"
+                                                   Visibility="{Binding IsWeapon, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                                            <Run Text="Attack Value: " />
+                                            <Run Text="{Binding AttackValue}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}"
+                                                   Visibility="{Binding IsArmor, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                                            <Run Text="Defense Value: " />
+                                            <Run Text="{Binding DefenseValue}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Weight: " />
+                                            <Run Text="{Binding Weight}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <ListBox    Grid.Column="1"
+                                                ItemsSource="{Binding AttackAttributes}" 
+                                                HorizontalContentAlignment="Stretch" 
+                                                HorizontalAlignment="Stretch"
+                                                Style="{StaticResource DarkListBoxStyle}" 
+                                                ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}" 
+                                                Background="Black" 
+                                                BorderThickness="0">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <local:DungeonEncyclopediaAttackAttributeCtrl />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+
+                    <!-- Consumable Row Details Template -->
+                    <DataTemplate x:Key="RogueItemGridRowConsumableDetailsTemplate">
+                        <Border Background="Black" BorderThickness="0.5">
+                            <Border.BorderBrush>
+                                <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
+                                    <Binding Path="IsEquiped" />
+                                    <Binding Path="IsCursed" />
+                                    <Binding Path="IsObjective" />
+                                    <Binding Path="IsUnique" />
+                                </MultiBinding>
+                            </Border.BorderBrush>
+                            <Border.Resources>
+                                <Style x:Key="ConsumableTextBlockBrush" TargetType="TextBlock">
+                                    <Setter Property="Foreground">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource ItemGridTooltipForegroundConverter}">
+                                                <Binding Path="IsEquiped" />
+                                                <Binding Path="IsCursed" />
+                                                <Binding Path="IsObjective" />
+                                                <Binding Path="IsUnique" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="FontStyle">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{StaticResource ItemGridFontStyleConverter}">
+                                                <Binding Path="IsEquiped" />
+                                                <Binding Path="IsCursed" />
+                                                <Binding Path="IsObjective" />
+                                                <Binding Path="IsUnique" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="FontSize" Value="14" />
+                                </Style>
+                            </Border.Resources>
+                            <StackPanel>
+                                <Grid Margin="4">
+                                    <TextBlock HorizontalAlignment="Left" Style="{StaticResource ConsumableTextBlockBrush}">
+                                        <Run Text="Required Level " />
+                                        <Run Text="{Binding RequiredLevel}" />
+                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Visibility="{Binding IsCursed, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Cursed" />
+                                        </TextBlock>
+                                        <TextBlock Visibility="{Binding IsObjective, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Objective" />
+                                        </TextBlock>
+                                        <TextBlock Visibility="{Binding IsUnique, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Unique" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Quantity: " />
+                                            <Run Text="{Binding Quantity}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Uses: " />
+                                            <Run Text="{Binding Uses}" />
+                                        </TextBlock>
+                                        <TextBlock Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Weight: " />
+                                            <Run Text="{Binding Weight}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Type: " />
+                                            <Run Text="{Binding Type}" />
+                                        </TextBlock>
+                                        <TextBlock Visibility="{Binding ThrowEnable, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Throwable: " />
+                                            <Run Text="Yes" />
+                                        </TextBlock>
+                                        <TextBlock Visibility="{Binding ThrowEnable, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
+                                                   Style="{StaticResource ConsumableTextBlockBrush}">
+                                            <Run Text="Throwable: " />
+                                            <Run Text="No" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -264,28 +348,94 @@
     <Grid x:Name="LayoutRoot">
     	<Grid.RowDefinitions>
     		<RowDefinition Height="Auto" />
-    		<RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
-        <TextBlock x:Name="ModeTB"  
+        <Grid Margin="4">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <ToggleButton x:Name="ShowDetailsButton" 
+                          FontSize="12"
+                          ToolTip="Show Details"
+                          VerticalAlignment="Center"
+                          Margin="4, 0, 8, 0"
+                          Foreground="White"
+                          Background="Black"
+                          BorderBrush="White"
+                          Cursor="Hand"
+                          Width="14"
+                          Height="14"
+                          IsChecked="{Binding ShowDetails, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
+                          Content="?"
+                          Style="{StaticResource ShinyTextToggleButtonStyle}" />
+                <TextBlock x:Name="ModeTB"  
                    Grid.Row="0" 
+                   Text="{Binding IntendedAction, Converter={StaticResource ItemGridIntendedActionTextConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}"
                    TextWrapping="Wrap" 
                    VerticalAlignment="Center" 
-                   Foreground="White" 
-                   FontSize="18.667" 
-                   HorizontalAlignment="Left" 
-                   Margin="4" />
-        <StackPanel Margin="4" Grid.Row="0" x:Name="ButtonStack" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-            <RadioButton x:Name="Consume" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Consume}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
-            <RadioButton x:Name="Equip" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Equip}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
-            <RadioButton x:Name="Identify" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Identify}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" BorderBrush="Yellow" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Identify" Cursor="Hand" />
-            <RadioButton x:Name="Uncurse" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Uncurse}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Uncurse.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Uncurse" Cursor="Hand" />
-            <RadioButton x:Name="EnchantArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnchantArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnchantArmor.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant Armor" Cursor="Hand" />
-            <RadioButton x:Name="EnchantWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnchantWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnchantWeapon.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant Weapon" Cursor="Hand" />
-            <RadioButton x:Name="ImbueArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueArmor.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Armor" Cursor="Hand" />
-            <RadioButton x:Name="ImbueWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueWeapon.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Weapon" Cursor="Hand" />
-            <RadioButton x:Name="Throw" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Throw}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
-            <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Drop}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
-        </StackPanel>
+                   FontSize="20" 
+                   HorizontalAlignment="Left">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="White" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Drop}">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Throw}">
+                                    <Setter Property="Foreground" Value="Goldenrod" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.ImbueWeapon}">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.ImbueArmor}">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.EnchantWeapon}">
+                                    <Setter Property="Foreground" Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.EnchantWeapon}">
+                                    <Setter Property="Foreground" Value="Yellow" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Uncurse}">
+                                    <Setter Property="Foreground" Value="White" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Identify}">
+                                    <Setter Property="Foreground" Value="White" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Equip}">
+                                    <Setter Property="Foreground" Value="White" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.Consume}">
+                                    <Setter Property="Foreground" Value="Fuchsia" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <RadioButton x:Name="Consume" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Consume}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
+                <RadioButton x:Name="Equip" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Equip}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
+                <RadioButton x:Name="Identify" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Identify}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" BorderBrush="Yellow" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Identify" Cursor="Hand" />
+                <RadioButton x:Name="Uncurse" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Uncurse}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Uncurse.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Uncurse" Cursor="Hand" />
+                <RadioButton x:Name="EnchantArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnchantArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnchantArmor.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant Armor" Cursor="Hand" />
+                <RadioButton x:Name="EnchantWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnchantWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnchantWeapon.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant Weapon" Cursor="Hand" />
+                <RadioButton x:Name="ImbueArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueArmor.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Armor" Cursor="Hand" />
+                <RadioButton x:Name="ImbueWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueWeapon.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Weapon" Cursor="Hand" />
+                <RadioButton x:Name="Throw" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Throw}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
+                <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Drop}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+            </StackPanel>
+        </Grid>
         <DataGrid x:Name="TheGrid"
                   ItemsSource="{Binding Source={StaticResource SortedItemsSource}}"
                   Grid.Row="1"
@@ -305,7 +455,7 @@
                   CanUserReorderColumns="False" 
                   CanUserResizeRows="False" 
                   RowBackground="Black"
-                  HorizontalScrollBarVisibility="Hidden" 
+                  HorizontalScrollBarVisibility="Disabled" 
                   VerticalScrollBarVisibility="Auto"
                   GridLinesVisibility="Horizontal"
                   SelectionMode="Single"
@@ -313,7 +463,7 @@
                   ColumnHeaderStyle="{DynamicResource Rogue2DataGridColumnHeaderStyle}" 
                   RowStyle="{DynamicResource RogueItemGridRowStyle}" 
                   Style="{DynamicResource Rogue2ItemDataGridStyle}" 
-                  RowDetailsVisibilityMode="Collapsed"
+                  RowDetailsTemplateSelector="{StaticResource RogueItemGridRowDetailsTemplateSelector}"
                   CellStyle="{StaticResource DataGridCellStyle}"
                   ColumnWidth="SizeToCells">
             <DataGrid.Columns>

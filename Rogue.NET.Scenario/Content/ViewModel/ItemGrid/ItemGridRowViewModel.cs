@@ -16,6 +16,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 {
     public class ItemGridRowViewModel : NotifyViewModel
     {
+        static readonly string INFINITY = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E });
 
         #region (private) Backing Fields
         string _id;
@@ -25,7 +26,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _dropEnable;
         bool _uncurseEnable;
         bool _selectEnable;
-        bool _detailsEnable;
         bool _throwEnable;
         bool _enchantArmorEnable;
         bool _enchantWeaponEnable;
@@ -37,16 +37,18 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _isUnique;
         bool _isConsumable;
         bool _isEquipment;
+        bool _isWeapon;
+        bool _isArmor;
         int _quantity;
-        int _uses;
+        string _uses;
+        int _requiredLevel;
         string _type;
         EquipmentType _equipType;
         string _class;
         string _weight;
         string _quality;
-        string _shortDescription;
-        string _longDescription;
-        string _usageDescription;
+        string _attackValue;
+        string _defenseValue;
         string _rogueName;
         string _displayName;
         string _characterSymbol;
@@ -97,11 +99,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _selectEnable; }
             set { this.RaiseAndSetIfChanged(ref _selectEnable, value); }
         }
-        public bool DetailsEnable
-        {
-            get { return _detailsEnable; }
-            set { this.RaiseAndSetIfChanged(ref _detailsEnable, value); }
-        }
         public bool ThrowEnable
         {
             get { return _throwEnable; }
@@ -147,15 +144,30 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _isUnique; }
             set { this.RaiseAndSetIfChanged(ref _isUnique, value); }
         }
+        public bool IsWeapon
+        {
+            get { return _isWeapon; }
+            set { this.RaiseAndSetIfChanged(ref _isWeapon, value); }
+        }
+        public bool IsArmor
+        {
+            get { return _isArmor; }
+            set { this.RaiseAndSetIfChanged(ref _isArmor, value); }
+        }
         public int Quantity
         {
             get { return _quantity; }
             set { this.RaiseAndSetIfChanged(ref _quantity, value); }
         }
-        public int Uses
+        public string Uses
         {
             get { return _uses; }
             set { this.RaiseAndSetIfChanged(ref _uses, value); }
+        }
+        public int RequiredLevel
+        {
+            get { return _requiredLevel; }
+            set { this.RaiseAndSetIfChanged(ref _requiredLevel, value); }
         }
         public string Type
         {
@@ -166,6 +178,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             get { return _equipType; }
             set { this.RaiseAndSetIfChanged(ref _equipType, value); }
+        }
+        public string AttackValue
+        {
+            get { return _attackValue; }
+            set { this.RaiseAndSetIfChanged(ref _attackValue, value); }
+        }
+        public string DefenseValue
+        {
+            get { return _defenseValue; }
+            set { this.RaiseAndSetIfChanged(ref _defenseValue, value); }
         }
         public string Class
         {
@@ -181,21 +203,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             get { return _quality; }
             set { this.RaiseAndSetIfChanged(ref _quality, value); }
-        }
-        public string ShortDescription
-        {
-            get { return _shortDescription; }
-            set { this.RaiseAndSetIfChanged(ref _shortDescription, value); }
-        }
-        public string LongDescription
-        {
-            get { return _longDescription; }
-            set { this.RaiseAndSetIfChanged(ref _longDescription, value); }
-        }
-        public string UsageDescription
-        {
-            get { return _usageDescription; }
-            set { this.RaiseAndSetIfChanged(ref _usageDescription, value); }
         }
         public bool IsConsumable
         {
@@ -289,11 +296,17 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             this.IsEquipment = false;
             this.IsConsumable = true;
+            this.IsArmor = false;
+            this.IsWeapon = false;
 
             this.Quantity = totalQuantity;
             this.Weight = totalWeight.ToString("F2");
+            this.AttackValue = "N/A";
+            this.DefenseValue = "N/A";
             this.Type = consumable.SubType.ToString();
-            this.Uses = totalUses;
+            this.Uses = consumable.Type == ConsumableType.UnlimitedUses ? INFINITY :
+                        consumable.Type == ConsumableType.MultipleUses ? totalUses.ToString() : "1";
+            this.RequiredLevel = consumable.LevelRequired;
 
             this.EquipEnable = false;
             this.ConsumeEnable = consumeEnable;
@@ -306,8 +319,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.EnchantWeaponEnable = false;
             this.ImbueArmorEnable = false;
             this.ImbueWeaponEnable = false;
-
-            this.UsageDescription = CreateConsumableUsageDescription(consumable.SubType, throwEnable, consumeEnable, this.Quantity, this.Uses);
 
             // Symbol Details
             this.CharacterSymbol = consumable.CharacterSymbol;
@@ -327,8 +338,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             if (!metaData.IsIdentified)
             {
                 this.DisplayName = "???";
-                this.ShortDescription = "";
-                this.LongDescription = "";
             }
             // Different rule for consumable of multiple uses
             else
@@ -341,68 +350,49 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 else if (consumable.Type == ConsumableType.UnlimitedUses)
                 {
                     //Infinity symbol
-                    this.DisplayName = consumable.RogueName + " (" + Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E }) + ")";
+                    this.DisplayName = consumable.RogueName + " (" + INFINITY + ")";
                 }
 
                 else
                     this.DisplayName = consumable.RogueName;
-
-                this.LongDescription = metaData.LongDescription;
-                this.ShortDescription = metaData.Description;
             }
         }
         public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData)
         {
             this.Id = equipment.Id;
             this.RogueName = equipment.RogueName;
+            this.DisplayName = metaData.IsIdentified ? equipment.RogueName : "???";
+            this.Type = equipment.Type.ToString();
+            this.EquipType = equipment.Type;
 
-            bool shouldShowClass = false;
-            bool consumeEnable = false;
-            bool uncurseEnable = false;
-            bool throwEnable = false;
-            bool isEquiped = false;
-            bool isCursed = false;
-
-            string quality = "N/A";
-            string classs = "N/A";
+            this.IsEquiped = equipment.IsEquipped;
+            this.IsCursed = equipment.IsCursed && metaData.IsCurseIdentified;
+            this.IsObjective = (metaData.IsObjective && metaData.IsIdentified);
+            this.IsUnique = (metaData.IsUnique && metaData.IsIdentified);
 
             this.IsEquipment = true;
             this.IsConsumable = false;
+            this.IsArmor = equipment.IsArmorType();
+            this.IsWeapon = equipment.IsWeaponType();
 
-            shouldShowClass = equipment.ClassApplies();
-
-            uncurseEnable = equipment.IsCursed;
-            isEquiped = equipment.IsEquipped;
-            isCursed = equipment.IsCursed && metaData.IsCurseIdentified;
-            quality = shouldShowClass ? equipment.Quality.ToString("F2") : "N/A";
-            classs = shouldShowClass ? equipment.Class.ToString("F0") : "N/A";
-
-            if (!equipment.IsIdentified)
-                classs = "?";
-
-            this.EquipType = equipment.Type;
             this.Quantity = 1;
+            this.Quality = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Quality.ToString("F2") :
+                                                       equipment.IsIdentified ? "N/A" : "?";
+            this.Class = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Class.ToString("F0") :
+                                                     equipment.IsIdentified ? "N/A" : "?";
+            this.AttackValue = equipment.IsWeaponType() ? equipment.IsIdentified ? 
+                                                          equipment.GetAttackValue().ToString("F2") : "?" : "N/A";
+            this.DefenseValue = equipment.IsArmorType() ? equipment.IsIdentified ?
+                                                          equipment.GetDefenseValue().ToString("F2") : "?" : "N/A";
             this.Weight = equipment.Weight.ToString("F2");
-            this.Type = equipment.Type.ToString();
-            this.AttackAttributes.Clear();
-
-            if (equipment.IsIdentified)
-                this.AttackAttributes.AddRange(equipment.AttackAttributes
-                                                        .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
-                                                        .Select(x => new AttackAttributeViewModel(x)));
-
-            // Fire PropertyChanged event for AttackAttributes to update bindings
-            OnPropertyChanged("AttackAttributes");
-
-            this.UsageDescription = CreateEquipmentUsageDescription(equipment.Type, isEquiped);
-
+            this.RequiredLevel = equipment.LevelRequired;
             this.EquipEnable = true;
-            this.ConsumeEnable = consumeEnable;
-            this.IdentifyEnable = !metaData.IsIdentified || (!equipment.IsIdentified && shouldShowClass);
-            this.UncurseEnable = uncurseEnable;
+            this.ConsumeEnable = false;
+            this.IdentifyEnable = !metaData.IsIdentified || (!equipment.IsIdentified && equipment.ClassApplies());
+            this.UncurseEnable = equipment.IsCursed;
             this.DropEnable = true;
             this.SelectEnable = true;
-            this.ThrowEnable = throwEnable;
+            this.ThrowEnable = false;
             this.EnchantArmorEnable = equipment.ClassApplies() && equipment.IsArmorType();
             this.EnchantWeaponEnable = equipment.ClassApplies() && equipment.IsWeaponType();
             this.ImbueArmorEnable = equipment.CanImbue() && equipment.IsArmorType();
@@ -417,85 +407,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.SmileyLineColor = equipment.SmileyLineColor;
             this.SmileyAuraColor = equipment.SmileyAuraColor;
             this.SymbolType = equipment.SymbolType;
-            
-            this.IsEquiped = isEquiped;
-            this.IsCursed = isCursed;
-            this.IsObjective = (metaData.IsObjective && metaData.IsIdentified);
-            this.IsUnique = (metaData.IsUnique && metaData.IsIdentified);
 
-            // For item specific parameters need to identify the item. For item type parameters
-            // need to identify the meta-data (have identified one)
-            this.Quality = !equipment.IsIdentified ? "?" : quality;
-            this.Class = !equipment.IsIdentified ? "?" : classs;
+            this.AttackAttributes.Clear();
 
-            if (!metaData.IsIdentified)
-            {
-                this.DisplayName = metaData.IsIdentified ? this.RogueName : "???";
-                this.ShortDescription = "???";
-                this.LongDescription = "???";
-            }
-            else
-            {
-                this.DisplayName = equipment.RogueName;
-                this.LongDescription = metaData.LongDescription;
-                this.ShortDescription = metaData.Description;
-            }
-        }
-        private string CreateEquipmentUsageDescription(EquipmentType type, bool isEquiped)
-        {
-            switch (type)
-            {
-                case EquipmentType.None:
-                    return "";
-                case EquipmentType.Armor:
-                    return isEquiped ? "Armor - Click button to the left to un-equip" : "Armor - Click button to the left to equip";
-                case EquipmentType.Shoulder:
-                    return isEquiped ? "Shoulder - Click button to the left to un-equip" : "Shoulder - Click button to the left to equip";
-                case EquipmentType.Belt:
-                    return isEquiped ? "Belt - Click button to the left to un-equip" : "Belt - Click button to the left to equip";
-                case EquipmentType.Helmet:
-                    return isEquiped ? "Helmet - Click button to the left to un-equip" : "Helmet - Click button to the left to equip";
-                case EquipmentType.Ring:
-                    return isEquiped ? "Ring - Click button to the left to un-equip" : "Ring - Click button to the left to equip";
-                case EquipmentType.Amulet:
-                    return isEquiped ? "Amulet - Click button to the left to un-equip" : "Amulet - Click button to the left to equip";
-                case EquipmentType.Boots:
-                    return isEquiped ? "Armor - Click button to the left to un-equip" : "Armor - Click button to the left to equip";
-                case EquipmentType.Gauntlets:
-                    return isEquiped ? "Gauntlets - Click button to the left to un-equip" : "Gauntlets - Click button to the left to equip";
-                case EquipmentType.OneHandedMeleeWeapon:
-                    return isEquiped ? "One Handed Weapon - Click button to the left to un-equip" : "One Handed Weapon - Click button to the left to equip";
-                case EquipmentType.TwoHandedMeleeWeapon:
-                    return isEquiped ? "Two Handed Weapon - Click button to the left to un-equip" : "Two Handed Weapon - Click button to the left to equip";
-                case EquipmentType.RangeWeapon:
-                    return isEquiped ? "Two Handed Range Weapon - Click button to the left to un-equip" : "Two Handed Range Weapon - Click button to the left to equip";
-                case EquipmentType.Shield:
-                    return isEquiped ? "Shield - Click button to the left to un-equip" : "Shield - Click button to the left to equip";
-                case EquipmentType.Orb:
-                    return isEquiped ? "Orb - Click button to the left to un-equip" : "Orb - Click button to the left to equip";
-                default:
-                    return "";
-            }
-        }
-        private string CreateConsumableUsageDescription(ConsumableSubType subType, bool throwEnable, bool consumeEnable, int quantity, int uses)
-        {
-            var result = subType.ToString() + " - ";
+            if (equipment.IsIdentified)
+                this.AttackAttributes.AddRange(equipment.AttackAttributes
+                                                        .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
+                                                        .Select(x => new AttackAttributeViewModel(x)));
 
-            if (throwEnable)
-                result += "To Throw use \"T\" to target enemy and Click button to the left (IN THROW MODE)";
-
-            if (consumeEnable)
-            {
-                if (throwEnable)
-                    result += "\r\n";
-
-                result += "To Consume Click button on the left (IN CONSUME MODE)";
-            }
-
-            if (!consumeEnable && !throwEnable && subType == ConsumableSubType.Ammo)
-                result += "To Fire Range Weapon - First equip corresponding range weapon. Use \"T\" to target enemy and \"F\" to Fire";
-
-            return result;
+            // Fire PropertyChanged event for AttackAttributes to update bindings
+            OnPropertyChanged("AttackAttributes");           
         }
     }
 }

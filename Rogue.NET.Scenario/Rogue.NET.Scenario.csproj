@@ -192,6 +192,7 @@
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\ItemTemplateSelector\RogueItemGridRowDetailsTemplateSelector.cs" />
     <Compile Include="Content\Views\ItemTemplateSelector\ScenarioMessageItemTemplateSelector.cs" />
     <Compile Include="Content\Views\LevelCanvas.xaml.cs">
       <DependentUpon>LevelCanvas.xaml</DependentUpon>
@@ -217,6 +218,7 @@
     <Compile Include="Control\EllipsePanel.cs" />
     <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
+    <Compile Include="Converter\ItemGridIntendedActionTextConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
     <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
     <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
