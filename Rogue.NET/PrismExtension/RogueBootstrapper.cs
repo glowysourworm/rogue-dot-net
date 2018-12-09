@@ -14,7 +14,6 @@ using System.ComponentModel.Composition.Hosting;
 
 using Microsoft.Practices.ServiceLocation;
 
-using Rogue.NET.Scenario.Views;
 using Rogue.NET.Common.Extension.Prism;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.ViewModel.ItemGrid;
@@ -22,6 +21,7 @@ using System.Windows.Threading;
 using System;
 using Prism.Modularity;
 using System.Collections.Generic;
+using Rogue.NET.Scenario.Content.Views;
 
 namespace Rogue.NET.PrismExtension
 {

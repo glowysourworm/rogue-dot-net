@@ -13,6 +13,7 @@
     <converter:BoolANDVisibilityMultiConverter x:Key="BoolANDVisibilityMultiConverter" />
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
+    <converter:CollectionEmptyVisibilityConverter x:Key="CollectionEmptyVisibilityConverter" />
     <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />
     <converter:ColorBrushConverter x:Key="ColorBrushConverter" />
     <converter:DualBoolVisibilityCollapsedConverter x:Key="DualBoolVisibilityCollapsedConverter" />
@@ -27,6 +28,7 @@
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
     <converter:ScenarioImageElementConverter x:Key="ScenarioImageElementConverter" />
     <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
+    <converter:ScenarioImageSourceMultiConverter x:Key="ScenarioImageSourceMultiConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />

@@ -4,7 +4,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
-	xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
+	xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
     xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
     xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
     xmlns:prism="http://www.codeplex.com/prism"

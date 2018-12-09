@@ -164,6 +164,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\AlterationAttributeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\AlterationViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
@@ -189,9 +191,13 @@
     <Compile Include="Content\ViewModel\Message\ScenarioNormalMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioPlayerAdvancementMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioSkillAdvancementMessageViewModel.cs" />
+    <Compile Include="Content\Views\AlterationCtrl.xaml.cs">
+      <DependentUpon>AlterationCtrl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\ItemTemplateSelector\AlterationGridDataTemplateSelector.cs" />
     <Compile Include="Content\Views\ItemTemplateSelector\RogueItemGridRowDetailsTemplateSelector.cs" />
     <Compile Include="Content\Views\ItemTemplateSelector\ScenarioMessageItemTemplateSelector.cs" />
     <Compile Include="Content\Views\LevelCanvas.xaml.cs">
@@ -298,6 +304,10 @@
     <Compile Include="Service\ScenarioUIGeometryService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Content\Views\AlterationCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Content\Views\ItemGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

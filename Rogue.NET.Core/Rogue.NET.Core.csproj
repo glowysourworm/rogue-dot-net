@@ -88,6 +88,7 @@
     <Compile Include="Converter\BoolVisibilityCollapseConverter.cs" />
     <Compile Include="Converter\BoolVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\CollectionNonEmptyVisibilityConverter.cs" />
+    <Compile Include="Converter\CollectionEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\ColorBrushConverter.cs" />
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Converter\RadioButtonEnumConverter.cs" />
     <Compile Include="Converter\ScenarioImageElementConverter.cs" />
     <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
+    <Compile Include="Converter\ScenarioImageSourceMultiConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
@@ -266,6 +268,8 @@
     <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\AttackAttribute.cs" />
+    <Compile Include="Model\Scenario\Alteration\Extension\AlterationCostExtension.cs" />
+    <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\BehaviorDetails.cs" />
     <Compile Include="Model\Scenario\Character\Character.cs" />

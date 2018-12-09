@@ -32,7 +32,8 @@ namespace Rogue.NET.Scenario.Views
                 this.ConsumablesCtrl,
                 this.InventoryCtrl,
                 this.SkillCtrl,
-                this.StatsCtrl
+                this.StatsCtrl,
+                this.AlterationsCtrl
             });
 
             _radioList = new List<RadioButton>(new RadioButton[]{
@@ -40,7 +41,8 @@ namespace Rogue.NET.Scenario.Views
                 this.CosumablesRB,
                 this.InventoryRB,
                 this.SkillsRB,
-                this.StatsRB
+                this.StatsRB,
+                this.AlterationsRB
             });
 
             _radioList[0].IsChecked = true;

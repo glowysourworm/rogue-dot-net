@@ -37,7 +37,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public string DisplayName
         {
             get { return _displayName; }
-            protected set { this.RaiseAndSetIfChanged(ref _displayName, value); }
+            set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
         public string CharacterSymbol
         {

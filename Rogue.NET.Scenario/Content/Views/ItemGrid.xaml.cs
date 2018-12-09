@@ -4,17 +4,13 @@ using System.Windows.Controls;
 using System.ComponentModel.Composition;
 
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 
 using Prism.Events;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using System.Collections.Generic;
-using Rogue.NET.Core.Utility;
 
-namespace Rogue.NET.Scenario.Views
+namespace Rogue.NET.Scenario.Content.Views
 {
     [Export]
     [PartCreationPolicy(CreationPolicy.NonShared)]

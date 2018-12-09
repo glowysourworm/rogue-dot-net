@@ -18,6 +18,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -65,6 +66,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         double _auraRadiusBase;
         double _magicBlock;
         double _magicBlockBase;
+        double _speed;
+        double _speedBase;
         SkillSetViewModel _activeSkillSet;
         EquipmentViewModel _equippedAmulet;
         EquipmentViewModel _equippedArmor;
@@ -252,6 +255,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _magicBlockBase; }
             set { this.RaiseAndSetIfChanged(ref _magicBlockBase, value); }
         }
+        public double Speed
+        {
+            get { return _speed; }
+            set { this.RaiseAndSetIfChanged(ref _speed, value); }
+        }
+        public double SpeedBase
+        {
+            get { return _speedBase; }
+            set { this.RaiseAndSetIfChanged(ref _speedBase, value); }
+        }
         public AttributeEmphasis AttributeEmphasis
         {
             get { return _attributeEmphasis; }
@@ -329,7 +342,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public ObservableCollection<SkillSetViewModel> SkillSets { get; set; }
 
+        /// <summary>
+        /// Set of aggregate attack attributes used for melee calculations
+        /// </summary>
         public ObservableCollection<AttackAttributeViewModel> MeleeAttackAttributes { get; set; }
+
+        /// <summary>
+        /// Alteration effect / cause container for player - one per passive or temporary effect
+        /// </summary>
+        public ObservableCollection<AlterationViewModel> Alterations { get; set; }
 
         [ImportingConstructor]
         public PlayerViewModel(
@@ -345,6 +366,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
+            this.Alterations = new ObservableCollection<AlterationViewModel>();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
@@ -393,6 +415,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, _eventAggregator);
 
+            // Player Stats
             this.Level = player.Level;
             this.Class = player.Class;
             this.Experience = player.Experience;
@@ -409,6 +432,49 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             // Attribute Emphasis
             this.AttributeEmphasis = player.AttributeEmphasis;
 
+            // Alterations
+            this.Alterations.Clear();
+            this.Alterations.AddRange(player.Alteration.Get().Select(tuple =>
+            {
+                return new AlterationViewModel()
+                {
+                    DisplayName = tuple.Item4.DisplayName,
+                    Type = tuple.Item1 == AlterationType.PassiveAura ? "Aura" :
+                           tuple.Item1 == AlterationType.PassiveSource ? "Passive" :
+                           tuple.Item1 == AlterationType.TemporarySource ? "Temporary" :
+                           tuple.Item1 == AlterationType.AttackAttribute ?
+                               tuple.Item2 == AlterationAttackAttributeType.Passive ? "Passive" :
+                               tuple.Item2 == AlterationAttackAttributeType.TemporaryFriendlySource ? "Temporary (Friendly)" : 
+                               tuple.Item2 == AlterationAttackAttributeType.TemporaryMalignSource ? "Temporary (Malign)" : "" : "",
+                    AlteredCharacterState = tuple.Item4.State == null ? null : new ScenarioImageViewModel(tuple.Item4.State),
+                    AlterationCostAttributes = tuple.Item3 != null ? 
+                        new ObservableCollection<AlterationAttributeViewModel>(
+                            tuple.Item3.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
+                            {
+                                AttributeName = x.Key,
+                                AttributeValue = x.Value.ToString("F2")
+                            })) :
+                        new ObservableCollection<AlterationAttributeViewModel>(),
+
+                    AlterationEffectAttributes =
+                        new ObservableCollection<AlterationAttributeViewModel>(
+                            tuple.Item4.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
+                            {
+                                AttributeName = x.Key,
+                                AttributeValue = x.Value.ToString("F2")
+                            })),
+
+                    AlterationEffectAttackAttributes = 
+                        new ObservableCollection<AttackAttributeViewModel>(
+                            tuple.Item4.AttackAttributes
+                                       .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
+                                       .Select(x => new AttackAttributeViewModel(x))),
+
+                    IsAlteredState = tuple.Item4.State != null && 
+                                     tuple.Item4.State.BaseType != CharacterStateType.Normal
+                };
+            }));
+
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
 
@@ -421,6 +487,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SmileyLineColor = symbol.SmileyLineColor;
             this.SymbolType = symbol.SymbolType;
 
+            // Stats
             this.Agility = player.GetAgility();
             this.AgilityBase = player.AgilityBase;
             this.Attack = player.GetAttack();
@@ -444,6 +511,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MpRegenBase = player.MpRegenBase;
             this.Strength = player.GetStrength();
             this.StrengthBase = player.StrengthBase;
+            this.Speed = player.GetSpeed();
+            this.SpeedBase = player.SpeedBase;
 
             var constructor = new Func<Equipment, EquipmentViewModel>(x => x == null ? null : new EquipmentViewModel(x));
 

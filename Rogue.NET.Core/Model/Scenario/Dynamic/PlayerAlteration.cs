@@ -23,6 +23,58 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         }
 
         /// <summary>
+        /// (GUNKY!) Method to query alterations by type - returns correlated type / attack attribute type / cost / effect tuple
+        /// </summary>
+        public IEnumerable<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>> Get()
+        {
+            // Method that returns left outer join - leaving cost null if no cost applies
+            var leftOuterJoin = new Func<AlterationType,
+                                         AlterationAttackAttributeType,
+                                         IDictionary<SpellReference, AlterationEffect>, 
+                                         IDictionary<SpellReference, AlterationCost>, 
+                                         IEnumerable<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>>>(
+            (type, attackAttributeType, effectDict, costDict) =>
+            {
+                return effectDict.GroupJoin(costDict,
+                                            effect => effect.Key,
+                                            cost => cost.Key,
+                                            (effect, cost) => new
+                                            {
+                                                Costs = cost.Select(x => x.Value),
+                                                Effect = effect.Value
+                                            })
+                                 .Select(z => new Tuple<AlterationType, 
+                                                        AlterationAttackAttributeType, 
+                                                        AlterationCost, 
+                                                        AlterationEffect>(type, attackAttributeType, z.Costs.FirstOrDefault(), z.Effect));
+            });
+
+            return leftOuterJoin(AlterationType.PassiveSource,
+                                 AlterationAttackAttributeType.ImbueArmor,
+                                 this.ActivePassiveEffects, this.PerStepAlterationCosts)
+
+                   .Union(leftOuterJoin(AlterationType.PassiveAura,
+                                        AlterationAttackAttributeType.ImbueArmor,
+                                        this.ActiveAuras, this.PerStepAlterationCosts))
+
+                   .Union(leftOuterJoin(AlterationType.TemporarySource,
+                                        AlterationAttackAttributeType.ImbueArmor,
+                                        this.ActiveTemporaryEffects, this.PerStepAlterationCosts))
+
+                   .Union(leftOuterJoin(AlterationType.AttackAttribute,
+                                        AlterationAttackAttributeType.Passive,
+                                        this.AttackAttributePassiveEffects, this.PerStepAlterationCosts))
+
+                   .Union(leftOuterJoin(AlterationType.AttackAttribute,
+                                        AlterationAttackAttributeType.TemporaryFriendlySource,
+                                        this.AttackAttributeTemporaryFriendlyEffects, this.PerStepAlterationCosts))
+
+                   .Union(leftOuterJoin(AlterationType.AttackAttribute,
+                                        AlterationAttackAttributeType.TemporaryMalignSource,
+                                        this.AttackAttributeTemporaryMalignEffects, this.PerStepAlterationCosts));
+        }
+
+        /// <summary>
         /// Returns active aura effects - PLAYER ONLY
         /// </summary>
         /// <returns></returns>
