@@ -9,6 +9,7 @@ using Rogue.NET.Scenario.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 
 using Prism.Events;
+using System.Windows.Threading;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -88,7 +89,14 @@ namespace Rogue.NET.Scenario.Content.Views
                                 ItemId = itemViewModel.Id
                             });
 
-            _executingTask = false;
+            // ISSUE WITH VIEW UPDATING - NOT SURE WHY BUT VIEW MODEL FOR ITEM GRID NOT UP TO DATE WHEN 
+            // FIRING THE NEXT EVENT! GOING TO TRY TO FORCE WAIT FOR APPLICATION IDLE TO ALLOW BINDING TO CATCH UP.
+
+            this.Dispatcher.Invoke(() =>
+            {
+                _executingTask = false;
+
+            }, DispatcherPriority.ApplicationIdle);
         }
         
         private void SetMode(ItemGridModes mode)
