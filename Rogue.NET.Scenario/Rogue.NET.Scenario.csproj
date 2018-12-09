@@ -194,6 +194,12 @@
     <Compile Include="Content\Views\AlterationCtrl.xaml.cs">
       <DependentUpon>AlterationCtrl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\AttackAttributesCtrl.xaml.cs">
+      <DependentUpon>AttackAttributesCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\EquipmentSubpanel.xaml.cs">
+      <DependentUpon>EquipmentSubpanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
@@ -305,6 +311,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\AlterationCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\AttackAttributesCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\EquipmentSubpanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
