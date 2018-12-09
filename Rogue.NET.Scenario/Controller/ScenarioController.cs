@@ -36,7 +36,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioService = scenarioService;
 
             // Subscribe to user input
-            _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(OnUserCommand);
+            _eventAggregator.GetEvent<UserCommandEvent>().Subscribe(async (e) => await OnUserCommand(e));
         }
         public void Stop()
         {
