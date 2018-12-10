@@ -81,6 +81,7 @@
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Foreground" Value="{Binding IsSelected, Converter={StaticResource ItemGridSelectionColorConverter}}"/>
                         <Setter Property="SnapsToDevicePixels" Value="true"/>
+                        <Setter Property="DetailsVisibility" Value="Collapsed" />
                         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
                         <Setter Property="ValidationErrorTemplate">
                             <Setter.Value>
@@ -348,7 +349,6 @@
     <Grid x:Name="LayoutRoot">
     	<Grid.RowDefinitions>
     		<RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
     	</Grid.RowDefinitions>
         <Grid Margin="4">
@@ -445,6 +445,7 @@
                   BorderThickness="0,0,0,1"
                   BorderBrush="Black"
                   AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
                   HorizontalContentAlignment="Stretch" 
                   VerticalContentAlignment="Stretch"
                   HorizontalAlignment="Stretch"

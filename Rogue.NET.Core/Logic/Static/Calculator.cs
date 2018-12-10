@@ -31,6 +31,13 @@ namespace Rogue.NET.Core.Logic.Static
             double y = location2.Row - location1.Row;
             return Math.Sqrt((x * x) + (y * y));
         }
+        public static double EuclideanSquareDistance(CellPoint location1, CellPoint location2)
+        {
+            double x = location2.Column - location1.Column;
+            double y = location2.Row - location1.Row;
+
+            return (x * x) + (y * y);
+        }
         public static double RoguianDistance(CellPoint location1, CellPoint location2)
         {
             double x = Math.Abs(location2.Column - location1.Column);

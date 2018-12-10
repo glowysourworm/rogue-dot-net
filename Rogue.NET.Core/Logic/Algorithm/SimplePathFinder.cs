@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using System;
 
 namespace Rogue.NET.Core.Logic.Algorithm
 {
@@ -17,12 +18,6 @@ namespace Rogue.NET.Core.Logic.Algorithm
     [Export(typeof(IPathFinder))]
     public class SimplePathFinder : IPathFinder
     {
-        /// <summary>
-        /// Controls the max level of the path tree that is created. Each iteration expands the search super-linearly.
-        /// (Could be super-exponential.. can't remember)
-        /// </summary>
-        private const int MAX_CTR = 50;
-
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
 
@@ -33,43 +28,15 @@ namespace Rogue.NET.Core.Logic.Algorithm
             _layoutEngine = layoutEngine;
         }
 
-        #region Nested Classes
-        protected class PathCell
-        {
-            public int PathIndex { get; private set; }
-            public CellPoint CurrentCell { get; private set; }
-            public CellPoint NextCell { get; private set; }
-
-            public PathCell(int pathIdx, CellPoint currentCell, CellPoint nextCell)
-            {
-                this.PathIndex = pathIdx;
-                this.CurrentCell = currentCell;
-                this.NextCell = nextCell;
-            }
-            public override bool Equals(object obj)
-            {
-                return this.CurrentCell == null ? base.Equals(obj) : this.CurrentCell.Equals(obj);
-            }
-            public override int GetHashCode()
-            {
-                return this.CurrentCell == null ? base.GetHashCode() : this.CurrentCell.GetHashCode();
-            }
-            public override string ToString()
-            {
-                return this.CurrentCell.ToString();
-            }
-        }
-        #endregion
-
         public CellPoint FindPath(CellPoint point1, CellPoint point2, double maxRadius)
         {
-            return FindPath(maxRadius, new Dictionary<CellPoint, PathCell>(), point1, point1, point2, 0);
+            // Initialize recurse A* algorithm with pathIdx = 1; and start point added to history
+            return FindPath(maxRadius, new Dictionary<CellPoint, int>() { { point1, 0 } }, point1, point2, 1);
         }
 
         private CellPoint FindPath(double maxSeparation, 
-                                   Dictionary<CellPoint, PathCell> pathDictionary, 
+                                   Dictionary<CellPoint, int> pathDictionary, 
                                    CellPoint start, 
-                                   CellPoint location, 
                                    CellPoint end, 
                                    int pathIdx)
         {
@@ -78,60 +45,65 @@ namespace Rogue.NET.Core.Logic.Algorithm
 
             var grid = _modelService.Level.Grid;
 
-            // Gets a set of adjacent locations that aren't blocked
-            var adjacentPathLocations = _modelService.Level.Grid.GetAdjacentLocations(location)
-                                                     .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, x, true) &&
-                                                                 !(Calculator.EuclideanDistance(x, end) > maxSeparation))
-                                                     .ToList();
-
-            // Sort by distance from target
-            adjacentPathLocations.Sort((point1, point2) =>
+            // Iterate over all round possible paths - add to end of dictionary so it's safe for recursion
+            // Also cache the current dictionary count so that it doesn't change over recursion
+            for (int i = 0; i < pathDictionary.Count; i++)
             {
-                double dist1 = Calculator.RoguianDistance(point1, end);
-                double dist2 = Calculator.RoguianDistance(point2, end);
+                var pathElement = pathDictionary.ElementAt(i);
 
-                return dist1.CompareTo(dist2);
-            });
+                // *** SHOULD BE ABLE TO SKIP ANYTHING WITH PREVIOUS PATH INDEX
+                //     OR CURRENT INDEX (WAS JUST ADDED)
+                if (pathElement.Value < pathIdx - 1 ||
+                    pathElement.Value == pathIdx)
+                    continue;
 
-            // Apply in decreasing order
-            for (int i = adjacentPathLocations.Count - 1; i >= 0; i--)
-            {
-                var nextLocation = adjacentPathLocations[i];
+                // Gets a set of adjacent locations that aren't blocked
+                var adjacentPathLocations = grid.GetAdjacentLocations(pathElement.Key)
+                                                .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, pathElement.Key, x, true));
 
-                if (!pathDictionary.ContainsKey(nextLocation))
-                    pathDictionary.Add(nextLocation, new PathCell(pathIdx, location, nextLocation));
-
-                else
-                    adjacentPathLocations.RemoveAt(i);
-
-                // Found the end point
-                if (nextLocation == end)
+                // First, Add ALL cells not in the path history
+                foreach (var nextLocation in adjacentPathLocations)
                 {
-                    //Backtrack to start location
-                    var backTrackPoint = end;
-                    while (backTrackPoint != start)
+                    // Found the target point - so start backtracking
+                    if (nextLocation == end)
                     {
-                        backTrackPoint = pathDictionary[backTrackPoint].CurrentCell;
+                        var backtrackLocation = end;
+                        var backtrackPathIdx = pathIdx;
 
-                        if (backTrackPoint == start)
-                            return pathDictionary[backTrackPoint].NextCell;
+                        while (backtrackLocation != start)
+                        {
+                            // Get adjacent cells for next backtracking point
+                            // NOTE** Check for blocking from enemies only if path index != 0. (otherwise, would be the start point)
+                            var nextBackTrackLocation = grid.GetAdjacentLocations(backtrackLocation)
+                                                            .Where(x => pathDictionary.ContainsKey(x) &&
+                                                                        pathDictionary[x] == backtrackPathIdx - 1 &&
+                                                                        !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, backtrackLocation, x, backtrackPathIdx - 1 != 0))
+                                                            .FirstOrDefault();
+
+                            // This catch should not happen; but have here as a safety clause
+                            if (nextBackTrackLocation == null)
+                                return null;
+
+                            // Decrement the path index to find the previous entries on the history of paths
+                            backtrackPathIdx--;
+
+                            // If you've found the start, then return the next cell in the path
+                            if (nextBackTrackLocation == start)
+                                return backtrackLocation;
+
+                            else
+                                backtrackLocation = nextBackTrackLocation;
+                        }
                     }
+
+                    // Otherwise, add to the collection
+                    if (!pathDictionary.ContainsKey(nextLocation))
+                        pathDictionary.Add(nextLocation, pathIdx);
                 }
             }
 
-            // Iterate out to create tree of possible paths
-            foreach (var nextLocation in adjacentPathLocations)
-            {
-                // Recursion only returns non-null if the end point is reached
-                var recurseResult = FindPath(maxSeparation, pathDictionary, start, nextLocation, end, pathIdx + 1);
-
-                if (recurseResult != null)
-                    return recurseResult;
-            }
-
-            // Returning null indicates that nothing was reached; but this doesn't get returned unless all path
-            // trees fail.
-            return null;
+            // Iterate to collect path information to backtrack with - incrementing path index
+            return FindPath(maxSeparation, pathDictionary, start, end, pathIdx + 1);
         }
     }
 }

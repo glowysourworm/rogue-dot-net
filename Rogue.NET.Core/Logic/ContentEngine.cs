@@ -569,7 +569,11 @@ namespace Rogue.NET.Core.Logic
 
                 // Can't Move (Is sleeping, paralyzed, etc..)
                 if (enemy.Is(CharacterStateType.CantMove))
+                {
+                    // Apply end-of-turn behavior for enemy
+                    _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, false);
                     continue;
+                }
 
                 //Confused - check during calculate character move
                 var willRandomStrikeMelee = _randomSequenceGenerator.Get() <= ModelConstants.RandomStrikeProbability;
@@ -648,7 +652,7 @@ namespace Rogue.NET.Core.Logic
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
-                    var nextLocation = _pathFinder.FindPath(enemy.Location, enemy.Location, enemy.BehaviorDetails.DisengageRadius);
+                    var nextLocation = _pathFinder.FindPath(enemy.Location, _modelService.Player.Location, enemy.BehaviorDetails.DisengageRadius);
                     return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault();

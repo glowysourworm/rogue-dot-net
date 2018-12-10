@@ -37,7 +37,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                     
                                     <!-- Altered State -->
-                                    <Image Height="15" Width="10" VerticalAlignment="Center" 
+                                    <Image Height="15" Width="10" Margin="0,0,4,0" VerticalAlignment="Center" 
                                            Visibility="{Binding IsAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                         <Image.Source>
                                             <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
@@ -53,7 +53,7 @@
                                         </Image.Source>
                                     </Image>
 
-                                    <TextBlock Text="{Binding DisplayName}" Margin="8,0,0,0" FontSize="14" Foreground="White" />
+                                    <TextBlock Text="{Binding DisplayName}" FontSize="14" Foreground="White" />
                                 </StackPanel>
                                 <TextBlock HorizontalAlignment="Right" Text="{Binding Type}" Foreground="White" FontSize="14" />
                             </Grid>
