@@ -28,13 +28,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
             _layoutEngine = layoutEngine;
         }
 
-        public CellPoint FindPath(CellPoint point1, CellPoint point2, double maxRadius)
+        public CellPoint FindPath(CellPoint point1, CellPoint point2, double maxRadius, bool canOpenDoors)
         {
             // Initialize recurse A* algorithm with pathIdx = 1; and start point added to history
-            return FindPath(maxRadius, new Dictionary<CellPoint, int>() { { point1, 0 } }, point1, point2, 1);
+            return FindPath(maxRadius, canOpenDoors, new Dictionary<CellPoint, int>() { { point1, 0 } }, point1, point2, 1);
         }
 
-        private CellPoint FindPath(double maxSeparation, 
+        private CellPoint FindPath(double maxSeparation,
+                                   bool canOpenDoors,
                                    Dictionary<CellPoint, int> pathDictionary, 
                                    CellPoint start, 
                                    CellPoint end, 
@@ -59,7 +60,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
 
                 // Gets a set of adjacent locations that aren't blocked
                 var adjacentPathLocations = grid.GetAdjacentLocations(pathElement.Key)
-                                                .Where(x => !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, pathElement.Key, x, true));
+                                                .Where(x => canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(_modelService.Level, pathElement.Key, x, true)
+                                                                         : !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, pathElement.Key, x, true));
 
                 // First, Add ALL cells not in the path history
                 foreach (var nextLocation in adjacentPathLocations)
@@ -77,7 +79,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
                             var nextBackTrackLocation = grid.GetAdjacentLocations(backtrackLocation)
                                                             .Where(x => pathDictionary.ContainsKey(x) &&
                                                                         pathDictionary[x] == backtrackPathIdx - 1 &&
-                                                                        !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, backtrackLocation, x, backtrackPathIdx - 1 != 0))
+                                                                        (canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(_modelService.Level, backtrackLocation, x, backtrackPathIdx - 1 != 0)
+                                                                                      : !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, backtrackLocation, x, backtrackPathIdx - 1 != 0)))
                                                             .FirstOrDefault();
 
                             // This catch should not happen; but have here as a safety clause
@@ -103,7 +106,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
             }
 
             // Iterate to collect path information to backtrack with - incrementing path index
-            return FindPath(maxSeparation, pathDictionary, start, end, pathIdx + 1);
+            return FindPath(maxSeparation, canOpenDoors, pathDictionary, start, end, pathIdx + 1);
         }
     }
 }

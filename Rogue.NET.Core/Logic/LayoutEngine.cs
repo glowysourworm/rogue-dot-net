@@ -283,13 +283,17 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsPathToCellThroughWall(LevelGrid grid, CellPoint location1, CellPoint location2)
+        public bool IsPathToCellThroughWall(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
         {
+            var grid = level.Grid;
             var cell1 = grid.GetCell(location1);
             var cell2 = grid.GetCell(location2);
 
             if (cell1 == null || cell2 == null)
                 return false;
+
+            if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
+                return true;
 
             var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
             var oppositeDirection = GetOppositeDirection(direction);
@@ -325,11 +329,13 @@ namespace Rogue.NET.Core.Logic
                         {
                             b1 |= (diag1.Walls & oppositeCardinal1) != 0;
                             b1 |= (cell2.Walls & oppositeCardinal2) != 0;
+                            b1 |= (level.IsCellOccupiedByEnemy(diag1.Location) && includeBlockedByEnemy);
                         }
                         if (diag2 != null)
                         {
                             b2 |= (diag2.Walls & oppositeCardinal2) != 0;
                             b2 |= (cell2.Walls & oppositeCardinal1) != 0;
+                            b2 |= (level.IsCellOccupiedByEnemy(diag2.Location) && includeBlockedByEnemy);
                         }
                         return b1 && b2;
                     }
