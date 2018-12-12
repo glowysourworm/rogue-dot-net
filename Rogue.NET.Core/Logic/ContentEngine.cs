@@ -381,11 +381,12 @@ namespace Rogue.NET.Core.Logic
                         // Set character location to other teleporter
                         character.Location = otherTeleporter.Location;
 
-                        // Update Content Visibility
-                        _modelService.UpdateContents();
-
                         // Queue update to level 
-                        QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+                        if (character is Enemy)
+                            QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+
+                        else
+                            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
 
                         if (character is Player)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
@@ -749,14 +750,14 @@ namespace Rogue.NET.Core.Logic
             if (!createMonster)
                 return;
 
-            // Select enemy templates with: 0) this level range, 2) non-objective, 3) already generated unique enemies
+            // Select enemy templates with: 0) this level range, 2) non-objective, 3) non-unique enemies
             var enemyTemplates = _modelService.ScenarioConfiguration
                                               .EnemyTemplates
                                               .Where(x =>
                                               {
-                                                  return !(x.IsUnique && x.HasBeenGenerated) &&
-                                                          !x.IsObjectiveItem &&
-                                                           x.Level.Contains(_modelService.Level.Number);
+                                                  return !x.IsUnique &&
+                                                         !x.IsObjectiveItem &&
+                                                          x.Level.Contains(_modelService.Level.Number);
                                               })
                                               .ToList();
 

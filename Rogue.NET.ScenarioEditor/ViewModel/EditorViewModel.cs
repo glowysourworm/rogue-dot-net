@@ -79,7 +79,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             });
             this.ShowDifficultyCommand = new DelegateCommand(() =>
             {
-                _eventAggregator.GetEvent<ScoreScenarioEvent>().Publish();
+                _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Publish();
             });
             this.NewCommand = new DelegateCommand(() =>
             {

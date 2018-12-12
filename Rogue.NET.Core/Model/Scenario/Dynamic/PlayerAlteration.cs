@@ -23,9 +23,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         }
 
         /// <summary>
+        /// TODO:  GET RID OF THIS
         /// (GUNKY!) Method to query alterations by type - returns correlated type / attack attribute type / cost / effect tuple
         /// </summary>
-        public IEnumerable<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>> Get()
+        public override IEnumerable<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>> Get()
         {
             // Method that returns left outer join - leaving cost null if no cost applies
             var leftOuterJoin = new Func<AlterationType,
@@ -78,7 +79,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         /// Returns active aura effects - PLAYER ONLY
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<AlterationEffect> GetActiveAuras()
+        public override IEnumerable<AlterationEffect> GetActiveAuras()
         {
             return this.ActiveAuras.Values;
         }

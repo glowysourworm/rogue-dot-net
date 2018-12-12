@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Logic.Static
 {
     /// <summary>
     /// Static methods necessary to de-couple circular dependency between Character processing
-    /// and Character extension methods.
+    /// and Character extension methods. 
     /// </summary>
     public static class Calculator
     {

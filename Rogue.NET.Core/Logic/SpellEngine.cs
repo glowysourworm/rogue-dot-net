@@ -450,15 +450,21 @@ namespace Rogue.NET.Core.Logic
                 // (Forgiven curse spell when enemy steals item)
                 if (equipment.HasCurseSpell)
                     _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
+
+                // Update UI
+                QueueLevelUpdate(LevelUpdateType.PlayerEquipmentRemove, itemStolen.Key);
             }
             else
             {
                 _modelService.Player.Consumables.Remove(itemStolen.Key);
                 enemy.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
+
+                // Update UI
+                QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemStolen.Key);
             }
 
             var enemyDisplayName = _modelService.GetDisplayName(enemy.RogueName);
-            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value.RogueName);
+            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value.RogueName);            
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
         }
@@ -545,8 +551,8 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your senses are vastly awakened");
 
-            _modelService.UpdateContents();
             _modelService.UpdateVisibleLocations();
+            _modelService.UpdateContents();
 
             QueueLevelUpdate(LevelUpdateType.LayoutReveal, "");
         }

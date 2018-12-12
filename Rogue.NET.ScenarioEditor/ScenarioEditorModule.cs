@@ -119,7 +119,7 @@ namespace Rogue.NET.ScenarioEditor
                 // Create an instance of the config so that there aren't any null refs.
                 _scenarioEditorController.New();
             });
-            _eventAggregator.GetEvent<ScoreScenarioEvent>().Subscribe(() =>
+            _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("DesignRegion", "ScenarioDifficultyChart");
             });

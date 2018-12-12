@@ -169,7 +169,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "These stairs lead to the previous upper level",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Stairs Up",
+                        RogueName = ModelConstants.DoodadStairsUpRogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -184,7 +184,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "These stairs lead to the next lower level",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Stairs Down",
+                        RogueName = ModelConstants.DoodadStairsDownRogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -199,7 +199,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "Contains strange markings related to reincarnation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Save Point",
+                        RogueName = ModelConstants.DoodadSavePointRogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -214,7 +214,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Teleporter A",
+                        RogueName = ModelConstants.DoodadTeleporterARogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -229,7 +229,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Teleporter B",
+                        RogueName = ModelConstants.DoodadTeleporterBRogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -244,7 +244,7 @@ namespace Rogue.NET.Core.Model.Generator
                         IsUnique = false,
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                        RogueName = "Random Teleporter",
+                        RogueName = ModelConstants.DoodadTeleporterRandomRogueName,
                         SymbolType = SymbolTypes.Image,
                         Type = DoodadType.Normal.ToString()
                     };

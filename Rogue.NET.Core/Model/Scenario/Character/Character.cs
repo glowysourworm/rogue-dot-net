@@ -41,6 +41,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Hp { get; set; }
         public double Mp { get; set; }
 
+        public abstract CharacterAlteration Alteration { get; set; }
+
         public Character() : base() 
         {
             Initialize();
@@ -60,9 +62,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         {
             this.Equipment = new Dictionary<string, Equipment>();
             this.Consumables = new Dictionary<string, Consumable>();
-
-            // TODO: Add this to the scenario editor / generator
-            this.SpeedBase = ModelConstants.MaxSpeed;
         }
     }
 }

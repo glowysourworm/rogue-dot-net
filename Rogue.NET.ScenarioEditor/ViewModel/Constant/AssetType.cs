@@ -88,6 +88,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
         }
 
+        public static int GetRequiredLevel(DungeonObjectTemplateViewModel viewModel)
+        {
+            if (viewModel is ConsumableTemplateViewModel)
+                return (viewModel as ConsumableTemplateViewModel).LevelRequired;
+
+            else if (viewModel is EquipmentTemplateViewModel)
+                return (viewModel as EquipmentTemplateViewModel).LevelRequired;
+
+            return 0;
+        }
+
         /// <summary>
         /// Collection of asset display names by asset type
         /// </summary>

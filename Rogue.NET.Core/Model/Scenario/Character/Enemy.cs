@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
 
-        public CharacterAlteration Alteration { get; set; }
+        public override CharacterAlteration Alteration { get; set; }
 
         public Enemy() : base()
         {

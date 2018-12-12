@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Hunger { get; set; }
         public double FoodUsagePerTurnBase { get; set; }
 
-        public PlayerAlteration Alteration { get; set; }
+        public override CharacterAlteration Alteration { get; set; }
 
         public AttributeEmphasis AttributeEmphasis { get; set; }
 

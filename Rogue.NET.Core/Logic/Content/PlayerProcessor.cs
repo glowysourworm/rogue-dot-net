@@ -14,6 +14,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Windows.Media;
+using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -37,40 +38,38 @@ namespace Rogue.NET.Core.Logic.Content
 
         public double CalculateExperienceNext(Player player)
         {
-            //	y = 100e^(0.25)x  - based on player level 8 with 8500 experience points
-            //  available by level 15; and 100 to reach first level + linear component to
-            //  avoid easy leveling during low levels
-            //return (100 * Math.Exp(0.25*p.Level)) + (300 * p.Level);
-
-            return (player.Level == 0) ? 100 : ((10 * Math.Pow(player.Level + 1, 3)) + (300 + player.Level));
+            return PlayerCalculator.CalculateExperienceNext(player.Level);
         }
         public void CalculateLevelGains(Player player)
         {
             var attributesChanged = new List<Tuple<string, double, Color>>();
 
             // Hp Max
-            var change = (player.StrengthBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
+            var change = PlayerCalculator.CalculateHpGain(player.StrengthBase * _randomSequenceGenerator.Get());
             player.HpMax += change;
             attributesChanged.Add(new Tuple<string, double, Color>("HP", change, Colors.Red));
 
             // Mp Max
-            change = (player.IntelligenceBase) * ModelConstants.LevelGainBase * 2 * _randomSequenceGenerator.Get();
+            change = PlayerCalculator.CalculateMpGain(player.IntelligenceBase * _randomSequenceGenerator.Get());
             player.MpMax += change;
             attributesChanged.Add(new Tuple<string, double, Color>("MP", change, Colors.Blue));
 
             // Strength
-            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.StrengthBase += (player.AttributeEmphasis == AttributeEmphasis.Strength) ? 3 * change : change;
+            change = PlayerCalculator.CalculateStrengthGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Strength);
+            player.StrengthBase += change;
+
             attributesChanged.Add(new Tuple<string, double, Color>("Strength", change, Colors.Salmon));
 
             // Intelligence
-            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.IntelligenceBase += (player.AttributeEmphasis == AttributeEmphasis.Intelligence) ? 3 * change : change;
+            change = PlayerCalculator.CalculateIntelligenceGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Intelligence);
+            player.IntelligenceBase += change;
+
             attributesChanged.Add(new Tuple<string, double, Color>("Intelligence", change, Colors.LightBlue));
 
             // Agility
-            change = ModelConstants.LevelGainBase * _randomSequenceGenerator.Get();
-            player.AgilityBase += (player.AttributeEmphasis == AttributeEmphasis.Agility) ? 3 * change : change;
+            change = PlayerCalculator.CalculateAgilityGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Agility);
+            player.AgilityBase += change;
+
             attributesChanged.Add(new Tuple<string, double, Color>("Agility", change, Colors.Tan));
 
             // Level :)

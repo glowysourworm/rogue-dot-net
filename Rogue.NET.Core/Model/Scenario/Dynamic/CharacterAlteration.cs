@@ -165,6 +165,23 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         }
 
         /// <summary>
+        /// Returns active auras for the character (PLAYER ONLY)
+        /// </summary>
+        public virtual IEnumerable<AlterationEffect> GetActiveAuras()
+        {
+            return new List<AlterationEffect>();
+        }
+        /// <summary>
+        /// Returns total list of active alterations (NOT LIKED; BUT USED FOR UI UPDATING)
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>> Get()
+        {
+            return new List<Tuple<AlterationType, AlterationAttackAttributeType, AlterationCost, AlterationEffect>>();
+        }
+
+
+        /// <summary>
         /// Returns accumulated character state enums from all active (non-attack attribute) alterations.
         /// </summary>
         public IEnumerable<AlteredCharacterState> GetStates()

@@ -12,148 +12,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
     public static class PlayerExtension
     {
-        public static double GetMpRegen(this Player player)
-        {
-            return player.MpRegenBase + player.Alteration.GetAlterations().Sum(x => x.MpPerStep);
-        }
-        public static double GetHpRegen(this Player player, bool regenerate)
-        {
-            var result = regenerate ? player.HpRegenBase : 0;
-
-            // Normal alteration effects
-            if (regenerate)
-                result += player.Alteration.GetAlterations().Sum(x => x.HpPerStep);
-
-            // Malign attack attribute contributions
-            foreach (var malignEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(false))
-            {
-                foreach (var malignAttribute in malignEffect.AttackAttributes)
-                {
-                    double resistance = 0;
-                    double weakness = 0;
-                    double attack = malignAttribute.Attack;
-
-                    // Friendly attack attribute contributions
-                    foreach (var friendlyEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(true))
-                    {
-                        resistance += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    // Passive attack attribute contributions
-                    foreach (var passiveEffect in player.Alteration.GetPassiveAttackAttributeAlterations())
-                    {
-                        resistance += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    // Equipment contributions
-                    foreach (var equipment in player.Equipment.Where(z => z.Value.IsEquipped).Select(x => x.Value))
-                    {
-                        resistance += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    result -= Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
-                }
-            }
-
-            return result;
-        }
-        public static double GetStrength(this Player player)
-        {
-            var result = player.StrengthBase;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.Strength);
-
-            return Math.Max(0.1, result);
-        }
-        public static double GetAgility(this Player player)
-        {
-            var result = player.AgilityBase;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.Agility);
-
-            return Math.Max(0.1, result);
-        }
-        public static double GetIntelligence(this Player player)
-        {
-            var result = player.IntelligenceBase;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.Intelligence);
-
-            return Math.Max(0.1, result);
-        }
-        public static double GetAuraRadius(this Player player)
-        {
-            var result = player.AuraRadiusBase;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.AuraRadius);
-
-            return Math.Max(0.1, result);
-        }
-        public static double GetMagicBlock(this Player player)
-        {
-            var result = player.GetIntelligence() / 100;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.MagicBlockProbability);
-
-            return Math.Max(Math.Min(1, result), 0);
-        }
-        public static double GetDodge(this Player player)
-        {
-            var result = player.GetAgility() / 100;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.DodgeProbability);
-
-            return Math.Max(Math.Min(1, result), 0);
-        }
-        public static double GetSpeed(this Player player)
-        {
-            var speed = player.SpeedBase + player.Alteration.GetAlterations().Sum(x => x.Speed);
-
-            // 0.1 < speed < 1
-            return Math.Max(Math.Min(1, speed), 0.1);
-        }
-
-        public static double GetAttack(this Player player)
-        {
-            var attackValue = player.Equipment
-                                   .Values
-                                   .Where(x => x.IsEquipped && x.IsWeaponType())
-                                   .Sum(x => x.GetAttackValue());
-
-            var result = (attackValue * player.GetStrength()) +
-                          player.Alteration.GetAlterations().Sum(x => x.Attack);
-
-            return Math.Max(0, result);
-        }
-        public static double GetDefense(this Player player)
-        {
-            var baseStrengthMultiplier = player.GetStrength() / 5.0D;
-            var defenseValue = player.Equipment
-                                    .Values
-                                    .Where(x => x.IsEquipped && x.IsArmorType())
-                                    .Sum(x => x.GetDefenseValue());
-
-            var result = (defenseValue * baseStrengthMultiplier) +
-                          player.Alteration.GetAlterations().Sum(x => x.Defense);
-
-            return Math.Max(0, result);
-        }
         public static double GetFoodUsagePerTurn(this Player player)
         {
             var result = player.FoodUsagePerTurnBase + (player.GetHaul() / ModelConstants.HaulFoodUsageDivisor);
 
             result += player.Alteration.GetAlterations().Sum(x => x.FoodUsagePerTurn);
-
-            return Math.Max(0, result);
-        }
-        public static double GetCriticalHitProbability(this Player player)
-        {
-            var result = ModelConstants.CriticalHitBase;
-
-            result += player.Alteration.GetAlterations().Sum(x => x.CriticalHit);
 
             return Math.Max(0, result);
         }
@@ -166,7 +29,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = new List<AttackAttribute>();
 
-            // Enemy Base Attributes
+            // Base Attributes
             foreach (var baseAttribute in scenarioAttributes)
                 result.Add(new AttackAttribute()
                 {
@@ -220,11 +83,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             }
 
             return result;
-        }
-
-        public static bool Is(this Player player, CharacterStateType characterStateType)
-        {
-            return player.Alteration.GetAlterations().Any(x => x.State.BaseType == characterStateType);
         }
 
         public static void ApplyLimits(this Player player)

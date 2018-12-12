@@ -26,7 +26,13 @@
 
     </UserControl.Resources>
     <Grid>
-        <chart:SparrowChart Foreground="White" FontFamily="Arial" ContainerBorderStyle="{StaticResource containerStyle}" Margin="5"  x:Name="Chart" >
+        <chart:SparrowChart Foreground="White" 
+                            FontFamily="Arial" 
+                            ContainerBorderStyle="{StaticResource containerStyle}" 
+                            Series="{Binding DifficultySeries}"
+                            Margin="8"
+                            Padding="8"
+                            x:Name="Chart" >
             <chart:SparrowChart.Background>
                 <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                     <GradientStop Color="#FF00170B" Offset="0"/>
@@ -34,17 +40,30 @@
                 </LinearGradientBrush>
             </chart:SparrowChart.Background>
             <chart:SparrowChart.Legend>
-                <chart:Legend Padding="10" Header="Live Fourier Series"/>
+                <chart:Legend Padding="10" Header="Legend" />
             </chart:SparrowChart.Legend>
             <chart:SparrowChart.XAxis>
-                <chart:LinearXAxis CrossLineStyle="{StaticResource crossLineStyle}" MinorLineStyle="{StaticResource minorcrossLineStyle}" MajorLineStyle="{StaticResource crossLineStyle}" AxisLineStyle="{StaticResource axisLineStyle}" MinValue="2" MinorTicksCount="3" MaxValue="5"  ShowCrossLines="True" Header="Time(ms)" StringFormat="0.0"/>
+                <chart:LinearXAxis CrossLineStyle="{StaticResource crossLineStyle}" 
+                                   MinorLineStyle="{StaticResource minorcrossLineStyle}" 
+                                   MajorLineStyle="{StaticResource crossLineStyle}" 
+                                   AxisLineStyle="{StaticResource axisLineStyle}" 
+                                   MinValue="1" 
+                                   MaxValue="{Binding NumberOfLevels}"
+                                   ShowCrossLines="True" 
+                                   Header="Level" 
+                                   StringFormat="N0"/>
             </chart:SparrowChart.XAxis>
             <chart:SparrowChart.YAxis>
-                <chart:LinearYAxis CrossLineStyle="{StaticResource crossLineStyle}"  MinorLineStyle="{StaticResource minorcrossLineStyle}" MajorLineStyle="{StaticResource crossLineStyle}" AxisLineStyle="{StaticResource axisLineStyle}" MinValue="-15" MinorTicksCount="3" MaxValue="15" ShowCrossLines="True" StringFormat="0.0" Header="Voltage(mV)" >
-                </chart:LinearYAxis>
+                <chart:LinearYAxis CrossLineStyle="{StaticResource crossLineStyle}"  
+                                   MinorLineStyle="{StaticResource minorcrossLineStyle}" 
+                                   MajorLineStyle="{StaticResource crossLineStyle}" 
+                                   AxisLineStyle="{StaticResource axisLineStyle}" 
+                                   MinValue="0" 
+                                   MaxValue="{Binding MaxValue}"
+                                   ShowCrossLines="True" 
+                                   StringFormat="0.0" 
+                                   Header="Value" />
             </chart:SparrowChart.YAxis>
-            <chart:LineSeries Label="Amplitude = 2" PointsSource="{Binding Collection}" Stroke="#FFA3FFC9" XPath="Value" YPath="Value1" StrokeThickness="2" UseSinglePart="True">
-            </chart:LineSeries>
         </chart:SparrowChart>
     </Grid>
 </UserControl>

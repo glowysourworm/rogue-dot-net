@@ -141,6 +141,9 @@
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
+    <Compile Include="Logic\Static\EquipmentCalculator.cs" />
+    <Compile Include="Logic\Static\MeleeCalculator.cs" />
+    <Compile Include="Logic\Static\PlayerCalculator.cs" />
     <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />

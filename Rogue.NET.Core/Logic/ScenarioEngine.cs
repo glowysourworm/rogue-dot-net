@@ -115,10 +115,6 @@ namespace Rogue.NET.Core.Logic
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
 
-                // Want to now update model service from the model. This will process new visibility of
-                // the Level Grid.
-                _modelService.UpdateVisibleLocations();
-
                 // Notify Listener queue
                 QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
             }
@@ -174,6 +170,7 @@ namespace Rogue.NET.Core.Logic
             foreach (var target in _modelService.GetTargetedEnemies())
                 QueueLevelUpdate(LevelUpdateType.TargetingEnd, target.Id);
 
+            _modelService.UpdateVisibleLocations();
             _modelService.ClearTargetedEnemies();
             _modelService.UpdateContents();
 
