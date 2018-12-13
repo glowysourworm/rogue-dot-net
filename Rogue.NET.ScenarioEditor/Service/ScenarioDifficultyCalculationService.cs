@@ -18,6 +18,8 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -37,7 +39,8 @@ namespace Rogue.NET.ScenarioEditor.Service
         public IEnumerable<IProjectedQuantityViewModel> CalculateEnemyAttackPower(
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
-            bool usePlayerStrengthAttributeEmphasis)
+            bool usePlayerStrengthAttributeEmphasis,
+            bool includeAttackAttributes)
         {
             var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
             var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
@@ -49,7 +52,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,
                                                        usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
 
-                        playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets,
+                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets,
                                                         usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
 
                         // Select enemies whose level range overlaps this level and whose generation rate is
@@ -57,17 +60,93 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var enemies = configuration.EnemyTemplates
                                                    .Where(x => x.Level.Contains(levelNumber) &&
                                                                x.GenerationRate > 0 &&
-                                                               includedAssets.Any(z => z.Id == x.Guid));
+                                                               includedAssets.Any(z => z.Id == x.Guid && z.Included));
+
+                        var enemiesLow = enemies.Select(x => CreateEnemy(x, true));
+                        var enemiesHigh = enemies.Select(x => CreateEnemy(x, false));
 
                         // Calculate all attack value ranges
-                        var attackValueRanges = enemies.Select(x => _characterCalculationService.CalculateEnemyAttack(x));
+                        var attackLow = enemiesLow.Any() ? enemiesLow.Min(x => x.GetAttack()) : 0;
+                        var attackHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetAttack()) : 0;
 
                         // Calculate Player attack power
                         var defenseValueHigh = MeleeCalculator.GetAttackValue(playerHigh.GetDefense(), playerHigh.GetStrength());
                         var defenseValueLow = MeleeCalculator.GetAttackValue(playerLow.GetDefense(), playerLow.GetStrength());
 
-                        var high = Math.Max(attackValueRanges.Max(x => x.High) - defenseValueLow, 0);
-                        var low = Math.Max(attackValueRanges.Min(x => x.Low) - defenseValueHigh, 0);
+                        // Calculate Attack Attribute Contributions
+                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
+                        var attackAttributesAttackHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, enemy) =>
+                        {
+                            // Join and accumulate the high attack value
+                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Attack.High = Math.Max(x.Attack.High, y.Attack);
+                                return x;
+                            });
+
+                        }) : CreateAttackAttributes(configuration);
+
+                        var attackAttributesAttackLow = enemiesLow.Any() ? enemiesLow.Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, enemy) =>
+                        {
+                            // Join and accumulate the low attack value
+                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Attack.Low = Math.Min(x.Attack.Low, y.Attack);
+                                return x;
+                            });
+
+                        }) : CreateAttackAttributes(configuration);
+
+                        var attackAttributesDefenseLow = playerLow.Equipment
+                                                                  .Where(x => x.Value.IsEquipped)
+                                                                  .Select(x => x.Value)
+                                                                  .Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, equipment) =>
+                        {
+                            // Join and accumulate the low defense values
+                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Resistance.Low = Math.Min(x.Resistance.Low, y.Resistance);
+                                x.Weakness.High = Math.Max(x.Weakness.High, y.Weakness);
+                                return x;
+                            });
+                        });
+
+                        var attackAttributesDefenseHigh = playerLow.Equipment
+                                                                   .Where(x => x.Value.IsEquipped)
+                                                                   .Select(x => x.Value)
+                                                                   .Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, equipment) =>
+                        {
+                            // Join and accumulate the low defense values
+                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Resistance.High = Math.Max(x.Resistance.High, y.Resistance);
+                                x.Weakness.Low = Math.Min(x.Weakness.Low, y.Weakness);
+                                return x;
+                            });
+                        });
+
+                        var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
+                                attackAttributesAttackLow
+                                .Join(attackAttributesDefenseHigh,
+                                        x => x.Name,
+                                        y => y.Name,
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High, y.Weakness.Low))
+                                .Sum();
+
+                        var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
+                                attackAttributesAttackHigh
+                                .Join(attackAttributesDefenseLow,
+                                        x => x.Name,
+                                        y => y.Name,
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low, y.Weakness.High))
+                                .Sum();
+
+                        var high = Math.Max((attackHigh - defenseValueLow) + attackAttributeMeleeHigh, 0);
+                        var low = Math.Max((attackLow - defenseValueHigh) + attackAttributeMeleeLow, 0);
 
                         // Select High, Low, and Average
                         return new ProjectedQuantityViewModel()
@@ -94,13 +173,13 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var enemies = configuration.EnemyTemplates
                                                    .Where(x => x.Level.Contains(levelNumber) &&
                                                                x.GenerationRate > 0 &&
-                                                               includedAssets.Any(z => z.Id == x.Guid));
+                                                               includedAssets.Any(z => z.Id == x.Guid && z.Included));
 
                         return new ProjectedQuantityViewModel()
                         {
-                            High = enemies.Max(x => x.Hp.High),
-                            Low = enemies.Min(x => x.Hp.Low),
-                            Average = enemies.Average(x => x.Hp.GetAverage()),
+                            High = enemies.Any() ? enemies.Max(x => x.Hp.High) : 0,
+                            Low = enemies.Any() ? enemies.Min(x => x.Hp.Low) : 0,
+                            Average = enemies.Any() ? enemies.Average(x => x.Hp.GetAverage()) : 0,
                             Level = levelNumber
                         };
                     }));
@@ -168,7 +247,8 @@ namespace Rogue.NET.ScenarioEditor.Service
         public IEnumerable<IProjectedQuantityViewModel> CalculatePlayerAttackPower(
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
-            bool usePlayerStrengthAttributeEmphasis)
+            bool usePlayerStrengthAttributeEmphasis,
+            bool includeAttackAttributes)
         {
             var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
             var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
@@ -180,25 +260,105 @@ namespace Rogue.NET.ScenarioEditor.Service
                         playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,
                                                        usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
 
-                        playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets,
+                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets,
                                                         usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
 
                         // Select enemies whose level range overlaps this level and whose generation rate is
                         // greater than zero.
-                        var enemies = configuration.EnemyTemplates
-                                                   .Where(x => x.Level.Contains(levelNumber) &&
-                                                               x.GenerationRate > 0 &&
-                                                               includedAssets.Any(z => z.Id == x.Guid));
+                        var enemiesLow = configuration.EnemyTemplates
+                                                      .Where(x => x.Level.Contains(levelNumber) &&
+                                                                  x.GenerationRate > 0 &&
+                                                                  includedAssets.Any(z => z.Id == x.Guid && z.Included))
+                                                      .Select(x => CreateEnemy(x, true));
 
-                        // Calculate all defense value ranges
-                        var defenseValueRanges = enemies.Select(x => _characterCalculationService.CalculateEnemyDefense(x));
+                        var enemiesHigh = configuration.EnemyTemplates
+                                                       .Where(x => x.Level.Contains(levelNumber) &&
+                                                                   x.GenerationRate > 0 &&
+                                                                   includedAssets.Any(z => z.Id == x.Guid && z.Included))
+                                                       .Select(x => CreateEnemy(x, false));
+
+                        // Calculate all base defense value ranges
+                        var defenseLow = enemiesLow.Any() ? enemiesLow.Min(x => x.GetDefense()) : 0D;
+                        var defenseHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetDefense()) : 0D;
+
+                        // Calculate Attack Attribute Contributions
+                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
+                        var attackAttributesDefenseHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, enemy) =>
+                        {                            
+                            // Join and accumulate the high defense value
+                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Resistance.High = Math.Max(x.Resistance.High, y.Resistance);
+                                x.Weakness.Low = Math.Min(x.Weakness.Low, y.Weakness);
+                                return x;
+                            });
+
+                        }) : CreateAttackAttributes(configuration);
+
+                        var attackAttributesDefenseLow = enemiesLow.Any() ? enemiesLow.Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, enemy) =>
+                        {
+                            // Join and accumulate the Low defense value
+                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Resistance.Low = Math.Min(x.Resistance.Low, y.Resistance);
+                                x.Weakness.High = Math.Min(x.Weakness.High, y.Weakness);
+                                return x;
+                            });
+
+                        }) : CreateAttackAttributes(configuration);
+
+                        var attackAttributesAttackLow = playerLow.Equipment
+                                                                  .Where(x => x.Value.IsEquipped)
+                                                                  .Select(x => x.Value)
+                                                                  .Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, equipment) =>
+                        {
+                            // Join and accumulate the low defense values
+                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Attack.Low = Math.Min(x.Attack.Low, y.Attack);
+                                return x;
+                            });
+                        });
+
+                        var attackAttributesAttackHigh = playerLow.Equipment
+                                                                   .Where(x => x.Value.IsEquipped)
+                                                                   .Select(x => x.Value)
+                                                                   .Aggregate(CreateAttackAttributes(configuration),
+                        (accumulator, equipment) =>
+                        {
+                            // Join and accumulate the low defense values
+                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
+                            {
+                                x.Attack.High = Math.Min(x.Attack.High, y.Attack);
+                                return x;
+                            });
+                        });
+
+                        var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
+                                attackAttributesAttackLow
+                                .Join(attackAttributesDefenseHigh,
+                                        x => x.Name,
+                                        y => y.Name,
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High, y.Weakness.Low))
+                                .Sum();
+
+                        var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
+                                attackAttributesAttackHigh
+                                .Join(attackAttributesDefenseLow,
+                                        x => x.Name,
+                                        y => y.Name,
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low, y.Weakness.High))
+                                .Sum();
 
                         // Calculate Player attack power
                         var attackValueHigh = MeleeCalculator.GetAttackValue(playerHigh.GetAttack(), playerHigh.GetStrength());
                         var attackValueLow = MeleeCalculator.GetAttackValue(playerLow.GetAttack(), playerLow.GetStrength());
 
-                        var high = Math.Max(attackValueHigh - defenseValueRanges.Min(x => x.Low), 0);
-                        var low = Math.Max(attackValueLow - defenseValueRanges.Max(x => x.High), 0);
+                        var high = Math.Max(attackValueHigh - defenseLow + attackValueHigh, 0);
+                        var low = Math.Max(attackValueLow - defenseHigh + attackValueLow, 0);
 
                         return new ProjectedQuantityViewModel()
                         {
@@ -223,7 +383,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         .Select((levelNumber) =>
                         {
                             playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -249,7 +409,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         .Select((levelNumber) =>
                         {
                             playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -274,7 +434,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         .Select((levelNumber) =>
                         {
                             playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -299,7 +459,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         .Select((levelNumber) =>
                         {
                             playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -323,8 +483,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         // Get layout templates whose level range includes this level
                         var pathLengths = configuration.DungeonTemplate
                                                            .LayoutTemplates
-                                                           .Where(x => x.Level.Contains(levelNumber) &&
-                                                                       includedAssets.Any(z => z.Id == z.Id))
+                                                           .Where(x => x.Level.Contains(levelNumber))
                                                            .Select(template =>
                                                            {
                                                                switch (template.Type)
@@ -337,14 +496,14 @@ namespace Rogue.NET.ScenarioEditor.Service
                                                                    case LayoutType.BigRoom:
 
                                                                        // Measure  = # of traversals * length of traversal for
-                                                                       //            a single pass only.
+                                                                       //            a single pass only * 4;
                                                                        return template.RoomDivCellHeight * template.NumberRoomRows *
-                                                                              template.NumberRoomCols;
+                                                                              template.NumberRoomCols * 4;
                                                                    case LayoutType.Maze:
 
                                                                        // Measure = Made up :) 
-                                                                       return 10 * template.NumberRoomCols * template.RoomDivCellWidth *
-                                                                                   template.NumberRoomRows * template.RoomDivCellHeight;
+                                                                       return 100 * template.NumberRoomCols * template.RoomDivCellWidth *
+                                                                                    template.NumberRoomRows * template.RoomDivCellHeight;
                                                                }
                                                            });
 
@@ -385,29 +544,29 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Select content that WILL be generated (And are included assets)
             var equipment = configuration.EquipmentTemplates
                                         .Where(x => x.Level.Contains(level) &&
-                                                    includedAssets.Any(z => z.Id == x.Guid));
+                                                    includedAssets.Any(z => z.Id == x.Guid && z.Included));
 
             var consumables = configuration.ConsumableTemplates
                                             .Where(x => x.Level.Contains(level) &&
-                                                        includedAssets.Any(z => z.Id == x.Guid));
+                                                        includedAssets.Any(z => z.Id == x.Guid && z.Included));
 
             var enemies = configuration.EnemyTemplates
                                         .Where(x => x.Level.Contains(level) &&
-                                                    includedAssets.Any(z => z.Id == x.Guid));
+                                                    includedAssets.Any(z => z.Id == x.Guid && z.Included));
 
             // Calculate a LOW and HIGH generation number and clone items for player
             var generatedEnemies = simulateLow ? enemies.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate))
                                                 : enemies.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate + (x.GenerationRate % 1 > 0 ? 1 : 0)));
 
             var generatedEnemyEquipment = simulateLow ? generatedEnemies.SelectMany(x => x.StartingEquipment.Where(z => z.GenerationProbability == 1).Select(z => z.TheTemplate))
-                                                    : generatedEnemies.SelectMany(x => x.StartingEquipment.Where(z => z.GenerationProbability > 0).Select(z => z.TheTemplate));
+                                                      : generatedEnemies.SelectMany(x => x.StartingEquipment.Where(z => z.GenerationProbability > 0).Select(z => z.TheTemplate));
 
             var generatedEnemyConsumables = simulateLow ? generatedEnemies.SelectMany(x => x.StartingConsumables.Where(z => z.GenerationProbability == 1).Select(z => z.TheTemplate))
                                                         : generatedEnemies.SelectMany(x => x.StartingConsumables.Where(z => z.GenerationProbability > 0).Select(z => z.TheTemplate));
 
             // Calculate total item collections
             var generatedEquipment = simulateLow ? equipment.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate))
-                                                : equipment.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate + (x.GenerationRate % 1 > 0 ? 1 : 0)));
+                                                 : equipment.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate + (x.GenerationRate % 1 > 0 ? 1 : 0)));
 
             var generatedConsumables = simulateLow ? consumables.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate))
                                                     : consumables.SelectMany(x => x.TransformMany(z => z, (int)x.GenerationRate + (x.GenerationRate % 1 > 0 ? 1 : 0)));
@@ -426,14 +585,14 @@ namespace Rogue.NET.ScenarioEditor.Service
             // 2) Simulate level gains for the player
             while (player.Experience >= PlayerCalculator.CalculateExperienceNext(player.Level))
             {
-                var levelGainBase = simulateLow ? 0 : 1;
+                var simulatedRandom = simulateLow ? 0 : 1.0D;
 
-                player.Hp += PlayerCalculator.CalculateHpGain(levelGainBase * player.StrengthBase);
-                player.Mp += PlayerCalculator.CalculateHpGain(levelGainBase * player.IntelligenceBase);
+                player.Hp += PlayerCalculator.CalculateHpGain(simulatedRandom * player.StrengthBase);
+                player.Mp += PlayerCalculator.CalculateMpGain(simulatedRandom * player.IntelligenceBase);
 
-                player.StrengthBase += PlayerCalculator.CalculateStrengthGain(levelGainBase, attributeEmphasis == AttributeEmphasis.Strength);
-                player.IntelligenceBase += PlayerCalculator.CalculateIntelligenceGain(levelGainBase, attributeEmphasis == AttributeEmphasis.Intelligence);
-                player.AgilityBase += PlayerCalculator.CalculateAgilityGain(levelGainBase, attributeEmphasis == AttributeEmphasis.Agility);
+                player.StrengthBase += PlayerCalculator.CalculateStrengthGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Strength);
+                player.IntelligenceBase += PlayerCalculator.CalculateIntelligenceGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Intelligence);
+                player.AgilityBase += PlayerCalculator.CalculateAgilityGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Agility);
 
                 player.Level++;
             }
@@ -447,7 +606,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             });
             totalEquipment.ForEach(x =>
             {
-                var theEquipment = CreateEquipment(x, simulateLow);
+                var theEquipment = CreateEquipment(x, simulateLow, false);
 
                 player.Equipment.Add(theEquipment.Id, theEquipment);
             });
@@ -557,17 +716,65 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             return consumable;
         }
-        private Equipment CreateEquipment(EquipmentTemplateViewModel template, bool simulateLow)
+        private Equipment CreateEquipment(EquipmentTemplateViewModel template, bool simulateLow, bool equip)
         {
             // COPYING ONLY PARAMETERS USED IN BASIC COMBAT
             var equipment = new Equipment();
 
+            equipment.IsEquipped = equip;
             equipment.Class = simulateLow ? template.Class.Low : template.Class.High;
             equipment.Quality = simulateLow ? template.Quality.Low : template.Quality.High;
             equipment.LevelRequired = template.LevelRequired;
             equipment.Type = template.Type;
 
+            // Adding on Attack Attributes
+            equipment.AttackAttributes = template.AttackAttributes.Select(x => new AttackAttribute()
+            {
+                RogueName = x.Name,
+                Attack = simulateLow ? x.Attack.Low : x.Attack.High,
+                Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
+                Weakness = simulateLow ? x.Weakness.High : x.Weakness.Low
+
+            }).ToList();
+
             return equipment;
+        }
+        private Enemy CreateEnemy(EnemyTemplateViewModel template, bool simulateLow)
+        {
+            return new Enemy()
+            {
+                RogueName = template.Name,
+                AgilityBase = simulateLow ? template.Agility.Low : template.Agility.High,
+                StrengthBase = simulateLow ? template.Strength.Low : template.Strength.High,
+                IntelligenceBase = simulateLow ? template.Intelligence.Low : template.Intelligence.High,
+                Equipment = template.StartingEquipment
+                                    .Where(x => (simulateLow ? x.GenerationProbability >= 1 : x.GenerationProbability > 0))
+                                    .Select(x => CreateEquipment(x.TheTemplate, simulateLow, x.EquipOnStartup))
+                                    .ToDictionary(x => x.Id),
+                Consumables = template.StartingConsumables
+                                    .Where(x => (simulateLow ? x.GenerationProbability >= 1 : x.GenerationProbability > 0))
+                                    .Select(x => CreateConsumable(x.TheTemplate))
+                                    .ToDictionary(x => x.Id),
+                AttackAttributes = template.AttackAttributes
+                                           .Select(x => new AttackAttribute()
+                                           {
+                                               RogueName = x.Name,
+                                               Attack = simulateLow ? x.Attack.Low : x.Attack.High,
+                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
+                                               Weakness = simulateLow ? x.Weakness.High : x.Weakness.Low
+                                           })
+                                           .ToDictionary(x => x.RogueName)
+            };
+        }
+        private IEnumerable<AttackAttributeTemplate> CreateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
+        {
+            return configuration.AttackAttributes.Select(x => new AttackAttributeTemplate()
+            {
+                Name = x.Name,
+                Attack = new Range<double>(0,0),
+                Resistance = new Range<double>(0,0),
+                Weakness = new Range<int>(0,0)
+            });
         }
         #endregion
 

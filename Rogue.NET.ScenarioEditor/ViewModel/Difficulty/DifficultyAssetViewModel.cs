@@ -2,13 +2,13 @@
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
 {
     public class DifficultyAssetViewModel : NotifyViewModel, IDifficultyAssetViewModel
     {
         string _id;
-        string _type;
         string _name;
         int _requiredLevel;
         bool _included;
@@ -41,6 +41,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
             get { return _symbolDetailsViewModel; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetailsViewModel, value); }
         }
+        public ICommand CalculateCommand { get; set; }
 
         public DifficultyAssetViewModel(DungeonObjectTemplateViewModel viewModel)
         {

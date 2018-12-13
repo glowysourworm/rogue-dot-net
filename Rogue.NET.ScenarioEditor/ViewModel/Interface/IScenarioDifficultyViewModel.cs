@@ -8,6 +8,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
 {
     public interface IScenarioDifficultyViewModel
     {
-
+        
     }
 }

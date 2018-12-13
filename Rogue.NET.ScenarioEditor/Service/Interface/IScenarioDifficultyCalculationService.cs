@@ -93,7 +93,8 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         IEnumerable<IProjectedQuantityViewModel> CalculatePlayerAttackPower(
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
-            bool usePlayerStrengthAttributeEmphasis);
+            bool usePlayerStrengthAttributeEmphasis,
+            bool includeAttackAttributes);
 
         /// <summary>
         /// Calculates Enemy projected attack power = Enemy Attack - Player Defense
@@ -104,6 +105,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         IEnumerable<IProjectedQuantityViewModel> CalculateEnemyAttackPower(
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
-            bool usePlayerStrengthAttributeEmphasis);
+            bool usePlayerStrengthAttributeEmphasis,
+            bool includeAttackAttributes);
     }
 }
