@@ -8,5 +8,10 @@ namespace Rogue.NET.Core.Utility
         {
             return Regex.Replace(str, "(\\B[A-Z])", " $1");
         }
+
+        public static bool ValidateFileName(string str)
+        {
+            return Regex.Match(str, @"\w+").Captures.Count == str.Length;
+        }
     }
 }

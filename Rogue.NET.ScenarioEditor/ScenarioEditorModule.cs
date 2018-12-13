@@ -106,7 +106,7 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("DesignRegion", typeof(PlayerDesign));
 
             // Design Region - Difficulty View
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ScenarioDifficultyChart));
+            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ScenarioDesignOverview));
         }
         private void RegisterEvents()
         {
@@ -121,7 +121,7 @@ namespace Rogue.NET.ScenarioEditor
             });
             _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("DesignRegion", "ScenarioDifficultyChart");
+                _regionManager.RequestNavigate("DesignRegion", "ScenarioDesignOverview");
             });
 
             // Asset Events

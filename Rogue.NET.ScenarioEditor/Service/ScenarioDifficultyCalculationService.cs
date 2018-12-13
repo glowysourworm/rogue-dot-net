@@ -656,14 +656,16 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             // 5) Feed player until Hunger drops below 100
             while (player.Consumables.Values.Any(x => x.SubType == ConsumableSubType.Food &&
-                                                      x.LevelRequired <= player.Level) &&
-                   player.Hunger > 100 &&
-                   simulateEating)
+                                                      x.LevelRequired <= player.Level &&
+                                                      x.Spell.Effect.HungerRange.Low < 0 &&
+                                                      x.Spell.Effect.HungerRange.High < 0) &&
+                                                      player.Hunger > 100 &&
+                                                      simulateEating)
             {
-                // Order by decreasing hunger change to optimize food usage
+                // Order by increasing hunger to avoid consumables with hunger > 0
                 var foodItem = player.Consumables
                                      .Values
-                                     .OrderByDescending(x => x.Spell.Effect.HungerRange.Low)
+                                     .OrderBy(x => x.Spell.Effect.HungerRange.Low)
                                      .First(x => x.SubType == ConsumableSubType.Food);
 
                 // Simulate using the food item

@@ -112,6 +112,7 @@
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
     <Compile Include="Converter\StringColorConverter.cs" />
+    <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Event\ExitEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Logic\Static\EquipmentCalculator.cs" />
     <Compile Include="Logic\Static\MeleeCalculator.cs" />
     <Compile Include="Logic\Static\PlayerCalculator.cs" />
+    <Compile Include="Model\Enums\ValidationMessage.cs" />
     <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
@@ -308,17 +310,25 @@
     <Compile Include="Model\Scenario\Statistic\DoodadStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\EnemyStatistic.cs" />
     <Compile Include="Model\Scenario\Statistic\ItemStatistic.cs" />
+    <Compile Include="Model\Validation\Interface\IScenarioValidationResult.cs" />
+    <Compile Include="Model\Validation\Interface\IScenarioValidationMessage.cs" />
+    <Compile Include="Model\Validation\Interface\IScenarioValidationRule.cs" />
+    <Compile Include="Model\Validation\ScenarioValidationMessage.cs" />
+    <Compile Include="Model\Validation\ScenarioValidationResult.cs" />
+    <Compile Include="Model\Validation\ScenarioValidationRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\Interface\IModelService.cs" />
     <Compile Include="Service\Interface\IScenarioFileService.cs" />
     <Compile Include="Service\Interface\IScenarioResourceService.cs" />
     <Compile Include="Service\Interface\IScenarioMessageService.cs" />
     <Compile Include="Service\Interface\IScenarioService.cs" />
+    <Compile Include="Service\Interface\IScenarioValidationService.cs" />
     <Compile Include="Service\ModelService.cs" />
     <Compile Include="Service\ScenarioFileService.cs" />
     <Compile Include="Service\ScenarioResourceService.cs" />
     <Compile Include="Service\ScenarioMessageService.cs" />
     <Compile Include="Service\ScenarioService.cs" />
+    <Compile Include="Service\ScenarioValidationService.cs" />
     <Compile Include="Utility\TextUtility.cs" />
     <Compile Include="View\Smiley.xaml.cs">
       <DependentUpon>Smiley.xaml</DependentUpon>

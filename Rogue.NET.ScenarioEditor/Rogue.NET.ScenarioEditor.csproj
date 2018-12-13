@@ -348,7 +348,7 @@
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioDifficultyViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
     <Compile Include="Views\Assets\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
     </Compile>
@@ -534,8 +534,8 @@
     <Compile Include="Views\ScenarioConstruction.xaml.cs">
       <DependentUpon>ScenarioConstruction.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ScenarioDifficultyChart.xaml.cs">
-      <DependentUpon>ScenarioDifficultyChart.xaml</DependentUpon>
+    <Compile Include="Views\ScenarioDesignOverview.xaml.cs">
+      <DependentUpon>ScenarioDesignOverview.xaml</DependentUpon>
     </Compile>
     <Page Include="Resources\Dictionaries\Converter.xaml">
       <SubType>Designer</SubType>
@@ -797,7 +797,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ScenarioDifficultyChart.xaml">
+    <Page Include="Views\ScenarioDesignOverview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -30,6 +30,7 @@
     <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
     <converter:ScenarioImageSourceMultiConverter x:Key="ScenarioImageSourceMultiConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
+    <converter:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyVisibilityConverter" />
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
