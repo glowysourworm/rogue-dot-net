@@ -6,7 +6,5 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface
     {
         string Title { get; set; }
         bool Show { get; set; }
-
-        ICommand CalculateCommand { get; set; }
     }
 }

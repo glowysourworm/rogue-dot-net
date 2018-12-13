@@ -41,7 +41,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
             get { return _symbolDetailsViewModel; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetailsViewModel, value); }
         }
-        public ICommand CalculateCommand { get; set; }
 
         public DifficultyAssetViewModel(DungeonObjectTemplateViewModel viewModel)
         {

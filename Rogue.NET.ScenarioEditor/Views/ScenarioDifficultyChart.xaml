@@ -88,18 +88,19 @@
                 <StackPanel>
                     <Grid Margin="6">
                         <TextBlock FontSize="16" Foreground="LightSteelBlue" Text="Attack Attributes" HorizontalAlignment="Left" />
-                        <CheckBox IsChecked="{Binding IncludeAttackAttributes}" Command="{Binding CalculateCommand}" HorizontalAlignment="Right" />
+                        <CheckBox IsChecked="{Binding IncludeAttackAttributes}" HorizontalAlignment="Right" />
                     </Grid>
                     <ItemsControl ItemsSource="{Binding Charts}" Margin="4">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="2">
                                     <TextBlock FontSize="16" Foreground="Beige" Text="{Binding Title}" HorizontalAlignment="Left" />
-                                    <CheckBox IsChecked="{Binding Show}" Command="{Binding CalculateCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" />
+                                    <CheckBox IsChecked="{Binding Show}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" />
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    <Button Command="{Binding CalculateCommand}" Content="Calculate!" Padding="4" Margin="8" HorizontalAlignment="Right" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="Included Assets" Background="Black">
@@ -110,7 +111,6 @@
                         <TreeView x:Name="AssetTreeView"
                               ItemContainerStyle="{DynamicResource AssetBrowserItemContainerStyle}" 
                               Style="{DynamicResource AssetBrowserStyle}">
-                            <TreeViewItem x:Name="LayoutItem" ItemsSource="{Binding Source={StaticResource LayoutAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Layouts" />
                             <TreeViewItem x:Name="EnemiesItem" ItemsSource="{Binding Source={StaticResource EnemyAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Enemies" />
                             <TreeViewItem x:Name="EquipmentItem" ItemsSource="{Binding Source={StaticResource EquipmentAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Equipment" />
                             <TreeViewItem x:Name="ConsumablesItem" ItemsSource="{Binding Source={StaticResource ConsumableAssetViewSource}}" ItemTemplate="{StaticResource DifficultyAssetDataTemplate}" Header="Consumables" />

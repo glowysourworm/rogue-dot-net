@@ -74,28 +74,27 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.AssetBrowserViewModel = new DifficultyAssetBrowserViewModel(scenarioConfiguration);
             this.Charts = new ObservableCollection<IDifficultyChartViewModel>(new List<IDifficultyChartViewModel>()
             {
-                new DifficultyChartViewModel() { Title = CHART_HUNGER_AVERAGE, Show = false, CalculateCommand = new DelegateCommand(Initialize) },
-                new DifficultyChartViewModel() { Title = CHART_HUNGER_HIGH, Show = false, CalculateCommand = new DelegateCommand(Initialize) },
-                new DifficultyChartViewModel() { Title = CHART_HUNGER_LOW, Show = false, CalculateCommand = new DelegateCommand(Initialize) },
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_AVERAGE, Show = true, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_HIGH, Show = true, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_LOW, Show = true, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_AVERAGE, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_HIGH, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_LOW, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_AVERAGE, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_HIGH, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_LOW, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_AVERAGE, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_HIGH, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_LOW, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_AVERAGE, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_HIGH, Show = false, CalculateCommand = new DelegateCommand(Initialize)},
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_LOW, Show = false, CalculateCommand = new DelegateCommand(Initialize)}
+                new DifficultyChartViewModel() { Title = CHART_HUNGER_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_HUNGER_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_HUNGER_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_LEVEL_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_ATTACK_POWER_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_AVERAGE, Show = true },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_AVERAGE, Show = true },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_LOW, Show = false }
             });
 
-            // TODO: MOVE THIS TO IDifficultyAssetViewModel
-            this.AssetBrowserViewModel.Assets.ForEach(x => x.CalculateCommand = new DelegateCommand(Initialize));
+            this.CalculateCommand = new DelegateCommand(Initialize);
 
             Initialize();
         }

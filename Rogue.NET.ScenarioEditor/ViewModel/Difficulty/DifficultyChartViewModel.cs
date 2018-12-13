@@ -19,7 +19,5 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
             get { return _show; }
             set { this.RaiseAndSetIfChanged(ref _show, value); }
         }
-
-        public ICommand CalculateCommand { get; set; }
     }
 }

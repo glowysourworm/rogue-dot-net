@@ -17,7 +17,5 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty.Interface
         /// Flag to say whether it's included in the calculation
         /// </summary>
         bool Included { get; set; }
-
-        ICommand CalculateCommand { get; set; }
     }
 }
