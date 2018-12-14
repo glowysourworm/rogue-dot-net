@@ -12,29 +12,29 @@ namespace Rogue.NET.Core.Model.Validation
 {
     public class ScenarioValidationRule : NotifyViewModel, IScenarioValidationRule
     {
-        readonly Func<ScenarioConfigurationContainer, IScenarioValidationResult> _validationFunc;
+        readonly Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>> _validationFunc;
 
         string _name;
         ValidationMessageSeverity _severity;
 
-        public ScenarioValidationRule(string name, ValidationMessageSeverity severity, Func<ScenarioConfigurationContainer, IScenarioValidationResult> validationFunc)
+        public ScenarioValidationRule(string name, ValidationMessageSeverity severity, Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>> validationFunc)
         {
             _name = name;
             _severity = severity;
             _validationFunc = validationFunc;
         }
 
-        public IScenarioValidationMessage Validate(ScenarioConfigurationContainer configuration)
+        public IEnumerable<IScenarioValidationMessage> Validate(ScenarioConfigurationContainer configuration)
         {
             var result = _validationFunc(configuration);
 
-            return new ScenarioValidationMessage()
+            return result.Select(x => new ScenarioValidationMessage()
             {
-                InnerMessage = result.InnerMessage,
-                Message = _name + (result.Passed ? " - Passed" : " - Failed"),
-                Passed = result.Passed,
-                Severity = result.Passed ? ValidationMessageSeverity.Info : _severity
-            };
+                InnerMessage = x.InnerMessage,
+                Message = _name + (x.Passed ? " - Passed" : " - Failed"),
+                Passed = x.Passed,
+                Severity = x.Passed ? ValidationMessageSeverity.Info : _severity
+            });
         }
     }
 }

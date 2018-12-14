@@ -258,6 +258,19 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
+            // Check for targeting - including Ammo type
+            if (consumable.HasSpell || consumable.SubType == ConsumableSubType.Ammo)
+            {
+                var targetedEnemy = _modelService.GetTargetedEnemies()
+                                                 .FirstOrDefault();
+
+                if (_alterationProcessor.CalculateSpellRequiresTarget(consumable.Spell) && targetedEnemy == null)
+                {
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
+                    return LevelContinuationAction.DoNothing;
+                }
+            }
+
             // Check for removal of item
             switch (consumable.Type)
             {
@@ -312,29 +325,15 @@ namespace Rogue.NET.Core.Logic
 
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
                 }
+                return LevelContinuationAction.ProcessTurn;
             }
 
-            // All other types - including Ammo type
-            if (consumable.HasSpell || consumable.SubType == ConsumableSubType.Ammo)
-            {
-                var targetedEnemy = _modelService.GetTargetedEnemies()
-                                                 .FirstOrDefault();
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + displayName);
 
-                if (_alterationProcessor.CalculateSpellRequiresTarget(consumable.Spell) && targetedEnemy == null)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
-
-                else
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + displayName);
-                    
-                    // Queue processing of spell
-                    return _spellEngine.QueuePlayerMagicSpell((consumable.SubType == ConsumableSubType.Ammo) ? 
-                                                               consumable.AmmoSpell : 
-                                                               consumable.Spell);
-                }
-            }
-
-            return LevelContinuationAction.ProcessTurn;
+            // Queue processing of spell
+            return _spellEngine.QueuePlayerMagicSpell((consumable.SubType == ConsumableSubType.Ammo) ?
+                                                       consumable.AmmoSpell :
+                                                       consumable.Spell);
         }
         public void Identify(string itemId)
         {

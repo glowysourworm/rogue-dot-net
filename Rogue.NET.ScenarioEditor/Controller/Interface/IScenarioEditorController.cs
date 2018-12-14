@@ -10,6 +10,5 @@ namespace Rogue.NET.ScenarioEditor.Controller.Interface
         void New();
         void Open(string name, bool builtIn);
         void Save();
-        void Validate();
     }
 }

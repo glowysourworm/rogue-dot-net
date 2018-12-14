@@ -14,5 +14,6 @@ namespace Rogue.NET.Core.Service.Interface
     public interface IScenarioValidationService
     {
         IEnumerable<IScenarioValidationMessage> Validate(ScenarioConfigurationContainer scenarioConfigurationContainer);
+        bool IsValid(ScenarioConfigurationContainer scenarioConfigurationContainer);
     }
 }

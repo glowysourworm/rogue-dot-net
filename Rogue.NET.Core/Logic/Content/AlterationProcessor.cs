@@ -174,6 +174,12 @@ namespace Rogue.NET.Core.Logic.Content
                 || spell.Type == AlterationType.TemporaryTarget)
                 return true;
 
+            if (spell.Type == AlterationType.AttackAttribute &&
+               (spell.AttackAttributeType == AlterationAttackAttributeType.TemporaryFriendlyTarget ||
+                spell.AttackAttributeType == AlterationAttackAttributeType.TemporaryMalignTarget ||
+                spell.AttackAttributeType == AlterationAttackAttributeType.MeleeTarget))
+                return true;
+
             return false;
         }
 

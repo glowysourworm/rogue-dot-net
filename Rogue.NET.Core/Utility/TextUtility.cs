@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Utility
 
         public static bool ValidateFileName(string str)
         {
-            return Regex.Match(str, @"\w+").Captures.Count == str.Length;
+            return Regex.IsMatch(str, @"^[a-zA-Z0-9]+$");
         }
     }
 }

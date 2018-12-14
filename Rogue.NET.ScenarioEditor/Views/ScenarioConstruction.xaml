@@ -1,19 +1,30 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.ScenarioConstruction"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:views="clr-namespace:Rogue.NET.ScenarioEditor.Views">
     <UserControl.Resources>
         <!--ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml" /-->
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
     </UserControl.Resources>    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Foreground="White" Text="Scenario Design" FontSize="20" Margin="8" />
+        <Grid>
+            <TextBlock Foreground="White" Text="Scenario Design" FontSize="20" Margin="8" />
+            <!-- Validate -->
+            <Button Style="{StaticResource ActionButton}" 
+                    HorizontalAlignment="Right"
+                    Width="80"
+                    Command="{Binding Path=DataContext.ShowDifficultyCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type views:Editor}}}" 
+                    Margin="4">
+                <TextBlock Foreground="White" Margin="4">
+                    <Run Text="&#xf046;" FontFamily="{StaticResource FontAwesome}" />
+                    <Run Text="  Overview" />
+                </TextBlock>
+            </Button>
+        </Grid>
         <ListBox x:Name="AssetLB" 
                   FontSize="16"
                   SelectionChanged="AssetLB_SelectionChanged"

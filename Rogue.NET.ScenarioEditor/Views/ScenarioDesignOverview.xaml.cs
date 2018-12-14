@@ -18,19 +18,15 @@ namespace Rogue.NET.ScenarioEditor.Views
             IScenarioEditorController scenarioEditorController,
             IScenarioValidationService scenarioValidationService,
             IEventAggregator eventAggregator)
-        {
-            _scenarioEditorController = scenarioEditorController;
-
+        {            
             InitializeComponent();
-
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
-            {
-                this.DataContext = new ScenarioDesignOverviewViewModel(configuration, scenarioValidationService, eventAggregator);
-            });
 
             this.Loaded += (sender, e) =>
             {
-                this.DataContext = new ScenarioDesignOverviewViewModel(_scenarioEditorController.CurrentConfig, scenarioValidationService, eventAggregator);
+                this.DataContext = new ScenarioDesignOverviewViewModel(
+                                    scenarioEditorController.CurrentConfig, 
+                                    scenarioValidationService, 
+                                    eventAggregator);
             };
         }
     }

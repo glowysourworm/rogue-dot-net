@@ -657,6 +657,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             // 5) Feed player until Hunger drops below 100
             while (player.Consumables.Values.Any(x => x.SubType == ConsumableSubType.Food &&
                                                       x.LevelRequired <= player.Level &&
+                                                      x.HasSpell &&
+                                                      x.Spell.Type == AlterationType.PermanentSource &&
+                                                      x.Spell.Effect != null &&                                                      
                                                       x.Spell.Effect.HungerRange.Low < 0 &&
                                                       x.Spell.Effect.HungerRange.High < 0) &&
                                                       player.Hunger > 100 &&

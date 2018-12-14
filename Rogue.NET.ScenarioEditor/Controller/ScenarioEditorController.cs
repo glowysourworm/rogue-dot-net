@@ -13,6 +13,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Rogue.NET.Controller.ScenarioEditor
 {
@@ -25,6 +26,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
         readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
+        readonly IScenarioValidationService _scenarioValidationService;
 
         readonly ScenarioConfigurationMapper _configurationMapper;
 
@@ -36,13 +38,15 @@ namespace Rogue.NET.Controller.ScenarioEditor
             IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,
-            IScenarioFileService scenarioFileService)
+            IScenarioFileService scenarioFileService,
+            IScenarioValidationService scenarioValidationService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
+            _scenarioValidationService = scenarioValidationService;
 
             _configurationMapper = new ScenarioConfigurationMapper();
 
@@ -153,6 +157,24 @@ namespace Rogue.NET.Controller.ScenarioEditor
             // Map back to the model namespace
             var config = _configurationMapper.MapBack(_config);
 
+            // Validate - if invalid and user chooses not to proceed - then hide the splash display and
+            //            return.
+            if (!_scenarioValidationService.IsValid(config) &&
+                 MessageBox.Show("Scenario is not valid and will not be playable. Save anyway?",
+                                 "Scenario Invalid",
+                                 MessageBoxButton.YesNoCancel) != MessageBoxResult.Yes)
+            {
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+                {
+                    SplashAction = SplashAction.Hide,
+                    SplashType = SplashEventType.Loading
+                });
+
+                PublishOutputMessage("Scenario Invalid - Save Terminated");
+
+                return;
+            }
+
             // Save the configuration
             if (builtInScenario)
                 _scenarioFileService.EmbedConfiguration(builtInScenarioType, config);
@@ -171,11 +193,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
             });
 
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
-        }
-
-        public void Validate()
-        {
-            //TODO
         }
 
         private void PublishOutputMessage(string msg)

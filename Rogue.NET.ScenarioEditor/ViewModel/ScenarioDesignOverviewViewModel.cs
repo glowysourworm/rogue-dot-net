@@ -24,6 +24,7 @@ using Prism.Events;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -125,6 +126,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 CalculateDifficulty();
 
             }, () => this.ValidationPassed);
+
+            Validate();
+            CalculateDifficulty();
         }
 
         private void CalculateDifficulty()
@@ -152,7 +156,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             // VALIDATE CONFIGURATION
             this.ValidationMessages.Clear();
             this.ValidationMessages.AddRange(_scenarioValidationService.Validate(configuration));
-            this.ValidationPassed = this.ValidationMessages.Count == 0;
+            this.ValidationPassed = this.ValidationMessages
+                                        .Count(x => x.Severity == ValidationMessageSeverity.Error) == 0;
 
             (this.CalculateCommand as DelegateCommand).RaiseCanExecuteChanged();
 
