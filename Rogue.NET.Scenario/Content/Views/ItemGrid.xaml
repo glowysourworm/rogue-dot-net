@@ -213,12 +213,12 @@
                                             <Run Text="{Binding Quality}" />
                                         </TextBlock>
                                         <TextBlock Style="{StaticResource EquipmentTextBlockBrush}"
-                                                   Visibility="{Binding IsWeapon, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                                                   Visibility="{Binding IsWeapon, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                             <Run Text="Attack Value: " />
                                             <Run Text="{Binding AttackValue}" />
                                         </TextBlock>
                                         <TextBlock Style="{StaticResource EquipmentTextBlockBrush}"
-                                                   Visibility="{Binding IsArmor, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                                                   Visibility="{Binding IsArmor, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                             <Run Text="Defense Value: " />
                                             <Run Text="{Binding DefenseValue}" />
                                         </TextBlock>

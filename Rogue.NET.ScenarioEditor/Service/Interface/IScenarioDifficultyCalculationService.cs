@@ -53,6 +53,16 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
             IEnumerable<IDifficultyAssetViewModel> includedAssets);
 
         /// <summary>
+        /// Calculates Enemy Strength per level (absolute low, absolute high, and average)
+        /// </summary>
+        /// <param name="configuration">Scenario Configuration</param>
+        /// <param name="includedAssets">Set of included assets in the calculation</param>
+        /// <returns>Projected enemy strength curve</returns>
+        IEnumerable<IProjectedQuantityViewModel> CalculateEnemyStrength(
+            ScenarioConfigurationContainerViewModel configuration,
+            IEnumerable<IDifficultyAssetViewModel> includedAssets);
+
+        /// <summary>
         /// Calculates Player Hp per level (absolute low, absolute high, and average).
         /// </summary>
         /// <param name="configuration">Scenario Configuration</param>
@@ -60,6 +70,18 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// <param name="usePlayerStrengthAttributeEmphasis">Assume Player uses Strength Attribute Emphasis</param>
         /// <returns>Projected Player Hp curve</returns>
         IEnumerable<IProjectedQuantityViewModel> CalculatePlayerHp(
+            ScenarioConfigurationContainerViewModel configuration,
+            IEnumerable<IDifficultyAssetViewModel> includedAssets,
+            bool usePlayerStrengthAttributeEmphasis);
+
+        /// <summary>
+        /// Calculates Player Strength per level (absolute low, absolute high, and average).
+        /// </summary>
+        /// <param name="configuration">Scenario Configuration</param>
+        /// <param name="includedAssets">Set of included assets in the calculation</param>
+        /// <param name="usePlayerStrengthAttributeEmphasis">Assume Player uses Strength Attribute Emphasis</param>
+        /// <returns>Projected Player Strength curve</returns>
+        IEnumerable<IProjectedQuantityViewModel> CalculatePlayerStrength(
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
             bool usePlayerStrengthAttributeEmphasis);

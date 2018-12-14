@@ -46,12 +46,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         const string CHART_PLAYER_HP_AVERAGE = "Player Hp (Avg)";
         const string CHART_PLAYER_HP_HIGH = "Player Hp (High)";
         const string CHART_PLAYER_HP_LOW = "Player Hp (Low)";
+        const string CHART_PLAYER_STRENGTH_AVERAGE = "Player Strength (Avg)";
+        const string CHART_PLAYER_STRENGTH_HIGH = "Player Strength (High)";
+        const string CHART_PLAYER_STRENGTH_LOW = "Player Strength (Low)";
         const string CHART_PLAYER_LEVEL_AVERAGE = "Player Level (Avg)";
         const string CHART_PLAYER_LEVEL_HIGH = "Player Level (High)";
         const string CHART_PLAYER_LEVEL_LOW = "Player Level (Low)";
         const string CHART_ENEMY_ATTACK_POWER_AVERAGE = "Enemy Attack Power (Avg)";
         const string CHART_ENEMY_ATTACK_POWER_HIGH = "Enemy Attack Power (High)";
         const string CHART_ENEMY_ATTACK_POWER_LOW = "Enemy Attack Power (Low)";
+        const string CHART_ENEMY_STRENGTH_AVERAGE = "Enemy Strength (Avg)";
+        const string CHART_ENEMY_STRENGTH_HIGH = "Enemy Strength (High)";
+        const string CHART_ENEMY_STRENGTH_LOW = "Enemy Strength (Low)";
         const string CHART_ENEMY_HP_AVERAGE = "Enemy Hp (Avg)";
         const string CHART_ENEMY_HP_HIGH = "Enemy Hp (High)";
         const string CHART_ENEMY_HP_LOW = "Enemy Hp (Low)";
@@ -95,6 +101,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             _scenarioValidationService = scenarioValidationService;
             _eventAggregator = eventAggregator;
 
+            this.IncludeAttackAttributes = true;
             this.DifficultySeries = new SeriesCollection();
             this.ValidationMessages = new ObservableCollection<IScenarioValidationMessage>();
             this.AssetBrowserViewModel = new DifficultyAssetBrowserViewModel(scenarioConfiguration);
@@ -112,11 +119,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_AVERAGE, Show = true },
                 new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_HIGH, Show = false },
                 new DifficultyChartViewModel() { Title = CHART_PLAYER_HP_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_STRENGTH_AVERAGE, Show = true },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_STRENGTH_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_PLAYER_STRENGTH_LOW, Show = false },
                 new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_AVERAGE, Show = false },
                 new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_HIGH, Show = false },
                 new DifficultyChartViewModel() { Title = CHART_ENEMY_HP_LOW, Show = false },
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_AVERAGE, Show = true },
-                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_STRENGTH_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_STRENGTH_HIGH, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_STRENGTH_LOW, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_AVERAGE, Show = false },
+                new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_HIGH, Show = true },
                 new DifficultyChartViewModel() { Title = CHART_ENEMY_ATTACK_POWER_LOW, Show = false }
             });
 
@@ -253,6 +266,30 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                                                 .Select(x => new ObservablePoint(x.Level, x.Low)));
                     }
                     break;
+                case CHART_ENEMY_STRENGTH_AVERAGE:
+                    {
+                        lineSeries.Stroke = Brushes.MediumVioletRed;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
+                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
+                    }
+                    break;
+                case CHART_ENEMY_STRENGTH_HIGH:
+                    {
+                        lineSeries.Stroke = Brushes.MediumVioletRed;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
+                                                .Select(x => new ObservablePoint(x.Level, x.High)));
+                    }
+                    break;
+                case CHART_ENEMY_STRENGTH_LOW:
+                    {
+                        lineSeries.Stroke = Brushes.MediumVioletRed;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculateEnemyStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets)
+                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
+                    }
+                    break;
                 case CHART_PLAYER_ATTACK_POWER_AVERAGE:
                     {
                         lineSeries.Stroke = Brushes.White;
@@ -298,6 +335,30 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                         lineSeries.Stroke = Brushes.Red;
                         lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
                                                 .CalculatePlayerHp(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
+                                                .Select(x => new ObservablePoint(x.Level, x.Low)));
+                    }
+                    break;
+                case CHART_PLAYER_STRENGTH_AVERAGE:
+                    {
+                        lineSeries.Stroke = Brushes.Red;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
+                                                .Select(x => new ObservablePoint(x.Level, x.Average)));
+                    }
+                    break;
+                case CHART_PLAYER_STRENGTH_HIGH:
+                    {
+                        lineSeries.Stroke = Brushes.Red;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
+                                                .Select(x => new ObservablePoint(x.Level, x.High)));
+                    }
+                    break;
+                case CHART_PLAYER_STRENGTH_LOW:
+                    {
+                        lineSeries.Stroke = Brushes.Red;
+                        lineSeries.Values = new ChartValues<ObservablePoint>(_scenarioDifficultyCalculationService
+                                                .CalculatePlayerStrength(_scenarioConfiguration, this.AssetBrowserViewModel.Assets, true)
                                                 .Select(x => new ObservablePoint(x.Level, x.Low)));
                     }
                     break;

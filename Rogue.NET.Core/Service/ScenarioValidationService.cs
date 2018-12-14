@@ -35,6 +35,7 @@ namespace Rogue.NET.Core.Service
             var validationRules = CreateValidationRules();
 
             return validationRules.SelectMany(x => x.Validate(scenarioConfigurationContainer))
+                                  .Where(x => x.Severity == ValidationMessageSeverity.Error)
                                   .All(x => x.Passed);
         }
 

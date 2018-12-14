@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System;
 using System.ComponentModel.Composition;
@@ -11,10 +12,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
     public class ScenarioAssetViewModel : NotifyViewModel, IScenarioAssetViewModel
     {
         bool _isSelected = false;
+        bool _isLevelPlacement = false;
         string _name = "";
         string _type = "";
         string _subType = "";
         SymbolDetailsTemplateViewModel _symbolDetailsViewModel;
+        RangeViewModel<int> _level;
 
         [ImportingConstructor]
         public ScenarioAssetViewModel()
@@ -41,6 +44,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 if (this.CopyAssetEvent != null)
                     CopyAssetEvent(this, this);
             });
+
+            this.IsLevelPlacement = false;
+            this.Level = new RangeViewModel<int>();
         }
 
 
@@ -65,10 +71,20 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             get { return _isSelected; }
             set { this.RaiseAndSetIfChanged(ref _isSelected, value); }
         }
+        public bool IsLevelPlacement
+        {
+            get { return _isLevelPlacement; }
+            set { this.RaiseAndSetIfChanged(ref _isLevelPlacement, value); }
+        }
         public SymbolDetailsTemplateViewModel SymbolDetails
         {
             get { return _symbolDetailsViewModel; }
             set { this.RaiseAndSetIfChanged(ref _symbolDetailsViewModel, value); }
+        }
+        public RangeViewModel<int> Level
+        {
+            get { return _level; }
+            set { this.RaiseAndSetIfChanged(ref _level, value); }
         }
 
         public ICommand RemoveAssetCommand { get; set; }

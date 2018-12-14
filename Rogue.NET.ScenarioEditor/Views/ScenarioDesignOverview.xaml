@@ -15,6 +15,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/ScenarioAssetBrowser.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
                 <ResourceDictionary>
 
                     <CollectionViewSource x:Key="LayoutAssetViewSource" Source="{Binding AssetBrowserViewModel.LayoutGroup.Assets}">
@@ -116,23 +117,32 @@
             <TabControl Grid.Column="1" Background="Black">
                 <TabItem Header="Difficulty Charts" Background="Black">
                     <!-- Chart Selector -->
-                    <StackPanel>
-                        <Grid Margin="6">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button Style="{StaticResource ActionButton}" Command="{Binding CalculateCommand}" Width="80" Content="Calculate!" Padding="4" Margin="8" HorizontalAlignment="Right" />
+                        <Grid Margin="6" Grid.Row="1">
                             <TextBlock FontSize="16" Foreground="LightSteelBlue" Text="Attack Attributes" HorizontalAlignment="Left" />
                             <CheckBox IsChecked="{Binding IncludeAttackAttributes}" HorizontalAlignment="Right" />
                         </Grid>
-                        <ItemsControl ItemsSource="{Binding Charts}" Margin="4">
-                            <ItemsControl.ItemTemplate>
+                        <ListBox ItemsSource="{Binding Charts}" 
+                                 Margin="4" Grid.Row="2"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
+                                 Style="{StaticResource DarkListBoxStyle}">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="2">
                                         <TextBlock FontSize="16" Foreground="Beige" Text="{Binding Title}" HorizontalAlignment="Left" />
                                         <CheckBox IsChecked="{Binding Show}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" />
                                     </Grid>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <Button Command="{Binding CalculateCommand}" Content="Calculate!" Padding="4" Margin="8" HorizontalAlignment="Right" />
-                    </StackPanel>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="Included Assets" Background="Black">
                     <!-- Included Assets -->

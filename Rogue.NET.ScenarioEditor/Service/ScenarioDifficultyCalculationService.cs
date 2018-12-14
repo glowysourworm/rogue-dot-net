@@ -4,17 +4,13 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Rogue.NET.ScenarioEditor.ViewModel.Difficulty;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.ScenarioEditor.ViewModel.Difficulty;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
@@ -180,6 +176,32 @@ namespace Rogue.NET.ScenarioEditor.Service
                             High = enemies.Any() ? enemies.Max(x => x.Hp.High) : 0,
                             Low = enemies.Any() ? enemies.Min(x => x.Hp.Low) : 0,
                             Average = enemies.Any() ? enemies.Average(x => x.Hp.GetAverage()) : 0,
+                            Level = levelNumber
+                        };
+                    }));
+        }
+
+        // Enemy Strength
+        public IEnumerable<IProjectedQuantityViewModel> CalculateEnemyStrength(
+            ScenarioConfigurationContainerViewModel configuration,
+            IEnumerable<IDifficultyAssetViewModel> includedAssets)
+        {
+            return new List<IProjectedQuantityViewModel>(
+                Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
+                    .Select((levelNumber) =>
+                    {
+                        // Select enemies whose level range overlaps this level and whose generation rate is
+                        // greater than zero.
+                        var enemies = configuration.EnemyTemplates
+                                                   .Where(x => x.Level.Contains(levelNumber) &&
+                                                               x.GenerationRate > 0 &&
+                                                               includedAssets.Any(z => z.Id == x.Guid && z.Included));
+
+                        return new ProjectedQuantityViewModel()
+                        {
+                            High = enemies.Any() ? enemies.Max(x => x.Strength.High) : 0,
+                            Low = enemies.Any() ? enemies.Min(x => x.Strength.Low) : 0,
+                            Average = enemies.Any() ? enemies.Average(x => x.Strength.GetAverage()) : 0,
                             Level = levelNumber
                         };
                     }));
@@ -416,6 +438,32 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 High = playerHigh.Hp,
                                 Low = playerLow.Hp,
                                 Average = (playerLow.Hp + playerHigh.Hp) / 2.0D,
+                                Level = levelNumber
+                            };
+                        }));
+        }
+
+        // Player Strength
+        public IEnumerable<IProjectedQuantityViewModel> CalculatePlayerStrength(
+            ScenarioConfigurationContainerViewModel configuration,
+            IEnumerable<IDifficultyAssetViewModel> includedAssets,
+            bool usePlayerStrengthAttributeEmphasis)
+        {
+            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+
+            return new List<IProjectedQuantityViewModel>(
+              Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
+                        .Select((levelNumber) =>
+                        {
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+
+                            return new ProjectedQuantityViewModel()
+                            {
+                                High = playerHigh.StrengthBase,
+                                Low = playerLow.StrengthBase,
+                                Average = (playerLow.StrengthBase + playerHigh.StrengthBase) / 2.0D,
                                 Level = levelNumber
                             };
                         }));

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Input;
 
@@ -9,8 +10,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         string Name { get; set; }
         string Type { get; set; }
         string SubType { get; set; }
+        RangeViewModel<int> Level { get; set; }
         SymbolDetailsTemplateViewModel SymbolDetails { get; set; }
         bool IsSelected { get; set; }
+        bool IsLevelPlacement { get; set; }
 
         ICommand RemoveAssetCommand { get; set; }
         ICommand LoadAssetCommand { get; set; }

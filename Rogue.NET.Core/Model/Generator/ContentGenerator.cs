@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -186,8 +187,17 @@ namespace Rogue.NET.Core.Model.Generator
                 var teleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
                 var teleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, teleport1.Id);
 
-                teleport1.Location = GetRandomCell(true, i, freeCells, freeRoomCells);
-                teleport2.Location = GetRandomCell(true, i + 1, freeCells, freeRoomCells);
+                var location1 = GetRandomCell(true, i, freeCells, freeRoomCells);
+                var location2 = GetRandomCell(true, i + 1, freeCells, freeRoomCells);
+
+                if (location1 == CellPoint.Empty)
+                    throw new Exception("Trying to place teleporter but ran out of room!");
+
+                if (location2 == CellPoint.Empty)
+                    throw new Exception("Trying to place teleporter but ran out of room!");
+
+                teleport1.Location = location1;
+                teleport2.Location = location2;
 
                 teleport1.PairId = teleport2.Id;
 
@@ -198,8 +208,17 @@ namespace Rogue.NET.Core.Model.Generator
             var lastRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
             var firstRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, lastRoomTeleport.Id);
 
-            lastRoomTeleport.Location = GetRandomCell(true, rooms.Length - 1, freeCells, freeRoomCells);
-            firstRoomTeleport.Location = GetRandomCell(true, 0, freeCells, freeRoomCells);
+            var lastRoomLocation = GetRandomCell(true, rooms.Length - 1, freeCells, freeRoomCells);
+            var firstRoomLocation = GetRandomCell(true, 0, freeCells, freeRoomCells);
+
+            if (lastRoomLocation == CellPoint.Empty)
+                throw new Exception("Trying to place teleporter but ran out of room!");
+
+            if (firstRoomLocation == CellPoint.Empty)
+                throw new Exception("Trying to place teleporter but ran out of room!");
+
+            lastRoomTeleport.Location = lastRoomLocation;
+            firstRoomTeleport.Location = firstRoomLocation;
 
             lastRoomTeleport.PairId = firstRoomTeleport.Id;
 
@@ -212,9 +231,18 @@ namespace Rogue.NET.Core.Model.Generator
                 var extraTeleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
                 var extraTeleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, extraTeleport1.Id);
 
+                var extraLocation1 = GetRandomCell(false, -1, freeCells, freeRoomCells);
+                var extraLocation2 = GetRandomCell(false, -1, freeCells, freeRoomCells);
+
+                if (extraLocation1 == CellPoint.Empty)
+                    throw new Exception("Trying to place teleporter but ran out of room!");
+
+                if (extraLocation2 == CellPoint.Empty)
+                    throw new Exception("Trying to place teleporter but ran out of room!");
+
                 // Pick 2 random rooms
-                extraTeleport1.Location = GetRandomCell(true, _randomSequenceGenerator.Get(0, rooms.Length), freeCells, freeRoomCells);
-                extraTeleport2.Location = GetRandomCell(true, _randomSequenceGenerator.Get(0, rooms.Length), freeCells, freeRoomCells);
+                extraTeleport1.Location = extraLocation1;
+                extraTeleport2.Location = extraLocation2;
 
                 extraTeleport1.PairId = extraTeleport2.Id;
 
@@ -231,7 +259,12 @@ namespace Rogue.NET.Core.Model.Generator
             for (int i = 0; i < rooms.Length; i++)
             {
                 var doodad = new DoodadNormal(DoodadNormalType.TeleportRandom, ModelConstants.DoodadTeleporterRandomRogueName, "");
-                doodad.Location = GetRandomCell(true, i, freeCells, freeRoomCells);
+                var location = GetRandomCell(true, i, freeCells, freeRoomCells);
+
+                if (location == CellPoint.Empty)
+                    throw new Exception("Trying to place teleporter but ran out of room!");
+
+                doodad.Location = location;
                 level.AddContent(doodad);
             }
         }

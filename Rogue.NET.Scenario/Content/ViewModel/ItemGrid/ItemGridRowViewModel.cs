@@ -381,10 +381,17 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.Class = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Class.ToString("F0") :
                                                      equipment.IsIdentified ? "N/A" : "?";
 
-            this.AttackValue = equipment.IsWeaponType() && equipment.IsIdentified ? equipment.GetAttackValue().ToString("F2") : 
-                                                           equipment.IsIdentified ? "?" : "N/A";
-            this.DefenseValue = equipment.IsArmorType() && equipment.IsIdentified ? equipment.GetDefenseValue().ToString("F2") : 
-                                                           equipment.IsIdentified ? "?" : "N/A";
+            // Attack and Defense Value
+            if (!equipment.IsIdentified)
+            {
+                this.AttackValue = "?";
+                this.DefenseValue = "?";
+            }
+            else
+            {
+                this.AttackValue = equipment.GetAttackValue().ToString("F2");
+                this.DefenseValue = equipment.GetDefenseValue().ToString("F2");
+            }
 
             this.Weight = equipment.Weight.ToString("F2");
             this.RequiredLevel = equipment.LevelRequired;

@@ -54,6 +54,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
                    assetType == Pen);
         }
 
+        public static bool HasLevelPlacement(string assetType)
+        {
+            return assetType == Layout ||
+                   assetType == Consumable ||
+                   assetType == Doodad ||
+                   assetType == Enemy ||
+                   assetType == Equipment;
+        }
+
         public static string GetSubType(TemplateViewModel viewModel)
         {
             if (viewModel is EquipmentTemplateViewModel)

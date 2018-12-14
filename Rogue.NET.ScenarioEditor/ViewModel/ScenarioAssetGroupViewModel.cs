@@ -11,6 +11,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Collections.Specialized;
 using System.Collections;
 using AssetTypeConst = Rogue.NET.ScenarioEditor.ViewModel.Constant.AssetType;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -87,13 +88,30 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
             if (_hasSymbol)
             {
-                foreach (var item in collection.Cast<DungeonObjectTemplateViewModel>())                                                  
-                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SubType = AssetTypeConst.GetSubType(item),  SymbolDetails = item.SymbolDetails });
+                foreach (var item in collection.Cast<DungeonObjectTemplateViewModel>())
+                {
+                    this.Assets.Add(new ScenarioAssetViewModel()
+                    {
+                        Name = item.Name,
+                        Type = this.AssetType,
+                        SubType = AssetTypeConst.GetSubType(item),
+                        SymbolDetails = item.SymbolDetails,
+                        IsLevelPlacement = AssetTypeConst.HasLevelPlacement(this.AssetType),
+                        Level = item.Level
+                    });
+                }
             }
             else
             {
                 foreach (var item in collection.Cast<TemplateViewModel>())
-                    this.Assets.Add(new ScenarioAssetViewModel() { Name = item.Name, Type = this.AssetType, SubType = AssetTypeConst.GetSubType(item) });
+                    this.Assets.Add(new ScenarioAssetViewModel()
+                    {
+                        Name = item.Name,
+                        Type = this.AssetType,
+                        SubType = AssetTypeConst.GetSubType(item),
+                        IsLevelPlacement = AssetTypeConst.HasLevelPlacement(this.AssetType),
+                        Level = AssetTypeConst.HasLevelPlacement(this.AssetType) ? ((LayoutTemplateViewModel)item).Level : null
+                    });
             }
 
             HookAssetEvents();

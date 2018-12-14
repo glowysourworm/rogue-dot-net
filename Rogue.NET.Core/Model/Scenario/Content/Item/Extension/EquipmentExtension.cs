@@ -40,9 +40,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item.Extension
             return EquipmentCalculator.IsWeaponType(equipment.Type);
         }
 
+        public static bool IsNonMelee(this Equipment equipment)
+        {
+            return equipment.Type == EquipmentType.Amulet ||
+                   equipment.Type == EquipmentType.None ||
+                   equipment.Type == EquipmentType.Orb ||
+                   equipment.Type == EquipmentType.Ring;
+        }
+
         public static double GetAttackValue(this Equipment equipment)
         {
-            if (equipment.IsArmorType())
+            if (equipment.IsArmorType() || equipment.IsNonMelee())
                 return 0;
 
             return EquipmentCalculator.GetAttackValue(equipment.Type, equipment.Class, equipment.Quality);
@@ -50,7 +58,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item.Extension
 
         public static double GetDefenseValue(this Equipment equipment)
         {
-            if (equipment.IsWeaponType())
+            if (equipment.IsWeaponType() || equipment.IsNonMelee())
                 return 0;
 
             return EquipmentCalculator.GetDefenseValue(equipment.Type, equipment.Class, equipment.Quality);
