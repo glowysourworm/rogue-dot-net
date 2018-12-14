@@ -3,6 +3,7 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
@@ -98,10 +99,13 @@ namespace Rogue.NET.Scenario.Controller
 
                 // Fifth: Process all Scenario Events
                 while (_scenarioService.AnyScenarioEvents())
-                    ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+                {
+                    // Have to cancel processing on certain scenario events
+                    processing = ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+                }
 
                 // Finally: Process the next backend work item. (If processing finished - then allow user command)
-                if (!_scenarioService.ProcessBackend())
+                if (!_scenarioService.ProcessBackend() && processing)
                     processing = false;
             }
         }
@@ -115,9 +119,18 @@ namespace Rogue.NET.Scenario.Controller
         {
             _eventAggregator.GetEvent<LevelUpdateEvent>().Publish(update);
         }
-        private void ProcessScenarioUpdate(IScenarioUpdate update)
+        private bool ProcessScenarioUpdate(IScenarioUpdate update)
         {
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(update);
+
+            switch (update.ScenarioUpdateType)
+            {
+                case ScenarioUpdateType.LevelChange:
+                case ScenarioUpdateType.PlayerDeath:
+                    return false;
+            }
+
+            return true;
         }
         private void ProcessSplashUpdate(ISplashUpdate update)
         {

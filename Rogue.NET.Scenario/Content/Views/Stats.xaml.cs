@@ -4,6 +4,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class StatsControl : UserControl
     {
