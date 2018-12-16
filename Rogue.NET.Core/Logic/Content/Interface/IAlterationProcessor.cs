@@ -8,8 +8,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
 {
     public interface IAlterationProcessor
     {
-        ScenarioImage CalculateEffectiveSymbol(Enemy enemy);
-        ScenarioImage CalculateEffectiveSymbol(Player player);
+        ScenarioImage CalculateEffectiveSymbol(Character character);
 
         bool CalculateSpellRequiresTarget(Spell spell);
         bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost);

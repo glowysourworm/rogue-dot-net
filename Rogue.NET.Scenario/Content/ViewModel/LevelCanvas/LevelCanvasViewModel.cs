@@ -443,12 +443,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
         {
             var image = new LevelCanvasImage();
+            var isEnemyInvisible = false;                // FOR ENEMY INVISIBILITY ONLY
 
             // Calculate effective symbol
             var effectiveSymbol = (ScenarioImage)scenarioObject;
 
             if (scenarioObject is Enemy)
+            {
+                // Calculate invisibility
+                var enemy = (scenarioObject as Enemy);
+
+                isEnemyInvisible = (enemy.IsInvisible || enemy.Is(CharacterStateType.Invisible)) && !_modelService.Player.Alteration.CanSeeInvisibleCharacters();
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
+            }
 
             else if (scenarioObject is Player)
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
@@ -474,8 +481,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            image.Visibility = scenarioObject.IsPhysicallyVisible || scenarioObject.IsRevealed ? Visibility.Visible : 
-                                                                                                 Visibility.Hidden;
+            image.Visibility = (scenarioObject.IsPhysicallyVisible || 
+                                scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
             Canvas.SetLeft(image, point.X);
             Canvas.SetTop(image, point.Y);
@@ -484,7 +491,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             // AURA
             if (scenarioObject is Character &&
-                scenarioObject.SymbolType == SymbolTypes.Smiley)
+                scenarioObject.SymbolType == SymbolTypes.Smiley &&
+                !isEnemyInvisible)
             {
                 // TODO: Put transform somewhere else
                 var character = scenarioObject as Character;
@@ -515,9 +523,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private void UpdateObject(FrameworkElement content, ScenarioObject scenarioObject)
         {
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
-
-            content.Visibility = scenarioObject.IsPhysicallyVisible || scenarioObject.IsRevealed ? Visibility.Visible : 
-                                                                                                   Visibility.Hidden;
+            var isEnemyInvisible = false;                // FOR ENEMY INVISIBILITY ONLY
 
             // Calculate effective symbol
             var effectiveSymbol = (ScenarioImage)scenarioObject;
@@ -528,11 +534,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 scenarioObject is Player))
             {
                 if (scenarioObject is Enemy)
+                {
+                    // Calculate invisibility
+                    var enemy = (scenarioObject as Enemy);
+
+                    isEnemyInvisible = (enemy.IsInvisible || 
+                                        enemy.Is(CharacterStateType.Invisible)) && 
+                                        !_modelService.Player.Alteration.CanSeeInvisibleCharacters();
+
                     effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
+                }
 
                 else if (scenarioObject is Player)
                     effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
             }
+
+            content.Visibility = (scenarioObject.IsPhysicallyVisible ||
+                                  scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
             (content as LevelCanvasImage).Source =
                 scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :

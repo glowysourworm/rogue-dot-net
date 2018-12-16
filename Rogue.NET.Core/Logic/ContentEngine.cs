@@ -20,6 +20,7 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -283,9 +284,17 @@ namespace Rogue.NET.Core.Logic
             var level = _modelService.Level;
             var player = _modelService.Player;
 
+            // Check for invisibility
+            if (player.Is(CharacterStateType.Invisible) &&
+               !enemy.Alteration.CanSeeInvisibleCharacters())
+            {
+                enemy.IsEngaged = false;
+                return;
+            }
+
             var distance = Calculator.RoguianDistance(enemy.Location, player.Location);
 
-            //Check for engaged
+            // Check for engaged
             if (distance < enemy.BehaviorDetails.EngageRadius)
                 enemy.IsEngaged = true;
 
@@ -588,9 +597,48 @@ namespace Rogue.NET.Core.Logic
                             var adjacentCells = _modelService.Level.Grid.GetAdjacentLocations(enemy.Location);
                             var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
 
-                            // Attack Conditions: location is non-null; AND enemy is not confused; OR enemy is confused and can strike
-                            if (attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
-                                                           (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
+                            // Check to see what kind of melee attack will happen - based on enemy equipment
+                            if (enemy.IsRangeMelee())
+                            {
+                                // Check for line of sight and firing range
+                                var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
+                                var range = Calculator.RoguianDistance(enemy.Location, _modelService.Player.Location);
+
+                                // These are guaranteed by the enemy check IsRangeMelee()
+                                var rangeWeapon = enemy.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
+                                var ammo = enemy.Consumables.Values.First(x => x.RogueName == rangeWeapon.AmmoName);
+
+                                if (range > ModelConstants.MinFiringDistance && isLineOfSight)
+                                {
+                                    // Remove ammo from enemy inventory
+                                    enemy.Consumables.Remove(ammo.Id);
+
+                                    // Calculate hit - if enemy hit then queue Ammunition spell
+                                    var enemyHit = _interactionProcessor.CalculateEnemyRangeHit(_modelService.Player, enemy);
+
+                                    // If enemy hit then process the spell associated with the ammo
+                                    if (enemyHit)
+                                        _spellEngine.QueueEnemyMagicSpell(enemy, ammo.AmmoSpell);
+
+                                    // Otherwise, process the animation only
+                                    else if (ammo.AmmoSpell.Animations.Any())
+                                    {
+                                        AnimationUpdateEvent(this, new AnimationUpdate()
+                                        {
+                                            Animations = ammo.AmmoSpell.Animations,
+                                            SourceLocation = enemy.Location,
+                                            TargetLocations = new CellPoint[] { _modelService.Player.Location }
+                                        });
+                                    }
+
+                                    actionTaken = true;
+                                }
+                            }
+
+                            // Attack Conditions: !actionTaken (no range attack), location is non-null; AND enemy is not confused; OR enemy is confused and can strike
+                            if (!actionTaken && 
+                                 attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
+                                                            (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
@@ -601,14 +649,31 @@ namespace Rogue.NET.Core.Logic
                         }
                         break;
                     case CharacterAttackType.Skill:
+                    case CharacterAttackType.SkillCloseRange:
                         if (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
                         {
                             // Must have line of sight to player
                             var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
+                            var isInRange = true;
+
+                            // Add a check for close range skills
+                            if (enemy.BehaviorDetails.CurrentBehavior.AttackType == CharacterAttackType.SkillCloseRange)
+                            {
+                                isInRange = _modelService.Level
+                                                         .Grid
+                                                         .GetAdjacentLocations(enemy.Location)
+                                                         .Any(x => x == _modelService.Player.Location) && isLineOfSight;
+                            }
 
                             // Queue Enemy Magic Spell -> Animation -> Post Animation Processing
-                            if (isLineOfSight)
+                            if (isLineOfSight && isInRange)
                             {
+                                _scenarioMessageService.PublishEnemyAlterationMessage(
+                                    ScenarioMessagePriority.Normal,
+                                    _modelService.Player.RogueName,
+                                    _modelService.GetDisplayName(enemy.RogueName),
+                                    enemy.BehaviorDetails.CurrentBehavior.EnemySkill.DisplayName);
+
                                 _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);
 
                                 actionTaken = true;
@@ -620,14 +685,12 @@ namespace Rogue.NET.Core.Logic
                         break;
                 }
 
+                // Action Taken => enemy did some kind of attack
                 if (!actionTaken)
                 {
                     var moveLocation = CalculateEnemyMoveLocation(enemy, _modelService.Player.Location);
                     if (moveLocation != null)
-                    {
                         ProcessEnemyMove(enemy, moveLocation);
-                        actionTaken = true;
-                    }
                 }
 
                 // Apply end-of-turn behavior for enemy
@@ -650,7 +713,7 @@ namespace Rogue.NET.Core.Logic
                                         .FirstOrDefault();
                 case CharacterMovementType.StandOffIsh:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
-                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
+                                        .OrderBy(x => Calculator.EuclideanDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, _modelService.Player.Location, enemy.BehaviorDetails.DisengageRadius, enemy.BehaviorDetails.CanOpenDoors);
@@ -769,7 +832,9 @@ namespace Rogue.NET.Core.Logic
             var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
-            enemy.Location = _modelService.Level.GetRandomLocation(_modelService.GetVisibleLocations(), true, _randomSequenceGenerator);
+            enemy.Location = _modelService.Level.GetRandomLocation(_modelService.GetVisibleLocations()
+                                                                                .Union(new List<CellPoint>() { _modelService.Player.Location }),
+                                                                                true, _randomSequenceGenerator);
 
             // Add content to level
             _modelService.Level.AddContent(enemy);

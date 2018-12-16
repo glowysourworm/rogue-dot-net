@@ -291,8 +291,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || (isIdentify && identifyConsumable);
             bool throwEnable = consumable.HasProjectileSpell;
 
-            this.Quality = "N/A";
-            this.Class = "N/A";
+            this.Quality = "-";
+            this.Class = "-";
 
             this.IsEquipment = false;
             this.IsConsumable = true;
@@ -301,8 +301,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             this.Quantity = totalQuantity;
             this.Weight = totalWeight.ToString("F2");
-            this.AttackValue = "N/A";
-            this.DefenseValue = "N/A";
+            this.AttackValue = "-";
+            this.DefenseValue = "-";
             this.Type = consumable.SubType.ToString();
             this.Uses = consumable.Type == ConsumableType.UnlimitedUses ? INFINITY :
                         consumable.Type == ConsumableType.MultipleUses ? totalUses.ToString() : "1";
@@ -377,9 +377,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             this.Quantity = 1;
             this.Quality = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Quality.ToString("F2") :
-                                                       equipment.IsIdentified ? "N/A" : "?";
+                                                       equipment.IsIdentified ? "-" : "?";
             this.Class = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Class.ToString("F0") :
-                                                     equipment.IsIdentified ? "N/A" : "?";
+                                                     equipment.IsIdentified ? "-" : "?";
 
             // Attack and Defense Value
             if (!equipment.IsIdentified)

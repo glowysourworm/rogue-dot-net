@@ -24,16 +24,20 @@ namespace Rogue.NET.Core.Logic.Content
         readonly IAlterationProcessor _alterationProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IModelService _modelService;
 
+        // TODO: Untangle reference to model service.
         [ImportingConstructor]
         public PlayerProcessor(
             IAlterationProcessor alterationProcessor,
             IScenarioMessageService scenarioMessageService,
-            IRandomSequenceGenerator randomSequenceGenerator)
+            IRandomSequenceGenerator randomSequenceGenerator,
+            IModelService modelService)
         {
             _alterationProcessor = alterationProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _modelService = modelService;
         }
 
         public double CalculateExperienceNext(Player player)
@@ -115,7 +119,8 @@ namespace Rogue.NET.Core.Logic.Content
                         break;
                 }
 
-                if (skill.Emphasis > 0)
+                // Show message to user
+                if (skill.Emphasis > 0 && skill.Level < skill.Skills.Count)
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
@@ -170,8 +175,35 @@ namespace Rogue.NET.Core.Logic.Content
         public void ApplyEndOfTurn(Player player, bool regenerate)
         {
             //Normal turn stuff
-            player.Hp += player.GetHpRegen(regenerate);
+            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit();
             player.Mp += player.GetMpRegen();
+
+            // Set Killed By if malign attribute hit is great enough
+            if (player.Hp <= 0)
+            {
+                var malignAlteration = player.Alteration
+                                            .GetTemporaryAttackAttributeAlterations(false)
+                                            .FirstOrDefault();
+
+                if (malignAlteration != null)
+                    _modelService.SetKilledBy(malignAlteration.DisplayName);
+            }
+
+            // Broadcast hungry, starving, critical messages
+            var hunger = player.Hunger;
+            var nextHunger = hunger + player.GetFoodUsagePerTurn();
+
+            if (nextHunger >= ModelConstants.Hunger.HungryThreshold &&
+                hunger < ModelConstants.Hunger.HungryThreshold)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is getting Hungry");
+
+            if (nextHunger >= ModelConstants.Hunger.VeryHungryThreshold &&
+                hunger < ModelConstants.Hunger.VeryHungryThreshold)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " is Very Hungry");
+
+            if (nextHunger >= ModelConstants.Hunger.CriticalThreshold &&
+                hunger < ModelConstants.Hunger.CriticalThreshold)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " is Starving!!!");
 
             player.Hunger += player.GetFoodUsagePerTurn();
 

@@ -87,6 +87,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationEffect.RogueName = spellName;
             alterationEffect.DisplayName = spellDisplayName;
             alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
+            alterationEffect.CanSeeInvisibleCharacters = alterationEffectTemplate.CanSeeInvisibleCharacters;
 
             //Store remedied state name
             alterationEffect.RemediedStateName = alterationEffectTemplate.RemediedState.Name;

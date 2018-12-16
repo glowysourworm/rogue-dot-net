@@ -130,7 +130,7 @@
         <common:ProgressBar x:Name="MpRegen" Grid.Row="5" BarColor1="#FF00007C" TextFormat="F2" ValueMax="10" Value="{Binding MpRegenBase}" Header="Mp Regen" Margin="0,2,0,2" ValueTextBrush="#FFBDB4FF" Value2="{Binding MpRegen}"/>
         <common:ProgressBar x:Name="FoodUsage" Grid.Row="6" BarColor1="#FF5C4800" TextFormat="F3" Value="{Binding FoodUsagePerTurnBase}" ValueMax="5" Header="Food Usage" Margin="0,2,0,2" ValueTextBrush="#FFF8FFB6" Value2="{Binding FoodUsagePerTurn}" Invert="True"/>
         <common:ProgressBar x:Name="Aura" Grid.Row="7" BarColor1="White" Header="Aura" TextFormat="N0" ValueMax="25" Value2="{Binding AuraRadius}" Value="{Binding AuraRadiusBase}" Margin="0,2,0,2" ValueTextBrush="Gray"/>
-        <common:ProgressBar x:Name="Attack" Grid.Row="8" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="100" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
+        <common:ProgressBar x:Name="Attack" Grid.Row="8" BarColor1="#FF727272" TextFormat="F2" Header="Attack" ValueMax="500" Value="{Binding AttackBase}" Margin="0,2,0,2" Value2="{Binding Attack}"/>
         <common:ProgressBar x:Name="Defense" Grid.Row="9" BarColor1="#FF813B00" Header="Defense" TextFormat="F2" Value="{Binding DefenseBase}" ValueMax="100" Margin="0,2,0,2" Value2="{Binding Defense}"/>
         <common:ProgressBar x:Name="Dodge" Grid.Row="12" BarColor1="#FD007A89" ValueMax="1" Value="{Binding DodgeBase}" TextFormat="F3" Header="Dodge" Margin="0,2,0,2" ValueTextBrush="#FFEAE3FF" Value2="{Binding Dodge}"/>
         <common:ProgressBar x:Name="MagicBlock" Grid.Row="11" Header="Magic Block" Margin="0,2,0,2" BarColor1="#FF6500FF" ValueMax="1" Value="{Binding MagicBlockBase}" Value2="{Binding MagicBlock}" TextFormat="F3" />

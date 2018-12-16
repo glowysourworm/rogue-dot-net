@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double ExperienceGiven { get; set; }
         public double TurnCounter { get; set; }
         public bool IsEngaged { get; set; }
-        public bool WasAttackedByPlayer { get; set; }
+        public bool IsInvisible { get; set; }
 
         public BehaviorDetails BehaviorDetails { get; set; }
 

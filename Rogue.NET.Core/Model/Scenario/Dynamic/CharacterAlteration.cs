@@ -136,6 +136,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         }
 
         /// <summary>
+        /// Method to look through alterations to see if character can see invisible characters
+        /// </summary>
+        public bool CanSeeInvisibleCharacters()
+        {
+            return GetAlterations().Any(x => x.CanSeeInvisibleCharacters);
+        }
+
+        /// <summary>
         /// Gets list of spell Id's for applied effects that COULD BE factored into IsStackable calculation. (These 
         /// represent spells that have been applied to create effects. These are used as keys for the containing dictionaries)
         /// </summary>

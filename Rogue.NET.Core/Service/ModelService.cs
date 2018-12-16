@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Service
         IList<Enemy> _targetedEnemies;
 
         // Enemy to have slain the player
-        private Enemy _finalEnemy;
+        string _killedBy;
 
         [ImportingConstructor]
         public ModelService(IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator)
@@ -126,13 +126,13 @@ namespace Rogue.NET.Core.Service
         {
             _targetedEnemies.Clear();
         }
-        public Enemy GetFinalEnemy()
+        public string GetKilledBy()
         {
-            return _finalEnemy;
+            return _killedBy;
         }
-        public void SetFinalEnemy(Enemy enemy)
+        public void SetKilledBy(string killedBy)
         {
-            _finalEnemy = enemy;
+            _killedBy = killedBy;
         }
         public IEnumerable<Enemy> GetVisibleEnemies()
         {
@@ -175,7 +175,7 @@ namespace Rogue.NET.Core.Service
                 var cell = this.Level.Grid.GetCell(scenarioObject.Location);
 
                 scenarioObject.IsExplored = cell.IsPhysicallyVisible;
-                scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible;
+                scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible && !scenarioObject.IsHidden;
 
                 // Set this based on whether the cell is physically visible. Once the cell is seen
                 // the IsRevealed flag gets reset. So, if it's set and the cell isn't visible then

@@ -39,6 +39,18 @@
             <TextBlock Text="Stackable" Foreground="White" />
             <CheckBox IsChecked="{Binding Stackable, Mode=TwoWay}" HorizontalAlignment="Right" />
         </Grid>
+
+        <!-- Effect Can See Invisible Characters -->
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Foreground="White" Text="Can See Invisible Characters" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding Effect.CanSeeInvisibleCharacters, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
         
         <!-- Is Symbol Alteration -->
         <Grid Margin="10">
@@ -72,7 +84,7 @@
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
-                </MultiBinding>                
+                </MultiBinding>
             </Grid.Visibility>
             <TextBlock Foreground="White" Text="Event Time" />
             <controls:Range DataContext="{Binding Effect.EventTime}" />

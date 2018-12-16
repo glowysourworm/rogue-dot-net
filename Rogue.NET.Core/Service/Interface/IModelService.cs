@@ -76,7 +76,8 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<CellPoint> GetRevealedLocations();
 
         /// <summary>
-        /// Statefully maintained collection of level contents visible to the Player
+        /// Statefully maintained collection of level contents visible to the Player. THIS DOES NOT INCLUDE
+        /// INVISIBILITY ALTERATION EFFECTS
         /// </summary>
         IEnumerable<ScenarioObject> GetVisibleContents();
 
@@ -93,12 +94,12 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Returns enemy to have slain the Player
         /// </summary>
-        Enemy GetFinalEnemy();
+        string GetKilledBy();
 
         /// <summary>
-        /// Sets enemy to have slain the Player
+        /// Sets enemy or alteration to have slain the Player
         /// </summary>
-        void SetFinalEnemy(Enemy enemy);
+        void SetKilledBy(string killedBy);
 
         /// <summary>
         /// Sets enemy targeted

@@ -73,6 +73,23 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return result;
         }
 
+        public static bool IsRangeMelee(this Enemy enemy)
+        {
+            var rangeWeapon = enemy.Equipment.Values.FirstOrDefault(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
+
+            // Check for ammunition
+            if (rangeWeapon != null)
+            {
+                var ammo = enemy.Consumables
+                                .Values
+                                .FirstOrDefault(x => x.RogueName == rangeWeapon.AmmoName);
+
+                return ammo != null;
+            }
+
+            return false;
+        }
+
         public static void ApplyLimits(this Enemy enemy)
         {
             if (enemy.Mp < 0)

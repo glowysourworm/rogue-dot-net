@@ -65,10 +65,6 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var attackLow = enemiesLow.Any() ? enemiesLow.Min(x => x.GetAttack()) : 0;
                         var attackHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetAttack()) : 0;
 
-                        // Calculate Player attack power
-                        var defenseValueHigh = MeleeCalculator.GetAttackValue(playerHigh.GetDefense(), playerHigh.GetStrength());
-                        var defenseValueLow = MeleeCalculator.GetAttackValue(playerLow.GetDefense(), playerLow.GetStrength());
-
                         // Calculate Attack Attribute Contributions
                         var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
                         var attackAttributesAttackHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
@@ -141,8 +137,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                                         (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low, y.Weakness.High))
                                 .Sum();
 
-                        var high = Math.Max((attackHigh - defenseValueLow) + attackAttributeMeleeHigh, 0);
-                        var low = Math.Max((attackLow - defenseValueHigh) + attackAttributeMeleeLow, 0);
+                        var high = Math.Max((attackHigh - playerLow.GetDefense()) + attackAttributeMeleeHigh, 0);
+                        var low = Math.Max((attackLow - playerHigh.GetDefense()) + attackAttributeMeleeLow, 0);
 
                         // Select High, Low, and Average
                         return new ProjectedQuantityViewModel()
@@ -376,11 +372,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Sum();
 
                         // Calculate Player attack power
-                        var attackValueHigh = MeleeCalculator.GetAttackValue(playerHigh.GetAttack(), playerHigh.GetStrength());
-                        var attackValueLow = MeleeCalculator.GetAttackValue(playerLow.GetAttack(), playerLow.GetStrength());
-
-                        var high = Math.Max(attackValueHigh - defenseLow + attackValueHigh, 0);
-                        var low = Math.Max(attackValueLow - defenseHigh + attackValueLow, 0);
+                        var high = Math.Max((playerHigh.GetAttack() - defenseLow) + attackAttributeMeleeHigh, 0);
+                        var low = Math.Max((playerLow.GetAttack() - defenseHigh) + attackAttributeMeleeLow, 0);
 
                         return new ProjectedQuantityViewModel()
                         {

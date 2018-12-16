@@ -9,9 +9,22 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
+        private bool _isInvisible;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
 
+        public bool IsInvisible
+        {
+            get { return _isInvisible; }
+            set
+            {
+                if (_isInvisible != value)
+                {
+                    _isInvisible = value;
+                    OnPropertyChanged("IsInvisible");
+                }
+            }
+        }
         public Range<double> ExperienceGiven
         {
             get { return _experienceGiven; }

@@ -365,7 +365,7 @@ namespace Rogue.NET.Core.Media
             {
                 //x = vt - making sure to set defaults if bad parameters
                 if (velocity <= 0)
-                    velocity = 1;
+                    velocity = DEFAULT_VELOCITY;
 
                 //convert to seconds
                 time = (int)((dpath * 1000) / velocity);

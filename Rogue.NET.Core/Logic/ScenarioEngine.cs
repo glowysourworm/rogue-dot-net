@@ -153,9 +153,9 @@ namespace Rogue.NET.Core.Logic
             //I'm Not DEEEAD!
             if (player.Hunger >= 100 || player.Hp <= 0.1)
             {
-                var finalEnemy = _modelService.GetFinalEnemy();
-                if (finalEnemy != null)
-                    QueueScenarioPlayerDeath("Killed by a(n) " + finalEnemy.RogueName);
+                var killedBy = _modelService.GetKilledBy();
+                if (killedBy != null)
+                    QueueScenarioPlayerDeath("Killed by " + killedBy);
                 else
                     QueueScenarioPlayerDeath("Had a rough day");
             }
@@ -376,6 +376,14 @@ namespace Rogue.NET.Core.Logic
 
                 // Increment Resistance
                 armorAttribute.Resistance += attackAttribute.Resistance;
+
+                // Publish message
+                if (armorAttribute.Resistance > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
+                        "{0} has increased {1} Resistance by {2}", 
+                        _modelService.GetDisplayName(armor.RogueName), 
+                        attackAttribute.RogueName, 
+                        attackAttribute.Resistance.ToString("F2"));
             }
 
             // Queue update
@@ -392,6 +400,14 @@ namespace Rogue.NET.Core.Logic
 
                 // Increment Attack
                 weaponAttribute.Attack += attackAttribute.Attack;
+
+                // Publish message
+                if (weaponAttribute.Resistance > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
+                        "{0} has increased {1} Attack by {2}",
+                        _modelService.GetDisplayName(weapon.RogueName),
+                        attackAttribute.RogueName,
+                        attackAttribute.Resistance.ToString("F2"));
             }
 
             // Queue update
@@ -450,15 +466,37 @@ namespace Rogue.NET.Core.Logic
                 // Calculate hit - if enemy hit then queue Ammunition spell
                 var enemyHit = _interactionProcessor.CalculatePlayerRangeHit(_modelService.Player, targetedEnemy);
 
+                // If enemy hit then process the spell associated with the ammo
                 if (enemyHit)
+                {
                     return _spellEngine.QueuePlayerMagicSpell(ammo.AmmoSpell);
+                }
+
+                // Otherwise, process the animation only
+                else if (ammo.AmmoSpell.Animations.Any())
+                {
+                    AnimationUpdateEvent(this, new AnimationUpdate()
+                    {
+                        Animations = ammo.AmmoSpell.Animations,
+                        SourceLocation = _modelService.Player.Location,
+                        TargetLocations = new CellPoint[] {targetedEnemy.Location}
+                    });
+                }
             }
             return LevelContinuationAction.ProcessTurn;
         }
         public void Target(Compass direction)
         {
             var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
-            var enemiesInRange = _modelService.GetVisibleEnemies().ToList();
+            var enemiesInRange = _modelService.GetVisibleEnemies()
+                                              .ToList();
+
+            // Filter out invisible enemies
+            if (!_modelService.Player.Alteration.CanSeeInvisibleCharacters())
+            {
+                enemiesInRange = enemiesInRange.Where(x => !x.IsInvisible && !x.Is(CharacterStateType.Invisible))
+                                               .ToList();
+            }
 
             Enemy target = null;
 
@@ -508,6 +546,45 @@ namespace Rogue.NET.Core.Logic
 
                 // Queue update to level to show animation
                 QueueLevelUpdate(LevelUpdateType.TargetingStart, target.Id);
+            }
+        }
+        public void CycleActiveSkill()
+        {
+            var activeSkill = _modelService.Player.SkillSets.FirstOrDefault(x => x.IsActive);
+            var learnedSkills = _modelService.Player.SkillSets.Where(x => x.IsLearned);
+
+            if (!learnedSkills.Any())
+                return;
+
+            // No Active Skill
+            if (activeSkill == null)
+            {
+                var firstLearnedSkill = learnedSkills.FirstOrDefault();
+                if (firstLearnedSkill != null)
+                    ToggleActiveSkill(firstLearnedSkill.Id, true);
+                else
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Learned Skills");
+            }
+
+            // Cycle to next skill
+            else
+            {
+                var skillList = learnedSkills.ToList();
+                var activeSkillIndex = skillList.IndexOf(activeSkill);
+                var nextIndex = activeSkillIndex;
+
+                // Calculate index of next skill
+                if (activeSkillIndex == skillList.Count - 1)
+                    nextIndex = 0;
+                else
+                    nextIndex = activeSkillIndex + 1;
+
+                // Set active skill
+                var nextSkill = skillList[nextIndex];
+                if (nextSkill != null)
+                    ToggleActiveSkill(nextSkill.Id, true);
+                else
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Other Learned Skills");
             }
         }
         public void ToggleActiveSkill(string skillSetId, bool activate)
@@ -612,7 +689,7 @@ namespace Rogue.NET.Core.Logic
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)
                 {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + currentSkill.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + currentSkill.DisplayName);
 
                     // Pass - through method is safe
                     _modelService.Player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
@@ -624,7 +701,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     activeSkillSet.IsTurnedOn = true;
 
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.RogueName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.DisplayName);
 
                     // Queue processing -> Animation -> Process parameters (backend)
                     return  _spellEngine.QueuePlayerMagicSpell(currentSkill);
@@ -634,7 +711,7 @@ namespace Rogue.NET.Core.Logic
             else
             {
                 // Publish message
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.RogueName);
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.DisplayName);
 
                 // Queue processing -> Animation -> Process parameters (backend)
                 return _spellEngine.QueuePlayerMagicSpell(currentSkill);

@@ -116,11 +116,13 @@ namespace Rogue.NET.Core.Service
                                                                  (x.IsInvoked && x.InvokedMagicSpellTemplate == null));
 
                     var enemiesNotSet = configuration.EnemyTemplates
-                                                     .Where(x => (x.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill &&
-                                                                  x.BehaviorDetails.PrimaryBehavior.EnemySpell == null) ||
-                                                                 (x.BehaviorDetails.SecondaryReason != SecondaryBehaviorInvokeReason.SecondaryNotInvoked) &&
-                                                                  x.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill &&
-                                                                  x.BehaviorDetails.SecondaryBehavior.EnemySpell == null);
+                                                     .Where(x => ((x.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill ||
+                                                                   x.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                                                                   x.BehaviorDetails.PrimaryBehavior.EnemySpell == null) ||
+                                                                 ((x.BehaviorDetails.SecondaryReason != SecondaryBehaviorInvokeReason.SecondaryNotInvoked) &&
+                                                                 ((x.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill ||
+                                                                   x.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                                                                   x.BehaviorDetails.SecondaryBehavior.EnemySpell == null)));
 
                     return consumablesNotSet
                                 .Cast<DungeonObjectTemplate>()
@@ -467,8 +469,9 @@ namespace Rogue.NET.Core.Service
 
         private string ValidateEnemyAlterationTypes(EnemyTemplate template)
         {
-            if (template.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill &&
-                template.BehaviorDetails.PrimaryBehavior.EnemySpell != null)
+            if ((template.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill ||
+                 template.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                 template.BehaviorDetails.PrimaryBehavior.EnemySpell != null)
             {
                 switch (template.BehaviorDetails.PrimaryBehavior.EnemySpell.Type)
                 {
@@ -501,8 +504,9 @@ namespace Rogue.NET.Core.Service
             }
 
             if (template.BehaviorDetails.SecondaryReason != SecondaryBehaviorInvokeReason.SecondaryNotInvoked &&
-                template.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill &&
-                template.BehaviorDetails.SecondaryBehavior.EnemySpell != null)
+                ((template.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill ||
+                  template.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                  template.BehaviorDetails.SecondaryBehavior.EnemySpell != null))
             {
                 switch (template.BehaviorDetails.SecondaryBehavior.EnemySpell.Type)
                 {

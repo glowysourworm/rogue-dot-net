@@ -98,6 +98,7 @@ namespace Rogue.NET.Core.Logic.Content
         {
             return enemy.GetSpeed() / player.GetSpeed();
         }
+
         public void CalculatePlayerMeleeHit(Player player, Enemy enemy)
         {
             // Start with standard melee - randomized
@@ -306,7 +307,7 @@ namespace Rogue.NET.Core.Logic.Content
                 player.Hp -= attack;
 
                 if (player.Hp <= 0)
-                    _modelService.SetFinalEnemy(enemy);
+                    _modelService.SetKilledBy(enemy.RogueName);
 
                 // Publish detailed melee message
                 _scenarioMessageService.PublishMeleeMessage(
@@ -321,6 +322,81 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Misses");
         }
+        public bool CalculateEnemyRangeHit(Player player, Enemy enemy)
+        {
+            // Start with standard melee - randomized
+            var attack = Math.Max(_randomSequenceGenerator.Get() * (enemy.GetAttack() - player.GetDefense()), 0);
+            var attackBase = attack;
+            var dodge = _randomSequenceGenerator.Get() < enemy.GetDodge();
+            var criticalHit = _randomSequenceGenerator.Get() <= enemy.GetCriticalHitProbability();
+
+            // Store attack attribute interaction
+            var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
+
+            //Attack attributes (need empty attributes for player calculation)
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
+            {
+                CharacterColor = x.CharacterColor,
+                CharacterSymbol = x.CharacterSymbol,
+                Icon = x.Icon,
+                SmileyAuraColor = x.SmileyAuraColor,
+                SmileyBodyColor = x.SmileyBodyColor,
+                SmileyLineColor = x.SmileyLineColor,
+                SmileyMood = x.SmileyMood,
+                SymbolType = x.SymbolType,
+                RogueName = x.RogueName,
+                Attack = 0,
+                Resistance = 0,
+                Weakness = 0
+            });
+
+            var playerAttributes = player.GetMeleeAttributes(baseAttributes);
+            var enemyAttributes = enemy.GetMeleeAttributes();
+
+            // Calculate Melee
+            foreach (var playerAttribute in playerAttributes)
+            {
+                // Enemy (Defense) Attribute
+                var enemyAttribute = enemyAttributes.First(x => x.RogueName == playerAttribute.RogueName);
+
+                var attackAttributeHit = Calculator.CalculateAttackAttributeMelee(
+                                            enemyAttribute.Attack,
+                                            playerAttribute.Resistance,
+                                            playerAttribute.Weakness);
+
+                attack += attackAttributeHit;
+
+                // Store attack attribute details for publishing
+                if (attackAttributeHit > 0)
+                    attackAttributeHitDict.Add(playerAttribute, attackAttributeHit);
+            }
+
+            if (attack <= 0 || dodge)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " Misses");
+
+            // Player Hits Targeted Enemy
+            else
+            {
+                if (criticalHit)
+                    attack *= 2;
+
+                player.Hp -= attack;
+
+                _scenarioMessageService.PublishMeleeMessage(
+                    ScenarioMessagePriority.Bad,
+                    _modelService.GetDisplayName(enemy.RogueName),
+                    player.RogueName,
+                    attackBase,
+                    criticalHit,
+                    attackAttributeHitDict.Count > 0,
+                    attackAttributeHitDict);
+
+                return true;
+            }
+
+            return false;
+        }
+
         public bool CalculateSpellBlock(Enemy enemy)
         {
             return _randomSequenceGenerator.Get() < enemy.GetMagicBlock();

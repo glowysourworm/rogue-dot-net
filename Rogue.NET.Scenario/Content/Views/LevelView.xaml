@@ -26,7 +26,7 @@
                         HorizontalAlignment="Stretch" />
 
         <!-- (LHS) Player Status / Player Sub-panel -->
-        <Grid x:Name="LeftHandSideControls" Grid.Column="0" Background="#AF000000">
+        <Grid x:Name="LeftHandSideControls" Grid.Column="0" Background="#CF000000">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -42,7 +42,7 @@
         <!-- (RHS) Control Panel / Dialog Messages -->
         <Border x:Name="RightHandSideControls"
                 Grid.Column="2"
-                Background="#AF000000"
+                Background="#CF000000"
                 Margin="0, 0, 8, 8"
                 BorderBrush="#AFFFFFFF"
                 BorderThickness="1"
@@ -126,7 +126,7 @@
                 Visibility="Collapsed"
                 Grid.ColumnSpan="3" 
                 Margin="8,0,0,0"
-                Background="#AF000000"
+                Background="#CF000000"
                 BorderBrush="#AFFFFFFF"
                 BorderThickness="0.75"
                 VerticalAlignment="Top" 
@@ -139,7 +139,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Grid.ColumnSpan="3"
-                Background="#AF000000">
+                Background="#CF000000">
             <TextBlock 
                 Margin="8"
                 Text="SURVIVOR MODE"
@@ -153,7 +153,7 @@
                 Grid.Row="1"
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom"
-                Background="#AF000000">
+                Background="#CF000000">
             <TextBlock Text="Objective Acheived! (Proceed to the Exit! Level 1!)" 
                        FontSize="20" 
                        Margin="8">

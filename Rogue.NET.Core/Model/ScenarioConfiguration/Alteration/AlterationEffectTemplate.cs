@@ -11,6 +11,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         private SymbolDetailsTemplate _symbolAlteration;
         private bool _isSymbolAlteration;
+        private bool _canSeeInvisibleCharacters;
         private Range<int> _eventTime;
         private AlteredCharacterStateTemplate _alteredState;
         private AlteredCharacterStateTemplate _remediedState;
@@ -53,6 +54,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _isSymbolAlteration = value;
                     OnPropertyChanged("IsSymbolAlteration");
+                }
+            }
+        }
+        public bool CanSeeInvisibleCharacters
+        {
+            get { return _canSeeInvisibleCharacters; }
+            set
+            {
+                if (_canSeeInvisibleCharacters != value)
+                {
+                    _isSymbolAlteration = value;
+                    OnPropertyChanged("CanSeeInvisibleCharacters");
                 }
             }
         }

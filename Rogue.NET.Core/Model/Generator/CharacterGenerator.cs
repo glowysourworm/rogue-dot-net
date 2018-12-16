@@ -130,6 +130,9 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
 
+            // Permanent Invisibility Flag
+            enemy.IsInvisible = enemyTemplate.IsInvisible;
+
             enemy.BehaviorDetails = new BehaviorDetails();
             enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);
             enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior);
@@ -171,6 +174,10 @@ namespace Rogue.NET.Core.Model.Generator
                     continue;
 
                 var equipment = _itemGenerator.GenerateEquipment(template);
+
+                // Equip on Startup
+                if (equipmentTemplate.EquipOnStartup)
+                    equipment.IsEquipped = true;
 
                 enemy.Equipment.Add(equipment.Id, equipment);
             }

@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml" />
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -26,8 +27,11 @@
             </TextBlock.Visibility>
         </TextBlock>
 
-        <ItemsControl ItemsSource="{Binding Alterations}">
-            <ItemsControl.ItemTemplate>
+        <ListBox ItemsSource="{Binding Alterations}"
+                 ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
+                 Style="{StaticResource DarkListBoxStyle}"
+                 BorderBrush="Transparent">
+            <ListBox.ItemTemplate>
                 <DataTemplate>
 
                     <Border Background="#0F0000FF" Padding="4" Margin="4">
@@ -107,7 +111,7 @@
                         </StackPanel>
                     </Border>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </UserControl>

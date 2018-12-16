@@ -10,6 +10,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
     {
         private SymbolDetailsTemplateViewModel _symbolAlteration;
         private bool _isSymbolAlteration;
+        private bool _canSeeInvisibleCharacters;
         private RangeViewModel<int> _eventTime;
         private AlteredCharacterStateTemplateViewModel _alteredState;
         private AlteredCharacterStateTemplateViewModel _remediedState;
@@ -40,6 +41,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _isSymbolAlteration; }
             set { this.RaiseAndSetIfChanged(ref _isSymbolAlteration, value); }
+        }
+        public bool CanSeeInvisibleCharacters
+        {
+            get { return _canSeeInvisibleCharacters; }
+            set { this.RaiseAndSetIfChanged(ref _canSeeInvisibleCharacters, value); }
         }
         public RangeViewModel<int> EventTime
         {

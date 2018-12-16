@@ -45,47 +45,12 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             return character.MpRegenBase + character.Alteration.GetAlterations().Sum(x => x.MpPerStep);
         }
-        public static double GetHpRegen(this Character character, bool regenerate)
+        public static double GetHpRegen(this Character character)
         {
-            var result = regenerate ? character.HpRegenBase : 0;
+            var result = character.HpRegenBase;
 
             // Normal alteration effects
-            if (regenerate)
-                result += character.Alteration.GetAlterations().Sum(x => x.HpPerStep);
-
-            // Malign attack attribute contributions
-            foreach (var malignEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(false))
-            {
-                foreach (var malignAttribute in malignEffect.AttackAttributes)
-                {
-                    double resistance = 0;
-                    double weakness = 0;
-                    double attack = malignAttribute.Attack;
-
-                    // Friendly attack attribute contributions
-                    foreach (var friendlyEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(true))
-                    {
-                        resistance += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    // Passive attack attribute contributions
-                    foreach (var passiveEffect in character.Alteration.GetPassiveAttackAttributeAlterations())
-                    {
-                        resistance += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    // Equipment contributions
-                    foreach (var equipment in character.Equipment.Where(z => z.Value.IsEquipped).Select(x => x.Value))
-                    {
-                        resistance += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
-                    }
-
-                    result -= Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
-                }
-            }
+            result += character.Alteration.GetAlterations().Sum(x => x.HpPerStep);
 
             return result;
         }
@@ -182,6 +147,51 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             result += character.Alteration.GetAlterations().Sum(x => x.CriticalHit);
 
             return Math.Max(0, result);
+        }
+
+        /// <summary>
+        /// Returns the end-of-turn malign attack attribute contribution used at the end
+        /// of each character turn.
+        /// </summary>
+        public static double GetMalignAttackAttributeHit(this Character character)
+        {
+            var result = 0D;
+
+            // Malign attack attribute contributions
+            foreach (var malignEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(false))
+            {
+                foreach (var malignAttribute in malignEffect.AttackAttributes)
+                {
+                    double resistance = 0;
+                    double weakness = 0;
+                    double attack = malignAttribute.Attack;
+
+                    // Friendly attack attribute contributions
+                    foreach (var friendlyEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(true))
+                    {
+                        resistance += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
+                        weakness += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
+                    }
+
+                    // Passive attack attribute contributions
+                    foreach (var passiveEffect in character.Alteration.GetPassiveAttackAttributeAlterations())
+                    {
+                        resistance += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
+                        weakness += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
+                    }
+
+                    // Equipment contributions
+                    foreach (var equipment in character.Equipment.Where(z => z.Value.IsEquipped).Select(x => x.Value))
+                    {
+                        resistance += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
+                        weakness += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
+                    }
+
+                    result += Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
+                }
+            }
+
+            return result;
         }
 
         public static bool Is(this Character character, CharacterStateType characterStateType)

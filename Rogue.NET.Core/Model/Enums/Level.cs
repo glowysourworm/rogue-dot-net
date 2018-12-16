@@ -43,6 +43,7 @@ namespace Rogue.NET.Core.Model.Enums
         EmphasizeSkillUp,
         EmphasizeSkillDown,
         ActivateSkill,
+        CycleSkill,
         DebugNext,
         DebugExperience,
         DebugIdentifyAll,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 using System.Linq;
+using System;
 
 namespace Rogue.NET.Core.Utility
 {
@@ -31,10 +32,10 @@ namespace Rogue.NET.Core.Utility
             var color2 = Convert(colorString2);
 
             var result = new Color();
-            result.A = System.Convert.ToByte(color1.A + color2.A / 2.0D);
-            result.R = System.Convert.ToByte(color1.R + color2.R / 2.0D);
-            result.G = System.Convert.ToByte(color1.G + color2.G / 2.0D);
-            result.B = System.Convert.ToByte(color1.B + color2.B / 2.0D);
+            result.A = System.Convert.ToByte(Math.Min((color1.A + color2.A) / 2.0D, 255));
+            result.R = System.Convert.ToByte(Math.Min((color1.R + color2.R) / 2.0D, 255));
+            result.G = System.Convert.ToByte(Math.Min((color1.G + color2.G) / 2.0D, 255));
+            result.B = System.Convert.ToByte(Math.Min((color1.B + color2.B) / 2.0D, 255));
 
             return result.ToString();
         }

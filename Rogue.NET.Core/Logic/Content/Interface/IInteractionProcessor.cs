@@ -12,6 +12,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         void CalculatePlayerMeleeHit(Player player, Enemy enemy);
         bool CalculatePlayerRangeHit(Player player, Enemy targetedEnemy);
         void CalculateEnemyHit(Player player, Enemy enemy);
+        bool CalculateEnemyRangeHit(Player player, Enemy enemy);
         bool CalculateSpellBlock(Enemy enemy);
         bool CalculateSpellBlock(Player player);
     }

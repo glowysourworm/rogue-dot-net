@@ -75,6 +75,11 @@ namespace Rogue.NET.Core.Model.Enums
         Skill,
 
         /// <summary>
+        /// Skill that can only be used at very close (radius=1) range
+        /// </summary>
+        SkillCloseRange,
+
+        /// <summary>
         /// no attack
         /// </summary>
         None

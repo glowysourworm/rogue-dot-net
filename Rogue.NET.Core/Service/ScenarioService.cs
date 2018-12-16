@@ -260,6 +260,12 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
+                case LevelAction.CycleSkill:
+                    {
+                        _scenarioEngine.CycleActiveSkill();
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
+                    break;
 
 #if DEBUG
                 case LevelAction.DebugNext:

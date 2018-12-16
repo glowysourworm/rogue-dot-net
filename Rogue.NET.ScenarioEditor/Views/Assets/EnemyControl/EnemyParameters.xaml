@@ -23,6 +23,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" DataContext="{Binding Strength}" />
@@ -32,6 +33,7 @@
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" DataContext="{Binding Hp}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" DataContext="{Binding Mp}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" DataContext="{Binding ExperienceGiven}" />
+        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" IsChecked="{Binding IsInvisible}" HorizontalAlignment="Center" />
 
         <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
@@ -40,7 +42,7 @@
         <TextBlock Grid.Row="4" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="5" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Foreground="White" Text="Experience Given (On Death)" Margin="10" VerticalAlignment="Center" />
-        
+        <TextBlock Grid.Row="7" Foreground="White" Text="Is Invisible" Margin="10" VerticalAlignment="Center" />
     </Grid>
 </UserControl>
 

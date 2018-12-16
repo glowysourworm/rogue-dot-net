@@ -501,7 +501,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.DodgeBase = player.GetDodgeBase();
             this.FoodUsagePerTurn = player.GetFoodUsagePerTurn();
             this.FoodUsagePerTurnBase = player.FoodUsagePerTurnBase;
-            this.HpRegen = player.GetHpRegen(true);
+            this.HpRegen = player.GetHpRegen();
             this.HpRegenBase = player.HpRegenBase;
             this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;

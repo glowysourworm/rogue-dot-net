@@ -65,6 +65,9 @@ namespace Rogue.NET.Scenario.Service
             //Target
             else if (key == _preferences.Target)
                 return new UserCommandEventArgs(LevelAction.Target, Compass.E, "");
+            //Cycle Skill
+            else if (key == _preferences.Skill && shift)
+                return new UserCommandEventArgs(LevelAction.CycleSkill, Compass.Null, "");
             //Skill Usage
             else if (key == _preferences.Skill)
                 return new UserCommandEventArgs(LevelAction.InvokeSkill, Compass.Null, "");
@@ -75,7 +78,7 @@ namespace Rogue.NET.Scenario.Service
             else if (key == _preferences.Fire)
                 return new UserCommandEventArgs(LevelAction.Fire, Compass.Null, "");
 
-//Debug*******
+            //Debug*******
 #if DEBUG
             else if (key == Key.N)
                 return new UserCommandEventArgs(LevelAction.DebugNext, Compass.Null, "");

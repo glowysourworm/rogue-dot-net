@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Logic.Content
 
         public void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken)
         {
-            enemy.Hp += enemy.GetHpRegen(true);
+            enemy.Hp += enemy.GetHpRegen() - enemy.GetMalignAttackAttributeHit(); 
             enemy.Mp += enemy.GetMpRegen();
 
             // Increment event times - ignore messages to publish
@@ -50,15 +50,14 @@ namespace Rogue.NET.Core.Logic.Content
                     enemy.BehaviorDetails.IsSecondaryBehavior = false;
                     break;
                 case SecondaryBehaviorInvokeReason.PrimaryInvoked:
-                    enemy.BehaviorDetails.IsSecondaryBehavior |= actionTaken;
+                    enemy.BehaviorDetails.IsSecondaryBehavior = enemy.BehaviorDetails.IsSecondaryBehavior || actionTaken;
                     break;
                 case SecondaryBehaviorInvokeReason.HpLow: // Hp is less than 10%
                     if ((enemy.Hp / enemy.HpMax) < ModelConstants.HpLowFraction)
                         enemy.BehaviorDetails.IsSecondaryBehavior = true;
                     break;
                 case SecondaryBehaviorInvokeReason.Random:
-                    if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.SecondaryProbability)
-                        enemy.BehaviorDetails.IsSecondaryBehavior = !enemy.BehaviorDetails.IsSecondaryBehavior;
+                    enemy.BehaviorDetails.IsSecondaryBehavior = (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.SecondaryProbability);
                     break;
                 default:
                     break;

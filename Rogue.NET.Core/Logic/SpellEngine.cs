@@ -127,7 +127,6 @@ namespace Rogue.NET.Core.Logic
             if (alteration.Cost.Type == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(_modelService.Player, alteration.Cost);
 
-            // TBD - Show (Non)-Stackable Alteration not applied
             switch (alteration.Type)
             {
                 case AlterationType.PassiveAura:
@@ -241,7 +240,7 @@ namespace Rogue.NET.Core.Logic
             QueueLevelUpdate(LevelUpdateType.ContentUpdate, enemy.Id);
 
             if (_modelService.Player.Hp <= 0)
-                _modelService.SetFinalEnemy(enemy);
+                _modelService.SetKilledBy(enemy.RogueName);
         }
         private void ProcessPlayerTargetAlteration(AlterationContainer alteration)
         {
