@@ -353,8 +353,12 @@ namespace Rogue.NET.Core.Logic
                         // Update Content Visibility
                         _modelService.UpdateContents();
 
-                        // Queue update event for character location
-                        QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+                        // Queue update to level 
+                        if (character is Enemy)
+                            QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+
+                        else
+                            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
                     }
                     break;
                 case DoodadNormalType.Teleport1:

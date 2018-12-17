@@ -223,9 +223,6 @@ namespace Rogue.NET.Core.Service
         #region (private) Methods
         private BitmapSource GetImage(ImageResources img)
         {
-            if (img == ImageResources.WellYellowCopy)
-                img = ImageResources.WellYellow;
-
             var path = "Rogue.NET.Common.Resource.Images.ScenarioObjects." + img.ToString() + ".png";
             var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
             var stream = assembly.GetManifestResourceStream(path);
@@ -258,9 +255,6 @@ namespace Rogue.NET.Core.Service
 
         private Image GetElement(ImageResources imageResource)
         {
-            if (imageResource == ImageResources.WellYellowCopy)
-                imageResource = ImageResources.WellYellow;
-
             var result = new Image();
             result.Width = ModelConstants.CellWidth;
             result.Height = ModelConstants.CellHeight;
