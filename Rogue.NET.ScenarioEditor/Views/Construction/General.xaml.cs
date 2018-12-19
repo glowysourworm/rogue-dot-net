@@ -1,10 +1,12 @@
 ﻿using Prism.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -23,9 +25,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
+
+            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
 
-
+        #region
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             var config = this.DataContext as ScenarioConfigurationContainerViewModel;
@@ -36,15 +40,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 return;
 
             var name = this.AttributeTB.Text;
-            var symbol = this.AttributeSymbolCB.Value;
+            var symbol = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel;
 
             _eventAggregator.GetEvent<AddAttackAttributeEvent>().Publish(new AddAttackAttributeEventArgs()
             {
-                Icon = symbol,
+                SymbolDetails = symbol,
                 Name = name
             });
 
             this.AttributeTB.Text = "";
+            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
@@ -55,11 +60,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Publish(selectedItem);               
             }
         }
-        private void AttackAttribLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AttributeSymbolButton_Click(object sender, RoutedEventArgs e)
         {
-            if (e.AddedItems.Count > 0)
-                this.NewAttributeStack.DataContext = e.AddedItems[0];
+            var view = new SymbolEditor();
+            view.DataContext = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel;
+            view.WindowMode = true;
+            view.Width = 600;
+
+            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
         }
+        #endregion
 
         private void AddAlteredStateButton_Click(object sender, RoutedEventArgs e)
         {

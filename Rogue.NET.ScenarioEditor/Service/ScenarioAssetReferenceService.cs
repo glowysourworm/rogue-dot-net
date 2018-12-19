@@ -185,7 +185,14 @@ namespace Rogue.NET.ScenarioEditor.Service
                 else
                 {
                     var existing = dest.First(a => a.Name == attrib.Name);
+                    existing.SymbolDetails.CharacterColor = attrib.SymbolDetails.CharacterColor;
+                    existing.SymbolDetails.CharacterSymbol = attrib.SymbolDetails.CharacterSymbol;
                     existing.SymbolDetails.Icon = attrib.SymbolDetails.Icon;
+                    existing.SymbolDetails.SmileyAuraColor = attrib.SymbolDetails.SmileyAuraColor;
+                    existing.SymbolDetails.SmileyBodyColor = attrib.SymbolDetails.SmileyBodyColor;
+                    existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
+                    existing.SymbolDetails.SmileyMood = attrib.SymbolDetails.SmileyMood;
+                    existing.SymbolDetails.Type = attrib.SymbolDetails.Type;
                 }
             }
 

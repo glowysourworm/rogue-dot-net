@@ -5,8 +5,7 @@
              Height="{Binding LevelContainerHeight}" Background="LightCoral">
     <ItemsControl x:Name="TheItemsControl"
                   ItemsSource="{Binding Contents}" 
-                  BorderBrush="#AF0000FF" 
-                  BorderThickness="1" 
+                  BorderBrush="Transparent" 
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 

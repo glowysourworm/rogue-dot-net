@@ -58,13 +58,31 @@
                                 <StackPanel x:Name="NewAttributeStack" Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Margin="8" VerticalAlignment="Top" Text="New Attribute: " Foreground="White" />
                                     <extension:UpdatingTextBox x:Name="AttributeTB" VerticalAlignment="Top" Margin="8" Width="100" />
-                                    <controls:ImageEnumComboBox x:Name="AttributeSymbolCB" VerticalAlignment="Top" Margin="8" Width="140" />
+                                    <Button x:Name="AttributeSymbolButton" Click="AttributeSymbolButton_Click" Height="24" Width="110">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Height="15" Width="10" Margin="4">
+                                                <Image.Source>
+                                                    <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                        <Binding Path="CharacterSymbol" />
+                                                        <Binding Path="CharacterColor" />
+                                                        <Binding Path="Icon" />
+                                                        <Binding Path="SmileyMood" />
+                                                        <Binding Path="SmileyBodyColor" />
+                                                        <Binding Path="SmileyLineColor" />
+                                                        <Binding Path="SmileyAuraColor" />
+                                                        <Binding Path="Type" />
+                                                    </MultiBinding>
+                                                </Image.Source>
+                                            </Image>
+                                            <TextBlock Text="Edit Symbol" Margin="4" />
+                                        </StackPanel>
+                                    </Button>
                                     <Button x:Name="AddButton" ToolTip="Add" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                     <Button x:Name="RemoveButton" ToolTip="Remove" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                 </StackPanel>
                             </Grid>
                             <GroupBox Header="Attack Attribute List" Margin="10">
-                                <ListBox x:Name="AttackAttribLB" ItemsSource="{Binding AttackAttributes}" SelectionChanged="AttackAttribLB_SelectionChanged" MaxHeight="180" SelectionMode="Single">
+                                <ListBox x:Name="AttackAttribLB" ItemsSource="{Binding AttackAttributes}" MaxHeight="180" SelectionMode="Single">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Background="Transparent">

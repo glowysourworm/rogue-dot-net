@@ -189,11 +189,7 @@ namespace Rogue.NET.ScenarioEditor
                 _scenarioEditorController.CurrentConfig.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
                 {
                     Name = e.Name,
-                    SymbolDetails = new SymbolDetailsTemplateViewModel()
-                    {
-                        Type = SymbolTypes.Image,
-                        Icon = e.Icon
-                    }
+                    SymbolDetails = e.SymbolDetails
                 });
 
                 // Update Scenario object references
