@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 {
-    public class RangeViewModel<T> : INotifyPropertyChanged, INotifyPropertyChanging where T : IComparable
+    public class RangeViewModel<T> : INotifyPropertyChanged, INotifyPropertyChanging, IComparable where T : IComparable
     {
         T _low = default(T);
         T _high = default(T);
@@ -113,6 +113,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public override string ToString()
         {
             return "From " + this.Low + " To " + this.High;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var rangeViewModel = obj as RangeViewModel<T>;
+            if (rangeViewModel == null)
+                return 0;
+
+            return rangeViewModel.Low.CompareTo(this.Low);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

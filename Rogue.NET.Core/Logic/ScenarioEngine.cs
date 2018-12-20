@@ -684,7 +684,9 @@ namespace Rogue.NET.Core.Logic
 
             // For passives - work with IsTurnedOn flag
             if (currentSkill.Type == AlterationType.PassiveAura ||
-                currentSkill.Type == AlterationType.PassiveSource)
+                currentSkill.Type == AlterationType.PassiveSource ||
+               (currentSkill.Type == AlterationType.AttackAttribute &&
+                currentSkill.AttackAttributeType == AlterationAttackAttributeType.Passive))
             {
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)

@@ -246,6 +246,7 @@
   <ItemGroup>
     <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
     <Compile Include="Controller\ScenarioAssetController.cs" />
+    <Compile Include="Converter\AlterationHasEffectSymbolChangeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\SymbolDetailsImageSourceConverter.cs" />

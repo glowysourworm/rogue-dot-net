@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets

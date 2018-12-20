@@ -14,6 +14,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -65,12 +66,9 @@
             </TabItem>
             <TabItem Header="Effect Symbol Change">
                 <TabItem.Visibility>
-                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
-                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <MultiBinding Converter="{StaticResource AlterationHasEffectSymbolChangeVisibilityConverter}">
+                        <Binding Path="Type" />
+                        <Binding Path="AttackAttributeType" />
                     </MultiBinding>
                 </TabItem.Visibility>
                 <StackPanel Background="Black">
