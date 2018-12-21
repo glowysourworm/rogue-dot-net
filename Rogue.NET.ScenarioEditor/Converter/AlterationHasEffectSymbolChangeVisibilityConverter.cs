@@ -29,7 +29,11 @@ namespace Rogue.NET.ScenarioEditor.Converter
                    type == AlterationType.TemporarySource ||
                    type == AlterationType.TemporaryTarget ||
                    (type == AlterationType.AttackAttribute &&
-                    attackAttributeType == AlterationAttackAttributeType.Passive)) ? Visibility.Visible : Visibility.Collapsed;
+                    (attackAttributeType == AlterationAttackAttributeType.Passive ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryFriendlySource ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryFriendlyTarget ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryMalignSource ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryMalignTarget))) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
