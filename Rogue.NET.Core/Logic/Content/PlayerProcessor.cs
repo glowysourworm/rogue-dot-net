@@ -15,6 +15,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Windows.Media;
 using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -134,8 +135,7 @@ namespace Rogue.NET.Core.Logic.Content
                     if (skill.Level < skill.Skills.Count)
                     {
                         //Deactivate if currently turned on
-                        if (skill.IsTurnedOn && (skill.GetCurrentSkill().Type == AlterationType.PassiveAura ||
-                                             skill.GetCurrentSkill().Type == AlterationType.PassiveSource))
+                        if (skill.IsTurnedOn && skill.GetCurrentSkill().IsPassive())
                         {
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skill.RogueName);
 

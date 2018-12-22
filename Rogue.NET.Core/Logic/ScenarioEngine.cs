@@ -21,6 +21,7 @@ using Rogue.NET.Core.Logic.Static;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -683,10 +684,7 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
 
             // For passives - work with IsTurnedOn flag
-            if (currentSkill.Type == AlterationType.PassiveAura ||
-                currentSkill.Type == AlterationType.PassiveSource ||
-               (currentSkill.Type == AlterationType.AttackAttribute &&
-                currentSkill.AttackAttributeType == AlterationAttackAttributeType.Passive))
+            if (currentSkill.IsPassive())
             {
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)

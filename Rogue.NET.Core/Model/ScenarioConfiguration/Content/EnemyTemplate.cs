@@ -9,10 +9,23 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
+        private bool _generateOnStep;
         private bool _isInvisible;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
 
+        public bool GenerateOnStep
+        {
+            get { return _generateOnStep; }
+            set
+            {
+                if (_generateOnStep != value)
+                {
+                    _generateOnStep = value;
+                    OnPropertyChanged("GenerateOnStep");
+                }
+            }
+        }
         public bool IsInvisible
         {
             get { return _isInvisible; }

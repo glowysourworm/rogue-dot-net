@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasLearnedSkill;
         private bool _hasSpell;
         private bool _isProjectile;
+        private bool _identifyOnUse;
         private SpellTemplateViewModel _spellTemplate;
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
@@ -59,6 +60,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isProjectile; }
             set { this.RaiseAndSetIfChanged(ref _isProjectile, value); }
         }
+        public bool IdentifyOnUse
+        {
+            get { return _identifyOnUse; }
+            set { this.RaiseAndSetIfChanged(ref _identifyOnUse, value); }
+        }
         public SpellTemplateViewModel SpellTemplate
         {
             get { return _spellTemplate; }
@@ -92,6 +98,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
+            this.IdentifyOnUse = false;
         }
         public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
         {
@@ -105,6 +112,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
+            this.IdentifyOnUse = false;
         }
     }
 }

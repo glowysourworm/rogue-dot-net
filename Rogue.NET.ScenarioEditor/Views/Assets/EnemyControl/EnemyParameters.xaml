@@ -10,12 +10,13 @@
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Height="220" VerticalAlignment="Top">
+    <Grid VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
@@ -33,7 +34,8 @@
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" DataContext="{Binding Hp}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" DataContext="{Binding Mp}" />
         <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" DataContext="{Binding ExperienceGiven}" />
-        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" IsChecked="{Binding IsInvisible}" HorizontalAlignment="Center" />
+        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" IsChecked="{Binding IsInvisible}" HorizontalAlignment="Left" />
+        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Left" />
 
         <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
@@ -43,6 +45,7 @@
         <TextBlock Grid.Row="5" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Foreground="White" Text="Experience Given (On Death)" Margin="10" VerticalAlignment="Center" />
         <TextBlock Grid.Row="7" Foreground="White" Text="Is Invisible" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="8" Foreground="White" Text="Generate On Step" Margin="10" VerticalAlignment="Center" />
     </Grid>
 </UserControl>
 

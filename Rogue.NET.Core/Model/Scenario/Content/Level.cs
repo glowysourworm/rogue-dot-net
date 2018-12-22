@@ -21,6 +21,13 @@ namespace Rogue.NET.Core.Model.Scenario
 
         public int Number { get; protected set; }
 
+#if DEBUG
+        /// <summary>
+        /// Stored layout name to support debug function
+        /// </summary>
+        public string LayoutName { get; protected set; }
+#endif
+
         public bool HasStairsUp { get { return this.StairsUp != null; } }
         public bool HasStairsDown { get { return this.StairsDown != null; } }
         public bool HasSavePoint { get { return this.SavePoint != null; } }
@@ -78,8 +85,11 @@ namespace Rogue.NET.Core.Model.Scenario
         }
 
         public Level() { } 
-        public Level(LevelGrid grid, LayoutType layoutType, int number, string wallColor, string doorColor)
+        public Level(string layoutName, LevelGrid grid, LayoutType layoutType, int number, string wallColor, string doorColor)
         {
+            // Stored to support Debug function
+            this.LayoutName = layoutName;
+
             this.Type = layoutType;
             this.Grid = grid;
             this.Number = number;

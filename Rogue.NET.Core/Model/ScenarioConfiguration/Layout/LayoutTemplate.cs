@@ -182,5 +182,31 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.WallColor = Colors.Blue.ToString();
             this.DoorColor = Colors.Fuchsia.ToString();
         }
+
+        /// <summary>
+        /// Calculates a simulated number of steps that the player will use to traverse the layout
+        /// </summary>
+        public int GetPathLength()
+        {
+            switch (this.Type)
+            {
+                default:
+                case LayoutType.Normal:
+                case LayoutType.Teleport:
+                case LayoutType.TeleportRandom:
+                case LayoutType.Hall:
+                case LayoutType.BigRoom:
+
+                    // Measure  = # of traversals * length of traversal for
+                    //            a single pass only * 4;
+                    return this.RoomDivCellHeight * this.NumberRoomRows *
+                           this.NumberRoomCols * 4;
+                case LayoutType.Maze:
+
+                    // Measure = Made up :) 
+                    return 100 * this.NumberRoomCols * this.RoomDivCellWidth *
+                                 this.NumberRoomRows * this.RoomDivCellHeight;
+            }
+        }
     }
 }

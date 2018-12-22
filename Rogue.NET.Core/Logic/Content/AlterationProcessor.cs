@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
@@ -99,7 +100,7 @@ namespace Rogue.NET.Core.Logic.Content
 
         public bool CalculateSpellRequiresTarget(Spell spell)
         {
-            if (spell.Type == AlterationType.PassiveAura || spell.Type == AlterationType.PassiveSource)
+            if (spell.IsPassive())
                 return false;
 
             if (spell.Type == AlterationType.PermanentAllTargets

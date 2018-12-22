@@ -28,11 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public string CreateMonsterEnemyName { get; set; }
         public string DisplayName { get; set; }
 
-        public bool IsPassive()
-        {
-            return this.Type == AlterationType.PassiveSource || this.Type == AlterationType.PassiveAura;
-        }
-
         public Spell() { }
     }
 }

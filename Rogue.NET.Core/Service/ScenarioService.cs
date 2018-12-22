@@ -23,6 +23,7 @@ namespace Rogue.NET.Core.Service
         readonly IContentEngine _contentEngine;
         readonly ILayoutEngine _layoutEngine;
         readonly ISpellEngine _spellEngine;
+        readonly IDebugEngine _debugEngine;
 
         readonly IModelService _modelService;
         readonly IRayTracer _rayTracer;
@@ -60,6 +61,7 @@ namespace Rogue.NET.Core.Service
             IContentEngine contentEngine, 
             ILayoutEngine layoutEngine,
             IModelService modelService,
+            IDebugEngine debugEngine,
             ISpellEngine spellEngine,
             IRayTracer rayTracer)
         {
@@ -68,9 +70,10 @@ namespace Rogue.NET.Core.Service
             _layoutEngine = layoutEngine;
             _modelService = modelService;
             _spellEngine = spellEngine;
+            _debugEngine = debugEngine;
             _rayTracer = rayTracer;
 
-            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine };
+            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _debugEngine };
 
             _animationQueue = new Queue<IAnimationUpdate>();
             _scenarioQueue = new Queue<IScenarioUpdate>();
@@ -270,67 +273,26 @@ namespace Rogue.NET.Core.Service
 #if DEBUG
                 case LevelAction.DebugNext:
                     {
-                        //Give all items and experience to the player and 
-                        //put player at exit
-                        foreach (var consumable in level.Consumables)
-                            player.Consumables.Add(consumable.Id, consumable);
-
-                        foreach (var equipment in level.Equipment)
-                            player.Equipment.Add(equipment.Id, equipment);
-
-                        foreach (var enemy in level.Enemies)
-                        {
-                            player.Experience += enemy.ExperienceGiven;
-                            foreach (var equipment in enemy.Equipment)
-                                player.Equipment.Add(equipment.Key, equipment.Value);
-
-                            foreach (var consumable in enemy.Consumables)
-                                player.Consumables.Add(consumable.Key, consumable.Value);
-                        }
-
-                        for (int i = level.Consumables.Count() - 1; i >= 0; i--)
-                            level.RemoveContent(level.Consumables.ElementAt(i));
-
-                        for (int i = level.Equipment.Count() - 1; i >= 0; i--)
-                            level.RemoveContent(level.Equipment.ElementAt(i));
-
-
-                        for (int i = level.Enemies.Count() - 1; i >= 0; i--)
-                            level.RemoveContent(level.Enemies.ElementAt(i));
-
-                        if (level.HasStairsDown)
-                            player.Location = level.StairsDown.Location;
-
-                        // Queue update: TODO: Clean this up maybe? 
-                        _modelService.UpdateVisibleLocations();
-                        _modelService.UpdateContents();
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentAll });
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutAll });
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+                        _debugEngine.SimulateAdvanceToNextLevel();
+                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelAction.DebugIdentifyAll:
                     {
-                        foreach (var item in player.Inventory)
-                            _scenarioEngine.Identify(item.Key);
-
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+                        _debugEngine.IdentifyAll();
+                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelAction.DebugExperience:
                     {
-                        player.Experience += 10000;
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+                        _debugEngine.GivePlayerExperience();
+                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelAction.DebugSkillUp:
                     {
-                        foreach (var skillSet in player.SkillSets)
-                        {
-                            if (skillSet.Level < player.SkillSets.Count)
-                                skillSet.Level++;
-                        }
-                        _uiQueue.Enqueue(new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+                        _debugEngine.GivePlayerSkillExperience();
+                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
 #endif

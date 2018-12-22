@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasLearnedSkill;
         private bool _hasSpell;
         private bool _isProjectile;
+        private bool _identifyOnUse;
         private SpellTemplate _spellTemplate;
         private SkillSetTemplate _learnedSkill;
         private SpellTemplate _projectileSpellTemplate;
@@ -118,6 +119,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public bool IdentifyOnUse
+        {
+            get { return _identifyOnUse; }
+            set
+            {
+                if (_identifyOnUse != value)
+                {
+                    _identifyOnUse = value;
+                    OnPropertyChanged("IdentifyOnUse");
+                }
+            }
+        }
         public SpellTemplate SpellTemplate
         {
             get { return _spellTemplate; }
@@ -179,6 +192,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
+            this.IdentifyOnUse = false;
         }
         public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
         {
@@ -192,6 +206,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
+            this.IdentifyOnUse = false;
         }
     }
 }

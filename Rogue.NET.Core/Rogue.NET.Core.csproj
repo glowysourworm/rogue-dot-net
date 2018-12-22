@@ -139,6 +139,8 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
+    <Compile Include="Logic\DebugEngine.cs" />
+    <Compile Include="Logic\Interface\IDebugEngine.cs" />
     <Compile Include="Logic\Processing\DialogUpdate.cs" />
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\AttackAttribute.cs" />
+    <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationCostExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior.cs" />
@@ -285,6 +288,7 @@
     <Compile Include="Model\Scenario\Content\Extension\LevelExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
+    <Compile Include="Model\Scenario\Content\Skill\Extension\SpellExtension.cs" />
     <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
     <Compile Include="Model\Scenario\Character\Enemy.cs" />
     <Compile Include="Model\Scenario\Character\Player.cs" />
