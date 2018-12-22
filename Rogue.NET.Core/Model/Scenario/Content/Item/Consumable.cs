@@ -15,6 +15,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public bool HasProjectileSpell { get; set; }
         public bool HasLearnedSkillSet { get; set; }
 
+        public bool IdentifyOnUse { get; set; }
+
         public int Uses { get; set; }
 
         public Spell Spell { get; set; }
@@ -27,6 +29,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
             this.Type = ConsumableType.OneUse;
             this.SubType = ConsumableSubType.Food;
             this.HasSpell = false;
+            this.IdentifyOnUse = false;
             this.Spell = new Spell();
             this.AmmoSpell = new Spell();
             this.LearnedSkill = new SkillSet();
@@ -39,6 +42,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
             this.SubType = subType;
             this.RogueName = name;
             this.HasSpell = false;
+            this.IdentifyOnUse = false;
             this.LearnedSkill = new SkillSet();
             this.Spell = new Spell();
             this.AmmoSpell = new Spell();

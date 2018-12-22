@@ -272,6 +272,19 @@ namespace Rogue.NET.Core.Logic
                 }
             }
 
+            // Proceeding with use - so check for identify on use
+            if (consumable.IdentifyOnUse)
+            {
+                // Set consumable identified
+                consumable.IsIdentified = true;
+
+                _modelService.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
+                _modelService.ScenarioEncyclopedia[consumable.RogueName].IsCurseIdentified = true;
+
+                // Update UI
+                QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, consumable.Id);
+            }
+
             // Check for removal of item
             switch (consumable.Type)
             {

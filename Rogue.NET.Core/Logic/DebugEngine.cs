@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Interface;
+﻿using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
@@ -19,13 +20,19 @@ namespace Rogue.NET.Core.Logic
         readonly IModelService _modelService;
         readonly IContentEngine _contentEngine;
         readonly IScenarioMessageService _scenarioMessageService;
+        readonly IPlayerProcessor _playerProcessor;
 
         [ImportingConstructor]
-        public DebugEngine(IModelService modelService, IContentEngine contentEngine, IScenarioMessageService scenarioMessageService)
+        public DebugEngine(
+            IModelService modelService, 
+            IContentEngine contentEngine, 
+            IScenarioMessageService scenarioMessageService,
+            IPlayerProcessor playerProcessor)
         {
             _modelService = modelService;
             _contentEngine = contentEngine;           
             _scenarioMessageService = scenarioMessageService;
+            _playerProcessor = playerProcessor;
         }
 
         public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
@@ -85,9 +92,10 @@ namespace Rogue.NET.Core.Logic
             //
             //  0) Calculate Path Length for level
             //  1) Generate Extra Enemies for that path length
-            //  2) Defeat all enemies - grant items to player
+            //  2) Defeat all enemies - grant items to player - advance skill learning
             //  3) Grant all items to player in level
             //  4) Advance player to stairs down
+            //  5) Generate Hunger
 
             // Calculate Path Length
             var pathLength = template.GetPathLength();
@@ -106,12 +114,19 @@ namespace Rogue.NET.Core.Logic
 
             foreach (var enemy in level.Enemies)
             {
-                player.Experience += enemy.ExperienceGiven;
                 foreach (var equipment in enemy.Equipment)
+                {
+                    // Un-equip item before giving to the player
+                    equipment.Value.IsEquipped = false;
+
                     player.Equipment.Add(equipment.Key, equipment.Value);
+                }
 
                 foreach (var consumable in enemy.Consumables)
                     player.Consumables.Add(consumable.Key, consumable.Value);
+
+                // Calculate player gains
+                _playerProcessor.CalculateEnemyDeathGains(player, enemy);
             }
 
             for (int i = level.Consumables.Count() - 1; i >= 0; i--)
@@ -125,6 +140,9 @@ namespace Rogue.NET.Core.Logic
 
             if (level.HasStairsDown)
                 player.Location = level.StairsDown.Location;
+
+            // Generate Hunger
+            player.Hunger += player.FoodUsagePerTurnBase * pathLength;
 
             // Queue update: TODO: Clean this up maybe? 
             _modelService.UpdateVisibleLocations();

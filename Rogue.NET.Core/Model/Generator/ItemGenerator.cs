@@ -96,6 +96,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.Weight = consumableTemplate.Weight;
             consumable.LevelRequired = consumableTemplate.LevelRequired;
             consumable.Uses = _randomSequenceGenerator.GetRandomValue(consumableTemplate.UseCount);
+            consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
             consumableTemplate.HasBeenGenerated = true;
 
             return consumable;

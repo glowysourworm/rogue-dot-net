@@ -817,13 +817,14 @@ namespace Rogue.NET.Core.Logic
             if (!createMonster)
                 return;
 
-            // Select enemy templates with: 0) this level range, 2) non-objective, 3) non-unique enemies
+            // Select enemy templates with: 0) this level range, 2) non-objective, 3) non-unique enemies, 4) Generate on step
             var enemyTemplates = _modelService.ScenarioConfiguration
                                               .EnemyTemplates
                                               .Where(x =>
                                               {
                                                   return !x.IsUnique &&
                                                          !x.IsObjectiveItem &&
+                                                          x.GenerateOnStep &&
                                                           x.Level.Contains(_modelService.Level.Number);
                                               })
                                               .ToList();
