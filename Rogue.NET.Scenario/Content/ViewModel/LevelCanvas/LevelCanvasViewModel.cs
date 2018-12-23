@@ -212,7 +212,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                         throw new Exception("Level Canvas View Model doens't contain player Id");
 
                     UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
-                    UpdateLayoutVisibility();
+                    //UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.TargetingStart:
                     PlayTargetAnimation();
@@ -433,7 +433,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
             _contentDict[REVEALED_KEY].OpacityMask = revealedDrawingBrush;
 
+            // PERFORMANCE ISSUE - OPACITY MASKS VERY VERY VERY SLOW. CONSIDER TRYING TO 
+            // DRAW AURAS BEFORE RENDERING... INSTEAD OF USING OPACITY MASKS
             // Update Aura Opacity masks
+
+            // JUST UPDATE PLAYER ONLY - OTHER MASKS SHOULD BE OMITTED
             foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
                 _contentDict[key].OpacityMask = visibleDrawingBrush;
         }
@@ -489,10 +493,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             aura = null;
 
-            // AURA
-            if (scenarioObject is Character &&
-                scenarioObject.SymbolType == SymbolTypes.Smiley &&
-                !isEnemyInvisible)
+            // AURA - PLAYER ONLY
+            if (scenarioObject is Player)
             {
                 // TODO: Put transform somewhere else
                 var character = scenarioObject as Character;
@@ -559,7 +561,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);
             
-            // Update related Aura
+            // Update related Aura - PLAYER ONLY
             if (_contentDict.ContainsKey(scenarioObject.Id + AURA_EXT))
             {
                 // TODO: Put transform somewhere else
