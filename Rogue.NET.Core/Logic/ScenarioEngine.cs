@@ -342,6 +342,21 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.ProcessTurn;
             }
 
+            // Notes
+            if (consumable.SubType == ConsumableSubType.Note)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Reading " + displayName);
+
+                DialogUpdateEvent(this, new DialogUpdate()
+                {
+                    Type = DialogEventType.Note,
+                    NoteMessage = consumable.NoteMessage,
+                    NoteTitle = displayName
+                });
+
+                return LevelContinuationAction.ProcessTurn;
+            }
+
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + displayName);
 
             // Queue processing of spell

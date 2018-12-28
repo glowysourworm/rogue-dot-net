@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="Rogue.NET.View.NoteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             Background="Transparent"
+             Height="450"
+             Width="700">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/EllipsePanel.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border BorderBrush="White" Background="Black" BorderThickness="1" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="TitleTB" FontSize="24" Margin="20" HorizontalAlignment="Left" Foreground="Beige" VerticalAlignment="Center" />
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"                          
+                          Grid.Row="1"
+                          Background="Black"
+                          BorderBrush="#AFFFFFFF"
+                          BorderThickness="0,0.75,0,0">
+                <TextBlock x:Name="MessageTB"
+                           Margin="20"
+                           FontStyle="Italic"
+                           TextWrapping="Wrap"
+                           Foreground="Tan"
+                           FontSize="18" />
+            </ScrollViewer>
+            <Button Cursor="Hand" 
+                    Grid.Row="2" 
+                    Style="{StaticResource ShinyTextButtonStyle}" 
+                    FontFamily="{StaticResource FontAwesome}"
+                    Margin="10" 
+                    HorizontalAlignment="Right" 
+                    Content="&#xf00d;" 
+                    Width="28" Height="28" 
+                    BorderBrush="White" 
+                    Foreground="White" 
+                    Background="Black">
+                <interactivity:Interaction.Triggers>
+                    <interactivity:EventTrigger EventName="Click">
+                        <extension:CustomDialogResultTrigger 
+                                DialogResult="True"
+                                IsEnabled="True" />
+                    </interactivity:EventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

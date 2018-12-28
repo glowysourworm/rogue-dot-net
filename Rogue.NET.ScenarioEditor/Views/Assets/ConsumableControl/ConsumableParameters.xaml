@@ -45,6 +45,21 @@
                           HorizontalAlignment="Right" Height="24"  Width="400"  />
             </Grid>
 
+            <Grid Margin="10, 5, 10, 0" Visibility="{Binding SubType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Note}}">
+                <TextBlock Text="Note Message" Foreground="White" Margin="10" VerticalAlignment="Center" />
+                <TextBox Text="{Binding NoteMessage}" 
+                         Foreground="{DynamicResource TextBrush}"
+                         BorderBrush="{DynamicResource NormalBorderBrush}"
+                         Background="{DynamicResource LightBrush}"
+                         HorizontalAlignment="Right" 
+                         AcceptsReturn="True"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         Height="100"
+                         Width="400" />
+            </Grid>
+
             <Grid Margin="10,5,10,0" Visibility="{Binding IsProjectile, Converter={StaticResource BoolVisibilityCollapseConverter}, Mode=TwoWay}">
                 <TextBlock Grid.Row="5" Foreground="White" Text="Projectile Spell" Margin="10" VerticalAlignment="Center" />
                 <ComboBox x:Name="ProjectileSpellCB" 

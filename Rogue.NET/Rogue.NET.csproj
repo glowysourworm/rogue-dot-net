@@ -203,6 +203,9 @@
     <Compile Include="View\EnchantArmorView.xaml.cs">
       <DependentUpon>EnchantArmorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\NoteView.xaml.cs">
+      <DependentUpon>NoteView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HelpView.xaml.cs">
       <DependentUpon>HelpView.xaml</DependentUpon>
     </Compile>
@@ -241,6 +244,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\EnchantArmorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\NoteView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

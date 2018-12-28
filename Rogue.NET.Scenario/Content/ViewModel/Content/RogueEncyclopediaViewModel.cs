@@ -73,6 +73,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 constructor(ConsumableSubType.Wand.ToString(),"Wand", "Items that channel magic"),
                 constructor(ConsumableSubType.Ammo.ToString(),"Ammunition", "Ammunition for range weapons"),
                 constructor(ConsumableSubType.Misc.ToString(),"Miscellaneous", "Miscellaneous items"),
+                constructor(ConsumableSubType.Note.ToString(),"Notes", "Items that you can read"),
                 constructor(EquipmentType.OneHandedMeleeWeapon.ToString(), "One Handed Weapon", "Weapons for one hand (may equip two at once)"),
                 constructor(EquipmentType.TwoHandedMeleeWeapon.ToString(),  "Two Handed Weapon", "Weapons for two hands"),
                 constructor(EquipmentType.RangeWeapon.ToString(),  "Range Weapon", "Range weapons (require ammunition)"),

@@ -97,6 +97,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.LevelRequired = consumableTemplate.LevelRequired;
             consumable.Uses = _randomSequenceGenerator.GetRandomValue(consumableTemplate.UseCount);
             consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
+            consumable.NoteMessage = consumableTemplate.NoteMessage;
             consumableTemplate.HasBeenGenerated = true;
 
             return consumable;

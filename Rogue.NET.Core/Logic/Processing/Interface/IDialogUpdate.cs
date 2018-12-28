@@ -8,6 +8,10 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     {
         DialogEventType Type { get; set; }
 
+        // Parameters to support notes
+        string NoteTitle { get; set; }
+        string NoteMessage { get; set; }
+
         IEnumerable<AttackAttribute> ImbueAttackAttributes { get; set; }
     }
 }

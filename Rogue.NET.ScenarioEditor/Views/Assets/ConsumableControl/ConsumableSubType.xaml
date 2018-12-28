@@ -39,6 +39,13 @@
                                 Text="Misc:  Make something up!" />
                 </RadioButton.Content>
             </RadioButton>
+            <RadioButton x:Name="NoteRB" 
+                         IsChecked="{Binding SubType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Note}}" Margin="10" Foreground="White" Background="Black">
+                <RadioButton.Content>
+                    <TextBlock  TextWrapping="Wrap"
+                                Text="Note:  Create a consumable that shows a simple message" />
+                </RadioButton.Content>
+            </RadioButton>            
             <RadioButton x:Name="PotionRB" 
                          IsChecked="{Binding SubType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Potion}}" Margin="10" Foreground="White" Background="Black">
                 <RadioButton.Content>

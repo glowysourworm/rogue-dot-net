@@ -24,6 +24,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public Spell ProjectileSpell { get; set; }
         public SkillSet LearnedSkill { get; set; }
 
+        public string NoteMessage { get; set; }
+
         public Consumable() : base()
         {
             this.Type = ConsumableType.OneUse;
@@ -34,6 +36,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
             this.AmmoSpell = new Spell();
             this.LearnedSkill = new SkillSet();
             this.Weight = 0.5;
+            this.NoteMessage = "";
         }
         public Consumable(ConsumableType type, ConsumableSubType subType, string name, ImageResources icon)
             : base(name, icon)
@@ -46,6 +49,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
             this.LearnedSkill = new SkillSet();
             this.Spell = new Spell();
             this.AmmoSpell = new Spell();
+            this.NoteMessage = "";
         }
     }
 }

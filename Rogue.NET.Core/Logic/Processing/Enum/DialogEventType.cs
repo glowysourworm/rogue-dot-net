@@ -16,6 +16,7 @@ namespace Rogue.NET.Core.Logic.Processing.Enum
         Uncurse,
         Help,
         Commands,
-        Objective
+        Objective,
+        Note
     }
 }

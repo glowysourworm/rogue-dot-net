@@ -288,7 +288,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Make sure identifyConsumable applies to consume an identify item (there's at least one thing to identify)
             bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
 
-            bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || (isIdentify && identifyConsumable);
+            bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || 
+                                 (consumable.SubType == ConsumableSubType.Note) || // Always allow using notes
+                                 (isIdentify && identifyConsumable);
+
             bool throwEnable = consumable.HasProjectileSpell;
 
             this.Quality = "-";

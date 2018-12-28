@@ -9,6 +9,9 @@ namespace Rogue.NET.Core.Logic.Processing
     {
         public DialogEventType Type { get; set; }
 
+        public string NoteMessage { get; set; }
+        public string NoteTitle { get; set; }
+
         /// <summary>
         /// ***REQUIRED:  ATTACK ATTRIBUTES USED FOR IMBUE PROCESSING.
         /// </summary>

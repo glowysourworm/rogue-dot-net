@@ -6,6 +6,7 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.Scenario.Views;
@@ -78,7 +79,7 @@ namespace Rogue.NET.View
                 // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
                 Application.Current.MainWindow.Tag = window;
 
-                window.Content = CreateDialogView(update.Type);
+                window.Content = CreateDialogView(update);
                 window.ShowDialog();
             });
         }
@@ -168,11 +169,11 @@ namespace Rogue.NET.View
             }
         }
 
-        private UserControl CreateDialogView(DialogEventType type)
+        private UserControl CreateDialogView(IDialogUpdate update)
         {
             // Passing these in to take care of dependency injection. Another way is to create
             // multiple region managers and have a separate Shell window.
-            switch (type)
+            switch (update.Type)
             {
                 case DialogEventType.Help:
                     return GetInstance<HelpView>();
@@ -180,6 +181,15 @@ namespace Rogue.NET.View
                     return GetInstance<CommandsView>();
                 case DialogEventType.Objective:
                     return GetInstance<ObjectiveView>();
+                case DialogEventType.Note:
+                    {
+                        // TODO: Use Binding Somehow...
+                        var view = GetInstance<NoteView>();
+                        view.TitleTB.Text = update.NoteTitle;
+                        view.MessageTB.Text = update.NoteMessage;
+
+                        return view;
+                    }
                 case DialogEventType.Identify:
                     return GetInstance<IdentifyView>();
                 case DialogEventType.Uncurse:

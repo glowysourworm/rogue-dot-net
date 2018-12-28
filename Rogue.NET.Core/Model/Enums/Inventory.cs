@@ -31,6 +31,7 @@
         Manual,
         Food,
         Ammo,
-        Misc
+        Misc,
+        Note
     }
 }

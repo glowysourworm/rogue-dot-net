@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SkillSetTemplate _learnedSkill;
         private SpellTemplate _projectileSpellTemplate;
         private SpellTemplate _ammoSpellTemplate;
+        private string _noteMessage;
 
         public ConsumableType Type
         {
@@ -179,6 +180,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public string NoteMessage
+        {
+            get { return _noteMessage; }
+            set
+            {
+                if (_noteMessage != value)
+                {
+                    _noteMessage = value;
+                    OnPropertyChanged("NoteMessage");
+                }
+            }
+        }
 
         public ConsumableTemplate()
         {
@@ -193,6 +206,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.NoteMessage = "";
         }
         public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
         {
@@ -207,6 +221,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.NoteMessage = "";
         }
     }
 }
