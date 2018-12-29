@@ -217,9 +217,9 @@
 
 - Teleportation:  Add a standard animation for teleporting that shows the trajectory of the path to the new location.						
 
-- Character classes: Add class selection and set for equipment. Provide choice at the beginning of class.
+- Character classes:  Add class selection and set for equipment. Provide choice at the beginning of class.
 					 (Defined in Scenario): Example: Elf, Dwarf, Employee, Wizard, Worlock, etc... These would
-					 have equipment trade-offs
+					 have equipment trade-offs, combat implications, and attribute bonuses.
 					 
 					 Equipment: Have different patameter sets per class. OR just a flag to say "Out of class" or "In class"
 								to make it simpler.
@@ -231,6 +231,35 @@
 					 and agility combat consequences.
 
 				     Altered States:  Certain classes are immune from certain states. Example: Stone Golem immune from stone..
+
+					 Enemy Classes:   Could support combat adjustment from interacting character classes. Example:  Stone Golem
+									  has a multiplier v.s. Wizard and Worlock classes. Or, a "Miss Ratio" multiplier.. But these
+									  would be set up in the Scenario Editor.. 
+
+									  Setup:  Character Class "Elf": (contains) ClassAttribute, List<ClassAttributeMelee>
+											  
+											  ClassAttribute:  Any Player Stat (Strength, Agility, ..., Attack, Defense, Miss Ratio, Dodge, Critical Hit, etc...)
+															   with a bonus. This would show up as a Passive Alteration. The effect could be positive or negative.
+
+											  ClassAttributeChange = ClassAttribute (modification) + EnemyClassName
+
+														       The effect of this would be to modify the player's stat (determined by the ClassAttribute)
+															   during Melee combat ONLY.
+
+															   WOULD REALLY WANT TO SHOW PEOPLE WHAT WAS HAPPENING HERE. So, extra combat messages are 
+															   preferred to show.
+
+															   Example:  "Stone Golem" is immune to Altered State = "Stone". His class attribute is
+																	     + 0.3 for Critical Hit.
+
+																		 Against Wizard:		    Class Attribute = -5 Intelligence
+																		 Against Elf:			    Class Attribute = -3 Agility
+																		 Against Water Elemental:   Class Attribute = -10 Defense
+									
+																	     Message (Water Elemental):  Leviathan attacked Ryan
+																									 HP = 43 + Attack Attributes...
+																									 Bonus attack for Water Elemental = 32
+
 					 
 - Weapons "Gain Experience" from defeating enemies. So, they would "grow" with your character. 
 
@@ -256,7 +285,7 @@
 
 			 - Design Problem:  How to pick a random symbol from the set but keep it consistent for the rest of the scenario.
 			 
-- Player Stat:  Miss Ratio - Based on Agility and Equipment "Out of Class" flag. 
+- Player Stat:  Miss Ratio - BASED ON AGILITY and Equipment "Out of Class" flag. 
 				
 				Idea:   This stat would be factored in during combat. It would also be available for alterations
 				
@@ -289,7 +318,30 @@
 						   SPEED UP PERFORMANCE. IF IT WORKS - THEN GO FOR THE NEXT LAYER WHICH IS THE OPACITY.
 						   
 - Equipment Explainations: Add section to show parameter changes by %.
+
+- Equipment Quality Enhancement:  Alteration to enhance quality value for equipment! Need to separate armor types
+								  and weapon types just like for Enchant and Imbue.
+
+								  Example:  Sharpening Stone - Upgrades Quality for weapons by 0.3! :)
+
+								  Example:  Anvil - (would need ImageResources) Upgrades Quality for Armor by 0.3! :) :)
+
+								  Name:  Maybe "Upgrade Weapon" and "Upgrade Armor"
+
+- Player "Aura" Refactoring:  Several things...
+		
+		1) Separate Auras from Light Radius
+
+		2) Use Aura Effect Range to create new aura on top of the light radius. 
+
+		3) Choose whether to change Light Color or to apply Aura on top of Light Circle
+
+		4) Show effect range in the Alterations screen.
+
+		Effectively this should separate the two and show them independently
 						  
+- PLAYER DEATH R.I.P. TOMBSTONE
+
 ---------
 						  
 - Add - Scenario details to Open screen

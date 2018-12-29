@@ -333,6 +333,7 @@
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Project Documents\bugs-enhancements-backlog.xlsx" />
+    <None Include="Project Documents\DeveloperOverview.ppt" />
     <None Include="Project Documents\scenario-editor-wireframe.xlsx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -367,7 +368,12 @@
       <Name>Rogue.NET.Scenario</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Project Documents\ddn-prism.txt" />
+    <Resource Include="Project Documents\developer-readme.txt" />
+    <Resource Include="Project Documents\rogue-dot-net-validations.txt" />
+    <Resource Include="Project Documents\rogue-todo.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
