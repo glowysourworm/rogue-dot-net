@@ -30,7 +30,6 @@ namespace Rogue.NET.Scenario.Views
             _ctrlList = new List<FrameworkElement>(new FrameworkElement[]{
                 this.EquipmentCtrl,
                 this.ConsumablesCtrl,
-                this.InventoryCtrl,
                 this.SkillCtrl,
                 this.StatsCtrl,
                 this.AlterationsCtrl
@@ -39,7 +38,6 @@ namespace Rogue.NET.Scenario.Views
             _radioList = new List<RadioButton>(new RadioButton[]{
                 this.EquipmentRB,
                 this.CosumablesRB,
-                this.InventoryRB,
                 this.SkillsRB,
                 this.StatsRB,
                 this.AlterationsRB

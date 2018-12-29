@@ -149,16 +149,6 @@ namespace Rogue.NET.PrismExtension
                 return view;
             });
 
-            regionManager.RegisterViewWithRegion("PlayerSubpanelInventoryRegion", () =>
-            {
-                var view = this.Container.GetExport<ItemGrid>().Value;
-                view.Mode = ItemGridModes.Inventory;
-                view.IntendedAction = ItemGridActions.Drop;
-                view.IsDialogMode = false;
-                view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.Inventory;
-                return view;
-            });
-
             regionManager.RegisterViewWithRegion("UncurseItemGridRegion", () =>
             {
                 var view = this.Container.GetExport<ItemGrid>().Value;

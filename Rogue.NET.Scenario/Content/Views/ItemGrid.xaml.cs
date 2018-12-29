@@ -113,8 +113,7 @@ namespace Rogue.NET.Scenario.Content.Views
             this.ImbueWeapon.Visibility = mode == ItemGridModes.ImbueWeapon ? Visibility.Visible : Visibility.Collapsed;
             this.Throw.Visibility = mode == ItemGridModes.Consumable ? Visibility.Visible : Visibility.Collapsed;
             this.Drop.Visibility = mode == ItemGridModes.Consumable ? Visibility.Visible :
-                                   mode == ItemGridModes.Equipment ? Visibility.Visible :
-                                   mode == ItemGridModes.Inventory ? Visibility.Visible : Visibility.Collapsed;
+                                   mode == ItemGridModes.Equipment ? Visibility.Visible : Visibility.Collapsed;
 
             this.ClassColumn.Visibility = mode == ItemGridModes.EnchantArmor ? Visibility.Visible :
                                           mode == ItemGridModes.EnchantWeapon ? Visibility.Visible :

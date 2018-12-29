@@ -11,7 +11,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
     /// </summary>
     public enum ItemGridModes
     {
-        Inventory,
         Consumable,
         Equipment,
         Identify,

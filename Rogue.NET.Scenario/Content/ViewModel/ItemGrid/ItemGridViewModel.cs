@@ -1,15 +1,12 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +20,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
     public class ItemGridViewModel : NotifyViewModel
     {
         // Have to maintain these collections for use in the ItemGrid
-        public ObservableCollection<ItemGridRowViewModel> Inventory { get; set; }
         public ObservableCollection<ItemGridRowViewModel> Consumables { get; set; }
         public ObservableCollection<ItemGridRowViewModel> Equipment { get; set; }
         public ObservableCollection<ItemGridRowViewModel> IdentifyInventory { get; set; }
@@ -38,7 +34,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             IEventAggregator eventAggregator, 
             IModelService modelService)
         {
-            this.Inventory = new ObservableCollection<ItemGridRowViewModel>();
             this.Consumables = new ObservableCollection<ItemGridRowViewModel>();
             this.Equipment = new ObservableCollection<ItemGridRowViewModel>();
             this.IdentifyInventory = new ObservableCollection<ItemGridRowViewModel>();
@@ -80,27 +75,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             var consumables = modelService.Player.Consumables.Values;
             var inventory = modelService.Player.Inventory.Values;
             var identifyConsumable = inventory.Any(x => (!x.IsIdentified && x is Equipment) || !modelService.ScenarioEncyclopedia[x.RogueName].IsIdentified);
-
-            // Inventory
-            SynchronizeCollection<ItemBase, ItemGridRowViewModel>(
-                inventory,
-                this.Inventory,
-                item =>
-                {
-                    if (item is Consumable)
-                        return new ItemGridRowViewModel(item as Consumable,
-                                             encyclopedia[item.RogueName],
-                                             identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
-                    else
-                        return new ItemGridRowViewModel(item as Equipment, encyclopedia[item.RogueName]);
-                },
-                (viewModel, item) =>
-                {
-                    if (item is Consumable)
-                        viewModel.UpdateConsumable(item as Consumable, encyclopedia[viewModel.RogueName], identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
-                    else
-                        viewModel.UpdateEquipment(item as Equipment, encyclopedia[viewModel.RogueName]);
-                });
 
             // Consumables
             SynchronizeCollection<Consumable, ItemGridRowViewModel>(

@@ -342,6 +342,8 @@
 						  
 - PLAYER DEATH R.I.P. TOMBSTONE
 
+- Messages when objective has been acheived
+
 ---------
 						  
 - Add - Scenario details to Open screen
@@ -389,7 +391,6 @@
 
 IMMEDIATE TODO'S:
 
-	- Intelligence Scaled Alterations:  TotalValue = Value * (1 + Character.GetIntelligence()) applied to any alteration effect.	
-	- Messages when objective has been acheived
-	- Remove Inventory and underlying collection update :) (not using)
-	- Above Fix / ISSUE / Change / Add 
+	- Intelligence Scaled Alterations:  TotalValue = Value * (1 + Character.GetIntelligence()) applied to any alteration effect.		
+	- Finish up Rogue Encyclopedia:  Implement paging, fix minor error with display (non-identified text, total progress, etc...)
+	- Above Fix / ISSUE / Change / Add (NECESSARY ONLY)

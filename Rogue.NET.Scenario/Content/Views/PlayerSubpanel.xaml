@@ -22,7 +22,6 @@
         <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelEquipmentRegion" x:Name="EquipmentCtrl" Grid.Row="1" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelConsumablesRegion" x:Name="ConsumablesCtrl" Visibility="Collapsed" Grid.Row="1" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelInventoryRegion" x:Name="InventoryCtrl" Visibility="Collapsed" Grid.Row="1" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelSkillsRegion" Grid.Row="1" x:Name="SkillCtrl" Visibility="Collapsed" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelStatsRegion" Grid.Row="1" Visibility="Collapsed" x:Name="StatsCtrl" />
         <ContentControl prism:RegionManager.RegionName="PlayerSubpanelAlterationsRegion" Grid.Row="1" Visibility="Collapsed" x:Name="AlterationsCtrl" />
@@ -34,7 +33,6 @@
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
             <RadioButton x:Name="EquipmentRB" IsEnabled="False" Tag="Equipment" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="CosumablesRB" IsEnabled="False" Tag="Consumables" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
-            <RadioButton x:Name="InventoryRB" IsEnabled="False" Tag="Inventory" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="SkillsRB" IsEnabled="False" Tag="Skills" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="StatsRB" IsEnabled="False" Tag="Stats" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
             <RadioButton x:Name="AlterationsRB" IsEnabled="False" Tag="Alterations" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />
