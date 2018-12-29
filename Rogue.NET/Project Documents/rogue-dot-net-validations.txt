@@ -1,0 +1,18 @@
+Rogue.NET Scenario Configuration Validations
+--------------------------------------------
+
+(Error)   => Can't Save 
+(Warning) => Can Save
+(Info)    => N/A
+
+- (Warning)(DONE) Generation Rate = 0
+- (Warning)(DONE) Content Level Range out of Scenario Range
+- (Error)(DONE)   Dungeon Template Name not set (OR) Set to embeded configuration
+- (Error)(DONE)   Alteration Spell not supported for usage (Example:  Equipment Equip spell set to non-passive-source)
+- (Error)(DONE)   Objective isn't set
+- (Error)(DONE)   Objective won't be produced or isn't guaranteed (Includes enemy inventory)
+- (Error)(DONE)   Spells have to be set on all content (NON NULL)
+- (Error)(DONE)   Remedy / Create Monster fields not set on Alterations / 
+- (Error)         Ammo spell for ammo type consumables
+
+- (Warning) 		  Check for "New Template" Alterations on content
