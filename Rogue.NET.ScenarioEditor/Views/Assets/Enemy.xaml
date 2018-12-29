@@ -16,7 +16,7 @@
                 <enemy:EnemyMetadata />
             </TabItem>
             <TabItem Header="Parameters">
-                <enemy:EnemyParameters />
+                <ContentControl prism:RegionManager.RegionName="EnemyParametersRegion" />
             </TabItem>
             <TabItem Header="Behavior">
                 <ContentControl prism:RegionManager.RegionName="EnemyBehaviorRegion" />

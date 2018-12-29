@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -8,9 +12,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
     public partial class EnemyParameters : UserControl
     {
         [ImportingConstructor]
-        public EnemyParameters()
+        public EnemyParameters(IEventAggregator eventAggregator)
         {
             InitializeComponent();
+
+            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
+            {
+                this.DeathAnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
+            });
+        }
+
+        private void DeathAnimationsLB_AddEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as EnemyTemplateViewModel;
+            if (viewModel != null)
+                viewModel.DeathAnimations.Add(e as AnimationTemplateViewModel);
+        }
+
+        private void DeathAnimationsLB_RemoveEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as EnemyTemplateViewModel;
+            if (viewModel != null)
+                viewModel.DeathAnimations.Remove(e as AnimationTemplateViewModel);
         }
     }
 }

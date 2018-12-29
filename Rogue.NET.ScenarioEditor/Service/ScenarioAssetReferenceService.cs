@@ -59,6 +59,9 @@ namespace Rogue.NET.ScenarioEditor.Service
         {
             foreach (var alteration in configuration.MagicSpells)
                 UpdateCollection(configuration.AnimationTemplates, alteration.Animations);
+
+            foreach (var enemy in configuration.EnemyTemplates)
+                UpdateCollection(configuration.AnimationTemplates, enemy.DeathAnimations);
         }
 
         public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)

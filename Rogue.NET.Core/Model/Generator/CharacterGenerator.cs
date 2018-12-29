@@ -1,7 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -146,6 +148,8 @@ namespace Rogue.NET.Core.Model.Generator
 
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                    .ToDictionary(x => x.RogueName);
+
+            enemy.DeathAnimations = new List<AnimationTemplate>(enemyTemplate.DeathAnimations);
 
             //Starting Consumables
             foreach (var consumableTemplate in enemyTemplate.StartingConsumables)

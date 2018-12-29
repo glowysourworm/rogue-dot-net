@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     public class EnemyTemplate : CharacterTemplate
     {
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
+        public List<AnimationTemplate> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
         private bool _isInvisible;
@@ -68,12 +70,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
+            this.DeathAnimations = new List<AnimationTemplate>();
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
+            this.DeathAnimations = new List<AnimationTemplate>();
         }
     }
 }

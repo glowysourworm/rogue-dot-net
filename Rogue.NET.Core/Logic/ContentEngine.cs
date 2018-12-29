@@ -235,6 +235,15 @@ namespace Rogue.NET.Core.Logic
 
             level.RemoveContent(enemy);
 
+            // Queue Animation for enemy death
+            if (enemy.DeathAnimations.Count > 0)
+                AnimationUpdateEvent(this, new AnimationUpdate()
+                {
+                    Animations = enemy.DeathAnimations,
+                    SourceLocation = enemy.Location,
+                    TargetLocations = new CellPoint[] { _modelService.Player.Location }
+                });
+
             // Calculate player gains
             _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
 
