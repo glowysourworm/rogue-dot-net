@@ -6,12 +6,11 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IAlterationGenerator
     {
-        AlterationContainer GenerateAlteration(Spell spell);
-
-        AlterationEffect GenerateAlterationEffect(
-            string spellName, 
-            string spellDisplayName, 
-            double effectRange, 
-            AlterationEffectTemplate alterationEffectTemplate);
+        /// <summary>
+        /// Generates an alteration container (cost, effect, parameters) from a Spell and the caster's
+        /// intelligence. This should be the total intelligence of the caster; and is only applied to
+        /// the effects - not the cost.
+        /// </summary>
+        AlterationContainer GenerateAlteration(Spell spell, double characterIntelligence);
     }
 }

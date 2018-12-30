@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -7,6 +8,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -121,7 +123,7 @@ namespace Rogue.NET.Core.Logic
             var player = _modelService.Player;
 
             //Calculate alteration from spell's random parameters
-            var alteration = _alterationGenerator.GenerateAlteration(spell);
+            var alteration = _alterationGenerator.GenerateAlteration(spell, player.GetIntelligence());
 
             //Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
             if (alteration.Cost.Type == AlterationCostType.OneTime)
@@ -174,7 +176,7 @@ namespace Rogue.NET.Core.Logic
         public void ProcessEnemyMagicSpell(Enemy enemy, Spell spell)
         {
             // Calculate alteration from spell's random parameters
-            var alteration = _alterationGenerator.GenerateAlteration(spell);
+            var alteration = _alterationGenerator.GenerateAlteration(spell, enemy.GetIntelligence());
 
             // Apply Alteration Cost
             if (alteration.Cost.Type == AlterationCostType.OneTime)
@@ -406,18 +408,19 @@ namespace Rogue.NET.Core.Logic
                     }
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
-                    foreach (var enemy in _modelService.GetTargetedEnemies())
-                    {
-                        foreach (var attribute in alteration.Effect.AttackAttributes)
+                    _modelService
+                        .GetTargetedEnemies()
+                        .ForEach(enemy =>
                         {
-                            var hit = _interactionProcessor.CalculateAttackAttributeMelee(enemy, attribute);
-                            if (hit > 0)
-                                enemy.Hp -= hit;
-                        }
+                            // Apply the Alteration Effect -> Publish the results
+                            _interactionProcessor.CalculateAttackAttributeMelee(
+                                alteration.Effect.DisplayName, 
+                                enemy, 
+                                alteration.Effect.AttackAttributes);
 
-                        // Set Enemy Engaged
-                        enemy.IsEngaged = true;
-                    }
+                            // Set Enemy Engaged
+                            enemy.IsEngaged = true;
+                        }); 
                     break;
             }
         }
@@ -494,12 +497,8 @@ namespace Rogue.NET.Core.Logic
                     _modelService.Player.Alteration.ActivateAlteration(alteration, false);
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
-                    foreach (var attackAttribute in alteration.Effect.AttackAttributes)
-                    {
-                        double hit = _interactionProcessor.CalculateAttackAttributeMelee(_modelService.Player, attackAttribute);
-                        if (hit > 0)
-                            _modelService.Player.Hp -= hit;
-                    }
+                    // Apply the Alteration Effect -> Publish the results
+                    _interactionProcessor.CalculateAttackAttributeMelee(alteration.Effect.DisplayName, enemy, alteration.Effect.AttackAttributes);
                     break;
             }
         }

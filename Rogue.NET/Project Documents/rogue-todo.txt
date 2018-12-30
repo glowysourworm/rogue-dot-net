@@ -425,6 +425,7 @@
 		  be that the content is objective and therefore has to be placed.
 - ISSUE - See Invisible isn't working.
 - ISSUE - Reveal isn't showing invisible enemies
+- ISSUE - SPEED DIVIDE BY ZERO PROBLEM - Change to check for zero speed; and return 1. Example:  chacter.GetSpeed() / player.GetSpeed()
 			  
 - Fix - Spell max level didn't shut off learning. Also need to change UI to show max level; and display the skill set icon
 - Fix - Skill learning didn't work when player learned skill AFTER required level
@@ -493,3 +494,32 @@ IMMEDIATE TODO'S:
 								  For now, JUST DO DODGE CALCULATION. That will provide enough to balance until there's
 								  enough time to go back and do character classes.
 				 
+
+	- The Bigger Problem:  Seeing issues with Attack Attribute scaling
+
+		- Problem:  Scaling combat value by intelligence suggests mismatch between physical and alteration based
+					fighting. (i.e. use in one doesn't match use in the other)
+
+					Example:  Fireball Alteration has Fire attribute scaled by intelligence.
+							  Enemy uses Fire attribute for melee.
+
+							  One is scaled by intelligence for both attack and defense. The other is
+							  not scaled at all. So, your character has trouble with one enemy but not
+							  another in terms of the Fire attribute.
+
+		- Solution:  Create scaling for both Strength and Intelligence; and use flags on the attack attributes
+					 to determine whether or not they're included in Alteration combat and Physical combat.
+
+		- Bigger Problems Solved with this:
+
+				1) Remove Weakness parameter (not scaled properly as Attack and Resistance)
+				
+				2) Remove updating of lists of Attack Attributes on each asset. Only add as required
+				   for each instance - to a specified attack attribute list.
+
+				3) Solve scaling issues for both cases - Physical and Alteration. Driven mostly by
+				   base parameters unless extra balancing is desired.
+
+				4) Fix scale of Attack and Resistance (0 - 1000)
+
+				5) Systematize Attack Attributes for futue concerns (possibly Agility scaled attributes)

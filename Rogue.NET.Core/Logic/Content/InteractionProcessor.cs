@@ -1,5 +1,7 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -33,6 +35,43 @@ namespace Rogue.NET.Core.Logic.Content
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
             _playerProcessor = playerProcessor;
+        }
+
+        public void CalculateAttackAttributeMelee(string alterationDisplayName, Enemy enemy, IEnumerable<AttackAttribute> offenseAttributes)
+        {
+            // Create detached attributes to send along the message publisher
+            var attackAttributes = offenseAttributes.Select(x => x.DeepClone());
+
+            // Apply the calculation, Filter the results, Create an Attack Attribute Dictionary
+            var combatResults = attackAttributes.Select(x => new { AttackAttribute = x, CombatValue = CalculateAttackAttributeMelee(enemy, x) })
+                                                .Where(x => x.CombatValue > 0)
+                                                .ToDictionary(x => x.AttackAttribute, x => x.CombatValue);
+
+            // Sum the total combat value
+            var combatValue = combatResults.Sum(x => x.Value);
+
+            // Apply the effect
+            enemy.Hp -= combatValue;
+
+            _scenarioMessageService.PublishAlterationMessage(ScenarioMessagePriority.Normal, "", "HP", combatValue, true, combatResults);
+        }
+        public void CalculateAttackAttributeMelee(string alterationDisplayName, Player player, IEnumerable<AttackAttribute> offenseAttributes)
+        {
+            // Create detached attributes to send along the message publisher
+            var attackAttributes = offenseAttributes.Select(x => x.DeepClone());
+
+            // Apply the calculation, Filter the results, Create an Attack Attribute Dictionary
+            var combatResults = attackAttributes.Select(x => new { AttackAttribute = x, CombatValue = CalculateAttackAttributeMelee(player, x) })
+                                                .Where(x => x.CombatValue > 0)
+                                                .ToDictionary(x => x.AttackAttribute, x => x.CombatValue);
+
+            // Sum the total combat value
+            var combatValue = combatResults.Sum(x => x.Value);
+
+            // Apply the effect
+            player.Hp -= combatValue;
+
+            _scenarioMessageService.PublishAlterationMessage(ScenarioMessagePriority.Bad, "", "HP", combatValue, true, combatResults);
         }
 
         public double CalculateAttackAttributeMelee(Enemy enemy, AttackAttribute offenseAttribute)
@@ -96,7 +135,8 @@ namespace Rogue.NET.Core.Logic.Content
 
         public double CalculateEnemyTurn(Player player, Enemy enemy)
         {
-            return enemy.GetSpeed() / player.GetSpeed();
+            // Check for divide by zero and apply min speed to return a guaranteed turn for the enemy.
+            return player.GetSpeed() <= ModelConstants.MinSpeed ? 1.0D : enemy.GetSpeed() / player.GetSpeed();
         }
 
         public void CalculatePlayerMeleeHit(Player player, Enemy enemy)
@@ -109,21 +149,7 @@ namespace Rogue.NET.Core.Logic.Content
             var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
-            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
-            {
-                CharacterColor = x.CharacterColor,
-                CharacterSymbol = x.CharacterSymbol,
-                Icon = x.Icon,
-                SmileyAuraColor = x.SmileyAuraColor,
-                SmileyBodyColor = x.SmileyBodyColor,
-                SmileyLineColor = x.SmileyLineColor,
-                SmileyMood = x.SmileyMood,
-                SymbolType = x.SymbolType,
-                RogueName = x.RogueName,
-                Attack = 0,
-                Resistance = 0, 
-                Weakness = 0
-            });
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => CopyEmpty(x));
 
             var playerAttributes = player.GetMeleeAttributes(baseAttributes);
             var enemyAttributes = enemy.GetMeleeAttributes();
@@ -187,21 +213,7 @@ namespace Rogue.NET.Core.Logic.Content
             var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
-            var baseAttributes = targetedEnemy.AttackAttributes.Values.Select(x => new AttackAttribute()
-            {
-                CharacterColor = x.CharacterColor,
-                CharacterSymbol = x.CharacterSymbol,
-                Icon = x.Icon,
-                SmileyAuraColor = x.SmileyAuraColor,
-                SmileyBodyColor = x.SmileyBodyColor,
-                SmileyLineColor = x.SmileyLineColor,
-                SmileyMood = x.SmileyMood,
-                SymbolType = x.SymbolType,
-                RogueName = x.RogueName,
-                Attack = 0,
-                Resistance = 0,
-                Weakness = 0
-            });
+            var baseAttributes = targetedEnemy.AttackAttributes.Values.Select(x => CopyEmpty(x));
 
             var playerAttributes = player.GetMeleeAttributes(baseAttributes);
             var enemyAttributes = targetedEnemy.GetMeleeAttributes();
@@ -261,21 +273,7 @@ namespace Rogue.NET.Core.Logic.Content
             var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
-            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
-            {
-                CharacterColor = x.CharacterColor,
-                CharacterSymbol = x.CharacterSymbol,
-                Icon = x.Icon,
-                SmileyAuraColor = x.SmileyAuraColor,
-                SmileyBodyColor = x.SmileyBodyColor,
-                SmileyLineColor = x.SmileyLineColor,
-                SmileyMood = x.SmileyMood,
-                SymbolType = x.SymbolType,
-                RogueName = x.RogueName,
-                Attack = 0,
-                Resistance = 0,
-                Weakness = 0
-            });
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => CopyEmpty(x));
 
             var playerAttributes = player.GetMeleeAttributes(baseAttributes);
             var enemyAttributes = enemy.GetMeleeAttributes();
@@ -334,21 +332,7 @@ namespace Rogue.NET.Core.Logic.Content
             var attackAttributeHitDict = new Dictionary<AttackAttribute, double>();
 
             //Attack attributes (need empty attributes for player calculation)
-            var baseAttributes = enemy.AttackAttributes.Values.Select(x => new AttackAttribute()
-            {
-                CharacterColor = x.CharacterColor,
-                CharacterSymbol = x.CharacterSymbol,
-                Icon = x.Icon,
-                SmileyAuraColor = x.SmileyAuraColor,
-                SmileyBodyColor = x.SmileyBodyColor,
-                SmileyLineColor = x.SmileyLineColor,
-                SmileyMood = x.SmileyMood,
-                SymbolType = x.SymbolType,
-                RogueName = x.RogueName,
-                Attack = 0,
-                Resistance = 0,
-                Weakness = 0
-            });
+            var baseAttributes = enemy.AttackAttributes.Values.Select(x => CopyEmpty(x));
 
             var playerAttributes = player.GetMeleeAttributes(baseAttributes);
             var enemyAttributes = enemy.GetMeleeAttributes();
@@ -404,6 +388,18 @@ namespace Rogue.NET.Core.Logic.Content
         public bool CalculateSpellBlock(Player player)
         {
             return _randomSequenceGenerator.Get() < player.GetMagicBlock();
+        }
+
+        private AttackAttribute CopyEmpty(AttackAttribute attackAttribute)
+        {
+            // Create a deep clone of the attack attribute to capture symbol details
+            var result = attackAttribute.DeepClone();
+
+            result.Attack = 0;
+            result.Resistance = 0;
+            result.Weakness = 0;
+
+            return result;
         }
     }
 }

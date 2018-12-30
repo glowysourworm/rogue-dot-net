@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
@@ -25,11 +26,11 @@ namespace Rogue.NET.Core.Model.Generator
             _alteredStateGenerator = alteredStateGenerator;
         }
 
-        public AlterationContainer GenerateAlteration(Spell spell)
+        public AlterationContainer GenerateAlteration(Spell spell, double characterIntelligence)
         {
             AlterationCost alterationCost = new AlterationCost();
-            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect);
-            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect);
+            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect, characterIntelligence, spell.ScaledByIntelligence);
+            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect, characterIntelligence, spell.ScaledByIntelligence);
 
             alterationCost.Type = spell.Cost.Type;
             alterationCost.Agility = spell.Cost.Agility;
@@ -60,46 +61,65 @@ namespace Rogue.NET.Core.Model.Generator
 
             return alterationContainer;
         }
-        public AlterationEffect GenerateAlterationEffect(string spellName, string spellDisplayName, double effectRange, AlterationEffectTemplate alterationEffectTemplate)
+        public AlterationEffect GenerateAlterationEffect(
+                string spellName, 
+                string spellDisplayName, 
+                double effectRange, 
+                AlterationEffectTemplate alterationEffectTemplate, 
+                double characterIntelligence,
+                bool scaleByIntelligence)
         {
             AlterationEffect alterationEffect = new AlterationEffect();
 
-            alterationEffect.Agility = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AgilityRange);
-            alterationEffect.Attack = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AttackRange);
-            alterationEffect.AuraRadius = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AuraRadiusRange);
-            alterationEffect.Defense = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DefenseRange);
-            alterationEffect.DodgeProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DodgeProbabilityRange);
-            alterationEffect.Experience = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.ExperienceRange);
+            var scale = scaleByIntelligence ? (1 + characterIntelligence) : 1;
+
+            // Scaled Parameters
+            alterationEffect.Agility = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AgilityRange);
+            alterationEffect.Attack = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AttackRange);
+            alterationEffect.AuraRadius = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AuraRadiusRange);
+            alterationEffect.Defense = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DefenseRange);
+            alterationEffect.DodgeProbability = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DodgeProbabilityRange);
+            alterationEffect.Experience = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.ExperienceRange);
+            alterationEffect.FoodUsagePerTurn = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.FoodUsagePerTurnRange);
+            alterationEffect.Hp = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpRange);
+            alterationEffect.HpPerStep = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpPerStepRange);
+            alterationEffect.Hunger = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HungerRange);
+            alterationEffect.Intelligence = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.IntelligenceRange);
+            alterationEffect.MagicBlockProbability = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
+            alterationEffect.Mp = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
+            alterationEffect.MpPerStep = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
+            alterationEffect.Speed = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
+            alterationEffect.Strength = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
+            alterationEffect.CriticalHit = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
+
+            // Scaled - Attack Attributes
+            alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes
+                                                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                                                      .Select(x =>
+                                                      {
+                                                          x.Attack = scale * x.Attack;
+                                                          x.Resistance = scale * x.Resistance;
+
+                                                          return x;
+                                                      })
+                                                      .ToList();
+
+            // Non-Scaled Parameters
             alterationEffect.EventTime = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.EventTime);
-            alterationEffect.FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.FoodUsagePerTurnRange);
-            alterationEffect.Hp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpRange);
-            alterationEffect.HpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpPerStepRange);
-            alterationEffect.Hunger = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HungerRange);
-            alterationEffect.Intelligence = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.IntelligenceRange);
+
+            // Non-Scaled - Copied to aura effect so that it can detach from the spell
+            alterationEffect.EffectRange = effectRange;
+
             alterationEffect.IsSymbolAlteration = alterationEffectTemplate.IsSymbolAlteration;
-            alterationEffect.MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
-            alterationEffect.Mp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
-            alterationEffect.MpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
             alterationEffect.RogueName = alterationEffectTemplate.Name;
-            alterationEffect.Speed = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
             alterationEffect.State = _alteredStateGenerator.GenerateAlteredState(alterationEffectTemplate.AlteredState);
-            alterationEffect.Strength = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
             alterationEffect.SymbolAlteration = alterationEffectTemplate.SymbolAlteration;
             alterationEffect.RogueName = spellName;
             alterationEffect.DisplayName = spellDisplayName;
-            alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
             alterationEffect.CanSeeInvisibleCharacters = alterationEffectTemplate.CanSeeInvisibleCharacters;
 
             //Store remedied state name
             alterationEffect.RemediedStateName = alterationEffectTemplate.RemediedState.Name;
-
-            //Attack Attributes
-            alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes
-                                                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                      .ToList();
-
-            //Copied to aura effect so that it can detach from the spell
-            alterationEffect.EffectRange = effectRange;
 
             return alterationEffect;
         }
