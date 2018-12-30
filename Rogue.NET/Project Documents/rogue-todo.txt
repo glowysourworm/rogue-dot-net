@@ -344,6 +344,39 @@
 
 - Messages when objective has been acheived
 
+- Agility:  Figure out how calculations for Dodge are done
+
+		    - Should have an agility component; but not entirely because it wouldn't balance well
+
+			  Example:  Dodge = enemy.GetAgility() / player.GetAgility()
+
+						player agility = 100
+						enemy agility = 100
+
+						dodge = 1 => certain
+
+	        - Idea:  Can use trancendental function to describe dodge probability. Possibly an arctan 
+					 function or asymptotic function.
+
+					 MUST support attribute balancing.
+
+					 MEANS that you can modify it with Alterations.
+
+			  Example:  Dodge = enemy.GetDodge() + function(enemy.GetAgility(), player.GetAgility())
+
+						Where enemy.GetDodge() returns the base component (altered by all effects and equipment)
+						and the other component is the asymptotic component.
+
+						The sum should be less than or equal to 1. So, balance accordingly.
+
+			- Also:  Want to support "Miss Ratio" character stat - which has to be factored into the calculation. So,
+				     need better understanding or model for the asymptotic parts using Agility so that player can
+					 progress and balancing is more interesting.
+
+			- So... Basically - two parts to the calculations for "Dodge" and "Miss Ratio". A base part of the 
+					attribute - which is modifiable by alterations and equipment bonuses (or balances depending on class) - 
+					also by Alterations.. and an asymptotic part that is relative to the enemy's Agility.
+
 ---------
 						  
 - Add - Scenario details to Open screen

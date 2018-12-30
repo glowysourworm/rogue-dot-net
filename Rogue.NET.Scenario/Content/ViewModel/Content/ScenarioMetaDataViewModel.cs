@@ -110,8 +110,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.RogueName = metaData.RogueName;
             this.DisplayName = metaData.IsIdentified ? metaData.RogueName : "???";
             this.Type = metaData.Type;
-            this.Description = metaData.Description;
-            this.LongDescription = metaData.LongDescription;
+            this.Description = metaData.IsIdentified ? metaData.Description : "???";
+            this.LongDescription = metaData.IsIdentified ? metaData.LongDescription : "???";
             this.IsIdentified = metaData.IsIdentified;
             this.IsObjective = metaData.IsObjective;
             this.IsCursed = metaData.IsCursed;

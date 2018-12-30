@@ -12,6 +12,7 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Common.ViewModel;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario;
+using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -19,22 +20,30 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     [Export(typeof(RogueEncyclopediaViewModel))]
     public class RogueEncyclopediaViewModel : NotifyViewModel
     {
-        public ObservableCollection<RogueEncyclopediaCategoryViewModel> Categories { get; set; }
+        public PagedObservableCollection<RogueEncyclopediaCategoryViewModel> Categories { get; set; }
 
+        const int PAGE_SIZE = 6;
         const string OBJECTIVE_NAME = "Objective";
 
         [ImportingConstructor]
         public RogueEncyclopediaViewModel(IEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
-            this.Categories = new ObservableCollection<RogueEncyclopediaCategoryViewModel>();
+            this.Categories = new PagedObservableCollection<RogueEncyclopediaCategoryViewModel>(PAGE_SIZE);
 
-            CreateCategories(scenarioResourceService);
-
+            // Reset event
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                UpdateOrAdd(modelService, scenarioResourceService);
+                // First clear all categories and empty pages
+                this.Categories.Clear();
 
+                // Have to force a reset here and filter categories that are empty
+                CreateCategories(modelService, scenarioResourceService);
+
+                // Initialize the categories
+                UpdateOrAdd(modelService, scenarioResourceService);
             });
+
+            // Update event
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
                 switch (update.LevelUpdateType)
@@ -49,7 +58,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             });
         }
 
-        private void CreateCategories(IScenarioResourceService scenarioResourceService)
+        private void CreateCategories(IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
             var constructor = new Func<string, string, string, RogueEncyclopediaCategoryViewModel>((categoryName, categoryDisplayName, categoryDescription) =>
             {
@@ -92,7 +101,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 constructor("Enemy", "Enemy", "Characters that will likely try and hurt you"),
                 constructor("Skill", "Skill", "Skill sets that you can learn"),
                 constructor(OBJECTIVE_NAME, OBJECTIVE_NAME, "Enemies, Items, or Objects that are your mission objective")
-            });
+
+              // Filter all empty categories (always leave objective category)
+            }.Where(x => modelService.ScenarioEncyclopedia
+                                     .Values
+                                     .Any(z => z.Type == x.CategoryName) || x.IsObjectiveCategory));
         }
 
         private void UpdateOrAdd(IModelService modelService, IScenarioResourceService scenarioResourceService)
@@ -101,11 +114,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
             {
                 // Update base category
-                UpdateCategory(this.Categories.FirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
+                UpdateCategory(this.Categories.PagedFirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
 
                 // Update the objective category
                 if (metaData.IsObjective)
-                    UpdateCategory(this.Categories.First(x => x.CategoryName == OBJECTIVE_NAME), metaData, scenarioResourceService);
+                    UpdateCategory(this.Categories.PagedFirst(x => x.CategoryName == OBJECTIVE_NAME), metaData, scenarioResourceService);
             }
 
             OnPropertyChanged("Categories");
@@ -116,7 +129,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             if (category == null)
                 throw new Exception("Unknown Scenario MetaData Type");
 
-            var item = category.Items.FirstOrDefault(x => x.RogueName == metaData.RogueName);
+            var item = category.Items.PagedFirstOrDefault(x => x.RogueName == metaData.RogueName);
 
             // Add
             if (item == null)

@@ -6,6 +6,7 @@
              xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:control="clr-namespace:Rogue.NET.Scenario.Control"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              x:Class="Rogue.NET.Scenario.Views.DungeonEncyclopedia" d:DesignWidth="1241.5" d:DesignHeight="606.42">
 	<UserControl.Resources>
@@ -13,8 +14,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/EllipsePanel.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary>
-                    <converter:RogueMetaDataCategoryFilter x:Key="RogueMetaDataCategoryFilter" />
                     <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
                     <Style x:Key="CategoryTextBlockStyle" TargetType="TextBlock">
                         <Setter Property="Foreground" Value="White" />
@@ -77,7 +78,7 @@
                                     <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
                                     <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="False" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="Cyan" />
+                                <Setter Property="Foreground" Value="Goldenrod" />
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
@@ -86,7 +87,7 @@
                                     <Condition Binding="{Binding SelectedItem.IsUnique, ElementName=CategoryEntryLB}" Value="True" />
                                     <Condition Binding="{Binding SelectedItem.IsCursed, ElementName=CategoryEntryLB}" Value="True" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="Cyan" />
+                                <Setter Property="Foreground" Value="Goldenrod" />
                             </MultiDataTrigger>
                             
                             <!-- Cursed -->
@@ -334,6 +335,7 @@
 
                     <!-- Category Entry Attack Attributes -->
                     <ItemsControl ItemsSource="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.AttackAttributes}"
+                                  Visibility="{Binding ElementName=CategoryEntryLB, Path=SelectedItem.IsIdentified, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                                   ItemTemplate="{StaticResource AttackAttributeDataTemplate}"
                                   ItemContainerStyle="{StaticResource AttackAttributeContainerStyle}">
                         <ItemsControl.ItemsPanel>
@@ -397,11 +399,11 @@
                          BorderBrush="Transparent"
                          VirtualizingPanel.IsVirtualizing="False"
                          ItemContainerStyle="{StaticResource EllipseListBoxItemStyle}"
-                         ItemsSource="{Binding Categories, Converter={StaticResource RogueMetaDataCategoryFilter}}">
+                         ItemsSource="{Binding Categories}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <control:EllipsePanel SelectedItem="{Binding ElementName=CategoryLB, Path=SelectedItem}" 
-                                                  ItemWidth="40"
+                                                  ItemWidth="46"
                                                   ItemHeight="60"
                                                   ItemPadding="60"
                                                   IsItemsHost="True" 
@@ -409,11 +411,50 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-                <TextBlock Text="{Binding Path=SelectedItem.CategoryDisplayName, ElementName=CategoryLB}"
+                <StackPanel Margin="0,20,0,0"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                    
+                    <TextBlock Text="{Binding Path=SelectedItem.CategoryDisplayName, ElementName=CategoryLB}"
                            Style="{StaticResource CategoryTextBlockStyle}"
                            FontSize="22"
+                           Margin="0,0,0,20"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Center" />
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button Style="{StaticResource ShinyTextButtonStyle}" 
+                            Command="{Binding CategoryPreviousPageCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}"
+                            Height="28" Width="28" 
+                            Cursor="Hand"
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="&#xf060;"
+                            Margin="0,0,20,0"
+                            BorderBrush="White" 
+                            Background="Black" 
+                            Foreground="White" />
+
+                        <TextBlock 
+                           FontSize="16"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                            <Run Text="Page " />
+                            <Run Text="{Binding CategoryPageNumber, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}" />
+                            <Run Text="/" />
+                            <Run Text="{Binding CategoryPageCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}" />
+                        </TextBlock>
+
+                        <Button Style="{StaticResource ShinyTextButtonStyle}" 
+                            Command="{Binding CategoryNextPageCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}"
+                            Height="28" Width="28" 
+                            Cursor="Hand"
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="&#xf061;"
+                            Margin="20,0,0,0"
+                            BorderBrush="White" 
+                            Background="Black" 
+                            Foreground="White" />
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </Border>
         <Border Grid.Column="1" Style="{StaticResource CategoryEntryBorderStyle}" Margin="8" Grid.Row="1" BorderThickness="1" CornerRadius="10" >
@@ -434,12 +475,49 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-                <TextBlock Text="{Binding Path=SelectedItem.DisplayName, ElementName=CategoryEntryLB}"
+
+                <StackPanel Margin="0,20,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Path=SelectedItem.DisplayName, ElementName=CategoryEntryLB}"
                            Style="{StaticResource CategoryEntryTextBlockStyle}"
                            FontSize="22"
+                           Margin="0,0,0,20"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Center" />                
-        	</Grid>
+                           HorizontalAlignment="Center" />
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button Style="{StaticResource ShinyTextButtonStyle}" 
+                            Command="{Binding EntryPreviousPageCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}"
+                            Height="28" Width="28" 
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="&#xf060;"
+                            Margin="0,0,20,0"
+                            BorderBrush="White" 
+                            Background="Black" 
+                            Foreground="White" />
+
+                        <TextBlock 
+                           FontSize="16"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center">
+                            <Run Text="Page " />
+                            <Run Text="{Binding EntryPageNumber, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}" />
+                            <Run Text="/" />
+                            <Run Text="{Binding EntryPageCount, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}" />
+                        </TextBlock>
+
+                        <Button Style="{StaticResource ShinyTextButtonStyle}" 
+                            Command="{Binding EntryNextPageCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DungeonEncyclopedia}}}"
+                            Height="28" Width="28" 
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="&#xf061;"
+                            Margin="20,0,0,0"
+                            BorderBrush="White" 
+                            Background="Black" 
+                            Foreground="White" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

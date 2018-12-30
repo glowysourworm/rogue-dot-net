@@ -233,7 +233,6 @@
     <Compile Include="Converter\ItemGridIntendedActionTextConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
     <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
-    <Compile Include="Converter\RogueMetaDataCategoryFilter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
     <Compile Include="Converter\SkillSetProgressConverter.cs" />
