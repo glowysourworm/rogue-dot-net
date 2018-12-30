@@ -377,6 +377,29 @@
 					attribute - which is modifiable by alterations and equipment bonuses (or balances depending on class) - 
 					also by Alterations.. and an asymptotic part that is relative to the enemy's Agility.
 
+- Enemy List:  Similar to enemy scope; but is a list of enemys just during combat. Shows all enemies in visible range
+			   and their relevant attributes - (Mostly progress Health bar would be the best).
+
+			   Several Ideas...
+
+			   Idea:  Only show health meter until "Knowledge" of this enemy is increased
+
+					  - Maybe, increase using a ratio or function of enemy / player intelligence
+					  - Increase based on defeating many of the same enemies
+					  - Possibly increase based on alteration (NOT LIKELY)
+
+			   Idea:  Show in the dialog window using a split window during combat
+
+			   Idea:  Show the last hit as first in the list. So, do an insert at the top for the last
+					  enemy hit.
+
+			   Idea:  Show this meter over the head of each enemy (similar to a live action game)
+
+					  LIKE THIS IDEA:  It saves lots of room; and would be simple if included as part of
+									   a custom framework element for each enemy. Just create a framework 
+									   element; and set the progress bar's render transform to offset it 
+									   "above their heads".
+
 ---------
 						  
 - Add - Scenario details to Open screen
@@ -409,7 +432,6 @@
 - Fix - Problem with Blindness - didn't recalculate enemy visibility immediately
 - Fix - Zealots didn't move around
 - Fix - Enemy opens door - trigger topology change (something went wrong.. didn't show door opened)
-- Fix - Unique text color in Rogue Encyclopedia
 - Fix - Apply limits to MP (negative value on Lynx evaporate MP)
 - Fix - Update player symbol when activating skill (should be done on turn)
 - Fix - Add Attack Attribute melee message to player spell and enemy spell (meleetarget)
@@ -425,5 +447,49 @@
 IMMEDIATE TODO'S:
 
 	- Intelligence Scaled Alterations:  TotalValue = Value * (1 + Character.GetIntelligence()) applied to any alteration effect.		
-	- Finish up Rogue Encyclopedia:  Implement paging, fix minor error with display (non-identified text, total progress, etc...)
-	- Above Fix / ISSUE / Change / Add (NECESSARY ONLY)
+
+		- Idea:  Similar to Dodge and Miss Ratio - have two parts to Intelligence based combat.
+
+				 ***INTELLIGENCE BASED ALTERATIONS ONLY***
+
+				 Block = function (defender's base intelligence, defender's Alterations) + 
+						 function (defender's total intelligence, attacker's total intelligence)
+
+				 Combat Value = function (attacker's total intelligence * Alteration Paraeters) - 
+								function (defender's total intelligence)
+
+				 So, the combat value is both scaled by the attacker's BASE intelligence * Alteration Parameters
+				 AND the defense value which is a function of the defender's intelligence.
+
+				 Also, a "Block" means that the attackee has completely negated the Alteration.
+
+				 Point #1:  Each of the "Block" and "Combat Value" have 2 distinct parts. The first is a
+							function of the BASE Intelligence (for Block). This would provide scaling up based on
+							just the innate property of the character. The Attack is given extra weight because
+							it takes the attacker's TOTAL intelligence into account. The defender also has
+							a chance to utilize this total for defense.
+
+							The 2nd part of the "Block" calculation is an asymptotic function based on some ratio 
+							of each character's TOTAL intelligence. This would provide an adjustment for character level and
+							otherwise relative intelligence.
+
+				 Point #2:  The BASE part of each of these can/should be modified/modifiable by an
+						    Alteration Effect. These would provide an absolute offset to the the base. Such
+							alterations can be passive equipment bonuses (or character class if that's introduced).
+
+		- Design Problem:   Implementing target Alteration Effects with Intelligence Scaling requires that they're calculated
+							BEFORE detaching to send to the target character's Alteration list. 
+
+							This will apply to both source and target alterations to avoid ambiguity; and only for those
+							that are marked "Scale with Intelligence".
+
+		- Agility Scaled Combat:  (Described Above). Going to implement now as it's similar to intelligence scaled
+								  combat; and would provide some actual dynamics to the current relative agility 
+								  scaling of the scenario enemies. 
+
+								  Also, would want to go back and adjust balancing based on these new ideas - so should
+								  do both immediately.
+
+								  For now, JUST DO DODGE CALCULATION. That will provide enough to balance until there's
+								  enough time to go back and do character classes.
+				 

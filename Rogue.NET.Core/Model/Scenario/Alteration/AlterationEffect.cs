@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
     {
         public SymbolDetailsTemplate SymbolAlteration { get; set; }
         public bool IsSymbolAlteration { get; set; }
-        public bool CanSeeInvisibleCharacters { get; set; }
+        public bool CanSeeInvisibleCharacters { get; set; }        
 
         public string DisplayName { get; set; }
 

@@ -17,6 +17,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
         private bool _stackable;
+        private bool _scaledByIntelligence;
         private string _createMonsterEnemy;
         private string _displayName;
 
@@ -59,6 +60,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _stackable; }
             set { this.RaiseAndSetIfChanged(ref _stackable, value); }
+        }
+        public bool ScaledByIntelligence
+        {
+            get { return _scaledByIntelligence; }
+            set { this.RaiseAndSetIfChanged(ref _scaledByIntelligence, value); }
         }
         public string CreateMonsterEnemy
         {

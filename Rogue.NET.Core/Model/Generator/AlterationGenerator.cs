@@ -55,6 +55,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.GeneratingSpellId = spell.Id;
             alterationContainer.GeneratingSpellName = spell.RogueName;
             alterationContainer.IsStackable = spell.IsStackable;
+            alterationContainer.ScaledByIntelligence = spell.ScaledByIntelligence;
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
             return alterationContainer;

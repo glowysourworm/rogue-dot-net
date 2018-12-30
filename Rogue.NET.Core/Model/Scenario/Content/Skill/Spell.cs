@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public AlterationAttackAttributeType AttackAttributeType { get; set; }
 
         public bool IsStackable { get; set; }
+        public bool ScaledByIntelligence { get; set; }
         public double EffectRange { get; set; }        
         public string CreateMonsterEnemyName { get; set; }
         public string DisplayName { get; set; }

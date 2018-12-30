@@ -18,6 +18,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
         private bool _stackable;
+        private bool _scaledByIntelligence;
         private string _createMonsterEnemy;
         private string _displayName;
 
@@ -114,6 +115,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _stackable = value;
                     OnPropertyChanged("Stackable");
+                }
+            }
+        }
+        public bool ScaledByIntelligence
+        {
+            get { return _scaledByIntelligence; }
+            set
+            {
+                if (_scaledByIntelligence != value)
+                {
+                    _scaledByIntelligence = value;
+                    OnPropertyChanged("ScaledByIntelligence");
                 }
             }
         }

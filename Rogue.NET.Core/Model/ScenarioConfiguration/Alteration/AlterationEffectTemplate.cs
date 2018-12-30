@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             {
                 if (_canSeeInvisibleCharacters != value)
                 {
-                    _isSymbolAlteration = value;
+                    _canSeeInvisibleCharacters = value;
                     OnPropertyChanged("CanSeeInvisibleCharacters");
                 }
             }

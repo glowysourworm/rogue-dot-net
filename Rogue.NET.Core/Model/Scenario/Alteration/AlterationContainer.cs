@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public AlterationAttackAttributeType AttackAttributeType { get; set; }
         public double EffectRange { get; set; }
         public bool IsStackable { get; set; }
+        public bool ScaledByIntelligence { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

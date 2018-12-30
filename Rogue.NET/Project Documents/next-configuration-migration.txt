@@ -1,0 +1,23 @@
+﻿Configuration Migration
+-----------------------
+
+This is to get a list of changes to make to the scenario configuration that I'd like to do 
+next time I refactor it.
+
+- Attack Attribute Weakness: change to a value 0-5000 and re-do the code calculation to just divide by 500 which creates (0-10).
+
+- Decouple Alterations: Separate into sub-classes and set targeting type instead of a single enum. Also, separate
+						and reduce parameter sets to just what's needed. Intelligence scaling should have its own
+						set.. ETC... THINK FOR A WHILE. LOTS TO DO HERE.
+
+						ALSO, think of a way to refactor the Alteration to remove SpellId / SpellName / etc... from
+						the AlterationContainer. This is used to identify sources of passive alterations; and should
+						be refactored to remove saving state there.
+
+- Refactor Symbol Details: Separate Symbol Alterations out and add those to the Alteration Effect separately. Also
+							include Symbol randomization.
+
+- Layout Template:  Converge Level content and Layout Design into "Level Template". Remove Level Range from each 
+					asset and just add assets to each level with a generation rate.
+
+- Remove Pens
