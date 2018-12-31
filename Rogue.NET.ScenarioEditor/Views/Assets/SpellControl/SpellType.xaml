@@ -238,7 +238,7 @@
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.MeleeTarget}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
-                                    Text="Melee Target: Calcualtes a one-time hit to the target" />
+                                        Text="Combat (Intelligence Based): Calcualtes a one-time hit to the target using Intelligence Scaling (where it's configured)" />
                         </RadioButton.Content>
                     </RadioButton>
                 </StackPanel>

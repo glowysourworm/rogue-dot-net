@@ -44,70 +44,100 @@
                             <Grid Margin="10,5,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Party Room Generation (per level)" />
                                 <toolkit:DoubleUpDown Value="{Binding PartyRoomGenerationRate, Mode=TwoWay}" Minimum="0" Maximum="1" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
-                            </Grid>                            
+                            </Grid>
                             <StackPanel Margin="10,5,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" />
                                 <extension:UpdatingTextBox Margin="0,5,0,5" Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True"  Foreground="White" />
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Attack Attributes">
+                    <TabItem Header="Combat Attributes">
                         <StackPanel>
-                            <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Attack Attributes are attached to equipment items and enemies as a way to balance combat in the scenario. Besides core attributes (strength, agility, intelligence) you can define your own attributes here - making them available to attach to enemies and items. (See manual for more details)" />
+                            <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Combat Attributes are attached to equipment items and enemies as a way to balance combat in the scenario. Besides core attributes (strength, agility, intelligence) you can define your own attributes here - making them available to attach to enemies and items. (See manual for more details)" />
                             <Grid Margin="10,0,10,0">
-                                <StackPanel x:Name="NewAttributeStack" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <StackPanel x:Name="NewCombatAttributeStack" Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Margin="8" VerticalAlignment="Top" Text="New Attribute: " Foreground="White" />
-                                    <extension:UpdatingTextBox x:Name="AttributeTB" VerticalAlignment="Top" Margin="8" Width="100" />
-                                    <Button x:Name="AttributeSymbolButton" Click="AttributeSymbolButton_Click" Height="24" Width="110">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Height="15" Width="10" Margin="4">
-                                                <Image.Source>
-                                                    <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                        <Binding Path="CharacterSymbol" />
-                                                        <Binding Path="CharacterColor" />
-                                                        <Binding Path="Icon" />
-                                                        <Binding Path="SmileyMood" />
-                                                        <Binding Path="SmileyBodyColor" />
-                                                        <Binding Path="SmileyLineColor" />
-                                                        <Binding Path="SmileyAuraColor" />
-                                                        <Binding Path="Type" />
-                                                    </MultiBinding>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock Text="Edit Symbol" Margin="4" />
-                                        </StackPanel>
-                                    </Button>
-                                    <Button x:Name="AddButton" ToolTip="Add" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
-                                    <Button x:Name="RemoveButton" ToolTip="Remove" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                    <extension:UpdatingTextBox x:Name="CombatAttributeTB" VerticalAlignment="Top" Margin="8" Width="100" />
+                                    <Button x:Name="AddCombatAttributeButton" ToolTip="Add" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                    <Button x:Name="RemoveCombatAttributeButton" ToolTip="Remove" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                 </StackPanel>
                             </Grid>
-                            <GroupBox Header="Attack Attribute List" Margin="10">
-                                <ListBox x:Name="AttackAttribLB" ItemsSource="{Binding AttackAttributes}" MaxHeight="180" SelectionMode="Single">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Background="Transparent">
-                                                <Image HorizontalAlignment="Left">
+                            <GroupBox Header="Combat Attribute List" Margin="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <ListBox x:Name="CombatAttribLB" 
+                                             Grid.Column="0"
+                                             ItemsSource="{Binding CombatAttributes}" 
+                                             Margin="10"
+                                             Height="200" 
+                                             SelectionMode="Single"
+                                             VerticalAlignment="Top">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image HorizontalAlignment="Left" Margin="4">
+                                                        <Image.Source>
+                                                            <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                                <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                                <Binding Path="SymbolDetails.CharacterColor" />
+                                                                <Binding Path="SymbolDetails.Icon" />
+                                                                <Binding Path="SymbolDetails.SmileyMood" />
+                                                                <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                                <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                                <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                                <Binding Path="SymbolDetails.Type" />
+                                                            </MultiBinding>
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                    <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                        <Button x:Name="CombatAttributeSymbolButton" Click="AttributeSymbolButton_Click" Margin="10" HorizontalAlignment="Left" Height="24" Width="110">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Height="15" Width="10" Margin="4">
                                                     <Image.Source>
                                                         <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
-                                                            <Binding Path="SymbolDetails.CharacterColor" />
-                                                            <Binding Path="SymbolDetails.Icon" />
-                                                            <Binding Path="SymbolDetails.SmileyMood" />
-                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
-                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                                            <Binding Path="SymbolDetails.Type" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.CharacterSymbol" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.CharacterColor" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.Icon" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.SmileyMood" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.SmileyBodyColor" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.SmileyLineColor" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.SmileyAuraColor" />
+                                                            <Binding ElementName="CombatAttribLB" Path="SelectedItem.SymbolDetails.Type" />
                                                         </MultiBinding>
                                                     </Image.Source>
                                                 </Image>
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="36,0,0,0" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                                <TextBlock Text="Edit Symbol" Margin="4" />
+                                            </StackPanel>
+                                        </Button>
+                                        <Grid Margin="10">
+                                            <TextBlock Text="Use for Physical Combat" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <CheckBox IsChecked="{Binding ElementName=CombatAttribLB, Path=SelectedItem.AppliesToStrengthBasedCombat}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Grid>
+                                        <Grid Margin="10">
+                                            <TextBlock Text="Physical Combat Scaled By Strength [X = X * (1 + Strength)]" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <CheckBox IsChecked="{Binding ElementName=CombatAttribLB, Path=SelectedItem.ScaledByStrength}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Grid>                                        
+                                        <Grid Margin="10">
+                                            <TextBlock Text="Use for Alteration Combat" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <CheckBox IsChecked="{Binding ElementName=CombatAttribLB, Path=SelectedItem.AppliesToIntelligenceBasedCombat}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Grid>
+                                        <Grid Margin="10">
+                                            <TextBlock Text="Alteration Combat Scaled By Intelligence [X = X * (1 + Intelligence)]" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <CheckBox IsChecked="{Binding ElementName=CombatAttribLB, Path=SelectedItem.ScaledByIntelligence}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
                             </GroupBox>
                         </StackPanel>
-                    </TabItem>
+                    </TabItem>                    
                     <TabItem Header="Altered Character States">
                         <StackPanel x:Name="AlteredStateStack">
                             <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Altered Character States are altered states that you can define here; and are available to attach to alterations. They are based on types supported by Rogue.NET such as &quot;Can't Move&quot; (Paralyzed) or &quot;Moves Randomly&quot; (Confused). Use these to define an array of special types to attach to your Alterations. NOTE*** These types support Remedies - which are applied to remove Alteration Effects with these altered types." />

@@ -15,6 +15,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
 using Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl;
@@ -180,21 +181,17 @@ namespace Rogue.NET.ScenarioEditor
             {
                 LoadConstruction(e.ConstructionName);
             });
-            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<AddCombatAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
-                // Add Attack Attribute to the scenario
-                _scenarioEditorController.CurrentConfig.AttackAttributes.Add(new DungeonObjectTemplateViewModel()
-                {
-                    Name = e.Name,
-                    SymbolDetails = e.SymbolDetails
-                });
+                // Add Combat Attribute to the scenario
+                _scenarioEditorController.CurrentConfig.CombatAttributes.Add(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
@@ -203,17 +200,33 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<RemoveCombatAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
-                // Remove Attack Attribute from the scenario
-                _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e);
+                // Remove Combat Attribute from the scenario
+                _scenarioEditorController.CurrentConfig.CombatAttributes.Remove(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
+                LoadConstruction("General");
+            });
+            _eventAggregator.GetEvent<UpdateCombatAttributeEvent>().Subscribe((e) =>
+            {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();

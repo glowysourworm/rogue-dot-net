@@ -21,8 +21,8 @@
             <TabItem Header="Behavior">
                 <ContentControl prism:RegionManager.RegionName="EnemyBehaviorRegion" />
             </TabItem>
-            <TabItem Header="Attack Attributes">
-                <enemy:EnemyAttackAttributes />
+            <TabItem Header="Combat Attributes">
+                <enemy:EnemyCombatAttributes />
             </TabItem>
             <TabItem Header="Items">
                 <ContentControl prism:RegionManager.RegionName="EnemyItemsRegion" />

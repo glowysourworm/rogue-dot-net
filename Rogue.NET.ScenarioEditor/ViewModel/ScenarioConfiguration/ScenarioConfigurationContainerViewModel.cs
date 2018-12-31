@@ -35,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ObservableCollection<SpellTemplateViewModel> MagicSpells { get; set; }
         public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
         public ObservableCollection<DungeonObjectTemplateViewModel> AttackAttributes { get; set; }
+        public ObservableCollection<CombatAttributeTemplateViewModel> CombatAttributes { get; set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; set; }
 
         public ScenarioConfigurationContainerViewModel()
@@ -51,6 +52,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.DoodadTemplates = new ObservableCollection<DoodadTemplateViewModel>();
             this.PenTemplates = new ObservableCollection<PenTemplateViewModel>();
             this.AttackAttributes = new ObservableCollection<DungeonObjectTemplateViewModel>();
+            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
         }
 

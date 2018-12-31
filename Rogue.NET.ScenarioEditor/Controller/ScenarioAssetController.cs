@@ -80,7 +80,7 @@ namespace Rogue.NET.ScenarioEditor.Controller
             _undoService.Block();
 
             // Update Asset References - (Example: Attack Attributes for enemy or alteration or other affected object)
-            _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+            _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
 
             // Restore Undo Service
             _undoService.UnBlock();

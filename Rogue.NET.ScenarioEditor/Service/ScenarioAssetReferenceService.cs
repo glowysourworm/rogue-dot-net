@@ -5,10 +5,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -64,19 +62,19 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateCollection(configuration.AnimationTemplates, enemy.DeathAnimations);
         }
 
-        public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateCombatAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
             // Alterations
             foreach (var spell in configuration.MagicSpells)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
+                UpdateCombatAttributeCollection(configuration.CombatAttributes, spell.Effect.CombatAttributes);
 
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
+                UpdateCombatAttributeCollection(configuration.CombatAttributes, equipment.CombatAttributes);
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
+                UpdateCombatAttributeCollection(configuration.CombatAttributes, enemy.CombatAttributes);
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
@@ -172,17 +170,13 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
         }
 
-        private void UpdateAttackAttributeCollection(IList<DungeonObjectTemplateViewModel> source, IList<AttackAttributeTemplateViewModel> dest)
+        private void UpdateCombatAttributeCollection(IList<CombatAttributeTemplateViewModel> source, IList<CombatAttributeTemplateViewModel> dest)
         {
             // Create
             foreach (var attrib in source)
             {
                 if (!dest.Any(a => a.Name == attrib.Name))
-                    dest.Add(new AttackAttributeTemplateViewModel()
-                    {
-                        Name = attrib.Name,
-                        SymbolDetails = attrib.SymbolDetails
-                    });
+                    dest.Add(attrib.DeepClone());
 
                 // Update
                 else
@@ -196,6 +190,11 @@ namespace Rogue.NET.ScenarioEditor.Service
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
                     existing.SymbolDetails.SmileyMood = attrib.SymbolDetails.SmileyMood;
                     existing.SymbolDetails.Type = attrib.SymbolDetails.Type;
+
+                    existing.AppliesToIntelligenceBasedCombat = attrib.AppliesToIntelligenceBasedCombat;
+                    existing.AppliesToStrengthBasedCombat = attrib.AppliesToStrengthBasedCombat;
+                    existing.ScaledByStrength = attrib.ScaledByStrength;
+                    existing.ScaledByIntelligence = attrib.ScaledByIntelligence;
                 }
             }
 
