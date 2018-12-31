@@ -19,6 +19,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new ScenarioMetaData()
             {
                 AttackAttributes = new List<AttackAttributeTemplate>(),
+                CombatAttributes = new List<CombatAttributeTemplate>(),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
@@ -47,6 +48,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new ScenarioMetaData()
             {
                 AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
+                CombatAttributes = new List<CombatAttributeTemplate>(template.CombatAttributes),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
@@ -75,6 +77,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new ScenarioMetaData()
             {
                 AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
+                CombatAttributes = new List<CombatAttributeTemplate>(template.CombatAttributes),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
@@ -103,6 +106,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new ScenarioMetaData()
             {
                 AttackAttributes = new List<AttackAttributeTemplate>(),
+                CombatAttributes = new List<CombatAttributeTemplate>(),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
@@ -131,6 +135,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new ScenarioMetaData()
             {
                 AttackAttributes = new List<AttackAttributeTemplate>(),
+                CombatAttributes = new List<CombatAttributeTemplate>(),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,

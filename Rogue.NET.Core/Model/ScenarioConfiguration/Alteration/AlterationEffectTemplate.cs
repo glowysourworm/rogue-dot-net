@@ -311,6 +311,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         }
 
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
+        public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         public AlterationEffectTemplate()
         {
@@ -338,6 +339,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.CriticalHit = new Range<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new List<AttackAttributeTemplate>();
+            this.CombatAttributes = new List<CombatAttributeTemplate>();
             this.RemediedState = new AlteredCharacterStateTemplate();
         }
     }

@@ -8,6 +8,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     public class EnemyTemplateViewModel : CharacterTemplateViewModel
     {
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
+        public ObservableCollection<CombatAttributeTemplateViewModel> CombatAttributes { get; set; }
         public ObservableCollection<AnimationTemplateViewModel> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
@@ -42,6 +43,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
         }
         public EnemyTemplateViewModel(DungeonObjectTemplateViewModel template) : base(template)
@@ -50,6 +52,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
         }
     }

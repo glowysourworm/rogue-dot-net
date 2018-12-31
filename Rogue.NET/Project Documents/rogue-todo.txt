@@ -523,3 +523,8 @@ IMMEDIATE TODO'S:
 				4) Fix scale of Attack and Resistance (0 - 1000)
 
 				5) Systematize Attack Attributes for futue concerns (possibly Agility scaled attributes)
+
+				6) Separate the UI to show applying either Attack or Resistance based on usage. Also 
+				   Describe "MeleeTarget" alteration as "Intelligence Based Combat".
+
+		- Nice to have:  Explain attack attributes by having a separate UI to show how they apply
