@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private Range<double> _mpRange;
         private Range<double> _criticalHit;
 
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public SymbolDetailsTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
@@ -335,9 +335,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             }
         }
 
-        [ProtoMember(24, AsReference = true)]
+        [ProtoMember(24)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        [ProtoMember(25, AsReference = true)]
+        [ProtoMember(25)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         public AlterationEffectTemplate()

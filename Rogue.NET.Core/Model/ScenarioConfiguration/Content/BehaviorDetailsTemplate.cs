@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private double _criticalRatio;
         private double _counterAttackProbability;
 
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public BehaviorTemplate PrimaryBehavior
         {
             get { return _primaryBehavior; }
@@ -33,7 +33,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2, AsReference = true)]
+        [ProtoMember(2)]
         public BehaviorTemplate SecondaryBehavior
         {
             get { return _secondaryBehavior; }

@@ -25,18 +25,6 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Creates a copy using the BinaryFormatted
-        /// </summary>
-        public static T Copy<T>(this T source)
-        {
-            // Didn't work for ScenarioConfgiurationContainer
-            // return Mapper.DeepClone<T>(source);
-
-            var buffer = BinarySerializer.Serialize(source);
-            return (T)BinarySerializer.Deserialize(buffer);
-        }
-
-        /// <summary>
         /// Creates a copy using the Agile Mapper
         /// </summary>
         public static T DeepClone<T>(this T source)
@@ -48,7 +36,8 @@ namespace Rogue.NET.Common.Extension
         {
             var logic = new CompareLogic(new ComparisonConfig()
             {
-                MaxStructDepth = 5  
+                MaxStructDepth = 5,
+                MaxDifferences = 5
             });
 
             return logic.Compare(source, dest).AreEqual;

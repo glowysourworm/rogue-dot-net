@@ -11,9 +11,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [ProtoInclude(10, typeof(EnemyTemplate))]
     public class CharacterTemplate : DungeonObjectTemplate
     {
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public List<ProbabilityEquipmentTemplate> StartingEquipment { get; set; }
-        [ProtoMember(2, AsReference = true)]
+        [ProtoMember(2)]
         public List<ProbabilityConsumableTemplate> StartingConsumables { get; set; }
 
         private Range<double> _strength;

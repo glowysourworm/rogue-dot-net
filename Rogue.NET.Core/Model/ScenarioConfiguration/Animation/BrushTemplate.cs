@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         private double _gradientEndX;
         private double _gradientEndY;
 
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public List<GradientStopTemplate> GradientStops { get; set; }
         [ProtoMember(2)]
         public BrushType Type

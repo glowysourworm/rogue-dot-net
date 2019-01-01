@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private bool _isObjectiveItem;
         private bool _hasBeenGenerated;
 
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public SymbolDetailsTemplate SymbolDetails
         {
             get { return _symbolDetails; }

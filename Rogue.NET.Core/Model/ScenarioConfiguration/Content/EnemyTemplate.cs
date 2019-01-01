@@ -10,9 +10,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class EnemyTemplate : CharacterTemplate
     {
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        [ProtoMember(2, AsReference = true)]
+        [ProtoMember(2)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
         [ProtoMember(3, AsReference = true)]
         public List<AnimationTemplate> DeathAnimations { get; set; }
@@ -61,7 +61,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(7, AsReference = true)]
+        [ProtoMember(7)]
         public BehaviorDetailsTemplate BehaviorDetails
         {
             get { return _behaviorDetails; }

@@ -11,9 +11,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class EquipmentTemplate : DungeonObjectTemplate
     {
-        [ProtoMember(1, AsReference = true)]
+        [ProtoMember(1)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        [ProtoMember(2, AsReference = true)]
+        [ProtoMember(2)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         private Range<int> _class;
