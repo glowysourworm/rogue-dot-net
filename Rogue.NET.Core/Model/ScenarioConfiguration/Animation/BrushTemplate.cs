@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
     }
 
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     [ProtoInclude(9, typeof(PenTemplate))]
     public class BrushTemplate : Template
     {

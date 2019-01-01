@@ -52,6 +52,8 @@ namespace Rogue.NET.Core.Service
 
             using (var stream = File.OpenRead(path))
             {
+                //return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(File.ReadAllBytes(path));
+
                 return Serializer.Deserialize<ScenarioConfigurationContainer>(stream);
             }
         }

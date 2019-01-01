@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class SpellTemplate : DungeonObjectTemplate
     {
         private AlterationCostTemplate _cost;

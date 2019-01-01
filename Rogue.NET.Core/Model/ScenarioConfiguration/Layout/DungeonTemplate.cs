@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class DungeonTemplate : Template
     {
         private int _numberOfLevels;

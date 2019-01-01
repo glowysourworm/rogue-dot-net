@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class CombatAttributeTemplate : DungeonObjectTemplate
     {
         private Range<double> _attack;

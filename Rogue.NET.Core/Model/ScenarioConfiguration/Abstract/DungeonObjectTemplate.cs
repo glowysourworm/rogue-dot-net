@@ -6,7 +6,7 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     [ProtoInclude(10, typeof(CharacterTemplate))]
     [ProtoInclude(11, typeof(EquipmentTemplate))]
     [ProtoInclude(12, typeof(DoodadTemplate))]

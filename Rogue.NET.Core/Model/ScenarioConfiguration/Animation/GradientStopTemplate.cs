@@ -6,7 +6,7 @@ using System.Windows.Media;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class GradientStopTemplate : Template
     {
         private string _gradientColor;

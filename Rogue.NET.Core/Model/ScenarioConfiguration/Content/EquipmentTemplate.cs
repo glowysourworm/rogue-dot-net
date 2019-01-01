@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class EquipmentTemplate : DungeonObjectTemplate
     {
         [ProtoMember(1, AsReference = true)]

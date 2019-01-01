@@ -7,7 +7,7 @@ using System.Windows.Media;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class LayoutTemplate : Template
     {
         private int _numberRoomRows;

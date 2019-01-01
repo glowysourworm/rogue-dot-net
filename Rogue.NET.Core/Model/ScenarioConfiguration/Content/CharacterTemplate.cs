@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     [ProtoInclude(9, typeof(PlayerTemplate))]
     [ProtoInclude(10, typeof(EnemyTemplate))]
     public class CharacterTemplate : DungeonObjectTemplate

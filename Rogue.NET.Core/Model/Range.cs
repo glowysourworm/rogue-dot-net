@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace Rogue.NET.Core.Model
 {
     [Serializable]
-    [ProtoContract]
+    [ProtoContract(SkipConstructor = true)]
     public class Range<T> where T : IComparable<T>
     {
         [ProtoMember(1)]

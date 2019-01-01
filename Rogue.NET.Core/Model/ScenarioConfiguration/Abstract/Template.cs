@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     [ProtoInclude(3, typeof(ProbabilityEquipmentTemplate))]
     [ProtoInclude(4, typeof(ProbabilityConsumableTemplate))]
     [ProtoInclude(5, typeof(DungeonObjectTemplate))]

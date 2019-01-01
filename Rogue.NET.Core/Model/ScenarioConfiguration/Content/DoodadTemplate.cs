@@ -6,7 +6,7 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class DoodadTemplate : DungeonObjectTemplate
     {
         private SpellTemplate _automaticMagicSpellTemplate;

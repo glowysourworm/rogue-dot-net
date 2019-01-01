@@ -7,7 +7,7 @@ using System.Windows.Media;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class SymbolDetailsTemplate : Template
     {
         private SymbolTypes _type;

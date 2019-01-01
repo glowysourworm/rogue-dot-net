@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class AlteredCharacterStateTemplate : DungeonObjectTemplate
     {
         [ProtoMember(1)]
