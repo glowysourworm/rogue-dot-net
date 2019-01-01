@@ -48,7 +48,7 @@ namespace Rogue.NET.Common.Extension
         {
             var logic = new CompareLogic(new ComparisonConfig()
             {
-                MaxStructDepth = 5
+                MaxStructDepth = 5  
             });
 
             return logic.Compare(source, dest).AreEqual;

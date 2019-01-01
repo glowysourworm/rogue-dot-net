@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
     public class AlterationEffectTemplate : Template
     {
         private SymbolDetailsTemplate _symbolAlteration;
@@ -31,8 +33,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private Range<double> _hungerRange;
         private Range<double> _hpRange;
         private Range<double> _mpRange;
-        private Range<double> _criticalHit;        
+        private Range<double> _criticalHit;
 
+        [ProtoMember(1, AsReference = true)]
         public SymbolDetailsTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
@@ -45,6 +48,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(2)]
         public bool IsSymbolAlteration
         {
             get { return _isSymbolAlteration; }
@@ -57,6 +61,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(3)]
         public bool CanSeeInvisibleCharacters
         {
             get { return _canSeeInvisibleCharacters; }
@@ -69,6 +74,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(4)]
         public Range<int> EventTime
         {
             get { return _eventTime; }
@@ -81,6 +87,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(5, AsReference = true)]
         public AlteredCharacterStateTemplate AlteredState
         {
             get { return _alteredState; }
@@ -93,6 +100,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(6, AsReference = true)]
         public AlteredCharacterStateTemplate RemediedState
         {
             get { return _remediedState; }
@@ -105,6 +113,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(7)]
         public Range<double> StrengthRange
         {
             get { return _strengthRange; }
@@ -117,6 +126,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(8)]
         public Range<double> IntelligenceRange
         {
             get { return _intelligenceRange; }
@@ -129,6 +139,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(9)]
         public Range<double> AgilityRange
         {
             get { return _agilityRange; }
@@ -141,6 +152,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(10)]
         public Range<double> SpeedRange
         {
             get { return _speedRange; }
@@ -153,6 +165,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(11)]
         public Range<double> AuraRadiusRange
         {
             get { return _auraRadiusRange; }
@@ -165,6 +178,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(12)]
         public Range<double> FoodUsagePerTurnRange
         {
             get { return _foodUsagePerTurnRange; }
@@ -177,6 +191,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(13)]
         public Range<double> HpPerStepRange
         {
             get { return _hpPerStepRange; }
@@ -189,6 +204,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(14)]
         public Range<double> MpPerStepRange
         {
             get { return _mpPerStepRange; }
@@ -201,6 +217,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(15)]
         public Range<double> AttackRange
         {
             get { return _attackRange; }
@@ -213,6 +230,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(16)]
         public Range<double> DefenseRange
         {
             get { return _defenseRange; }
@@ -225,6 +243,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(17)]
         public Range<double> MagicBlockProbabilityRange
         {
             get { return _magicBlockProbabilityRange; }
@@ -237,6 +256,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(18)]
         public Range<double> DodgeProbabilityRange
         {
             get { return _dodgeProbabilityRange; }
@@ -249,6 +269,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(19)]
         public Range<double> ExperienceRange
         {
             get { return _experienceRange; }
@@ -261,6 +282,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(20)]
         public Range<double> HungerRange
         {
             get { return _hungerRange; }
@@ -273,6 +295,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(21)]
         public Range<double> HpRange
         {
             get { return _hpRange; }
@@ -285,6 +308,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(22)]
         public Range<double> MpRange
         {
             get { return _mpRange; }
@@ -297,6 +321,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(23)]
         public Range<double> CriticalHit
         {
             get { return _criticalHit; }
@@ -310,7 +335,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             }
         }
 
+        [ProtoMember(24, AsReference = true)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
+        [ProtoMember(25, AsReference = true)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         public AlterationEffectTemplate()

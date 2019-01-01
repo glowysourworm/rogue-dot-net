@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
@@ -6,6 +7,7 @@ using System.Windows.Media;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
     public class LayoutTemplate : Template
     {
         private int _numberRoomRows;
@@ -21,6 +23,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private string _wallColor;
         private string _doorColor;
 
+        [ProtoMember(1)]
         public int NumberRoomRows
         {
             get { return _numberRoomRows; }
@@ -33,6 +36,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(2)]
         public int NumberRoomCols
         {
             get { return _numberRoomCols; }
@@ -45,6 +49,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(3)]
         public int RoomDivCellHeight
         {
             get { return _roomDivCellHeight; }
@@ -57,6 +62,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(4)]
         public int RoomDivCellWidth
         {
             get { return _roomDivCellWidth; }
@@ -69,6 +75,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(5)]
         public int NumberExtraWallRemovals
         {
             get { return _numberExtraWallRemovals; }
@@ -81,6 +88,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(6)]
         public int NumberHallwayPoints
         {
             get { return _numberHallwayPoints; }
@@ -93,6 +101,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(7)]
         public double HiddenDoorProbability
         {
             get { return _hiddenDoorProbability; }
@@ -105,6 +114,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(8)]
         public double GenerationRate
         {
             get { return _generationRatio; }
@@ -117,6 +127,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(9)]
         public LayoutType Type
         {
             get { return _type; }
@@ -129,6 +140,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(10)]
         public Range<int> Level
         {
             get { return _levelRange; }
@@ -141,6 +153,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(11)]
         public string WallColor
         {
             get { return _wallColor; }
@@ -153,6 +166,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        [ProtoMember(12)]
         public string DoorColor
         {
             get { return _doorColor; }

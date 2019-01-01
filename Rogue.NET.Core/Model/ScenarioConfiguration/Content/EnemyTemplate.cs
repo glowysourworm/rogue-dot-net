@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,14 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
     public class EnemyTemplate : CharacterTemplate
     {
+        [ProtoMember(1, AsReference = true)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
+        [ProtoMember(2, AsReference = true)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
+        [ProtoMember(3, AsReference = true)]
         public List<AnimationTemplate> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
@@ -17,6 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
 
+        [ProtoMember(4)]
         public bool GenerateOnStep
         {
             get { return _generateOnStep; }
@@ -29,6 +35,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(5)]
         public bool IsInvisible
         {
             get { return _isInvisible; }
@@ -41,6 +48,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(6)]
         public Range<double> ExperienceGiven
         {
             get { return _experienceGiven; }
@@ -53,6 +61,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(7, AsReference = true)]
         public BehaviorDetailsTemplate BehaviorDetails
         {
             get { return _behaviorDetails; }

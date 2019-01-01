@@ -1,9 +1,28 @@
-﻿using System;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
+using System;
 using System.ComponentModel;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoInclude(3, typeof(ProbabilityEquipmentTemplate))]
+    [ProtoInclude(4, typeof(ProbabilityConsumableTemplate))]
+    [ProtoInclude(5, typeof(DungeonObjectTemplate))]
+    [ProtoInclude(6, typeof(BehaviorTemplate))]
+    [ProtoInclude(7, typeof(BehaviorDetailsTemplate))]
+    [ProtoInclude(8, typeof(BrushTemplate))]
+    [ProtoInclude(9, typeof(AnimationTemplate))]
+    [ProtoInclude(10, typeof(AlterationEffectTemplate))]
+    [ProtoInclude(11, typeof(AlterationCostTemplate))]
+    [ProtoInclude(12, typeof(SymbolDetailsTemplate))]
+    [ProtoInclude(13, typeof(DungeonTemplate))]
+    [ProtoInclude(14, typeof(LayoutTemplate))]
+    [ProtoInclude(15, typeof(GradientStopTemplate))]
     public class Template : INotifyPropertyChanged
     {
         public Template()
@@ -23,6 +42,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private string _name;
         private string _guid;
 
+        [ProtoMember(1)]
         public string Name
         {
             get { return _name; }
@@ -35,6 +55,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
+        [ProtoMember(2)]
         public string Guid
         {
             get { return _guid; }

@@ -1,10 +1,12 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
     public class AlterationCostTemplate : Template
     {
         private AlterationCostType _type;
@@ -22,6 +24,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private double _mpPerStep;
         private double _hungerPerStep;
 
+        [ProtoMember(1)]
         public AlterationCostType Type
         {
             get { return _type; }
@@ -34,6 +37,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(2)]
         public double Strength
         {
             get { return _strength; }
@@ -46,6 +50,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(3)]
         public double Intelligence
         {
             get { return _intelligence; }
@@ -58,6 +63,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(4)]
         public double Agility
         {
             get { return _agility; }
@@ -70,6 +76,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(5)]
         public double Speed
         {
             get { return _speed; }
@@ -82,6 +89,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(6)]
         public double FoodUsagePerTurn
         {
             get { return _foodUsagePerTurn; }
@@ -94,6 +102,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(7)]
         public double AuraRadius
         {
             get { return _auraRadius; }
@@ -106,6 +115,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(8)]
         public double Experience
         {
             get { return _experience; }
@@ -118,6 +128,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(9)]
         public double Hunger
         {
             get { return _hunger; }
@@ -130,6 +141,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(10)]
         public double Hp
         {
             get { return _hp; }
@@ -142,6 +154,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(11)]
         public double Mp
         {
             get { return _mp; }
@@ -154,6 +167,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(12)]
         public double HpPerStep
         {
             get { return _hpPerStep; }
@@ -166,6 +180,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(13)]
         public double MpPerStep
         {
             get { return _mpPerStep; }
@@ -178,6 +193,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        [ProtoMember(14)]
         public double HungerPerStep
         {
             get { return _hungerPerStep; }

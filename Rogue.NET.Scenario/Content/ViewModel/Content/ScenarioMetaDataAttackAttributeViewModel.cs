@@ -68,12 +68,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.AttackHigh = template.Attack.High;
             this.ResistanceLow = template.Resistance.Low;
             this.ResistanceHigh = template.Resistance.High;
-            this.WeaknessLow = template.Weakness.Low;
-            this.WeaknessHigh = template.Weakness.High;
 
             this.IsAttackSet = template.Attack.IsSet();
             this.IsResistanceSet = template.Resistance.IsSet();
-            this.IsWeaknessSet = template.Weakness.IsSet();
 
             this.RogueName = template.Name;
 

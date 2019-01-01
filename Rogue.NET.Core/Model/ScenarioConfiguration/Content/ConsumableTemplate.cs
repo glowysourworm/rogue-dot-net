@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 
@@ -7,6 +8,7 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
     public class ConsumableTemplate : DungeonObjectTemplate
     {
         private ConsumableType _type;
@@ -24,6 +26,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SpellTemplate _ammoSpellTemplate;
         private string _noteMessage;
 
+        [ProtoMember(1)]
         public ConsumableType Type
         {
             get { return _type; }
@@ -36,6 +39,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(2)]
         public ConsumableSubType SubType
         {
             get { return _subType; }
@@ -48,6 +52,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(3)]
         public double Weight
         {
             get { return _weight; }
@@ -60,6 +65,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(4)]
         public int LevelRequired
         {
             get { return _levelRequired; }
@@ -72,6 +78,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(5)]
         public Range<int> UseCount
         {
             get { return _useCount; }
@@ -84,6 +91,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(6)]
         public bool HasLearnedSkill
         {
             get { return _hasLearnedSkill; }
@@ -96,6 +104,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(7)]
         public bool HasSpell
         {
             get { return _hasSpell; }
@@ -108,6 +117,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(8)]
         public bool IsProjectile
         {
             get { return _isProjectile; }
@@ -120,6 +130,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(9)]
         public bool IdentifyOnUse
         {
             get { return _identifyOnUse; }
@@ -132,6 +143,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(10, AsReference = true)]
         public SpellTemplate SpellTemplate
         {
             get { return _spellTemplate; }
@@ -144,6 +156,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(11, AsReference = true)]
         public SkillSetTemplate LearnedSkill
         {
             get { return _learnedSkill; }
@@ -156,6 +169,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(12, AsReference = true)]
         public SpellTemplate ProjectileSpellTemplate
         {
             get { return _projectileSpellTemplate; }
@@ -168,6 +182,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(13, AsReference = true)]
         public SpellTemplate AmmoSpellTemplate
         {
             get { return _ammoSpellTemplate; }
@@ -180,6 +195,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(14)]
         public string NoteMessage
         {
             get { return _noteMessage; }

@@ -1,14 +1,20 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.ComponentModel;
 
 namespace Rogue.NET.Core.Model
 {
     [Serializable]
+    [ProtoContract]
     public class Range<T> where T : IComparable<T>
     {
+        [ProtoMember(1)]
         public T Low { get; set; }
+        [ProtoMember(2)]
         public T High { get; set; }
+        [ProtoMember(3)]
         public T LowLimit { get; set; }
+        [ProtoMember(4)]
         public T HighLimit { get; set; }
 
         public Range() { }

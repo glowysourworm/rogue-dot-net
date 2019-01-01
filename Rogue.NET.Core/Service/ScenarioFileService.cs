@@ -1,8 +1,11 @@
-﻿using Rogue.NET.Common.Utility;
+﻿using ProtoBuf;
+using ProtoBuf.Meta;
+using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -19,22 +22,38 @@ namespace Rogue.NET.Core.Service
 
         public void SaveConfiguration(string scenarioConfigurationName, ScenarioConfigurationContainer configuration)
         {
-            var file = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName) + "." + 
-                                    ResourceConstants.ScenarioConfigurationExtension;
+            var file = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName) +
+                           "." + ResourceConstants.ScenarioConfigurationExtension;
 
-            BinarySerializer.SerializeToFile(file, configuration);
+            if (File.Exists(file))
+                File.Delete(file);
+
+            using (var stream = File.OpenWrite(file))
+            {
+                Serializer.Serialize(stream, configuration);
+            }
         }
         public void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration)
         {
             var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configResource.ToString()) + "." + 
                                     ResourceConstants.ScenarioConfigurationExtension;
 
-            BinarySerializer.SerializeToFile(file, configuration);
+            if (File.Exists(file))
+                File.Delete(file);
+
+            using (var stream = File.OpenWrite(file))
+            {
+                Serializer.Serialize(stream, configuration);
+            }
         }
         public ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName)
         {
             var path = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName + "." + ResourceConstants.ScenarioConfigurationExtension);
-            return (ScenarioConfigurationContainer)BinarySerializer.DeserializeFromFile(path);
+
+            using (var stream = File.OpenRead(path))
+            {
+                return Serializer.Deserialize<ScenarioConfigurationContainer>(stream);
+            }
         }
         public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()
         {

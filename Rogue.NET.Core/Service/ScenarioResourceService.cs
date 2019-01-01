@@ -22,6 +22,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Common.Extension;
+using ProtoBuf;
 
 namespace Rogue.NET.Core.Service
 {
@@ -80,9 +81,12 @@ namespace Rogue.NET.Core.Service
             var location = "Rogue.NET.Common.Resource.Configuration." + name.ToString() + "." + ResourceConstants.ScenarioConfigurationExtension;
             using (var stream = assembly.GetManifestResourceStream(location))
             {
-                var memoryStream = new MemoryStream();
-                stream.CopyTo(memoryStream);
-                _scenarioConfigurations.Add(configResource.ToString(), (ScenarioConfigurationContainer)BinarySerializer.Deserialize(memoryStream.GetBuffer()));
+                //var memoryStream = new MemoryStream();
+                //stream.CopyTo(memoryStream);
+
+                var configuration = Serializer.Deserialize<ScenarioConfigurationContainer>(stream);
+
+                _scenarioConfigurations.Add(configResource.ToString(), configuration);
             }
 
             // Have to copy configuration because of the HasBeenGenerated flags in memory

@@ -1,13 +1,19 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using ProtoBuf;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
+    [ProtoContract(AsReferenceDefault = true)]
+    [ProtoInclude(9, typeof(PlayerTemplate))]
+    [ProtoInclude(10, typeof(EnemyTemplate))]
     public class CharacterTemplate : DungeonObjectTemplate
     {
+        [ProtoMember(1, AsReference = true)]
         public List<ProbabilityEquipmentTemplate> StartingEquipment { get; set; }
+        [ProtoMember(2, AsReference = true)]
         public List<ProbabilityConsumableTemplate> StartingConsumables { get; set; }
 
         private Range<double> _strength;
@@ -17,6 +23,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _hp;
         private Range<double> _mp;
 
+        [ProtoMember(3)]
         public Range<double> Strength
         {
             get { return _strength; }
@@ -29,6 +36,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(4)]
         public Range<double> Agility
         {
             get { return _agility; }
@@ -41,6 +49,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(5)]
         public Range<double> Intelligence
         {
             get { return _intelligence; }
@@ -53,6 +62,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(6)]
         public Range<double> Speed
         {
             get { return _speed; }
@@ -65,6 +75,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(7)]
         public Range<double> Hp
         {
             get { return _hp; }
@@ -77,6 +88,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        [ProtoMember(8)]
         public Range<double> Mp
         {
             get { return _mp; }
