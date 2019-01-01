@@ -1,18 +1,15 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class ProbabilityEquipmentTemplate : Template
     {
         private EquipmentTemplate _theTemplate;
         private double _generationProbability;
         private bool _equipOnStartup;
 
-        [ProtoMember(1, AsReference = true)]
         public EquipmentTemplate TheTemplate
         {
             get { return _theTemplate; }
@@ -25,7 +22,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2)]
         public double GenerationProbability
         {
             get { return _generationProbability; }
@@ -38,7 +34,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(3)]
         public bool EquipOnStartup
         {
             get { return _equipOnStartup; }

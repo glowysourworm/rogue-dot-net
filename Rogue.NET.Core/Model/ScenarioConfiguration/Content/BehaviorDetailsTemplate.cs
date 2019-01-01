@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 using System;
@@ -7,7 +6,6 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class BehaviorDetailsTemplate : Template
     {
         private BehaviorTemplate _primaryBehavior;
@@ -20,7 +18,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private double _criticalRatio;
         private double _counterAttackProbability;
 
-        [ProtoMember(1)]
         public BehaviorTemplate PrimaryBehavior
         {
             get { return _primaryBehavior; }
@@ -33,7 +30,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2)]
         public BehaviorTemplate SecondaryBehavior
         {
             get { return _secondaryBehavior; }
@@ -46,7 +42,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(3)]
         public SecondaryBehaviorInvokeReason SecondaryReason
         {
             get { return _secondaryReason; }
@@ -59,7 +54,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(4)]
         public double SecondaryProbability
         {
             get { return _secondaryProbability; }
@@ -72,7 +66,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(5)]
         public bool CanOpenDoors
         {
             get { return _canOpenDoors; }
@@ -85,7 +78,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(6)]
         public double EngageRadius
         {
             get { return _engageRadius; }
@@ -98,7 +90,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(7)]
         public double DisengageRadius
         {
             get { return _disengageRadius; }
@@ -111,7 +102,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(8)]
         public double CriticalRatio
         {
             get { return _criticalRatio; }
@@ -124,7 +114,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(9)]
         public double CounterAttackProbability
         {
             get { return _counterAttackProbability; }

@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class SpellTemplate : DungeonObjectTemplate
     {
         private AlterationCostTemplate _cost;
@@ -23,9 +21,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private string _createMonsterEnemy;
         private string _displayName;
 
-        [ProtoMember(1, AsReference = true)]
         public List<AnimationTemplate> Animations { get; set; }
-        [ProtoMember(2, AsReference = true)]
         public AlterationCostTemplate Cost
         {
             get { return _cost; }
@@ -38,7 +34,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(3, AsReference = true)]
         public AlterationEffectTemplate Effect
         {
             get { return _effect; }
@@ -51,7 +46,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(4, AsReference = true)]
         public AlterationEffectTemplate AuraEffect
         {
             get { return _auraEffect; }
@@ -64,7 +58,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(5)]
         public AlterationType Type
         {
             get { return _type; }
@@ -77,7 +70,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(6)]
         public AlterationMagicEffectType OtherEffectType
         {
             get { return _otherEffectType; }
@@ -90,7 +82,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(7)]
         public AlterationAttackAttributeType AttackAttributeType
         {
             get { return _attackAttributeType; }
@@ -103,7 +94,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(8)]
         public double EffectRange
         {
             get { return _effectRange; }
@@ -116,7 +106,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(9)]
         public bool Stackable
         {
             get { return _stackable; }
@@ -129,7 +118,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(10)]
         public bool ScaledByIntelligence
         {
             get { return _scaledByIntelligence; }
@@ -142,7 +130,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(11)]
         public string CreateMonsterEnemy
         {
             get { return _createMonsterEnemy; }
@@ -155,7 +142,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        [ProtoMember(12)]
         public string DisplayName
         {
             get { return _displayName; }

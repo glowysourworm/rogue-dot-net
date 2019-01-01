@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using System;
@@ -8,12 +7,9 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class EquipmentTemplate : DungeonObjectTemplate
     {
-        [ProtoMember(1)]
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        [ProtoMember(2)]
         public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         private Range<int> _class;
@@ -27,7 +23,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
 
-        [ProtoMember(3)]
         public Range<int> Class
         {
             get { return _class; }
@@ -40,7 +35,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(4)]
         public double Weight
         {
             get { return _weight; }
@@ -53,7 +47,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(5)]
         public int LevelRequired
         {
             get { return _levelRequired; }
@@ -66,7 +59,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(6)]
         public Range<double> Quality
         {
             get { return _quality; }
@@ -79,7 +71,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(7)]
         public EquipmentType Type
         {
             get { return _type; }
@@ -92,7 +83,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(8, AsReference = true)]
         public SpellTemplate EquipSpell
         {
             get { return _equipSpell; }
@@ -105,7 +95,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(9, AsReference = true)]
         public SpellTemplate CurseSpell
         {
             get { return _curseSpell; }
@@ -118,7 +107,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(10, AsReference = true)]
         public ConsumableTemplate AmmoTemplate
         {
             get { return _ammoTemplate; }
@@ -131,7 +119,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(11)]
         public bool HasEquipSpell
         {
             get { return _hasEquipSpell; }
@@ -144,7 +131,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(12)]
         public bool HasCurseSpell
         {
             get { return _hasCurseSpell; }

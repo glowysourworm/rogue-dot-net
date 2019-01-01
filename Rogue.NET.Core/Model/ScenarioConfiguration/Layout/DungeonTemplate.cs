@@ -1,12 +1,10 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class DungeonTemplate : Template
     {
         private int _numberOfLevels;
@@ -14,7 +12,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private double _partyRoomGenerationRate;
         private string _objectiveDescription;
 
-        [ProtoMember(1)]
         public int NumberOfLevels
         {
             get { return _numberOfLevels; }
@@ -27,7 +24,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        [ProtoMember(2)]
         public double MonsterGenerationBase
         {
             get { return _monsterGenerationBase; }
@@ -40,7 +36,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        [ProtoMember(3)]
         public double PartyRoomGenerationRate
         {
             get { return _partyRoomGenerationRate; }
@@ -53,7 +48,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        [ProtoMember(4)]
         public string ObjectiveDescription
         {
             get { return _objectiveDescription; }
@@ -67,7 +61,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             }
         }
 
-        [ProtoMember(5, AsReference = true)]
         public List<LayoutTemplate> LayoutTemplates { get; set; }
 
         public DungeonTemplate()

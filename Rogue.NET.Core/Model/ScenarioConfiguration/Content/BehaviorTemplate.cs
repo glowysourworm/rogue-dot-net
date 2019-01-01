@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using System;
@@ -7,14 +6,12 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class BehaviorTemplate : Template
     {
         private CharacterMovementType _movementType;
         private CharacterAttackType _attackType;
         private SpellTemplate _enemySpell;
 
-        [ProtoMember(1)]
         public CharacterMovementType MovementType
         {
             get { return _movementType; }
@@ -27,7 +24,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2)]
         public CharacterAttackType AttackType
         {
             get { return _attackType; }
@@ -40,7 +36,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(3, AsReference = true)]
         public SpellTemplate EnemySpell
         {
             get { return _enemySpell; }

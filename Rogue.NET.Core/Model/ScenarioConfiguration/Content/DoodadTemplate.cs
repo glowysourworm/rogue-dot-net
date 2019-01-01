@@ -1,12 +1,10 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class DoodadTemplate : DungeonObjectTemplate
     {
         private SpellTemplate _automaticMagicSpellTemplate;
@@ -16,7 +14,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvoked;
         private bool _isOneUse;
 
-        [ProtoMember(1, AsReference = true)]
         public SpellTemplate AutomaticMagicSpellTemplate
         {
             get { return _automaticMagicSpellTemplate; }
@@ -29,7 +26,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2, AsReference = true)]
         public SpellTemplate InvokedMagicSpellTemplate
         {
             get { return _invokedMagicSpellTemplate; }
@@ -42,7 +38,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(3)]
         public bool IsAutomatic
         {
             get { return _isAutomatic; }
@@ -55,7 +50,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(4)]
         public bool IsVisible
         {
             get { return _isVisible; }
@@ -68,7 +62,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(5)]
         public bool IsInvoked
         {
             get { return _isInvoked; }
@@ -81,7 +74,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(6)]
         public bool IsOneUse
         {
             get { return _isOneUse; }

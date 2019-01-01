@@ -1,12 +1,10 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class AnimationTemplate : Template
     {
         private int _repeatCount;
@@ -31,7 +29,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         private double _spiralRate;
         private double _roamRadius;
 
-        [ProtoMember(1)]
         public int RepeatCount
         {
             get { return _repeatCount; }
@@ -44,7 +41,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(2)]
         public int AnimationTime
         {
             get { return _animationTime; }
@@ -57,7 +53,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(3)]
         public bool AutoReverse
         {
             get { return _autoReverse; }
@@ -70,7 +65,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(4)]
         public bool ConstantVelocity
         {
             get { return _constantVelocity; }
@@ -83,7 +77,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(5)]
         public double AccelerationRatio
         {
             get { return _accelerationRatio; }
@@ -96,7 +89,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(6)]
         public AnimationType Type
         {
             get { return _type; }
@@ -109,7 +101,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(7, AsReference = true)]
         public BrushTemplate FillTemplate
         {
             get { return _fillTemplate; }
@@ -122,7 +113,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(8, AsReference = true)]
         public BrushTemplate StrokeTemplate
         {
             get { return _strokeTemplate; }
@@ -135,7 +125,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(9)]
         public double StrokeThickness
         {
             get { return _strokeThickness; }
@@ -148,7 +137,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(10)]
         public double Opacity1
         {
             get { return _opacity1; }
@@ -161,7 +149,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(11)]
         public double Opacity2
         {
             get { return _opacity2; }
@@ -174,7 +161,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(12)]
         public double Height1
         {
             get { return _height1; }
@@ -187,7 +173,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(13)]
         public double Height2
         {
             get { return _height2; }
@@ -200,7 +185,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(14)]
         public double Width1
         {
             get { return _width1; }
@@ -213,7 +197,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(15)]
         public double Width2
         {
             get { return _width2; }
@@ -226,7 +209,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(16)]
         public int Velocity
         {
             get { return _velocity; }
@@ -239,7 +221,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(17)]
         public int ChildCount
         {
             get { return _childCount; }
@@ -252,7 +233,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(18)]
         public int Erradicity
         {
             get { return _erradicity; }
@@ -265,7 +245,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(19)]
         public double RadiusFromFocus
         {
             get { return _radiusFromFocus; }
@@ -278,7 +257,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(20)]
         public double SpiralRate
         {
             get { return _spiralRate; }
@@ -291,7 +269,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(21)]
         public double RoamRadius
         {
             get { return _roamRadius; }

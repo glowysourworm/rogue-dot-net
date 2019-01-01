@@ -1,18 +1,15 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class GradientStopTemplate : Template
     {
         private string _gradientColor;
         private double _gradientOffset;
 
-        [ProtoMember(1)]
         public string GradientColor
         {
             get { return _gradientColor; }
@@ -25,7 +22,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(2)]
         public double GradientOffset
         {
             get { return _gradientOffset; }

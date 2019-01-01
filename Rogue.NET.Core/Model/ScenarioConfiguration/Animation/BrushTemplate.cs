@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -15,8 +14,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
     }
 
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
-    [ProtoInclude(9, typeof(PenTemplate))]
     public class BrushTemplate : Template
     {
         private BrushType _type;
@@ -27,9 +24,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         private double _gradientEndX;
         private double _gradientEndY;
 
-        [ProtoMember(1)]
         public List<GradientStopTemplate> GradientStops { get; set; }
-        [ProtoMember(2)]
         public BrushType Type
         {
             get { return _type; }
@@ -42,7 +37,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(3)]
         public double Opacity
         {
             get { return _opacity; }
@@ -55,7 +49,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(4)]
         public string SolidColor
         {
             get { return _solidColor; }
@@ -68,7 +61,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(5)]
         public double GradientStartX
         {
             get { return _gradientStartX; }
@@ -81,7 +73,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(6)]
         public double GradientStartY
         {
             get { return _gradientStartY; }
@@ -94,7 +85,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(7)]
         public double GradientEndX
         {
             get { return _gradientEndX; }
@@ -107,7 +97,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        [ProtoMember(8)]
         public double GradientEndY
         {
             get { return _gradientEndY; }

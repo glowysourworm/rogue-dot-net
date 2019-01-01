@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class PlayerTemplate : CharacterTemplate
     {
         private string _class;
@@ -15,7 +13,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _foodUsage;
         private List<SkillSetTemplate> _skills;
 
-        [ProtoMember(1)]
         public string Class
         {
             get { return _class; }
@@ -28,7 +25,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2)]
         public double AuraRadius
         {
             get { return _auraRadius; }
@@ -41,7 +37,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(3)]
         public Range<double> FoodUsage
         {
             get { return _foodUsage; }
@@ -54,7 +49,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(4, AsReference = true)]
         public List<SkillSetTemplate> Skills
         {
             get { return _skills; }

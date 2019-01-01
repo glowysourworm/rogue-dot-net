@@ -1,15 +1,13 @@
-﻿using ProtoBuf;
-using ProtoBuf.Meta;
+﻿using Antmicro.Migrant;
+using Antmicro.Migrant.Customization;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Rogue.NET.Core.Service
 {
@@ -30,7 +28,15 @@ namespace Rogue.NET.Core.Service
 
             using (var stream = File.OpenWrite(file))
             {
-                Serializer.Serialize(stream, configuration);
+                var serializer = new Serializer(
+                    new Settings(Method.Generated,
+                                 Method.Generated,
+                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
+                                 false, false,
+                                 true, true, false,
+                                 ReferencePreservation.Preserve));
+
+                serializer.Serialize(configuration, stream);
             }
         }
         public void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration)
@@ -43,7 +49,15 @@ namespace Rogue.NET.Core.Service
 
             using (var stream = File.OpenWrite(file))
             {
-                Serializer.Serialize(stream, configuration);
+                var serializer = new Serializer(
+                    new Settings(Method.Generated,
+                                 Method.Generated,
+                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
+                                 false, false,
+                                 true, true, false,
+                                 ReferencePreservation.Preserve));
+
+                serializer.Serialize(configuration, stream);
             }
         }
         public ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName)
@@ -52,7 +66,15 @@ namespace Rogue.NET.Core.Service
 
             using (var stream = File.OpenRead(path))
             {
-                return Serializer.Deserialize<ScenarioConfigurationContainer>(stream);
+                var serializer = new Serializer(
+                    new Settings(Method.Generated,
+                                 Method.Generated,
+                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
+                                 false, false,
+                                 true, true, false,
+                                 ReferencePreservation.Preserve));
+
+                return serializer.Deserialize<ScenarioConfigurationContainer>(stream);
             }
         }
         public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()

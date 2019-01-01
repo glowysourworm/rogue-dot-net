@@ -1,5 +1,4 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 
 using System;
 using System.Windows.Media;
@@ -7,7 +6,6 @@ using System.Windows.Media;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class SymbolDetailsTemplate : Template
     {
         private SymbolTypes _type;
@@ -27,7 +25,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private bool _isCharacterDelta;
         private bool _isColorDelta;
 
-        [ProtoMember(1)]
         public SymbolTypes Type
         {
             get { return _type; }
@@ -40,7 +37,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(2)]
         public SmileyMoods SmileyMood
         {
             get { return _smileyMood; }
@@ -53,7 +49,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(3)]
         public string SmileyBodyColor
         {
             get { return _smileyBodyColor; }
@@ -66,7 +61,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(4)]
         public string SmileyLineColor
         {
             get { return _smileyLineColor; }
@@ -79,7 +73,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(5)]
         public string SmileyAuraColor
         {
             get { return _smileyAuraColor; }
@@ -92,7 +85,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(6)]
         public string CharacterSymbol
         {
             get { return _characterSymbol; }
@@ -105,7 +97,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(7)]
         public string CharacterColor
         {
             get { return _characterColor; }
@@ -118,7 +109,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(8)]
         public ImageResources Icon
         {
             get { return _icon; }
@@ -131,7 +121,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(9)]
         public bool IsFullSymbolDelta
         {
             get { return _isFullSymbolDelta; }
@@ -144,7 +133,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(10)]
         public bool IsImageDelta
         {
             get { return _isImageDelta; }
@@ -157,7 +145,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(11)]
         public bool IsMoodDelta
         {
             get { return _isMoodDelta; }
@@ -170,7 +157,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(12)]
         public bool IsBodyDelta
         {
             get { return _isBodyDelta; }
@@ -183,7 +169,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(13)]
         public bool IsLineDelta
         {
             get { return _isLineDelta; }
@@ -196,7 +181,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(14)]
         public bool IsAuraDelta
         {
             get { return _isAuraDelta; }
@@ -209,7 +193,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(15)]
         public bool IsCharacterDelta
         {
             get { return _isCharacterDelta; }
@@ -222,7 +205,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        [ProtoMember(16)]
         public bool IsColorDelta
         {
             get { return _isColorDelta; }

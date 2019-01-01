@@ -1,11 +1,9 @@
-﻿using ProtoBuf;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    [ProtoContract(AsReferenceDefault = true, SkipConstructor = true)]
     public class CombatAttributeTemplate : DungeonObjectTemplate
     {
         private Range<double> _attack;
@@ -17,7 +15,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _scaledByStrength;
         private bool _scaledByIntelligence;
 
-        [ProtoMember(1)]
         public Range<double> Attack
         {
             get { return _attack; }
@@ -30,7 +27,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(2)]
         public Range<double> Resistance
         {
             get { return _resistance; }
@@ -44,7 +40,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             }
         }
 
-        [ProtoMember(3)]
         public bool AppliesToStrengthBasedCombat
         {
             get { return _appliesToStrengthBasedCombat; }
@@ -57,7 +52,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(4)]
         public bool AppliesToIntelligenceBasedCombat
         {
             get { return _appliesToIntelligenceBasedCombat; }
@@ -71,7 +65,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             }
         }
 
-        [ProtoMember(5)]
         public bool ScaledByStrength
         {
             get { return _scaledByStrength; }
@@ -84,7 +77,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        [ProtoMember(6)]
         public bool ScaledByIntelligence
         {
             get { return _scaledByIntelligence; }
