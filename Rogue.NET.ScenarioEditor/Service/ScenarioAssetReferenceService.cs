@@ -62,19 +62,19 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateCollection(configuration.AnimationTemplates, enemy.DeathAnimations);
         }
 
-        public void UpdateCombatAttributes(ScenarioConfigurationContainerViewModel configuration)
-        {
+        public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
+        {/*
             // Alterations
             foreach (var spell in configuration.MagicSpells)
-                UpdateCombatAttributeCollection(configuration.CombatAttributes, spell.Effect.CombatAttributes);
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
 
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
-                UpdateCombatAttributeCollection(configuration.CombatAttributes, equipment.CombatAttributes);
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
-                UpdateCombatAttributeCollection(configuration.CombatAttributes, enemy.CombatAttributes);
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);*/
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
@@ -170,7 +170,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
         }
 
-        private void UpdateCombatAttributeCollection(IList<CombatAttributeTemplateViewModel> source, IList<CombatAttributeTemplateViewModel> dest)
+        private void UpdateAttackAttributeCollection(IList<AttackAttributeTemplateViewModel> source, IList<AttackAttributeTemplateViewModel> dest)
         {
             // Create
             foreach (var attrib in source)

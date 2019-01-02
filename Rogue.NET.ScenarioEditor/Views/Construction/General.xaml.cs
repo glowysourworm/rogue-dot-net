@@ -34,7 +34,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config == null || string.IsNullOrEmpty(this.CombatAttributeTB.Text))
                 return;
 
-            if (config.CombatAttributes.Any(x => x.Name == this.CombatAttributeTB.Text))
+            if (config.AttackAttributes.Any(x => x.Name == this.CombatAttributeTB.Text))
                 return;
 
             var name = this.CombatAttributeTB.Text;

@@ -39,7 +39,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// ADD them to the collections if they don't exist. (ALL Attack Attributes exist on ALL
         /// collections of them in the Scenario. This makes it much easier to manage downstream)
         /// </summary>
-        void UpdateCombatAttributes(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
         /// Updates Altered Character State references on Alterations. This will set dangling references

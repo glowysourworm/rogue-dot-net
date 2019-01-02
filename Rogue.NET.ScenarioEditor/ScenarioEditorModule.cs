@@ -188,10 +188,10 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Block();
 
                 // Add Combat Attribute to the scenario
-                _scenarioEditorController.CurrentConfig.CombatAttributes.Add(e);
+                //_scenarioEditorController.CurrentConfig.CombatAttributes.Add(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
@@ -207,10 +207,10 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Block();
 
                 // Remove Combat Attribute from the scenario
-                _scenarioEditorController.CurrentConfig.CombatAttributes.Remove(e);
+                //_scenarioEditorController.CurrentConfig.CombatAttributes.Remove(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
@@ -226,7 +226,7 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Block();
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateCombatAttributes(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
