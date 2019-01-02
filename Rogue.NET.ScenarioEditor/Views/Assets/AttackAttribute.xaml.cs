@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
-
     [Export]
-    public partial class EquipmentCombatAttributes : UserControl
+    public partial class AttackAttribute : UserControl
     {
         [ImportingConstructor]
-        public EquipmentCombatAttributes()
+        public AttackAttribute()
         {
             InitializeComponent();
         }

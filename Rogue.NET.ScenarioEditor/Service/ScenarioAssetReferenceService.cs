@@ -63,7 +63,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         }
 
         public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
-        {/*
+        {
             // Alterations
             foreach (var spell in configuration.MagicSpells)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
@@ -74,7 +74,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);*/
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)

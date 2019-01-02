@@ -31,32 +31,32 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             var config = this.DataContext as ScenarioConfigurationContainerViewModel;
-            if (config == null || string.IsNullOrEmpty(this.CombatAttributeTB.Text))
+            if (config == null || string.IsNullOrEmpty(this.AttributeTB.Text))
                 return;
 
-            if (config.AttackAttributes.Any(x => x.Name == this.CombatAttributeTB.Text))
+            if (config.AttackAttributes.Any(x => x.Name == this.AttributeTB.Text))
                 return;
 
-            var name = this.CombatAttributeTB.Text;
+            var name = this.AttributeTB.Text;
 
-            _eventAggregator.GetEvent<AddCombatAttributeEvent>().Publish(new CombatAttributeTemplateViewModel()
+            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Publish(new AttackAttributeTemplateViewModel()
             {
                 Name = name
             });
 
-            this.CombatAttributeTB.Text = "";
+            this.AttributeTB.Text = "";
         }
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.CombatAttribLB.SelectedItem as CombatAttributeTemplateViewModel;
+            var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<RemoveCombatAttributeEvent>().Publish(selectedItem);               
+                _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Publish(selectedItem);               
             }
         }
         private void AttributeSymbolButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.CombatAttribLB.SelectedItem as CombatAttributeTemplateViewModel;
+            var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
             if (selectedItem != null)
             {
                 var view = new SymbolEditor();
@@ -67,16 +67,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 DialogWindowFactory.Show(view, "Rogue Symbol Editor");
 
                 // Update Combat Attributes
-                _eventAggregator.GetEvent<UpdateCombatAttributeEvent>().Publish(selectedItem);
+                _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Publish(selectedItem);
             }
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             // Update Combat Attributes
-            var selectedItem = this.CombatAttribLB.SelectedItem as CombatAttributeTemplateViewModel;
+            var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<UpdateCombatAttributeEvent>().Publish(selectedItem);
+                _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Publish(selectedItem);
             }
         }
         #endregion

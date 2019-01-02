@@ -3,7 +3,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.Events
 {
-    public class UpdateCombatAttributeEvent : RogueEvent<CombatAttributeTemplateViewModel>
+    public class RemoveAttackAttributeEvent : RogueEvent<AttackAttributeTemplateViewModel>
     {
     }
 }

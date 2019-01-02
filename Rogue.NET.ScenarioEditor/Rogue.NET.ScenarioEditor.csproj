@@ -255,7 +255,7 @@
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Events\AddAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
-    <Compile Include="Events\AddCombatAttributeEvent.cs" />
+    <Compile Include="Events\AddAttackAttributeEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
@@ -265,7 +265,7 @@
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
     <Compile Include="Events\RemoveAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
-    <Compile Include="Events\RemoveCombatAttributeEvent.cs" />
+    <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
@@ -275,7 +275,7 @@
     <Compile Include="Events\LoadDifficultyChartEvent.cs" />
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />
-    <Compile Include="Events\UpdateCombatAttributeEvent.cs" />
+    <Compile Include="Events\UpdateAttackAttributeEvent.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="Service\CharacterCalculationService.cs" />
     <Compile Include="Service\Interface\ICharacterCalculationService.cs" />
@@ -332,7 +332,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\BrushTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\GradientStopTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\PenTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Content\CombatAttributeTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\AttackAttributeTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorTemplateViewModel.cs" />
@@ -367,8 +366,8 @@
     <Compile Include="Views\Assets\AnimationControl\AnimationPreview.xaml.cs">
       <DependentUpon>AnimationPreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\CombatAttribute.xaml.cs">
-      <DependentUpon>CombatAttribute.xaml</DependentUpon>
+    <Compile Include="Views\Assets\AttackAttribute.xaml.cs">
+      <DependentUpon>AttackAttribute.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\Brush.xaml.cs">
       <DependentUpon>Brush.xaml</DependentUpon>
@@ -400,8 +399,8 @@
     <Compile Include="Views\Assets\Enemy.xaml.cs">
       <DependentUpon>Enemy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\EnemyControl\EnemyCombatAttributes.xaml.cs">
-      <DependentUpon>EnemyCombatAttributes.xaml</DependentUpon>
+    <Compile Include="Views\Assets\EnemyControl\EnemyAttackAttributes.xaml.cs">
+      <DependentUpon>EnemyAttackAttributes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\EnemyControl\EnemyBehavior.xaml.cs">
       <DependentUpon>EnemyBehavior.xaml</DependentUpon>
@@ -421,8 +420,8 @@
     <Compile Include="Views\Assets\Equipment.xaml.cs">
       <DependentUpon>Equipment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\EquipmentControl\EquipmentCombatAttributes.xaml.cs">
-      <DependentUpon>EquipmentCombatAttributes.xaml</DependentUpon>
+    <Compile Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml.cs">
+      <DependentUpon>EquipmentAttackAttributes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml.cs">
       <DependentUpon>EquipmentMetadata.xaml</DependentUpon>
@@ -448,8 +447,8 @@
     <Compile Include="Views\Assets\SpellControl\SpellAuraEffect.xaml.cs">
       <DependentUpon>SpellAuraEffect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellEffectCombatAttributes.xaml.cs">
-      <DependentUpon>SpellEffectCombatAttributes.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SpellControl\SpellEffectAttackAttributes.xaml.cs">
+      <DependentUpon>SpellEffectAttackAttributes.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SpellControl\SpellCost.xaml.cs">
       <DependentUpon>SpellCost.xaml</DependentUpon>
@@ -576,7 +575,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\CombatAttribute.xaml">
+    <Page Include="Views\Assets\AttackAttribute.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -620,7 +619,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\EnemyControl\EnemyCombatAttributes.xaml">
+    <Page Include="Views\Assets\EnemyControl\EnemyAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -648,7 +647,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\EquipmentControl\EquipmentCombatAttributes.xaml">
+    <Page Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -684,7 +683,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellEffectCombatAttributes.xaml">
+    <Page Include="Views\Assets\SpellControl\SpellEffectAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

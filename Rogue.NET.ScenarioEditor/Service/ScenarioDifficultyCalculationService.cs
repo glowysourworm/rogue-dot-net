@@ -66,7 +66,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var attackHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetAttack()) : 0;
 
                         // Calculate Attack Attribute Contributions
-                        /*var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
+                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
                         var attackAttributesAttackHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
                         (accumulator, enemy) =>
                         {
@@ -137,14 +137,14 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 
                         var high = Math.Max((attackHigh - playerLow.GetDefense()) + attackAttributeMeleeHigh, 0);
                         var low = Math.Max((attackLow - playerHigh.GetDefense()) + attackAttributeMeleeLow, 0);
-                        */
+                        
                         // Select High, Low, and Average
                         return new ProjectedQuantityViewModel()
                         {
-                            //High = high,
-                           // Low = low,
-                            //Average = (low + high) / 2.0D,
-                           // Level = levelNumber
+                            High = high,
+                            Low = low,
+                            Average = (low + high) / 2.0D,
+                            Level = levelNumber
                         };
                     }));
         }
@@ -298,7 +298,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var defenseHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetDefense()) : 0D;
 
                         // Calculate Attack Attribute Contributions
-                        /*var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
+                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
                         var attackAttributesDefenseHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
                         (accumulator, enemy) =>
                         {                            
@@ -370,13 +370,13 @@ namespace Rogue.NET.ScenarioEditor.Service
                         // Calculate Player attack power
                         var high = Math.Max((playerHigh.GetAttack() - defenseLow) + attackAttributeMeleeHigh, 0);
                         var low = Math.Max((playerLow.GetAttack() - defenseHigh) + attackAttributeMeleeLow, 0);
-                        */
+                        
                         return new ProjectedQuantityViewModel()
                         {
-                            //High = high,
-                            //Low = low,
-                            //Average = (low + high) / 2.0D,
-                            //Level = levelNumber
+                            High = high,
+                            Low = low,
+                            Average = (low + high) / 2.0D,
+                            Level = levelNumber
                         };
                     }));
         }
@@ -809,12 +809,12 @@ namespace Rogue.NET.ScenarioEditor.Service
         private IEnumerable<AttackAttributeTemplate> CreateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
             return null;
-            /*return configuration.AttackAttributes.Select(x => new AttackAttributeTemplate()
+            return configuration.AttackAttributes.Select(x => new AttackAttributeTemplate()
             {
                 Name = x.Name,
                 Attack = new Range<double>(0,0),
                 Resistance = new Range<double>(0,0)
-            });*/
+            });
         }
         #endregion
 

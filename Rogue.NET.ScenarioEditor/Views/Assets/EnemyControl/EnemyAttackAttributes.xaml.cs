@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 {
     [Export]
-    public partial class SpellEffectCombatAttributes : UserControl
+    public partial class EnemyAttackAttributes : UserControl
     {
         [ImportingConstructor]
-        public SpellEffectCombatAttributes()
+        public EnemyAttackAttributes()
         {
             InitializeComponent();
         }

@@ -56,9 +56,9 @@
                 </TabItem.Visibility>
                 <spell:SpellEffect />
             </TabItem>
-            <TabItem Header="Spell Combat Attributes" 
+            <TabItem Header="Spell Attack Attributes" 
                      Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}">
-                <spell:SpellEffectCombatAttributes />
+                <spell:SpellEffectAttackAttributes />
             </TabItem>
             <TabItem Header="Spell Aura Effect" Background="Black"
                      Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">

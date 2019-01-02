@@ -21,8 +21,8 @@
             <TabItem Header="Parameters">
                 <ContentControl prism:RegionManager.RegionName="EquipmentParametersRegion" />
             </TabItem>
-            <TabItem Header="Combat Attributes">
-                <equipment:EquipmentCombatAttributes />
+            <TabItem Header="Attack Attributes">
+                <equipment:EquipmentAttackAttributes />
             </TabItem>
         </TabControl>
     </Grid>

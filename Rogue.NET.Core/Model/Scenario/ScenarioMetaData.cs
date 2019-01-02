@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Model.Scenario
         public bool IsCurseIdentified { get; set; }
         public DungeonMetaDataObjectTypes ObjectType { get; set; }
         public IList<AttackAttributeTemplate> AttackAttributes { get; set; }
-        public IList<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         public ScenarioMetaData()
         {
@@ -33,7 +32,6 @@ namespace Rogue.NET.Core.Model.Scenario
             this.LongDescription = "";
             this.ObjectType = DungeonMetaDataObjectTypes.Item;
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.CombatAttributes = new List<CombatAttributeTemplate>();
         }
     }
 }

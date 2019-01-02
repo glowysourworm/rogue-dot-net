@@ -181,14 +181,14 @@ namespace Rogue.NET.ScenarioEditor
             {
                 LoadConstruction(e.ConstructionName);
             });
-            _eventAggregator.GetEvent<AddCombatAttributeEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
                 // Add Combat Attribute to the scenario
-                //_scenarioEditorController.CurrentConfig.CombatAttributes.Add(e);
+                _scenarioEditorController.CurrentConfig.AttackAttributes.Add(e);
 
                 // Update Scenario object references
                 _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
@@ -200,14 +200,14 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<RemoveCombatAttributeEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
                 // Remove Combat Attribute from the scenario
-                //_scenarioEditorController.CurrentConfig.CombatAttributes.Remove(e);
+               _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e);
 
                 // Update Scenario object references
                 _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
@@ -219,7 +219,7 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<UpdateCombatAttributeEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK

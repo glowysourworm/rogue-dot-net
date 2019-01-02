@@ -253,7 +253,6 @@
     <Compile Include="Model\ScenarioConfiguration\Animation\BrushTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\GradientStopTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\PenTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Content\CombatAttributeTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\AttackAttributeTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\BehaviorDetailsTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\BehaviorTemplate.cs" />
