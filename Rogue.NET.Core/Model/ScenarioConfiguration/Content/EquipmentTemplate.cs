@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     public class EquipmentTemplate : DungeonObjectTemplate
     {
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
-        public List<CombatAttributeTemplate> CombatAttributes { get; set; }
 
         private Range<int> _class;
         private Range<double> _quality;
@@ -154,7 +153,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.CombatAttributes = new List<CombatAttributeTemplate>();
         }
         public EquipmentTemplate(DungeonObjectTemplate tmp)
             : base(tmp)
@@ -166,7 +164,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.CombatAttributes = new List<CombatAttributeTemplate>();
         }
     }
 }

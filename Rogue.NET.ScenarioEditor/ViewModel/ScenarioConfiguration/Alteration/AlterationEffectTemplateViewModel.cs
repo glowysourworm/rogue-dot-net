@@ -149,7 +149,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
-        public ObservableCollection<CombatAttributeTemplateViewModel> CombatAttributes { get; set; }
 
 
         public AlterationEffectTemplateViewModel()
@@ -177,7 +176,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
 
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();
             this.RemediedState = new AlteredCharacterStateTemplateViewModel();
         }

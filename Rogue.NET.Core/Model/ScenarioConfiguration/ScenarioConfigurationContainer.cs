@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
@@ -23,7 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
         public List<SpellTemplate> MagicSpells { get; set; }
         public List<DoodadTemplate> DoodadTemplates { get; set; }
-        public List<DungeonObjectTemplate> AttackAttributes { get; set; }
+        public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
 
         public ScenarioConfigurationContainer()
@@ -39,7 +38,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.PlayerTemplate = new PlayerTemplate();
             this.DoodadTemplates = new List<DoodadTemplate>();
             this.PenTemplates = new List<PenTemplate>();
-            this.AttackAttributes = new List<DungeonObjectTemplate>();
+            this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
         }
     }

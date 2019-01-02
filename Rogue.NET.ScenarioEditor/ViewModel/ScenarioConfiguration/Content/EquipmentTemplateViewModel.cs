@@ -10,7 +10,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     public class EquipmentTemplateViewModel : DungeonObjectTemplateViewModel
     {
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
-        public ObservableCollection<CombatAttributeTemplateViewModel> CombatAttributes { get; set; }
 
         private RangeViewModel<int> _class;
         private RangeViewModel<double> _quality;
@@ -84,7 +83,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
         }
         public EquipmentTemplateViewModel(DungeonObjectTemplateViewModel tmp)
             : base(tmp)
@@ -96,7 +94,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.CombatAttributes = new ObservableCollection<CombatAttributeTemplateViewModel>();
         }
     }
 }
