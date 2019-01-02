@@ -23,59 +23,20 @@ namespace Rogue.NET.Core.Service
             var file = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName) +
                            "." + ResourceConstants.ScenarioConfigurationExtension;
 
-            if (File.Exists(file))
-                File.Delete(file);
-
-            using (var stream = File.OpenWrite(file))
-            {
-                var serializer = new Serializer(
-                    new Settings(Method.Generated,
-                                 Method.Generated,
-                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
-                                 false, false,
-                                 true, true, false,
-                                 ReferencePreservation.Preserve));
-
-                serializer.Serialize(configuration, stream);
-            }
+            File.WriteAllBytes(file, BinarySerializer.Serialize(configuration));
         }
         public void EmbedConfiguration(ConfigResources configResource, ScenarioConfigurationContainer configuration)
         {
             var file = Path.Combine(ResourceConstants.EmbeddedScenarioDirectory, configResource.ToString()) + "." + 
                                     ResourceConstants.ScenarioConfigurationExtension;
 
-            if (File.Exists(file))
-                File.Delete(file);
-
-            using (var stream = File.OpenWrite(file))
-            {
-                var serializer = new Serializer(
-                    new Settings(Method.Generated,
-                                 Method.Generated,
-                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
-                                 false, false,
-                                 true, true, false,
-                                 ReferencePreservation.Preserve));
-
-                serializer.Serialize(configuration, stream);
-            }
+            File.WriteAllBytes(file, BinarySerializer.Serialize(configuration));
         }
         public ScenarioConfigurationContainer OpenConfiguration(string scenarioConfigurationName)
         {
             var path = Path.Combine(ResourceConstants.ScenarioDirectory, scenarioConfigurationName + "." + ResourceConstants.ScenarioConfigurationExtension);
 
-            using (var stream = File.OpenRead(path))
-            {
-                var serializer = new Serializer(
-                    new Settings(Method.Generated,
-                                 Method.Generated,
-                                 VersionToleranceLevel.AllowFieldRemoval | VersionToleranceLevel.AllowFieldAddition | VersionToleranceLevel.AllowInheritanceChainChange,
-                                 false, false,
-                                 true, true, false,
-                                 ReferencePreservation.Preserve));
-
-                return serializer.Deserialize<ScenarioConfigurationContainer>(stream);
-            }
+            return (ScenarioConfigurationContainer)BinarySerializer.Deserialize(File.ReadAllBytes(path));
         }
         public IDictionary<string, ScenarioFileHeader> GetScenarioHeaders()
         {
