@@ -17,58 +17,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return Math.Max(0, result);
         }
 
-        /// <summary>
-        /// Returns effective attack attributes for use with direct melee calculation. Scenario Attributes are empty containers for scenario 
-        /// defined attack attributes. NOTE - THESE SHOULD NOT BE REFERENCED.
-        /// </summary>
-        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Player player, IEnumerable<AttackAttribute> scenarioAttributes)
-        {
-            var result = new List<AttackAttribute>();
-
-            // Base Attributes
-            foreach (var baseAttribute in scenarioAttributes)
-                result.Add(baseAttribute.DeepClone());
-
-            // Zero out Attack / Resistance
-            result.ForEach(x => { x.Attack = 0; x.Resistance = 0; });
-
-            // Friendly attack attribute contributions
-            foreach (var friendlyAttackAttributes in player.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
-            {
-                foreach (var attribute in result)
-                {
-                    attribute.Resistance += friendlyAttackAttributes.First(y => y.RogueName == attribute.RogueName).Resistance;
-                }
-            }
-
-            // Passive attack attribute contributions
-            foreach (var passiveAttackAttributes in player.Alteration.GetPassiveAttackAttributeAlterations().Select(x => x.AttackAttributes))
-            {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = passiveAttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                }
-            }
-
-            //Equipment contributions
-            foreach (var equipment in player.Equipment.Values.Where(z => z.IsEquipped))
-            {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = equipment.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                }
-            }
-
-            // Filter result by attributes that apply to strength base combat ONLY
-            return result.Where(x => x.AppliesToStrengthBasedCombat);
-        }
-
         public static void ApplyLimits(this Player player)
         {
             if (player.Hp < 0)

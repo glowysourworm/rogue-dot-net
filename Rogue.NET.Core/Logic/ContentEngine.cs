@@ -21,6 +21,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Collections.Generic;
+using Rogue.NET.Core.Logic.Content.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -313,7 +314,7 @@ namespace Rogue.NET.Core.Logic
             if (!enemy.IsEngaged)
                 return;
 
-            enemy.TurnCounter += _interactionProcessor.CalculateEnemyTurn(player, enemy);
+            enemy.TurnCounter += _interactionProcessor.CalculateEnemyTurnIncrement(player, enemy);
 
             if (enemy.TurnCounter >= 1)
                 OnEnemyReaction(enemy);
@@ -627,7 +628,7 @@ namespace Rogue.NET.Core.Logic
                                     enemy.Consumables.Remove(ammo.Id);
 
                                     // Calculate hit - if enemy hit then queue Ammunition spell
-                                    var enemyHit = _interactionProcessor.CalculateEnemyRangeHit(_modelService.Player, enemy);
+                                    var enemyHit = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, InteractionType.Range);
 
                                     // If enemy hit then process the spell associated with the ammo
                                     if (enemyHit)
@@ -655,7 +656,7 @@ namespace Rogue.NET.Core.Logic
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
-                                    _interactionProcessor.CalculateEnemyHit(_modelService.Player, enemy);
+                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, InteractionType.Melee);
                                     actionTaken = true;
                                 }
                             }

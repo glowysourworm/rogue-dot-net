@@ -71,7 +71,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         (accumulator, enemy) =>
                         {
                             // Join and accumulate the high attack value
-                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
                             {
                                 x.Attack.High = Math.Max(x.Attack.High, y.Attack);
                                 return x;
@@ -83,7 +83,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         (accumulator, enemy) =>
                         {
                             // Join and accumulate the low attack value
-                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
                             {
                                 x.Attack.Low = Math.Min(x.Attack.Low, y.Attack);
                                 return x;
@@ -119,12 +119,12 @@ namespace Rogue.NET.ScenarioEditor.Service
                             });
                         });
 
-                        var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
-                                attackAttributesAttackLow
-                                .Join(attackAttributesDefenseHigh,
-                                        x => x.Name,
-                                        y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High))
+                    var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
+                            attackAttributesAttackLow
+                            .Join(attackAttributesDefenseHigh,
+                                    x => x.Name,
+                                    y => y.Name,
+                                    (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.Low, y.Resistance.High))
                                 .Sum();
 
                         var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
@@ -132,7 +132,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseLow,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low))
+                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.High, y.Resistance.Low))
                                 .Sum();
                                 
                         var high = Math.Max((attackHigh - playerLow.GetDefense()) + attackAttributeMeleeHigh, 0);
@@ -303,7 +303,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         (accumulator, enemy) =>
                         {                            
                             // Join and accumulate the high defense value
-                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
                             {
                                 x.Resistance.High = Math.Max(x.Resistance.High, y.Resistance);
                                 return x;
@@ -315,7 +315,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                         (accumulator, enemy) =>
                         {
                             // Join and accumulate the Low defense value
-                            return accumulator.Join(enemy.GetMeleeAttributes(), x => x.Name, y => y.RogueName, (x, y) =>
+                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
                             {
                                 x.Resistance.Low = Math.Min(x.Resistance.Low, y.Resistance);
                                 return x;
@@ -356,7 +356,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseHigh,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High))
+                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.Low, y.Resistance.High))
                                 .Sum();
 
                         var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
@@ -364,7 +364,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseLow,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low))
+                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.High, y.Resistance.Low))
                                 .Sum();
 
                         // Calculate Player attack power

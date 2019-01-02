@@ -9,53 +9,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
     public static class EnemyExtension
     {
         /// <summary>
-        /// Returns effective attack attributes for use with direct melee calculation
+        /// Returns true if the enemy is equipped to fire it's range weapon.
         /// </summary>
-        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Enemy enemy)
-        {
-            var result = new List<AttackAttribute>();
-
-            // Enemy Base Attributes
-            foreach (var baseAttribute in enemy.AttackAttributes)
-                result.Add(baseAttribute.Value.DeepClone());
-
-            // Friendly attack attribute contributions
-            foreach (var friendlyAttackAttributes in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
-            {
-                foreach (var attribute in result)
-                {
-                    attribute.Resistance += friendlyAttackAttributes.First(y => y.RogueName == attribute.RogueName).Resistance;
-                }
-            }
-
-            // Passive attack attribute contributions
-            foreach (var passiveAttackAttributes in enemy.Alteration.GetPassiveAttackAttributeAlterations().Select(x => x.AttackAttributes))
-            {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = passiveAttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                }
-            }
-
-            //Equipment contributions
-            foreach (var equipment in enemy.Equipment.Values.Where(z => z.IsEquipped))
-            {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = equipment.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                }
-            }
-
-            // Filter by attributes that apply to strength based combat ONLY.
-            return result.Where(x => x.AppliesToStrengthBasedCombat);
-        }
-
         public static bool IsRangeMelee(this Enemy enemy)
         {
             var rangeWeapon = enemy.Equipment.Values.FirstOrDefault(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);

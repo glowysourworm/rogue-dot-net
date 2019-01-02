@@ -182,10 +182,10 @@ namespace Rogue.NET.Core.Logic
             if (alteration.Cost.Type == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(enemy, alteration.Cost);
 
-            // Spell blocked by Player
-            if (_interactionProcessor.CalculateSpellBlock(_modelService.Player))
+            // Alteration blocked by Player
+            if (_interactionProcessor.CalculateAlterationBlock(enemy, _modelService.Player, spell.BlockType))
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.Player + " has blocked the spell!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.Player.RogueName + " has blocked the attack!");
                 return;
             }
 
@@ -254,9 +254,9 @@ namespace Rogue.NET.Core.Logic
 
             foreach (var enemy in _modelService.GetTargetedEnemies())
             {
-                bool blocked = _interactionProcessor.CalculateSpellBlock(enemy);
+                bool blocked = _interactionProcessor.CalculateAlterationBlock(_modelService.Player, enemy, alteration.BlockType);
                 if (blocked)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " blocked the spell!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " blocked the attack!");
 
                 else
                 {
@@ -413,8 +413,9 @@ namespace Rogue.NET.Core.Logic
                         .ForEach(enemy =>
                         {
                             // Apply the Alteration Effect -> Publish the results
-                            _interactionProcessor.CalculateAttackAttributeMelee(
-                                alteration.Effect.DisplayName, 
+                            _interactionProcessor.CalculateAttackAttributeHit(
+                                alteration.Effect.DisplayName,
+                                _modelService.Player,
                                 enemy, 
                                 alteration.Effect.AttackAttributes);
 
@@ -498,7 +499,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     // Apply the Alteration Effect -> Publish the results
-                    _interactionProcessor.CalculateAttackAttributeMelee(alteration.Effect.DisplayName, enemy, alteration.Effect.AttackAttributes);
+                    _interactionProcessor.CalculateAttackAttributeHit(alteration.Effect.DisplayName, enemy, _modelService.Player, alteration.Effect.AttackAttributes);
                     break;
             }
         }

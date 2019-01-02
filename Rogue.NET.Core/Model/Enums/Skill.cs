@@ -27,9 +27,19 @@
         OneTime,
         PerStep
     }
+    /// <summary>
+    /// Defines a way to block (completely negate Effects) Alterations using different stats
+    /// </summary>
     public enum AlterationBlockType
     {
+        /// <summary>
+        /// Blocks Alteration using Base Intelligence ONLY
+        /// </summary>
         Mental,
+
+        /// <summary>
+        /// Blocks Alteration using Base Agility ONLY
+        /// </summary>
         Physical
     }
     public enum AlterationType

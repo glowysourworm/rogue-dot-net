@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Service.Interface;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -14,16 +15,18 @@ namespace Rogue.NET.Core.Logic.Content
     public class EnemyProcessor : IEnemyProcessor
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IModelService _modelService;
 
         [ImportingConstructor]
-        public EnemyProcessor(IRandomSequenceGenerator randomSequenceGenerator)
+        public EnemyProcessor(IRandomSequenceGenerator randomSequenceGenerator, IModelService modelService)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
+            _modelService = modelService;
         }
 
         public void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken)
         {
-            enemy.Hp += enemy.GetHpRegen() - enemy.GetMalignAttackAttributeHit(); 
+            enemy.Hp += enemy.GetHpRegen() - enemy.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes()); 
             enemy.Mp += enemy.GetMpRegen();
 
             // Increment event times - ignore messages to publish

@@ -288,10 +288,10 @@ namespace Rogue.NET.Core.Logic.Content
 
             // Hunger
             if (alterationEffect.Hunger > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hunger has changed by " + alterationEffect.Strength.ToString("N0"));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
 
             else if (alterationEffect.Hunger < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hunger has changed by " + alterationEffect.Strength.ToString("N0"));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
 
             // Hp
             if (alterationEffect.Hp > 0)

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Core.Logic.Content.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -207,7 +208,7 @@ namespace Rogue.NET.Core.Logic
                 enemy.IsEngaged = true;
 
                 // Enemy gets hit OR dodges
-                _interactionProcessor.CalculatePlayerMeleeHit(_modelService.Player, enemy);
+                _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, InteractionType.Melee);
             }
         }
         public LevelContinuationAction Throw(string itemId)
@@ -493,7 +494,7 @@ namespace Rogue.NET.Core.Logic
                 QueuePlayerConsumableRemove(ammo.Id);
 
                 // Calculate hit - if enemy hit then queue Ammunition spell
-                var enemyHit = _interactionProcessor.CalculatePlayerRangeHit(_modelService.Player, targetedEnemy);
+                var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, InteractionType.Range);
 
                 // If enemy hit then process the spell associated with the ammo
                 if (enemyHit)

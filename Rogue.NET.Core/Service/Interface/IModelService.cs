@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -116,5 +117,11 @@ namespace Rogue.NET.Core.Service.Interface
         /// </summary>
         /// <returns>Display name if the object is Identified</returns>
         string GetDisplayName(string rogueName);
+
+        /// <summary>
+        /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from
+        /// the configuration. This contains definitions for all attack attributes.
+        /// </summary>
+        IEnumerable<AttackAttribute> GetAttackAttributes();
     }
 }

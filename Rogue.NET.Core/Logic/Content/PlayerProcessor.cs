@@ -175,7 +175,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void ApplyEndOfTurn(Player player, bool regenerate)
         {
             //Normal turn stuff
-            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit();
+            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes());
             player.Mp += player.GetMpRegen();
 
             // Set Killed By if malign attribute hit is great enough

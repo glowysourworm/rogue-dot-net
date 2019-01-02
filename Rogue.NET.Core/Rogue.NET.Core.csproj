@@ -144,6 +144,7 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
+    <Compile Include="Logic\Content\Enum\InteractionType.cs" />
     <Compile Include="Logic\DebugEngine.cs" />
     <Compile Include="Logic\Interface\IDebugEngine.cs" />
     <Compile Include="Logic\Processing\DialogUpdate.cs" />

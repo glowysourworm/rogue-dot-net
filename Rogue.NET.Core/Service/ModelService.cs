@@ -16,6 +16,8 @@ using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Service
 {
@@ -25,6 +27,7 @@ namespace Rogue.NET.Core.Service
     {
         readonly IRayTracer _rayTracer;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IAttackAttributeGenerator _attackAttributeGenerator;
 
         // Line of sight collection calculated each time player moves. This is used for enemy calculations.
         IEnumerable<CellPoint> _lineOfSightLocations;
@@ -45,10 +48,11 @@ namespace Rogue.NET.Core.Service
         string _killedBy;
 
         [ImportingConstructor]
-        public ModelService(IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator)
+        public ModelService(IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator, IAttackAttributeGenerator attackAttributeGenerator)
         {
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _attackAttributeGenerator = attackAttributeGenerator;
 
             _lineOfSightLocations = new List<CellPoint>();
             _exploredLocations = new List<CellPoint>();
@@ -114,10 +118,18 @@ namespace Rogue.NET.Core.Service
 
         public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
 
+        public IEnumerable<AttackAttribute> GetAttackAttributes()
+        {
+            return this.ScenarioConfiguration
+                       .AttackAttributes
+                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x));
+        }
+
         public string GetDisplayName(string rogueName)
         {
             return this.ScenarioEncyclopedia[rogueName].IsIdentified ? rogueName : ModelConstants.UnIdentifiedDisplayName;
         }
+        
         public IEnumerable<Enemy> GetTargetedEnemies()
         {
             return _targetedEnemies;

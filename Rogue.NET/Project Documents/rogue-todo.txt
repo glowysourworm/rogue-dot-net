@@ -402,6 +402,8 @@
 
 - Refactor "SpellTemplate" to "AlterationTemplate"
 
+- Fix calculations in Scenario Difficulty Service for attack attibute melee.
+
 ---------
 						  
 - Add - Scenario details to Open screen

@@ -1,7 +1,10 @@
-﻿using Rogue.NET.Core.Logic.Static;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Character.Extension
@@ -35,21 +38,15 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetDefenseBase(this Character character)
         {
-            return character.GetStrengthBase() / 5.0D;
+            return character.GetStrengthBase() * ModelConstants.Melee.DefenseBaseMultiplier;
         }
-
         public static double GetMpRegen(this Character character)
         {
             return character.MpRegenBase + character.Alteration.GetAlterations().Sum(x => x.MpPerStep);
         }
         public static double GetHpRegen(this Character character)
         {
-            var result = character.HpRegenBase;
-
-            // Normal alteration effects
-            result += character.Alteration.GetAlterations().Sum(x => x.HpPerStep);
-
-            return result;
+            return character.HpRegenBase + character.Alteration.GetAlterations().Sum(x => x.HpPerStep);
         }
         public static double GetStrength(this Character character)
         {
@@ -93,7 +90,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetDodge(this Character character)
         {
-            var result = character.GetAgility() / 100;
+            var result = character.GetDodgeBase();
 
             result += character.Alteration.GetAlterations().Sum(x => x.DodgeProbability);
 
@@ -143,44 +140,89 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             result += character.Alteration.GetAlterations().Sum(x => x.CriticalHit);
 
-            return Math.Max(0, result);
+            return Math.Min(Math.Max(0, result), 1);
         }
+
+        /// <summary>
+        /// Returns effective attack attributes for use with direct melee calculation
+        /// </summary>
+        public static IEnumerable<AttackAttribute> GetMeleeAttributes(this Character character, IEnumerable<AttackAttribute> scenarioAttributes)
+        {
+            // Create base attribute list from the scenario list
+            var result = scenarioAttributes.DeepClone();
+
+            // For Enemy characters - add on the intrinsic attributes
+            if (character is Enemy)
+            {
+                var enemy = character as Enemy;
+
+                // Add contributions from enemy list
+                result = result.Join(enemy.AttackAttributes.Values, x => x.RogueName, y => y.RogueName, (x, y) =>
+                {
+                    x.Attack += y.Attack;
+                    x.Resistance += y.Resistance;
+
+                    return x;
+                });
+            }
+
+            // Friendly attack attribute contributions
+            foreach (var friendlyAttackAttributes in character.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
+            {
+                foreach (var attribute in result)
+                {
+                    attribute.Resistance += friendlyAttackAttributes.First(y => y.RogueName == attribute.RogueName).Resistance;
+                }
+            }
+
+            // Passive attack attribute contributions
+            foreach (var passiveAttackAttributes in character.Alteration.GetPassiveAttackAttributeAlterations().Select(x => x.AttackAttributes))
+            {
+                foreach (var attribute in result)
+                {
+                    var passiveAttribute = passiveAttackAttributes.First(y => y.RogueName == attribute.RogueName);
+
+                    attribute.Attack += passiveAttribute.Attack;
+                    attribute.Resistance += passiveAttribute.Resistance;
+                }
+            }
+
+            //Equipment contributions
+            foreach (var equipment in character.Equipment.Values.Where(z => z.IsEquipped))
+            {
+                foreach (var attribute in result)
+                {
+                    var passiveAttribute = equipment.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
+
+                    attribute.Attack += passiveAttribute.Attack;
+                    attribute.Resistance += passiveAttribute.Resistance;
+                }
+            }
+
+            // Filter by attributes that apply to strength based combat ONLY.
+            return result;
+        }
+
 
         /// <summary>
         /// Returns the end-of-turn malign attack attribute contribution used at the end
         /// of each character turn.
         /// </summary>
-        public static double GetMalignAttackAttributeHit(this Character character)
+        public static double GetMalignAttackAttributeHit(this Character character, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var result = 0D;
+
+            // Get character effective attack attributes
+            var attackAttributes = character.GetMeleeAttributes(scenarioAttributes);
 
             // Malign attack attribute contributions
             foreach (var malignEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(false))
             {
                 foreach (var malignAttribute in malignEffect.AttackAttributes)
                 {
-                    double resistance = 0;
-                    double attack = malignAttribute.Attack;
+                    var defensiveAttribute = attackAttributes.First(x => x.RogueName == malignAttribute.RogueName);
 
-                    // Friendly attack attribute contributions
-                    foreach (var friendlyEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(true))
-                    {
-                        resistance += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                    }
-
-                    // Passive attack attribute contributions
-                    foreach (var passiveEffect in character.Alteration.GetPassiveAttackAttributeAlterations())
-                    {
-                        resistance += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                    }
-
-                    // Equipment contributions
-                    foreach (var equipment in character.Equipment.Where(z => z.Value.IsEquipped).Select(x => x.Value))
-                    {
-                        resistance += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                    }
-
-                    result += Calculator.CalculateAttackAttributeMelee(attack, resistance);
+                    result += Calculator.CalculateAttackAttributeEffect(character, malignAttribute, defensiveAttribute);
                 }
             }
 
