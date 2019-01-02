@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Converter.AttackAttribute
             {
                 foreach (var attribute in attributeList)
                 {
-                    if (attribute.Weakness == 0 && attribute.Resistance == 0 && attribute.Attack == 0)
+                    if (attribute.Resistance == 0 && attribute.Attack == 0)
                         continue;
 
                     filteredList.Add(attribute);

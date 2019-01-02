@@ -1,12 +1,8 @@
-﻿using Rogue.NET.Core.Logic.Static;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
@@ -31,21 +27,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             // Base Attributes
             foreach (var baseAttribute in scenarioAttributes)
-                result.Add(new AttackAttribute()
-                {
-                    RogueName = baseAttribute.RogueName,
-                    CharacterColor = baseAttribute.CharacterColor,
-                    CharacterSymbol = baseAttribute.CharacterSymbol,
-                    Icon = baseAttribute.Icon,
-                    SmileyAuraColor = baseAttribute.SmileyAuraColor,
-                    SmileyBodyColor = baseAttribute.SmileyBodyColor,
-                    SmileyLineColor = baseAttribute.SmileyLineColor,
-                    SmileyMood = baseAttribute.SmileyMood,
-                    SymbolType = baseAttribute.SymbolType,
-                    Resistance = 0,
-                    Weakness = 0,
-                    Attack = 0
-                });
+                result.Add(baseAttribute.DeepClone());
+
+            // Zero out Attack / Resistance
+            result.ForEach(x => { x.Attack = 0; x.Resistance = 0; });
 
             // Friendly attack attribute contributions
             foreach (var friendlyAttackAttributes in player.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
@@ -65,7 +50,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
                 }
             }
 
@@ -78,11 +62,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
                 }
             }
 
-            return result;
+            // Filter result by attributes that apply to strength base combat ONLY
+            return result.Where(x => x.AppliesToStrengthBasedCombat);
         }
 
         public static void ApplyLimits(this Player player)

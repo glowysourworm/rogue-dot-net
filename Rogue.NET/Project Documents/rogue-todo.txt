@@ -459,6 +459,12 @@ IMMEDIATE TODO'S:
 				 Combat Value = function (attacker's total intelligence * Alteration Paraeters) - 
 								function (defender's total intelligence)
 
+				 NOTE*** NEED FLAG ON ALTERATION TO SAY WHETHER IT'S CONSIDERED PHYSICAL OR MENTAL. This is
+						 required to show how to calculate the Block portion of combat.
+
+					     Example: Alteration called "Stun" used by an Ogre. This would be considered Physical; and
+								  should be blocked by Agility and/or Strength. NOT Intelligence.
+
 				 So, the combat value is both scaled by the attacker's BASE intelligence * Alteration Parameters
 				 AND the defense value which is a function of the defender's intelligence.
 

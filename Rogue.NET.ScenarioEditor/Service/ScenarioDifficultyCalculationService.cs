@@ -124,7 +124,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseHigh,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High, 0))
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High))
                                 .Sum();
 
                         var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
@@ -132,7 +132,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseLow,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low, 0))
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low))
                                 .Sum();
                                 
                         var high = Math.Max((attackHigh - playerLow.GetDefense()) + attackAttributeMeleeHigh, 0);
@@ -356,7 +356,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseHigh,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High, 0))
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.Low, y.Resistance.High))
                                 .Sum();
 
                         var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
@@ -364,7 +364,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                 .Join(attackAttributesDefenseLow,
                                         x => x.Name,
                                         y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low, 0))
+                                        (x, y) => Calculator.CalculateAttackAttributeMelee(x.Attack.High, y.Resistance.Low))
                                 .Sum();
 
                         // Calculate Player attack power

@@ -8,14 +8,19 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
     {
         public double Attack { get; set; }
         public double Resistance { get; set; }
-        public int Weakness { get; set; }
+
+        public bool AppliesToStrengthBasedCombat { get; set; }
+        public bool AppliesToIntelligenceBasedCombat { get; set; }
+
+        public bool ScaledByStrength { get; set; }
+        public bool ScaledByIntelligence { get; set; }
 
         public AttackAttribute()
         {
         }
         public override string ToString()
         {
-            return this.RogueName + " " + this.Attack.ToString() + "|" + this.Resistance.ToString() + "|" + this.Weakness.ToString();
+            return this.RogueName + " " + this.Attack.ToString() + "|" + this.Resistance.ToString();
         }
     }
 }

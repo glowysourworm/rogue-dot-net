@@ -109,27 +109,16 @@
                     <TextBlock Margin="20, 8, 8, 8"
                            Text="Example 5: Attack Attribute Melee: " />
                     <TextBlock Margin="20, 8, 8, 8"
-                           Text="           An enemy's Fire Attack Attribute = 4.2A 0R 0W" />                    
+                           Text="           An enemy's Fire Attack Attribute = 4.2A 0R" />                    
                     <TextBlock Margin="20, 8, 8, 8"
-                           Text="           Your Fire Attack Attribute = 0A 3R 0W" />
+                           Text="           Your Fire Attack Attribute = 0A 3R" />
                     <TextBlock Margin="20, 8, 8, 8"
-                           Text="           The resulting reduction in your HP = A * (1 - (R / (A + R)) + W) = 2.45" />
+                           Text="           The resulting reduction in your HP = A * (1 - (R / (A + R))) = 2.45" />
                     <TextBlock Margin="20, 8, 8, 8"
-                           Text="The attack (4.2A) from the enemy is blocked partially by a resistance (3R) from the player. So, the effect of Resistance is to block only a portion of the attack. The higher the resistance - the less of a blow the player will receive. Conversely, the weakness parameter (W) has a multiplicative effect on the melee." />
-
-                    <TextBlock Margin="20, 8, 8, 8"
-                           Text="Example 6: Attack Attribute Melee: " />
-                    <TextBlock Margin="20, 8, 8, 8"
-                           Text="           An enemy's Water Attack Attribute = 0A 0R 2W" />                    
-                    <TextBlock Margin="20, 8, 8, 8"
-                           Text="           Your Water Attack Attribute = 3A 0R 0W" />
-                    <TextBlock Margin="20, 8, 8, 8"
-                           Text="           The resulting reduction in the enemy's HP = A * (1 - (R / (A + R)) + W) = 6.00" />
-                    <TextBlock Margin="20, 8, 8, 8"
-                           Text="The attack (3A) from the player is multiplied by the weakness (2W) of the enemy. So, the effect is a greatly enhanced blow." />
+                           Text="The attack (4.2A) from the enemy is blocked partially by a resistance (3R) from the player. So, the effect of Resistance is to block only a portion of the attack. The higher the resistance - the less of a blow the player will receive." />
 
                     <TextBlock Margin="8" Text="Question:  Ok, I think I have an idea of what Attack Attributes are. They're a little complicated. What should I do?" />
-                    <TextBlock Margin="8" Text="Answer:  It's pretty simple. Just remember A = Attack, R = Resistance, and W = Weakness. You'll want to build resistance against evil or enemy attributes; and find / exploit enemy weaknesses. This can mean the difference between winning and losing." />
+                    <TextBlock Margin="8" Text="Answer:  It's pretty simple. Just remember A = Attack, and R = Resistance. You'll want to build resistance against evil or enemy attributes; and find / exploit enemy weaknesses. This can mean the difference between winning and losing." />
 
                     <TextBlock Margin="8" Text="Question:  What about enemy magic? How do I know if I'm being poisoned or something?" />
                     <TextBlock Margin="8" Text="Answer:  Attack Attributes can vary for different scenarios. Each time your player's HP is altered - there should be a log message showing the calculation. Pay close attention to those messages to look for attack attribute related hits. Those could be hurting your player and you'll need to keep track of that." />

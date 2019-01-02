@@ -8,12 +8,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         double _attackHigh;
         double _resistanceLow;
         double _resistanceHigh;
-        int _weaknessLow;
-        int _weaknessHigh;
 
         bool _isAttackSet;
         bool _isResistanceSet;
-        bool _isWeaknessSet;
 
         public double AttackLow
         {
@@ -35,16 +32,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _resistanceHigh; }
             set { this.RaiseAndSetIfChanged(ref _resistanceHigh, value); }
         }
-        public int WeaknessLow
-        {
-            get { return _weaknessLow; }
-            set { this.RaiseAndSetIfChanged(ref _weaknessLow, value); }
-        }
-        public int WeaknessHigh
-        {
-            get { return _weaknessHigh; }
-            set { this.RaiseAndSetIfChanged(ref _weaknessHigh, value); }
-        }
 
         public bool IsAttackSet
         {
@@ -55,11 +42,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _isResistanceSet; }
             set { this.RaiseAndSetIfChanged(ref _isResistanceSet, value); }
-        }
-        public bool IsWeaknessSet
-        {
-            get { return _isWeaknessSet; }
-            set { this.RaiseAndSetIfChanged(ref _isWeaknessSet, value); }
         }
 
         public ScenarioMetaDataAttackAttributeViewModel(AttackAttributeTemplate template)

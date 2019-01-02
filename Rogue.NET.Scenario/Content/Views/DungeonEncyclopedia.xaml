@@ -255,12 +255,6 @@
                                                     <Run Text="{Binding ResistanceHigh, StringFormat=F1}" />
                                                     <Run Text="R" />
                                                 </TextBlock>
-                                                <TextBlock Margin="2" Foreground="Red" FontSize="18" Visibility="{Binding IsWeaknessSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="{Binding WeaknessLow, StringFormat=F1}" />
-                                                    <Run Text=" - " />
-                                                    <Run Text="{Binding WeaknessHigh, StringFormat=F1}" />
-                                                    <Run Text="W" />
-                                                </TextBlock>
                                             </StackPanel>
                                         </Border>
                                     </ToolTip>

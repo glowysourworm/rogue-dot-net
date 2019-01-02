@@ -6,7 +6,6 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
@@ -82,9 +81,6 @@ namespace Rogue.NET.Core.Logic.Content
             // Resistance (Enemy type only has inate Attack Attributes)
             var resistance = enemy.AttackAttributes[offenseAttribute.RogueName].Resistance;
 
-            // Weakness (Enemy type only has inate Attack Attributes)
-            var weakness = enemy.AttackAttributes[offenseAttribute.RogueName].Weakness;
-
             // Friendly attack attribute contributions
             foreach (AlterationEffect friendlyEffect in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true))
                 resistance += friendlyEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
@@ -93,24 +89,21 @@ namespace Rogue.NET.Core.Logic.Content
             foreach (AlterationEffect passiveEffect in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true))
             {
                 resistance += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
-                weakness += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
             }
 
             // Equipment contributions
             foreach (var equipment in enemy.Equipment.Values.Where(z => z.IsEquipped))
             {
                 resistance += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
-                weakness += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
             }
 
-            return Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
+            return Calculator.CalculateAttackAttributeMelee(attack, resistance);
         }
         public double CalculateAttackAttributeMelee(Player player, AttackAttribute offenseAttribute)
         {
             // Offense
             var attack = offenseAttribute.Attack;
             var resistance = 0D;
-            var weakness = 0;
 
             // Friendly attack attribute contributions
             foreach (AlterationEffect friendlyEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(true))
@@ -120,17 +113,15 @@ namespace Rogue.NET.Core.Logic.Content
             foreach (AlterationEffect passiveEffect in player.Alteration.GetTemporaryAttackAttributeAlterations(true))
             {
                 resistance += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
-                weakness += passiveEffect.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
             }
 
             // Equipment contributions
             foreach (var equipment in player.Equipment.Values.Where(z => z.IsEquipped))
             {
                 resistance += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Resistance;
-                weakness += equipment.AttackAttributes.First(y => y.RogueName == offenseAttribute.RogueName).Weakness;
             }
 
-            return Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
+            return Calculator.CalculateAttackAttributeMelee(attack, resistance);
         }
 
         public double CalculateEnemyTurn(Player player, Enemy enemy)
@@ -162,8 +153,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 var attackAttributeHit = Calculator.CalculateAttackAttributeMelee(
                                             playerAttribute.Attack, 
-                                            enemyAttribute.Resistance, 
-                                            enemyAttribute.Weakness);
+                                            enemyAttribute.Resistance);
 
                 attack += attackAttributeHit;
 
@@ -226,8 +216,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 var attackAttributeHit = Calculator.CalculateAttackAttributeMelee(
                                             playerAttribute.Attack,
-                                            enemyAttribute.Resistance,
-                                            enemyAttribute.Weakness);
+                                            enemyAttribute.Resistance);
 
                 attack += attackAttributeHit;
 
@@ -286,8 +275,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 var attackAttributeHit = Calculator.CalculateAttackAttributeMelee(
                                             enemyAttribute.Attack,
-                                            playerAttribute.Resistance,
-                                            playerAttribute.Weakness);
+                                            playerAttribute.Resistance);
 
                 // If there is an effect, then store the attack attribute for use with the output message
                 if (attackAttributeHit > 0)
@@ -345,8 +333,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 var attackAttributeHit = Calculator.CalculateAttackAttributeMelee(
                                             enemyAttribute.Attack,
-                                            playerAttribute.Resistance,
-                                            playerAttribute.Weakness);
+                                            playerAttribute.Resistance);
 
                 attack += attackAttributeHit;
 
@@ -397,7 +384,6 @@ namespace Rogue.NET.Core.Logic.Content
 
             result.Attack = 0;
             result.Resistance = 0;
-            result.Weakness = 0;
 
             return result;
         }

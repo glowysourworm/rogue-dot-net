@@ -424,7 +424,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             if (equipment.IsIdentified)
                 this.AttackAttributes.AddRange(equipment.AttackAttributes
-                                                        .Where(x => x.Resistance > 0 || x.Attack > 0 || x.Weakness > 0)
+                                                        .Where(x => x.Resistance > 0 || x.Attack > 0)
                                                         .Select(x => new AttackAttributeViewModel(x)));
 
             // Fire PropertyChanged event for AttackAttributes to update bindings

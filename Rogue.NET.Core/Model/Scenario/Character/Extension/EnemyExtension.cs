@@ -1,8 +1,6 @@
-﻿using Rogue.NET.Core.Logic.Static;
+﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,21 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             // Enemy Base Attributes
             foreach (var baseAttribute in enemy.AttackAttributes)
-                result.Add(new AttackAttribute()
-                {
-                    RogueName = baseAttribute.Value.RogueName,
-                    CharacterColor = baseAttribute.Value.CharacterColor,
-                    CharacterSymbol = baseAttribute.Value.CharacterSymbol,
-                    Icon = baseAttribute.Value.Icon,
-                    SmileyAuraColor = baseAttribute.Value.SmileyAuraColor,
-                    SmileyBodyColor = baseAttribute.Value.SmileyBodyColor,
-                    SmileyLineColor = baseAttribute.Value.SmileyLineColor,
-                    SmileyMood = baseAttribute.Value.SmileyMood,
-                    SymbolType = baseAttribute.Value.SymbolType,
-                    Resistance = baseAttribute.Value.Resistance,
-                    Weakness = baseAttribute.Value.Weakness,
-                    Attack = baseAttribute.Value.Attack
-                });
+                result.Add(baseAttribute.Value.DeepClone());
 
             // Friendly attack attribute contributions
             foreach (var friendlyAttackAttributes in enemy.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
@@ -53,7 +37,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
                 }
             }
 
@@ -66,11 +49,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
                 }
             }
 
-            return result;
+            // Filter by attributes that apply to strength based combat ONLY.
+            return result.Where(x => x.AppliesToStrengthBasedCombat);
         }
 
         public static bool IsRangeMelee(this Enemy enemy)

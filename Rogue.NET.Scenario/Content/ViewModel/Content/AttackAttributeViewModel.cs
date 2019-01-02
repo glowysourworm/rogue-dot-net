@@ -7,13 +7,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     {
         double _attack;
         double _resistance;
-        int _weakness;
 
         public AttackAttributeViewModel(AttackAttribute attackAttribute) : base(attackAttribute)
         {
             this.Attack = attackAttribute.Attack;
             this.Resistance = attackAttribute.Resistance;
-            this.Weakness = attackAttribute.Weakness;
         }
 
         public double Attack
@@ -25,11 +23,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _resistance; }
             set { this.RaiseAndSetIfChanged(ref _resistance, value); }
-        }
-        public int Weakness
-        {
-            get { return _weakness; }
-            set { this.RaiseAndSetIfChanged(ref _weakness, value); }
         }
     }
 }

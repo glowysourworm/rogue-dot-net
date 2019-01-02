@@ -2,10 +2,7 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
@@ -88,7 +85,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetMagicBlock(this Character character)
         {
-            var result = character.GetIntelligence() / 100;
+            var result = character.GetMagicBlockBase();
 
             result += character.Alteration.GetAlterations().Sum(x => x.MagicBlockProbability);
 
@@ -163,31 +160,27 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 foreach (var malignAttribute in malignEffect.AttackAttributes)
                 {
                     double resistance = 0;
-                    double weakness = 0;
                     double attack = malignAttribute.Attack;
 
                     // Friendly attack attribute contributions
                     foreach (var friendlyEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(true))
                     {
                         resistance += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += friendlyEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
                     }
 
                     // Passive attack attribute contributions
                     foreach (var passiveEffect in character.Alteration.GetPassiveAttackAttributeAlterations())
                     {
                         resistance += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += passiveEffect.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
                     }
 
                     // Equipment contributions
                     foreach (var equipment in character.Equipment.Where(z => z.Value.IsEquipped).Select(x => x.Value))
                     {
                         resistance += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Resistance;
-                        weakness += equipment.AttackAttributes.First(z => z.RogueName == malignAttribute.RogueName).Weakness;
                     }
 
-                    result += Calculator.CalculateAttackAttributeMelee(attack, resistance, weakness);
+                    result += Calculator.CalculateAttackAttributeMelee(attack, resistance);
                 }
             }
 

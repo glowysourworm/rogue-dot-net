@@ -14,15 +14,14 @@ namespace Rogue.NET.Core.Logic.Static
     public static class Calculator
     {
         /// <summary>
-        /// Calculates the deducted HP for the effective { attack (offense), resistance (defense), weakness (defense) }
+        /// Calculates the deducted HP for the effective { attack (offense), resistance (defense) }
         /// </summary>
         /// <param name="attack">Effective (offensive) attack sum</param>
         /// <param name="resistance">Effective (defensive) resistance</param>
-        /// <param name="weakness">Effective (defensive) weakness</param>
         /// <returns>Deducted HP from the target character</returns>
-        public static double CalculateAttackAttributeMelee(double attack, double resistance, double weakness)
+        public static double CalculateAttackAttributeMelee(double attack, double resistance)
         {
-            return attack > 0 ? attack * (1 - (resistance / (attack + resistance)) + weakness) : 0;
+            return attack > 0 ? attack * (1 - (resistance / (attack + resistance))) : 0;
         }
 
         public static double EuclideanDistance(CellPoint location1, CellPoint location2)

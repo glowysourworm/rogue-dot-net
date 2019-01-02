@@ -467,7 +467,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                     AlterationEffectAttackAttributes = 
                         new ObservableCollection<AttackAttributeViewModel>(
                             tuple.Item4.AttackAttributes
-                                       .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
+                                       .Where(x => x.Attack > 0 || x.Resistance > 0)
                                        .Select(x => new AttackAttributeViewModel(x))),
 
                     IsAlteredState = tuple.Item4.State != null && 
@@ -558,13 +558,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         var equipmentAttribute = equipment.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
                         attackAttribute.Attack += equipmentAttribute.Attack;
                         attackAttribute.Resistance += equipmentAttribute.Resistance;
-                        attackAttribute.Weakness += equipmentAttribute.Weakness;
                     }
                 }
 
                 return aggregate;
             }).
-            Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0);
+            Where(x => x.Attack > 0 || x.Resistance > 0);
 
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
