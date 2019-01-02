@@ -13,11 +13,11 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public AlterationEffect Effect { get; set; }
         public AlterationEffect AuraEffect { get; set; }
         public AlterationType Type { get; set; }
+        public AlterationBlockType BlockType { get; set; }
         public AlterationMagicEffectType OtherEffectType { get; set; }
         public AlterationAttackAttributeType AttackAttributeType { get; set; }
         public double EffectRange { get; set; }
         public bool IsStackable { get; set; }
-        public bool ScaledByIntelligence { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

@@ -400,6 +400,8 @@
 									   element; and set the progress bar's render transform to offset it 
 									   "above their heads".
 
+- Refactor "SpellTemplate" to "AlterationTemplate"
+
 ---------
 						  
 - Add - Scenario details to Open screen

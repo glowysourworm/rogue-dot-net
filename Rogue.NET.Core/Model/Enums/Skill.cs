@@ -29,7 +29,7 @@
     }
     public enum AlterationBlockType
     {
-        Magic,
+        Mental,
         Physical
     }
     public enum AlterationType

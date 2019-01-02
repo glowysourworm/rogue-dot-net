@@ -29,8 +29,8 @@ namespace Rogue.NET.Core.Model.Generator
         public AlterationContainer GenerateAlteration(Spell spell, double characterIntelligence)
         {
             AlterationCost alterationCost = new AlterationCost();
-            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect, characterIntelligence, spell.ScaledByIntelligence);
-            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect, characterIntelligence, spell.ScaledByIntelligence);
+            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect, characterIntelligence, false);
+            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect, characterIntelligence, false);
 
             alterationCost.Type = spell.Cost.Type;
             alterationCost.Agility = spell.Cost.Agility;
@@ -53,10 +53,10 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.OtherEffectType = spell.OtherEffectType;
             alterationContainer.AttackAttributeType = spell.AttackAttributeType;
             alterationContainer.Type = spell.Type;
+            alterationContainer.BlockType = spell.BlockType;
             alterationContainer.GeneratingSpellId = spell.Id;
             alterationContainer.GeneratingSpellName = spell.RogueName;
             alterationContainer.IsStackable = spell.IsStackable;
-            alterationContainer.ScaledByIntelligence = spell.ScaledByIntelligence;
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
             return alterationContainer;

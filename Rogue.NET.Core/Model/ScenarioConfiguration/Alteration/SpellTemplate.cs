@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 {
+    // TODO: REFACTOR NAME OF CLASS TO REMOVE "SPELL" (Change to Alteration Template)
     [Serializable]
     public class SpellTemplate : DungeonObjectTemplate
     {
@@ -13,11 +14,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationEffectTemplate _effect;
         private AlterationEffectTemplate _auraEffect;
         private AlterationType _type;
+        private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
         private bool _stackable;
-        private bool _scaledByIntelligence;
         private string _createMonsterEnemy;
         private string _displayName;
 
@@ -70,6 +71,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        public AlterationBlockType BlockType
+        {
+            get { return _blockType; }
+            set
+            {
+                if (_blockType != value)
+                {
+                    _blockType = value;
+                    OnPropertyChanged("BlockType");
+                }
+            }
+        }
         public AlterationMagicEffectType OtherEffectType
         {
             get { return _otherEffectType; }
@@ -115,18 +128,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _stackable = value;
                     OnPropertyChanged("Stackable");
-                }
-            }
-        }
-        public bool ScaledByIntelligence
-        {
-            get { return _scaledByIntelligence; }
-            set
-            {
-                if (_scaledByIntelligence != value)
-                {
-                    _scaledByIntelligence = value;
-                    OnPropertyChanged("ScaledByIntelligence");
                 }
             }
         }
