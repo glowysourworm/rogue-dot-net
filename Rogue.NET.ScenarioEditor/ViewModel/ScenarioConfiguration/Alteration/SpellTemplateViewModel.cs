@@ -13,7 +13,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationEffectTemplateViewModel _effect;
         private AlterationEffectTemplateViewModel _auraEffect;
         private AlterationType _type;
-        private AlterationBlockType _blockType;
+        //private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
@@ -41,11 +41,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
         }
-        public AlterationBlockType BlockType
-        {
-            get { return _blockType; }
-            set { this.RaiseAndSetIfChanged(ref _blockType, value); }
-        }
+        //public AlterationBlockType BlockType
+        //{
+        //    get { return _blockType; }
+        //    set { this.RaiseAndSetIfChanged(ref _blockType, value); }
+        //}
         public AlterationMagicEffectType OtherEffectType
         {
             get { return _otherEffectType; }
