@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Rogue.NET.Core.Logic.Content.Enum
 {
     /// <summary>
-    /// Defines interaction types for character combat
+    /// Defines interaction types for physical character combat
     /// </summary>
-    public enum InteractionType
+    public enum PhysicalAttackType
     {
         /// <summary>
         /// Hand-to-hand combat
@@ -20,5 +20,21 @@ namespace Rogue.NET.Core.Logic.Content.Enum
         /// Range combat
         /// </summary>
         Range
+    }
+
+    /// <summary>
+    /// Defines an interaction type between two characters
+    /// </summary>
+    public enum InteractionType
+    {
+        /// <summary>
+        /// This would define any strength, agility, or speed based physical interaction
+        /// </summary>
+        Physical,
+
+        /// <summary>
+        /// This defines any intelligence based interaction
+        /// </summary>
+        Mental
     }
 }

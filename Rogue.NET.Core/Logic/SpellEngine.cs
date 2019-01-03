@@ -415,6 +415,7 @@ namespace Rogue.NET.Core.Logic
                             // Apply the Alteration Effect -> Publish the results
                             _interactionProcessor.CalculateAttackAttributeHit(
                                 alteration.Effect.DisplayName,
+                                alteration.BlockType,
                                 _modelService.Player,
                                 enemy, 
                                 alteration.Effect.AttackAttributes);
@@ -499,7 +500,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationAttackAttributeType.MeleeTarget:
                     // Apply the Alteration Effect -> Publish the results
-                    _interactionProcessor.CalculateAttackAttributeHit(alteration.Effect.DisplayName, enemy, _modelService.Player, alteration.Effect.AttackAttributes);
+                    _interactionProcessor.CalculateAttackAttributeHit(alteration.Effect.DisplayName, alteration.BlockType, enemy, _modelService.Player, alteration.Effect.AttackAttributes);
                     break;
             }
         }

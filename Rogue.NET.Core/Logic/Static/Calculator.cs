@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+﻿using Rogue.NET.Core.Logic.Content.Enum;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -29,19 +30,20 @@ namespace Rogue.NET.Core.Logic.Static
                 Character attacker, 
                 Character defender, 
                 AttackAttribute offenseAttribute, 
-                AttackAttribute defenseAttribute)
+                AttackAttribute defenseAttribute,
+                InteractionType interactionType)
         {
             var attack = 0D;
             var resistance = 0D;
 
             // Intelligence Based Combat
-            if (offenseAttribute.AppliesToIntelligenceBasedCombat)
+            if (offenseAttribute.AppliesToIntelligenceBasedCombat && interactionType == InteractionType.Mental)
             {
                 attack = offenseAttribute.ScaledByIntelligence ? attacker.GetIntelligence() * offenseAttribute.Attack : offenseAttribute.Attack;
                 resistance = defenseAttribute.ScaledByIntelligence ? defender.GetIntelligence() * defenseAttribute.Resistance : defenseAttribute.Resistance;
             }
             // Strength Based Combat
-            else if (offenseAttribute.AppliesToStrengthBasedCombat)
+            else if (offenseAttribute.AppliesToStrengthBasedCombat && interactionType == InteractionType.Physical)
             {
                 attack = offenseAttribute.ScaledByStrength ? attacker.GetStrength() * offenseAttribute.Attack : offenseAttribute.Attack;
                 resistance = defenseAttribute.ScaledByStrength ? defender.GetStrength() * defenseAttribute.Resistance : defenseAttribute.Resistance;
@@ -62,19 +64,20 @@ namespace Rogue.NET.Core.Logic.Static
         public static double CalculateAttackAttributeEffect(
                 Character character,
                 AttackAttribute offenseAttribute,
-                AttackAttribute defenseAttribute)
+                AttackAttribute defenseAttribute,
+                InteractionType interactionType)
         {
             var attack = 0D;
             var resistance = 0D;
 
             // Intelligence Based Combat
-            if (offenseAttribute.AppliesToIntelligenceBasedCombat)
+            if (offenseAttribute.AppliesToIntelligenceBasedCombat && interactionType == InteractionType.Mental)
             {
                 attack = offenseAttribute.Attack;
                 resistance = defenseAttribute.ScaledByIntelligence ? character.GetIntelligence() * defenseAttribute.Resistance : defenseAttribute.Resistance;
             }
             // Strength Based Combat
-            else if (offenseAttribute.AppliesToStrengthBasedCombat)
+            else if (offenseAttribute.AppliesToStrengthBasedCombat && interactionType == InteractionType.Physical)
             {
                 attack = offenseAttribute.Attack;
                 resistance = defenseAttribute.ScaledByStrength ? character.GetStrength() * defenseAttribute.Resistance : defenseAttribute.Resistance;

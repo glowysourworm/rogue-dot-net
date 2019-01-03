@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Content.Enum;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
@@ -222,7 +223,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 {
                     var defensiveAttribute = attackAttributes.First(x => x.RogueName == malignAttribute.RogueName);
 
-                    result += Calculator.CalculateAttackAttributeEffect(character, malignAttribute, defensiveAttribute);
+                    // TODO: Have an issue with AlterationContainer.BlockType not saved to AlterationEffect. 
+                    //       ***Needs to be refactored to split up all of the alteration types to properly support
+                    //          all features. (Example: Break apart Physical / Mental Alterations entirely)
+                    result += Calculator.CalculateAttackAttributeEffect(character, malignAttribute, defensiveAttribute, InteractionType.Mental);
                 }
             }
 

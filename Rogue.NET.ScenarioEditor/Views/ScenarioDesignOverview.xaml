@@ -124,10 +124,10 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Button Style="{StaticResource ActionButton}" Command="{Binding CalculateCommand}" Width="80" Content="Calculate!" Padding="4" Margin="8" HorizontalAlignment="Right" />
-                        <Grid Margin="6" Grid.Row="1">
+                        <!--Grid Margin="6" Grid.Row="1">
                             <TextBlock FontSize="16" Foreground="LightSteelBlue" Text="Attack Attributes" HorizontalAlignment="Left" />
                             <CheckBox IsChecked="{Binding IncludeAttackAttributes}" HorizontalAlignment="Right" />
-                        </Grid>
+                        </-->
                         <ListBox ItemsSource="{Binding Charts}" 
                                  Margin="4" Grid.Row="2"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"

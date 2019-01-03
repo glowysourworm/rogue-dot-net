@@ -404,6 +404,25 @@
 
 - Fix calculations in Scenario Difficulty Service for attack attibute melee.
 
+- Refactoring:  Alteration -> Mental Alteration, Physical Alteration, Equipment Alteration, etc...
+							  Trying to figure out best way to break up that class into smaller parts.
+
+				- When Refactoring: Create another level of abstraction to add other parts to a "Spell", or "Skill",
+									or "Special Effect".. including animations, display text, etc... So that it makes sense
+									in terms of parameters.
+
+- Equipment Balancing:  Some new parameters to consider. These could be mostly calculated; but flags or support from
+						Equipment items need to be considered.
+
+						- Miss %:  Calculated based on character strength, agility, class, etc...
+						- Quality: Change this to "Attack Value" or "Power" - And calculate based on
+								   strength, agility, intelligence, character level, speed, etc... (possibly with flag support)
+								   ("Grows with Level") - Power = Quality * Level.
+								   ("Grows with Enemies Slain") - Power = Quality * Enemies Slain.
+
+						Alterations could accompany the new parameters. Example:  "Sharpening Stone" improves base quality
+						instead of attack attribute.
+
 ---------
 						  
 - Add - Scenario details to Open screen

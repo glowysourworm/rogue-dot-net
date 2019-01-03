@@ -64,80 +64,10 @@ namespace Rogue.NET.ScenarioEditor.Service
                         // Calculate all attack value ranges
                         var attackLow = enemiesLow.Any() ? enemiesLow.Min(x => x.GetAttack()) : 0;
                         var attackHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetAttack()) : 0;
-
-                        // Calculate Attack Attribute Contributions
-                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
-                        var attackAttributesAttackHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, enemy) =>
-                        {
-                            // Join and accumulate the high attack value
-                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Attack.High = Math.Max(x.Attack.High, y.Attack);
-                                return x;
-                            });
-
-                        }) : CreateAttackAttributes(configuration);
-
-                        var attackAttributesAttackLow = enemiesLow.Any() ? enemiesLow.Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, enemy) =>
-                        {
-                            // Join and accumulate the low attack value
-                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Attack.Low = Math.Min(x.Attack.Low, y.Attack);
-                                return x;
-                            });
-
-                        }) : CreateAttackAttributes(configuration);
-
-                        var attackAttributesDefenseLow = playerLow.Equipment
-                                                                  .Where(x => x.Value.IsEquipped)
-                                                                  .Select(x => x.Value)
-                                                                  .Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, equipment) =>
-                        {
-                            // Join and accumulate the low defense values
-                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Resistance.Low = Math.Min(x.Resistance.Low, y.Resistance);
-                                return x;
-                            });
-                        });
-
-                        var attackAttributesDefenseHigh = playerLow.Equipment
-                                                                   .Where(x => x.Value.IsEquipped)
-                                                                   .Select(x => x.Value)
-                                                                   .Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, equipment) =>
-                        {
-                            // Join and accumulate the low defense values
-                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Resistance.High = Math.Max(x.Resistance.High, y.Resistance);
-                                return x;
-                            });
-                        });
-
-                    var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
-                            attackAttributesAttackLow
-                            .Join(attackAttributesDefenseHigh,
-                                    x => x.Name,
-                                    y => y.Name,
-                                    (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.Low, y.Resistance.High))
-                                .Sum();
-
-                        var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
-                                attackAttributesAttackHigh
-                                .Join(attackAttributesDefenseLow,
-                                        x => x.Name,
-                                        y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.High, y.Resistance.Low))
-                                .Sum();
                                 
-                        var high = Math.Max((attackHigh - playerLow.GetDefense()) + attackAttributeMeleeHigh, 0);
-                        var low = Math.Max((attackLow - playerHigh.GetDefense()) + attackAttributeMeleeLow, 0);
-                        
+                        var high = Math.Max((attackHigh - playerLow.GetDefense()), 0);
+                        var low = Math.Max((attackLow - playerHigh.GetDefense()), 0);
+                      
                         // Select High, Low, and Average
                         return new ProjectedQuantityViewModel()
                         {
@@ -297,79 +227,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var defenseLow = enemiesLow.Any() ? enemiesLow.Min(x => x.GetDefense()) : 0D;
                         var defenseHigh = enemiesHigh.Any() ? enemiesHigh.Max(x => x.GetDefense()) : 0D;
 
-                        // Calculate Attack Attribute Contributions
-                        var attackAttributes = configuration.AttackAttributes.Select(x => new AttackAttributeTemplate() { Name = x.Name });
-                        var attackAttributesDefenseHigh = enemiesHigh.Any() ? enemiesHigh.Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, enemy) =>
-                        {                            
-                            // Join and accumulate the high defense value
-                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Resistance.High = Math.Max(x.Resistance.High, y.Resistance);
-                                return x;
-                            });
-
-                        }) : CreateAttackAttributes(configuration);
-
-                        var attackAttributesDefenseLow = enemiesLow.Any() ? enemiesLow.Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, enemy) =>
-                        {
-                            // Join and accumulate the Low defense value
-                            return accumulator.Join(enemy.GetMeleeAttributes(enemy.AttackAttributes.Values), x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Resistance.Low = Math.Min(x.Resistance.Low, y.Resistance);
-                                return x;
-                            });
-
-                        }) : CreateAttackAttributes(configuration);
-
-                        var attackAttributesAttackLow = playerLow.Equipment
-                                                                  .Where(x => x.Value.IsEquipped)
-                                                                  .Select(x => x.Value)
-                                                                  .Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, equipment) =>
-                        {
-                            // Join and accumulate the low defense values
-                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Attack.Low = Math.Min(x.Attack.Low, y.Attack);
-                                return x;
-                            });
-                        });
-
-                        var attackAttributesAttackHigh = playerLow.Equipment
-                                                                   .Where(x => x.Value.IsEquipped)
-                                                                   .Select(x => x.Value)
-                                                                   .Aggregate(CreateAttackAttributes(configuration),
-                        (accumulator, equipment) =>
-                        {
-                            // Join and accumulate the low defense values
-                            return accumulator.Join(equipment.AttackAttributes, x => x.Name, y => y.RogueName, (x, y) =>
-                            {
-                                x.Attack.High = Math.Min(x.Attack.High, y.Attack);
-                                return x;
-                            });
-                        });
-
-                        var attackAttributeMeleeLow = !includeAttackAttributes ? 0 :
-                                attackAttributesAttackLow
-                                .Join(attackAttributesDefenseHigh,
-                                        x => x.Name,
-                                        y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.Low, y.Resistance.High))
-                                .Sum();
-
-                        var attackAttributeMeleeHigh = !includeAttackAttributes ? 0 :
-                                attackAttributesAttackHigh
-                                .Join(attackAttributesDefenseLow,
-                                        x => x.Name,
-                                        y => y.Name,
-                                        (x, y) => Calculator.CalculateAttackAttributeValue(x.Attack.High, y.Resistance.Low))
-                                .Sum();
-
                         // Calculate Player attack power
-                        var high = Math.Max((playerHigh.GetAttack() - defenseLow) + attackAttributeMeleeHigh, 0);
-                        var low = Math.Max((playerLow.GetAttack() - defenseHigh) + attackAttributeMeleeLow, 0);
+                        var high = Math.Max((playerHigh.GetAttack() - defenseLow), 0);
+                        var low = Math.Max((playerLow.GetAttack() - defenseHigh), 0);
                         
                         return new ProjectedQuantityViewModel()
                         {
@@ -801,19 +661,26 @@ namespace Rogue.NET.ScenarioEditor.Service
                                            {
                                                RogueName = x.Name,
                                                Attack = simulateLow ? x.Attack.Low : x.Attack.High,
-                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High
+                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
+                                               AppliesToIntelligenceBasedCombat = x.AppliesToIntelligenceBasedCombat,
+                                               AppliesToStrengthBasedCombat = x.AppliesToStrengthBasedCombat,
+                                               ScaledByIntelligence = x.ScaledByIntelligence,
+                                               ScaledByStrength = x.ScaledByStrength
                                            })
                                            .ToDictionary(x => x.RogueName)
             };
         }
         private IEnumerable<AttackAttributeTemplate> CreateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
-            return null;
             return configuration.AttackAttributes.Select(x => new AttackAttributeTemplate()
             {
                 Name = x.Name,
                 Attack = new Range<double>(0,0),
-                Resistance = new Range<double>(0,0)
+                Resistance = new Range<double>(0,0),
+                AppliesToIntelligenceBasedCombat = x.AppliesToIntelligenceBasedCombat,
+                AppliesToStrengthBasedCombat = x.AppliesToStrengthBasedCombat,
+                ScaledByStrength = x.ScaledByStrength,
+                ScaledByIntelligence = x.ScaledByIntelligence
             });
         }
         #endregion

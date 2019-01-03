@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// </summary>
         /// <param name="alterationDisplayName">Alteration Display Name (AlterationEffect.DisplayName)</param>
         /// <param name="offenseAttributes">Attack Attributes coming from the Alteration</param>
-        void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
+        void CalculateAttackAttributeHit(string alterationDisplayName, AlterationBlockType alterationBlockType, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
 
         /// <summary>
         /// Calculates increment to enemy turn counter based on relative speed of characters
@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// by interactionType (Range, Melee, etc...). Returns true if an attack landed on the defender. Attack
         /// HP is deducted from the defending character.
         /// </summary>
-        bool CalculateInteraction(Character attacker, Character defender, InteractionType interactionType);
+        bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType interactionType);
 
         /// <summary>
         /// Calculates a block to an alteration

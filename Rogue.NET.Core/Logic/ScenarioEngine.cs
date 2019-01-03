@@ -208,7 +208,7 @@ namespace Rogue.NET.Core.Logic
                 enemy.IsEngaged = true;
 
                 // Enemy gets hit OR dodges
-                _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, InteractionType.Melee);
+                _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, PhysicalAttackType.Melee);
             }
         }
         public LevelContinuationAction Throw(string itemId)
@@ -494,7 +494,7 @@ namespace Rogue.NET.Core.Logic
                 QueuePlayerConsumableRemove(ammo.Id);
 
                 // Calculate hit - if enemy hit then queue Ammunition spell
-                var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, InteractionType.Range);
+                var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
 
                 // If enemy hit then process the spell associated with the ammo
                 if (enemyHit)

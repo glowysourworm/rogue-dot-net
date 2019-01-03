@@ -628,7 +628,7 @@ namespace Rogue.NET.Core.Logic
                                     enemy.Consumables.Remove(ammo.Id);
 
                                     // Calculate hit - if enemy hit then queue Ammunition spell
-                                    var enemyHit = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, InteractionType.Range);
+                                    var enemyHit = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Range);
 
                                     // If enemy hit then process the spell associated with the ammo
                                     if (enemyHit)
@@ -656,7 +656,7 @@ namespace Rogue.NET.Core.Logic
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
-                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, InteractionType.Melee);
+                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Melee);
                                     actionTaken = true;
                                 }
                             }

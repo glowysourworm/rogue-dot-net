@@ -12,6 +12,64 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
+        /// Returns the item of a collection corresponding to the max of some selected value
+        /// </summary>
+        public static T MaxWith<T, TValue>(this IEnumerable<T> collection, Func<T, TValue> valueSelector) where TValue : IComparable
+        {
+            T max = default(T);
+            TValue maxValue = default(TValue);
+
+            // Iterate through collection to get the greatest item for the specified selected value
+            foreach (var item in collection)
+            {
+                var nextValue = valueSelector(item);
+
+                if (maxValue.Equals(default(TValue)))
+                {
+                    maxValue = nextValue;
+                    max = item;
+                }
+
+                else if (nextValue.CompareTo(maxValue) > 0)
+                {
+                    maxValue = nextValue;
+                    max = item;
+                }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        /// Returns the item of a collection corresponding to the mix of some selected value
+        /// </summary>
+        public static T MinWhere<T, TValue>(this IEnumerable<T> collection, Func<T, TValue> valueSelector) where TValue : IComparable
+        {
+            T min = default(T);
+            TValue minValue = default(TValue);
+
+            // Iterate through collection to get the greatest item for the specified selected value
+            foreach (var item in collection)
+            {
+                var nextValue = valueSelector(item);
+
+                if (minValue.Equals(default(TValue)))
+                {
+                    minValue = nextValue;
+                    min = item;
+                }
+
+                else if (nextValue.CompareTo(minValue) < 0)
+                {
+                    minValue = nextValue;
+                    min = item;
+                }
+            }
+
+            return min;
+        }
+
+        /// <summary>
         /// Repeats a transform on an object to create a collection of transformed items. (Somewhat like a "Clone Many")
         /// </summary>
         /// <typeparam name="T">input type</typeparam>
