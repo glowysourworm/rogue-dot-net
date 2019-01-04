@@ -12,9 +12,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         private bool _generateOnStep;
         private bool _isInvisible;
+        private bool _hasReligiousAffiliation;
         private RangeViewModel<double> _experienceGiven;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
+        private ReligiousAffiliationTemplateViewModel _religiousAffiliation;
 
+        public bool HasReligiousAffiliation
+        {
+            get { return _hasReligiousAffiliation; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliation, value); }
+        }
         public bool GenerateOnStep
         {
             get { return _generateOnStep; }
@@ -35,22 +42,31 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _behaviorDetails; }
             set { this.RaiseAndSetIfChanged(ref _behaviorDetails, value); }
         }
+        public ReligiousAffiliationTemplateViewModel ReligiousAffiliation
+        {
+            get { return _religiousAffiliation; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliation, value); }
+        }
 
         public EnemyTemplateViewModel()
         {
+            this.HasReligiousAffiliation = false;
             this.GenerateOnStep = true;
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
+            this.ReligiousAffiliation = new ReligiousAffiliationTemplateViewModel();
         }
         public EnemyTemplateViewModel(DungeonObjectTemplateViewModel template) : base(template)
         {
+            this.HasReligiousAffiliation = false;
             this.GenerateOnStep = true;
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
+            this.ReligiousAffiliation = new ReligiousAffiliationTemplateViewModel();
         }
     }
 }

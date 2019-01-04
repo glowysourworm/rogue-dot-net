@@ -13,9 +13,23 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         private bool _generateOnStep;
         private bool _isInvisible;
+        private bool _hasReligiousAffiliation;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
+        private ReligiousAffiliationTemplate _religiousAffiliation;
 
+        public bool HasReligiousAffiliation
+        {
+            get { return _hasReligiousAffiliation; }
+            set
+            {
+                if (_hasReligiousAffiliation != value)
+                {
+                    _hasReligiousAffiliation = value;
+                    OnPropertyChanged("HasReligiousAffiliation");
+                }
+            }
+        }
         public bool GenerateOnStep
         {
             get { return _generateOnStep; }
@@ -64,20 +78,36 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public ReligiousAffiliationTemplate ReligiousAffiliation
+        {
+            get { return _religiousAffiliation; }
+            set
+            {
+                if (_religiousAffiliation != value)
+                {
+                    _religiousAffiliation = value;
+                    OnPropertyChanged("ReligiousAffiliation");
+                }
+            }
+        }
 
         public EnemyTemplate()
         {
+            this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
+            this.ReligiousAffiliation = new ReligiousAffiliationTemplate();
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
+            this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
+            this.ReligiousAffiliation = new ReligiousAffiliationTemplate();
         }
     }
 }

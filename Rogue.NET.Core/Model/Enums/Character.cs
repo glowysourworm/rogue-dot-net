@@ -109,4 +109,20 @@ namespace Rogue.NET.Core.Model.Enums
         Agility,
         Intelligence
     }
+
+    /// <summary>
+    /// Represents charater base attributes
+    /// </summary>
+    public enum CharacterAttribute
+    {
+        Hp,
+        Mp,
+        Strength,
+        Agility,
+        Intelligence,
+        Speed,
+        HpRegen,
+        MpRegen,
+        AuraRadius
+    }
 }
