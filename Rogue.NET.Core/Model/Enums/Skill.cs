@@ -20,7 +20,17 @@
         RevealFood,
         RevealLevel,
 
-        CreateMonster
+        CreateMonster,
+
+        /// <summary>
+        /// Forces renunciation of religious affiliation
+        /// </summary>
+        RenounceReligion,
+
+        /// <summary>
+        /// Invoker increases religious affiliation by 10%
+        /// </summary>
+        IncreaseReligiousAffiliation
     }
     public enum AlterationCostType
     {

@@ -6,11 +6,19 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class ReligionTemplateViewModel : DungeonObjectTemplateViewModel
     {
+        string _followerName;
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttribute;
+        bool _allowsRenunciation;
+        bool _allowsReAffiliation;
         CharacterAttribute _bonusAttribute;
         AttackAttributeTemplateViewModel _bonusAttackAttribute;
 
+        public string FollowerName
+        {
+            get { return _followerName; }
+            set { this.RaiseAndSetIfChanged(ref _followerName, value); }
+        }
         public bool HasAttributeBonus
         {
             get { return _hasBonusAttribute; }
@@ -20,6 +28,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _hasBonusAttackAttribute; }
             set { this.RaiseAndSetIfChanged(ref _hasBonusAttackAttribute, value); }
+        }
+        public bool AllowsRenunciation
+        {
+            get { return _allowsRenunciation; }
+            set { this.RaiseAndSetIfChanged(ref _allowsRenunciation, value); }
+        }
+        public bool AllowsReAffiliation
+        {
+            get { return _allowsReAffiliation; }
+            set { this.RaiseAndSetIfChanged(ref _allowsReAffiliation, value); }
         }
         public CharacterAttribute BonusAttribute
         {
@@ -36,7 +54,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public ReligionTemplateViewModel()
         {
+            this.FollowerName = "Christian";
+
             this.AttackParameters = new ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel>();
+
+            this.AllowsRenunciation = true;
+            this.AllowsReAffiliation = false;
         }
     }
 }
