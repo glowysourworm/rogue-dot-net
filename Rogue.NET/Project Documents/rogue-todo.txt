@@ -475,18 +475,18 @@ IMMEDIATE TODO'S:
 	- Equipment Quality Changing Alterations:  Class Change / Quality Change + plus or - minus. Example (sharpening Stone) + 0.1 to quality. Or skill of	
 											   enemy changes quality -0.3 (stone golem or something chips your blade). So, new alteration types required:
 											   
-											   - Degrade Weapon Quality:  Alteration used as skill by enemy (or player) to degrade character equipped weapon
+											   - Decrease Weapon Quality:  Alteration used as skill by enemy (or player) to degrade character equipped weapon
 																		  quality.
 																		  
-											   - Degrade Armor Quality:  (similar)
+											   - Decrease Armor Quality:  (similar)
 											   
 											   - De-Enchant Weapon:  Alteration to degrade equipped weapon class (used by enemy or player as skill).
 											   
 											   - De-Enchant Armor:   (similar)
 											   
-											   - Upgrade Weapon Quality:  Alteration used by Player ONLY to upgrade any weapon's quality (using UI to select)
+											   - Increase Weapon Quality:  Alteration used by Player ONLY to upgrade any weapon's quality (using UI to select)
 											   
-											   - Upgrade Armor Quality:  (similar)
+											   - Increase Armor Quality:  (similar)
 											   											   
 											   
 
