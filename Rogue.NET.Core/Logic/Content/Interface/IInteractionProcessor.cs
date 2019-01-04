@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// </summary>
         /// <param name="alterationDisplayName">Alteration Display Name (AlterationEffect.DisplayName)</param>
         /// <param name="offenseAttributes">Attack Attributes coming from the Alteration</param>
-        void CalculateAttackAttributeHit(string alterationDisplayName, AlterationBlockType alterationBlockType, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
+        void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
 
         /// <summary>
         /// Calculates increment to enemy turn counter based on relative speed of characters

@@ -17,76 +17,7 @@ namespace Rogue.NET.Core.Logic.Static
     /// </summary>
     public static class Calculator
     {
-        /// <summary>
-        /// Calculates the deducted HP for the effective (aggregate) Attack Attribute - taking into account
-        /// scaling both Attack and Resistance by strength or intelligence.
-        /// </summary>
-        /// <param name="attacker">Attacking Character</param>
-        /// <param name="defender">Defending Character</param>
-        /// <param name="offenseAttribute">Effective (or aggregate) offensive attack attribute</param>
-        /// <param name="defenseAttribute">Effective (or aggregate) defensive attack attribute</param>
-        /// <returns></returns>
-        public static double CalculateAttackAttributeMelee(
-                Character attacker, 
-                Character defender, 
-                AttackAttribute offenseAttribute, 
-                AttackAttribute defenseAttribute,
-                InteractionType interactionType)
-        {
-            var attack = 0D;
-            var resistance = 0D;
-
-            // Intelligence Based Combat
-            if (offenseAttribute.AppliesToIntelligenceBasedCombat && interactionType == InteractionType.Mental)
-            {
-                attack = offenseAttribute.ScaledByIntelligence ? attacker.GetIntelligence() * offenseAttribute.Attack : offenseAttribute.Attack;
-                resistance = defenseAttribute.ScaledByIntelligence ? defender.GetIntelligence() * defenseAttribute.Resistance : defenseAttribute.Resistance;
-            }
-            // Strength Based Combat
-            else if (offenseAttribute.AppliesToStrengthBasedCombat && interactionType == InteractionType.Physical)
-            {
-                attack = offenseAttribute.ScaledByStrength ? attacker.GetStrength() * offenseAttribute.Attack : offenseAttribute.Attack;
-                resistance = defenseAttribute.ScaledByStrength ? defender.GetStrength() * defenseAttribute.Resistance : defenseAttribute.Resistance;
-            }
-
-            return CalculateAttackAttributeValue(attack, resistance);
-        }
-
-        /// <summary>
-        /// This is used for Malign Attack Attribute calulations. Calculates the deducted HP for the 
-        /// effective (aggregate) Attack Attribute - taking into account scaling both Attack and Resistance 
-        /// by strength or intelligence.
-        /// </summary>
-        /// <param name="character">Defending Character</param>
-        /// <param name="offenseAttribute">Effective (or aggregate) offensive attack attribute</param>
-        /// <param name="defenseAttribute">Effective (or aggregate) defensive attack attribute</param>
-        /// <returns></returns>
-        public static double CalculateAttackAttributeEffect(
-                Character character,
-                AttackAttribute offenseAttribute,
-                AttackAttribute defenseAttribute,
-                InteractionType interactionType)
-        {
-            var attack = 0D;
-            var resistance = 0D;
-
-            // Intelligence Based Combat
-            if (offenseAttribute.AppliesToIntelligenceBasedCombat && interactionType == InteractionType.Mental)
-            {
-                attack = offenseAttribute.Attack;
-                resistance = defenseAttribute.ScaledByIntelligence ? character.GetIntelligence() * defenseAttribute.Resistance : defenseAttribute.Resistance;
-            }
-            // Strength Based Combat
-            else if (offenseAttribute.AppliesToStrengthBasedCombat && interactionType == InteractionType.Physical)
-            {
-                attack = offenseAttribute.Attack;
-                resistance = defenseAttribute.ScaledByStrength ? character.GetStrength() * defenseAttribute.Resistance : defenseAttribute.Resistance;
-            }
-
-            return CalculateAttackAttributeValue(attack, resistance);
-        }
-
-        public static double CalculateAttackAttributeValue(double attack, double resistance)
+        public static double CalculateAttackAttributeMelee(double attack, double resistance)
         {
             if (attack <= 0)
                 return 0;

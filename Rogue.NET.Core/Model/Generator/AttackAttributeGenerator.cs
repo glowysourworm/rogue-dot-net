@@ -33,11 +33,6 @@ namespace Rogue.NET.Core.Model.Generator
             attackAttribute.Attack = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Attack);
             attackAttribute.Resistance = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Resistance);
 
-            attackAttribute.AppliesToIntelligenceBasedCombat = attackAttributeTemplate.AppliesToIntelligenceBasedCombat;
-            attackAttribute.AppliesToStrengthBasedCombat = attackAttributeTemplate.AppliesToStrengthBasedCombat;
-            attackAttribute.ScaledByIntelligence = attackAttributeTemplate.ScaledByIntelligence;
-            attackAttribute.ScaledByStrength = attackAttributeTemplate.ScaledByStrength;
-
             return attackAttribute;
         }
     }

@@ -25,6 +25,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
+
+            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
 
         #region Combat Attribute
@@ -37,14 +39,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config.AttackAttributes.Any(x => x.Name == this.AttributeTB.Text))
                 return;
 
-            var name = this.AttributeTB.Text;
-
             _eventAggregator.GetEvent<AddAttackAttributeEvent>().Publish(new AttackAttributeTemplateViewModel()
             {
-                Name = name
+                Name = this.AttributeTB.Text,
+                SymbolDetails = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel
             });
 
             this.AttributeTB.Text = "";
+            this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -56,27 +58,15 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         private void AttributeSymbolButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
-            if (selectedItem != null)
+            var symbolDetails = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel;
+            if (symbolDetails != null)
             {
                 var view = new SymbolEditor();
-                view.DataContext = selectedItem.SymbolDetails;
+                view.DataContext = symbolDetails;
                 view.WindowMode = true;
                 view.Width = 600;
 
                 DialogWindowFactory.Show(view, "Rogue Symbol Editor");
-
-                // Update Combat Attributes
-                _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Publish(selectedItem);
-            }
-        }
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Update Combat Attributes
-            var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
-            if (selectedItem != null)
-            {
-                _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Publish(selectedItem);
             }
         }
         #endregion

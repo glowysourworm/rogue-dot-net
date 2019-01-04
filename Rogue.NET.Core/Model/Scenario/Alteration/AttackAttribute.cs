@@ -9,12 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public double Attack { get; set; }
         public double Resistance { get; set; }
 
-        public bool AppliesToStrengthBasedCombat { get; set; }
-        public bool AppliesToIntelligenceBasedCombat { get; set; }
-
-        public bool ScaledByStrength { get; set; }
-        public bool ScaledByIntelligence { get; set; }
-
         public AttackAttribute()
         {
         }

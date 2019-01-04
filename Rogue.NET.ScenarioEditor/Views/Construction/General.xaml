@@ -58,83 +58,59 @@
                                 <StackPanel x:Name="NewAttributeStack" Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Margin="8" VerticalAlignment="Top" Text="New Attribute: " Foreground="White" />
                                     <extension:UpdatingTextBox x:Name="AttributeTB" VerticalAlignment="Top" Margin="8" Width="100" />
+                                    <Button x:Name="AttributeSymbolButton" Click="AttributeSymbolButton_Click" Margin="10" HorizontalAlignment="Left" Height="24" Width="110">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Height="15" Width="10" Margin="4">
+                                                <Image.Source>
+                                                    <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                        <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                        <Binding Path="SymbolDetails.CharacterColor" />
+                                                        <Binding Path="SymbolDetails.Icon" />
+                                                        <Binding Path="SymbolDetails.SmileyMood" />
+                                                        <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                        <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                        <Binding Path="SymbolDetails.Type" />
+                                                    </MultiBinding>
+                                                </Image.Source>
+                                            </Image>
+                                            <TextBlock Text="Edit Symbol" Margin="4" />
+                                        </StackPanel>
+                                    </Button>
                                     <Button x:Name="AddAttributeButton" ToolTip="Add" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                     <Button x:Name="RemoveAttributeButton" ToolTip="Remove" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
                                 </StackPanel>
                             </Grid>
                             <GroupBox Header="Attack Attribute List" Margin="10">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <ListBox x:Name="AttribLB" 
+                                <ListBox x:Name="AttribLB" 
                                              Grid.Column="0"
                                              ItemsSource="{Binding AttackAttributes}" 
                                              Margin="10"
                                              Height="200" 
                                              SelectionMode="Single"
                                              VerticalAlignment="Top">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Image HorizontalAlignment="Left" Margin="4">
-                                                        <Image.Source>
-                                                            <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                                <Binding Path="SymbolDetails.CharacterSymbol" />
-                                                                <Binding Path="SymbolDetails.CharacterColor" />
-                                                                <Binding Path="SymbolDetails.Icon" />
-                                                                <Binding Path="SymbolDetails.SmileyMood" />
-                                                                <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                                                <Binding Path="SymbolDetails.SmileyLineColor" />
-                                                                <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                                                <Binding Path="SymbolDetails.Type" />
-                                                            </MultiBinding>
-                                                        </Image.Source>
-                                                    </Image>
-                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                    <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                        <Button x:Name="AttributeSymbolButton" Click="AttributeSymbolButton_Click" Margin="10" HorizontalAlignment="Left" Height="24" Width="110">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Image Height="15" Width="10" Margin="4">
+                                                <Image HorizontalAlignment="Left" Margin="4">
                                                     <Image.Source>
                                                         <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.CharacterSymbol" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.CharacterColor" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.Icon" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.SmileyMood" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.SmileyBodyColor" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.SmileyLineColor" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.SmileyAuraColor" />
-                                                            <Binding ElementName="AttribLB" Path="SelectedItem.SymbolDetails.Type" />
+                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                                            <Binding Path="SymbolDetails.Icon" />
+                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                            <Binding Path="SymbolDetails.Type" />
                                                         </MultiBinding>
                                                     </Image.Source>
                                                 </Image>
-                                                <TextBlock Text="Edit Symbol" Margin="4" />
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
                                             </StackPanel>
-                                        </Button>
-                                        <Grid Margin="10">
-                                            <TextBlock Text="Use for Physical Combat" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                            <CheckBox IsChecked="{Binding ElementName=AttribLB, Path=SelectedItem.AppliesToStrengthBasedCombat}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                        </Grid>
-                                        <Grid Margin="10">
-                                            <TextBlock Text="Physical Combat Scaled By Strength [X = X * (1 + Strength)]" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                            <CheckBox IsChecked="{Binding ElementName=AttribLB, Path=SelectedItem.ScaledByStrength}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                        </Grid>                                        
-                                        <Grid Margin="10">
-                                            <TextBlock Text="Use for Alteration Combat" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                            <CheckBox IsChecked="{Binding ElementName=AttribLB, Path=SelectedItem.AppliesToIntelligenceBasedCombat}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                        </Grid>
-                                        <Grid Margin="10">
-                                            <TextBlock Text="Alteration Combat Scaled By Intelligence [X = X * (1 + Intelligence)]" FontSize="16" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                            <CheckBox IsChecked="{Binding ElementName=AttribLB, Path=SelectedItem.ScaledByIntelligence}" Click="SaveButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                        </Grid>
-                                    </StackPanel>
-                                </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </GroupBox>
                         </StackPanel>
                     </TabItem>                    

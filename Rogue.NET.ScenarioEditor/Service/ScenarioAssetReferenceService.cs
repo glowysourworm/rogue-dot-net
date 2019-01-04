@@ -190,11 +190,6 @@ namespace Rogue.NET.ScenarioEditor.Service
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
                     existing.SymbolDetails.SmileyMood = attrib.SymbolDetails.SmileyMood;
                     existing.SymbolDetails.Type = attrib.SymbolDetails.Type;
-
-                    existing.AppliesToIntelligenceBasedCombat = attrib.AppliesToIntelligenceBasedCombat;
-                    existing.AppliesToStrengthBasedCombat = attrib.AppliesToStrengthBasedCombat;
-                    existing.ScaledByStrength = attrib.ScaledByStrength;
-                    existing.ScaledByIntelligence = attrib.ScaledByIntelligence;
                 }
             }
 

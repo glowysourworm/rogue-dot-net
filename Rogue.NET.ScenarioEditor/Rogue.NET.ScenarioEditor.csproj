@@ -275,7 +275,6 @@
     <Compile Include="Events\LoadDifficultyChartEvent.cs" />
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />
-    <Compile Include="Events\UpdateAttackAttributeEvent.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
     <Compile Include="Service\CharacterCalculationService.cs" />
     <Compile Include="Service\Interface\ICharacterCalculationService.cs" />

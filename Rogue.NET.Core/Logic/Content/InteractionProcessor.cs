@@ -38,11 +38,8 @@ namespace Rogue.NET.Core.Logic.Content
             _playerProcessor = playerProcessor;
         }
 
-        public void CalculateAttackAttributeHit(string alterationDisplayName, AlterationBlockType alterationBlockType, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
+        public void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
         {
-            // Figure out the interaction type
-            var interactionType = alterationBlockType == AlterationBlockType.Mental ? InteractionType.Mental : InteractionType.Physical;
-
             // Create detached attributes to send along the message publisher
             var baseAttributes = _modelService.GetAttackAttributes();
 
@@ -50,7 +47,7 @@ namespace Rogue.NET.Core.Logic.Content
             var defenseAttributes = defender.GetMeleeAttributes(baseAttributes);
 
             // Apply the calculation, Filter the results, Create an Attack Attribute Dictionary
-            var combatResults = CreateAttackAttributeResults(attacker, defender, offenseAttributes, defenseAttributes, interactionType);
+            var combatResults = CreateAttackAttributeResults(offenseAttributes, defenseAttributes);
 
             // Sum the total combat value
             var combatValue = combatResults.Sum(x => x.Value);
@@ -76,7 +73,7 @@ namespace Rogue.NET.Core.Logic.Content
             return player.GetSpeed() <= ModelConstants.MinSpeed ? 1.0D : enemy.GetSpeed() / player.GetSpeed();
         }
 
-        public bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType interactionType)
+        public bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType attackType)
         {
             // Result implies that an attack was made
             var result = false;
@@ -98,7 +95,7 @@ namespace Rogue.NET.Core.Logic.Content
             var defenderAttributes = defender.GetMeleeAttributes(baseAttributes);
 
             // Calculate Attack Attribute Melee
-            var attackAttributeResults = CreateAttackAttributeResults(attacker, defender, attackerAttributes, defenderAttributes, InteractionType.Physical);
+            var attackAttributeResults = CreateAttackAttributeResults(attackerAttributes, defenderAttributes);
 
             // Add Results to attack
             attack += attackAttributeResults.Sum(x => x.Value);
@@ -130,14 +127,14 @@ namespace Rogue.NET.Core.Logic.Content
             // Check for Enemy Counter-attack
             var enemy = defender as Enemy;
 
-            if (enemy != null && interactionType == PhysicalAttackType.Melee)
+            if (enemy != null && attackType == PhysicalAttackType.Melee)
             {
                 if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CounterAttackProbability)
                 {
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " counter attacks!");
 
                     // Calculate and publish counter attack
-                    CalculateInteraction(defender, attacker, interactionType);
+                    CalculateInteraction(defender, attacker, attackType);
                 }
             }
 
@@ -158,11 +155,8 @@ namespace Rogue.NET.Core.Logic.Content
         }
 
         private IDictionary<AttackAttribute, double> CreateAttackAttributeResults(
-                Character attacker,
-                Character defender,
                 IEnumerable<AttackAttribute> offensiveAttributes,
-                IEnumerable<AttackAttribute> defensiveAttributes,
-                InteractionType interactionType)
+                IEnumerable<AttackAttribute> defensiveAttributes)
         {
             return offensiveAttributes.Select(offensiveAttribute =>
             {
@@ -170,7 +164,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 return new
                 {
-                    Value = Calculator.CalculateAttackAttributeMelee(attacker, defender, offensiveAttribute, defensiveAttribute, interactionType),
+                    Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, defensiveAttribute.Resistance),
                     AttackAttribute = offensiveAttribute
                 };
             })

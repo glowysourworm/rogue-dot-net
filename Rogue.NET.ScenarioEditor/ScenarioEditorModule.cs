@@ -219,22 +219,6 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<UpdateAttackAttributeEvent>().Subscribe((e) =>
-            {
-                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
-                //         THE STACK
-                _undoService.Block();
-
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
-
-                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
-                _undoService.UnBlock();
-                _undoService.Clear();
-
-                // Reload designer
-                LoadConstruction("General");
-            });
 
             _eventAggregator.GetEvent<AddAlteredCharacterStateEvent>().Subscribe((e) =>
             {

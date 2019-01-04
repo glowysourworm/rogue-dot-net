@@ -661,11 +661,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                                            {
                                                RogueName = x.Name,
                                                Attack = simulateLow ? x.Attack.Low : x.Attack.High,
-                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
-                                               AppliesToIntelligenceBasedCombat = x.AppliesToIntelligenceBasedCombat,
-                                               AppliesToStrengthBasedCombat = x.AppliesToStrengthBasedCombat,
-                                               ScaledByIntelligence = x.ScaledByIntelligence,
-                                               ScaledByStrength = x.ScaledByStrength
+                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High
                                            })
                                            .ToDictionary(x => x.RogueName)
             };
@@ -676,11 +672,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 Name = x.Name,
                 Attack = new Range<double>(0,0),
-                Resistance = new Range<double>(0,0),
-                AppliesToIntelligenceBasedCombat = x.AppliesToIntelligenceBasedCombat,
-                AppliesToStrengthBasedCombat = x.AppliesToStrengthBasedCombat,
-                ScaledByStrength = x.ScaledByStrength,
-                ScaledByIntelligence = x.ScaledByIntelligence
+                Resistance = new Range<double>(0,0)
             });
         }
         #endregion
