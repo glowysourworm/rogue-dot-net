@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<DoodadTemplate> DoodadTemplates { get; set; }
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
+        public List<ReligionTemplate> Religions { get; set; }
 
         public ScenarioConfigurationContainer()
         {
@@ -40,6 +41,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.PenTemplates = new List<PenTemplate>();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
+            this.Religions = new List<ReligionTemplate>();
         }
     }
 }
