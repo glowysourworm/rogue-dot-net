@@ -21,6 +21,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
+        private bool _hasReligiousAffiliationRequirement;
+        private ReligiousAffiliationRequirementTemplateViewModel _religiousAffiliationRequirement;
 
         public RangeViewModel<int> Class
         {
@@ -72,6 +74,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCurseSpell; }
             set { this.RaiseAndSetIfChanged(ref _hasCurseSpell, value); }
         }
+        public bool HasReligiousAffiliationRequirement
+        {
+            get { return _hasReligiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
+        }
+        public ReligiousAffiliationRequirementTemplateViewModel ReligiousAffiliationRequirement
+        {
+            get { return _religiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirement, value); }
+        }
 
 
         public EquipmentTemplateViewModel()
@@ -83,6 +95,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
         }
         public EquipmentTemplateViewModel(DungeonObjectTemplateViewModel tmp)
             : base(tmp)
@@ -94,6 +108,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
         }
     }
 }

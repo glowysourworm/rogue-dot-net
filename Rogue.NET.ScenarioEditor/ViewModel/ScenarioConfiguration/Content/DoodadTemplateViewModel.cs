@@ -11,6 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _isVisible;
         private bool _isInvoked;
         private bool _isOneUse;
+        private bool _hasReligiousAffiliationRequirement;
+        private ReligiousAffiliationRequirementTemplateViewModel _religiousAffiliationRequirement;
 
         public SpellTemplateViewModel AutomaticMagicSpellTemplate
         {
@@ -42,6 +44,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isOneUse; }
             set { this.RaiseAndSetIfChanged(ref _isOneUse, value); }
         }
+        public bool HasReligiousAffiliationRequirement
+        {
+            get { return _hasReligiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
+        }
+        public ReligiousAffiliationRequirementTemplateViewModel ReligiousAffiliationRequirement
+        {
+            get { return _religiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirement, value); }
+        }
 
         public DoodadTemplateViewModel()
         {
@@ -49,6 +61,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
         }
         public DoodadTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
         {
@@ -56,6 +70,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
         }
     }
 }

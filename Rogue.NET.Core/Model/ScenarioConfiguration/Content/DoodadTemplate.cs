@@ -14,6 +14,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvoked;
         private bool _isOneUse;
 
+        private bool _hasReligiousAffiliationRequirement;
+        private ReligiousAffiliationRequirementTemplate _religiousAffiliationRequirement;
+
         public SpellTemplate AutomaticMagicSpellTemplate
         {
             get { return _automaticMagicSpellTemplate; }
@@ -87,19 +90,48 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             }
         }
 
+        public bool HasReligiousAffiliationRequirement
+        {
+            get { return _hasReligiousAffiliationRequirement; }
+            set
+            {
+                if (_hasReligiousAffiliationRequirement != value)
+                {
+                    _hasReligiousAffiliationRequirement = value;
+                    OnPropertyChanged("HasReligiousAffiliationRequirement");
+                }
+            }
+        }
+        public ReligiousAffiliationRequirementTemplate ReligiousAffiliationRequirement
+        {
+            get { return _religiousAffiliationRequirement; }
+            set
+            {
+                if (_religiousAffiliationRequirement != value)
+                {
+                    _religiousAffiliationRequirement = value;
+                    OnPropertyChanged("ReligiousAffiliationRequirement");
+                }
+            }
+        }
+
         public DoodadTemplate()
         {
             this.AutomaticMagicSpellTemplate = new SpellTemplate();
             this.InvokedMagicSpellTemplate = new SpellTemplate();
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasReligiousAffiliationRequirement = false;
         }
         public DoodadTemplate(DungeonObjectTemplate tmp) : base(tmp)
         {
             this.AutomaticMagicSpellTemplate = new SpellTemplate();
             this.InvokedMagicSpellTemplate = new SpellTemplate();
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasReligiousAffiliationRequirement = false;
         }
     }
 }

@@ -15,11 +15,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasSpell;
         private bool _isProjectile;
         private bool _identifyOnUse;
+        private bool _hasReligiousAffiliationRequirement;
+        private ReligiousAffiliationRequirementTemplateViewModel _religiousAffiliationRequirement;
         private SpellTemplateViewModel _spellTemplate;
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
         private SpellTemplateViewModel _ammoSpellTemplate;
         private string _noteMessage;
+
 
         public ConsumableType Type
         {
@@ -66,6 +69,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _identifyOnUse; }
             set { this.RaiseAndSetIfChanged(ref _identifyOnUse, value); }
         }
+        public bool HasReligiousAffiliationRequirement
+        {
+            get { return _hasReligiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
+        }
         public SpellTemplateViewModel SpellTemplate
         {
             get { return _spellTemplate; }
@@ -86,6 +94,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _ammoSpellTemplate; }
             set { this.RaiseAndSetIfChanged(ref _ammoSpellTemplate, value); }
         }
+        public ReligiousAffiliationRequirementTemplateViewModel ReligiousAffiliationRequirement
+        {
+            get { return _religiousAffiliationRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirement, value); }
+        }
+
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -105,6 +119,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
             this.NoteMessage = "";
         }
         public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
@@ -120,6 +136,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.HasReligiousAffiliationRequirement = false;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
             this.NoteMessage = "";
         }
     }
