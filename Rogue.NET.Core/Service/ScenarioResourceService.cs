@@ -165,6 +165,11 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
+        public BitmapSource GetImageSource(DisplayImageResources displayImageResources)
+        {
+            // TODO: Utilize cache
+            return GetImage(displayImageResources);
+        }
         public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage)
         {
             // Create cache image to retrieve cached GrayScale BitmapSource or to store it
@@ -227,6 +232,14 @@ namespace Rogue.NET.Core.Service
         private BitmapSource GetImage(ImageResources img)
         {
             var path = "Rogue.NET.Common.Resource.Images.ScenarioObjects." + img.ToString() + ".png";
+            var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
+            var stream = assembly.GetManifestResourceStream(path);
+            var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            return decoder.Frames[0];
+        }
+        private BitmapSource GetImage(DisplayImageResources displayImageResources)
+        {
+            var path = "Rogue.NET.Common.Resource.Images.DisplayImages." + displayImageResources.ToString() + ".png";
             var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
             var stream = assembly.GetManifestResourceStream(path);
             var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
