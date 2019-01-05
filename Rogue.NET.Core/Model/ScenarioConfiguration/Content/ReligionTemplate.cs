@@ -13,6 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         bool _hasBonusAttackAttribute;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
+        double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
         AttackAttributeTemplate _bonusAttackAttribute;
 
@@ -73,6 +74,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _allowsReAffiliation = value;
                     OnPropertyChanged("AllowsReAffiliation");
+                }
+            }
+        }
+        public double BonusAttributeValue
+        {
+            get { return _bonusAttributeValue; }
+            set
+            {
+                if (_bonusAttributeValue != value)
+                {
+                    _bonusAttributeValue = value;
+                    OnPropertyChanged("BonusAttributeValue");
                 }
             }
         }

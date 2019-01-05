@@ -107,8 +107,24 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum SymbolTypes
     {
+        /// <summary>
+        /// UTF-8 character set symbols
+        /// </summary>
         Character,
+
+        /// <summary>
+        /// Smiley type wpf control
+        /// </summary>
         Smiley,
-        Image
+
+        /// <summary>
+        /// Level grid cell sized image
+        /// </summary>
+        Image,
+
+        /// <summary>
+        /// Larger (30x30) image used for other UI purposes
+        /// </summary>
+        DisplayImage
     }
 }

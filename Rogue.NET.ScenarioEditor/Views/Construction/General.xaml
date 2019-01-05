@@ -59,6 +59,50 @@
                             </StackPanel>
                         </StackPanel>
                     </TabItem>
+                    <TabItem Header="Religions">
+                        <StackPanel>
+                            <TextBlock FontSize="16" 
+                                       TextWrapping="Wrap" 
+                                       Margin="10" 
+                                       Foreground="White" 
+                                       Text="Religions are attributed to characters, items, and scenario objects throughout the scenario. You can define the list of religions here." />
+                            <Grid Margin="10,0,10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ListBox x:Name="ReligionLB" 
+                                         Grid.Column="0"
+                                         ItemsSource="{Binding Religions}" 
+                                         Margin="10"
+                                         Height="200" 
+                                         SelectionMode="Single"
+                                         VerticalAlignment="Top">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image HorizontalAlignment="Left" Margin="4">
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                            <Binding Path="SymbolDetails.CharacterColor" />
+                                                            <Binding Path="SymbolDetails.Icon" />
+                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                            <Binding Path="SymbolDetails.Type" />
+                                                        </MultiBinding>
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </StackPanel>
+                    </TabItem>
                     <TabItem Header="Attack Attributes">
                         <StackPanel>
                             <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Attack Attributes are attached to equipment items and enemies as a way to balance combat in the scenario. Besides core attributes (strength, agility, intelligence) you can define your own attributes here - making them available to attach to enemies and items. (See manual for more details)" />

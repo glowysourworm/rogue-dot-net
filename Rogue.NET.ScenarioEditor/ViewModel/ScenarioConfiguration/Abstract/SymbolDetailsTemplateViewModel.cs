@@ -15,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         private string _characterSymbol;
         private string _characterColor;
         private ImageResources _icon;
+        private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
         private bool _isMoodDelta;
@@ -63,6 +64,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         {
             get { return _icon; }
             set { this.RaiseAndSetIfChanged(ref _icon, value); }
+        }
+        public DisplayImageResources DisplayIcon
+        {
+            get { return _displayIcon; }
+            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
         }
         public bool IsFullSymbolDelta
         {

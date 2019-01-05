@@ -16,6 +16,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private string _characterSymbol;
         private string _characterColor;
         private ImageResources _icon;
+        private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
         private bool _isMoodDelta;
@@ -118,6 +119,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 {
                     _icon = value;
                     OnPropertyChanged("Icon");
+                }
+            }
+        }
+        public DisplayImageResources DisplayIcon
+        {
+            get { return _displayIcon; }
+            set
+            {
+                if (_displayIcon != value)
+                {
+                    _displayIcon = value;
+                    OnPropertyChanged("DisplayIcon");
                 }
             }
         }
