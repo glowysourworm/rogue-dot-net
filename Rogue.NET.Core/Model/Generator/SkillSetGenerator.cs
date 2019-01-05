@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Generator
                 Icon = skillSetTemplate.SymbolDetails.Icon,
                 LevelLearned = skillSetTemplate.LevelLearned,
                 RogueName = skillSetTemplate.Name,
-                Skills = skillSetTemplate.Spells.Select(x => _spellGenerator.GenerateSpell(x)).ToList(),
+                //Skills = skillSetTemplate.Spells.Select(x => _spellGenerator.GenerateSpell(x)).ToList(),
                 SmileyAuraColor = skillSetTemplate.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = skillSetTemplate.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = skillSetTemplate.SymbolDetails.SmileyLineColor,

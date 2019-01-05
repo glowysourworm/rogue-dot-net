@@ -33,7 +33,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            viewModel.Spells.Add(e as SpellTemplateViewModel);
+            //viewModel.Spells.Add(e as SpellTemplateViewModel);
         }
         private void SkillSetBuilder_RemoveEvent(object sender, object e)
         {
@@ -41,7 +41,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            viewModel.Spells.Remove(e as SpellTemplateViewModel);
+            //viewModel.Spells.Remove(e as SpellTemplateViewModel);
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

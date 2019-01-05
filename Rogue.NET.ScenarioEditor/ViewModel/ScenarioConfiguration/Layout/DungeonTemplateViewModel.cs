@@ -9,6 +9,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         private int _numberOfLevels;
         private double _monsterGenerationBase;
         private double _partyRoomGenerationRate;
+        private double _skillPointMultiplier;
         private string _objectiveDescription;
 
         public int NumberOfLevels
@@ -25,6 +26,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
         {
             get { return _partyRoomGenerationRate; }
             set { this.RaiseAndSetIfChanged(ref _partyRoomGenerationRate, value); }
+        }
+        public double SkillPointMultiplier
+        {
+            get { return _skillPointMultiplier; }
+            set { this.RaiseAndSetIfChanged(ref _skillPointMultiplier, value); }
         }
         public string ObjectiveDescription
         {

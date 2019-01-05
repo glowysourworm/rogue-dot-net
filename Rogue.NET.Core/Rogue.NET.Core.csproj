@@ -249,6 +249,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\SkillTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SpellTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\BrushTemplate.cs" />

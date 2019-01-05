@@ -27,7 +27,10 @@ namespace Rogue.NET.ScenarioEditor.Service
 
             // Skill Sets
             foreach (var skillSet in configuration.SkillTemplates)
-                UpdateCollection(collection, skillSet.Spells);
+            {
+                foreach (var skill in skillSet.Skills)
+                    skill.Alteration = MatchByName(configuration.MagicSpells, skill.Alteration);
+            }
 
             // Doodads
             foreach (var doodad in configuration.DoodadTemplates)

@@ -167,7 +167,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)
             {
-                MatchCollection(configuration.MagicSpells, template.Spells);
+                foreach (var skillTemplate in template.Skills)
+                    Match(configuration.MagicSpells, skillTemplate.Alteration);
             }
 
             // Doodads
@@ -247,7 +248,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)
             {
-                MatchCollectionVM(configuration.MagicSpells, template.Spells);
+                foreach (var skillTemplate in template.Skills)
+                    MatchVM(configuration.MagicSpells, skillTemplate.Alteration);
             }
 
             // Doodads

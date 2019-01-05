@@ -10,6 +10,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
         private int _numberOfLevels;
         private double _monsterGenerationBase;
         private double _partyRoomGenerationRate;
+        private double _skillPointMultiplier;
         private string _objectiveDescription;
 
         public int NumberOfLevels
@@ -48,6 +49,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public double SkillPointMultiplier
+        {
+            get { return _skillPointMultiplier; }
+            set
+            {
+                if (_skillPointMultiplier != value)
+                {
+                    _skillPointMultiplier = value;
+                    OnPropertyChanged("SkillPointMultiplier");
+                }
+            }
+        }
         public string ObjectiveDescription
         {
             get { return _objectiveDescription; }
@@ -70,6 +83,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.NumberOfLevels = 100;
             this.MonsterGenerationBase = 0.01;
             this.PartyRoomGenerationRate = 0.1;
+            this.SkillPointMultiplier = 10D; 
         }
     }
 }
