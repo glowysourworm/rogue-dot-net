@@ -45,6 +45,14 @@
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Party Room Generation (per level)" />
                                 <toolkit:DoubleUpDown Value="{Binding PartyRoomGenerationRate, Mode=TwoWay}" Minimum="0" Maximum="1" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
                             </Grid>
+                            <Grid Margin="10,5,10,5">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White">
+                                    <Run Text="Skill Point Multiplier (Number of Points at Level 30=" />
+                                    <Run Text="{Binding SkillPointMultiplier, Converter={StaticResource SkillPointMultiplierExampleConverter}}" />
+                                    <Run Text=")" />
+                                </TextBlock>
+                                <toolkit:DoubleUpDown Value="{Binding SkillPointMultiplier, Mode=TwoWay}" Minimum="1" Maximum="100" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
+                            </Grid>                            
                             <StackPanel Margin="10,5,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" Text="Scenario Description (should explain objective to player)" />
                                 <extension:UpdatingTextBox Margin="0,5,0,5" Text="{Binding ObjectiveDescription, Mode=TwoWay}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" AcceptsReturn="True"  Foreground="White" />

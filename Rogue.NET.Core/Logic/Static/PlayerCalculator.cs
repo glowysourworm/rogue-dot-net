@@ -23,6 +23,23 @@ namespace Rogue.NET.Core.Logic.Static
             return (level == 0) ? 100 : ((10 * Math.Pow(level + 1, 3)) + (300 + level));
         }
 
+        /// <summary>
+        /// Calculates experience required for next point - based on level experience and a multiplier
+        /// </summary>
+        /// <param name="pointsEarned"></param>
+        /// <returns></returns>
+        public static double CalculateExperienceNextSkillPoint(int pointsEarned, double skillPointMultiplier)
+        {
+            if (pointsEarned <= 0)
+                return PlayerCalculator.CalculateExperienceNext(0);
+
+            if (skillPointMultiplier < 1)
+                skillPointMultiplier = 1;
+
+            return skillPointMultiplier * 
+                   (PlayerCalculator.CalculateExperienceNext(pointsEarned) / (double)pointsEarned);
+        }
+
         public static double CalculateHpGain(double baseValue)
         {
             return (baseValue * ModelConstants.LevelGains.LevelGainBase 
