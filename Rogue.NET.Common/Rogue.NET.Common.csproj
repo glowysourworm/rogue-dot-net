@@ -1098,6 +1098,38 @@
     <EmbeddedResource Include="Resource\Images\DisplayImages\WiccaWhite.png" />
     <EmbeddedResource Include="Resource\Images\DisplayImages\WiccaYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterRainbow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\AlterYellow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidRainbow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PyramidYellow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreePurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeRainbow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
