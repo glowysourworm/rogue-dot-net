@@ -19,6 +19,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
                 this.DeathAnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
+                this.ReligionCB.ItemsSource = configuration.Religions;
             });
         }
 

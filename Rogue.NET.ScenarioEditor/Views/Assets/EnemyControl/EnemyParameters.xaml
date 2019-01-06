@@ -7,54 +7,89 @@
              mc:Ignorable="d" Background="Black" FontSize="14"
              d:DesignHeight="300" d:DesignWidth="550">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" DataContext="{Binding Strength}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" DataContext="{Binding Agility}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" DataContext="{Binding Intelligence}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" DataContext="{Binding Speed}" />        
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" DataContext="{Binding Hp}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" DataContext="{Binding Mp}" />
-        <controls:Range Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" DataContext="{Binding ExperienceGiven}" />
-        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="7" IsChecked="{Binding IsInvisible}" HorizontalAlignment="Left" />
-        <CheckBox Margin="0,4,0,4" Grid.Column="1" Grid.Row="8" IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Left" />
-        <controls:ListBuilder x:Name="DeathAnimationsLB" 
-                              Margin="10" Grid.Column="1" Grid.Row="9"
-                              Height="150"
-                              AddEvent="DeathAnimationsLB_AddEvent"
-                              RemoveEvent="DeathAnimationsLB_RemoveEvent"
-                              DestinationItemsSource="{Binding DeathAnimations}" />
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="Grid">
+                <Setter Property="Margin" Value="10,5,10,5" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+            </Style>
+            <Style TargetType="{x:Type controls:Range}">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Width" Value="400" />
+            </Style>
+        </StackPanel.Resources>
+        <Grid>
+            <TextBlock Foreground="White" Text="Strength" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Strength}" />
+        </Grid>
 
-        <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="3" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="4" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="5" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Foreground="White" Text="Experience Given (On Death)" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="7" Foreground="White" Text="Is Invisible" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="8" Foreground="White" Text="Generate On Step" Margin="10" VerticalAlignment="Center" />
-        <TextBlock Grid.Row="9" Foreground="White" Text="Death Animations" Margin="10" VerticalAlignment="Center" />
-    </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Agility" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Agility}" />
+        </Grid>
+
+        <Grid>
+            <TextBlock Foreground="White" Text="Intelligence" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Intelligence}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Speed" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Speed}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Hp" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Hp}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Mp" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding Mp}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Experience Given (On Death)" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding ExperienceGiven}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Is Invisible" VerticalAlignment="Center" />
+            <CheckBox IsChecked="{Binding IsInvisible}" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Generate On Step" VerticalAlignment="Center" />
+            <CheckBox IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Has Religious Affiliation" VerticalAlignment="Center" />
+            <CheckBox IsChecked="{Binding HasReligiousAffiliation}" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Center" />
+            <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name" Width="200" SelectedItem="{Binding Religion}"
+                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Grid>
+        <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+              DataContext="{Binding ReligiousAffiliation}">
+            <TextBlock Foreground="White" Text="Religious Affiliation Level" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding ReligiousAffiliation}" />
+        </Grid>
+        <Grid>
+            <TextBlock Foreground="White" Text="Death Animations" VerticalAlignment="Center" />
+            <controls:ListBuilder x:Name="DeathAnimationsLB" 
+                                  Height="150"
+                                  HorizontalAlignment="Right"
+                                  Width="600"
+                                  AddEvent="DeathAnimationsLB_AddEvent"
+                                  RemoveEvent="DeathAnimationsLB_RemoveEvent"
+                                  DestinationItemsSource="{Binding DeathAnimations}" />
+        </Grid>
+    </StackPanel>
 </UserControl>
 
     

@@ -15,8 +15,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvisible;
         private bool _hasReligiousAffiliation;
         private Range<double> _experienceGiven;
+        private Range<double> _religiousAffiliation;
         private BehaviorDetailsTemplate _behaviorDetails;
-        private ReligiousAffiliationTemplate _religiousAffiliation;
+        private ReligionTemplate _religion;
 
         public bool HasReligiousAffiliation
         {
@@ -66,6 +67,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<double> ReligiousAffiliation
+        {
+            get { return _religiousAffiliation; }
+            set
+            {
+                if (_religiousAffiliation != value)
+                {
+                    _religiousAffiliation = value;
+                    OnPropertyChanged("ReligiousAffiliation");
+                }
+            }
+        }
         public BehaviorDetailsTemplate BehaviorDetails
         {
             get { return _behaviorDetails; }
@@ -78,15 +91,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligiousAffiliationTemplate ReligiousAffiliation
+        public ReligionTemplate Religion
         {
-            get { return _religiousAffiliation; }
+            get { return _religion; }
             set
             {
-                if (_religiousAffiliation != value)
+                if (_religion != value)
                 {
-                    _religiousAffiliation = value;
-                    OnPropertyChanged("ReligiousAffiliation");
+                    _religion = value;
+                    OnPropertyChanged("Religion");
                 }
             }
         }
@@ -95,19 +108,21 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
+            this.ReligiousAffiliation = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
-            this.ReligiousAffiliation = new ReligiousAffiliationTemplate();
+            this.Religion = new ReligionTemplate();
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
             this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
+            this.ReligiousAffiliation = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
-            this.ReligiousAffiliation = new ReligiousAffiliationTemplate();
+            this.Religion = new ReligionTemplate();
         }
     }
 }

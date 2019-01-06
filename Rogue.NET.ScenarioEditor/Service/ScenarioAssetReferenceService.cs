@@ -134,9 +134,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligiousAffiliation))
             {
-                enemy.ReligiousAffiliation.Religion = MatchByName(configuration.Religions, enemy.ReligiousAffiliation.Religion);
+                enemy.Religion = MatchByName(configuration.Religions, enemy.Religion);
 
-                if (enemy.ReligiousAffiliation.Religion == null)
+                if (enemy.Religion == null)
                     enemy.HasReligiousAffiliation = false;
             }
         }
