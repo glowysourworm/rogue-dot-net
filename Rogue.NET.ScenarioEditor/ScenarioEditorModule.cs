@@ -181,6 +181,8 @@ namespace Rogue.NET.ScenarioEditor
             {
                 LoadConstruction(e.ConstructionName);
             });
+
+            // Attack Attribute Events
             _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
@@ -220,6 +222,60 @@ namespace Rogue.NET.ScenarioEditor
                 LoadConstruction("General");
             });
 
+            // Religion Events
+            _eventAggregator.GetEvent<AddReligionEvent>().Subscribe((e) =>
+            {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Add Combat Attribute to the scenario
+                _scenarioEditorController.CurrentConfig.Religions.Add(e);
+
+                // Update all other religions
+                foreach (var religion in _scenarioEditorController.CurrentConfig.Religions)
+                {
+                    religion.AttackParameters.Add(new ReligiousAffiliationAttackParametersTemplateViewModel()
+                    {
+                        EnemyReligionName = e.Name
+                    });
+                }
+
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
+                LoadConstruction("General");
+            });
+            _eventAggregator.GetEvent<RemoveReligionEvent>().Subscribe((e) =>
+            {
+                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
+                //         THE STACK
+                _undoService.Block();
+
+                // Remove Combat Attribute from the scenario
+                _scenarioEditorController.CurrentConfig.Religions.Remove(e);
+
+                // Update all other religions
+                foreach (var religion in _scenarioEditorController.CurrentConfig.Religions)
+                    religion.AttackParameters.Filter(x => x.EnemyReligionName == e.Name);
+
+                // Update Scenario object references
+                _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);
+
+                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
+                _undoService.UnBlock();
+                _undoService.Clear();
+
+                // Reload designer
+                LoadConstruction("General");
+            });
+
+            // Altered State Events
             _eventAggregator.GetEvent<AddAlteredCharacterStateEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 

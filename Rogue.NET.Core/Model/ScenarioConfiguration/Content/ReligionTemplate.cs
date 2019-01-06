@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         string _followerName;
         bool _hasBonusAttribute;
-        bool _hasBonusAttackAttribute;
+        bool _hasBonusAttackAttributes;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         double _bonusAttributeValue;
@@ -41,14 +41,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasBonusAttackAttribute
+        public bool HasBonusAttackAttributes
         {
-            get { return _hasBonusAttackAttribute; }
+            get { return _hasBonusAttackAttributes; }
             set
             {
-                if (_hasBonusAttackAttribute != value)
+                if (_hasBonusAttackAttributes != value)
                 {
-                    _hasBonusAttackAttribute = value;
+                    _hasBonusAttackAttributes = value;
                     OnPropertyChanged("HasBonusAttackAttribute");
                 }
             }
@@ -101,19 +101,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public AttackAttributeTemplate BonusAttackAttribute
-        {
-            get { return _bonusAttackAttribute; }
-            set
-            {
-                if (_bonusAttackAttribute != value)
-                {
-                    _bonusAttackAttribute = value;
-                    OnPropertyChanged("BonusAttackAttribute");
-                }
-            }
-        }
 
+        public List<AttackAttributeTemplate> BonusAttackAttributes { get; set; }
         public List<ReligiousAffiliationAttackParametersTemplate> AttackParameters { get; set; }
 
         public ReligionTemplate()
@@ -121,6 +110,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.FollowerName = "Christian";
 
             this.AttackParameters = new List<ReligiousAffiliationAttackParametersTemplate>();
+            this.BonusAttackAttributes = new List<AttackAttributeTemplate>();
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;

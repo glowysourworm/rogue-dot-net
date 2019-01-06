@@ -8,12 +8,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     {
         string _followerName;
         bool _hasBonusAttribute;
-        bool _hasBonusAttackAttribute;
+        bool _hasBonusAttackAttributes;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
-        AttackAttributeTemplateViewModel _bonusAttackAttribute;
 
         public string FollowerName
         {
@@ -25,10 +24,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasBonusAttribute; }
             set { this.RaiseAndSetIfChanged(ref _hasBonusAttribute, value); }
         }
-        public bool HasBonusAttackAttribute
+        public bool HasBonusAttackAttributes
         {
-            get { return _hasBonusAttackAttribute; }
-            set { this.RaiseAndSetIfChanged(ref _hasBonusAttackAttribute, value); }
+            get { return _hasBonusAttackAttributes; }
+            set { this.RaiseAndSetIfChanged(ref _hasBonusAttackAttributes, value); }
         }
         public bool AllowsRenunciation
         {
@@ -50,12 +49,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _bonusAttribute; }
             set { this.RaiseAndSetIfChanged(ref _bonusAttribute, value); }
         }
-        public AttackAttributeTemplateViewModel BonusAttackAttribute
-        {
-            get { return _bonusAttackAttribute; }
-            set { this.RaiseAndSetIfChanged(ref _bonusAttackAttribute, value); }
-        }
 
+        public ObservableCollection<AttackAttributeTemplateViewModel> BonusAttackAttributes { get; set; }
         public ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel> AttackParameters { get; set; }
 
         public ReligionTemplateViewModel()
@@ -63,6 +58,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.FollowerName = "Christian";
 
             this.AttackParameters = new ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel>();
+            this.BonusAttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;

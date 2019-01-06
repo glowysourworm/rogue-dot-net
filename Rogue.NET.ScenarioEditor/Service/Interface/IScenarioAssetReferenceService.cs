@@ -42,6 +42,12 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
+        /// Updates Religion references on Enemies, Equipment, Consumables, and Doodads. This will
+        /// ensure that the reference is broken if it has been removed.
+        /// </summary>
+        void UpdateReligions(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
         /// Updates Altered Character State references on Alterations. This will set dangling references
         /// to default (new AlteredCharacterStateTemplate) - which will be a "Normal" Base Type.
         /// </summary>

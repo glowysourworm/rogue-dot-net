@@ -52,6 +52,7 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.SmileyAuraColor = symbolDetails.SmileyAuraColor;
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
+            this.DisplayIcon = symbolDetails.DisplayIcon;
             this.Icon = symbolDetails.Icon;
 
             this.IsGrayScale = grayScale;

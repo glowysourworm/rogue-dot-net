@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
@@ -29,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             this.AttributeSymbolButton.DataContext = new SymbolDetailsTemplateViewModel();
         }
 
-        #region Combat Attribute
+        #region Attack Attribute
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             var config = this.DataContext as ScenarioConfigurationContainerViewModel;
@@ -71,6 +72,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         #endregion
 
+        #region Altered State
         private void AddAlteredStateButton_Click(object sender, RoutedEventArgs e)
         {
             var config = this.DataContext as ScenarioConfigurationContainerViewModel;
@@ -108,5 +110,48 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (e.AddedItems.Count > 0)
                 this.AlteredStateStack.DataContext = e.AddedItems[0];
         }
+        #endregion
+
+        #region Religion
+        private void AddReligionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var config = this.DataContext as ScenarioConfigurationContainerViewModel;
+            if (config == null || string.IsNullOrEmpty(this.ReligionTB.Text))
+                return;
+
+            if (config.Religions.Any(x => x.Name == this.ReligionTB.Text))
+                return;
+
+            var religion = new ReligionTemplateViewModel()
+            {
+                Name = this.ReligionTB.Text,
+                BonusAttackAttributes = config.AttackAttributes.DeepClone()
+            };
+
+            religion.SymbolDetails.Type = SymbolTypes.DisplayImage;
+            religion.SymbolDetails.DisplayIcon = this.ReligionSymbolCB.Value;
+
+            // Initialize Attack Parameters list
+            foreach (var existingReligion in config.Religions)
+                religion.AttackParameters.Add(new ReligiousAffiliationAttackParametersTemplateViewModel()
+                {
+                    EnemyReligionName = existingReligion.Name
+                });
+            
+
+            _eventAggregator.GetEvent<AddReligionEvent>().Publish(religion);
+
+            this.ReligionTB.Text = "";
+        }
+
+        private void RemoveReligionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = this.ReligionLB.SelectedItem as ReligionTemplateViewModel;
+            if (selectedItem != null)
+            {
+                _eventAggregator.GetEvent<RemoveReligionEvent>().Publish(selectedItem);
+            }
+        }
+        #endregion
     }
 }

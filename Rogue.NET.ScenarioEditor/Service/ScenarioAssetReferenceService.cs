@@ -37,6 +37,12 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 doodad.AutomaticMagicSpellTemplate = MatchByName(collection, doodad.AutomaticMagicSpellTemplate);
                 doodad.InvokedMagicSpellTemplate = MatchByName(collection, doodad.InvokedMagicSpellTemplate);
+
+                if (doodad.AutomaticMagicSpellTemplate == null)
+                    doodad.IsAutomatic = false;
+
+                if (doodad.InvokedMagicSpellTemplate == null)
+                    doodad.IsInvoked = false;
             }
 
             // Equipment
@@ -45,6 +51,12 @@ namespace Rogue.NET.ScenarioEditor.Service
                 equipment.AmmoTemplate.AmmoSpellTemplate = MatchByName(collection, equipment.AmmoTemplate.AmmoSpellTemplate);
                 equipment.CurseSpell = MatchByName(collection, equipment.CurseSpell);
                 equipment.EquipSpell = MatchByName(collection, equipment.EquipSpell);
+
+                if (equipment.CurseSpell == null)
+                    equipment.HasCurseSpell = false;
+
+                if (equipment.EquipSpell == null)
+                    equipment.HasEquipSpell = false;
             }
 
             // Consumables
@@ -53,6 +65,12 @@ namespace Rogue.NET.ScenarioEditor.Service
                 consumable.AmmoSpellTemplate = MatchByName(collection, consumable.AmmoSpellTemplate);
                 consumable.ProjectileSpellTemplate = MatchByName(collection, consumable.ProjectileSpellTemplate);
                 consumable.SpellTemplate = MatchByName(collection, consumable.SpellTemplate);
+
+                if (consumable.ProjectileSpellTemplate == null)
+                    consumable.IsProjectile = false;
+
+                if (consumable.SpellTemplate == null)
+                    consumable.HasSpell = false;
             }
         }
 
@@ -78,6 +96,49 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
+
+            // Religions
+            foreach (var religion in configuration.Religions)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, religion.BonusAttackAttributes);
+        }
+
+        public void UpdateReligions(ScenarioConfigurationContainerViewModel configuration)
+        {
+            // Consumables
+            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligiousAffiliationRequirement))
+            {
+                consumable.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, consumable.ReligiousAffiliationRequirement.Religion);
+
+                if (consumable.ReligiousAffiliationRequirement.Religion == null)
+                    consumable.HasReligiousAffiliationRequirement = false;
+            }
+
+            // Equipment
+            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligiousAffiliationRequirement))
+            {
+                equipment.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, equipment.ReligiousAffiliationRequirement.Religion);
+
+                if (equipment.ReligiousAffiliationRequirement.Religion == null)
+                    equipment.HasReligiousAffiliationRequirement = false;
+            }
+
+            // Doodads
+            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligiousAffiliationRequirement))
+            {
+                doodad.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, doodad.ReligiousAffiliationRequirement.Religion);
+
+                if (doodad.ReligiousAffiliationRequirement.Religion == null)
+                    doodad.HasReligiousAffiliationRequirement = false;
+            }
+
+            // Enemies
+            foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligiousAffiliation))
+            {
+                enemy.ReligiousAffiliation.Religion = MatchByName(configuration.Religions, enemy.ReligiousAffiliation.Religion);
+
+                if (enemy.ReligiousAffiliation.Religion == null)
+                    enemy.HasReligiousAffiliation = false;
+            }
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
@@ -128,7 +189,12 @@ namespace Rogue.NET.ScenarioEditor.Service
         {
             // Consumables
             foreach (var consumable in configuration.ConsumableTemplates)
+            {
                 consumable.LearnedSkill = MatchByName(configuration.SkillTemplates, consumable.LearnedSkill);
+
+                if (consumable.LearnedSkill == null)
+                    consumable.HasLearnedSkill = false;
+            }
 
             UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
         }

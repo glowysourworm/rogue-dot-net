@@ -123,6 +123,10 @@ namespace Rogue.NET.Core.Model.Enums
         Speed,
         HpRegen,
         MpRegen,
-        AuraRadius
+        LightRadius,
+        Attack,
+        Defense,
+        Dodge,
+        MagicBlock
     }
 }

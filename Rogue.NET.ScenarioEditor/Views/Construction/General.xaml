@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
              mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,6 +16,13 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+                <ResourceDictionary>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource LightBrush}"/>
+                    </Style>
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -60,50 +68,185 @@
                         </StackPanel>
                     </TabItem>
                     <TabItem Header="Religions">
-                        <StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
                             <TextBlock FontSize="16" 
                                        TextWrapping="Wrap" 
                                        Margin="10" 
                                        Foreground="White" 
                                        Text="Religions are attributed to characters, items, and scenario objects throughout the scenario. You can define the list of religions here." />
-                            <Grid Margin="10,0,10,0">
+                            <StackPanel x:Name="NewReligionStack" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock Margin="8" VerticalAlignment="Top" Text="New Religion: " Foreground="White" />
+                                <extension:UpdatingTextBox x:Name="ReligionTB" VerticalAlignment="Top" Margin="8" Width="250" Height="32" VerticalContentAlignment="Center" />
+                                <controls:DisplayImageEnumComboBox x:Name="ReligionSymbolCB" Value="{Binding DisplayIcon}" Margin="8" Width="200" />
+                                <Button x:Name="AddReligionButton" ToolTip="Add" Click="AddReligionButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                <Button x:Name="RemoveReligionButton" ToolTip="Remove" Click="RemoveReligionButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                            </StackPanel>
+                            <Grid Margin="10,0,10,0" Grid.Row="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="250" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <ListBox x:Name="ReligionLB" 
-                                         Grid.Column="0"
+                                <StackPanel VerticalAlignment="Stretch">
+                                    <TextBlock Text="Religions" Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="10" />
+                                    <ListBox x:Name="ReligionLB" 
                                          ItemsSource="{Binding Religions}" 
-                                         Margin="10"
-                                         Height="200" 
+                                         Margin="10,5,10,10"
+                                         Height="200"
                                          SelectionMode="Single"
-                                         VerticalAlignment="Top">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Image HorizontalAlignment="Left" Margin="4">
-                                                    <Image.Source>
-                                                        <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                            <Binding Path="SymbolDetails.CharacterSymbol" />
-                                                            <Binding Path="SymbolDetails.CharacterColor" />
-                                                            <Binding Path="SymbolDetails.Icon" />
-                                                            <Binding Path="SymbolDetails.DisplayIcon" />
-                                                            <Binding Path="SymbolDetails.SmileyMood" />
-                                                            <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                                            <Binding Path="SymbolDetails.SmileyLineColor" />
-                                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                                            <Binding Path="SymbolDetails.Type" />
-                                                        </MultiBinding>
-                                                    </Image.Source>
-                                                </Image>
-                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                         VerticalAlignment="Stretch">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image HorizontalAlignment="Left" Margin="4">
+                                                        <Image.Source>
+                                                            <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                                                <Binding Path="SymbolDetails.CharacterSymbol" />
+                                                                <Binding Path="SymbolDetails.CharacterColor" />
+                                                                <Binding Path="SymbolDetails.Icon" />
+                                                                <Binding Path="SymbolDetails.DisplayIcon" />
+                                                                <Binding Path="SymbolDetails.SmileyMood" />
+                                                                <Binding Path="SymbolDetails.SmileyBodyColor" />
+                                                                <Binding Path="SymbolDetails.SmileyLineColor" />
+                                                                <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                                                <Binding Path="SymbolDetails.Type" />
+                                                            </MultiBinding>
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left" Margin="4" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                                 
+                                <TabControl DataContext="{Binding ElementName=ReligionLB, Path=SelectedItem}" 
+                                            Grid.Column="1" Margin="10" Background="Black">
+                                    <TabItem Header="Parameters" Background="Black">
+                                        <StackPanel>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Name" FontSize="16" HorizontalAlignment="Left" />
+                                                <TextBox Text="{Binding Name}" IsReadOnly="True" Width="300" HorizontalAlignment="Right" />
+                                            </Grid>                                            
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Follower Name" FontSize="16" HorizontalAlignment="Left" />
+                                                <TextBox Text="{Binding FollowerName}" Width="300" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Text="Short Description" Foreground="White" />
+                                                <TextBox Text="{Binding ShortDescription}" 
+                                                            HorizontalAlignment="Right" 
+                                                            AcceptsReturn="True"
+                                                            HorizontalScrollBarVisibility="Disabled"
+                                                            VerticalScrollBarVisibility="Auto"
+                                                            TextWrapping="Wrap"
+                                                            Height="60"
+                                                            Width="300" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Text="Long Description" Foreground="White" />
+                                                <TextBox Text="{Binding LongDescription}" 
+                                                         HorizontalAlignment="Right" 
+                                                         AcceptsReturn="True"
+                                                         HorizontalScrollBarVisibility="Disabled"
+                                                         VerticalScrollBarVisibility="Auto"
+                                                         TextWrapping="Wrap"
+                                                         Height="100"
+                                                         Width="300" />
+                                            </Grid>
+                                        </StackPanel>
+                                    </TabItem>
+                                    <TabItem Header="Attribute Parameters">
+                                        <StackPanel>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Has Attribute Bonus" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding HasAttributeBonus}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Has Attack Attribute Bonus" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding HasBonusAttackAttributes}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Allows Renunciation" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding AllowsRenunciation}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Allows Re-Affiliation" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding AllowsReAffiliation}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10" Visibility="{Binding HasAttributeBonus, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                <TextBlock Foreground="White" Text="Bonus Attribute" FontSize="16" HorizontalAlignment="Left" />
+                                                <commonView:EnumComboBox Width="200" EnumType="{x:Type coreModelEnums:CharacterAttribute}" EnumValue="{Binding BonusAttribute, Mode=TwoWay}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10" Visibility="{Binding HasAttributeBonus, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                <TextBlock Foreground="White" Text="Bonus Attribute Value" FontSize="16" HorizontalAlignment="Left" />
+                                                <toolkit:DoubleUpDown Width="150" Minimum="0" Maximum="100" Value="{Binding BonusAttributeValue}"  HorizontalAlignment="Right" />
+                                            </Grid>
+                                        </StackPanel>                                        
+                                    </TabItem>
+                                    <TabItem Header="Attack Parameters" Background="Black">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="250" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="Opposing Religion" Margin="10" Foreground="White" HorizontalAlignment="Left" />
+                                                <ListBox x:Name="EnemyReligionLB" 
+                                                         Margin="10,0,10,10"                                                         
+                                                         Grid.Row="1"
+                                                         DisplayMemberPath="EnemyReligionName"
+                                                         ItemsSource="{Binding AttackParameters}">
+                                                </ListBox>
+                                            </Grid>
+                                            <StackPanel Grid.Column="1"
+                                                        DataContext="{Binding ElementName=EnemyReligionLB, Path=SelectedItem}">
+                                                <Grid Margin="10">
+                                                    <TextBlock Foreground="White" Text="Attack Multiplier" FontSize="16" HorizontalAlignment="Left" />
+                                                    <toolkit:DoubleUpDown Width="150" Minimum="0" Maximum="100" Value="{Binding AttackMultiplier}"  HorizontalAlignment="Right" />
+                                                </Grid>
+                                                <Grid Margin="10">
+                                                    <TextBlock Foreground="White" Text="Defehse Multiplier" FontSize="16" HorizontalAlignment="Left" />
+                                                    <toolkit:DoubleUpDown Width="150" Minimum="-100" Maximum="100" Value="{Binding DefenseMultiplier}"  HorizontalAlignment="Right" />
+                                                </Grid>
+                                                <Grid Margin="10">
+                                                    <TextBlock Foreground="White" Text="(Mental Alteration) Block Multiplier" FontSize="16" HorizontalAlignment="Left" />
+                                                    <toolkit:DoubleUpDown Width="150" Minimum="-1" Maximum="1" Increment="0.01" Value="{Binding BlockMultiplier}"  HorizontalAlignment="Right" />
+                                                </Grid>
+                                            </StackPanel>
+                                        </Grid>
+                                    </TabItem>
+                                    <TabItem Header="Bonus Attack Attributes"
+                                             Background="Black"
+                                             Visibility="{Binding HasBonusAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                        <ListBox ItemsSource="{Binding BonusAttackAttributes}">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding AppliesToStrengthBasedCombat}" Value="False">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <assets:AttackAttribute />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </TabItem>
+                                </TabControl>
                             </Grid>
-                        </StackPanel>
+                        </Grid>
                     </TabItem>
                     <TabItem Header="Attack Attributes">
                         <StackPanel>
@@ -117,15 +260,15 @@
                                             <Image Height="15" Width="10" Margin="4">
                                                 <Image.Source>
                                                     <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                                        <Binding Path="SymbolDetails.CharacterSymbol" />
-                                                        <Binding Path="SymbolDetails.CharacterColor" />
-                                                        <Binding Path="SymbolDetails.Icon" />
-                                                        <Binding Path="SymbolDetails.DisplayIcon" />
-                                                        <Binding Path="SymbolDetails.SmileyMood" />
-                                                        <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                                        <Binding Path="SymbolDetails.SmileyLineColor" />
-                                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                                        <Binding Path="SymbolDetails.Type" />
+                                                        <Binding Path="CharacterSymbol" />
+                                                        <Binding Path="CharacterColor" />
+                                                        <Binding Path="Icon" />
+                                                        <Binding Path="DisplayIcon" />
+                                                        <Binding Path="SmileyMood" />
+                                                        <Binding Path="SmileyBodyColor" />
+                                                        <Binding Path="SmileyLineColor" />
+                                                        <Binding Path="SmileyAuraColor" />
+                                                        <Binding Path="Type" />
                                                     </MultiBinding>
                                                 </Image.Source>
                                             </Image>

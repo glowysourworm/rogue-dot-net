@@ -257,6 +257,7 @@
     <Compile Include="Events\AddAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddAttackAttributeEvent.cs" />
+    <Compile Include="Events\AddReligionEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
@@ -267,6 +268,7 @@
     <Compile Include="Events\RemoveAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
     <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
+    <Compile Include="Events\RemoveReligionEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
@@ -502,6 +504,9 @@
     </Compile>
     <Compile Include="Views\Controls\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\DisplayImageEnumComboBox.xaml.cs">
+      <DependentUpon>DisplayImageEnumComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\ImageEnumComboBox.xaml.cs">
       <DependentUpon>ImageEnumComboBox.xaml</DependentUpon>
@@ -755,6 +760,10 @@
     <Page Include="Views\Controls\DialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DisplayImageEnumComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\ImageEnumComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -277,6 +277,7 @@
                             <TextBlock x:Name="PART_Header" 
                                            Text="{Binding Name}"
                                            FontSize="16"
+                                           VerticalAlignment="Center"
                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                             </TextBlock>
                         </Border>

@@ -683,6 +683,24 @@
         WiccaGreen = 104,
         WiccaBlue = 105,
         WiccaPurple = 106,
-        WiccaFuschia = 107
+        WiccaFuschia = 107,
+        EyeWhite = 108,
+        EyeBlack = 109,
+        EyeRed = 110,
+        EyeOrange = 111,
+        EyeYellow = 112,
+        EyeGreen = 113,
+        EyeBlue = 114,
+        EyePurple = 115,
+        EyeFuschia = 116,
+        WorldWhite = 117,
+        WorldBlack = 118,
+        WorldRed = 119,
+        WorldOrange = 120,
+        WorldYellow = 121,
+        WorldGreen = 122,
+        WorldBlue = 123,
+        WorldPurple = 124,
+        WorldFuschia = 125
     }
 }

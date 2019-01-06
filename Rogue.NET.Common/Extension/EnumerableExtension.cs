@@ -86,5 +86,18 @@ namespace Rogue.NET.Common.Extension
 
             return result;
         }
+
+        /// <summary>
+        /// Filters out some elements of a list
+        /// </summary>
+        /// <param name="filter">filter to match elements by</param>
+        public static void Filter<T>(this IList<T> list, Func<T, bool> filter)
+        {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (filter(list[i]))
+                    list.RemoveAt(i);
+            }
+        }
     }
 }

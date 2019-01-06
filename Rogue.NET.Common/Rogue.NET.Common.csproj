@@ -1130,6 +1130,28 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeWhite.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\TreeYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeBlack.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeBlue.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeGreen.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeOrange.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyePurple.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeRed.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeWhite.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\EyeYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldBlack.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldBlue.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldGreen.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldOrange.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldPurple.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldRed.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldWhite.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
