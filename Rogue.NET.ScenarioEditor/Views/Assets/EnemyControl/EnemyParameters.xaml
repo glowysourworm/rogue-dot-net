@@ -74,10 +74,9 @@
             <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name" Width="200" SelectedItem="{Binding Religion}"
                       VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
-        <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-              DataContext="{Binding ReligiousAffiliation}">
+        <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <TextBlock Foreground="White" Text="Religious Affiliation Level" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding ReligiousAffiliation}" />
+            <controls:Range DataContext="{Binding ReligiousAffiliationLevel}" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Death Animations" VerticalAlignment="Center" />

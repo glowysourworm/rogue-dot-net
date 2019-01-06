@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvisible;
         private bool _hasReligiousAffiliation;
         private Range<double> _experienceGiven;
-        private Range<double> _religiousAffiliation;
+        private Range<double> _religiousAffiliationLevel;
         private BehaviorDetailsTemplate _behaviorDetails;
         private ReligionTemplate _religion;
 
@@ -67,14 +67,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public Range<double> ReligiousAffiliation
+        public Range<double> ReligiousAffiliationLevel
         {
-            get { return _religiousAffiliation; }
+            get { return _religiousAffiliationLevel; }
             set
             {
-                if (_religiousAffiliation != value)
+                if (_religiousAffiliationLevel != value)
                 {
-                    _religiousAffiliation = value;
+                    _religiousAffiliationLevel = value;
                     OnPropertyChanged("ReligiousAffiliation");
                 }
             }
@@ -108,7 +108,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
-            this.ReligiousAffiliation = new Range<double>(0.01, 0.03, 0.05, 1);
+            this.ReligiousAffiliationLevel = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.HasReligiousAffiliation = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
-            this.ReligiousAffiliation = new Range<double>(0.01, 0.03, 0.05, 1);
+            this.ReligiousAffiliationLevel = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
