@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" Background="Black" FontSize="14"
@@ -30,21 +31,21 @@
         <Grid>
             <StackPanel>
                 <Grid Margin="10">
-                <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
-                <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
-                    <Border.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Offset="0">
-                                <GradientStop.Color>
-                                    <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                        <Binding Path="SymbolDetails.Type" />
-                                    </MultiBinding>
-                                </GradientStop.Color>
-                            </GradientStop>
-                            <GradientStop Color="Transparent" Offset="1" />
-                        </RadialGradientBrush>
-                    </Border.Background>
+                    <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
+                    <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
+                        <Border.Background>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="0">
+                                    <GradientStop.Color>
+                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
+                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
+                                            <Binding Path="SymbolDetails.Type" />
+                                        </MultiBinding>
+                                    </GradientStop.Color>
+                                </GradientStop>
+                                <GradientStop Color="Transparent" Offset="1" />
+                            </RadialGradientBrush>
+                        </Border.Background>
                         <Image VerticalAlignment="Center" 
                                HorizontalAlignment="Center" 
                                Stretch="None">
@@ -63,9 +64,9 @@
                             </Image.Source>
                         </Image>
                     </Border>
-            </Grid>
+                </Grid>
                 <Grid Margin="10">
-                    <TextBlock Text="Short Description" />
+                    <TextBlock Text="Short Description" Foreground="White" VerticalAlignment="Center" />
                     <TextBox Text="{Binding ShortDescription}" 
                          HorizontalAlignment="Right" 
                          AcceptsReturn="True"
@@ -87,18 +88,43 @@
                          Width="300" />
                 </Grid>
                 <Grid Margin="10,10,10,5">
-                <TextBlock Foreground="White" Text="Required Player Level" VerticalAlignment="Center" />
+                    <TextBlock Foreground="White" Text="Required Player Level" VerticalAlignment="Center" />
                     <toolkit:IntegerUpDown Value="{Binding LevelLearned, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Foreground="White" Maximum="500" Minimum="0" Increment="1" Width="150" HorizontalAlignment="Right" />
-            </Grid>
-            <Grid Margin="10,5,10,5">
-                <GroupBox Header="Select Skills">
-                    <StackPanel>
-                        <TextBlock TextWrapping="Wrap" Margin="5" Foreground="White" Text="The skills in the set will be learned in the order they appear in the list. The first of these will be available when the player has reached the minimum level." />
-                        <controls:ListBuilder x:Name="SkillSetBuilder" DestinationItemsSource="{Binding Spells}" Height="140" Margin="5" />
-                    </StackPanel>
-                </GroupBox>
-            </Grid>    
-        </StackPanel>
-    </Grid>
+                </Grid>
+                <Grid Margin="10,10,10,5">
+                    <TextBlock Foreground="White" Text="Has Religious Affiliation" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding HasReligiousAffiliationRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,10,10,5"
+                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name"
+                                  Margin="10"
+                                  SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
+                                  VerticalAlignment="Center" 
+                                  Width="200"                              
+                                  HorizontalAlignment="Right" />
+                </Grid>
+                <Grid Margin="10,10,10,5"
+                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <TextBlock Foreground="White" Text="Required Affiliation Level" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <toolkit:DoubleUpDown Value="{Binding ReligiousAffiliationRequirement.RequiredAffiliationLevel}" 
+                                              Minimum="0.1"
+                                              Maximum="1"
+                                              Increment="0.1"
+                                              Width="80"
+                                              Margin="10,0,10,10"
+                                              HorizontalAlignment="Right" />
+                </Grid>                
+                <Grid Margin="10,5,10,5">
+                    <GroupBox Header="Select Skills">
+                        <StackPanel>
+                            <TextBlock TextWrapping="Wrap" Margin="5" Foreground="White" Text="The skills in the set will be shown in the order they appear in the list. They will be available to learn once the minimum level is reached by the Player." />
+                            <controls:ListBuilder x:Name="SkillSetBuilder" DestinationItemsSource="{Binding Skills}" Height="250" Margin="5" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </UserControl>

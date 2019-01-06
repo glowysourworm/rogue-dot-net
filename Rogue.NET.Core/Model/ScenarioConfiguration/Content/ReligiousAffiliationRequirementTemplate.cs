@@ -37,7 +37,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public ReligiousAffiliationRequirementTemplate()
         {
             this.Religion = new ReligionTemplate();
-            this.RequiredAffiliationLevel = 0D;
+            this.RequiredAffiliationLevel = 0.1D;
         }
     }
 }

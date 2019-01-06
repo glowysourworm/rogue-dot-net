@@ -3,7 +3,10 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Controls;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +24,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
             {
                 this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
+                this.ReligionCB.ItemsSource = configuration.Religions;
             });
 
             this.SkillSetBuilder.AddEvent += SkillSetBuilder_AddEvent;
@@ -33,7 +37,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            //viewModel.Spells.Add(e as SpellTemplateViewModel);
+            var alteration = e as SpellTemplateViewModel;
+
+            viewModel.Skills.Add(new SkillTemplateViewModel()
+            {
+                Name = alteration.DisplayName,
+                Alteration = alteration                
+            });
         }
         private void SkillSetBuilder_RemoveEvent(object sender, object e)
         {
@@ -41,7 +51,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            //viewModel.Spells.Remove(e as SpellTemplateViewModel);
+            viewModel.Skills.Remove(e as SkillTemplateViewModel);
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

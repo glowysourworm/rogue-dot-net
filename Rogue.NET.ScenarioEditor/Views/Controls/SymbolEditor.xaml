@@ -98,6 +98,12 @@
                     <controls:ImageEnumComboBox Value="{Binding Icon, Mode=TwoWay}" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  />
                 </Grid>
             </GroupBox>
+            <GroupBox Visibility="{Binding Type, Converter={StaticResource SymbolEditorVisibilityConverter}, ConverterParameter={x:Static coreModelEnums:SymbolTypes.DisplayImage}}" Margin="10" Header="Display Icon Parameters">
+                <Grid Margin="10">
+                    <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Image" />
+                    <controls:DisplayImageEnumComboBox Value="{Binding DisplayIcon, Mode=TwoWay}" Width="200" HorizontalAlignment="Right"  HorizontalContentAlignment="Stretch"  />
+                </Grid>
+            </GroupBox>            
             <!-- Symbol Delta Parameters -->
             <GroupBox x:Name="SymbolDeltaParametersGB" Visibility="Collapsed" Margin="10" Header="Symbol Change Parameters">
                 <StackPanel>

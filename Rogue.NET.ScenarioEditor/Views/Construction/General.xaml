@@ -137,6 +137,10 @@
                                                 <TextBox Text="{Binding FollowerName}" Width="300" HorizontalAlignment="Right" />
                                             </Grid>
                                             <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Is Identified (On Startup)" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding IsIdentified}" HorizontalAlignment="Right" />
+                                            </Grid>                                            
+                                            <Grid Margin="10">
                                                 <TextBlock Text="Short Description" Foreground="White" />
                                                 <TextBox Text="{Binding ShortDescription}" 
                                                             HorizontalAlignment="Right" 

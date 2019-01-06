@@ -9,8 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        bool _hasReligiousAffiliationRequirement;
-        ReligiousAffiliationRequirementTemplate _religiousAffiliationRequirement;
+        double _requiredAffiliationLevel;
         SpellTemplate _alteration;
 
         public int LevelRequirement
@@ -37,27 +36,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public bool HasReligiousAffiliationRequirement
+        public double RequiredAffiliationLevel
         {
-            get { return _hasReligiousAffiliationRequirement; }
+            get { return _requiredAffiliationLevel; }
             set
             {
-                if (_hasReligiousAffiliationRequirement != value)
+                if (_requiredAffiliationLevel != value)
                 {
-                    _hasReligiousAffiliationRequirement = value;
-                    OnPropertyChanged("HasReligiousAffiliationRequirement");
-                }
-            }
-        }
-        public ReligiousAffiliationRequirementTemplate ReligiousAffiliationRequirement
-        {
-            get { return _religiousAffiliationRequirement; }
-            set
-            {
-                if (_religiousAffiliationRequirement != value)
-                {
-                    _religiousAffiliationRequirement = value;
-                    OnPropertyChanged("ReligiousAffiliationRequirement");
+                    _requiredAffiliationLevel = value;
+                    OnPropertyChanged("RequiredAffiliationLevel");
                 }
             }
         }
@@ -76,8 +63,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 
         public SkillTemplate()
         {
-            this.HasReligiousAffiliationRequirement = false;
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
             this.Alteration = new SpellTemplate();
         }
     }

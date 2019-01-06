@@ -11,6 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         bool _hasBonusAttackAttributes;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
+        bool _isIdentified;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
 
@@ -38,6 +39,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _allowsReAffiliation; }
             set { this.RaiseAndSetIfChanged(ref _allowsReAffiliation, value); }
+        }
+        public bool IsIdentified
+        {
+            get { return _isIdentified; }
+            set { this.RaiseAndSetIfChanged(ref _isIdentified, value); }
         }
         public double BonusAttributeValue
         {

@@ -13,9 +13,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         bool _hasBonusAttackAttributes;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
+        bool _isIdentified;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
-        AttackAttributeTemplate _bonusAttackAttribute;
 
         public string FollowerName
         {
@@ -74,6 +74,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _allowsReAffiliation = value;
                     OnPropertyChanged("AllowsReAffiliation");
+                }
+            }
+        }
+        public bool IsIdentified
+        {
+            get { return _isIdentified; }
+            set
+            {
+                if (_isIdentified != value)
+                {
+                    _isIdentified = value;
+                    OnPropertyChanged("IsIdentified");
                 }
             }
         }

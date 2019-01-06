@@ -12,8 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        bool _hasReligiousAffiliationRequirement;
-        ReligiousAffiliationRequirementTemplateViewModel _religiousAffiliationRequirement;
+        double _requiredAffiliationLevel;
         SpellTemplateViewModel _alteration;
 
         public int LevelRequirement
@@ -26,15 +25,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _pointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _pointRequirement, value); }
         }
-        public bool HasReligiousAffiliationRequirement
+        public double RequiredAffiliationLevel
         {
-            get { return _hasReligiousAffiliationRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
-        }
-        public ReligiousAffiliationRequirementTemplateViewModel ReligiousAffiliationRequirement
-        {
-            get { return _religiousAffiliationRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirement, value); }
+            get { return _requiredAffiliationLevel; }
+            set { this.RaiseAndSetIfChanged(ref _requiredAffiliationLevel, value); }
         }
         public SpellTemplateViewModel Alteration
         {
@@ -44,8 +38,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 
         public SkillTemplateViewModel()
         {
-            this.HasReligiousAffiliationRequirement = false;
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplateViewModel();
             this.Alteration = new SpellTemplateViewModel();
         }
     }

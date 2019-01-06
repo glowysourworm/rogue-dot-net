@@ -470,8 +470,13 @@
 
 IMMEDIATE TODO'S:
 
-	- Re-scale speed:  Use integer values from 1 - 10. Then use ratio of speed as we do now => Min Speed = 1 / 10 = 0.1. Max Speed = 10 / 1 = 10.
-	
+	- Religious Affiliation:  Identify on Startup - Only show those that are assignable to the Player at the start. UI only shows identified 
+							  religions.. So, must identify a religion by:
+							  
+							  1) Defeating an enemy of the un-identified religion
+							  2) Identifying an item of the religion
+							  3) Using a doodad of the religion
+
 	- Equipment Quality Changing Alterations:  Class Change / Quality Change + plus or - minus. Example (sharpening Stone) + 0.1 to quality. Or skill of	
 											   enemy changes quality -0.3 (stone golem or something chips your blade). So, new alteration types required:
 											   
