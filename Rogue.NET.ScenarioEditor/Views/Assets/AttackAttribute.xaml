@@ -31,6 +31,7 @@
                         <Binding Path="SymbolDetails.CharacterSymbol" />
                         <Binding Path="SymbolDetails.CharacterColor" />
                         <Binding Path="SymbolDetails.Icon" />
+                        <Binding Path="SymbolDetails.DisplayIcon" />
                         <Binding Path="SymbolDetails.SmileyMood" />
                         <Binding Path="SymbolDetails.SmileyBodyColor" />
                         <Binding Path="SymbolDetails.SmileyLineColor" />

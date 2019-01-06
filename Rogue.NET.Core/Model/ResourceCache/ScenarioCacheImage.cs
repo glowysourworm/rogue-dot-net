@@ -15,6 +15,7 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public string CharacterSymbol { get; set; }
         public string CharacterColor { get; set; }
         public ImageResources Icon { get; set; }
+        public DisplayImageResources DisplayIcon { get; set; }
 
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
@@ -32,6 +33,7 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.Icon = scenarioImage.Icon;
+            this.DisplayIcon = scenarioImage.DisplayIcon;
 
             this.IsGrayScale = isGrayScale;
 

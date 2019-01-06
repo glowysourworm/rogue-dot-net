@@ -20,6 +20,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         //Image Details
         public ImageResources Icon { get; set; }
+        public DisplayImageResources DisplayIcon { get; set; }
 
         public ScenarioImage() { }
         public ScenarioImage(string name, ImageResources icon)
@@ -28,6 +29,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.Icon = icon;
 
             this.SymbolType = SymbolTypes.Image;
+        }
+        public ScenarioImage(string name, DisplayImageResources displayIcon)
+            : base(name)
+        {
+            this.DisplayIcon = displayIcon;
+
+            this.SymbolType = SymbolTypes.DisplayImage;
         }
         public ScenarioImage(string name, string characterSymbol, string characterColor)
             : base(name)

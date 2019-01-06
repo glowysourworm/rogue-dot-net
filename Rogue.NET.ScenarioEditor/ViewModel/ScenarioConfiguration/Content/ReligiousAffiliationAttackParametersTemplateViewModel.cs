@@ -4,15 +4,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class ReligiousAffiliationAttackParametersTemplateViewModel : TemplateViewModel
     {
-        string _enemyAffiliationName;
+        ReligionTemplateViewModel _enemyReligion;
         double _attackMultiplier;
         double _blockMultiplier;
         double _defenseMultiplier;
 
-        public string EnemyAffiliationName
+        public ReligionTemplateViewModel EnemyReligion
         {
-            get { return _enemyAffiliationName; }
-            set { this.RaiseAndSetIfChanged(ref _enemyAffiliationName, value); }
+            get { return _enemyReligion; }
+            set { this.RaiseAndSetIfChanged(ref _enemyReligion, value); }
         }
         public double AttackMultiplier
         {
@@ -30,6 +30,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             set { this.RaiseAndSetIfChanged(ref _defenseMultiplier, value); }
         }
 
-        public ReligiousAffiliationAttackParametersTemplateViewModel() { }
+        public ReligiousAffiliationAttackParametersTemplateViewModel()
+        {
+            this.EnemyReligion = new ReligionTemplateViewModel();
+        }
     }
 }

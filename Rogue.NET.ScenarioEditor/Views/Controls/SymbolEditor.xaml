@@ -41,6 +41,7 @@
                                 <Binding Path="CharacterSymbol" />
                                 <Binding Path="CharacterColor" />
                                 <Binding Path="Icon" />
+                                <Binding Path="DisplayIcon" />
                                 <Binding Path="SmileyMood" />
                                 <Binding Path="SmileyBodyColor" />
                                 <Binding Path="SmileyLineColor" />

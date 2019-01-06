@@ -928,6 +928,7 @@
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
                         <Binding Path="Icon" />
+                        <Binding Path="DisplayIcon" />
                         <Binding Path="SmileyMood" />
                         <Binding Path="SmileyAuraColor" />
                         <Binding Path="SmileyBodyColor" />
@@ -959,6 +960,7 @@
                                 <Binding Path="CharacterColor" />
                                 <Binding Path="CharacterSymbol" />
                                 <Binding Path="Icon" />
+                                <Binding Path="DisplayIcon" />
                                 <Binding Path="SmileyMood" />
                                 <Binding Path="SmileyAuraColor" />
                                 <Binding Path="SmileyBodyColor" />

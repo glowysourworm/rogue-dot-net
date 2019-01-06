@@ -56,6 +56,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         {
             this.Location = CellPoint.Empty;
         }
+        public ScenarioObject(string name, DisplayImageResources displayIcon)
+            : base(name, displayIcon)
+        {
+            this.Location = CellPoint.Empty;
+        }
         public ScenarioObject(string name, string symbol, string color)
             : base(name, symbol, color)
         {

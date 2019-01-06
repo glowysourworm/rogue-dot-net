@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Converter
             else if (values.Any(x => x == DependencyProperty.UnsetValue))
                 return Binding.DoNothing;
 
-            else if (values.Length != 8)
+            else if (values.Length != 9)
                 return Binding.DoNothing;
 
             return _scenarioResourceService.GetImageSource(new ScenarioImage()
@@ -35,11 +35,12 @@ namespace Rogue.NET.Core.Converter
                 CharacterSymbol = (string)values[0],
                 CharacterColor = (string)values[1],
                 Icon = (ImageResources)values[2],
-                SmileyMood = (SmileyMoods)values[3],
-                SmileyBodyColor = (string)values[4],
-                SmileyLineColor = (string)values[5],
-                SmileyAuraColor = (string)values[6],
-                SymbolType = (SymbolTypes)values[7]
+                DisplayIcon = (DisplayImageResources)values[3],
+                SmileyMood = (SmileyMoods)values[4],
+                SmileyBodyColor = (string)values[5],
+                SmileyLineColor = (string)values[6],
+                SmileyAuraColor = (string)values[7],
+                SymbolType = (SymbolTypes)values[8]
             });
         }
 

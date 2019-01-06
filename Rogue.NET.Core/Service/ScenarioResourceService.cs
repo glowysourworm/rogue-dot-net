@@ -123,6 +123,9 @@ namespace Rogue.NET.Core.Service
                 case SymbolTypes.Image:
                     result = GetImage(cacheImage.Icon);
                     break;
+                case SymbolTypes.DisplayImage:
+                    result = GetImage(cacheImage.DisplayIcon);
+                    break;
                 default:
                     throw new Exception("Unknown symbol type");
             }
@@ -156,6 +159,9 @@ namespace Rogue.NET.Core.Service
                 case SymbolTypes.Image:
                     result = GetImage(scenarioImage.Icon);
                     break;
+                case SymbolTypes.DisplayImage:
+                    result = GetImage(scenarioImage.DisplayIcon);
+                    break;
                 default:
                     throw new Exception("Unknown symbol type");
             }
@@ -164,11 +170,6 @@ namespace Rogue.NET.Core.Service
             _scenarioImageCache[cacheKey] = result;
 
             return result;
-        }
-        public BitmapSource GetImageSource(DisplayImageResources displayImageResources)
-        {
-            // TODO: Utilize cache
-            return GetImage(displayImageResources);
         }
         public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage)
         {
@@ -212,6 +213,9 @@ namespace Rogue.NET.Core.Service
                     break;
                 case SymbolTypes.Image:
                     result = GetElement(scenarioImage.Icon);
+                    break;
+                case SymbolTypes.DisplayImage:
+                    result = GetElement(scenarioImage.DisplayIcon);
                     break;
                 default:
                     throw new Exception("Unknown symbol type");
@@ -275,6 +279,15 @@ namespace Rogue.NET.Core.Service
             result.Width = ModelConstants.CellWidth;
             result.Height = ModelConstants.CellHeight;
             result.Source = GetImage(imageResource);
+
+            return result;
+        }
+        private Image GetElement(DisplayImageResources displayImageResource)
+        {
+            var result = new Image();
+            result.Width = ModelConstants.CellWidth;
+            result.Height = ModelConstants.CellHeight;
+            result.Source = GetImage(displayImageResource);
 
             return result;
         }
