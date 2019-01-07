@@ -60,6 +60,8 @@
 												   
 												   - Skill points are accrued and applied when the player wishes to apply them.
 
+												   - SPECIAL SKILL***  Use of Skill Points for a One-Off special skill for fully 
+																	   Affilliated Religion - (some kind of really really good skill).
 
 - Alteration Effect: Add points to active skill (skill learning alteration effect) (TBD)
 - Several Validation Points: 
@@ -225,8 +227,8 @@
 								to make it simpler.
 								
 					 Idea:  Chose race (elf, golem, etc...); chose attack attribute bonus to start with. Race could make you 
-					 immune to certain altered states.
-					 
+					 immune to certain altered states.					
+
 					 Also, could spend points at start instead of being assigned attribute values. So, need more intelligence,
 					 and agility combat consequences.
 

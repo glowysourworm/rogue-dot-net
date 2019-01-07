@@ -1152,6 +1152,33 @@
     <EmbeddedResource Include="Resource\Images\DisplayImages\WorldWhite.png" />
     <EmbeddedResource Include="Resource\Images\DisplayImages\WorldYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameBlack.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameBlue.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameCyan.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameGreen.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameOrange.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlamePurple.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameRed.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameWhite.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\FlameYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockBlack.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockBlue.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockCyan.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockGreen.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockOrange.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockPurple.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockRed.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockWhite.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\RockYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\WorldCyan.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
