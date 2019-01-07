@@ -6,21 +6,21 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class ReligiousAffiliationAttackParametersTemplate : Template
     {
-        ReligionTemplate _enemyReligion;
+        string _enemyReligionName;
         double _attackMultiplier;
         double _blockMultiplier;
         double _defenseMultiplier;
 
 
-        public ReligionTemplate EnemyReligion
+        public string EnemyReligionName
         {
-            get { return _enemyReligion; }
+            get { return _enemyReligionName; }
             set
             {
-                if (_enemyReligion != value)
+                if (_enemyReligionName != value)
                 {
-                    _enemyReligion = value;
-                    OnPropertyChanged("EnemyReligion");
+                    _enemyReligionName = value;
+                    OnPropertyChanged("EnemyReligionName");
                 }
             }
         }
@@ -63,7 +63,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public ReligiousAffiliationAttackParametersTemplate()
         {
-            this.EnemyReligion = new ReligionTemplate();
+            this.EnemyReligionName = "";
         }
     }
 }
