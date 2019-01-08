@@ -101,7 +101,7 @@ namespace Rogue.NET.Core.Logic
                 if (character is Player)
                 {
                     // Publish message
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Found " + _modelService.GetDisplayName(item.RogueName));
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Found " + _modelService.GetDisplayName(item));
 
                     if (item is Consumable)
                         LevelUpdateEvent(this, new LevelUpdate()
@@ -175,7 +175,7 @@ namespace Rogue.NET.Core.Logic
                 return;
             }
 
-            var displayName = _modelService.GetDisplayName(item.RogueName);
+            var displayName = _modelService.GetDisplayName(item);
 
             if (item is Equipment)
             {
@@ -425,7 +425,7 @@ namespace Rogue.NET.Core.Logic
 
             if (character is Player)
             {
-                var displayName = _modelService.GetDisplayName(doodad.RogueName);
+                var displayName = _modelService.GetDisplayName(doodad);
 
                 if (!(doodad.IsOneUse && doodad.HasBeenUsed))
                 {
@@ -451,7 +451,7 @@ namespace Rogue.NET.Core.Logic
             if (equipment.IsCursed)
             {
                 // Publish message
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, _modelService.GetDisplayName(equipment.RogueName) + " is Cursed!!!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, _modelService.GetDisplayName(equipment) + " is Cursed!!!");
 
                 // Set Curse Identified
                 metaData.IsCurseIdentified = true;
@@ -492,7 +492,7 @@ namespace Rogue.NET.Core.Logic
                         var equippedItem = _playerProcessor.GetEquippedType(_modelService.Player, equipment.Type);
                         if (equippedItem != null)
                         {
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equippedItem.RogueName));
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equippedItem));
 
                             return false;
                         }
@@ -519,7 +519,7 @@ namespace Rogue.NET.Core.Logic
 
                         if (ring != null && numberEquipped >= 2)
                         {
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equipment.RogueName));
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first un-equip " + _modelService.GetDisplayName(equipment));
 
                             return false;
                         }
@@ -531,7 +531,7 @@ namespace Rogue.NET.Core.Logic
 
             equipment.IsEquipped = true;
 
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Equipped " + _modelService.GetDisplayName(equipment.RogueName));
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Equipped " + _modelService.GetDisplayName(equipment));
 
             // Fire equip spell -> This will activate any passive effects after animating
             if (equipment.HasEquipSpell)
@@ -685,7 +685,7 @@ namespace Rogue.NET.Core.Logic
                                 _scenarioMessageService.PublishEnemyAlterationMessage(
                                     ScenarioMessagePriority.Normal,
                                     _modelService.Player.RogueName,
-                                    _modelService.GetDisplayName(enemy.RogueName),
+                                    _modelService.GetDisplayName(enemy),
                                     enemy.BehaviorDetails.CurrentBehavior.EnemySkill.DisplayName);
 
                                 _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);

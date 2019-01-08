@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +12,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         string _followerName;
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttributes;
+        bool _hasBonusSkillSet;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         bool _isIdentified;
         double _bonusAttributeValue;
+        string _bonusSkillSetName;
         CharacterAttribute _bonusAttribute;
 
         public string FollowerName
@@ -50,6 +53,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasBonusAttackAttributes = value;
                     OnPropertyChanged("HasBonusAttackAttribute");
+                }
+            }
+        }
+        public bool HasBonusSkillSet
+        {
+            get { return _hasBonusSkillSet; }
+            set
+            {
+                if (_hasBonusSkillSet != value)
+                {
+                    _hasBonusSkillSet = value;
+                    OnPropertyChanged("HasBonusSkillSet");
                 }
             }
         }
@@ -113,6 +128,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public string BonusSkillSetName
+        {
+            get { return _bonusSkillSetName; }
+            set
+            {
+                if (_bonusSkillSetName != value)
+                {
+                    _bonusSkillSetName = value;
+                    OnPropertyChanged("BonusSkillSetName");
+                }
+            }
+        }
 
         public List<AttackAttributeTemplate> BonusAttackAttributes { get; set; }
         public List<ReligiousAffiliationAttackParametersTemplate> AttackParameters { get; set; }
@@ -123,9 +150,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
             this.AttackParameters = new List<ReligiousAffiliationAttackParametersTemplate>();
             this.BonusAttackAttributes = new List<AttackAttributeTemplate>();
+            this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;
+            this.HasBonusAttackAttributes = false;
+            this.HasBonusSkillSet = false;
         }
     }
 }

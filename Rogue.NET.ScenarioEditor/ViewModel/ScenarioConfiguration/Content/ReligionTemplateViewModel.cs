@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
@@ -9,11 +10,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         string _followerName;
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttributes;
+        bool _hasBonusSkillSet;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         bool _isIdentified;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
+        string _bonusSkillSetName;
 
         public string FollowerName
         {
@@ -29,6 +32,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _hasBonusAttackAttributes; }
             set { this.RaiseAndSetIfChanged(ref _hasBonusAttackAttributes, value); }
+        }
+        public bool HasBonusSkillSet
+        {
+            get { return _hasBonusSkillSet; }
+            set { this.RaiseAndSetIfChanged(ref _hasBonusSkillSet, value); }
         }
         public bool AllowsRenunciation
         {
@@ -55,6 +63,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _bonusAttribute; }
             set { this.RaiseAndSetIfChanged(ref _bonusAttribute, value); }
         }
+        public string BonusSkillSetName
+        {
+            get { return _bonusSkillSetName; }
+            set { this.RaiseAndSetIfChanged(ref _bonusSkillSetName, value); }
+        }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> BonusAttackAttributes { get; set; }
         public ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel> AttackParameters { get; set; }
@@ -65,9 +78,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
             this.AttackParameters = new ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel>();
             this.BonusAttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;
+            this.HasAttributeBonus = false;
+            this.HasBonusAttackAttributes = false;
+            this.HasBonusSkillSet = false;
         }
     }
 }

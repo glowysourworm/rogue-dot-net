@@ -484,6 +484,8 @@ IMMEDIATE TODO'S:
 							  
 							  4) UI NEAR PLAYER TO SHOW RELIGIOUS AFFILIATION "STAMP" (Possibly ON FORHEAD OF PLAYER :))
 							  
+    - Change Experience and Point experience to start at 0 each level instead of continue							  
+							  
     - Alteration Block Type:  Hook back up and add one to the Enum to have a "Non-Blockable" type. Can't be blocked by Physical, Mental, or Religion.
 	
 	- Allow Player to select specific skill from set to use

@@ -122,12 +122,18 @@ namespace Rogue.NET.Core.Service
         {
             return this.ScenarioConfiguration
                        .AttackAttributes
-                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x));
+                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                       .Actualize();
         }
 
-        public string GetDisplayName(string rogueName)
+        public string GetDisplayName(ScenarioObject scenarioObject)
         {
-            return this.ScenarioEncyclopedia[rogueName].IsIdentified ? rogueName : ModelConstants.UnIdentifiedDisplayName;
+            if (scenarioObject is Player)
+                return scenarioObject.RogueName;
+
+            return this.ScenarioEncyclopedia[scenarioObject.RogueName].IsIdentified ? 
+                            scenarioObject.RogueName : 
+                            ModelConstants.UnIdentifiedDisplayName;
         }
         
         public IEnumerable<Enemy> GetTargetedEnemies()

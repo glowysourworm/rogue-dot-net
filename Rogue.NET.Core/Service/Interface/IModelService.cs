@@ -113,10 +113,11 @@ namespace Rogue.NET.Core.Service.Interface
         void ClearTargetedEnemies();
 
         /// <summary>
-        /// Method to get display name for Scenario object.
+        /// Method to get display name for Scenario Object
         /// </summary>
-        /// <returns>Display name if the object is Identified</returns>
-        string GetDisplayName(string rogueName);
+        /// <param name="scenarioObject"></param>
+        /// <returns>Display name is the object is Identified</returns>
+        string GetDisplayName(ScenarioObject scenarioObject);
 
         /// <summary>
         /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from

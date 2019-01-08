@@ -114,8 +114,8 @@ namespace Rogue.NET.Core.Logic.Content
 
                 _scenarioMessageService.PublishMeleeMessage(
                     (attacker is Enemy) ? ScenarioMessagePriority.Bad : ScenarioMessagePriority.Normal, 
-                    _modelService.GetDisplayName(attacker.RogueName), 
-                    _modelService.GetDisplayName(defender.RogueName), 
+                    _modelService.GetDisplayName(attacker), 
+                    _modelService.GetDisplayName(defender), 
                     attackBase, 
                     criticalHit,
                     attackAttributeResults.Count > 0,

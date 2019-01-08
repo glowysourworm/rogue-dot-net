@@ -251,7 +251,7 @@ namespace Rogue.NET.Core.Logic
             var player = _modelService.Player;
             var consumable = player.Consumables[itemId];
             var meetsAlterationCost = _alterationProcessor.CalculatePlayerMeetsAlterationCost(player, consumable.Spell.Cost);
-            var displayName = _modelService.GetDisplayName(consumable.RogueName);
+            var displayName = _modelService.GetDisplayName(consumable);
 
             // Check that item has level requirement met (ALSO DONE ON FRONT END)
             if (consumable.LevelRequired > player.Level)
@@ -390,7 +390,7 @@ namespace Rogue.NET.Core.Logic
             var equipment = _modelService.Player.Equipment[equipmentId];
             equipment.Class++;
 
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + _modelService.GetDisplayName(equipment.RogueName) + " starts to glow!");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + _modelService.GetDisplayName(equipment) + " starts to glow!");
 
             // Queue update
             QueuePlayerEquipmentAddOrUpdate(equipmentId);
@@ -411,7 +411,7 @@ namespace Rogue.NET.Core.Logic
                 if (armorAttribute.Resistance > 0)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
                         "{0} has increased {1} Resistance by {2}", 
-                        _modelService.GetDisplayName(armor.RogueName), 
+                        _modelService.GetDisplayName(armor), 
                         attackAttribute.RogueName, 
                         attackAttribute.Resistance.ToString("F2"));
             }
@@ -435,7 +435,7 @@ namespace Rogue.NET.Core.Logic
                 if (weaponAttribute.Resistance > 0)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
                         "{0} has increased {1} Attack by {2}",
-                        _modelService.GetDisplayName(weapon.RogueName),
+                        _modelService.GetDisplayName(weapon),
                         attackAttribute.RogueName,
                         attackAttribute.Resistance.ToString("F2"));
             }
@@ -448,7 +448,7 @@ namespace Rogue.NET.Core.Logic
             var equipment = _modelService.Player.Equipment[itemId];
             equipment.IsCursed = false;
 
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment.RogueName) + " Uncursed");
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment) + " Uncursed");
 
             if (equipment.HasCurseSpell)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + equipment.RogueName + " is now safe to use (with caution...)");

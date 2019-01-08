@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rogue.NET.Common.Extension
 {
@@ -98,6 +99,14 @@ namespace Rogue.NET.Common.Extension
                 if (filter(list[i]))
                     list.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        /// Forces actualization of Lazy enumerables
+        /// </summary>
+        public static IEnumerable<T> Actualize<T>(this IEnumerable<T> collection)
+        {
+            return collection.ToList();
         }
     }
 }

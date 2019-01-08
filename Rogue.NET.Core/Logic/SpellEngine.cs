@@ -215,7 +215,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.RunAway:
                     _modelService.Level.RemoveContent(enemy);
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has run away!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has run away!");
 
                     QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
                     break;
@@ -256,7 +256,7 @@ namespace Rogue.NET.Core.Logic
             {
                 bool blocked = _interactionProcessor.CalculateAlterationBlock(_modelService.Player, enemy, alteration.BlockType);
                 if (blocked)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " blocked the attack!");
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " blocked the attack!");
 
                 else
                 {
@@ -280,7 +280,7 @@ namespace Rogue.NET.Core.Logic
             var enemy = _modelService.GetTargetedEnemies().First();
             var enemyInventory = enemy.Inventory;
             if (!enemyInventory.Any())
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy.RogueName) + " has nothing to steal");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has nothing to steal");
 
             else
             {
@@ -309,7 +309,7 @@ namespace Rogue.NET.Core.Logic
                     _modelService.Player.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
                     enemy.Consumables.Remove(itemStolen.Key);
                 }
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value.RogueName));
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value));
             }
         }
         private void ProcessPlayerOtherMagicEffect(AlterationContainer alteration)
@@ -466,8 +466,8 @@ namespace Rogue.NET.Core.Logic
                 QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemStolen.Key);
             }
 
-            var enemyDisplayName = _modelService.GetDisplayName(enemy.RogueName);
-            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value.RogueName);            
+            var enemyDisplayName = _modelService.GetDisplayName(enemy);
+            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value);            
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
         }
@@ -513,7 +513,7 @@ namespace Rogue.NET.Core.Logic
 
             else
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character.RogueName) + " was teleported!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character) + " was teleported!");
 
                 // Set character engaged
                 (character as Enemy).IsEngaged = true;                
