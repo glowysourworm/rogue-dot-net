@@ -425,6 +425,9 @@
 						Alterations could accompany the new parameters. Example:  "Sharpening Stone" improves base quality
 						instead of attack attribute.
 
+- Alteration Effect:  "Reactive Temporary/Passive"	Applies Attribute change as a counter attack. And "Attack Attribute Reactive Temporary/Passive"
+					  That applies counter attack attribute attack.
+						
 ---------
 						  
 - Add - Scenario details to Open screen
@@ -478,6 +481,12 @@ IMMEDIATE TODO'S:
 							  1) Defeating an enemy of the un-identified religion
 							  2) Identifying an item of the religion
 							  3) Using a doodad of the religion
+							  
+							  4) UI NEAR PLAYER TO SHOW RELIGIOUS AFFILIATION "STAMP" (Possibly ON FORHEAD OF PLAYER :))
+							  
+    - Alteration Block Type:  Hook back up and add one to the Enum to have a "Non-Blockable" type. Can't be blocked by Physical, Mental, or Religion.
+	
+	- Allow Player to select specific skill from set to use
 
 	- Equipment Quality Changing Alterations:  Class Change / Quality Change + plus or - minus. Example (sharpening Stone) + 0.1 to quality. Or skill of	
 											   enemy changes quality -0.3 (stone golem or something chips your blade). So, new alteration types required:
