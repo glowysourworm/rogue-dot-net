@@ -1,16 +1,18 @@
-﻿using Prism.Commands;
-using Prism.Events;
+﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Scenario.Intro.ViewModel;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
+using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -19,159 +21,74 @@ namespace Rogue.NET.Intro.ViewModel
     {
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
+        readonly IAttackAttributeGenerator _attackAttributeGenerator;
+        readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IEventAggregator _eventAggregator;
 
-        #region Nested Classes
-        public class ScenarioSelectionViewModel
-        {
-            readonly IEventAggregator _eventAggregator;
-
-            public string Name { get; set; }
-            public Color SmileyColor { get; set; }
-            public Color SmileyLineColor { get; set; }
-            public string Description { get; set; }
-            public int NumberOfLevels { get; set; }
-            public int CurrentLevel { get; set; }
-            public bool ObjectiveAcheived { get; set; }
-
-            public ICommand DeleteScenarioCommand
-            {
-                get
-                {
-                    return new DelegateCommand(() =>
-                    {
-                        _eventAggregator.GetEvent<DeleteScenarioEvent>().Publish(new DeleteScenarioEventArgs()
-                        {
-                            ScenarioName = this.Name
-                        });
-                    });
-                }
-            }
-            public ICommand StartScenarioCommand
-            {
-                get
-                {
-                    return new DelegateCommand(() =>
-                    {
-                        _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEventArgs()
-                        {
-                            ScenarioName = this.Name
-                        });
-                    });
-                }
-            }
-
-            public ScenarioSelectionViewModel(IEventAggregator eventAggregator)
-            {
-                _eventAggregator = eventAggregator;
-            }
-        }
-        #endregion
-
-        #region Properties
-        public ObservableCollection<ScenarioSelectionViewModel> Scenarios { get; set; }
-        public ObservableCollection<ScenarioSelectionViewModel> Configs { get; set; }
-
-        string _config = "";
+        #region Fields
         string _rogueName = "";
         int _seed = 1;
         bool _survivorMode = false;
         AttributeEmphasis _emphasis = AttributeEmphasis.Strength;
-        Color _bodyColor = Colors.Yellow;
-        Color _lineColor = Colors.Black;
+        ScenarioViewModel _selectedConfiguration;
+        SavedGameViewModel _selectedGame;
+        ReligionViewModel _selectedReligion;
+        #endregion
 
-        string _loadingMessage = "";
-        double _loadingProgress = 0;
+        #region Properties
+        public ObservableCollection<SavedGameViewModel> Scenarios { get; set; }
+        public ObservableCollection<ScenarioViewModel> Configurations { get; set; }
 
-        public string ScenarioName
+        public ScenarioViewModel SelectedConfiguration
         {
-            get { return _config; }
-            set
-            {
-                _config = value;
-                OnPropertyChanged("ScenarioName");
-            }
+            get { return _selectedConfiguration; }
+            set { this.RaiseAndSetIfChanged(ref _selectedConfiguration, value); }
         }
+        public SavedGameViewModel SelectedGame
+        {
+            get { return _selectedGame; }
+            set { this.RaiseAndSetIfChanged(ref _selectedGame, value); }
+        }
+        public ReligionViewModel SelectedReligion
+        {
+            get { return _selectedReligion; }
+            set { this.RaiseAndSetIfChanged(ref _selectedReligion, value); }
+        }
+
         public string RogueName
         {
             get { return _rogueName; }
-            set
-            {
-                _rogueName = value;
-                OnPropertyChanged("RogueName");
-            }
-        }
-        public Color SmileyColor
-        {
-            get {return _bodyColor;}
-            set
-            {
-                _bodyColor = value;
-                OnPropertyChanged("SmileyBodyColor");
-            }
-        }
-        public Color SmileyLineColor
-        {
-            get {return _lineColor;}
-            set
-            {
-                _lineColor = value;
-                OnPropertyChanged("SmileyLineColor");
-            }
+            set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
         }
         public AttributeEmphasis AttributeEmphasis
         {
             get { return _emphasis; }
-            set
-            {
-                _emphasis = value;
-                OnPropertyChanged("AttributeEmphasis");
-            }
+            set { this.RaiseAndSetIfChanged(ref _emphasis, value); }
         }
         public int Seed
         {
             get { return _seed; }
-            set
-            {
-                _seed = value;
-                OnPropertyChanged("Seed");
-            }
+            set { this.RaiseAndSetIfChanged(ref _seed, value); }
         }
         public bool SurvivorMode
         {
             get { return _survivorMode; }
-            set
-            {
-                _survivorMode = value;
-                OnPropertyChanged("SurvivorMode");
-            }
-        }
-
-        public string LoadingMessage
-        {
-            get { return _loadingMessage; }
-            set
-            {
-                _loadingMessage = value;
-                OnPropertyChanged("LoadingMessage");
-            }
-        }
-        public double LoadingProgress
-        {
-            get { return _loadingProgress; }
-            set
-            {
-                _loadingProgress = value;
-                OnPropertyChanged("LoadingProgress");
-            }
+            set { this.RaiseAndSetIfChanged(ref _survivorMode, value); }
         }
         #endregion
 
         [ImportingConstructor]
-        public GameSetupViewModel(IScenarioResourceService scenarioResourceService, IScenarioFileService scenarioFileService, IEventAggregator eventAggregator)
+        public GameSetupViewModel(
+                IScenarioResourceService scenarioResourceService, 
+                IScenarioFileService scenarioFileService, 
+                IAttackAttributeGenerator attackAttributeGenerator,
+                IScenarioMetaDataGenerator scenarioMetaDataGenerator,
+                IEventAggregator eventAggregator)
         {
             _scenarioFileService = scenarioFileService;
             _scenarioResourceService = scenarioResourceService;
+            _attackAttributeGenerator = attackAttributeGenerator;
+            _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe(() =>
@@ -187,19 +104,19 @@ namespace Rogue.NET.Intro.ViewModel
                 Reinitialize();
             });
 
-            this.Scenarios = new ObservableCollection<ScenarioSelectionViewModel>();
-            this.Configs = new ObservableCollection<ScenarioSelectionViewModel>();
+            this.Scenarios = new ObservableCollection<SavedGameViewModel>();
+            this.Configurations = new ObservableCollection<ScenarioViewModel>();
             Reinitialize();
         }
 
         public void Reinitialize()
         {
             this.Scenarios.Clear();
-            this.Configs.Clear();
+            this.Configurations.Clear();
 
             foreach (var header in _scenarioFileService.GetScenarioHeaders())
             {
-                this.Scenarios.Add(new ScenarioSelectionViewModel(_eventAggregator)
+                this.Scenarios.Add(new SavedGameViewModel(_eventAggregator)
                 {
                     Name = header.Key,
                     SmileyColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyBodyColor),
@@ -209,13 +126,36 @@ namespace Rogue.NET.Intro.ViewModel
 
             foreach (var config in _scenarioResourceService.GetScenarioConfigurations())
             {
-                this.Configs.Add(new ScenarioSelectionViewModel(_eventAggregator)
+                // Identify Skill Sets for showing on the startup screen
+                var skillSets = config.SkillTemplates.Select(x => _scenarioMetaDataGenerator.CreateScenarioMetaData(x))
+                                                     .Actualize();
+
+                skillSets.ForEach(x => x.IsIdentified = true);
+
+                this.Configurations.Add(new ScenarioViewModel()
                 {
                     Name = config.DungeonTemplate.Name,
                     SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyBodyColor),
                     SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    NumberOfLevels = config.DungeonTemplate.NumberOfLevels
+                    Religions = new ObservableCollection<ReligionViewModel>(config.Religions.Where(x => x.CanStartWith)
+                                                                                            .Select(x => 
+                    new ReligionViewModel()
+                    {
+                        HasBonusAttackAttributes = x.HasBonusAttackAttributes,
+                        HasBonusAttribute = x.HasAttributeBonus,
+                        HasBonusSkillSet = x.HasBonusSkillSet,
+                        BonusAttackAttributes = new ObservableCollection<AttackAttribute>(x.BonusAttackAttributes
+                                                                                           .Where(z => z.Attack.IsSet() || z.Resistance.IsSet() || z.Weakness.IsSet())
+                                                                                           .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
+                        BonusAttribute = x.BonusAttribute,
+                        BonusAttributeValue = x.BonusAttributeValue,
+                        ReligionMetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
+                        SkillSetMetaData = x.HasBonusSkillSet ? new ScenarioMetaDataViewModel(skillSets.First(z => z.RogueName == x.BonusSkillSetName), _scenarioResourceService) : null,
+                        RogueName = x.Name,
+
+                        Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)
+                    }))
                 });
             }
         }

@@ -23,6 +23,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Linq;
 using Rogue.NET.Scenario.Outro;
+using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
 
 namespace Rogue.NET.Scenario
 {
@@ -112,6 +113,11 @@ namespace Rogue.NET.Scenario
                 _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
             });
 
+            _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Subscribe((type) =>
+            {
+                _regionManager.RequestNavigate("ChooseParametersRegion", type.Name);
+            });
+
             _eventAggregator.GetEvent<OutroFinishedEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("MainRegion", "IntroView");
@@ -153,6 +159,9 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
+            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseAttribute));
+            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseName));
+            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseReligion));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(OutroDisplay));

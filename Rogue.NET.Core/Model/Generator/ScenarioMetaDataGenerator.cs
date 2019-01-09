@@ -134,6 +134,7 @@ namespace Rogue.NET.Core.Model.Generator
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
+                DisplayIcon = template.SymbolDetails.DisplayIcon,
                 Icon = template.SymbolDetails.Icon,
                 IsCursed = template.IsCursed,
                 IsCurseIdentified = false,
@@ -251,6 +252,33 @@ namespace Rogue.NET.Core.Model.Generator
                 default:
                     throw new Exception("Trying to create unknown Normal Doodad type");
             }
+
+        }
+
+        public ScenarioMetaData CreateScenarioMetaData(ReligionTemplate religionTemplate)
+        {
+            return new ScenarioMetaData()
+            {
+                AttackAttributes = new List<AttackAttributeTemplate>(religionTemplate.BonusAttackAttributes),
+                CharacterColor = religionTemplate.SymbolDetails.CharacterColor,
+                CharacterSymbol = religionTemplate.SymbolDetails.CharacterSymbol,
+                Description = religionTemplate.LongDescription,
+                DisplayIcon = religionTemplate.SymbolDetails.DisplayIcon,
+                Icon = religionTemplate.SymbolDetails.Icon,
+                IsCursed = false,
+                IsCurseIdentified = false,
+                IsIdentified = religionTemplate.IsIdentified,                
+                IsObjective = false,                
+                IsUnique = false,
+                LongDescription = religionTemplate.LongDescription,                
+                RogueName = religionTemplate.Name,
+                SmileyAuraColor = religionTemplate.SymbolDetails.SmileyAuraColor,
+                SmileyBodyColor = religionTemplate.SymbolDetails.SmileyBodyColor,
+                SmileyLineColor = religionTemplate.SymbolDetails.SmileyLineColor,
+                SmileyMood = religionTemplate.SymbolDetails.SmileyMood,
+                SymbolType = religionTemplate.SymbolDetails.Type,
+                Type = "Religion"
+            };
         }
     }
 }

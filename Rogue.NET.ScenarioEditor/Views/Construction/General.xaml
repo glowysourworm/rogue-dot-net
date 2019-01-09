@@ -9,6 +9,7 @@
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Construction"
              mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -139,7 +140,11 @@
                                             <Grid Margin="10">
                                                 <TextBlock Foreground="White" Text="Is Identified (On Startup)" FontSize="16" HorizontalAlignment="Left" />
                                                 <CheckBox IsChecked="{Binding IsIdentified}" HorizontalAlignment="Right" />
-                                            </Grid>                                            
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Player Can Choose (On Startup)" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding CanStartWith}" HorizontalAlignment="Right" />
+                                            </Grid>
                                             <Grid Margin="10">
                                                 <TextBlock Text="Short Description" Foreground="White" />
                                                 <TextBox Text="{Binding ShortDescription}" 
@@ -190,7 +195,7 @@
                                                 <TextBlock Foreground="White" Text="Bonus Attribute Value" FontSize="16" HorizontalAlignment="Left" />
                                                 <toolkit:DoubleUpDown Width="150" Minimum="0" Maximum="100" Value="{Binding BonusAttributeValue}"  HorizontalAlignment="Right" />
                                             </Grid>
-                                        </StackPanel>                                        
+                                        </StackPanel>
                                     </TabItem>
                                     <TabItem Header="Attack Parameters" Background="Black">
                                         <Grid>
@@ -227,6 +232,32 @@
                                                 </Grid>
                                             </StackPanel>
                                         </Grid>
+                                    </TabItem>
+                                    <TabItem Header="Other Parameters" Background="Black">
+                                        <StackPanel>
+                                            <Grid Margin="10">
+                                                <TextBlock Foreground="White" Text="Has Bonus Skill Set" FontSize="16" HorizontalAlignment="Left" />
+                                                <CheckBox IsChecked="{Binding HasBonusSkillSet}" HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10" Visibility="{Binding HasBonusSkillSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                <TextBlock Foreground="White" Text="Bonus Skill Set" FontSize="16" HorizontalAlignment="Left" />
+                                                <ComboBox x:Name="BonusSkillSetCB"  
+                                                          ItemsSource="{Binding DataContext.SkillTemplates, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:General}}}"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Name"
+                                                          SelectedValue="{Binding BonusSkillSetName}"
+                                                          Width="200" 
+                                                          HorizontalAlignment="Right" />
+                                            </Grid>
+                                            <Grid Margin="10">
+                                                <StackPanel>
+                                                    <TextBlock Foreground="White" Text="Renunciation Animation" Margin="0,0,0,10" FontSize="16" HorizontalAlignment="Left" />
+                                                    <controls:ListBuilder SourceItemsSource="{Binding DataContext.AnimationTemplates, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:General}}}"
+                                                                          DestinationItemsSource="{Binding RenunciationAnimations}"
+                                                                          Height="300"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
                                     </TabItem>
                                     <TabItem Header="Bonus Attack Attributes"
                                              Background="Black"

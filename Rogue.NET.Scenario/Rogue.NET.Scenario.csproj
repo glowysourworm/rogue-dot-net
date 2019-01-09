@@ -243,10 +243,23 @@
     <Compile Include="Events\Content\GameUpdateEvent.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
+    <Compile Include="Events\RequestNaviateParametersDisplayEvent.cs" />
     <Compile Include="Events\OutroFinishedEvent.cs" />
     <Compile Include="Events\ToggleLevelViewControlsEvent.cs" />
+    <Compile Include="Intro\ViewModel\ReligionViewModel.cs" />
+    <Compile Include="Intro\ViewModel\SavedGameViewModel.cs" />
+    <Compile Include="Intro\ViewModel\ScenarioViewModel.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
       <DependentUpon>ChooseParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseAttribute.xaml.cs">
+      <DependentUpon>ChooseAttribute.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseName.xaml.cs">
+      <DependentUpon>ChooseName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseReligion.xaml.cs">
+      <DependentUpon>ChooseReligion.xaml</DependentUpon>
     </Compile>
     <Compile Include="Intro\Views\GameSetup\ChooseSavedGame.xaml.cs">
       <DependentUpon>ChooseSavedGame.xaml</DependentUpon>
@@ -350,6 +363,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Intro\Views\GameSetup\ChooseParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\Parameters\ChooseAttribute.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\Parameters\ChooseName.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Intro\Views\GameSetup\Parameters\ChooseReligion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

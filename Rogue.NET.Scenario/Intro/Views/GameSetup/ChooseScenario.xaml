@@ -36,16 +36,17 @@
                         </StackPanel>
                     </StackPanel>
                 </Grid>
-                <TextBlock HorizontalAlignment="Right" Width="500" VerticalAlignment="Bottom" Foreground="White" FontSize="14" TextWrapping="Wrap" Text="{Binding Description}" />
+                <TextBlock HorizontalAlignment="Right" Width="700" VerticalAlignment="Bottom" Foreground="White" FontSize="14" TextWrapping="Wrap" Text="{Binding Description}" />
             </Grid>
             <Grid HorizontalAlignment="Right" Width="60" Cursor="Hand">
                 <TextBlock x:Name="RightArrowTB" MouseDown="RightArrowTB_MouseDown" Text="&#xf054;" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#888" FontFamily="{StaticResource FontAwesome}" FontSize="48" />
             </Grid>
         </Grid>
         <Grid Grid.Row="1">
-            <ListBox x:Name="SmallLB" ItemsSource="{Binding Configs}" 
+            <ListBox x:Name="SmallLB" 
+                     ItemsSource="{Binding Configurations}" 
+                     SelectedItem="{Binding SelectedConfiguration}"
                           Height="100"
-                          MaxWidth="400"
                           Margin="60,0,60,0"
                           SelectedIndex="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"

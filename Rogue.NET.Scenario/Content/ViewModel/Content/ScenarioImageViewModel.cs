@@ -16,6 +16,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         string _characterSymbol;
         string _characterColor;
         ImageResources _icon;
+        DisplayImageResources _displayIcon;
         SmileyMoods _smileyMood;
         string _smileyBodyColor;
         string _smileyLineColor;
@@ -54,6 +55,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _icon; }
             set { this.RaiseAndSetIfChanged(ref _icon, value); }
         }
+        public DisplayImageResources DisplayIcon
+        {
+            get { return _displayIcon; }
+            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
+        }
         public SmileyMoods SmileyMood
         {
             get { return _smileyMood; }
@@ -91,6 +97,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.CharacterSymbol = scenarioObject.CharacterSymbol;
             this.CharacterColor = scenarioObject.CharacterColor;
             this.Icon = scenarioObject.Icon;
+            this.DisplayIcon = scenarioObject.DisplayIcon;
             this.SmileyMood = scenarioObject.SmileyMood;
             this.SmileyBodyColor = scenarioObject.SmileyBodyColor;
             this.SmileyLineColor = scenarioObject.SmileyLineColor;

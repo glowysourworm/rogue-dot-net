@@ -35,12 +35,30 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             InitializeComponent();
         }
 
+        private void TryAdd(object item)
+        {
+            if (this.DestinationItemsSource is IList)
+            {
+                (this.DestinationItemsSource as IList).Add(item);
+            }
+        }
+        private void TryRemove(object item)
+        {
+            if (this.SourceItemsSource is IList)
+            {
+                (this.SourceItemsSource as IList).Add(item);
+            }
+        }
+
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in this.SourceLB.SelectedItems)
             {
                 if (AddEvent != null)
                     AddEvent(this, item);
+
+                else
+                    TryAdd(item);
             }
         }
 
@@ -50,6 +68,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             {
                 if (RemoveEvent != null)
                     RemoveEvent(this, this.DestinationLB.SelectedItems[i]);
+
+                else
+                    TryRemove(this.DestinationLB.SelectedItems[i]);
             }
         }
     }

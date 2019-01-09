@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
+using Rogue.NET.Scenario.Intro.ViewModel;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
@@ -35,13 +36,6 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 
         private void BigLB_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var item = this.SmallLB.SelectedItem as GameSetupViewModel.ScenarioSelectionViewModel;
-            var viewModel = this.DataContext as GameSetupViewModel;
-
-            viewModel.ScenarioName = item.Name;
-            viewModel.SmileyColor = item.SmileyColor;
-            viewModel.SmileyLineColor = item.SmileyLineColor;
-
             _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
             {
                 NextDisplayType = typeof(ChooseParameters)

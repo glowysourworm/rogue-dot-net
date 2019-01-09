@@ -38,7 +38,7 @@ namespace Rogue.NET.Intro.Views
                 _eventAggregator.GetEvent<NewScenarioEvent>().Publish(new NewScenarioEventArgs()
                 {
                     RogueName = viewModel.RogueName,
-                    ScenarioName = viewModel.ScenarioName,
+                    ScenarioName = viewModel.SelectedConfiguration.Name,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode
                 });
@@ -47,28 +47,8 @@ namespace Rogue.NET.Intro.Views
             {
                 _eventAggregator.GetEvent<OpenScenarioEvent>().Publish(new OpenScenarioEventArgs()
                 {
-                    ScenarioName = viewModel.ScenarioName
+                    ScenarioName = viewModel.SelectedGame.Name
                 });
-            }
-        }
-
-        private void Config_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                var config = e.AddedItems[0] as Rogue.NET.Intro.ViewModel.GameSetupViewModel.ScenarioSelectionViewModel;
-                var viewModel = this.DataContext as GameSetupViewModel;
-                viewModel.ScenarioName = config.Name;
-            }
-        }
-
-        private void ScenariosListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count > 0)
-            {
-                var scenario = e.AddedItems[0] as Rogue.NET.Intro.ViewModel.GameSetupViewModel.ScenarioSelectionViewModel;
-                var viewModel = this.DataContext as GameSetupViewModel;
-                viewModel.ScenarioName = scenario.Name;
             }
         }
 

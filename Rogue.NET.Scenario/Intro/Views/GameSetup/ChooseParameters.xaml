@@ -2,9 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
-             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit">
+             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:prismExtension="clr-namespace:Rogue.NET.Common.Extension.Prism;assembly=Rogue.NET.Common">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml">
             <ResourceDictionary.MergedDictionaries>
@@ -12,54 +11,37 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="80" Width="800" Height="330" VerticalAlignment="Top" HorizontalAlignment="Center">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="80">
         <Grid.RowDefinitions>
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <coreView:Smiley 
-                        SmileyColor="{Binding SmileyColor}" 
-                        SmileyLineColor="{Binding SmileyLineColor}"
-                        SmileyMood="Happy"
-                        Height="330" Width="220" SmileyRadius="50"
-                            VerticalAlignment="Top"
-                        HorizontalAlignment="Left" />
-        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Width="400">
-            <Grid Margin="10">
-                <TextBlock Text="Rogue Name" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <extension:UpdatingTextBox Text="{Binding RogueName, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" FontSize="20" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock Text="Scenario #" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <toolkit:IntegerUpDown Value="{Binding Seed, Mode=TwoWay}" Width="150" HorizontalAlignment="Right" Minimum="1" Maximum="10000" FontSize="20" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock Text="Survivor Mode" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <CheckBox IsChecked="{Binding SurvivorMode, Mode=TwoWay}" Margin="0,0,-6,0" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="Play scenario without save points" />
-            </Grid>
-            <StackPanel HorizontalAlignment="Left" Margin="10,0,0,0">
-                <TextBlock Text="Player Attribute Development (Choose One)" FontSize="20" Foreground="White" HorizontalAlignment="Right" />
-                <RadioButton Margin="0, 10, 0,0" HorizontalAlignment="Left" IsChecked="{Binding AttributeEmphasis, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Strength}}" GroupName="AttributeEmphasisGroup" FontSize="20" Content="Strength" />
-                <RadioButton Margin="0, 10, 0,0" HorizontalAlignment="Left" IsChecked="{Binding AttributeEmphasis, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Agility}}" GroupName="AttributeEmphasisGroup" FontSize="20" Content="Agility" />
-                <RadioButton Margin="0, 10, 0,10" HorizontalAlignment="Left" IsChecked="{Binding AttributeEmphasis, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AttributeEmphasis.Intelligence}}" GroupName="AttributeEmphasisGroup" FontSize="20" Content="Intelligence" />
-            </StackPanel>
-        </StackPanel>
-        
+
+        <prismExtension:TransitionPresenter 
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     prism:RegionManager.RegionName="ChooseParametersRegion" >
+            <prismExtension:TransitionPresenter.Transition>
+                <prismExtension:BlurTransition FromRadius="0" ToRadius="50" />
+            </prismExtension:TransitionPresenter.Transition>
+        </prismExtension:TransitionPresenter>
+
         <!-- Button Panel -->
-        <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,0">
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="BackButton" Click="BackButton_Click" Height="54" Width="190" Cursor="Hand">
                     <Button.Template>
-                        <ControlTemplate>
+                        <ControlTemplate TargetType="Button">
                             <Border x:Name="border" CornerRadius="10,0,0,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
                                 <Grid>
                                     <coreView:Smiley SmileyColor="Blue" 
-                                                        SmileyMood="Scared" 
-                                                        SmileyLineColor="Yellow"
-                                                        SmileyRadius="4"
-                                                        HorizontalAlignment="Left"
-                                                        Margin="8,0,0,0"
-                                                        Height="30"
-                                                        Width="20"/>
+                                                SmileyMood="Scared" 
+                                                SmileyLineColor="Yellow"
+                                                SmileyRadius="4"
+                                                HorizontalAlignment="Left"
+                                                Margin="8,0,0,0"
+                                                Height="30"
+                                                Width="20"/>
                                     <TextBlock Foreground="White" Text="Hang on a Sec!" FontSize="18" Margin="0,0,8,0" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
@@ -73,30 +55,30 @@
                 </Button>
                 <Button x:Name="GoButton" Click="GoButton_Click" Height="54" Width="190" Cursor="Hand">
                     <Button.Template>
-                        <ControlTemplate>
+                        <ControlTemplate TargetType="Button">
                             <Border x:Name="border" CornerRadius="0,10,10,0" Background="Transparent" BorderBrush="White" BorderThickness="1">
                                 <Grid>
-                                    <coreView:Smiley SmileyColor="Green" 
-                                                        SmileyMood="Mischievous" 
-                                                        SmileyLineColor="Yellow"
-                                                        SmileyRadius="4"
-                                                        HorizontalAlignment="Right"
-                                                        Margin="0,0,8,0"
-                                                        Height="30"
-                                                        Width="20"/>
-                                    <TextBlock Foreground="White" Text="Lets Rock!" FontSize="18" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <coreView:Smiley x:Name="NextSmiley" 
+                                             SmileyColor="Green" 
+                                                SmileyMood="Happy" 
+                                                SmileyLineColor="Yellow"
+                                                SmileyRadius="4"
+                                                HorizontalAlignment="Right"
+                                                Margin="0,0,8,0"
+                                                Height="30"
+                                                Width="20"/>
+                                    <TextBlock x:Name="NextTB" Foreground="White" Text="This Looks Good!" FontSize="18" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="border" Property="Background" Value="#888" />
                                 </Trigger>
-                            </ControlTemplate.Triggers>                            
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
             </StackPanel>
         </Grid>
-        
     </Grid>
 </UserControl>

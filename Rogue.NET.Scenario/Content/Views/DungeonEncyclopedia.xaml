@@ -399,7 +399,7 @@
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <control:EllipsePanel SelectedItem="{Binding ElementName=CategoryLB, Path=SelectedItem}" 
-                                                  ItemWidth="46"
+                                                  ItemWidth="40"
                                                   ItemHeight="60"
                                                   ItemPadding="60"
                                                   IsItemsHost="True" 

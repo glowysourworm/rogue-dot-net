@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         bool _isIdentified;
+        bool _canStartWith;
         double _bonusAttributeValue;
         string _bonusSkillSetName;
         CharacterAttribute _bonusAttribute;
@@ -104,6 +106,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public bool CanStartWith
+        {
+            get { return _canStartWith; }
+            set
+            {
+                if (_canStartWith != value)
+                {
+                    _canStartWith = value;
+                    OnPropertyChanged("CanStartWith");
+                }
+            }
+        }
         public double BonusAttributeValue
         {
             get { return _bonusAttributeValue; }
@@ -143,6 +157,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public List<AttackAttributeTemplate> BonusAttackAttributes { get; set; }
         public List<ReligiousAffiliationAttackParametersTemplate> AttackParameters { get; set; }
+        public List<AnimationTemplate> RenunciationAnimations { get; set; }
 
         public ReligionTemplate()
         {
@@ -150,6 +165,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
             this.AttackParameters = new List<ReligiousAffiliationAttackParametersTemplate>();
             this.BonusAttackAttributes = new List<AttackAttributeTemplate>();
+            this.RenunciationAnimations = new List<AnimationTemplate>();
             this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;

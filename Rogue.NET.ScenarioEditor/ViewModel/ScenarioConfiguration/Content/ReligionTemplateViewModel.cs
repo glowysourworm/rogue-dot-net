@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
@@ -14,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         bool _isIdentified;
+        bool _canStartWith;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
         string _bonusSkillSetName;
@@ -53,6 +55,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isIdentified; }
             set { this.RaiseAndSetIfChanged(ref _isIdentified, value); }
         }
+        public bool CanStartWith
+        {
+            get { return _canStartWith; }
+            set { this.RaiseAndSetIfChanged(ref _canStartWith, value); }
+        }
         public double BonusAttributeValue
         {
             get { return _bonusAttributeValue; }
@@ -71,6 +78,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public ObservableCollection<AttackAttributeTemplateViewModel> BonusAttackAttributes { get; set; }
         public ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel> AttackParameters { get; set; }
+        public ObservableCollection<AnimationTemplateViewModel> RenunciationAnimations { get; set; }
 
         public ReligionTemplateViewModel()
         {
@@ -78,6 +86,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
             this.AttackParameters = new ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel>();
             this.BonusAttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.RenunciationAnimations = new ObservableCollection<AnimationTemplateViewModel>();
             this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;

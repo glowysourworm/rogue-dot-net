@@ -98,7 +98,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             this.AttackAttributes = new ObservableCollection<ScenarioMetaDataAttackAttributeViewModel>(
                                             metaData.AttackAttributes
-                                                    .Where(x => x.Attack.IsSet() || x.Resistance.IsSet())
+                                                    .Where(x => x.Attack.IsSet() || x.Resistance.IsSet() || x.Weakness.IsSet())
                                                     .Select(x => new ScenarioMetaDataAttackAttributeViewModel(x)));
 
             Update(metaData, scenarioResourceService);
