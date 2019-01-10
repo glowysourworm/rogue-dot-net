@@ -352,6 +352,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// </summary>
         public ObservableCollection<AlterationViewModel> Alterations { get; set; }
 
+        public ReligionViewModel Religion { get; set; }
+
         [ImportingConstructor]
         public PlayerViewModel(
             IEventAggregator eventAggregator, 
@@ -367,6 +369,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
             this.Alterations = new ObservableCollection<AlterationViewModel>();
+            this.Religion = new ReligionViewModel();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
@@ -391,6 +394,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 case LevelUpdateType.PlayerSkillSetAdd:
                 case LevelUpdateType.PlayerSkillSetRefresh:
                 case LevelUpdateType.PlayerStats:
+                case LevelUpdateType.PlayerReligion:
                 case LevelUpdateType.PlayerAll:
                 case LevelUpdateType.EncyclopediaCurseIdentify:
                 case LevelUpdateType.EncyclopediaIdentify:
@@ -567,6 +571,55 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
+
+            // Religion 
+            if (player.ReligiousAlteration.IsAffiliated())
+            {
+                this.Religion.AffiliationLevel = player.ReligiousAlteration.Affiliation;
+                this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
+                this.Religion.HasAttributeBonus = player.ReligiousAlteration.AttributeEffect != null;
+                this.Religion.IsAffiliated = true;
+
+                this.Religion.UpdateSymbol(player.ReligiousAlteration.Symbol);
+
+                // Bonus Attack Attributes
+                if (player.ReligiousAlteration.AttackAttributeEffect != null)
+                {
+                    this.Religion.AttackAttributeBonus.Clear();
+                    this.Religion
+                        .AttackAttributeBonus
+                        .AddRange(player.ReligiousAlteration
+                                        .AttackAttributeEffect
+                                        .AttackAttributes
+                                        .Select(x => new AttackAttributeViewModel(x)));
+                }
+
+                if (player.ReligiousAlteration.AttributeEffect != null)
+                {
+                    // Must be ONE attribute alteration if effect is non-null
+                    var attribute = player.ReligiousAlteration
+                                           .AttributeEffect
+                                           .GetUIAttributes()
+                                           .First();
+
+                    // Show SINGLE attribute bonus as a string
+                    this.Religion.AttributeBonus = "Bonus " + attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
+                }
+
+                // Attack Parameters
+                var religion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
+
+                this.Religion.AttackParameters.Clear();
+                this.Religion.AttackParameters.AddRange(religion.AttackParameters.Select(x => 
+                    new ReligionAttackParametersViewModel(
+                        x, 
+                        _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified, 
+                        player.ReligiousAlteration.Affiliation, 
+                        player.GetIntelligence(), 
+                        _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName))));
+            }
+            else
+                this.Religion.IsAffiliated = false;
         }
 
 

@@ -172,6 +172,7 @@
     <Compile Include="Extension\ButtonExtension.cs" />
     <Compile Include="Extension\CustomDialogResultTrigger.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />
+    <Compile Include="Extension\NumberExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />
@@ -207,6 +208,9 @@
     <Compile Include="Control\SpinPanel.cs" />
     <Compile Include="View\Slider.xaml.cs">
       <DependentUpon>Slider.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ValueBar.xaml.cs">
+      <DependentUpon>ValueBar.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -281,6 +285,10 @@
     <Page Include="View\ProgressBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ValueBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

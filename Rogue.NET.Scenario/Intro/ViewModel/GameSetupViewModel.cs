@@ -32,7 +32,7 @@ namespace Rogue.NET.Intro.ViewModel
         AttributeEmphasis _emphasis = AttributeEmphasis.Strength;
         ScenarioViewModel _selectedConfiguration;
         SavedGameViewModel _selectedGame;
-        ReligionViewModel _selectedReligion;
+        ReligionSelectionViewModel _selectedReligion;
         #endregion
 
         #region Properties
@@ -49,7 +49,7 @@ namespace Rogue.NET.Intro.ViewModel
             get { return _selectedGame; }
             set { this.RaiseAndSetIfChanged(ref _selectedGame, value); }
         }
-        public ReligionViewModel SelectedReligion
+        public ReligionSelectionViewModel SelectedReligion
         {
             get { return _selectedReligion; }
             set { this.RaiseAndSetIfChanged(ref _selectedReligion, value); }
@@ -138,9 +138,9 @@ namespace Rogue.NET.Intro.ViewModel
                     SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyBodyColor),
                     SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    Religions = new ObservableCollection<ReligionViewModel>(config.Religions.Where(x => x.CanStartWith)
+                    Religions = new ObservableCollection<Scenario.Intro.ViewModel.ReligionSelectionViewModel>(config.Religions.Where(x => x.CanStartWith)
                                                                                             .Select(x => 
-                    new ReligionViewModel()
+                    new Scenario.Intro.ViewModel.ReligionSelectionViewModel()
                     {
                         HasBonusAttackAttributes = x.HasBonusAttackAttributes,
                         HasBonusAttribute = x.HasAttributeBonus,

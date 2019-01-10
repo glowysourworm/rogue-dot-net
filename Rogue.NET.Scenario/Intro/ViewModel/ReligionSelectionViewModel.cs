@@ -14,7 +14,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.ViewModel
 {
-    public class ReligionViewModel : Image
+    public class ReligionSelectionViewModel : Image
     {
         public string RogueName { get; set; }
         public ScenarioMetaDataViewModel ReligionMetaData { get; set; }
@@ -26,7 +26,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
         public double BonusAttributeValue { get; set; }
         public ObservableCollection<AttackAttribute> BonusAttackAttributes { get; set; }
 
-        public ReligionViewModel()
+        public ReligionSelectionViewModel()
         {
             this.BonusAttackAttributes = new ObservableCollection<AttackAttribute>();
         }

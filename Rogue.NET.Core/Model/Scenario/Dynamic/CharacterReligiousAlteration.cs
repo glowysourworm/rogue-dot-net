@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
@@ -44,6 +45,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                 throw new Exception("Not affiliated with any religion");
 
             _religiousAffiliationLevel = affiliationLevel;
+        }
+
+        public string ReligionName
+        {
+            get { return _religion == null ? string.Empty : _religion.RogueName; }
+        }
+
+        public ScenarioImage Symbol
+        {
+            get { return _religion; }
         }
 
         public AlterationEffect AttackAttributeEffect

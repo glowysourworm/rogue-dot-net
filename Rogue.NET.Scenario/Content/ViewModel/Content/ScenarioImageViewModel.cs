@@ -87,6 +87,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
         #endregion
 
+        public void UpdateSymbol(ScenarioImage scenarioImage)
+        {
+            this.CharacterSymbol = scenarioImage.CharacterSymbol;
+            this.CharacterColor = scenarioImage.CharacterColor;
+            this.Icon = scenarioImage.Icon;
+            this.DisplayIcon = scenarioImage.DisplayIcon;
+            this.SmileyMood = scenarioImage.SmileyMood;
+            this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
+            this.SmileyLineColor = scenarioImage.SmileyLineColor;
+            this.SmileyAuraColor = scenarioImage.SmileyAuraColor;
+            this.SymbolType = scenarioImage.SymbolType;
+        }
+
         public ScenarioImageViewModel() { }
         public ScenarioImageViewModel(ScenarioImage scenarioObject)
         {
@@ -94,15 +107,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.RogueName = scenarioObject.RogueName;
             this.DisplayName = scenarioObject.RogueName;  // TODO - set if identified
 
-            this.CharacterSymbol = scenarioObject.CharacterSymbol;
-            this.CharacterColor = scenarioObject.CharacterColor;
-            this.Icon = scenarioObject.Icon;
-            this.DisplayIcon = scenarioObject.DisplayIcon;
-            this.SmileyMood = scenarioObject.SmileyMood;
-            this.SmileyBodyColor = scenarioObject.SmileyBodyColor;
-            this.SmileyLineColor = scenarioObject.SmileyLineColor;
-            this.SmileyAuraColor = scenarioObject.SmileyAuraColor;
-            this.SymbolType = scenarioObject.SymbolType;
+            UpdateSymbol(scenarioObject);
         }
     }
 }
