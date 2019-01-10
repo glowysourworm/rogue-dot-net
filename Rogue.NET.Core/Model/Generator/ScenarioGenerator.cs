@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Model.Generator
         readonly ILayoutGenerator _layoutGenerator;
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
+        readonly IReligionGenerator _religionGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
@@ -30,6 +31,7 @@ namespace Rogue.NET.Core.Model.Generator
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
+            IReligionGenerator religionGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
         {
@@ -37,24 +39,28 @@ namespace Rogue.NET.Core.Model.Generator
             _layoutGenerator = layoutGenerator;
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
+            _religionGenerator = religionGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, int seed, bool survivorMode)
+        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string religionName, int seed, bool survivorMode)
         {
             ScenarioContainer scenario = new ScenarioContainer();
 
             // Reseed the Random number generator
             _randomSequenceGenerator.Reseed(seed);
 
-            //Generate Dungeon
-            scenario.Player1 = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate);
-            scenario.Player1.AttributeEmphasis = AttributeEmphasis.Agility;
+            // Generate Religions
+            scenario.Religions = configuration.Religions.Select(x => _religionGenerator.GenerateReligion(x, configuration.SkillTemplates))
+                                                        .ToDictionary(x => x.RogueName, x => x);
+
+            // Generate Player
+            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, religionName, scenario.Religions.Values);
 
             var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
-            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, survivorMode).ToList();
+            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.Religions.Values, survivorMode).ToList();
 
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)
@@ -76,6 +82,10 @@ namespace Rogue.NET.Core.Model.Generator
             foreach (var template in configuration.SkillTemplates)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
+            //Load Encyclopedia Rogue-Tanica (Religions)
+            foreach (var template in configuration.Religions)
+                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
             //Load Encyclopedia Rogue-Tanica (Normal Doodads)
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadSavePointRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.SavePoint));
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadStairsDownRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.StairsDown));
@@ -84,72 +94,36 @@ namespace Rogue.NET.Core.Model.Generator
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterBRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport2));
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterRandomRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.TeleportRandom));
 
-            //Identify player skills / equipment / consumables
-            foreach (var skillSet in scenario.Player1.SkillSets)
+            //Identify player skills / equipment / consumables / and identified religions
+            foreach (var skillSet in scenario.Player.SkillSets)
             {
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
+
+                // Also setup skill set IsLearned flag based on player level and religious affiliation
+                skillSet.IsLearned = scenario.Player.Level >= skillSet.LevelLearned &&
+                                    (skillSet.HasReligiousAffiliationRequirement ?
+                                        scenario.Player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel :
+                                        true);
             }
 
-            foreach (var equipment in scenario.Player1.Equipment.Values)
+            foreach (var equipment in scenario.Player.Equipment.Values)
             {
                 scenario.ScenarioEncyclopedia[equipment.RogueName].IsIdentified = true;
                 equipment.IsIdentified = true;
             }
 
-            foreach (var consumable in scenario.Player1.Consumables.Values)
+            foreach (var consumable in scenario.Player.Consumables.Values)
             {
                 scenario.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
                 consumable.IsIdentified = true;
             }
+
+            foreach (var template in configuration.Religions)
+            {
+                scenario.ScenarioEncyclopedia[template.Name].IsIdentified = template.IsIdentified;
+            }
+
             return scenario;
-        }
-        public ScenarioContainer CreateDebugScenario(ScenarioConfigurationContainer configuration)
-        {
-            var layoutTemplate = new LayoutTemplate();
-            layoutTemplate.GenerationRate = 1;
-            layoutTemplate.HiddenDoorProbability = 0;
-            layoutTemplate.Level = new Range<int>(0, 0, 100, 100);
-            layoutTemplate.Name = "Debug Level";
-            layoutTemplate.NumberRoomCols = 3;
-            layoutTemplate.NumberRoomRows = 3;
-            layoutTemplate.RoomDivCellHeight = 20;
-            layoutTemplate.RoomDivCellWidth = 20;
-            layoutTemplate.Type = LayoutType.Normal;
-
-            configuration.DungeonTemplate.LayoutTemplates.Clear();
-            configuration.DungeonTemplate.LayoutTemplates.Add(layoutTemplate);
-
-            foreach (var template in configuration.ConsumableTemplates)
-            {
-                template.Level = new Range<int>(0, 0, 100, 100);
-                template.GenerationRate = 3;
-            }
-            foreach (var template in configuration.EquipmentTemplates)
-            {
-                template.Level = new Range<int>(0, 0, 100, 100);
-                template.GenerationRate = 3;
-            }
-            foreach (var template in configuration.EnemyTemplates)
-            {
-                template.Level = new Range<int>(0, 0, 100, 100);
-                template.GenerationRate = 3;
-            }
-            foreach (var template in configuration.DoodadTemplates)
-            {
-                template.Level = new Range<int>(0, 0, 100, 100);
-                template.GenerationRate = 3;
-            }
-
-            var identifyScroll = configuration.ConsumableTemplates.First(z => z.Name.Contains("Identify"));
-            for (int i = 0; i < 20; i++)
-                configuration.PlayerTemplate.StartingConsumables.Add(
-                    new ProbabilityConsumableTemplate()
-                    {
-                        TheTemplate = identifyScroll,
-                        GenerationProbability = 1
-                    });
-
-            return CreateScenario(configuration, 1234, false);
         }
     }
 }

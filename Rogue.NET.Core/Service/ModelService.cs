@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Core.Model.Scenario;
+﻿using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -9,15 +8,14 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.IO;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 
 namespace Rogue.NET.Core.Service
 {
@@ -66,12 +64,14 @@ namespace Rogue.NET.Core.Service
             PlayerStartLocation startLocation,
             Level level, 
             IDictionary<string, ScenarioMetaData> encyclopedia, 
-            ScenarioConfigurationContainer configuration)
+            ScenarioConfigurationContainer configuration,
+            IEnumerable<Religion> religions)
         {
             this.Level = level;
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
+            this.Religions = religions;
 
             switch (startLocation)
             {
@@ -102,6 +102,7 @@ namespace Rogue.NET.Core.Service
             this.Player = null;
             this.ScenarioConfiguration = null;
             this.ScenarioEncyclopedia = null;
+            this.Religions = null;
 
             _exploredLocations = new List<CellPoint>();
             _lineOfSightLocations = new List<CellPoint>();
@@ -117,6 +118,8 @@ namespace Rogue.NET.Core.Service
         public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; private set; }
 
         public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
+
+        public IEnumerable<Religion> Religions { get; private set; }
 
         public IEnumerable<AttackAttribute> GetAttackAttributes()
         {

@@ -22,7 +22,7 @@
             SmileyColor="{Binding SelectedConfiguration.SmileyColor}" 
             SmileyLineColor="{Binding SelectedConfiguration.SmileyLineColor}"
             SmileyMood="Happy"
-            Height="330" Width="220" SmileyRadius="50"
+            Height="270" Width="180" SmileyRadius="40"
             VerticalAlignment="Top"
             HorizontalAlignment="Left" />
         <StackPanel Grid.Column="1" Grid.Row="1" Margin="10,0,0,0">

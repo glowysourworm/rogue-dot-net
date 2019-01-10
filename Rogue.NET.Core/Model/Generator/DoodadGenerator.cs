@@ -1,7 +1,10 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator
@@ -44,6 +47,15 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.SmileyLineColor = doodadTemplate.SymbolDetails.SmileyLineColor;
             doodad.SymbolType = doodadTemplate.SymbolDetails.Type;
             doodad.HasBeenUsed = false;
+
+            // Religious Affiliation Requirement
+            if (doodad.HasReligiousAffiliationRequirement)
+                doodad.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement()
+                {
+                    ReligionName = doodadTemplate.ReligiousAffiliationRequirement.Religion.Name,
+                    RequiredAffiliationLevel = doodadTemplate.ReligiousAffiliationRequirement.RequiredAffiliationLevel
+                };
+
             doodadTemplate.HasBeenGenerated = true;
 
             return doodad;

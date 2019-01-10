@@ -70,7 +70,7 @@ namespace Rogue.NET.Scenario.Controller
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
-                    New(config, e.RogueName, e.Seed, e.SurvivorMode, e.AttributeEmphasis);
+                    New(config, e.RogueName, e.ReligionName, e.Seed, e.SurvivorMode, e.AttributeEmphasis);
             });
 
             // Open
@@ -119,7 +119,7 @@ namespace Rogue.NET.Scenario.Controller
             });
         }
 
-        public void New(ScenarioConfigurationContainer configuration, string characterName, int seed, bool survivorMode, AttributeEmphasis attributeEmphasis)
+        public void New(ScenarioConfigurationContainer configuration, string characterName, string religionName, int seed, bool survivorMode, AttributeEmphasis attributeEmphasis)
         {
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
@@ -138,18 +138,12 @@ namespace Rogue.NET.Scenario.Controller
             }
 
             //Create expanded dungeon contents in memory
-#if DEBUG
-            _scenarioContainer = (characterName.ToUpper() == "DEBUG") ? 
-                _scenarioGenerator.CreateDebugScenario(configuration) :
-                _scenarioGenerator.CreateScenario(configuration, seed, survivorMode);
-#else
-            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, seed, survivorMode);
-#endif
+            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, religionName, seed, survivorMode);
 
             _scenarioContainer.Seed = seed;
-            _scenarioContainer.Player1.RogueName = characterName;
-            _scenarioContainer.Player1.AttributeEmphasis = attributeEmphasis;
-            _scenarioContainer.StoredConfig = configuration;
+            _scenarioContainer.Player.RogueName = characterName;
+            _scenarioContainer.Player.AttributeEmphasis = attributeEmphasis;
+            _scenarioContainer.Configuration = configuration;
             _scenarioContainer.SurvivorMode = survivorMode;
             _scenarioContainer.Statistics.StartTime = DateTime.Now;
 
@@ -221,7 +215,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioFile.Update(_scenarioContainer);
 
             // Save scenario file to disk
-            _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player1.RogueName);
+            _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player.RogueName);
 
             // Hide Splash
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
@@ -247,7 +241,7 @@ namespace Rogue.NET.Scenario.Controller
             if (levelNumber < 0)
                 throw new ApplicationException("Trying to load level " + levelNumber.ToString());
 
-            else if (levelNumber > _scenarioContainer.StoredConfig.DungeonTemplate.NumberOfLevels)
+            else if (levelNumber > _scenarioContainer.Configuration.DungeonTemplate.NumberOfLevels)
                 throw new ApplicationException("Trying to load level " + levelNumber.ToString());
 
             // Check for Scenario Completed
@@ -286,11 +280,12 @@ namespace Rogue.NET.Scenario.Controller
 
                 // Register next level data with the model service
                 _modelService.Load(
-                    _scenarioContainer.Player1,
+                    _scenarioContainer.Player,
                     location,
                     nextLevel, 
                     _scenarioContainer.ScenarioEncyclopedia, 
-                    _scenarioContainer.StoredConfig);
+                    _scenarioContainer.Configuration,
+                    _scenarioContainer.Religions.Values);
 
                 // Notify Listeners - Level Loaded -> Game Update
                 _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();

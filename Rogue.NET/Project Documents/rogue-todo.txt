@@ -215,6 +215,11 @@
 		- Tracers!
 		- Spiral inward
 		
+- Water:  Player has a "Water Meter". Standing water could be a doodad to replenish your supply. Would need alterations to
+		  support water replenishment.
+		  
+		  Also, have skills that depend on water. (use water to cast a spell, etc..)
+		
 - Alteration Effect: Push Back Enemies ("X" number of spaces).. Possibly on a "Wave" with animations (but that's tricky)
 
 - Teleportation:  Add a standard animation for teleporting that shows the trajectory of the path to the new location.						

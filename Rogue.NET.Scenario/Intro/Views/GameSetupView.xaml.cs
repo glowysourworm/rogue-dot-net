@@ -39,6 +39,7 @@ namespace Rogue.NET.Intro.Views
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.SelectedConfiguration.Name,
+                    ReligionName = viewModel.SelectedReligion == null ? string.Empty : viewModel.SelectedReligion.RogueName,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode
                 });

@@ -127,6 +127,8 @@ namespace Rogue.NET.Core.Model.Enums
         Attack,
         Defense,
         Dodge,
-        MagicBlock
+        MagicBlock,
+        CriticalHit,
+        FoodUsagePerTurn
     }
 }

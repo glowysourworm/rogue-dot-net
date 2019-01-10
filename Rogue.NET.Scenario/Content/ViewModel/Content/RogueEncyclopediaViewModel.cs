@@ -100,6 +100,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 constructor(DoodadType.Magic.ToString(), "Magic Scenario Objects", "Objects that have special effects"),
                 constructor("Enemy", "Enemy", "Characters that will likely try and hurt you"),
                 constructor("Skill", "Skill", "Skill sets that you can learn"),
+                constructor("Religion", "Religion", "Religions that affect your Player"),
                 constructor(OBJECTIVE_NAME, OBJECTIVE_NAME, "Enemies, Items, or Objects that are your mission objective")
 
               // Filter all empty categories (always leave objective category)

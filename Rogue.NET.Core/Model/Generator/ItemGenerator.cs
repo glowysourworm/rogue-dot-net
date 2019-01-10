@@ -1,7 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -64,6 +66,16 @@ namespace Rogue.NET.Core.Model.Generator
                                                           .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                           .ToList();
 
+            equipment.HasReligiousAffiliationRequirement = equipmentTemplate.HasReligiousAffiliationRequirement;
+            
+            // Religious Affiliation Requirement
+            if (equipment.HasReligiousAffiliationRequirement)
+                equipment.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement()
+                {
+                    ReligionName = equipmentTemplate.ReligiousAffiliationRequirement.Religion.Name,
+                    RequiredAffiliationLevel = equipmentTemplate.ReligiousAffiliationRequirement.RequiredAffiliationLevel
+                };
+
             equipmentTemplate.HasBeenGenerated = true;
             return equipment;
         }
@@ -98,6 +110,15 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.Uses = _randomSequenceGenerator.GetRandomValue(consumableTemplate.UseCount);
             consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
             consumable.NoteMessage = consumableTemplate.NoteMessage;
+
+            // Religious Affiliation Requirement
+            if (consumable.HasReligiousAffiliationRequirement)
+                consumable.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement()
+                {
+                    ReligionName = consumableTemplate.ReligiousAffiliationRequirement.Religion.Name,
+                    RequiredAffiliationLevel = consumableTemplate.ReligiousAffiliationRequirement.RequiredAffiliationLevel
+                };
+
             consumableTemplate.HasBeenGenerated = true;
 
             return consumable;

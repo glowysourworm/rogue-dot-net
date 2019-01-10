@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Item
@@ -13,11 +14,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public double Weight { get; set; }
         public int LevelRequired { get; set; }
 
+        public bool HasReligiousAffiliationRequirement { get; set; }
+        public ReligiousAffiliationRequirement ReligiousAffiliationRequirement { get; set; }
+
         public ItemBase()
         {
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
         }
         public ItemBase(string name, ImageResources icon) : base(name, icon)
         {
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
         }
     }
 }

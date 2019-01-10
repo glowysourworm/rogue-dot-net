@@ -1,12 +1,12 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Religion;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.Generator.Interface
 {
-    public interface ISkillSetGenerator
+    public interface IReligionGenerator
     {
-        SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate);
+        Religion GenerateReligion(ReligionTemplate template, IEnumerable<SkillSetTemplate> skillSetTemplates);
     }
 }

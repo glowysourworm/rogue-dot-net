@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
     [Serializable]
     public class SkillSet : ScenarioImage
     {
-        public IList<Spell> Skills { get; set; }
+        public IList<Skill> Skills { get; set; }
 
         public int Level { get; set; }
         public int DisplayLevel
@@ -21,10 +22,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public bool IsLearned { get; set; }
         public double SkillProgress { get; set; }
 
-        public Spell GetCurrentSkill()
+        public bool HasReligiousAffiliationRequirement { get; set; }
+        public ReligiousAffiliationRequirement ReligiousAffiliationRequirement { get; set; }
+
+        public Spell GetCurrentSkillAlteration()
         {
             if (this.Level < this.Skills.Count)
-                return this.Skills[this.Level];
+                return this.Skills[this.Level].Alteration;
 
             return null;
         }
@@ -34,7 +38,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
             this.IsActive = false;
             this.IsLearned = false;
             this.Emphasis = 0;
-            this.Skills = new List<Spell>();
+            this.Skills = new List<Skill>();
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
         } 
     }
 }

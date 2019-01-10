@@ -190,5 +190,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+
+        public AlterationCostTemplate()
+        {
+
+        }
     }
 }

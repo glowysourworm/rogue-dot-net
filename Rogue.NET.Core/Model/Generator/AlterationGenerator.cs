@@ -26,11 +26,11 @@ namespace Rogue.NET.Core.Model.Generator
             _alteredStateGenerator = alteredStateGenerator;
         }
 
-        public AlterationContainer GenerateAlteration(Spell spell, double characterIntelligence)
+        public AlterationContainer GenerateAlteration(Spell spell)
         {
             AlterationCost alterationCost = new AlterationCost();
-            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect, characterIntelligence, false);
-            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect, characterIntelligence, false);
+            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect);
+            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect);
 
             alterationCost.Type = spell.Cost.Type;
             alterationCost.Agility = spell.Cost.Agility;
@@ -65,40 +65,37 @@ namespace Rogue.NET.Core.Model.Generator
                 string spellName, 
                 string spellDisplayName, 
                 double effectRange, 
-                AlterationEffectTemplate alterationEffectTemplate, 
-                double characterIntelligence,
-                bool scaleByIntelligence)
+                AlterationEffectTemplate alterationEffectTemplate)
         {
             AlterationEffect alterationEffect = new AlterationEffect();
 
-            var scale = scaleByIntelligence ? (1 + characterIntelligence) : 1;
-
             // Scaled Parameters
-            alterationEffect.Agility = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AgilityRange);
-            alterationEffect.Attack = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AttackRange);
-            alterationEffect.AuraRadius = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AuraRadiusRange);
-            alterationEffect.Defense = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DefenseRange);
-            alterationEffect.DodgeProbability = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DodgeProbabilityRange);
-            alterationEffect.Experience = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.ExperienceRange);
-            alterationEffect.FoodUsagePerTurn = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.FoodUsagePerTurnRange);
-            alterationEffect.Hp = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpRange);
-            alterationEffect.HpPerStep = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpPerStepRange);
-            alterationEffect.Hunger = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HungerRange);
-            alterationEffect.Intelligence = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.IntelligenceRange);
-            alterationEffect.MagicBlockProbability = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
-            alterationEffect.Mp = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
-            alterationEffect.MpPerStep = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
-            alterationEffect.Speed = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
-            alterationEffect.Strength = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
-            alterationEffect.CriticalHit = scale * _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
+            alterationEffect.Agility = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AgilityRange);
+            alterationEffect.Attack = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AttackRange);
+            alterationEffect.AuraRadius = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AuraRadiusRange);
+            alterationEffect.Defense = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DefenseRange);
+            alterationEffect.DodgeProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DodgeProbabilityRange);
+            alterationEffect.Experience = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.ExperienceRange);
+            alterationEffect.FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.FoodUsagePerTurnRange);
+            alterationEffect.Hp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpRange);
+            alterationEffect.HpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpPerStepRange);
+            alterationEffect.Hunger = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HungerRange);
+            alterationEffect.Intelligence = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.IntelligenceRange);
+            alterationEffect.MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
+            alterationEffect.Mp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
+            alterationEffect.MpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
+            alterationEffect.Speed = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
+            alterationEffect.Strength = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
+            alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
 
             // Scaled - Attack Attributes
             alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes
                                                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                       .Select(x =>
                                                       {
-                                                          x.Attack = scale * x.Attack;
-                                                          x.Resistance = scale * x.Resistance;
+                                                          x.Attack = x.Attack;
+                                                          x.Resistance = x.Resistance;
+                                                          x.Weakness = x.Weakness;
 
                                                           return x;
                                                       })

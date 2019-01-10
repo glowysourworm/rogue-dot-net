@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
@@ -33,7 +34,7 @@ namespace Rogue.NET.Core.Model.Generator
             _itemGenerator = itemGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<Religion> religions)
         {
             var player = new Player();
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
@@ -96,18 +97,26 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
-                                          .Select(x =>
-                                          {
-                                              var skillSet = _skillSetGenerator.GenerateSkillSet(x);
-                                              skillSet.IsLearned = skillSet.LevelLearned <= player.Level;
-
-                                              return skillSet;
-                                          })
+                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x))
                                           .ToList();
+
+            // Starting Religion
+            if (!string.IsNullOrEmpty(religionName))
+            {
+                var religion = religions.First(x => x.RogueName == religionName);
+
+                // Start with minimum affiliation to the chosen religion
+                player.ReligiousAlteration.Affiliate(religion, ModelConstants.Religion.AffiliationIncrement);
+
+                // Add skill set for this religion if there is one
+                if (religion.HasBonusSkillSet &&
+                   !player.SkillSets.Any(x => x.RogueName == religion.SkillSet.RogueName))
+                    player.SkillSets.Add(religion.SkillSet);
+            }
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<Religion> religions)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -185,6 +194,11 @@ namespace Rogue.NET.Core.Model.Generator
 
                 enemy.Equipment.Add(equipment.Id, equipment);
             }
+
+            // Religion - Generate random affiliation level based on range
+            if (enemyTemplate.HasReligiousAffiliation)
+                enemy.ReligiousAlteration.Affiliate(religions.First(x => x.RogueName == enemyTemplate.Religion.Name),
+                                                    _randomSequenceGenerator.GetRandomValue(enemyTemplate.ReligiousAffiliationLevel));
 
             enemyTemplate.HasBeenGenerated = true;
             return enemy;

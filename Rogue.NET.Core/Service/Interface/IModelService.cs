@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
 
@@ -20,7 +21,8 @@ namespace Rogue.NET.Core.Service.Interface
                 PlayerStartLocation startLocation,
                 Level level,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
-                ScenarioConfigurationContainer configuration);
+                ScenarioConfigurationContainer configuration,
+                IEnumerable<Religion> religions);
 
         void Unload();
 
@@ -43,6 +45,11 @@ namespace Rogue.NET.Core.Service.Interface
         /// Configuration for the scenario
         /// </summary>
         ScenarioConfigurationContainer ScenarioConfiguration { get; }
+
+        /// <summary>
+        /// Religions for the scenario
+        /// </summary>
+        IEnumerable<Religion> Religions { get; }
 
         /// <summary>
         /// Primary method to process an update to the contents. This should be called after

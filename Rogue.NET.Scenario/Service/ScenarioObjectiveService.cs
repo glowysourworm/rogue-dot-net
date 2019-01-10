@@ -49,7 +49,7 @@ namespace Rogue.NET.Scenario.Service
 
                 // Must have one in Player inventory
                 case DungeonMetaDataObjectTypes.Item:
-                    return scenarioContainer.Player1.Inventory.Values.Any(item => item.RogueName == metaData.RogueName);
+                    return scenarioContainer.Player.Inventory.Values.Any(item => item.RogueName == metaData.RogueName);
 
                 case DungeonMetaDataObjectTypes.Skill:
                     throw new Exception("Skill sets should not support ScenarioMetaData.IsObjective");

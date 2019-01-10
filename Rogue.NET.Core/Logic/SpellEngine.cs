@@ -123,7 +123,7 @@ namespace Rogue.NET.Core.Logic
             var player = _modelService.Player;
 
             //Calculate alteration from spell's random parameters
-            var alteration = _alterationGenerator.GenerateAlteration(spell, player.GetIntelligence());
+            var alteration = _alterationGenerator.GenerateAlteration(spell);
 
             //Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
             if (alteration.Cost.Type == AlterationCostType.OneTime)
@@ -176,7 +176,7 @@ namespace Rogue.NET.Core.Logic
         public void ProcessEnemyMagicSpell(Enemy enemy, Spell spell)
         {
             // Calculate alteration from spell's random parameters
-            var alteration = _alterationGenerator.GenerateAlteration(spell, enemy.GetIntelligence());
+            var alteration = _alterationGenerator.GenerateAlteration(spell);
 
             // Apply Alteration Cost
             if (alteration.Cost.Type == AlterationCostType.OneTime)
@@ -610,7 +610,7 @@ namespace Rogue.NET.Core.Logic
 
             if (enemyTemplate != null)
             {
-                var minion = _characterGenerator.GenerateEnemy(enemyTemplate);
+                var minion = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions);
 
                 minion.Location = location;
 
@@ -628,7 +628,7 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
 
-                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
+                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions);
                 enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
                 _modelService.Level.AddContent(enemy);

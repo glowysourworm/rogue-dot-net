@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Intro.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -22,6 +23,19 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters
         public ChooseReligion()
         {
             InitializeComponent();
+
+            this.Loaded += (sender, e) =>
+            {
+                var viewModel = this.DataContext as GameSetupViewModel;
+                if (viewModel != null)
+                {
+                    if (viewModel.SelectedReligion != null)
+                        this.ReligionLB.SelectedItem = viewModel.SelectedReligion;
+
+                    else if (viewModel.SelectedConfiguration != null)
+                        this.ReligionLB.SelectedItem = viewModel.SelectedConfiguration.Religions.FirstOrDefault();
+                }
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         IEnumerable<Level> CreateContents(
                 IEnumerable<Level> levels,
                 ScenarioConfigurationContainer configurationContainer,
+                IEnumerable<Religion> religions,
                 bool survivorMode);
     }
 }

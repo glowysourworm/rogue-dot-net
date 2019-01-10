@@ -135,12 +135,12 @@ namespace Rogue.NET.Core.Logic.Content
                     if (skill.Level < skill.Skills.Count)
                     {
                         //Deactivate if currently turned on
-                        if (skill.IsTurnedOn && skill.GetCurrentSkill().IsPassive())
+                        if (skill.IsTurnedOn && skill.GetCurrentSkillAlteration().IsPassive())
                         {
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skill.RogueName);
 
                             // Deactive the passive alteration - referenced by Spell Id
-                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkill().Id);
+                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkillAlteration().Id);
 
                             skill.IsTurnedOn = false;
                         }
@@ -242,13 +242,13 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 // Skill set is turned on; but can't afford the cost
                 if (skillSet.IsTurnedOn && 
-                    !_alterationProcessor.CalculatePlayerMeetsAlterationCost(player, skillSet.GetCurrentSkill().Cost))
+                    !_alterationProcessor.CalculatePlayerMeetsAlterationCost(player, skillSet.GetCurrentSkillAlteration().Cost))
                 {
                     skillSet.IsTurnedOn = false;
 
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
 
-                    var currentSkill = skillSet.GetCurrentSkill();
+                    var currentSkill = skillSet.GetCurrentSkillAlteration();
 
                     // Deactive the passive alteration - referenced by Spell Id
                     player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);

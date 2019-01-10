@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using System;
 
@@ -12,11 +13,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public bool IsAutomatic { get; set; }
         public bool IsInvoked { get; set; }
 
+        public bool HasReligiousAffiliationRequirement { get; set; }
+        public ReligiousAffiliationRequirement ReligiousAffiliationRequirement { get; set; }
+
         public DoodadMagic() : base()
         {
             this.Type = DoodadType.Magic;
             this.AutomaticSpell = new Spell();
             this.InvokedSpell = new Spell();
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
         }
         public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon)
             : base(name, icon)
@@ -26,6 +31,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
             this.InvokedSpell = invokeSpell;
             this.IsAutomatic = isauto;
             this.IsInvoked = isinvoke;
+            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
         }
     }
 }

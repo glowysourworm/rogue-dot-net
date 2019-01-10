@@ -34,6 +34,7 @@
                  Grid.Row="1"
                  VerticalAlignment="Stretch"
                  ItemsSource="{Binding SelectedConfiguration.Religions}"
+                 SelectedItem="{Binding SelectedReligion}"
                  Background="Black"
                  BorderBrush="Transparent"
                  VirtualizingPanel.IsVirtualizing="False"

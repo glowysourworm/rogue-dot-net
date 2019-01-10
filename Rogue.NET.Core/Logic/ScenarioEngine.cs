@@ -642,7 +642,7 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSets.RogueName);
 
                     // Pass-Through method is Safe to call
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSets.GetCurrentSkill().Id);
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSets.GetCurrentSkillAlteration().Id);
                 }
             }
 
@@ -692,7 +692,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             // No Current Skill (Could throw Exception)
-            var currentSkill = activeSkillSet.GetCurrentSkill();
+            var currentSkill = activeSkillSet.GetCurrentSkillAlteration();
             if (currentSkill == null)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");

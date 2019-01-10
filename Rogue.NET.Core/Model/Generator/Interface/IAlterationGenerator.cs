@@ -11,6 +11,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         /// intelligence. This should be the total intelligence of the caster; and is only applied to
         /// the effects - not the cost.
         /// </summary>
-        AlterationContainer GenerateAlteration(Spell spell, double characterIntelligence);
+        AlterationContainer GenerateAlteration(Spell spell);
     }
 }

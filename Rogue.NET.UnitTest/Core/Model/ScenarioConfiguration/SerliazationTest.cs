@@ -38,9 +38,13 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
             var attackAttributeGenerator = new AttackAttributeGenerator(randomSequenceGenerator);
             var spellGenerator = new SpellGenerator();
-            var skillSetGenerator = new SkillSetGenerator(spellGenerator);
+            var skillGenerator = new SkillGenerator(spellGenerator);
+            var skillSetGenerator = new SkillSetGenerator(skillGenerator);
             var behaviorGenerator = new BehaviorGenerator(spellGenerator);
             var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
+            var alteredStateGenerator = new AlteredStateGenerator();
+            var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator);
+            var religionGenerator = new ReligionGenerator(spellGenerator, attackAttributeGenerator, alterationGenerator, skillSetGenerator);
             var itemGenerator = new ItemGenerator(
                 randomSequenceGenerator,
                 attackAttributeGenerator,
@@ -63,6 +67,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 layoutGenerator,
                 contentGenerator,
                 characterGenerator,
+                religionGenerator,
                 scenarioMetaDataGenerator,
                 randomSequenceGenerator);
 
@@ -84,7 +89,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 
             Assert.IsNotNull(configuration);
 
-            var scenario = CreateScenarioGenerator(1234).CreateScenario(configuration, 1234, false);
+            var scenario = CreateScenarioGenerator(1234).CreateScenario(configuration, "", 1234, false);
 
             Assert.IsNotNull(scenario);
             Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);
@@ -100,7 +105,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             {
                 var scenarioGenerator = CreateScenarioGenerator(seed);
 
-                var scenario = scenarioGenerator.CreateScenario(configuration, seed, false);
+                var scenario = scenarioGenerator.CreateScenario(configuration, "", seed, false);
 
                 Assert.IsNotNull(scenario);
                 Assert.IsTrue(scenario.LoadedLevels.Count == configuration.DungeonTemplate.NumberOfLevels);

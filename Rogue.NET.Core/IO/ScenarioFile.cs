@@ -55,8 +55,8 @@ namespace Rogue.NET.Core.IO
             //Stream to build new buffer to dump back to file
             MemoryStream dungeonFileStream = new MemoryStream();
 
-            byte[] configuration = BinarySerializer.SerializeAndCompress(dungeon.StoredConfig);
-            byte[] player = BinarySerializer.SerializeAndCompress(dungeon.Player1);
+            byte[] configuration = BinarySerializer.SerializeAndCompress(dungeon.Configuration);
+            byte[] player = BinarySerializer.SerializeAndCompress(dungeon.Player);
             byte[] saveLocation = BinarySerializer.SerializeAndCompress(dungeon.SaveLocation);
             byte[] saveLevel = BinarySerializer.SerializeAndCompress(dungeon.SaveLevel);
             byte[] seed = BitConverter.GetBytes(dungeon.Seed);
@@ -107,7 +107,7 @@ namespace Rogue.NET.Core.IO
             offset += statistics.Length;
             
             //Dynamic contents
-            for (int i=1;i<=dungeon.StoredConfig.DungeonTemplate.NumberOfLevels;i++)
+            for (int i=1;i<=dungeon.Configuration.DungeonTemplate.NumberOfLevels;i++)
             {
                 IndexedObject indexedLevel = _header.DynamicObjects.FirstOrDefault(z => z.Identifier == LEVEL_PREFIX + i.ToString());
                 if (indexedLevel == null)
@@ -162,10 +162,10 @@ namespace Rogue.NET.Core.IO
                 switch (indexedObject.Identifier)
                 {
                     case CONFIG:
-                        dungeon.StoredConfig = BinarySerializer.DeserializeAndDecompress<ScenarioConfigurationContainer>(buffer);
+                        dungeon.Configuration = BinarySerializer.DeserializeAndDecompress<ScenarioConfigurationContainer>(buffer);
                         break;
                     case PLAYER:
-                        dungeon.Player1 = BinarySerializer.DeserializeAndDecompress<Player>(buffer);
+                        dungeon.Player = BinarySerializer.DeserializeAndDecompress<Player>(buffer);
                         break;
                     case SAVELOCATION:
                         dungeon.SaveLocation = BinarySerializer.DeserializeAndDecompress<PlayerStartLocation>(buffer);
@@ -301,17 +301,17 @@ namespace Rogue.NET.Core.IO
             ScenarioFileHeader header = new ScenarioFileHeader();
 
             //Store the player's colors for showing in the intro screens
-            header.SmileyLineColor = dungeon.Player1.SmileyLineColor;
-            header.SmileyBodyColor = dungeon.Player1.SmileyBodyColor;
+            header.SmileyLineColor = dungeon.Player.SmileyLineColor;
+            header.SmileyBodyColor = dungeon.Player.SmileyBodyColor;
 
             //Stream to build new buffer to dump back to file
             MemoryStream dungeonFileStream = new MemoryStream();
 
-            byte[] configuration = BinarySerializer.SerializeAndCompress(dungeon.StoredConfig);
+            byte[] configuration = BinarySerializer.SerializeAndCompress(dungeon.Configuration);
             //Add to allow other thread processing
             Thread.Sleep(10);
 
-            byte[] player = BinarySerializer.SerializeAndCompress(dungeon.Player1);
+            byte[] player = BinarySerializer.SerializeAndCompress(dungeon.Player);
             //Add to allow other thread processing
             Thread.Sleep(10);
 

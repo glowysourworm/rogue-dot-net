@@ -9,7 +9,7 @@ namespace Rogue.NET.Scenario.Controller.Interface
         void Initialize();
 
         // scenario loading
-        void New(ScenarioConfigurationContainer config, string rogueName, int seed, bool survivorMode, AttributeEmphasis attributeEmphasis);
+        void New(ScenarioConfigurationContainer config, string rogueName, string religionName, int seed, bool survivorMode, AttributeEmphasis attributeEmphasis);
         void Open(string file);
         void Save();
 
