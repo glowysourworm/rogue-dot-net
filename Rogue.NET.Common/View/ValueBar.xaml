@@ -4,8 +4,8 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-    <Canvas x:Name="ValueCanvas">
-        <Rectangle x:Name="ValueBackgroundRectangle" Width="{Binding Width, ElementName=ValueCanvas}" Opacity="1" Fill="{Binding ValueBackground}" />
-        <Rectangle x:Name="ValueRectangle" Opacity="0.7" Fill="{Binding ValueForeground}" Stroke="{Binding ValueBorder}" StrokeThickness="1" />
-    </Canvas>
+    <Grid>
+        <Rectangle x:Name="ValueBackgroundRectangle" Opacity="0.1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Rectangle x:Name="ValueRectangle" VerticalAlignment="Stretch" HorizontalAlignment="Left" Opacity="0.7" StrokeThickness="2" />
+    </Grid>
 </UserControl>

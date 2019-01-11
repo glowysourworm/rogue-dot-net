@@ -19,6 +19,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -577,6 +578,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 _modelService.Religions.Any()) // Check that model is loaded (could be that no model has loaded for the level)
                                                // TODO:  Force view model updates to wait until after IModelService is loaded
             {
+                this.Religion.DisplayName = player.ReligiousAlteration.ReligionName;
                 this.Religion.AffiliationLevel = player.ReligiousAlteration.Affiliation;
                 this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
                 this.Religion.HasAttributeBonus = player.ReligiousAlteration.AttributeEffect != null;
@@ -606,23 +608,51 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                            .First();
 
                     // Show SINGLE attribute bonus as a string
-                    this.Religion.AttributeBonus = "Bonus " + attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
+                    this.Religion.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
                 }
 
                 // Attack Parameters
-                var religion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
+                var playerReligion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
+                var maxParameters = new ReligiousAffiliationAttackParameters();
 
-                this.Religion.AttackParameters.Clear();
-                this.Religion
-                    .AttackParameters
-                    .AddRange(religion.AttackParameters
-                                      .Where(x => _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified)
-                                      .Select(x => new ReligionAttackParametersViewModel(
-                                                        x, 
-                                                        _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified, 
-                                                        player.ReligiousAlteration.Affiliation, 
-                                                        player.GetIntelligence(), 
-                                                        _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName))));
+                _modelService.Religions.ForEach(religion =>
+                {
+                    religion.AttackParameters.ForEach(x =>
+                    {
+                        maxParameters.AttackMultiplier = Math.Max(maxParameters.AttackMultiplier.Abs(), x.AttackMultiplier.Abs());
+                        maxParameters.DefenseMultiplier = Math.Max(maxParameters.DefenseMultiplier.Abs(), x.DefenseMultiplier.Abs());
+                        maxParameters.BlockMultiplier = Math.Max(maxParameters.BlockMultiplier.Abs(), x.BlockMultiplier.Abs());
+                    });
+                });
+
+                var attackParameters = playerReligion.AttackParameters
+                                            .Where(x => _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified)
+                                            .Select(x => new ReligionAttackParametersViewModel(
+                                                    x, 
+                                                    maxParameters,
+                                                    _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified, 
+                                                    player.ReligiousAlteration.Affiliation, 
+                                                    player.GetIntelligence(), 
+                                                    _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName)));
+
+                foreach (var parameters in attackParameters)
+                {
+                    if (!this.Religion.AttackParameters.Any(x => x.RogueName == parameters.RogueName))
+                        this.Religion.AttackParameters.Add(parameters);
+
+                    else
+                    {
+                        var existingParameters = this.Religion.AttackParameters.First(x => x.RogueName == parameters.RogueName);
+                        existingParameters.AttackMax = parameters.AttackMax;
+                        existingParameters.AttackValue = parameters.AttackValue;
+                        existingParameters.DefenseScale.Low = parameters.DefenseScale.Low;
+                        existingParameters.DefenseScale.High = parameters.DefenseScale.High;
+                        existingParameters.DefenseValue = parameters.DefenseValue;
+                        existingParameters.MagicBlockScale.Low = parameters.MagicBlockScale.Low;
+                        existingParameters.MagicBlockScale.High = parameters.MagicBlockScale.High;
+                        existingParameters.MagicBlockValue = parameters.MagicBlockValue;
+                    }
+                }
             }
             else
                 this.Religion.IsAffiliated = false;

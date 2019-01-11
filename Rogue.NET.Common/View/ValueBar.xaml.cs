@@ -23,13 +23,16 @@ namespace Rogue.NET.Common.View
                 new PropertyMetadata(0D, new PropertyChangedCallback(OnValueChanged)));
 
         public static readonly DependencyProperty ValueForegroundProperty =
-            DependencyProperty.Register("ValueForeground", typeof(Brush), typeof(ValueBar), new PropertyMetadata(Brushes.Red));
+            DependencyProperty.Register("ValueForeground", typeof(Brush), typeof(ValueBar),
+                new PropertyMetadata(Brushes.Red, new PropertyChangedCallback(OnColorChanged)));
 
         public static readonly DependencyProperty ValueBackgroundProperty =
-            DependencyProperty.Register("ValueBackground", typeof(Brush), typeof(ValueBar), new PropertyMetadata(Brushes.DarkRed));
+            DependencyProperty.Register("ValueBackground", typeof(Brush), typeof(ValueBar), 
+                new PropertyMetadata(Brushes.DarkRed, new PropertyChangedCallback(OnColorChanged)));
 
         public static readonly DependencyProperty ValueBorderProperty =
-            DependencyProperty.Register("ValueBorder", typeof(Brush), typeof(ValueBar), new PropertyMetadata(Brushes.OrangeRed));
+            DependencyProperty.Register("ValueBorder", typeof(Brush), typeof(ValueBar), 
+                new PropertyMetadata(Brushes.OrangeRed, new PropertyChangedCallback(OnColorChanged)));
         #endregion
 
         #region Properties
@@ -68,8 +71,6 @@ namespace Rogue.NET.Common.View
         public ValueBar()
         {
             InitializeComponent();
-
-            this.DataContext = this;
         }
 
         protected void ReInitialize()
@@ -84,21 +85,30 @@ namespace Rogue.NET.Common.View
             if (this.ValueLow < 0 && this.ValueHigh < 0)
                 return;
 
+            if (this.Value < this.ValueLow)
+                return;
+
+            if (this.Value > this.ValueHigh)
+                return;
+
+            if (this.ValueLow == double.NaN || this.ValueHigh == double.NaN || this.Value == double.NaN)
+                return;
+
             var valueTotal = this.ValueHigh - this.ValueLow;
 
             // Split Bar
             if (this.ValueLow < 0 && this.ValueHigh > 0)
             {
                 // Negative Value
-                if (this.Value <= 0)
+                if (this.Value < 0)
                 {
                     // Calculate position of negative oriented bar
-                    var totalNegativeWidth = Math.Abs(this.ValueLow / valueTotal) * this.Width;
+                    var totalNegativeWidth = Math.Abs(this.ValueLow / valueTotal) * this.RenderSize.Width;
                     var negativePosition = (this.Value / this.ValueLow) * totalNegativeWidth;
                     var negativeWidth = totalNegativeWidth - negativePosition;
 
                     // Position
-                    Canvas.SetLeft(this.ValueRectangle, negativePosition);
+                    this.ValueRectangle.Margin = new Thickness(negativePosition, 0, 0, 0);
 
                     // Middle - Position = Negative Bar Width
                     this.ValueRectangle.Width = negativeWidth;
@@ -107,12 +117,12 @@ namespace Rogue.NET.Common.View
                 else
                 {
                     // Calculate position of positive oriented bar
-                    var totalPositiveWidth = Math.Abs(this.ValueHigh / valueTotal) * this.Width;
+                    var totalPositiveWidth = Math.Abs(this.ValueHigh / valueTotal) * this.RenderSize.Width;
                     var positiveWidth = (this.Value / this.ValueHigh) * totalPositiveWidth;
-                    var zeroPosition = Math.Abs(this.ValueLow / valueTotal) * this.Width;
+                    var zeroPosition = Math.Abs(this.ValueLow / valueTotal) * this.RenderSize.Width;
 
                     // Position
-                    Canvas.SetLeft(this.ValueRectangle, zeroPosition);
+                    this.ValueRectangle.Margin = new Thickness(zeroPosition, 0, 0, 0);
 
                     // Width
                     this.ValueRectangle.Width = positiveWidth;
@@ -123,10 +133,10 @@ namespace Rogue.NET.Common.View
             else
             {
                 // Calculate position of positive oriented bar
-                var positiveWidth = ((this.Value - this.ValueLow) / valueTotal) * this.Width;
+                var positiveWidth = ((this.Value - this.ValueLow) / valueTotal) * this.RenderSize.Width;
 
                 // *** TREAT ValueLow as Zero Position
-                Canvas.SetLeft(this.ValueRectangle, 0);
+                this.ValueRectangle.Margin = new Thickness(0);
 
                 // Width
                 this.ValueRectangle.Width = positiveWidth;
@@ -140,6 +150,20 @@ namespace Rogue.NET.Common.View
         private static void OnModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as ValueBar).ReInitialize();
+        }
+        private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var valueBar = d as ValueBar;
+
+            valueBar.ValueBackgroundRectangle.Fill = valueBar.ValueBackground;
+            valueBar.ValueRectangle.Fill = valueBar.ValueForeground;
+            valueBar.ValueRectangle.Stroke = valueBar.ValueBorder;
+        }
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+
+            ReInitialize();
         }
     }
 }

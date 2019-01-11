@@ -8,7 +8,6 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="3" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -18,64 +17,120 @@
             <RowDefinition Height="28" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,0,4">
-            <Border BorderBrush="White" BorderThickness="0.75" CornerRadius="3">
-                <Image Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Image.Source>
-                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                            <Binding Path="CharacterSymbol" />
-                            <Binding Path="CharacterColor" />
-                            <Binding Path="Icon" />
-                            <Binding Path="DisplayIcon" />
-                            <Binding Path="SmileyMood" />
-                            <Binding Path="SmileyBodyColor" />
-                            <Binding Path="SmileyLineColor" />
-                            <Binding Path="SmileyAuraColor" />
-                            <Binding Path="SymbolType" />
-                        </MultiBinding>
-                    </Image.Source>                    
-                </Image>
-            </Border>
-            <TextBlock Text="{Binding Name}" Foreground="White" Margin="10,0,0,0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="0,0,0,4" HorizontalAlignment="Stretch">
+            <Image Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                        <Binding Path="CharacterSymbol" />
+                        <Binding Path="CharacterColor" />
+                        <Binding Path="Icon" />
+                        <Binding Path="DisplayIcon" />
+                        <Binding Path="SmileyMood" />
+                        <Binding Path="SmileyBodyColor" />
+                        <Binding Path="SmileyLineColor" />
+                        <Binding Path="SmileyAuraColor" />
+                        <Binding Path="SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+            <TextBlock Text="{Binding RogueName}" Foreground="White" Margin="10,0,0,0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Right" />
         </StackPanel>
         
         <!-- Value Bar Positive / Negative Separator -->
-        <Rectangle Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" 
-                   HorizontalAlignment="Stretch" 
+        <Rectangle Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="3" 
+                   Width="1"
+                   HorizontalAlignment="Center" 
                    VerticalAlignment="Stretch" 
                    Fill="Gray" Opacity="0.5" StrokeThickness="0" />
 
-        <commonView:ValueBar Grid.Row="1" Grid.Column="2" 
+        <commonView:ValueBar Grid.Row="1" Grid.Column="1" 
                              Value="{Binding AttackValue}" 
                              ValueBackground="Green" 
-                             ValueBorder="GreenYellow"
-                             ValueForeground="YellowGreen"
-                             ValueHigh="100"
+                             ValueBorder="Green"
+                             ValueForeground="Green"
+                             ValueHigh="{Binding AttackMax}"
                              ValueLow="0"
-                             Height="20"
+                             Height="18"
                              HorizontalAlignment="Stretch"
-                             Margin="0, 4, 0, 4" />
-        
-        <commonView:ValueBar Grid.ColumnSpan="3" Grid.Row="2" 
+                             Margin="0, 2, 0, 2">
+            <commonView:ValueBar.ToolTip>
+                <ToolTip Background="Transparent" BorderBrush="Transparent">
+                    <Border Background="Black" 
+                        BorderBrush="White" 
+                        BorderThickness="0.75" 
+                        Padding="2"
+                        CornerRadius="3">
+                        <StackPanel Width="300">
+                            <TextBlock Margin="2" Foreground="White" FontSize="18">
+                                <Run Text="Attack " />
+                                <Run Text="{Binding AttackRatio, StringFormat=P1}" />
+                            </TextBlock>
+                            <TextBlock Margin="2" Foreground="White" FontSize="12" TextWrapping="Wrap"
+                                   Text="(This is an intelligence based component of the total attack. This percent of your intelligence that is added to your player's attack and shown during combat.)" />
+                        </StackPanel>
+                    </Border>
+                </ToolTip>
+            </commonView:ValueBar.ToolTip>
+        </commonView:ValueBar>
+
+        <commonView:ValueBar Grid.ColumnSpan="2" Grid.Row="2" 
                              Value="{Binding DefenseValue}" 
-                             ValueBackground="DarkViolet" 
-                             ValueBorder="BlueViolet"
+                             ValueBackground="Violet" 
+                             ValueBorder="Violet"
                              ValueForeground="Violet"
-                             ValueHigh="100"
-                             ValueLow="-100"
-                             Height="20"
+                             ValueHigh="{Binding DefenseScale.High}"
+                             ValueLow="{Binding DefenseScale.Low}"
+                             Height="18"
                              HorizontalAlignment="Stretch"
-                             Margin="0, 4, 0, 4" />
-        
-        <commonView:ValueBar Grid.Column="3" Grid.Row="3" 
+                             Margin="0, 2, 0, 2">
+            <commonView:ValueBar.ToolTip>
+                <ToolTip Background="Transparent" BorderBrush="Transparent">
+                    <Border Background="Black" 
+                        BorderBrush="White" 
+                        BorderThickness="0.75" 
+                        Padding="2"
+                        CornerRadius="3">
+                        <StackPanel Width="300">
+                            <TextBlock Margin="2" Foreground="White" FontSize="18">
+                                <Run Text="Defense " />
+                                <Run Text="{Binding DefenseRatio, StringFormat=P1}" />
+                            </TextBlock>
+                            <TextBlock Margin="2" Foreground="White" FontSize="12" TextWrapping="Wrap"
+                                       Text="(This is a defense used to counter Religious-based attacks. This percent of your intelligence is used to absorb an attack by an Enemy Religious Affiliate.)" />
+                        </StackPanel>
+                    </Border>
+                </ToolTip>
+            </commonView:ValueBar.ToolTip>
+        </commonView:ValueBar>
+
+        <commonView:ValueBar Grid.ColumnSpan="2" Grid.Row="3" 
                              Value="{Binding MagicBlockValue}" 
-                             ValueBackground="DarkBlue" 
-                             ValueBorder="CornflowerBlue"
+                             ValueBackground="Blue" 
+                             ValueBorder="Blue"
                              ValueForeground="Blue"
-                             ValueHigh="1"
-                             ValueLow="-1"
-                             Height="20"
+                             ValueHigh="{Binding MagicBlockScale.High}"
+                             ValueLow="{Binding MagicBlockScale.Low}"
+                             Height="18"
                              HorizontalAlignment="Stretch"
-                             Margin="0, 4, 0, 4" />        
+                             Margin="0, 2, 0, 2">
+            <commonView:ValueBar.ToolTip>
+                <ToolTip Background="Transparent" BorderBrush="Transparent">
+                    <Border Background="Black" 
+                        BorderBrush="White" 
+                        BorderThickness="0.75" 
+                        Padding="2"
+                        CornerRadius="3">
+                        <StackPanel Width="300">
+                            <TextBlock Margin="2" Foreground="White" FontSize="18">
+                                <Run Text="Magic Block " />
+                                <Run Text="{Binding MagicBlockRatio, StringFormat=P1}" />
+                            </TextBlock>
+                            <TextBlock Margin="2" Foreground="White" FontSize="12" TextWrapping="Wrap"
+                                       Text="(This defense is added to your chance to block magic attacks from an Enemy Religious Affiliate. This bonus is ONLY valid during Religously affiliated combat; and this value is only against this Enemy Religion.)" />
+                        </StackPanel>
+                    </Border>
+                </ToolTip>
+            </commonView:ValueBar.ToolTip>            
+        </commonView:ValueBar>
     </Grid>
 </UserControl>

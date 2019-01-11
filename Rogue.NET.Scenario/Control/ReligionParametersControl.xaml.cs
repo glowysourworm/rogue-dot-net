@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Control
 {
-    /// <summary>
-    /// Interaction logic for ReligionParametersControl.xaml
-    /// </summary>
     public partial class ReligionParametersControl : UserControl
     {
         public ReligionParametersControl()

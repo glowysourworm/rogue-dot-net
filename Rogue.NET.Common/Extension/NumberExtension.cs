@@ -12,5 +12,19 @@ namespace Rogue.NET.Common.Extension
         {
             return number >= 0 ? "+" : "-";
         }
+
+        public static double Abs(this double number)
+        {
+            return Math.Abs(number);
+        }
+
+        public static double RoundOrderMagnitudeUp(this double number)
+        {
+            // Round up the log_10 of the number - which gives the inverse order-of-magnitude of
+            // the number (or, the number of digits in the exponent as a ceiling)
+            var numberDigits = Math.Ceiling(Math.Log10(number));
+
+            return Math.Pow(10, numberDigits);
+        }
     }
 }
