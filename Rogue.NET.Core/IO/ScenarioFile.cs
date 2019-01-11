@@ -13,6 +13,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 
 namespace Rogue.NET.Core.IO
 {
@@ -31,6 +32,7 @@ namespace Rogue.NET.Core.IO
         public const string SURVIVOR_MODE = "Survivor Mode";
         public const string ENCYCLOPEDIA = "Encyclopedia";
         public const string STATISTICS = "Statistics";
+        public const string RELIGIONS = "Religions";
 
         /// <summary>
         /// Prepend this to level number to identify level section (LEVEL_PREVIX + level.ToString())
@@ -64,6 +66,7 @@ namespace Rogue.NET.Core.IO
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
             byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
+            byte[] religions = BinarySerializer.SerializeAndCompress(dungeon.Religions);
 
             //Build the new header object and buffer simultaneously
             _header.StaticObjects.Clear();
@@ -105,6 +108,10 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(statistics, 0, statistics.Length);
 
             offset += statistics.Length;
+            _header.StaticObjects.Add(new IndexedObject(typeof(Dictionary<string, Religion>), RELIGIONS, offset, religions.Length));
+            dungeonFileStream.Write(religions, 0, religions.Length);
+
+            offset += religions.Length;
             
             //Dynamic contents
             for (int i=1;i<=dungeon.Configuration.DungeonTemplate.NumberOfLevels;i++)
@@ -187,6 +194,9 @@ namespace Rogue.NET.Core.IO
                         break;
                     case STATISTICS:
                         dungeon.Statistics = BinarySerializer.DeserializeAndDecompress<ScenarioStatistics>(buffer);
+                        break;
+                    case RELIGIONS:
+                        dungeon.Religions = BinarySerializer.DeserializeAndDecompress<Dictionary<string, Religion>>(buffer);
                         break;
                 }
             }
@@ -321,6 +331,7 @@ namespace Rogue.NET.Core.IO
             byte[] currentLevel = BitConverter.GetBytes(dungeon.CurrentLevel);
             byte[] survivorMode = BitConverter.GetBytes(dungeon.SurvivorMode);
             byte[] statistics = BinarySerializer.SerializeAndCompress(dungeon.Statistics);
+            byte[] religions = BinarySerializer.SerializeAndCompress(dungeon.Religions);
             
             byte[] encyclopedia = BinarySerializer.SerializeAndCompress(dungeon.ScenarioEncyclopedia);
             //Add to allow other thread processing
@@ -368,6 +379,10 @@ namespace Rogue.NET.Core.IO
             dungeonFileStream.Write(statistics, 0, statistics.Length);
 
             offset += statistics.Length;
+            header.StaticObjects.Add(new IndexedObject(typeof(Dictionary<string, Religion>), RELIGIONS, offset, religions.Length));
+            dungeonFileStream.Write(religions, 0, religions.Length);
+
+            offset += religions.Length;
 
             // compress levels on multiple threads
             var compressedDictionary = new ConcurrentDictionary<int, byte[]>();

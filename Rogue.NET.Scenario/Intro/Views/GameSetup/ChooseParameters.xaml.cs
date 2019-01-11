@@ -109,7 +109,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.SelectedConfiguration.Name,
-                    ReligionName = viewModel.SelectedReligion != null ? viewModel.SelectedReligion.Name : string.Empty,
+                    ReligionName = viewModel.SelectedReligion != null ? viewModel.SelectedReligion.RogueName : string.Empty,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode,
                     AttributeEmphasis = viewModel.AttributeEmphasis

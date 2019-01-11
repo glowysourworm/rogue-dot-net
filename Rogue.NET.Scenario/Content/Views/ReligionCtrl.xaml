@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.ReligionCtrl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:scenarioContentViews="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             xmlns:control="clr-namespace:Rogue.NET.Scenario.Control">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/DarkListBox.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- No Affiliation -->
+        <TextBlock Visibility="{Binding Religion.IsAffiliated, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
+                   Text="No Religious Affiliation" Margin="10"
+                   Foreground="White" FontSize="24" 
+                   TextWrapping="Wrap" HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+
+        <!-- Religious Affiliation -->
+        <Grid Visibility="{Binding Religion.IsAffiliated, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Religion Image -->
+            <Border Grid.Row="1" BorderThickness="0.75" BorderBrush="White">
+                <Image VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4">
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                            <Binding Path="Religion.CharacterSymbol" />
+                            <Binding Path="Religion.CharacterColor" />
+                            <Binding Path="Religion.Icon" />
+                            <Binding Path="Religion.DisplayIcon" />
+                            <Binding Path="Religion.SmileyMood" />
+                            <Binding Path="Religion.SmileyBodyColor" />
+                            <Binding Path="Religion.SmileyLineColor" />
+                            <Binding Path="Religion.SmileyAuraColor" />
+                            <Binding Path="Religion.SymbolType" />
+                        </MultiBinding> 
+                    </Image.Source>
+                </Image>
+            </Border>
+
+            <StackPanel Grid.Column="1">
+                <!-- Religion Name -->
+                <TextBlock Foreground="White" FontSize="20" Text="{Binding Religion.Name}" Margin="10" />
+                
+                <!-- Religion Bonus Attribute -->
+                <TextBlock Foreground="Tan" FontStyle="Italic" Margin="10,0,10,0"
+                           Visibility="{Binding Religion.HasAttributeBonus, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                           FontSize="18" Text="{Binding Religion.AttributeBonus}" />
+                
+                <!-- Religion Bonus Attack Attributes -->
+                <ListBox ItemsSource="{Binding Religion.AttackAttributeBonus}"
+                         Visibility="{Binding Religion.HasAttackAttributeBonus, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                         BorderBrush="Transparent"
+                         Style="{StaticResource DarkListBoxStyle}"
+                         ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <scenarioContentViews:DungeonEncyclopediaAttackAttributeCtrl />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>                         
+            </StackPanel>
+
+        </Grid>
+        
+        <!-- Religion Attack Parameters -->
+        <ListBox Grid.Row="1"
+                 BorderBrush="Transparent"
+                 Visibility="{Binding Religion.IsAffiliated, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                 Style="{StaticResource DarkListBoxStyle}"
+                 ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
+                 ItemsSource="{Binding Religion.AttackParameters}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <control:ReligionParametersControl Visibility="{Binding IsIdentified, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+    </Grid>
+</UserControl>

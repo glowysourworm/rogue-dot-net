@@ -220,6 +220,9 @@
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\ReligionCtrl.xaml.cs">
+      <DependentUpon>ReligionCtrl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Content\Views\ScenarioMessageView.xaml.cs">
       <DependentUpon>ScenarioMessageView.xaml</DependentUpon>
     </Compile>
@@ -231,6 +234,9 @@
     <Compile Include="Controller\ScenarioController.cs" />
     <Compile Include="Control\EllipsePanel.cs" />
     <Compile Include="Control\EllipsePanelAnimation.cs" />
+    <Compile Include="Control\ReligionParametersControl.xaml.cs">
+      <DependentUpon>ReligionParametersControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridIntendedActionTextConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
@@ -356,7 +362,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Content\Views\ReligionCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Content\Views\ScenarioMessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Control\ReligionParametersControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

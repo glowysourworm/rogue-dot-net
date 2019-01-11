@@ -567,13 +567,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
                 return aggregate;
             }).
-            Where(x => x.Attack > 0 || x.Resistance > 0);
+            Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0);
 
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
 
             // Religion 
-            if (player.ReligiousAlteration.IsAffiliated())
+            if (player.ReligiousAlteration.IsAffiliated() &&
+                _modelService.Religions.Any()) // Check that model is loaded (could be that no model has loaded for the level)
+                                               // TODO:  Force view model updates to wait until after IModelService is loaded
             {
                 this.Religion.AffiliationLevel = player.ReligiousAlteration.Affiliation;
                 this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
@@ -591,6 +593,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         .AddRange(player.ReligiousAlteration
                                         .AttackAttributeEffect
                                         .AttackAttributes
+                                        .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
                                         .Select(x => new AttackAttributeViewModel(x)));
                 }
 
@@ -610,13 +613,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 var religion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
 
                 this.Religion.AttackParameters.Clear();
-                this.Religion.AttackParameters.AddRange(religion.AttackParameters.Select(x => 
-                    new ReligionAttackParametersViewModel(
-                        x, 
-                        _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified, 
-                        player.ReligiousAlteration.Affiliation, 
-                        player.GetIntelligence(), 
-                        _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName))));
+                this.Religion
+                    .AttackParameters
+                    .AddRange(religion.AttackParameters
+                                      .Where(x => _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified)
+                                      .Select(x => new ReligionAttackParametersViewModel(
+                                                        x, 
+                                                        _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified, 
+                                                        player.ReligiousAlteration.Affiliation, 
+                                                        player.GetIntelligence(), 
+                                                        _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName))));
             }
             else
                 this.Religion.IsAffiliated = false;

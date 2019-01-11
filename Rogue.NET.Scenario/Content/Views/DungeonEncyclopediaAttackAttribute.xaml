@@ -38,6 +38,14 @@
                 <Run Text="{Binding Resistance, StringFormat=F1}" />
                 <Run Text="R" />
             </TextBlock>
+            <TextBlock Visibility="{Binding Weakness, Converter={StaticResource AttackAttributeVibilityCollapsedConverter}}" 
+                       VerticalAlignment="Center" 
+                       FontSize="14" 
+                       Foreground="Red" 
+                       Margin="4">
+                <Run Text="{Binding Weakness, StringFormat=N0}" />
+                <Run Text="W" />
+            </TextBlock>            
         </StackPanel>
     </Grid>
 </UserControl>

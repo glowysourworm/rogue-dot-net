@@ -24,7 +24,7 @@ namespace Rogue.NET.Core.Converter
             if (values == null)
                 return Binding.DoNothing;
 
-            else if (values.Any(x => x == DependencyProperty.UnsetValue))
+            else if (values.Any(x => x == DependencyProperty.UnsetValue || x == null))
                 return Binding.DoNothing;
 
             else if (values.Length != 9)
