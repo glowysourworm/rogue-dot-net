@@ -1,31 +1,20 @@
-﻿
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Service.Interface;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class ReligionAttackParametersViewModel : ScenarioImageViewModel
+    public class ReligionAttackParametersViewModel : Image, INotifyPropertyChanged
     {
-        bool _isIdentified;
         double _defenseValue;
         double _attackValue;
         double _magicBlockValue;
+        string _rogueName;
 
-        double _defenseRatio;
-        double _attackRatio;
-        double _magicBlockRatio;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        double _attackScale;
-        Range<double> _defenseScale;
-        Range<double> _magicBlockScale;
-
-        public bool IsIdentified
-        {
-            get { return _isIdentified; }
-            set { this.RaiseAndSetIfChanged(ref _isIdentified, value); }
-        }
         public double DefenseValue
         {
             get { return _defenseValue; }
@@ -41,65 +30,41 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _magicBlockValue; }
             set { this.RaiseAndSetIfChanged(ref _magicBlockValue, value); }
         }
-        public double DefenseRatio
+        public string RogueName
         {
-            get { return _defenseRatio; }
-            set { this.RaiseAndSetIfChanged(ref _defenseRatio, value); }
-        }
-        public double AttackRatio
-        {
-            get { return _attackRatio; }
-            set { this.RaiseAndSetIfChanged(ref _attackRatio, value); }
-        }
-        public double MagicBlockRatio
-        {
-            get { return _magicBlockRatio; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlockRatio, value); }
-        }
-        public Range<double> DefenseScale
-        {
-            get { return _defenseScale; }
-            set { this.RaiseAndSetIfChanged(ref _defenseScale, value); }
-        }
-        public double AttackMax
-        {
-            get { return _attackScale; }
-            set { this.RaiseAndSetIfChanged(ref _attackScale, value); }
-        }
-        public Range<double> MagicBlockScale
-        {
-            get { return _magicBlockScale; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlockScale, value); }
-        }
-
-        public ReligionAttackParametersViewModel()
-        {
-
+            get { return _rogueName; }
+            set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
         }
 
         // Use to copy symbol details over
         public ReligionAttackParametersViewModel(
             ReligiousAffiliationAttackParameters attackParameters, 
-            ReligiousAffiliationAttackParameters maxParameters,
-            bool isIdentified,
             double affiliationLevel,
-            double totalIntelligence,
-            Religion religion)
-            : base(religion)
+            Religion religion,
+            IScenarioResourceService scenarioResourceService)
         {
-            this.IsIdentified = isIdentified;
             this.AttackValue = attackParameters.AttackMultiplier * affiliationLevel;
             this.DefenseValue = attackParameters.DefenseMultiplier * affiliationLevel;
-            this.MagicBlockValue = attackParameters.BlockMultiplier * affiliationLevel;
+            this.MagicBlockValue = attackParameters.BlockMultiplier * affiliationLevel * 10;
 
-            this.AttackRatio = affiliationLevel * attackParameters.AttackMultiplier;
-            this.DefenseRatio = affiliationLevel * attackParameters.DefenseMultiplier;
-            this.MagicBlockRatio = affiliationLevel * attackParameters.BlockMultiplier;
+            this.RogueName = religion.RogueName;
 
-            this.AttackMax = (affiliationLevel * attackParameters.AttackMultiplier).RoundOrderMagnitudeUp();
-            this.DefenseScale = new Range<double>(-1 * (affiliationLevel * attackParameters.DefenseMultiplier).RoundOrderMagnitudeUp(),
-                                                       (affiliationLevel * attackParameters.DefenseMultiplier).RoundOrderMagnitudeUp());
-            this.MagicBlockScale = new Range<double>(-1 , 1);
+            this.Source = scenarioResourceService.GetImageSource(religion);
+        }
+
+        public void Update(ReligiousAffiliationAttackParameters attackParameters, double affiliationLevel)
+        {
+            this.AttackValue = attackParameters.AttackMultiplier * affiliationLevel;
+            this.DefenseValue = attackParameters.DefenseMultiplier * affiliationLevel;
+            this.MagicBlockValue = attackParameters.BlockMultiplier * affiliationLevel * 10;
+        }
+
+        protected void RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
+        {
+            field = value;
+
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(memberName));
         }
     }
 }
