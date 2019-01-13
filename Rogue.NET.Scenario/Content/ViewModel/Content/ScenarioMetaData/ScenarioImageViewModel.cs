@@ -1,15 +1,14 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
-    public class ScenarioImageViewModel : NotifyViewModel
+    public class ScenarioImageViewModel : RogueBaseViewModel
     {
         #region (private) Backing Fields
         // Base Data
-        string _id;
-        string _rogueName;
         string _displayName;
 
         // Symbol Data
@@ -25,16 +24,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         #endregion
 
         #region (public) Properties
-        public string Id
-        {
-            get { return _id; }
-            private set { this.RaiseAndSetIfChanged(ref _id, value); }
-        }
-        public string RogueName
-        {
-            get { return _rogueName; }
-            protected set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
-        }
         public string DisplayName
         {
             get { return _displayName; }
@@ -101,13 +90,26 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
 
         public ScenarioImageViewModel() { }
-        public ScenarioImageViewModel(ScenarioImage scenarioObject)
+        public ScenarioImageViewModel(ScenarioImage scenarioObject) : base(scenarioObject)
         {
-            this.Id = scenarioObject.Id;
-            this.RogueName = scenarioObject.RogueName;
             this.DisplayName = scenarioObject.RogueName;  // TODO - set if identified
 
             UpdateSymbol(scenarioObject);
+        }
+        public ScenarioImageViewModel(string id, string rogueName, SymbolDetailsTemplate symbolDetailsTemplate)
+            : base (id, rogueName)
+        {
+            this.DisplayName = rogueName;
+
+            this.CharacterColor = symbolDetailsTemplate.CharacterColor;
+            this.CharacterSymbol = symbolDetailsTemplate.CharacterSymbol;
+            this.DisplayIcon = symbolDetailsTemplate.DisplayIcon;
+            this.Icon = symbolDetailsTemplate.Icon;
+            this.SmileyAuraColor = symbolDetailsTemplate.SmileyAuraColor;
+            this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
+            this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
+            this.SmileyMood = symbolDetailsTemplate.SmileyMood;
+            this.SymbolType = symbolDetailsTemplate.Type;
         }
     }
 }

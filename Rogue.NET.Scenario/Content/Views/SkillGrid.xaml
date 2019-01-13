@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-             xmlns:commonviews="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
              xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
@@ -12,275 +12,121 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
-                <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
-                <ResourceDictionary>
-                    <scenarioConverter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
-                    <scenarioConverter:SkillSetProgressConverter x:Key="SkillSetProgressConverter" />
-
-                    <Style x:Key="ButtonFocusVisual">
-                        <Setter Property="Control.Template">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <Rectangle Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1" Margin="2" SnapsToDevicePixels="true"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="DownButtonStyle" TargetType="{x:Type Button}">
-                        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-                        <Setter Property="BorderThickness" Value="1"/>
-                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="Padding" Value="1"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Button}">
-                                    <Grid>
-                                        <Ellipse Fill="Black" Stroke="White" Margin="0"/>
-                                        <Path Fill="White" Stretch="Fill" Stroke="White" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="12" Height="12" Data="M8.2526676,11.509882 L13.333554,1.4800967 2.249798,1.3184929 z"/>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsKeyboardFocused" Value="true"/>
-                                        <Trigger Property="ToggleButton.IsChecked" Value="true"/>
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="#ADADAD"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <coreView:Smiley x:Key="PurpleSmiley" SmileyColor="Purple" SmileyLineColor="Yellow" Width="10" Height="15" SmileyMood="Indifferent" SmileyRadius="2" />
-                    <DataTemplate x:Key="ImageCellTemplate">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <Image VerticalAlignment="Center"
-                                   Source="{Binding ScenarioImageViewModelSourceConverter}">
-                            </Image>
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate x:Key="ProgressColumnTemplate">
-                        <Grid Width="Auto" VerticalAlignment="Stretch" Height="32">
-                            <commonviews:ProgressBar VerticalAlignment="Stretch" 
-                                                     ValueMax="1" 
-                                                     Width="75" 
-                                                     ValueTextBrush="Pink" 
-                                                     HeaderTextOn="False"  
-                                                     TextOn="False" 
-                                                     TextFormat="F3" 
-                                                     BarColor1="Purple" 
-                                                     Margin="0" 
-                                                     Height="32">
-                                <commonviews:ProgressBar.Value>
-                                    <MultiBinding Converter="{StaticResource SkillSetProgressConverter}">
-                                        <Binding Path="Level" />
-                                        <Binding Path="LevelMax" />
-                                        <Binding Path="SkillProgress" />
-                                    </MultiBinding>
-                                </commonviews:ProgressBar.Value>
-                                <commonviews:ProgressBar.Value2>
-                                    <MultiBinding Converter="{StaticResource SkillSetProgressConverter}">
-                                        <Binding Path="Level" />
-                                        <Binding Path="LevelMax" />
-                                        <Binding Path="SkillProgress" />
-                                    </MultiBinding>
-                                </commonviews:ProgressBar.Value2>
-                            </commonviews:ProgressBar>
-                            <Grid Margin="0" Width="Auto">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="24.75"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="LevelText" Margin="0" TextWrapping="Wrap" Text="{Binding DisplayLevel}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock x:Name="NameTExt" Margin="4,0,0,0" TextWrapping="Wrap" Text="{Binding RogueName}" Foreground="#FFF5FF98" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"/>
-                            </Grid>
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate x:Key="EmphasisColumnTemplate">
-                        <Grid VerticalAlignment="Stretch" 
-                              HorizontalAlignment="Center">
-                            <local:Emphasis VerticalAlignment="Center" Value="{Binding Emphasis}" RedOrbHeight="16" />
-                        </Grid>
-                    </DataTemplate>
-                    <DataTemplate x:Key="UpDownColumnTemplate">
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <StackPanel>
-                                <Button x:Name="UpButton" Command="{Binding EmphasizeSkillUpCommand}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/UpArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,2" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
-                                <Button x:Name="DownButton" Command="{Binding EmphasizeSkillDownCommand}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/DownArrow.png" Background="Black" BorderBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,2" Style="{DynamicResource ShinyButtonStyle}" Width="14" Height="14" Cursor="Hand"/>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                    <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Foreground" Value="White" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black">
-                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Text="{TemplateBinding Content}" Background="Black" Foreground="LightBlue" FontSize="16" Padding="2,8,8,8" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="ColumnHeaderGripperStyle" TargetType="{x:Type Thumb}">
-                        <Setter Property="Width" Value="8"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Cursor" Value="SizeWE"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Thumb}">
-                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="Rogue2DataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                                    <Grid>
-                                        <Microsoft_Windows_Themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" IsClickable="{TemplateBinding CanUserSort}" IsPressed="{TemplateBinding IsPressed}" IsHovered="{TemplateBinding IsMouseOver}" Padding="{TemplateBinding Padding}" SortDirection="{TemplateBinding SortDirection}" SeparatorBrush="{TemplateBinding SeparatorBrush}" SeparatorVisibility="{TemplateBinding SeparatorVisibility}" Background="Black">
-                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                        </Microsoft_Windows_Themes:DataGridHeaderBorder>
-                                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" Width="1" Background="#00000000"/>
-                                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" Width="1" Background="#00000000"/>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style x:Key="Rogue2DataGridRowStyle" TargetType="{x:Type DataGridRow}">
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-                        <Setter Property="SnapsToDevicePixels" Value="true"/>
-                        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
-                        <Setter Property="BorderBrush" Value="#2Faa99aa" />
-                        <Setter Property="ValidationErrorTemplate">
-                            <Setter.Value>
-                                <ControlTemplate>
-                                    <TextBlock Foreground="Red" Margin="2,0,0,0" Text="!" VerticalAlignment="Center"/>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="ToolTip">
-                            <Setter.Value>
-                                <ToolTip Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityHiddenConverter}}">
-                                    <ToolTip.Template>
-                                        <ControlTemplate>
-                                            <Border Background="Black" BorderBrush="Beige" CornerRadius="4" BorderThickness="0.5">
-                                                <StackPanel Margin="8" Orientation="Horizontal">
-                                                    <ContentPresenter Margin="4" Content="{StaticResource PurpleSmiley}" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                                    <TextBlock Margin="4" Text="{Binding LevelLearned, Converter={StaticResource SkillGridLevelLearnedTooltipConverter}}" VerticalAlignment="Center" Background="Black" Foreground="Beige" />
-                                                </StackPanel>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </ToolTip.Template>
-                                </ToolTip>
-                            </Setter.Value>
-                        </Setter>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridRow}">
-                                    <Border x:Name="DGR_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" IsEnabled="{Binding IsLearned}">
-                                        <Border.Effect>
-                                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource BoolIntConverter}}"/>
-                                        </Border.Effect>
-                                        <SelectiveScrollingGrid>
-                                            <SelectiveScrollingGrid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </SelectiveScrollingGrid.ColumnDefinitions>
-                                            <SelectiveScrollingGrid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </SelectiveScrollingGrid.RowDefinitions>
-                                            <DataGridCellsPresenter Grid.Column="1" ItemsPanel="{TemplateBinding ItemsPanel}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                            <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Visibility="{TemplateBinding DetailsVisibility}"/>
-                                            <DataGridRowHeader Grid.RowSpan="2" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical" Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                                        </SelectiveScrollingGrid>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-    	<DataGrid x:Name="TheGrid" 
-    		Foreground="White" 
-    		IsReadOnly="True"
-    		BorderBrush="Black"
-    		AutoGenerateColumns="False"
-    		HorizontalContentAlignment="Stretch" 
-    		VerticalContentAlignment="Stretch"
-    		HorizontalAlignment="Stretch"
-    		VerticalAlignment="Stretch"
-    		RowHeaderWidth="0" 
-    		CanUserSortColumns="False" 
-    		CanUserResizeColumns="False" 
-    		CanUserReorderColumns="False" 
-    		CanUserResizeRows="False" 
-            GridLinesVisibility="None"
-    		HorizontalScrollBarVisibility="Hidden"
-    		VerticalScrollBarVisibility="Auto"
-    		RowBackground="Black"
-            Style="{DynamicResource Rogue2ItemDataGridStyle}" 
-    		SelectionUnit="FullRow" ColumnHeaderStyle="{DynamicResource Rogue2DataGridColumnHeaderStyle}" 
-    		ItemsSource="{Binding SkillSets}" Background="#00F0F0F0" RowStyle="{DynamicResource Rogue2DataGridRowStyle}">
-    		<DataGrid.Columns>
-                <!-- ICON, Level, Name, PRogress, Emphasis, Up/Down, Activate-->
-    			<DataGridTemplateColumn CellTemplate="{StaticResource ImageCellTemplate}"   HeaderStyle="{StaticResource HeaderStyle}" />
-    			<DataGridTemplateColumn Header="" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource ProgressColumnTemplate}" Width="*" />
-    			<DataGridTemplateColumn Header="" Width="50" HeaderStyle="{StaticResource HeaderStyle}"  CellTemplate="{StaticResource EmphasisColumnTemplate}" />
-    			<DataGridTemplateColumn Header="" HeaderStyle="{StaticResource HeaderStyle}" CellTemplate="{StaticResource UpDownColumnTemplate}" />
-                <DataGridTemplateColumn Header=""  HeaderStyle="{StaticResource HeaderStyle}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <RadioButton Style="{StaticResource RadioButtonStyle}" Command="{Binding ActivateSkillCommand}" IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" GroupName="SkillRadioButtons" Height="18" Width="18" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-    		<DataGrid.HorizontalGridLinesBrush>
-                <SolidColorBrush Color="#2Faa99aa" />
-            </DataGrid.HorizontalGridLinesBrush>
-    		<DataGrid.CellStyle>
-    			<Style TargetType="{x:Type DataGridCell}">
-    				<Setter Property="FontSize" Value="14" />
-    				<Setter Property="HorizontalAlignment" Value="Stretch" />
-    				<Setter Property="VerticalAlignment" Value="Center" />
-    				<Setter Property="HorizontalContentAlignment" Value="Center" />
-    				<Setter Property="VerticalContentAlignment" Value="Center" />
-    				<Setter Property="Background" Value="Black" />
-    				<Setter Property="Foreground" Value="White" />
-    				<Setter Property="BorderThickness" Value="2" />
-    				<Setter Property="BorderBrush" Value="Black" />
-    				<Setter Property="ContentStringFormat" Value="F2" />
-    				<Style.Triggers>
-    					<Trigger Property="IsMouseOver" Value="True"/>
-    					<Trigger Property="IsSelected" Value="True">
-    						<Setter Property="BorderBrush" Value="Black" />
-    					</Trigger>
-    					<MultiDataTrigger>
-    						<MultiDataTrigger.Conditions>
-    							<Condition Binding="{Binding IsEquiped}" Value="True" />
-    							<Condition Binding="{Binding IsCursed}" Value="False" />
-    						</MultiDataTrigger.Conditions>
-    						<Setter Property="Foreground" Value="LightGreen" />
-    					</MultiDataTrigger>
-    					<MultiDataTrigger>
-    						<MultiDataTrigger.Conditions>
-    							<Condition Binding="{Binding IsEquiped}" Value="True" />
-    							<Condition Binding="{Binding IsCursed}" Value="True" />
-    						</MultiDataTrigger.Conditions>
-    						<Setter Property="Foreground" Value="Red" />
-    					</MultiDataTrigger>
-    				</Style.Triggers>
-    			</Style>
-    		</DataGrid.CellStyle>
-    	</DataGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <!-- Points Available -->
+        <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="4">
+            <Run Text="Points: " />
+            <Run Text="{Binding PointsAvailable}" />
+        </TextBlock>
+        
+        <!-- Point Experience -->
+        <commonView:ProgressBar BarColor1="Purple" Margin="4" Value="{Binding PointExperience}" ValueMax="{Binding PointExperienceNext}" />
+        
+        <!-- Skill Sets -->
+        <ItemsControl ItemsSource="{Binding SkillSets}"
+                      Margin="4">
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <!-- Have to add a scroll viewer for the items -->
+                    <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border IsEnabled="{Binding IsLearned}">
+                        <!-- Gray out if Skill Set not yet learned -->
+                        <Border.Effect>
+                            <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource BoolIntConverter}}"/>
+                        </Border.Effect>
+                        
+                        <!-- Tooltip with Purple Smiley -->
+                        <Border.ToolTip>
+                            <ToolTip ToolTipService.IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
+                                     Background="Transparent"
+                                     BorderBrush="Transparent"
+                                     Padding="0"
+                                     Margin="0">
+                                <Border Background="Black" Padding="10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <coreView:Smiley SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
+                                        <StackPanel>
+                                            <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
+                                            <TextBlock Foreground="LightBlue" FontSize="14" Margin="4">
+                                                <Run Text="Required Level: " />
+                                                <Run Text="{Binding LevelLearned}" />
+                                            </TextBlock>
+                                            <TextBlock Foreground="LightBlue" FontSize="14" Margin="4">
+                                                <Run Text="Required Religion: " />
+                                                <Run Text="{Binding ReligiousAffiliationRequirementName}" />
+                                                <Run Text=" " />
+                                                <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </ToolTip>
+                        </Border.ToolTip>
+                        
+                        <!-- Skill Set -->
+                        <StackPanel Orientation="Horizontal">
+                            
+                            <!-- Symbol -->
+                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                        <Binding Path="Religion.CharacterSymbol" />
+                                        <Binding Path="Religion.CharacterColor" />
+                                        <Binding Path="Religion.Icon" />
+                                        <Binding Path="Religion.DisplayIcon" />
+                                        <Binding Path="Religion.SmileyMood" />
+                                        <Binding Path="Religion.SmileyBodyColor" />
+                                        <Binding Path="Religion.SmileyLineColor" />
+                                        <Binding Path="Religion.SmileyAuraColor" />
+                                        <Binding Path="Religion.SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+
+                            <!-- Name / Selected Skill Name -->
+                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
+                                <Run Text="{Binding RogueName}" />
+                                <Run Text="/" />
+                                <Run Text="{Binding SelectedSkill.RogueName}" />
+                            </TextBlock>
+                            
+                            <!-- Button to Go-To Skill Screen -->
+                            <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" 
+                                       VerticalAlignment="Center" Margin="4" Text="&#xf06e;" />
+                            
+                            <!-- Skill Selection Buttons -->
+                            <StackPanel>
+                                <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand"
+                                        Width="14" Height="14" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" />
+                                <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand"
+                                        Width="14" Height="14" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" />
+                            </StackPanel>
+                            
+                            <!-- Activate Button -->
+                            <RadioButton GroupName="ActivateGroup" Height="18" Width="18" Cursor="Hand"
+                                         Style="{StaticResource RadioButtonStyle}" VerticalAlignment="Center" />
+
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

@@ -40,14 +40,14 @@ namespace Rogue.NET.Core.Model.Enums
         Identify,
         Drop,
         Fire,
-        EmphasizeSkillUp,
-        EmphasizeSkillDown,
+        ChangeSkillLevelUp,
+        ChangeSkillLevelDown,
         ActivateSkill,
         CycleSkill,
+        RenounceReligion,
         DebugNext,
         DebugExperience,
-        DebugIdentifyAll,
-        DebugSkillUp,
+        DebugIdentifyAll
     }
 
     /// <summary>

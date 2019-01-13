@@ -27,10 +27,5 @@ namespace Rogue.NET.Core.Logic.Interface
         /// Gives the Player 10,000 experience
         /// </summary>
         void GivePlayerExperience();
-
-        /// <summary>
-        /// Advances player skills 1 level
-        /// </summary>
-        void GivePlayerSkillExperience();
     }
 }

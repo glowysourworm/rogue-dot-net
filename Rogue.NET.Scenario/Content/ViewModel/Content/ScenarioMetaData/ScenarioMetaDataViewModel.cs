@@ -1,6 +1,5 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Service.Interface;
 using System.Collections.ObjectModel;
@@ -10,7 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Linq;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
+
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
     public class ScenarioMetaDataViewModel : Image, INotifyPropertyChanged
     {
@@ -91,7 +92,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public ObservableCollection<ScenarioMetaDataAttackAttributeViewModel> AttackAttributes { get; set; }
 
-        public ScenarioMetaDataViewModel(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
+        public ScenarioMetaDataViewModel(ScenarioMetaDataClass metaData, IScenarioResourceService scenarioResourceService)
         {
             this.Height = ModelConstants.CellHeight * 2;
             this.Width = ModelConstants.CellWidth * 2;
@@ -104,7 +105,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             Update(metaData, scenarioResourceService);
         }
 
-        public void Update(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
+        public void Update(ScenarioMetaDataClass metaData, IScenarioResourceService scenarioResourceService)
         {
             this.Id = metaData.Id;
             this.RogueName = metaData.RogueName;

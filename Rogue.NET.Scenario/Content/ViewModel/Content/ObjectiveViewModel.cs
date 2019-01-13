@@ -1,12 +1,7 @@
-﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -23,7 +18,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             set { this.RaiseAndSetIfChanged(ref _isCompleted, value); }
         }
 
-        public ObjectiveViewModel(ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService) 
+        public ObjectiveViewModel(ScenarioMetaDataClass metaData, IScenarioResourceService scenarioResourceService) 
             : base(metaData, scenarioResourceService)
         {
         }

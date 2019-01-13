@@ -13,6 +13,7 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Intro.ViewModel
 {

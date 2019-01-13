@@ -1,7 +1,6 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Converter;
+﻿using Rogue.NET.Core.Converter;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System;
 using System.Globalization;
 using System.Windows.Data;

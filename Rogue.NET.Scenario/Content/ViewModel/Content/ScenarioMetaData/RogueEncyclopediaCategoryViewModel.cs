@@ -10,7 +10,7 @@ using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Common.ViewModel;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
     public class RogueEncyclopediaCategoryViewModel : Image, INotifyPropertyChanged
     {

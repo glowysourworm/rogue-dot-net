@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+using ReligionClass = Rogue.NET.Core.Model.Scenario.Content.Religion.Religion;
+
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.Religion
 {
     public class ReligionAttackParametersViewModel : Image, INotifyPropertyChanged
     {
@@ -40,7 +42,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public ReligionAttackParametersViewModel(
             ReligiousAffiliationAttackParameters attackParameters, 
             double affiliationLevel,
-            Religion religion,
+            ReligionClass religion,
             IScenarioResourceService scenarioResourceService)
         {
             this.AttackValue = attackParameters.AttackMultiplier * affiliationLevel;

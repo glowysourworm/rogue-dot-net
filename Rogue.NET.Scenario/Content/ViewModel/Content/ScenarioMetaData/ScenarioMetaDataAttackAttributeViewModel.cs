@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
     public class ScenarioMetaDataAttackAttributeViewModel : ScenarioImageViewModel
     {

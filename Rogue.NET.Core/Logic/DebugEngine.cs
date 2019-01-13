@@ -54,17 +54,6 @@ namespace Rogue.NET.Core.Logic
             LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
         }
 
-        public void GivePlayerSkillExperience()
-        {
-            foreach (var skillSet in _modelService.Player.SkillSets)
-            {
-                if (skillSet.Level < _modelService.Player.SkillSets.Count)
-                    skillSet.Level++;
-            }
-
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
-        }
-
         public void IdentifyAll()
         {
             foreach (var item in _modelService.Player.Inventory.Values)

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
     public class AlterationAttributeViewModel : NotifyViewModel
     {

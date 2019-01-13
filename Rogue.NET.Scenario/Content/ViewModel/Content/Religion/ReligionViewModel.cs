@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.Religion
 {
     public class ReligionViewModel : ScenarioImageViewModel
     {

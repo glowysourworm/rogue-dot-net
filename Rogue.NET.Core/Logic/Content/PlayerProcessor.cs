@@ -99,61 +99,9 @@ namespace Rogue.NET.Core.Logic.Content
             // Add to player experience
             player.Experience += slainEnemy.ExperienceGiven;
 
-            // Skill Progress - Player gets boost on enemy death
+            // Check for point advancement
 
-            // Foreach SkillSet that can still require learning (From slain enemy reward)
-            foreach (var skill in player.SkillSets.Where(x => (x.Level < x.Skills.Count) && x.IsActive))
-            {
-                switch (skill.Emphasis)
-                {
-                    case 1:
-                        skill.SkillProgress += ModelConstants.SkillLowProgressIncrement;
-                        player.Hunger += ModelConstants.SkillLowHungerIncrement;
-                        break;
-                    case 2:
-                        skill.SkillProgress += ModelConstants.SkillMediumProgressIncrement;
-                        player.Hunger += ModelConstants.SkillMediumHungerIncrement;
-                        break;
-                    case 3:
-                        skill.SkillProgress += ModelConstants.SkillHighProgressIncrement;
-                        player.Hunger += ModelConstants.SkillHighHungerIncrement;
-                        break;
-                }
-
-                // Show message to user
-                if (skill.Emphasis > 0 && skill.Level < skill.Skills.Count)
-                {
-                    _scenarioMessageService.Publish(
-                        ScenarioMessagePriority.Normal,
-                        "{0} has progressed to {1}",
-                        skill.RogueName,
-                        skill.SkillProgress.ToString("P1"));
-                }
-
-                if (skill.SkillProgress >= 1)
-                {
-                    if (skill.Level < skill.Skills.Count)
-                    {
-                        //Deactivate if currently turned on
-                        if (skill.IsTurnedOn && skill.GetCurrentSkillAlteration().IsPassive())
-                        {
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skill.RogueName);
-
-                            // Deactive the passive alteration - referenced by Spell Id
-                            player.Alteration.DeactivatePassiveAlteration(skill.GetCurrentSkillAlteration().Id);
-
-                            skill.IsTurnedOn = false;
-                        }
-
-                        skill.Level++;
-                        skill.SkillProgress = 0;
-
-                        _scenarioMessageService.PublishSkillAdvancement(ScenarioMessagePriority.Good, skill.RogueName, skill.Level + 1);
-                    }
-                    else
-                        skill.SkillProgress = 1;
-                }
-            }
+            // TODO
         }
 
         public Equipment GetEquippedType(Player player, EquipmentType type)

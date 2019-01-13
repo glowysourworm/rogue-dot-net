@@ -658,28 +658,6 @@ namespace Rogue.NET.Core.Logic
             // Queue update for all skill sets
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.SkillSets.Select(x => x.Id).ToArray());
         }
-        public void EmphasizeSkillUp(string skillSetId)
-        {
-            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.Id == skillSetId);
-            if (skillSet != null)
-            {
-                if (skillSet.Emphasis < 3)
-                    skillSet.Emphasis++;
-            }
-
-            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, skillSet.Id);
-        }
-        public void EmphasizeSkillDown(string skillSetId)
-        {
-            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.Id == skillSetId);
-            if (skillSet != null)
-            {
-                if (skillSet.Emphasis > 0)
-                    skillSet.Emphasis--;
-            }
-
-            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, skillSet.Id);
-        }
         public LevelContinuationAction InvokePlayerSkill()
         {
             var activeSkillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.IsActive == true);

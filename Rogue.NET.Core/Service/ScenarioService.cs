@@ -245,18 +245,6 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.EmphasizeSkillDown:
-                    {
-                        _scenarioEngine.EmphasizeSkillDown(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelAction.EmphasizeSkillUp:
-                    {
-                        _scenarioEngine.EmphasizeSkillUp(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
                 case LevelAction.ActivateSkill:
                     {
                         _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, true);
@@ -268,6 +256,12 @@ namespace Rogue.NET.Core.Service
                         _scenarioEngine.CycleActiveSkill();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
+                    break;
+                case LevelAction.ChangeSkillLevelDown:
+                    break;
+                case LevelAction.ChangeSkillLevelUp:
+                    break;
+                case LevelAction.RenounceReligion:
                     break;
 
 #if DEBUG
@@ -286,12 +280,6 @@ namespace Rogue.NET.Core.Service
                 case LevelAction.DebugExperience:
                     {
                         _debugEngine.GivePlayerExperience();
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelAction.DebugSkillUp:
-                    {
-                        _debugEngine.GivePlayerSkillExperience();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;

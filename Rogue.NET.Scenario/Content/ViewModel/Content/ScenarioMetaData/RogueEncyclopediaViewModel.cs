@@ -1,20 +1,20 @@
 ﻿using Prism.Events;
+
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model;
-using System;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Common.ViewModel;
-using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario;
-using System.Windows.Input;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content
+using System;
+using System.Linq;
+using System.ComponentModel.Composition;
+
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
+
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(RogueEncyclopediaViewModel))]
@@ -125,7 +125,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             OnPropertyChanged("Categories");
         }
 
-        private void UpdateCategory(RogueEncyclopediaCategoryViewModel category, ScenarioMetaData metaData, IScenarioResourceService scenarioResourceService)
+        private void UpdateCategory(RogueEncyclopediaCategoryViewModel category, ScenarioMetaDataClass metaData, IScenarioResourceService scenarioResourceService)
         {
             if (category == null)
                 throw new Exception("Unknown Scenario MetaData Type");

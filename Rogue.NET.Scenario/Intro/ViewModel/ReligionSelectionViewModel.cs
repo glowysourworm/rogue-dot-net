@@ -1,15 +1,7 @@
-﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
-using System;
-using System.Collections.Generic;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.ViewModel

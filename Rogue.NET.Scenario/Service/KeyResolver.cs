@@ -86,8 +86,6 @@ namespace Rogue.NET.Scenario.Service
                 return new UserCommandEventArgs(LevelAction.DebugExperience, Compass.Null, "");
             else if (key == Key.Q)
                 return new UserCommandEventArgs(LevelAction.DebugIdentifyAll, Compass.Null, "");
-            else if (key == Key.A)
-                return new UserCommandEventArgs(LevelAction.DebugSkillUp, Compass.Null, "");
 #endif
             //Debug*******
 

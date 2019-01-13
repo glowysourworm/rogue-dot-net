@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 
 namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 {
@@ -54,6 +55,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         string _characterSymbol;
         string _characterColor;
         ImageResources _icon;
+        DisplayImageResources _displayIcon;
         SmileyMoods _smileyMood;
         string _smileyBodyColor;
         string _smileyLineColor;
@@ -241,6 +243,11 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _icon; }
             set { this.RaiseAndSetIfChanged(ref _icon, value); }
         }
+        public DisplayImageResources DisplayIcon
+        {
+            get { return _displayIcon; }
+            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
+        }
         public SmileyMoods SmileyMood
         {
             get { return _smileyMood; }
@@ -327,6 +334,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.CharacterSymbol = consumable.CharacterSymbol;
             this.CharacterColor = consumable.CharacterColor;
             this.Icon = consumable.Icon;
+            this.DisplayIcon = consumable.DisplayIcon;
             this.SmileyMood = consumable.SmileyMood;
             this.SmileyBodyColor = consumable.SmileyBodyColor;
             this.SmileyLineColor = consumable.SmileyLineColor;
@@ -414,6 +422,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.CharacterSymbol = equipment.CharacterSymbol;
             this.CharacterColor = equipment.CharacterColor;
             this.Icon = equipment.Icon;
+            this.DisplayIcon = equipment.DisplayIcon;
             this.SmileyMood = equipment.SmileyMood;
             this.SmileyBodyColor = equipment.SmileyBodyColor;
             this.SmileyLineColor = equipment.SmileyLineColor;

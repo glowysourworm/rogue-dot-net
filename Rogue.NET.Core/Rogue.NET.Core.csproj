@@ -252,6 +252,8 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCostTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationCostTemplateExtension.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationEffectTemplateExtension.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SpellTemplate.cs" />

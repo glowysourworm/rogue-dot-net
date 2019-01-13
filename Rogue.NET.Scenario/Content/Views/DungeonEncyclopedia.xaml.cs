@@ -8,6 +8,7 @@ using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System.Windows.Threading;
 using System.Windows.Input;
 using Prism.Commands;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Views
 {

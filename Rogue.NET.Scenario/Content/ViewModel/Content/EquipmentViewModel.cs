@@ -1,10 +1,5 @@
-﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {

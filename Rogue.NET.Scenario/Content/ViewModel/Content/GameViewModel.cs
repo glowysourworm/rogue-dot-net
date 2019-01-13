@@ -2,6 +2,7 @@
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Scenario.Events.Content;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;

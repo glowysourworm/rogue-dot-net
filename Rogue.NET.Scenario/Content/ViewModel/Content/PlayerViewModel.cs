@@ -20,6 +20,9 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Religion;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -35,9 +38,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         #region (private) Backing Fields
         int _level;
+        int _pointLevel;
+        int _pointsAvailable;
         string _class;
         double _experience;
         double _experienceNext;
+        double _pointExperience;
+        double _pointExperienceNext;
         double _hunger;
         double _haul;
         double _haulMax;
@@ -92,6 +99,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _level; }
             set { this.RaiseAndSetIfChanged(ref _level, value); }
         }
+        public int PointLevel
+        {
+            get { return _pointLevel; }
+            set { this.RaiseAndSetIfChanged(ref _pointLevel, value); }
+        }
+        public int PointsAvailable
+        {
+            get { return _pointsAvailable; }
+            set { this.RaiseAndSetIfChanged(ref _pointsAvailable, value); }
+        }
         public string Class
         {
             get { return _class; }
@@ -106,6 +123,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _experienceNext; }
             set { this.RaiseAndSetIfChanged(ref _experienceNext, value); }
+        }
+        public double PointExperience
+        {
+            get { return _pointExperience; }
+            set { this.RaiseAndSetIfChanged(ref _pointExperience, value); }
+        }
+        public double PointExperienceNext
+        {
+            get { return _pointExperienceNext; }
+            set { this.RaiseAndSetIfChanged(ref _pointExperienceNext, value); }
         }
         public double Hunger
         {
@@ -415,12 +442,31 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Base Collections
-            SynchronizeCollection(player.SkillSets, this.SkillSets, x => new SkillSetViewModel(x, _eventAggregator));
+            SynchronizeCollection(
+                player.SkillSets, 
+                this.SkillSets, 
+                x => new SkillSetViewModel(x, _eventAggregator),
+                (source, dest) =>
+                {
+                    // Update
+                    dest.IsActive = source.IsActive;
+                    dest.IsLearned = source.IsLearned;
+                    dest.IsTurnedOn = source.IsTurnedOn;
+                    dest.Skills.ForEach(skill =>
+                    {
+                        var skillSource = source.Skills.First(x => x.Id == skill.Id);
 
-            // Active Skill
+                        skill.IsLearned = skillSource.IsLearned;
+                    });
+                });
+
+            // Active Skill Set -> Active Skill
             var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
 
             this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, _eventAggregator);
+
+            if (this.ActiveSkillSet != null)
+                this.ActiveSkillSet.ActiveSkill = this.ActiveSkillSet.Skills.First(x => x.Id == activeSkillSet.SelectedSkill.Id);
 
             // Player Stats
             this.Level = player.Level;
@@ -441,46 +487,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             // Alterations
             this.Alterations.Clear();
-            this.Alterations.AddRange(player.Alteration.Get().Select(tuple =>
-            {
-                return new AlterationViewModel()
-                {
-                    DisplayName = tuple.Item4.DisplayName,
-                    Type = tuple.Item1 == AlterationType.PassiveAura ? "Aura" :
-                           tuple.Item1 == AlterationType.PassiveSource ? "Passive" :
-                           tuple.Item1 == AlterationType.TemporarySource ? "Temporary" :
-                           tuple.Item1 == AlterationType.AttackAttribute ?
-                               tuple.Item2 == AlterationAttackAttributeType.Passive ? "Passive" :
-                               tuple.Item2 == AlterationAttackAttributeType.TemporaryFriendlySource ? "Temporary (Friendly)" : 
-                               tuple.Item2 == AlterationAttackAttributeType.TemporaryMalignSource ? "Temporary (Malign)" : "" : "",
-                    AlteredCharacterState = tuple.Item4.State == null ? null : new ScenarioImageViewModel(tuple.Item4.State),
-                    AlterationCostAttributes = tuple.Item3 != null ? 
-                        new ObservableCollection<AlterationAttributeViewModel>(
-                            tuple.Item3.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
-                            {
-                                AttributeName = x.Key,
-                                AttributeValue = x.Value.ToString("F2")
-                            })) :
-                        new ObservableCollection<AlterationAttributeViewModel>(),
-
-                    AlterationEffectAttributes =
-                        new ObservableCollection<AlterationAttributeViewModel>(
-                            tuple.Item4.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
-                            {
-                                AttributeName = x.Key,
-                                AttributeValue = x.Value.ToString("F2")
-                            })),
-
-                    AlterationEffectAttackAttributes = 
-                        new ObservableCollection<AttackAttributeViewModel>(
-                            tuple.Item4.AttackAttributes
-                                       .Where(x => x.Attack > 0 || x.Resistance > 0)
-                                       .Select(x => new AttackAttributeViewModel(x))),
-
-                    IsAlteredState = tuple.Item4.State != null && 
-                                     tuple.Item4.State.BaseType != CharacterStateType.Normal
-                };
-            }));
+            this.Alterations.AddRange(player.Alteration.Get().Select(tuple => new AlterationViewModel(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4)));
 
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
@@ -646,7 +653,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         private void SynchronizeCollection<TSource, TDest>(
                         IEnumerable<TSource> sourceCollection, 
                         IList<TDest> destCollection,
-                        Func<TSource, TDest> constructor) where TSource : ScenarioImage
+                        Func<TSource, TDest> constructor,
+                        Action<TSource, TDest> update) where TSource : ScenarioImage
                                                            where TDest : ScenarioImageViewModel
         {
             foreach (var item in sourceCollection)
@@ -659,7 +667,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
                 // Update
                 else
-                    item.Update(destItem);
+                    update(item, destItem);
             }
             for (int i = destCollection.Count - 1; i >= 0; i--)
             {

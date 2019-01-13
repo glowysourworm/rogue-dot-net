@@ -1,9 +1,4 @@
-﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Message
 {

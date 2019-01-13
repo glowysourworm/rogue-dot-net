@@ -10,6 +10,7 @@ using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -172,6 +173,7 @@ namespace Rogue.NET.Scenario.Content.Views
             scenarioImage.CharacterColor = scenarioMetaData.CharacterColor;
             scenarioImage.CharacterSymbol = scenarioMetaData.CharacterSymbol;
             scenarioImage.Icon = scenarioMetaData.Icon;
+            scenarioImage.DisplayIcon = scenarioMetaData.DisplayIcon;
             scenarioImage.SmileyBodyColor = scenarioMetaData.SmileyBodyColor;
             scenarioImage.SmileyLineColor = scenarioMetaData.SmileyLineColor;
             scenarioImage.SmileyAuraColor = scenarioMetaData.SmileyAuraColor;
