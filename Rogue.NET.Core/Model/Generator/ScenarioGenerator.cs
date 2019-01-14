@@ -104,6 +104,16 @@ namespace Rogue.NET.Core.Model.Generator
                                     (skillSet.HasReligiousAffiliationRequirement ?
                                         scenario.Player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel :
                                         true);
+
+                foreach (var skill in skillSet.Skills)
+                {
+                    // Also setup skill IsLearned flag based on player level and religious affiliation
+                    skillSet.IsLearned = scenario.Player.Level >= skill.LevelRequirement &&
+                                         skill.SkillPointRequirement <= 0 &&
+                                        (skillSet.HasReligiousAffiliationRequirement ?
+                                         scenario.Player.ReligiousAlteration.Affiliation >= skill.RequiredAffiliationLevel :
+                                         true);
+                }
             }
 
             foreach (var equipment in scenario.Player.Equipment.Values)

@@ -26,6 +26,8 @@ namespace Rogue.NET.Core.Model.Generator
             spell.CreateMonsterEnemyName = spellTemplate.CreateMonsterEnemy;
             spell.DisplayName = spellTemplate.DisplayName;
             spell.IsStackable = spellTemplate.Stackable;
+
+            // TODO
             //spell.BlockType = spellTemplate.BlockType;
             return spell;
         }

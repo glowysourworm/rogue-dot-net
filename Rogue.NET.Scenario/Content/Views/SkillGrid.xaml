@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
-             xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
-             xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-             xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,28 +22,29 @@
         </Grid.RowDefinitions>
         
         <!-- Points Available -->
-        <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="4">
+        <TextBlock HorizontalAlignment="Right" FontSize="16" Margin="4" Foreground="Gold">
             <Run Text="Points: " />
-            <Run Text="{Binding PointsAvailable}" />
+            <Run Text="{Binding SkillPoints}" />
         </TextBlock>
         
         <!-- Point Experience -->
-        <commonView:ProgressBar BarColor1="Purple" Margin="4" Value="{Binding PointExperience}" ValueMax="{Binding PointExperienceNext}" />
+        <commonView:ProgressBar Grid.Row="1" BarColor1="Purple" Height="24" Margin="4" Header="Point Progress" ValueTextBrush="Transparent" Value="{Binding SkillPointExperience}" Value2="{Binding SkillPointExperience}" ValueMax="{Binding SkillPointExperienceNext}" />
         
         <!-- Skill Sets -->
         <ItemsControl ItemsSource="{Binding SkillSets}"
+                      Grid.Row="2"
                       Margin="4">
             <ItemsControl.Template>
                 <ControlTemplate>
                     <!-- Have to add a scroll viewer for the items -->
-                    <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}">
+                    <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter />
                     </ScrollViewer>
                 </ControlTemplate>
             </ItemsControl.Template>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border IsEnabled="{Binding IsLearned}">
+                    <Border HorizontalAlignment="Stretch" Background="Transparent">
                         <!-- Gray out if Skill Set not yet learned -->
                         <Border.Effect>
                             <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource BoolIntConverter}}"/>
@@ -54,21 +52,22 @@
                         
                         <!-- Tooltip with Purple Smiley -->
                         <Border.ToolTip>
-                            <ToolTip ToolTipService.IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
+                            <ToolTip IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
                                      Background="Transparent"
                                      BorderBrush="Transparent"
                                      Padding="0"
                                      Margin="0">
-                                <Border Background="Black" Padding="10">
+                                <Border Background="Black" Padding="4" BorderBrush="Purple" BorderThickness="1.5" CornerRadius="8">
                                     <StackPanel Orientation="Horizontal">
-                                        <coreView:Smiley SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
+                                        <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
                                         <StackPanel>
                                             <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
                                             <TextBlock Foreground="LightBlue" FontSize="14" Margin="4">
                                                 <Run Text="Required Level: " />
                                                 <Run Text="{Binding LevelLearned}" />
                                             </TextBlock>
-                                            <TextBlock Foreground="LightBlue" FontSize="14" Margin="4">
+                                            <TextBlock Foreground="LightBlue" FontSize="14" Margin="4"
+                                                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                 <Run Text="Required Religion: " />
                                                 <Run Text="{Binding ReligiousAffiliationRequirementName}" />
                                                 <Run Text=" " />
@@ -81,49 +80,75 @@
                         </Border.ToolTip>
                         
                         <!-- Skill Set -->
-                        <StackPanel Orientation="Horizontal">
-                            
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
                             <!-- Symbol -->
-                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
+                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Grid.RowSpan="2">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                        <Binding Path="Religion.CharacterSymbol" />
-                                        <Binding Path="Religion.CharacterColor" />
-                                        <Binding Path="Religion.Icon" />
-                                        <Binding Path="Religion.DisplayIcon" />
-                                        <Binding Path="Religion.SmileyMood" />
-                                        <Binding Path="Religion.SmileyBodyColor" />
-                                        <Binding Path="Religion.SmileyLineColor" />
-                                        <Binding Path="Religion.SmileyAuraColor" />
-                                        <Binding Path="Religion.SymbolType" />
+                                        <Binding Path="CharacterSymbol" />
+                                        <Binding Path="CharacterColor" />
+                                        <Binding Path="Icon" />
+                                        <Binding Path="DisplayIcon" />
+                                        <Binding Path="SmileyMood" />
+                                        <Binding Path="SmileyBodyColor" />
+                                        <Binding Path="SmileyLineColor" />
+                                        <Binding Path="SmileyAuraColor" />
+                                        <Binding Path="SymbolType" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>
 
                             <!-- Name / Selected Skill Name -->
-                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
-                                <Run Text="{Binding RogueName}" />
-                                <Run Text="/" />
+                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"
+                                       Text="{Binding RogueName}" Grid.Column="1" />
+
+                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30, 4, 4, 4"
+                                       Visibility="{Binding SelectedSkill, Converter={StaticResource NonNullVisibilityConverter}}"
+                                       Grid.Column="1" Grid.Row="1">
+                                <Run Text="&#xf061;" FontFamily="{StaticResource FontAwesome}" />
+                                <Run Text=" "  />                                
                                 <Run Text="{Binding SelectedSkill.RogueName}" />
                             </TextBlock>
-                            
+
                             <!-- Button to Go-To Skill Screen -->
-                            <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" 
+                            <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" Foreground="DodgerBlue"                                       
+                                       HorizontalAlignment="Right" Grid.RowSpan="2" Grid.Row="2" Grid.Column="2"
+                                       Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                                        VerticalAlignment="Center" Margin="4" Text="&#xf06e;" />
-                            
+
                             <!-- Skill Selection Buttons -->
-                            <StackPanel>
-                                <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand"
-                                        Width="14" Height="14" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" />
-                                <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand"
-                                        Width="14" Height="14" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" />
-                            </StackPanel>
-                            
+                            <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
+                                    Width="14" Height="14" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}"
+                                    Grid.Column="3"
+                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+
+                            <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
+                                    Width="14" Height="14" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" 
+                                    Grid.Column="3"
+                                    Grid.Row="1"
+                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>
+
+
                             <!-- Activate Button -->
                             <RadioButton GroupName="ActivateGroup" Height="18" Width="18" Cursor="Hand"
+                                         Grid.Column="4" Grid.RowSpan="2"
+                                         Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                                          Style="{StaticResource RadioButtonStyle}" VerticalAlignment="Center" />
 
-                        </StackPanel>
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

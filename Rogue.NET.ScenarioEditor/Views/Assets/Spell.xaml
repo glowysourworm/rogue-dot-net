@@ -34,6 +34,9 @@
             <TabItem Header="Spell Type">
                 <spell:SpellType />
             </TabItem>
+            <TabItem Header="Rogue-Encyclopedia Entry">
+                <spell:SpellMetaData />
+            </TabItem>
             <TabItem Header="(Primary) Parameters">
                 <ContentControl prism:RegionManager.RegionName="SpellParametersRegion" />
             </TabItem>

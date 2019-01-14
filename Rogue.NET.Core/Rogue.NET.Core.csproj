@@ -91,6 +91,7 @@
     <Compile Include="Converter\BoolANDMultiConverter.cs" />
     <Compile Include="Converter\BoolORVisibilityMultiConverter.cs" />
     <Compile Include="Converter\BoolORMultiConverter.cs" />
+    <Compile Include="Converter\BoolToValidationForegroundConverter.cs" />
     <Compile Include="Converter\BoolVisibilityCollapseConverter.cs" />
     <Compile Include="Converter\BoolVisibilityHiddenConverter.cs" />
     <Compile Include="Converter\CollectionNonEmptyVisibilityConverter.cs" />

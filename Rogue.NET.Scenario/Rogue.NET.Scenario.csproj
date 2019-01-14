@@ -229,6 +229,9 @@
     <Compile Include="Content\Views\ScenarioMessageView.xaml.cs">
       <DependentUpon>ScenarioMessageView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\SkillTree.xaml.cs">
+      <DependentUpon>SkillTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controller\Interface\IFrontEndController.cs" />
     <Compile Include="Controller\Interface\IGameController.cs" />
     <Compile Include="Controller\Interface\IScenarioController.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />
+    <Compile Include="Events\Content\RequestNavigateToSkillTreeEvent.cs" />
     <Compile Include="Events\Content\ShiftDisplayEvent.cs" />
     <Compile Include="Events\Content\GameUpdateEvent.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
@@ -369,6 +373,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Content\Views\ScenarioMessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\SkillTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

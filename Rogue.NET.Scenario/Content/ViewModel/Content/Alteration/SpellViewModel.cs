@@ -99,8 +99,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         // Alteration Designation
         public string DisplayType
         {
-            get { return _displayName; }
-            set { this.RaiseAndSetIfChanged(ref _displayName, value); }
+            get { return _displayType; }
+            set { this.RaiseAndSetIfChanged(ref _displayType, value); }
         }
 
         public AlterationType Type

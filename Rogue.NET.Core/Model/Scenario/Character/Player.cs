@@ -16,6 +16,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Hunger { get; set; }
         public double FoodUsagePerTurnBase { get; set; }
 
+        public int SkillPointsEarned { get; set; }
+        public int SkillPoints { get; set; }
+
         public override CharacterAlteration Alteration { get; set; }
 
         public AttributeEmphasis AttributeEmphasis { get; set; }

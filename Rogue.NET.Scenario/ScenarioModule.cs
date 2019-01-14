@@ -131,6 +131,10 @@ namespace Rogue.NET.Scenario
             {
                 _regionManager.RequestNavigate("GameRegion", "EquipmentSelectionCtrl");
             });
+            _eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Subscribe(() =>
+            {
+                _regionManager.RequestNavigate("GameRegion", "SkillTree");
+            });
             _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("GameRegion", "DungeonEncyclopedia");
@@ -167,6 +171,7 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(OutroDisplay));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
+            _regionManager.RegisterViewWithRegion("GameRegion", typeof(SkillTree));
             _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
             _regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
             _regionManager.RegisterViewWithRegion("LevelCompassRegion", typeof(CompassCtrl));

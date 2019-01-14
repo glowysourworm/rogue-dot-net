@@ -2,10 +2,15 @@
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
@@ -75,7 +80,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public ObservableCollection<SkillViewModel> Skills { get; set; }
 
-        public SkillSetViewModel(SkillSet skillSet, IEventAggregator eventAggregator) : base(skillSet)
+        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IEventAggregator eventAggregator) : base(skillSet)
         {
             this.LevelMax = skillSet.Skills.Count;
             this.LevelLearned = skillSet.LevelLearned;
@@ -92,9 +97,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 return new SkillViewModel(x)
                 {
                     Alteration = new SpellViewModel(x.Alteration),
+                    //Description = x.Alteration.
                     IsLearned = x.IsLearned,
-                    PointRequirement = x.PointRequirement,
-                    RequiredAffiliationLevel = x.RequiredAffiliationLevel,
+                    IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement,
+                    IsLevelRequirementMet = player.Level >= x.LevelRequirement,
+                    IsReligiousAffiliationRequirementMet = skillSet.HasReligiousAffiliationRequirement && 
+                                                           player.ReligiousAlteration.IsAffiliated() && 
+                                                          (player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel),
+                    ReligiousAffiliationRequirementLevel = x.RequiredAffiliationLevel,
+                    ReligiousAffiliationRequirementName = skillSet.ReligiousAffiliationRequirement.ReligionName,
+                    SkillPointRequirement = x.SkillPointRequirement,
+                    HasReligiousAffiliationRequirement = skillSet.HasReligiousAffiliationRequirement,                    
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

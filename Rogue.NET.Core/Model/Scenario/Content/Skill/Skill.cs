@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
     public class Skill : RogueBase
     {
         public int LevelRequirement { get; set; }
-        public int PointRequirement { get; set; }
+        public int SkillPointRequirement { get; set; }
         public double RequiredAffiliationLevel { get; set; }
         public Spell Alteration { get; set; }
 

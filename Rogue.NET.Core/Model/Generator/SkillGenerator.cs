@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Generator
             { 
                 Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration),
                 LevelRequirement = skillTemplate.LevelRequirement,
-                PointRequirement = skillTemplate.PointRequirement,
+                SkillPointRequirement = skillTemplate.PointRequirement,
                 RequiredAffiliationLevel = skillTemplate.RequiredAffiliationLevel                
             };
         }

@@ -16,6 +16,7 @@ using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Windows.Media;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -45,6 +46,12 @@ namespace Rogue.NET.Core.Logic.Content
         {
             return PlayerCalculator.CalculateExperienceNext(player.Level);
         }
+
+        public double CalculateSkillPointExperienceNext(Player player)
+        {
+            return PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
+        }
+
         public void CalculateLevelGains(Player player)
         {
             var attributesChanged = new List<Tuple<string, double, Color>>();
@@ -79,18 +86,6 @@ namespace Rogue.NET.Core.Logic.Content
 
             // Level :)
             player.Level++;
-
-            // Skill Learning
-            // Process skill learning
-            foreach (var skillSet in player.SkillSets)
-            {
-                if (player.Level >= skillSet.LevelLearned && !skillSet.IsLearned)
-                {
-                    skillSet.IsLearned = true;
-
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned A New Skill - " + skillSet.RogueName);
-                }
-            }
 
             _scenarioMessageService.PublishPlayerAdvancement(ScenarioMessagePriority.Good, player.RogueName, player.Level, attributesChanged);
         }
@@ -155,6 +150,7 @@ namespace Rogue.NET.Core.Logic.Content
 
             player.Hunger += player.GetFoodUsagePerTurn();
 
+            // Player Gains a Level
             if (player.Experience >= CalculateExperienceNext(player))
             {
                 CalculateLevelGains(player);
@@ -162,6 +158,56 @@ namespace Rogue.NET.Core.Logic.Content
                 //Bonus health and magic refill
                 player.Hp = player.HpMax;
                 player.Mp = player.MpMax;
+            }
+
+            // Player Gains a Skill Point
+            if (player.Experience >= CalculateSkillPointExperienceNext(player))
+            {
+                player.SkillPoints++;
+                player.SkillPointsEarned++;
+
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Unique, player.RogueName + " has earned a Skill Point");
+            }
+
+            // Check for Skill Set Requirements
+            foreach (var skillSet in player.SkillSets)
+            {
+                // If Player fell below level requirements then have to de-activate the skills and mark them not learned
+                if (skillSet.IsLearned && skillSet.HasReligiousAffiliationRequirement)
+                {
+                    if (player.ReligiousAlteration.Affiliation < skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel)
+                    {
+                        skillSet.IsLearned = false;
+                        
+                        // Maintain Passive Effects
+                        if (skillSet.IsTurnedOn)
+                        {
+                            skillSet.IsTurnedOn = false;
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
+
+                            // Pass-Through method is Safe to call
+                            _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
+                        }
+
+                        // Set all skills to Not-Learned
+                        skillSet.Skills.ForEach(x => x.IsLearned = false);
+                    }
+                }
+
+                // Skill Sets not yet learned
+                else if (!skillSet.IsLearned)
+                {
+                    // Religious Affiliation Requirement
+                    if (skillSet.HasReligiousAffiliationRequirement)
+                    {
+                        skillSet.IsLearned = player.Level >= skillSet.LevelLearned &&
+                                             player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel;
+                    }
+
+                    // Level Requirement Only
+                    else
+                        skillSet.IsLearned = player.Level >= skillSet.LevelLearned;
+                }
             }
 
             // Normal temporary effects

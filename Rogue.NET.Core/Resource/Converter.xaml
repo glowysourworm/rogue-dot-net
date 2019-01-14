@@ -14,6 +14,7 @@
     <converter:BoolANDVisibilityMultiConverter x:Key="BoolANDVisibilityMultiConverter" />
     <converter:BoolVisibilityCollapseConverter x:Key="BoolVisibilityCollapseConverter" />
     <converter:BoolVisibilityHiddenConverter x:Key="BoolVisibilityHiddenConverter" />
+    <converter:BoolToValidationForegroundConverter x:Key="BoolToValidationForegroundConverter" />
     <converter:CollectionEmptyVisibilityConverter x:Key="CollectionEmptyVisibilityConverter" />
     <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />
     <converter:ColorBrushConverter x:Key="ColorBrushConverter" />

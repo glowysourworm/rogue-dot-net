@@ -23,6 +23,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Religion;
+using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -38,13 +39,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         #region (private) Backing Fields
         int _level;
-        int _pointLevel;
-        int _pointsAvailable;
+        int _skillPointsEarned;
+        int _skillPoints;
         string _class;
         double _experience;
         double _experienceNext;
-        double _pointExperience;
-        double _pointExperienceNext;
+        double _skillPointExperience;
+        double _skillPointExperienceNext;
         double _hunger;
         double _haul;
         double _haulMax;
@@ -99,15 +100,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _level; }
             set { this.RaiseAndSetIfChanged(ref _level, value); }
         }
-        public int PointLevel
+        public int SkillPointsEarned
         {
-            get { return _pointLevel; }
-            set { this.RaiseAndSetIfChanged(ref _pointLevel, value); }
+            get { return _skillPointsEarned; }
+            set { this.RaiseAndSetIfChanged(ref _skillPointsEarned, value); }
         }
-        public int PointsAvailable
+        public int SkillPoints
         {
-            get { return _pointsAvailable; }
-            set { this.RaiseAndSetIfChanged(ref _pointsAvailable, value); }
+            get { return _skillPoints; }
+            set { this.RaiseAndSetIfChanged(ref _skillPoints, value); }
         }
         public string Class
         {
@@ -124,15 +125,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _experienceNext; }
             set { this.RaiseAndSetIfChanged(ref _experienceNext, value); }
         }
-        public double PointExperience
+        public double SkillPointExperience
         {
-            get { return _pointExperience; }
-            set { this.RaiseAndSetIfChanged(ref _pointExperience, value); }
+            get { return _skillPointExperience; }
+            set { this.RaiseAndSetIfChanged(ref _skillPointExperience, value); }
         }
-        public double PointExperienceNext
+        public double SkillPointExperienceNext
         {
-            get { return _pointExperienceNext; }
-            set { this.RaiseAndSetIfChanged(ref _pointExperienceNext, value); }
+            get { return _skillPointExperienceNext; }
+            set { this.RaiseAndSetIfChanged(ref _skillPointExperienceNext, value); }
         }
         public double Hunger
         {
@@ -445,7 +446,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             SynchronizeCollection(
                 player.SkillSets, 
                 this.SkillSets, 
-                x => new SkillSetViewModel(x, _eventAggregator),
+                x => new SkillSetViewModel(x, player, _modelService.ScenarioEncyclopedia, _eventAggregator),
                 (source, dest) =>
                 {
                     // Update
@@ -457,22 +458,40 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);
 
                         skill.IsLearned = skillSource.IsLearned;
+                        skill.IsSkillPointRequirementMet = player.SkillPoints >= skillSource.SkillPointRequirement;
+                        skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
+                        skill.IsReligiousAffiliationRequirementMet = player.ReligiousAlteration.IsAffiliated() &&
+                                                                    (player.ReligiousAlteration.Affiliation >= skillSource.RequiredAffiliationLevel);
                     });
                 });
 
             // Active Skill Set -> Active Skill
             var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
 
-            this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, _eventAggregator);
+            this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, player, _modelService.ScenarioEncyclopedia, _eventAggregator);
 
             if (this.ActiveSkillSet != null)
                 this.ActiveSkillSet.ActiveSkill = this.ActiveSkillSet.Skills.First(x => x.Id == activeSkillSet.SelectedSkill.Id);
 
+            // Calculate experience
+            var experienceLast = player.Level == 0 ? 0 : PlayerCalculator.CalculateExperienceNext(player.Level - 1);
+            var pointExperienceLast = player.SkillPointsEarned == 0 ? 0 : PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned - 1, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
+            var experienceNext = PlayerCalculator.CalculateExperienceNext(player.Level);
+            var pointExperienceNext = PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
+
+            var deltaExperience = player.Experience - experienceLast;
+            var deltaExperienceNext = experienceNext - experienceLast;
+
+            var deltaPointExperience = player.Experience - pointExperienceLast;
+            var deltaPointExperienceNext = pointExperienceNext - pointExperienceLast;
+
             // Player Stats
             this.Level = player.Level;
             this.Class = player.Class;
-            this.Experience = player.Experience;
-            this.ExperienceNext = _playerProcessor.CalculateExperienceNext(player);
+            this.Experience = deltaExperience;
+            this.ExperienceNext = deltaExperienceNext;
+            this.SkillPointExperience = deltaPointExperience;
+            this.SkillPointExperienceNext = deltaPointExperienceNext;
             this.Haul = player.GetHaul();
             this.HaulMax = player.GetHaulMax();
             this.Hp = player.Hp;
@@ -480,6 +499,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Hunger = player.Hunger;
             this.Mp = player.Mp;
             this.MpMax = player.MpMax;
+            this.SkillPointsEarned = player.SkillPointsEarned;
+            this.SkillPoints = player.SkillPoints;
             this.RogueName = player.RogueName;
 
             // Attribute Emphasis

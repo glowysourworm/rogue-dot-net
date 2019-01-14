@@ -274,6 +274,10 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
+    <Page Include="Resource\Dictionaries\ToggleSwitch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\DisappearingButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

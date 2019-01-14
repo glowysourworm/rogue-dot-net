@@ -21,6 +21,7 @@ namespace Rogue.NET.Scenario.Views
         {
             LevelView,
             EquipmentView,
+            SkillTreeView,
             EncyclopediaView
         }
 
@@ -67,9 +68,13 @@ namespace Rogue.NET.Scenario.Views
                     _eventAggregator.GetEvent<RequestNavigateToLevelViewEvent>().Publish();
                     _currentView = GameViewType.LevelView;
                     break;
-                case GameViewType.EncyclopediaView:
+                case GameViewType.SkillTreeView:
                     _eventAggregator.GetEvent<RequestNavigateToEquipmentSelectionEvent>().Publish();
                     _currentView = GameViewType.EquipmentView;
+                    break;
+                case GameViewType.EncyclopediaView:
+                    _eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Publish();
+                    _currentView = GameViewType.SkillTreeView;
                     break;
                 default:
                     break;
@@ -87,6 +92,10 @@ namespace Rogue.NET.Scenario.Views
                     _currentView = GameViewType.EquipmentView;
                     break;
                 case GameViewType.EquipmentView:
+                    _eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Publish();
+                    _currentView = GameViewType.SkillTreeView;
+                    break;
+                case GameViewType.SkillTreeView:
                     _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Publish();
                     _currentView = GameViewType.EncyclopediaView;
                     break;
@@ -110,6 +119,9 @@ namespace Rogue.NET.Scenario.Views
                     break;
                 case GameViewType.EquipmentView:
                     this.CurrentViewTitle = "Equipment Detail";
+                    break;
+                case GameViewType.SkillTreeView:
+                    this.CurrentViewTitle = "Skill Detail";
                     break;
                 case GameViewType.EncyclopediaView:
                     this.CurrentViewTitle = "Rogue Encyclopedia";
