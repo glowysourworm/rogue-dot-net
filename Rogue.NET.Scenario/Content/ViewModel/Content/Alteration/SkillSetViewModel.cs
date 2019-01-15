@@ -97,7 +97,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 return new SkillViewModel(x)
                 {
                     Alteration = new SpellViewModel(x.Alteration),
-                    //Description = x.Alteration.
+                    Description = encyclopedia[x.Alteration.RogueName].LongDescription,
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,

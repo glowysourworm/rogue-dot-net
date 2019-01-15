@@ -155,6 +155,17 @@ namespace Rogue.NET.Core.Model.Generator
             };
         }
 
+        public ScenarioMetaData CreateScenarioMetaData(SpellTemplate template)
+        {
+            return new ScenarioMetaData()
+            {
+                Description = template.ShortDescription,
+                LongDescription = template.LongDescription,
+
+                Type = "Alteration"
+            };
+        }
+
         public ScenarioMetaData CreateScenarioMetaData(DoodadNormalType doodadNormalType)
         {
             switch (doodadNormalType)

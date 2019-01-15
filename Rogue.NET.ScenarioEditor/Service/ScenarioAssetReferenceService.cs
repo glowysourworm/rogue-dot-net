@@ -28,6 +28,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Skill Sets
             foreach (var skillSet in configuration.SkillTemplates)
             {
+                // Skill
                 foreach (var skill in skillSet.Skills)
                     skill.Alteration = MatchByName(configuration.MagicSpells, skill.Alteration);
             }

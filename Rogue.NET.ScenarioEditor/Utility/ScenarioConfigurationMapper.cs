@@ -157,18 +157,18 @@ namespace Rogue.NET.ScenarioEditor.Utility
             {
                 MatchCollection(configuration.AnimationTemplates, template.Animations);
 
-                Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-                Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+                template.Effect.AlteredState = Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+                template.AuraEffect.AlteredState = Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
 
-                Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-                Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
+                template.Effect.RemediedState = Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+                template.AuraEffect.RemediedState = Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
             }
 
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)
             {
                 foreach (var skillTemplate in template.Skills)
-                    Match(configuration.MagicSpells, skillTemplate.Alteration);
+                    skillTemplate.Alteration = Match(configuration.MagicSpells, skillTemplate.Alteration);
             }
 
             // Doodads
@@ -238,18 +238,18 @@ namespace Rogue.NET.ScenarioEditor.Utility
             {
                 MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
 
-                MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-                MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+                template.Effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+                template.AuraEffect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
 
-                MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-                MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
+                template.Effect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+                template.AuraEffect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
             }
 
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)
             {
                 foreach (var skillTemplate in template.Skills)
-                    MatchVM(configuration.MagicSpells, skillTemplate.Alteration);
+                    skillTemplate.Alteration = MatchVM(configuration.MagicSpells, skillTemplate.Alteration);
             }
 
             // Doodads

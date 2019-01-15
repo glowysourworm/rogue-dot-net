@@ -114,6 +114,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             // To locate the ScenarioMetaDataViewModel -> find category by Type
             foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
             {
+                // TODO: Refactor this to add a filter to meta data (OR) Add Alterations to the Rogue-Encyclopedia UI
+                if (metaData.Type == "Alteration")
+                    continue;
+
                 // Update base category
                 UpdateCategory(this.Categories.PagedFirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
 
