@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Converter
             if (value == null)
                 return Binding.DoNothing;
 
-            return (bool)value ? Binding.DoNothing : Brushes.Red;
+            return (bool)value ? parameter : Brushes.Red;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

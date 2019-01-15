@@ -63,17 +63,27 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public bool IsSkillPointRequirementMet
         {
             get { return _isSkillPointRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isSkillPointRequirementMet, value); }
+            set { this.RaiseAndSetIfChanged(ref _isSkillPointRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
         }
         public bool IsLevelRequirementMet
         {
             get { return _isLevelRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isLevelRequirementMet, value); }
+            set { this.RaiseAndSetIfChanged(ref _isLevelRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
         }
         public bool IsReligiousAffiliationRequirementMet
         {
             get { return _isReligiousAffiliationRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isReligiousAffiliationRequirementMet, value); }
+            set { this.RaiseAndSetIfChanged(ref _isReligiousAffiliationRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
+        }
+        public bool AreAllRequirementsMet
+        {
+            get
+            {
+                return _isSkillPointRequirementMet &&
+                       _isLevelRequirementMet &&
+                       (!_hasReligiousAffiliationRequirement ||
+                         _isReligiousAffiliationRequirementMet);
+            }
         }
 
         public SkillViewModel(Skill skill) : base(skill)

@@ -22,6 +22,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public bool _isTurnedOn;
         public bool _isLearned;
         public bool _hasReligiousAffiliationRequirement;
+        public bool _hasLearnedSkills;
         public double _skillProgress;
         public double _religiousAffiliationRequirementLevel;
         public string _religiousAffiliationRequirementName;
@@ -52,6 +53,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             get { return _isLearned; }
             set { this.RaiseAndSetIfChanged(ref _isLearned, value); InvalidateCommands(); }
+        }
+        public bool HasLearnedSkills
+        {
+            get { return _hasLearnedSkills; }
+            set { this.RaiseAndSetIfChanged(ref _hasLearnedSkills, value); InvalidateCommands(); }
         }
         public bool HasReligiousAffiliationRequirement
         {
@@ -88,6 +94,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.IsTurnedOn = skillSet.IsTurnedOn;
             this.IsLearned = skillSet.IsLearned;
 
+            this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
             this.HasReligiousAffiliationRequirement = skillSet.HasReligiousAffiliationRequirement;
             this.ReligiousAffiliationRequirementName = skillSet.ReligiousAffiliationRequirement.ReligionName;
             this.ReligiousAffiliationRequirementLevel = skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel;

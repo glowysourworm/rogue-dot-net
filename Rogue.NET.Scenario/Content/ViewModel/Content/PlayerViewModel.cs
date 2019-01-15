@@ -453,6 +453,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                     dest.IsActive = source.IsActive;
                     dest.IsLearned = source.IsLearned;
                     dest.IsTurnedOn = source.IsTurnedOn;
+                    dest.HasLearnedSkills = source.Skills.Any(x => x.IsLearned);
+
                     dest.Skills.ForEach(skill =>
                     {
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);

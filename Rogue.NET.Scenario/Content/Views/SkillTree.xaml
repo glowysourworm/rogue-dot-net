@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/RadioButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ToggleSwitch.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
@@ -308,40 +309,53 @@
         
         <!-- Locked Skill Detail -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
-                Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
+                Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
             
-            <StackPanel DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}">
+            <StackPanel>
                 <Grid Margin="10">
                     <TextBlock Text="{Binding Alteration.DisplayName}" FontSize="20" Foreground="Tan" HorizontalAlignment="Left" />
                     <TextBlock Text="(Locked)" Foreground="Red" FontSize="18" HorizontalAlignment="Right" />
                 </Grid>
 
                 <Grid Margin="10">
-                    <TextBlock Text="{Binding Description}" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
                 </Grid>
 
                 <Grid Margin="10">
-                    <TextBlock Text="Requirements" FontSize="20" Foreground="White" HorizontalAlignment="Left" />
+                    <TextBlock Text="Requirements" FontSize="20" Foreground="Tan" HorizontalAlignment="Left" />
+                    <Button Cursor="Hand"
+                            Visibility="{Binding AreAllRequirementsMet, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                            Style="{StaticResource MetroButtonStyle}"
+                            Background="#3F111111"
+                            BorderBrush="#8FFFFFFF"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontFamily="{StaticResource FontAwesome}" Text="&#xf023;" FontSize="20" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10" />
+                            <TextBlock Text="Unlock" FontSize="20" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center" Foreground="White" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
 
                 <Grid Margin="40,10,10,10">
                     <StackPanel>
-                        <TextBlock FontSize="18" Foreground="White">
-                            <Run Text="Minimum Level: " />
-                            <Run Text="{Binding LevelRequirement}" Foreground="{Binding IsLevelRequirementMet, FallbackValue={x:Static Brushes.Gold}, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                        <TextBlock FontSize="18">
+                            <Run Text="Minimum Level: " Foreground="Tan" />
+                            <Run Text="{Binding LevelRequirement}" Foreground="{Binding IsLevelRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
-                        <TextBlock FontSize="18" Foreground="White">
-                            <Run Text="Skill Points: " />
-                            <Run Text="{Binding SkillPointRequirement}" Foreground="{Binding IsSkillPointRequirementMet, FallbackValue={x:Static Brushes.Gold}, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                        <TextBlock FontSize="18">
+                            <Run Text="Skill Points: " Foreground="Tan" />
+                            <Run Text="{Binding SkillPointRequirement}" Foreground="{Binding IsSkillPointRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
-                        <TextBlock FontSize="18" Foreground="White" 
+                        <TextBlock FontSize="18"
                                    Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                            <Run Text="Religious Affiliation Requirement: " />
+                            <Run Text="Religious Affiliation Requirement: " Foreground="Tan" />
                             <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" 
-                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, FallbackValue={x:Static Brushes.Gold}, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                             <Run Text=" " />
                             <Run Text="{Binding ReligiousAffiliationRequirementName}" 
-                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, FallbackValue={x:Static Brushes.Gold}, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
                     </StackPanel>
                 </Grid>
@@ -351,7 +365,8 @@
 
         <!-- Unlocked Skill Detail -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
-                Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
+                Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             
             <StackPanel DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}" Grid.Column="2">
                 <Grid Margin="10">

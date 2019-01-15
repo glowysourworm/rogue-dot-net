@@ -8,19 +8,14 @@
                     <Border x:Name="border"
                             CornerRadius="10,10,10,10" 
                             BorderBrush="{TemplateBinding Property=BorderBrush}" 
-                            BorderThickness="{TemplateBinding Property=BorderThickness}"
-                            Background="{TemplateBinding Background}" >
-                        <Grid>
-                            <ContentPresenter />
-                        </Grid>
+                            Background="{TemplateBinding Property=Background}"
+                            BorderThickness="1">
+                        <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#0FFFFFFF" />
-                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderThickness" Value="4" />
-                        </Trigger>                        
+                            <Setter TargetName="border" Property="Background" Value="#8FFFFFFF" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
