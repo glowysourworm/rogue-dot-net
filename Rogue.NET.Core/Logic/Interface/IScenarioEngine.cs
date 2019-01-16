@@ -34,8 +34,12 @@ namespace Rogue.NET.Core.Logic.Interface
         void Drop(string itemId);
         LevelContinuationAction Fire();
         void Target(Compass direction);
-        void CycleActiveSkill();
+        void ActivateSkill(string skillId);
+        void ChangeSkillLevelUp(string skillSetId);
+        void ChangeSkillLevelDown(string skillSetId);
+        void CycleActiveSkillSet();
         void ToggleActiveSkill(string skillSetId, bool activate);
+        void UnlockSkill(string skillId);
         LevelContinuationAction InvokePlayerSkill();
         LevelContinuationAction InvokeDoodad();
     }

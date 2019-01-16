@@ -149,9 +149,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
             // Effect
             this.CanSeeInvisibleCharacters = alteration.Effect.CanSeeInvisibleCharacters;
-            this.IsAlteredState = alteration.Effect.AlteredState != null;
-            this.EventTime = alteration.Effect.EventTime.Low.ToString("N0") + " to " +
-                             alteration.Effect.EventTime.High.ToString("N0");
+            this.IsAlteredState = alteration.Effect.AlteredState != null && alteration.Effect.AlteredState.BaseType != CharacterStateType.Normal;
+            this.EventTime = alteration.Effect.EventTime.Low == alteration.Effect.EventTime.High ? 
+                                alteration.Effect.EventTime.Low.ToString("N0") :
+                                alteration.Effect.EventTime.Low.ToString("N0") + " to " +
+                                alteration.Effect.EventTime.High.ToString("N0");
             this.AlteredState = this.IsAlteredState ? new ScenarioImageViewModel(
                                                         alteration.Effect.AlteredState.Guid,
                                                         alteration.Effect.AlteredState.Name,
@@ -188,7 +190,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 }));
 
             this.AlterationEffectAttackAttributes = new ObservableCollection<AttackAttributeViewModel>(
-                alteration.Effect.AttackAttributes.Select(x => new AttackAttributeViewModel(x)));
+                alteration.Effect
+                          .AttackAttributes
+                          .Where(x => x.Attack.IsSet() || x.Resistance.IsSet() || x.Weakness.IsSet())
+                          .Select(x => new AttackAttributeViewModel(x)));
         }
 
         private string CreateDisplayType(

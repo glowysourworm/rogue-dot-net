@@ -29,9 +29,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             };
 
             return values.Where(x => x.Value.IsSet())
-                         .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.Low.ToString("F2") + 
-                                                                              " to " + 
-                                                                              x.Value.High.ToString("F2")));
+                         .Select(x => new KeyValuePair<string, string>(x.Key,
+
+                         x.Value.Low == x.Value.High ? 
+                            x.Value.Low.ToString("F2") :
+                            x.Value.Low.ToString("F2") + 
+                            " to " + 
+                            x.Value.High.ToString("F2")));
         }
     }
 }

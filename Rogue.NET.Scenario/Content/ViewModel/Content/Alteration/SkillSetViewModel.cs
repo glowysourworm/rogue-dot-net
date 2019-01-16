@@ -42,12 +42,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public bool IsActive
         {
             get { return _isActive; }
-            set { this.RaiseAndSetIfChanged(ref _isActive, value); }
+            set { this.RaiseAndSetIfChanged(ref _isActive, value); InvalidateCommands(); }
         }
         public bool IsTurnedOn
         {
             get { return _isTurnedOn; }
-            set { this.RaiseAndSetIfChanged(ref _isTurnedOn, value); }
+            set { this.RaiseAndSetIfChanged(ref _isTurnedOn, value); InvalidateCommands(); }
         }
         public bool IsLearned
         {
@@ -101,7 +101,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {
-                return new SkillViewModel(x)
+                return new SkillViewModel(x, eventAggregator)
                 {
                     Alteration = new SpellViewModel(x.Alteration),
                     Description = encyclopedia[x.Alteration.RogueName].LongDescription,
@@ -127,19 +127,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.ChangeSkillLevelDown, Compass.Null, this.Id));
 
-            }, () => this.IsLearned);
+            }, () => this.IsLearned && this.IsActive);
 
             this.ChangeSkillLevelUpCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.ChangeSkillLevelUp, Compass.Null, this.Id));
 
-            }, () => this.IsLearned);
+            }, () => this.IsLearned && this.IsActive);
 
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelAction.ActivateSkill, Compass.Null, this.Id));
+                    new UserCommandEventArgs(LevelAction.ActivateSkillSet, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
         }

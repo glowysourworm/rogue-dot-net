@@ -127,6 +127,12 @@ namespace Rogue.NET.Core.Service.Interface
         string GetDisplayName(ScenarioObject scenarioObject);
 
         /// <summary>
+        /// Method to get display name for Scenario Image
+        /// </summary>
+        /// <returns>Display name is the object is Identified</returns>
+        string GetDisplayName(ScenarioImage scenarioImage);
+
+        /// <summary>
         /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from
         /// the configuration. This contains definitions for all attack attributes.
         /// </summary>

@@ -23,6 +23,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Logic.Content.Enum;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -578,7 +579,27 @@ namespace Rogue.NET.Core.Logic
                 QueueLevelUpdate(LevelUpdateType.TargetingStart, target.Id);
             }
         }
-        public void CycleActiveSkill()
+        public void ActivateSkill(string skillId)
+        {
+            var player = _modelService.Player;
+            var skillSet = player.SkillSets.FirstOrDefault(x => x.Skills.Any(z => z.Id == skillId));
+
+            if (skillSet != null)
+            {
+                var skill = skillSet.Skills.First(x => x.Id == skillId);
+
+                if (!skillSet.IsLearned || !skill.IsLearned)
+                    throw new Exception("Trying to activate non-learned skill");
+
+                // 1) Deactivate currently active SkillSet / Skill
+                DeActivateSkillSets();
+
+                // Activate SkillSet / Skill
+                skillSet.IsActive = true;
+                skillSet.SelectSkill(skillId);
+            }
+        }
+        public void CycleActiveSkillSet()
         {
             var activeSkill = _modelService.Player.SkillSets.FirstOrDefault(x => x.IsActive);
             var learnedSkills = _modelService.Player.SkillSets.Where(x => x.IsLearned);
@@ -617,6 +638,20 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Other Learned Skills");
             }
         }
+        public void ChangeSkillLevelUp(string skillSetId)
+        {
+            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
+
+            if (skillSet != null)
+                skillSet.SelectSkillUp();
+        }
+        public void ChangeSkillLevelDown(string skillSetId)
+        {
+            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
+
+            if (skillSet != null)
+                skillSet.SelectSkillDown();
+        }
         public void ToggleActiveSkill(string skillSetId, bool activate)
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.Id == skillSetId);
@@ -628,23 +663,8 @@ namespace Rogue.NET.Core.Logic
             if (!isActive && !activate)
                 return;
 
-            // Set non active for all skill sets
-            foreach (var playerSkillSet in _modelService.Player.SkillSets)
-                playerSkillSet.IsActive = false;
-
             // Maintain Passive Effects
-            foreach (var skillSets in _modelService.Player.SkillSets)
-            {
-                if (skillSets.IsTurnedOn)
-                {
-
-                    skillSets.IsTurnedOn = false;
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSets.RogueName);
-
-                    // Pass-Through method is Safe to call
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSets.GetCurrentSkillAlteration().Id);
-                }
-            }
+            DeActivateSkillSets();
 
             // Activate
             if (skillSet != null)
@@ -657,6 +677,45 @@ namespace Rogue.NET.Core.Logic
 
             // Queue update for all skill sets
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.SkillSets.Select(x => x.Id).ToArray());
+        }
+        public void UnlockSkill(string skillId)
+        {
+            var player = _modelService.Player;
+            var skillSet = player.SkillSets.FirstOrDefault(x => x.Skills.Any(z => z.Id == skillId));
+
+            if (skillSet != null)
+            {
+                var skill = skillSet.Skills.First(x => x.Id == skillId);
+
+                // Skill Set Requirements
+                var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
+                                             (!skillSet.HasReligiousAffiliationRequirement ||
+                                              (skillSet.HasReligiousAffiliationRequirement &&
+                                               player.ReligiousAlteration.IsAffiliated() &&
+                                               player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel &&
+                                               player.ReligiousAlteration.ReligionName == skillSet.ReligiousAffiliationRequirement.ReligionName));
+
+                // Skill Requirements
+                var skillRequirementsMet = player.Level >= skill.LevelRequirement &&
+                                           player.SkillPoints >= skill.SkillPointRequirement &&
+                                           (!skillSet.HasReligiousAffiliationRequirement ||
+                                            (skillSet.HasReligiousAffiliationRequirement &&
+                                               player.ReligiousAlteration.IsAffiliated() &&
+                                               player.ReligiousAlteration.Affiliation >=
+                                               skill.RequiredAffiliationLevel));
+
+                // If both requirements met then can learn the skill
+                if (skillSetRequirementsMet && skillRequirementsMet)
+                {
+                    player.SkillPoints -= skill.SkillPointRequirement;
+
+                    skill.IsLearned = true;
+
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
+
+                    QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
+                }
+            }
         }
         public LevelContinuationAction InvokePlayerSkill()
         {
@@ -788,6 +847,30 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
+
+        #region (private) Methods
+        private void DeActivateSkillSets()
+        {
+            var player = _modelService.Player;
+
+            // Deactivate skill sets
+            player.SkillSets.ForEach(x =>
+            {
+                // Maintain Passive Effects
+                if (x.IsTurnedOn)
+                {
+                    x.IsTurnedOn = false;
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + x.RogueName);
+
+                    // Pass-Through method is Safe to call
+                    player.Alteration.DeactivatePassiveAlteration(x.GetCurrentSkillAlteration().Id);
+                }
+
+                x.IsActive = false;
+            });
+        }
+        #endregion
+
 
         #region (private) Event Methods
         private void QueueLevelUpdate(LevelUpdateType type, string contentId)

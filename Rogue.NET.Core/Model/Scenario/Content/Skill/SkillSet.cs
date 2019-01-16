@@ -48,6 +48,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
                                                                       x != this.SelectedSkill);
             }
         }
+        public void SelectSkill(string skillId)
+        {
+            this.SelectedSkill = this.Skills.FirstOrDefault(x => x.Id == skillId);
+        }
         public Spell GetCurrentSkillAlteration()
         {
             if (this.SelectedSkill != null)

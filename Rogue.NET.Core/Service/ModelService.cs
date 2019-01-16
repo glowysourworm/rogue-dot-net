@@ -138,7 +138,17 @@ namespace Rogue.NET.Core.Service
                             scenarioObject.RogueName : 
                             ModelConstants.UnIdentifiedDisplayName;
         }
-        
+
+        public string GetDisplayName(ScenarioImage scenarioImage)
+        {
+            if (scenarioImage is Player)
+                return scenarioImage.RogueName;
+
+            return this.ScenarioEncyclopedia[scenarioImage.RogueName].IsIdentified ?
+                            scenarioImage.RogueName :
+                            ModelConstants.UnIdentifiedDisplayName;
+        }
+
         public IEnumerable<Enemy> GetTargetedEnemies()
         {
             return _targetedEnemies;

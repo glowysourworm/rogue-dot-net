@@ -172,42 +172,37 @@ namespace Rogue.NET.Core.Logic.Content
             // Check for Skill Set Requirements
             foreach (var skillSet in player.SkillSets)
             {
+                var skillSetLearned = skillSet.IsLearned;
+
+                var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
+                                             (!skillSet.HasReligiousAffiliationRequirement ||
+                                              (skillSet.HasReligiousAffiliationRequirement &&
+                                               player.ReligiousAlteration.IsAffiliated() &&
+                                               player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel &&
+                                               player.ReligiousAlteration.ReligionName == skillSet.ReligiousAffiliationRequirement.ReligionName));
+
                 // If Player fell below level requirements then have to de-activate the skills and mark them not learned
-                if (skillSet.IsLearned && skillSet.HasReligiousAffiliationRequirement)
+                if (!skillSetRequirementsMet && skillSet.IsTurnedOn)
                 {
-                    if (player.ReligiousAlteration.Affiliation < skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel)
-                    {
-                        skillSet.IsLearned = false;
-                        
-                        // Maintain Passive Effects
-                        if (skillSet.IsTurnedOn)
-                        {
-                            skillSet.IsTurnedOn = false;
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
+                    skillSet.IsTurnedOn = false;
 
-                            // Pass-Through method is Safe to call
-                            _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
-                        }
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
 
-                        // Set all skills to Not-Learned
-                        skillSet.Skills.ForEach(x => x.IsLearned = false);
-                    }
+                    // Pass-Through method is Safe to call
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
+
+                    // SET ALL SKILLS TO NOT-LEARNED
+                    skillSet.Skills.ForEach(x => x.IsLearned = false);
                 }
 
-                // Skill Sets not yet learned
-                else if (!skillSet.IsLearned)
-                {
-                    // Religious Affiliation Requirement
-                    if (skillSet.HasReligiousAffiliationRequirement)
-                    {
-                        skillSet.IsLearned = player.Level >= skillSet.LevelLearned &&
-                                             player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel;
-                    }
+                // Level Requirement Only
+                skillSet.IsLearned = skillSetRequirementsMet;
 
-                    // Level Requirement Only
-                    else
-                        skillSet.IsLearned = player.Level >= skillSet.LevelLearned;
-                }
+                if (!skillSetLearned && skillSetRequirementsMet)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned the Skill " + _modelService.GetDisplayName(skillSet));
+
+                else if (skillSetLearned && !skillSetRequirementsMet)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " can no longer use the Skill " + _modelService.GetDisplayName(skillSet));
             }
 
             // Normal temporary effects

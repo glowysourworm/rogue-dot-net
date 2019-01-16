@@ -4,6 +4,7 @@
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:Dotway_WPF_Effects="clr-namespace:Dotway.WPF.Effects;assembly=Dotway.WPF.Effects"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -222,11 +223,11 @@
             </Style>
 
             <Style TargetType="ListBoxItem" x:Key="SkillItemContainerStyle">
-                <Setter Property="Height" Value="50" />
+                <Setter Property="Height" Value="60" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <Border x:Name="border" Background="#8F000000" BorderThickness="1" CornerRadius="8">
+                            <Border x:Name="border" Background="#8F000033" BorderThickness="1" CornerRadius="8">
                                 <ContentPresenter />
                             </Border>
                             <ControlTemplate.Triggers>
@@ -282,7 +283,6 @@
             <commonView:ProgressBar HorizontalAlignment="Right" Width="250" Height="32" BarColor1="Purple" Margin="10" Header="Point Exp" ValueTextBrush="Transparent" Value="{Binding SkillPointExperience}" Value2="{Binding SkillPointExperience}" ValueMax="{Binding SkillPointExperienceNext}" />
         </StackPanel>
 
-
         <!-- Skill Sets -->
         <ListBox x:Name="SkillSetLB" 
                  Margin="10"
@@ -326,6 +326,7 @@
                     <TextBlock Text="Requirements" FontSize="20" Foreground="Tan" HorizontalAlignment="Left" />
                     <Button Cursor="Hand"
                             Visibility="{Binding AreAllRequirementsMet, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                            Command="{Binding UnlockCommand}"
                             Style="{StaticResource MetroButtonStyle}"
                             Background="#3F111111"
                             BorderBrush="#8FFFFFFF"
@@ -367,15 +368,284 @@
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
                 DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
                 Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-            
-            <StackPanel DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}" Grid.Column="2">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Alteration Name -->
                 <Grid Margin="10">
                     <TextBlock Text="{Binding Alteration.DisplayName}" FontSize="20" Foreground="Tan" HorizontalAlignment="Left" />
-                    <CheckBox Style="{StaticResource ToggleSwitchStyle}" HorizontalAlignment="Right" />
                 </Grid>
-            </StackPanel>
-            
-        </Border>
 
+                <!-- Alteration Description -->
+                <Grid Margin="10" Grid.Row="1">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
+                </Grid>
+                
+                <!-- Alteration Cost / Effect / Aura Effect Attributes -->
+                <ScrollViewer x:Name="scrollViewer"
+                          Grid.Row="2"
+                          Background="Transparent"
+                          BorderBrush="Transparent"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <WrapPanel>
+
+                        <!-- Primary Properties 1 -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
+                            <StackPanel>
+
+                                <Grid Margin="4">
+                                    <TextBlock Text="Primary Properties" Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <Grid Margin="4">
+                                    <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!-- Alteration Block Type-->
+                                <Grid Margin="4">
+                                    <TextBlock Text="Block Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding Alteration.BlockType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!-- Alteration Cost Type-->
+                                <Grid Margin="4">
+                                    <TextBlock Text="Cost Application" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding Alteration.AlterationCostType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!-- Alteration IsStackable -->
+                                <Grid Margin="4">
+                                    <TextBlock Text="Is Stackable" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding Alteration.IsStackable}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!-- Alteration Can See Invisible -->
+                                <Grid Margin="4">
+                                    <TextBlock Text="See Invisible" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding Alteration.CanSeeInvisibleCharacters}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Primary Properties 2 -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
+                            <Border.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                                    <Binding Path="Alteration.IsAlteredState" />
+                                </MultiBinding>
+                            </Border.Visibility>
+                            <StackPanel>
+
+                                <Grid Margin="4">
+                                    <TextBlock Text="More Properties" Foreground="Tan" FontSize="18" FontStyle="Italic" HorizontalAlignment="Right" />
+                                </Grid>
+
+                                <!-- Alteration Event Time -->
+                                <Grid Margin="4">
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>
+                                    <TextBlock Text="Event Time" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock FontSize="18" Foreground="White" HorizontalAlignment="Right">
+                                        <Run Text="{Binding Alteration.EventTime}" Foreground="White" />
+                                    </TextBlock>
+                                </Grid>
+
+                                <!-- Alteration Altered State -->
+                                <Grid Margin="4"
+                                      Visibility="{Binding Alteration.IsAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                    <TextBlock Text="Altered State" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                    <TextBlock FontSize="18" Foreground="White" HorizontalAlignment="Right">
+                                    <Image Stretch="None">
+                                        <Image.Source>
+                                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                <Binding Path="Alteration.AlteredState.CharacterSymbol" />
+                                                <Binding Path="Alteration.AlteredState.CharacterColor" />
+                                                <Binding Path="Alteration.AlteredState.Icon" />
+                                                <Binding Path="Alteration.AlteredState.DisplayIcon" />
+                                                <Binding Path="Alteration.AlteredState.SmileyMood" />
+                                                <Binding Path="Alteration.AlteredState.SmileyBodyColor" />
+                                                <Binding Path="Alteration.AlteredState.SmileyLineColor" />
+                                                <Binding Path="Alteration.AlteredState.SmileyAuraColor" />
+                                                <Binding Path="Alteration.AlteredState.SymbolType" />
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>                        
+                                    <Run Text="{Binding Alteration.AlteredState.DisplayName}" Foreground="White" />
+                                    </TextBlock>
+                                </Grid>
+
+                                <!-- Alteration Remedied State -->
+                                <Grid Margin="4">
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>
+                                    <TextBlock FontSize="18" HorizontalAlignment="Left">
+                                        <Run Text="Remedied State" Foreground="Tan" />
+                                    </TextBlock>
+                                    <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right">
+                                        <Image Stretch="None">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                    <Binding Path="Alteration.RemediedState.CharacterSymbol" />
+                                                    <Binding Path="Alteration.RemediedState.CharacterColor" />
+                                                    <Binding Path="Alteration.RemediedState.Icon" />
+                                                    <Binding Path="Alteration.RemediedState.DisplayIcon" />
+                                                    <Binding Path="Alteration.RemediedState.SmileyMood" />
+                                                    <Binding Path="Alteration.RemediedState.SmileyBodyColor" />
+                                                    <Binding Path="Alteration.RemediedState.SmileyLineColor" />
+                                                    <Binding Path="Alteration.RemediedState.SmileyAuraColor" />
+                                                    <Binding Path="Alteration.RemediedState.SymbolType" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <Run Text="{Binding Alteration.RemediedState.DisplayName}" Foreground="White" />
+                                    </TextBlock>
+                                </Grid>
+
+                                <!-- Alteration Aura Altered State -->
+                                <Grid Margin="4">
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>                                    
+                                    <TextBlock FontSize="18" HorizontalAlignment="Left">
+                                        <Run Text="Aura Altered State" Foreground="Tan" />
+                                    </TextBlock>
+                                    <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right">
+                                    <Image Stretch="None">
+                                        <Image.Source>
+                                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                <Binding Path="Alteration.AuraAlteredState.CharacterSymbol" />
+                                                <Binding Path="Alteration.AuraAlteredState.CharacterColor" />
+                                                <Binding Path="Alteration.AuraAlteredState.Icon" />
+                                                <Binding Path="Alteration.AuraAlteredState.DisplayIcon" />
+                                                <Binding Path="Alteration.AuraAlteredState.SmileyMood" />
+                                                <Binding Path="Alteration.AuraAlteredState.SmileyBodyColor" />
+                                                <Binding Path="Alteration.AuraAlteredState.SmileyLineColor" />
+                                                <Binding Path="Alteration.AuraAlteredState.SmileyAuraColor" />
+                                                <Binding Path="Alteration.AuraAlteredState.SymbolType" />
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>
+                                    <Run Text="{Binding Alteration.AuraAlteredState.DisplayName}" Foreground="White" />
+                                    </TextBlock>
+                                </Grid>
+
+                                <!-- Alteration Effect Range -->
+                                <Grid Margin="4">
+                                    <Grid.Visibility>
+                                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                            <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                                        </MultiBinding>
+                                    </Grid.Visibility>                                    
+                                    <TextBlock FontSize="18" HorizontalAlignment="Left" Text="Effect Range" Foreground="Tan" />
+                                    <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right" Text="{Binding Alteration.EffectRange, StringFormat=F1}" />
+                                </Grid>
+
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Alteration Cost -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4"
+                                Visibility="{Binding Alteration.AlterationCostAttributes, Converter={StaticResource CollectionNonEmptyVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Cost" HorizontalAlignment="Right" FontStyle="Italic" />
+                                <ItemsControl ItemsSource="{Binding Alteration.AlterationCostAttributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="4">
+                                                <TextBlock Text="{Binding AttributeName}" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                                <TextBlock Text="{Binding AttributeValue}" Foreground="White" FontSize="18" HorizontalAlignment="Right" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Alteration Effect -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
+                            <Border.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentSource}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentTarget}" />
+                                    <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
+                                </MultiBinding>
+                            </Border.Visibility>
+                            <StackPanel>
+                                <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Effect" HorizontalAlignment="Right" FontStyle="Italic" />
+                                <ItemsControl ItemsSource="{Binding Alteration.AlterationEffectAttributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="4">
+                                                <TextBlock Text="{Binding AttributeName}" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                                <TextBlock Text="{Binding AttributeValue}" Foreground="White" FontSize="18" HorizontalAlignment="Right" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Alteration Aura Effect -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4"
+                                Visibility="{Binding Alteration.Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+                            <StackPanel>
+                                <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Aura Effect" HorizontalAlignment="Right" FontStyle="Italic" />
+                                <ItemsControl ItemsSource="{Binding Alteration.AlterationAuraEffectAttributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="4">
+                                                <TextBlock Text="{Binding AttributeName}" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                                                <TextBlock Text="{Binding AttributeValue}" Foreground="White" FontSize="18" HorizontalAlignment="Right" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Alteration Effect Attack Attributes -->
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4"
+                                Visibility="{Binding Alteration.Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}">
+                            <StackPanel>
+                                <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Effect Attack Attributes" HorizontalAlignment="Right" FontStyle="Italic" />
+                                <ItemsControl ItemsSource="{Binding Alteration.AlterationEffectAttackAttributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:DungeonEncyclopediaAttackAttributeCtrl />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                        
+                    </WrapPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

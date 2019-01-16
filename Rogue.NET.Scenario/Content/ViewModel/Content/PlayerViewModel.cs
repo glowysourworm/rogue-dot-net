@@ -460,9 +460,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);
 
                         skill.IsLearned = skillSource.IsLearned;
+                        skill.IsActive = source.IsActive && (source.SelectedSkill.Id == skill.Id);
                         skill.IsSkillPointRequirementMet = player.SkillPoints >= skillSource.SkillPointRequirement;
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
                         skill.IsReligiousAffiliationRequirementMet = player.ReligiousAlteration.IsAffiliated() &&
+                                                                    (player.ReligiousAlteration.ReligionName == skill.ReligiousAffiliationRequirementName) &&
                                                                     (player.ReligiousAlteration.Affiliation >= skillSource.RequiredAffiliationLevel);
                     });
                 });

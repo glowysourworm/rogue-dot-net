@@ -245,23 +245,46 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.ActivateSkill:
+                case LevelAction.ActivateSkillSet:
                     {
                         _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, true);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.CycleSkill:
+                case LevelAction.CycleSkillSet:
                     {
-                        _scenarioEngine.CycleActiveSkill();
+                        _scenarioEngine.CycleActiveSkillSet();
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
+                    break;
+                case LevelAction.ActivateSkill:
+                    {
+                        _scenarioEngine.ActivateSkill(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelAction.ChangeSkillLevelDown:
+                    {
+                        _scenarioEngine.ChangeSkillLevelUp(command.ScenarioObjectId);
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
                     break;
                 case LevelAction.ChangeSkillLevelUp:
+                    {
+                        _scenarioEngine.ChangeSkillLevelDown(command.ScenarioObjectId);
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
+                    break;
+                case LevelAction.UnlockSkill:
+                    {
+                        _scenarioEngine.UnlockSkill(command.ScenarioObjectId);
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
                     break;
                 case LevelAction.RenounceReligion:
+                    {
+                        // TODO
+                    }
                     break;
 
 #if DEBUG

@@ -140,12 +140,14 @@
 
                         <!-- Skill Selection Buttons -->
                         <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
-                                    Width="20" Height="20" Margin="2" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3"
-                                    Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                                Width="20" Height="20" Margin="2" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3"
+                                Command="{Binding ChangeSkillLevelUpCommand}"
+                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
 
                         <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
-                                    Width="20" Height="20" Margin="2" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3" Grid.Row="1"
-                                    Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>
+                                Width="20" Height="20" Margin="2" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3" Grid.Row="1"
+                                Command="{Binding ChangeSkillLevelDownCommand}"
+                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>
 
                     </Grid>
                 </Border>

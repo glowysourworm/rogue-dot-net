@@ -1,4 +1,9 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Skill;
+﻿using Prism.Commands;
+using Prism.Events;
+using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
@@ -13,6 +18,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         SpellViewModel _alteration;
 
         bool _isLearned;
+        bool _isActive;
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
         bool _isReligiousAffiliationRequirementMet;
@@ -58,6 +64,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _isLearned; }
             set { this.RaiseAndSetIfChanged(ref _isLearned, value); }
         }
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set { this.RaiseAndSetIfChanged(ref _isActive, value); }
+        }
 
         // Necessary for data binding
         public bool IsSkillPointRequirementMet
@@ -86,9 +97,28 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             }
         }
 
-        public SkillViewModel(Skill skill) : base(skill)
+        public ICommand UnlockCommand { get; set; }
+        public ICommand ActivateCommand { get; set; }
+
+        public SkillViewModel(Skill skill, IEventAggregator eventAggregator) : base(skill)
         {
-            
+            this.UnlockCommand = new DelegateCommand(async () =>
+            {
+                await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
+                {
+                    Action = LevelAction.UnlockSkill,
+                    ItemId = this.Id
+                });
+            });
+
+            this.ActivateCommand = new DelegateCommand(async () =>
+            {
+                await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
+                {
+                    Action = LevelAction.ActivateSkill,
+                    ItemId = this.Id
+                });
+            });
         }
     }
 }
