@@ -642,15 +642,33 @@ namespace Rogue.NET.Core.Logic
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
 
+            // Deactivate current skill sets
+            DeActivateSkillSets();
+
+            // Activate and select next skill
             if (skillSet != null)
+            {
                 skillSet.SelectSkillUp();
+                skillSet.IsActive = true;
+            }
+
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
         }
         public void ChangeSkillLevelDown(string skillSetId)
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
 
+            // Deactivate current skill sets
+            DeActivateSkillSets();
+
+            // Activate and select next skill
             if (skillSet != null)
+            {
                 skillSet.SelectSkillDown();
+                skillSet.IsActive = true;
+            }
+
+            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
         }
         public void ToggleActiveSkill(string skillSetId, bool activate)
         {
@@ -672,7 +690,13 @@ namespace Rogue.NET.Core.Logic
                 skillSet.IsActive = !isActive || activate;
 
                 if (skillSet.IsActive)
+                {
+                    // If no skill selected then select first skill
+                    if (skillSet.SelectedSkill == null)
+                        skillSet.SelectSkillDown();
+
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Activating " + skillSet.RogueName);
+                }
             }
 
             // Queue update for all skill sets
@@ -868,6 +892,8 @@ namespace Rogue.NET.Core.Logic
 
                 x.IsActive = false;
             });
+
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
         }
         #endregion
 

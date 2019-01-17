@@ -29,48 +29,20 @@
         </ItemsControl.Template>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Border HorizontalAlignment="Stretch" Background="Transparent" Padding="2">
+                <Border HorizontalAlignment="Stretch" Padding="2">
+
                     <!-- Gray out if Skill Set not yet learned -->
                     <Border.Effect>
                         <Dotway_WPF_Effects:GrayscaleEffect DesaturationFactor="{Binding IsLearned, Converter={StaticResource BoolIntConverter}}"/>
                     </Border.Effect>
-
-                    <!-- Tooltip with Purple Smiley -->
-                    <Border.ToolTip>
-                        <ToolTip ToolTipService.IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
-                                     Background="Transparent"
-                                     BorderBrush="Transparent"
-                                     Padding="0"
-                                     Margin="0">
-                            <Border Background="Black" Padding="4" BorderBrush="Purple" BorderThickness="1.5" CornerRadius="8">
-                                <StackPanel Orientation="Horizontal">
-                                    <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
-                                    <StackPanel>
-                                        <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
-                                        <TextBlock Foreground="LightBlue" FontSize="14" Margin="4">
-                                                <Run Text="Required Level: " />
-                                                <Run Text="{Binding LevelLearned}" />
-                                        </TextBlock>
-                                        <TextBlock Foreground="LightBlue" FontSize="14" Margin="4"
-                                                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                <Run Text="Required Religion: " />
-                                                <Run Text="{Binding ReligiousAffiliationRequirementName}" />
-                                                <Run Text=" " />
-                                                <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
-                                        </TextBlock>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                        </ToolTip>
-                    </Border.ToolTip>
 
                     <!-- Skill Set -->
                     <Grid>
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -80,9 +52,16 @@
 
                         <!-- Activate Button -->
                         <RadioButton GroupName="ActivateGroup" Margin="4" Height="30" Width="30" Padding="2" Cursor="Hand" Grid.RowSpan="2"
-                                         Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                                         Style="{StaticResource ShinyTextRadioButtonStyle}" VerticalAlignment="Center"
-                                         Background="Black" BorderBrush="#AFFFFFFF">
+                                     
+                                     IsChecked="{Binding IsActive}" Command="{Binding ActivateSkillCommand}"
+                                     Style="{StaticResource ShinyTextRadioButtonStyle}" VerticalAlignment="Center"
+                                     Background="Black" BorderBrush="#AFFFFFFF">
+                            <RadioButton.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                    <Binding Path="IsLearned" />
+                                    <Binding Path="HasLearnedSkills" />
+                                </MultiBinding>
+                            </RadioButton.Visibility>
                             <!-- Symbol -->
                             <Image HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Width="20">
                                 <Image.Source>
@@ -101,6 +80,17 @@
                             </Image>
                         </RadioButton>
 
+                        <!-- Skill Selection Buttons -->
+                        <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
+                                Width="20" Height="20" Margin="2" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="1"
+                                Command="{Binding ChangeSkillLevelUpCommand}"
+                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+
+                        <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
+                                Width="20" Height="20" Margin="2" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="1" Grid.Row="1"
+                                Command="{Binding ChangeSkillLevelDownCommand}"
+                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>                        
+                        
                         <!-- Symbol -->
                         <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Grid.RowSpan="2"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
@@ -120,34 +110,103 @@
                         </Image>
 
                         <!-- Name / Selected Skill Name -->
-                        <StackPanel Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center">
-                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"
+                        <StackPanel Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="Foreground" Value="DodgerBlue" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="Foreground" Value="White" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"
                                            Text="{Binding RogueName}" />
 
-                            <TextBlock FontSize="18" Foreground="Tan" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30, 4, 4, 4"
-                                           Visibility="{Binding ActiveSkill, Converter={StaticResource NonNullVisibilityConverter}}">
+                            <TextBlock FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4"
+                                       Visibility="{Binding ActiveSkill, Converter={StaticResource NonNullVisibilityConverter}}">
                                     <Run Text="&#xf061;" FontFamily="{StaticResource FontAwesome}" FontSize="12" />
-                                    <Run Text=" "  />                                
-                                    <Run Text="{Binding ActiveSkill.RogueName}" />
+                                    <Run Text="{Binding ActiveSkill.Alteration.DisplayName}" />
                             </TextBlock>
                         </StackPanel>
 
-                        <!-- Button to Go-To Skill Screen -->
-                        <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" Foreground="DodgerBlue"                                       
-                                       HorizontalAlignment="Right" Grid.RowSpan="2" Grid.Column="2"
-                                       Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                                       VerticalAlignment="Center" Text="&#xf06e;" />
+                        <!-- Lock-Button to Go-To Skill Screen -->
+                        <Button Grid.RowSpan="2" Grid.Column="3"
+                                Command="{Binding ViewSkillsCommand}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                    <Binding Path="IsLearned" />
+                                    <Binding Path="HasLearnedSkills" Converter="{StaticResource BoolInverseConverter}" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <Button.ToolTip>
+                                <!-- Tooltip with Purple Smiley -->
+                                <ToolTip IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
+                                         Background="Transparent"
+                                         BorderBrush="Transparent"
+                                         Padding="0"
+                                         Margin="0">
+                                    <Border Background="Black" Padding="4" BorderBrush="Purple" BorderThickness="2" CornerRadius="8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="5" SmileyLineThickness="2" />
+                                            <StackPanel>
+                                                <TextBlock Text="Spend Skill Points to Unlock!" Foreground="LightSteelBlue" FontSize="18" Margin="4" VerticalAlignment="Center" />
+                                                <TextBlock Text="(click to view skill detail)" Foreground="LightSteelBlue" FontSize="12" Margin="4" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Button.ToolTip>                            
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" Foreground="Red"                                       
+                                               HorizontalAlignment="Right" VerticalAlignment="Center" Text="&#xf023;" />
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
 
-                        <!-- Skill Selection Buttons -->
-                        <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
-                                Width="20" Height="20" Margin="2" Content="&#xf062;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3"
-                                Command="{Binding ChangeSkillLevelUpCommand}"
-                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
-
-                        <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
-                                Width="20" Height="20" Margin="2" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="3" Grid.Row="1"
-                                Command="{Binding ChangeSkillLevelDownCommand}"
-                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>
+                        <!-- Lock-Button Gray -->
+                        <TextBlock Grid.RowSpan="2" Grid.Column="3"
+                                   FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" Foreground="LightGray"                                       
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" Text="&#xf023;">
+                            <TextBlock.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                    <Binding Path="IsLearned" Converter="{StaticResource BoolInverseConverter}" />
+                                    <Binding Path="HasLearnedSkills" Converter="{StaticResource BoolInverseConverter}" />
+                                </MultiBinding>
+                            </TextBlock.Visibility>
+                            <TextBlock.ToolTip>
+                                <!-- Tooltip with Gray Smiley -->
+                                <ToolTip IsEnabled="{Binding IsLearned, Converter={StaticResource BoolInverseConverter}}"
+                                         Background="Transparent"
+                                         BorderBrush="Transparent"
+                                         Padding="0"
+                                         Margin="0">
+                                    <Border Background="Black" Padding="4" BorderBrush="LightGray" BorderThickness="2" CornerRadius="8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <coreView:Smiley VerticalAlignment="Center" SmileyColor="Black" SmileyLineColor="LightGray" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="5" SmileyLineThickness="2" />
+                                            <StackPanel>
+                                                <TextBlock Text="Skill is currently locked" Foreground="LightGray" FontSize="14" Margin="4" />
+                                                <TextBlock Foreground="LightGray" FontSize="14" Margin="4">
+                                                    <Run Text="Required Level: " />
+                                                    <Run Text="{Binding LevelLearned}" />
+                                                </TextBlock>
+                                                <TextBlock Foreground="LightGray" FontSize="14" Margin="4"
+                                                           Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                        <Run Text="Required Religion: " />
+                                                        <Run Text="{Binding ReligiousAffiliationRequirementName}" />
+                                                        <Run Text=" " />
+                                                        <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
 
                     </Grid>
                 </Border>

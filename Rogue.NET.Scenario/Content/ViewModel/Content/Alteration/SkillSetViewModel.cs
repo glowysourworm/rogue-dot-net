@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using Prism.Commands;
+using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
@@ -6,10 +7,11 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using Rogue.NET.Scenario.Events.Content;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
+using System.Windows.Input;
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
@@ -83,6 +85,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public IAsyncCommand ChangeSkillLevelUpCommand { get; set; }
         public IAsyncCommand ChangeSkillLevelDownCommand { get; set; }
         public IAsyncCommand ActivateSkillCommand { get; set; }
+        public ICommand ViewSkillsCommand { get; set; }
 
         public ObservableCollection<SkillViewModel> Skills { get; set; }
 
@@ -127,14 +130,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.ChangeSkillLevelDown, Compass.Null, this.Id));
 
-            }, () => this.IsLearned && this.IsActive);
+            }, () => this.IsLearned);
 
             this.ChangeSkillLevelUpCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelAction.ChangeSkillLevelUp, Compass.Null, this.Id));
 
-            }, () => this.IsLearned && this.IsActive);
+            }, () => this.IsLearned);
 
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
@@ -142,6 +145,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     new UserCommandEventArgs(LevelAction.ActivateSkillSet, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
+
+            this.ViewSkillsCommand = new DelegateCommand(() =>
+            {
+                eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Publish();
+            });
         }
 
         private void InvalidateCommands()

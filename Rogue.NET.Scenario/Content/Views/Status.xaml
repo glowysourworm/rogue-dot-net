@@ -6,9 +6,7 @@
     xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Class="Rogue.NET.Scenario.Views.StatusCtrl"
-    Background="Transparent"
-    Height="Auto" mc:Ignorable="d" Width="250">
+    x:Class="Rogue.NET.Scenario.Views.StatusCtrl">
     <UserControl.Resources>
         <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml">
             <ResourceDictionary.MergedDictionaries>

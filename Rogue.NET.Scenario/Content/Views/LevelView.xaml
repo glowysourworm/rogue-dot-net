@@ -14,9 +14,9 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="270" />
+            <ColumnDefinition Width="280" />
         </Grid.ColumnDefinitions>
 
         <!-- Level Canvas -->
@@ -32,11 +32,12 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion" />
+            <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion"
+                            Margin="10"/>
 
             <ContentControl prism:RegionManager.RegionName="PlayerSubpanelRegion"  
                             Grid.Row="1"
-                            Margin="8" />
+                            Margin="10" />
         </Grid>
 
         <!-- (RHS) Control Panel / Dialog Messages -->

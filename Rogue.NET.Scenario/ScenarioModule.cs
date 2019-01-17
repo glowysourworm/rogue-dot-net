@@ -131,10 +131,6 @@ namespace Rogue.NET.Scenario
             {
                 _regionManager.RequestNavigate("GameRegion", "EquipmentSelectionCtrl");
             });
-            _eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Subscribe(() =>
-            {
-                _regionManager.RequestNavigate("GameRegion", "SkillTree");
-            });
             _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Subscribe(() =>
             {
                 _regionManager.RequestNavigate("GameRegion", "DungeonEncyclopedia");

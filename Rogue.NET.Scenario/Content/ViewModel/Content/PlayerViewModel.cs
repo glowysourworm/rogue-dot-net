@@ -300,11 +300,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _attributeEmphasis; }
             set { this.RaiseAndSetIfChanged(ref _attributeEmphasis, value); }
         }
-        public SkillSetViewModel ActiveSkillSet
-        {
-            get { return _activeSkillSet; }
-            set { this.RaiseAndSetIfChanged(ref _activeSkillSet, value); }
-        }
         #endregion
 
         #region (public) Equipped Item Properties
@@ -454,6 +449,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                     dest.IsLearned = source.IsLearned;
                     dest.IsTurnedOn = source.IsTurnedOn;
                     dest.HasLearnedSkills = source.Skills.Any(x => x.IsLearned);
+                    dest.ActiveSkill = source.SelectedSkill == null ? null :
+                                       dest.Skills.FirstOrDefault(x => x.Id == source.SelectedSkill.Id);
 
                     dest.Skills.ForEach(skill =>
                     {
@@ -468,14 +465,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                                     (player.ReligiousAlteration.Affiliation >= skillSource.RequiredAffiliationLevel);
                     });
                 });
-
-            // Active Skill Set -> Active Skill
-            var activeSkillSet = player.SkillSets.FirstOrDefault(x => x.IsActive);
-
-            this.ActiveSkillSet = activeSkillSet == null ? null : new SkillSetViewModel(activeSkillSet, player, _modelService.ScenarioEncyclopedia, _eventAggregator);
-
-            if (this.ActiveSkillSet != null)
-                this.ActiveSkillSet.ActiveSkill = this.ActiveSkillSet.Skills.First(x => x.Id == activeSkillSet.SelectedSkill.Id);
 
             // Calculate experience
             var experienceLast = player.Level == 0 ? 0 : PlayerCalculator.CalculateExperienceNext(player.Level - 1);

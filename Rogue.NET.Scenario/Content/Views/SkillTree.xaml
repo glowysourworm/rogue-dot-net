@@ -141,7 +141,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
-                            <Run Text="{Binding Path=DataContext.SkillPointsEarned, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SkillTree}}}" />                            
+                            <Run Text="{Binding Path=DataContext.SkillPoints, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:SkillTree}}}" />                            
                             <Run Text="/" />
                             <Run Text="{Binding SkillPointRequirement}" />
                         </TextBlock>
@@ -227,7 +227,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ListBoxItem">
-                            <Border x:Name="border" Background="#8F000033" BorderThickness="1" CornerRadius="8">
+                            <Border x:Name="border" Background="#8F000000" BorderThickness="1" CornerRadius="8">
                                 <ContentPresenter />
                             </Border>
                             <ControlTemplate.Triggers>
@@ -391,6 +391,7 @@
                           Grid.Row="2"
                           Background="Transparent"
                           BorderBrush="Transparent"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <WrapPanel>
 
@@ -404,7 +405,7 @@
 
                                 <Grid Margin="4">
                                     <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
-                                    <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding Alteration.DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
                                 </Grid>
 
                                 <!-- Alteration Block Type-->

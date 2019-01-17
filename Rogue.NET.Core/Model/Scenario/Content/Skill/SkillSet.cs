@@ -29,10 +29,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
 
             else
             {
-                this.SelectedSkill = this.Skills.FirstOrDefault(x => (x.LevelRequirement >=
-                                                                      this.SelectedSkill.LevelRequirement) &&
-                                                                      x.IsLearned &&
-                                                                      x != this.SelectedSkill);
+                this.SelectedSkill = this.Skills.FirstOrDefault(x => x.IsLearned &&
+                                                                     x != this.SelectedSkill) ?? this.SelectedSkill;
             }
         }
         public void SelectSkillDown()
@@ -42,10 +40,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
 
             else
             {
-                this.SelectedSkill = this.Skills.FirstOrDefault(x => (x.LevelRequirement <=
-                                                                      this.SelectedSkill.LevelRequirement) &&
-                                                                      x.IsLearned &&
-                                                                      x != this.SelectedSkill);
+                this.SelectedSkill = this.Skills.FirstOrDefault(x => x.IsLearned &&
+                                                                     x != this.SelectedSkill) ?? this.SelectedSkill;
             }
         }
         public void SelectSkill(string skillId)

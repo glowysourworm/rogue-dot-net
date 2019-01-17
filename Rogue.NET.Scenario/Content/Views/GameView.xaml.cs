@@ -54,6 +54,17 @@ namespace Rogue.NET.Scenario.Views
 
                 SetViewText();
             });
+
+            // Subscribe here to handle title text
+            eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Subscribe(() =>
+            {
+                regionManager.RequestNavigate("GameRegion", "SkillTree");
+
+                _currentView = GameViewType.SkillTreeView;
+
+                SetViewText();
+            });
+
         }
 
         private void CycleViewLeftButton_Click(object sender, RoutedEventArgs e)
