@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ namespace Rogue.NET.Core.Model.ScenarioMessage.Message
         {
         }
 
-        public string ActorDisplayName { get; set; }
-        public string ActeeDisplayName { get; set; }
+        public string AttackerDisplayName { get; set; }
+        public string DefenderDisplayName { get; set; }
         public double BaseHit { get; set; }
         public bool IsCriticalHit { get; set; }
-        public bool AnyAttackAttributes { get; set; }
+        public bool AnySpecializedHits { get; set; }
 
-        public IDictionary<AttackAttribute, double> AttackAttributeHit { get; set; }
+        public IDictionary<ScenarioImage, double> SpecializedHits { get; set; }
     }
 }

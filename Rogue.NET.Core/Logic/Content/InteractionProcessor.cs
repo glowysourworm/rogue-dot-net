@@ -8,6 +8,7 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
@@ -89,16 +90,44 @@ namespace Rogue.NET.Core.Logic.Content
             // Calculate critical hit
             var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
 
-            //Attack attributes
+            // Attack attributes
             var baseAttributes = _modelService.GetAttackAttributes();
             var attackerAttributes = attacker.GetMeleeAttributes(baseAttributes);
             var defenderAttributes = defender.GetMeleeAttributes(baseAttributes);
 
             // Calculate Attack Attribute Melee
-            var attackAttributeResults = CreateAttackAttributeResults(attackerAttributes, defenderAttributes);
+            var specializedHits = CreateAttackAttributeResults(attackerAttributes, defenderAttributes);
 
             // Add Results to attack
-            attack += attackAttributeResults.Sum(x => x.Value);
+            attack += specializedHits.Sum(x => x.Value);
+
+            // Calculate Religion Interaction
+            if (attacker.ReligiousAlteration.IsAffiliated() &&
+                defender.ReligiousAlteration.IsAffiliated())
+            {
+                var attackerReligion = attacker.ReligiousAlteration.ReligionName;
+                var defenderReligion = defender.ReligiousAlteration.ReligionName;
+
+                var attackerParameters = attacker.ReligiousAlteration.GetParameters(defenderReligion);
+                var defenderParameters = defender.ReligiousAlteration.GetParameters(attackerReligion);
+
+                // Attack = I_A * M_A * A_A - I_D * M_D * D_D
+                var religiousAttack = attacker.GetIntelligence() *
+                                      attackerParameters.AttackMultiplier *
+                                      attacker.ReligiousAlteration.Affiliation;
+
+                var religiousDefense = defender.GetIntelligence() *
+                                       defenderParameters.DefenseMultiplier *
+                                       defender.ReligiousAlteration.Affiliation;
+
+                var hit = Math.Max(0, religiousAttack - religiousDefense);
+
+                if (hit > 0)
+                {
+                    attack += hit;
+                    specializedHits.Add(attacker.ReligiousAlteration.Symbol, hit);
+                }
+            }
 
             if (attack <= 0 || dodge)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, attacker.RogueName + " Misses");
@@ -118,8 +147,8 @@ namespace Rogue.NET.Core.Logic.Content
                     _modelService.GetDisplayName(defender), 
                     attackBase, 
                     criticalHit,
-                    attackAttributeResults.Count > 0,
-                    attackAttributeResults);
+                    specializedHits.Count > 0,
+                    specializedHits);
 
                 result = true;
             }
@@ -154,7 +183,7 @@ namespace Rogue.NET.Core.Logic.Content
             }
         }
 
-        private IDictionary<AttackAttribute, double> CreateAttackAttributeResults(
+        private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
                 IEnumerable<AttackAttribute> offensiveAttributes,
                 IEnumerable<AttackAttribute> defensiveAttributes)
         {
@@ -165,7 +194,7 @@ namespace Rogue.NET.Core.Logic.Content
                 return new
                 {
                     Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, defensiveAttribute.Resistance),
-                    AttackAttribute = offensiveAttribute
+                    AttackAttribute = offensiveAttribute as ScenarioImage
                 };
             })
             .Where(x => x.Value > 0)

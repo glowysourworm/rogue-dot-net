@@ -175,18 +175,18 @@
                 <!-- Critical Hit Base Text -->
                 <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
-                <Run Text="{Binding ActorDisplayName}" />
-                <Run Text=" has attacked " />
-                <Run Text="{Binding ActeeDisplayName}" />
-                <Run Text=" for a critical hit!" />
+                    <Run Text="{Binding AttackerDisplayName}" />
+                    <Run Text=" has attacked " />
+                    <Run Text="{Binding DefenderDisplayName}" />
+                    <Run Text=" for a critical hit!" />
                 </TextBlock>
 
                 <!-- Non Critical Hit Base Text -->
                 <TextBlock Visibility="{Binding IsCriticalHit, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                        Style="{StaticResource ScenarioMessageTextBlockStyle}">
-                <Run Text="{Binding ActorDisplayName}" />
-                <Run Text=" has attacked " />
-                <Run Text="{Binding ActeeDisplayName}" />
+                    <Run Text="{Binding AttackerDisplayName}" />
+                    <Run Text=" has attacked " />
+                    <Run Text="{Binding DefenderDisplayName}" />
                 </TextBlock>
 
                 <!-- Attack Calculation -->
@@ -194,16 +194,17 @@
 
                     <!-- Base Hit -->
                     <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}">
-                    <Run Text="HP = " />
-                    <Run Text="{Binding BaseHit, StringFormat=F1}" />
+                        <Run Text="HP = " />
+                        <Run Text="{Binding BaseHit, StringFormat=F1}" />
                     </TextBlock>
 
-                    <!-- + Attack Attributes... -->
-                    <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                    <!-- + Specialized Hits (Attack Attributes, Religions, etc...) -->
+                    <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnySpecializedHits, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
 
-                    <!-- Attack Attributes -->
-                    <ItemsControl   Visibility="{Binding AnyAttackAttributes, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                            ItemsSource="{Binding AttackAttributeHits}"
+                    <!-- Specialized Hits -->
+                    <ItemsControl   
+                            Visibility="{Binding AnySpecializedHits, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                            ItemsSource="{Binding SpecializedHits}"
                             ItemTemplate="{StaticResource AttackAttributeHitDataTemplate}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Stretch"

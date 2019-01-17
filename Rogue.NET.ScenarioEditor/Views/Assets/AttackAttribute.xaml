@@ -23,6 +23,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="32" />
             <RowDefinition Height="32" />
+            <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <Image Margin="10">
@@ -44,7 +45,9 @@
         </StackPanel>
         <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
         <TextBlock Text="Resistance" Grid.Row="2" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
+        <TextBlock Text="Weakness" Grid.Row="3" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
         <controls:Range DataContext="{Binding Attack}" Grid.Column="1" Grid.Row="1" />
         <controls:Range DataContext="{Binding Resistance}" Grid.Column="1" Grid.Row="2" />
+        <controls:Range DataContext="{Binding Weakness}" Grid.Column="1" Grid.Row="3" />
     </Grid>
 </UserControl>

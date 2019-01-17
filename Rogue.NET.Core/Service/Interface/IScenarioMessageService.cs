@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using System;
 using System.Collections.Generic;
@@ -18,18 +19,18 @@ namespace Rogue.NET.Core.Service.Interface
                 string effectedAttributeName,
                 double effect,
                 bool isCausedByAttackAttributes = false,
-                IDictionary<AttackAttribute, double> attackAttributeEffect = null);
+                IDictionary<ScenarioImage, double> attackAttributeEffect = null);
 
         void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string playerName, string enemyDisplayName, string alterationDisplayName);
 
         void PublishMeleeMessage(
                 ScenarioMessagePriority priority,
-                string actor,
-                string actee,
+                string attacker,
+                string defender,
                 double baseHit,
                 bool isCriticalHit,
-                bool anyAttackAttributes = false,
-                IDictionary<AttackAttribute, double> attackAttributeHits = null);
+                bool anySpecializedHits = false,
+                IDictionary<ScenarioImage, double> specializedHits = null);
 
         void PublishPlayerAdvancement(ScenarioMessagePriority priority, string playerName, int playerLevel, IList<Tuple<string, double, Color>> attributesChanged);
 

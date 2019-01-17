@@ -489,7 +489,11 @@ IMMEDIATE TODO'S:
 							  
 							  4) UI NEAR PLAYER TO SHOW RELIGIOUS AFFILIATION "STAMP" (Possibly ON FORHEAD OF PLAYER :))
 							  
-    - Change Experience and Point experience to start at 0 each level instead of continue							  
+    - Change Experience and Point experience to start at 0 each level instead of continue		
+
+	- Engage enemies if they've been hit by the player (if invisible or transmorgified)
+	
+	- Enemies that die from an alteration have a move on the queue that causes a crash
 							  
     - Alteration Block Type:  Hook back up and add one to the Enum to have a "Non-Blockable" type. Can't be blocked by Physical, Mental, or Religion.
 	

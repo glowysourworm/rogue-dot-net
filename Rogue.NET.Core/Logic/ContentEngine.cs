@@ -296,7 +296,8 @@ namespace Rogue.NET.Core.Logic
 
             // Check for invisibility
             if (player.Is(CharacterStateType.Invisible) &&
-               !enemy.Alteration.CanSeeInvisibleCharacters())
+               !enemy.Alteration.CanSeeInvisibleCharacters() &&
+               !enemy.WasAttackedByPlayer)
             {
                 enemy.IsEngaged = false;
                 return;

@@ -208,6 +208,9 @@ namespace Rogue.NET.Core.Logic
                 //Engage enemy if they're attacked
                 enemy.IsEngaged = true;
 
+                // Set flag to allow enemy to fight back if they're attacked (even if player is invisible)
+                enemy.WasAttackedByPlayer = true;
+
                 // Enemy gets hit OR dodges
                 _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, PhysicalAttackType.Melee);
             }
@@ -602,7 +605,7 @@ namespace Rogue.NET.Core.Logic
         public void CycleActiveSkillSet()
         {
             var activeSkill = _modelService.Player.SkillSets.FirstOrDefault(x => x.IsActive);
-            var learnedSkills = _modelService.Player.SkillSets.Where(x => x.IsLearned);
+            var learnedSkills = _modelService.Player.SkillSets.Where(x => x.IsLearned && x.Skills.Any(z => z.IsLearned));
 
             if (!learnedSkills.Any())
                 return;

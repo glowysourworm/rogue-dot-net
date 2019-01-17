@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.ScenarioMessage.Message;
 using Rogue.NET.Core.Service.Interface;
@@ -45,7 +46,7 @@ namespace Rogue.NET.Core.Service
                 string effectedAttributeName, 
                 double effect, 
                 bool isCausedByAttackAttributes = false, 
-                IDictionary<AttackAttribute, double> attackAttributeEffect = null)
+                IDictionary<ScenarioImage, double> attackAttributeEffect = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new AlterationMessage(priority)
             {
@@ -69,19 +70,19 @@ namespace Rogue.NET.Core.Service
 
         public void PublishMeleeMessage(
                 ScenarioMessagePriority priority,
-                string actor, 
-                string actee, 
-                double baseHit, 
-                bool isCriticalHit, 
-                bool anyAttackAttributes = false, 
-                IDictionary<AttackAttribute, double> attackAttributeHits = null)
+                string attacker,
+                string defender,
+                double baseHit,
+                bool isCriticalHit,
+                bool anySpecializedHits = false,
+                IDictionary<ScenarioImage, double> specializedHits = null)
         {
             _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new MeleeMessage(priority)
             {
-                ActeeDisplayName = actee,
-                ActorDisplayName = actor,
-                AnyAttackAttributes = anyAttackAttributes,
-                AttackAttributeHit = attackAttributeHits,
+                DefenderDisplayName = defender,
+                AttackerDisplayName = attacker,
+                AnySpecializedHits = anySpecializedHits,
+                SpecializedHits = specializedHits,
                 BaseHit = baseHit,
                 IsCriticalHit = isCriticalHit
             });

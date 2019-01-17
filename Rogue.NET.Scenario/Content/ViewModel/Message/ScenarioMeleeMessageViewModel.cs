@@ -10,12 +10,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Message
         bool _isCriticalHit;
         bool _anyAttackAttributes;
 
-        public string ActorDisplayName
+        public string AttackerDisplayName
         {
             get { return _actorDisplayName; }
             set { this.RaiseAndSetIfChanged(ref _actorDisplayName, value); }
         }
-        public string ActeeDisplayName
+        public string DefenderDisplayName
         {
             get { return _acteeDisplayName; }
             set { this.RaiseAndSetIfChanged(ref _acteeDisplayName, value); }
@@ -30,17 +30,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Message
             get { return _isCriticalHit; }
             set { this.RaiseAndSetIfChanged(ref _isCriticalHit, value); }
         }
-        public bool AnyAttackAttributes
+        public bool AnySpecializedHits
         {
             get { return _anyAttackAttributes; }
             set { this.RaiseAndSetIfChanged(ref _anyAttackAttributes, value); }
         }
 
-        public ObservableCollection<AttackAttributeHitViewModel> AttackAttributeHits { get; set; }
+        public ObservableCollection<AttackAttributeHitViewModel> SpecializedHits { get; set; }
 
         public ScenarioMeleeMessageViewModel()
         {
-            this.AttackAttributeHits = new ObservableCollection<AttackAttributeHitViewModel>();
+            this.SpecializedHits = new ObservableCollection<AttackAttributeHitViewModel>();
         }
     }
 }

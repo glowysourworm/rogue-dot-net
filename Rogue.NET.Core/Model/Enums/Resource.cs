@@ -722,6 +722,16 @@
         RockCyan = 143,
         RockBlue = 144,
         RockPurple = 145,
-        RockFuschia = 146
+        RockFuschia = 146,
+        PenticleBlack = 147,
+        PenticleWhite = 148,
+        PenticleRed = 149,
+        PenticleOrange = 150,
+        PenticleYellow = 151,
+        PenticleGreen = 152,
+        PenticleCyan = 153,
+        PenticleBlue = 154,
+        PenticlePurple = 155,
+        PenticleFuschia = 156
     }
 }

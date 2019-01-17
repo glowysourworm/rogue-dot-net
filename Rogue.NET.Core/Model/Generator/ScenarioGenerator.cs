@@ -104,19 +104,20 @@ namespace Rogue.NET.Core.Model.Generator
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
 
                 // Also setup skill set IsLearned flag based on player level and religious affiliation
-                skillSet.IsLearned = scenario.Player.Level >= skillSet.LevelLearned &&
-                                    (skillSet.HasReligiousAffiliationRequirement ?
-                                        scenario.Player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel :
-                                        true);
+                skillSet.IsLearned = (scenario.Player.Level >= skillSet.LevelLearned) &&
+                                     (!skillSet.HasReligiousAffiliationRequirement ||
+                                      (skillSet.HasReligiousAffiliationRequirement &&
+                                       scenario.Player.ReligiousAlteration.Affiliation >=
+                                       skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel));
 
                 foreach (var skill in skillSet.Skills)
                 {
                     // Also setup skill IsLearned flag based on player level and religious affiliation
-                    skillSet.IsLearned = scenario.Player.Level >= skill.LevelRequirement &&
-                                         skill.SkillPointRequirement <= 0 &&
-                                        (skillSet.HasReligiousAffiliationRequirement ?
-                                         scenario.Player.ReligiousAlteration.Affiliation >= skill.RequiredAffiliationLevel :
-                                         true);
+                    skill.IsLearned = (scenario.Player.Level >= skill.LevelRequirement) &&
+                                     (!skillSet.HasReligiousAffiliationRequirement ||
+                                      (skillSet.HasReligiousAffiliationRequirement &&
+                                       scenario.Player.ReligiousAlteration.Affiliation >=
+                                       skill.RequiredAffiliationLevel));
                 }
             }
 

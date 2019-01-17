@@ -57,6 +57,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             get { return _religion; }
         }
 
+        public ReligiousAffiliationAttackParameters GetParameters(string enemyReligionName)
+        {
+            return _religion == null ? null :
+                   _religion.AttackParameters.First(x => x.EnemyReligionName == enemyReligionName);
+        }
 
         /// <summary>
         /// Treated as an attack attribute passive effect

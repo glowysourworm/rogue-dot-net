@@ -95,19 +95,19 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             var viewModel = new ScenarioMeleeMessageViewModel()
             {
-                ActeeDisplayName = message.ActeeDisplayName,
-                ActorDisplayName = message.ActorDisplayName,
-                AnyAttackAttributes = message.AnyAttackAttributes,
+                DefenderDisplayName = message.DefenderDisplayName,
+                AttackerDisplayName = message.AttackerDisplayName,
+                AnySpecializedHits = message.AnySpecializedHits,
                 BaseHit = message.BaseHit,
                 IsCriticalHit = message.IsCriticalHit,
                 Priority = message.Priority
             };
 
-            if (message.AnyAttackAttributes)
+            if (message.AnySpecializedHits)
             {
-                viewModel.AttackAttributeHits
+                viewModel.SpecializedHits
                          .AddRange(
-                    message.AttackAttributeHit
+                    message.SpecializedHits
                            .Select(x => (AttackAttributeHitViewModel)SetScenarioImageProperties(
                                            new AttackAttributeHitViewModel()
                                            {

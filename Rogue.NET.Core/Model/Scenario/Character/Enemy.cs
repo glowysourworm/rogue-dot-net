@@ -14,6 +14,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public bool IsEngaged { get; set; }
         public bool IsInvisible { get; set; }
 
+        /// <summary>
+        /// Flag to alert enemies to Player if they're invisible or transmorgified
+        /// </summary>
+        public bool WasAttackedByPlayer { get; set; }
+
         public BehaviorDetails BehaviorDetails { get; set; }
 
         public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }

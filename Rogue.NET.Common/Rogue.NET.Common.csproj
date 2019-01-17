@@ -1191,6 +1191,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource\Images\DisplayImages\WorldCyan.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleBlack.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleBlue.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleCyan.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleGreen.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleOrange.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticlePurple.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleRed.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleWhite.png" />
+    <EmbeddedResource Include="Resource\Images\DisplayImages\PenticleYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
