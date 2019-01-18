@@ -53,6 +53,8 @@
                 <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Top" HorizontalAlignment="Left" />
                 <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name"
                                   SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
+                                  SelectedValue="{Binding ReligiousAffiliationRequirement.Religion.Name}"
+                                  SelectedValuePath="Name"
                                   VerticalAlignment="Center" 
                                   Width="200"                              
                                   HorizontalAlignment="Right" />

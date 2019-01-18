@@ -46,14 +46,17 @@
             <Grid Margin="10"
                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name"
-                                  SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
-                                  VerticalAlignment="Center" 
-                                  Width="200"                              
-                                  HorizontalAlignment="Right" />
+                <ComboBox x:Name="ReligionCB" 
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
+                          SelectedValue="{Binding ReligiousAffiliationRequirement.Religion.Name}"
+                          SelectedValuePath="Name"
+                          VerticalAlignment="Center" 
+                          Width="200"                              
+                          HorizontalAlignment="Right" />
             </Grid>
             <Grid Margin="10"
-                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                  Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Foreground="White" Text="Required Affiliation Level" VerticalAlignment="Top" HorizontalAlignment="Left" />
                 <toolkit:DoubleUpDown Value="{Binding ReligiousAffiliationRequirement.RequiredAffiliationLevel}" 
                                               Minimum="0.1"

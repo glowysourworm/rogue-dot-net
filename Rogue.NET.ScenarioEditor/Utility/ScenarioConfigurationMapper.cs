@@ -47,7 +47,20 @@ namespace Rogue.NET.ScenarioEditor.Utility
         {
             var result = MapObject<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel);
 
-            return FixReferences(result);
+            var configuration = FixReferences(result);
+
+            // Sort collections 
+            configuration.AnimationTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.BrushTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.MagicSpells.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.Religions.Sort((x, y) => x.Name.CompareTo(y.Name));
+            configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+            return configuration;
         }
 
         public TDest MapObject<TSource, TDest>(TSource source)
