@@ -326,6 +326,18 @@
                             Text="Uncurse: Spell that calls the uncurse dialog" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.RenounceReligion}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Renounce Religion: Spell that forces the Player to renounce their religion" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding OtherEffectType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationMagicEffectType.IncreaseReligiousAffiliation}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Increase Religious Affiliation: Spell that increases Player religious affiliation" />
+                        </RadioButton.Content>
+                    </RadioButton>                    
                 </StackPanel>
             </StackPanel>
         </StackPanel>

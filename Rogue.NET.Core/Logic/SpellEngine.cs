@@ -380,6 +380,10 @@ namespace Rogue.NET.Core.Logic
                 case AlterationMagicEffectType.CreateMonster:
                     CreateMonster(alteration.CreateMonsterEnemy);
                     break;
+                case AlterationMagicEffectType.RenounceReligion:
+                    break;
+                case AlterationMagicEffectType.IncreaseReligiousAffiliation:
+                    break;
             }
         }
         private void ProcessPlayerAttackAttributeEffect(AlterationContainer alteration)

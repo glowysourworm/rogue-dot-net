@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
-
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
@@ -13,13 +13,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationEffectTemplateViewModel _effect;
         private AlterationEffectTemplateViewModel _auraEffect;
         private AlterationType _type;
-        //private AlterationBlockType _blockType;
+        private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
+        private double _religiousAffiliationIncrease;
         private double _effectRange;
         private bool _stackable;
         private string _createMonsterEnemy;
         private string _displayName;
+        private ReligionTemplateViewModel _religiousAffiliationReligion;
+
 
         public AlterationCostTemplateViewModel Cost
         {
@@ -41,11 +44,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
         }
-        //public AlterationBlockType BlockType
-        //{
-        //    get { return _blockType; }
-        //    set { this.RaiseAndSetIfChanged(ref _blockType, value); }
-        //}
+        public AlterationBlockType BlockType
+        {
+            get { return _blockType; }
+            set { this.RaiseAndSetIfChanged(ref _blockType, value); }
+        }
         public AlterationMagicEffectType OtherEffectType
         {
             get { return _otherEffectType; }
@@ -60,6 +63,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _effectRange; }
             set { this.RaiseAndSetIfChanged(ref _effectRange, value); }
+        }
+        public double ReligiousAffiliationIncrease
+        {
+            get { return _religiousAffiliationIncrease; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationIncrease, value); }
         }
         public bool Stackable
         {
@@ -76,6 +84,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _displayName; }
             set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
+        public ReligionTemplateViewModel ReligiousAffiliationReligion
+        {
+            get { return _religiousAffiliationReligion; }
+            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationReligion, value); }
+        }
 
         public SpellTemplateViewModel()
         {
@@ -83,6 +96,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.Cost = new AlterationCostTemplateViewModel();
             this.Effect = new AlterationEffectTemplateViewModel();
             this.AuraEffect = new AlterationEffectTemplateViewModel();
+            this.ReligiousAffiliationReligion = new ReligionTemplateViewModel();
 
             this.CreateMonsterEnemy = "";
             this.DisplayName = "";

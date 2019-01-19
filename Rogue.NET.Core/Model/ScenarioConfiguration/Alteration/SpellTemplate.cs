@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 using System.Collections.Generic;
 
@@ -14,13 +15,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationEffectTemplate _effect;
         private AlterationEffectTemplate _auraEffect;
         private AlterationType _type;
-        //private AlterationBlockType _blockType;
+        private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
+        private double _religiousAffiliationIncrease;
         private bool _stackable;
         private string _createMonsterEnemy;
         private string _displayName;
+        private ReligionTemplate _religiousAffiliationReligion;
 
         public List<AnimationTemplate> Animations { get; set; }
         public AlterationCostTemplate Cost
@@ -71,7 +74,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        /*
         public AlterationBlockType BlockType
         {
             get { return _blockType; }
@@ -84,7 +86,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        */
         public AlterationMagicEffectType OtherEffectType
         {
             get { return _otherEffectType; }
@@ -118,6 +119,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _effectRange = value;
                     OnPropertyChanged("EffectRange");
+                }
+            }
+        }
+        public double ReligiousAffiliationIncrease
+        {
+            get { return _religiousAffiliationIncrease; }
+            set
+            {
+                if (_religiousAffiliationIncrease != value)
+                {
+                    _religiousAffiliationIncrease = value;
+                    OnPropertyChanged("ReligiousAffiliationIncrease");
                 }
             }
         }
@@ -157,6 +170,19 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        public ReligionTemplate ReligiousAffiliationReligion
+        {
+            get { return _religiousAffiliationReligion; }
+            set
+            {
+                if (_religiousAffiliationReligion != value)
+                {
+                    _religiousAffiliationReligion = value;
+                    OnPropertyChanged("ReligiousAffiliationReligion");
+                }
+            }
+        }
+
 
         public SpellTemplate()
         {
@@ -164,6 +190,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.Cost = new AlterationCostTemplate();
             this.Effect = new AlterationEffectTemplate();
             this.AuraEffect = new AlterationEffectTemplate();
+            this.ReligiousAffiliationReligion = new ReligionTemplate();
 
             this.CreateMonsterEnemy = "";
             this.DisplayName = "";

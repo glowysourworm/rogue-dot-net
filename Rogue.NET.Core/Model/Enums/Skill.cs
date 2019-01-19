@@ -50,7 +50,12 @@
         /// <summary>
         /// Blocks Alteration using Base Agility ONLY
         /// </summary>
-        Physical
+        Physical,
+
+        /// <summary>
+        /// Alteration can't be blocked
+        /// </summary>
+        NonBlockable
     }
     public enum AlterationType
     {
