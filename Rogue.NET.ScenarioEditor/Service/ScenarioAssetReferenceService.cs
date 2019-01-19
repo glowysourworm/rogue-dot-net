@@ -7,6 +7,7 @@ using System.ComponentModel.Composition;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -105,6 +106,14 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateReligions(ScenarioConfigurationContainerViewModel configuration)
         {
+            // Alterations
+            foreach (var alteration in configuration.MagicSpells
+                                                    .Where(x => x.Type == AlterationType.OtherMagicEffect &&
+                                                                x.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation))
+            {
+                alteration.ReligiousAffiliationReligion = MatchByName(configuration.Religions, alteration.ReligiousAffiliationReligion);
+            }
+
             // Consumables
             foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligiousAffiliationRequirement))
             {

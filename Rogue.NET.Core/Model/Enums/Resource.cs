@@ -572,7 +572,16 @@
         TreeBlue = 560,
         TreePurple = 561,
         TreeFuschia = 562,
-        TreeRainbow = 563
+        TreeRainbow = 563,
+        TorchRed = 564,
+        TorchOrange = 565,
+        TorchGreen = 566,
+        TorchBlue = 567,
+        TorchPurple = 568,
+        TorchFuschia = 569,
+        TorchCyan = 570,
+        TorchBlack = 571,
+        TorchWhite = 572
     }
     public enum DisplayImageResources
     {

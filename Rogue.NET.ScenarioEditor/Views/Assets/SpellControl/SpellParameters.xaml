@@ -45,7 +45,6 @@
             <TextBlock Foreground="White" Text="Alteration Block Type:  Mental" HorizontalAlignment="Left" />
             <RadioButton GroupName="BlockTypeGroup" 
                          IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Mental}}"
-                         Margin="8" 
                          Foreground="White" 
                          HorizontalAlignment="Right" />
         </Grid>
@@ -55,11 +54,19 @@
             <TextBlock Foreground="White" Text="Alteration Block Type:  Physical" HorizontalAlignment="Left" />
             <RadioButton GroupName="BlockTypeGroup" 
                          IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Physical}}"
-                         Margin="8" 
                          Foreground="White" 
                          HorizontalAlignment="Right" />
-        </Grid>        
-        
+        </Grid>
+
+        <!-- Block Type Non-Blockable -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Alteration Block Type:  Non-Blockable" HorizontalAlignment="Left" />
+            <RadioButton GroupName="BlockTypeGroup" 
+                         IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.NonBlockable}}"
+                         Foreground="White" 
+                         HorizontalAlignment="Right" />
+        </Grid>
+
         <!-- Effect Can See Invisible Characters -->
         <Grid Margin="10">
             <Grid.Visibility>
@@ -181,6 +188,37 @@
               Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
             <TextBlock Text="Effect Range" Foreground="White" />
             <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
+        </Grid>
+        
+        <!-- Increase Religious Affiliation (Religion) -->
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
+                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.IncreaseReligiousAffiliation}" />
+                </MultiBinding>
+            </Grid.Visibility>
+            <TextBlock Text="Religion (Religious Affiliation Increase)" Foreground="White" />
+            <ComboBox x:Name="ReligiousAffiliationReligionCB"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding ReligiousAffiliationReligion}"
+                      SelectedValue="{Binding ReligiousAffiliationReligion.Name}"
+                      SelectedValuePath="Name"
+                      HorizontalAlignment="Right"
+                      Width="250" />
+        </Grid>
+
+        <!-- Increase Religious Affiliation (Amount) -->
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
+                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.IncreaseReligiousAffiliation}" />
+                </MultiBinding>
+            </Grid.Visibility>            
+            <TextBlock Text="Amount (Religious Affiliation Increase)" Foreground="White" />
+            <toolkit:DoubleUpDown Minimum="0" Maximum="1" Increment="0.01" Value="{Binding ReligiousAffiliationIncrease}"
+                                  AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
         </Grid>
 
         <!-- Animations -->
