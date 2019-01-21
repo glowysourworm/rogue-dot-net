@@ -101,6 +101,8 @@
                     <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name"
                                   Margin="10"
                                   SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
+                                  SelectedValue="{Binding ReligiousAffiliationRequirement.Religion.Name}"
+                                  SelectedValuePath="Name"
                                   VerticalAlignment="Center" 
                                   Width="200"                              
                                   HorizontalAlignment="Right" />

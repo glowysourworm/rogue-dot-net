@@ -13,89 +13,79 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
     [Serializable]
     public class CharacterReligiousAlteration
     {
-        Religion _religion;
-        double _religiousAffiliationLevel;
+        public AlterationEffect AttackAttributeEffect { get; protected set; }
+        public AlterationEffect AttributeEffect { get; protected set; }
 
-        // Keep these instantiated for pass-through usage.
-        AlterationEffect _attributeEffect = new AlterationEffect();
-        AlterationEffect _attackAttributeEffect = new AlterationEffect();
+        protected Religion Religion { get; set; }
+        protected double ReligiousAffiliationLevel { get; set; }
+
+        protected IEnumerable<AttackAttribute> ScenarioAttackAttributes { get; set; }
 
         public bool IsAffiliated()
         {
-            return _religion != null && _religiousAffiliationLevel > 0;
+            return this.Religion != null && this.ReligiousAffiliationLevel > 0;
         }
 
-        public IEnumerable<AnimationTemplate> Renounce(IEnumerable<AttackAttribute> scenarioAttributes)
+        public IEnumerable<AnimationTemplate> Renounce()
         {
-            var renunciationAnimations = _religion.RenunciationAnimations;
+            var renunciationAnimations = this.Religion.RenunciationAnimations;
 
-            _religion = null;
+            this.Religion = null;
 
-            CreateEffects(scenarioAttributes);
+            CreateEffects();
 
             return renunciationAnimations;
         }
 
-        public void Affiliate(Religion religion, double affiliationLevel, IEnumerable<AttackAttribute> scenarioAttributes)
+        public void Affiliate(Religion religion, double affiliationLevel)
         {
-            if (_religion != null)
+            if (this.Religion != null)
                 throw new Exception("Trying to affiliate religion without renouncing old religion");
 
-            _religion = religion;
-            _religiousAffiliationLevel = affiliationLevel;
+            this.Religion = religion;
+            this.ReligiousAffiliationLevel = affiliationLevel;
 
-            CreateEffects(scenarioAttributes);
+            CreateEffects();
         }
 
-        public void SetAffiliationLevel(double affiliationLevel, IEnumerable<AttackAttribute> scenarioAttributes)
+        public void SetAffiliationLevel(double affiliationLevel)
         {
-            if (_religion == null)
+            if (this.Religion == null)
                 throw new Exception("Not affiliated with any religion");
 
-            _religiousAffiliationLevel = affiliationLevel;
+            this.ReligiousAffiliationLevel = affiliationLevel;
 
-            CreateEffects(scenarioAttributes);
+            CreateEffects();
         }
 
         public string ReligionName
         {
-            get { return _religion == null ? string.Empty : _religion.RogueName; }
+            get { return this.Religion?.RogueName ?? string.Empty; }
         }
 
         public ScenarioImage Symbol
         {
-            get { return _religion; }
+            get { return this.Religion; }
         }
 
         public ReligiousAffiliationAttackParameters GetParameters(string enemyReligionName)
         {
-            return _religion == null ? null :
-                   _religion.AttackParameters.First(x => x.EnemyReligionName == enemyReligionName);
-        }
-
-        public AlterationEffect AttackAttributeEffect
-        {
-            get { return _attackAttributeEffect; }
-        }
-
-        public AlterationEffect AttributeEffect
-        {
-            get { return _attributeEffect; }
+            return this.Religion?.AttackParameters.First(x => x.EnemyReligionName == enemyReligionName);
         }
 
         public bool HasAttributeEffect
         {
-            get { return _religion?.HasAttributeBonus ?? false; }
+            get { return this.Religion?.HasAttributeBonus ?? false; }
         }
 
         public bool HasAttackAttributeEffect
         {
-            get { return _religion?.HasBonusAttackAttributes ?? false; }
+            get { return this.Religion?.HasBonusAttackAttributes ?? false; }
         }
 
         public double Affiliation
         {
-            get { return _religiousAffiliationLevel; }
+            get { return this.ReligiousAffiliationLevel; }
         }
 
         public CharacterReligiousAlteration()
@@ -103,42 +93,53 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
         }
 
-        protected void CreateEffects(IEnumerable<AttackAttribute> scenarioAttributes)
+        /// <summary>
+        /// Must be called immediately after instantiating.
+        /// </summary>
+        public void Initialize(IEnumerable<AttackAttribute> scenarioAttributes)
         {
-            var attributeEffect = _religion?.AttributeAlteration ?? new AlterationEffect();
+            this.ScenarioAttackAttributes = scenarioAttributes;
+
+            CreateEffects();
+        }
+
+        protected void CreateEffects()
+        {
+            var attributeEffect = this.Religion?.AttributeAlteration ?? new AlterationEffect();
 
             // Attribute Bonus Effect
-            _attributeEffect = new AlterationEffect()
+            this.AttributeEffect = new AlterationEffect()
             {
-                DisplayName = (_religion?.RogueName ?? "Zero") + " Attribute Bonus",
+                DisplayName = (this.Religion?.RogueName ?? "Zero") + " Attribute Bonus",
 
-                Agility = attributeEffect.Agility * _religiousAffiliationLevel,
-                Attack = attributeEffect.Attack * _religiousAffiliationLevel,
-                AuraRadius = attributeEffect.AuraRadius * _religiousAffiliationLevel,
-                CriticalHit = attributeEffect.CriticalHit * _religiousAffiliationLevel,
-                Defense = attributeEffect.Defense * _religiousAffiliationLevel,
-                DodgeProbability = attributeEffect.DodgeProbability * _religiousAffiliationLevel,
-                FoodUsagePerTurn = attributeEffect.FoodUsagePerTurn * _religiousAffiliationLevel,
-                HpPerStep = attributeEffect.HpPerStep * _religiousAffiliationLevel,
-                Intelligence = attributeEffect.Intelligence * _religiousAffiliationLevel,
-                MagicBlockProbability = attributeEffect.MagicBlockProbability * _religiousAffiliationLevel,
-                MpPerStep = attributeEffect.MpPerStep * _religiousAffiliationLevel,
-                Speed = attributeEffect.Speed * _religiousAffiliationLevel,
-                Strength = attributeEffect.Strength * _religiousAffiliationLevel
+                Agility = attributeEffect.Agility * this.ReligiousAffiliationLevel,
+                Attack = attributeEffect.Attack * this.ReligiousAffiliationLevel,
+                AuraRadius = attributeEffect.AuraRadius * this.ReligiousAffiliationLevel,
+                CriticalHit = attributeEffect.CriticalHit * this.ReligiousAffiliationLevel,
+                Defense = attributeEffect.Defense * this.ReligiousAffiliationLevel,
+                DodgeProbability = attributeEffect.DodgeProbability * this.ReligiousAffiliationLevel,
+                FoodUsagePerTurn = attributeEffect.FoodUsagePerTurn * this.ReligiousAffiliationLevel,
+                HpPerStep = attributeEffect.HpPerStep * this.ReligiousAffiliationLevel,
+                Intelligence = attributeEffect.Intelligence * this.ReligiousAffiliationLevel,
+                MagicBlockProbability = attributeEffect.MagicBlockProbability * this.ReligiousAffiliationLevel,
+                MpPerStep = attributeEffect.MpPerStep * this.ReligiousAffiliationLevel,
+                Speed = attributeEffect.Speed * this.ReligiousAffiliationLevel,
+                Strength = attributeEffect.Strength * this.ReligiousAffiliationLevel
             };
 
-            var attackAttributes = _religion == null ? scenarioAttributes : _religion.AttackAttributeAlteration.AttackAttributes;
+            var attackAttributes = this.Religion == null ? this.ScenarioAttackAttributes : 
+                                                           this.Religion.AttackAttributeAlteration.AttackAttributes;
 
             // Attack Attribute Bonus Effect
-            _attackAttributeEffect = new AlterationEffect()
+            this.AttackAttributeEffect = new AlterationEffect()
             {
-                DisplayName = (_religion?.RogueName ?? "Zero") + " Attack Attribute Bonus",
+                DisplayName = (this.Religion?.RogueName ?? "Zero") + " Attack Attribute Bonus",
 
                 AttackAttributes = attackAttributes.Select(x => new AttackAttribute()
                 {
-                    Attack = x.Attack * _religiousAffiliationLevel,
-                    Resistance = x.Resistance * _religiousAffiliationLevel,
-                    Weakness = x.Weakness * _religiousAffiliationLevel,
+                    Attack = x.Attack * this.ReligiousAffiliationLevel,
+                    Resistance = x.Resistance * this.ReligiousAffiliationLevel,
+                    Weakness = x.Weakness * this.ReligiousAffiliationLevel,
 
                     CharacterColor = x.CharacterColor,
                     CharacterSymbol = x.CharacterSymbol,

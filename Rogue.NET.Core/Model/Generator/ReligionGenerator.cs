@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Model.Generator
                 // Create an alteration for the attack attribute bonus
                 AttackAttributeAlteration = new AlterationEffect()
                 {
-                    DisplayName = template.Name + " - Attack Attribute Bonus",
+                    DisplayName = template.Name + " - Attack Attributes",
 
                     // Don't allow symbol alterations for religion (TBD)
                     IsSymbolAlteration = false,
@@ -59,7 +59,7 @@ namespace Rogue.NET.Core.Model.Generator
                 },
                 AttributeAlteration = new AlterationEffect()
                 {
-                    DisplayName = template.Name + " - Attribute Bonus",
+                    DisplayName = template.Name + " - Attribute",
                     
                     // Don't allow symbol alterations for religion (TBD)
                     IsSymbolAlteration = false,

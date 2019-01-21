@@ -107,7 +107,8 @@ namespace Rogue.NET.Core.Model.Generator
                 var religion = religions.First(x => x.RogueName == religionName);
 
                 // Start with minimum affiliation to the chosen religion
-                player.ReligiousAlteration.Affiliate(religion, ModelConstants.Religion.AffiliationIncrement, scenarioAttributes);
+                player.ReligiousAlteration.Initialize(scenarioAttributes);
+                player.ReligiousAlteration.Affiliate(religion, ModelConstants.Religion.AffiliationIncrement);
 
                 // Add skill set for this religion if there is one
                 if (religion.HasBonusSkillSet &&
@@ -196,11 +197,12 @@ namespace Rogue.NET.Core.Model.Generator
                 enemy.Equipment.Add(equipment.Id, equipment);
             }
 
-            // Religion - Generate random affiliation level based on range
+            // Religion -> Initialize() -> Generate random affiliation level based on range
+            enemy.ReligiousAlteration.Initialize(scenarioAttributes);
+
             if (enemyTemplate.HasReligiousAffiliation)
                 enemy.ReligiousAlteration.Affiliate(religions.First(x => x.RogueName == enemyTemplate.Religion.Name),
-                                                    _randomSequenceGenerator.GetRandomValue(enemyTemplate.ReligiousAffiliationLevel),
-                                                    scenarioAttributes);
+                                                    _randomSequenceGenerator.GetRandomValue(enemyTemplate.ReligiousAffiliationLevel));
 
             enemyTemplate.HasBeenGenerated = true;
             return enemy;
