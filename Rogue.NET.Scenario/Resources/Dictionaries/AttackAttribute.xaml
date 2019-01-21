@@ -66,22 +66,22 @@
                                 </Image>
                                 <TextBlock Text="{Binding RogueName}" Margin="2" Foreground="White" FontSize="18" />
                                 <TextBlock Margin="2" Foreground="Yellow" FontSize="18" Visibility="{Binding IsAttackSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="{Binding AttackLow, StringFormat=F1}" />
-                                                    <Run Text=" - " />
-                                                    <Run Text="{Binding AttackHigh, StringFormat=F1}" />
-                                                    <Run Text="A" />
+                                            <Run Text="{Binding AttackLow, StringFormat=F1}" />
+                                            <Run Text=" - " />
+                                            <Run Text="{Binding AttackHigh, StringFormat=F1}" />
+                                            <Run Text="A" />
                                 </TextBlock>
                                 <TextBlock Margin="2" Foreground="LightSteelBlue" FontSize="18" Visibility="{Binding IsResistanceSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="{Binding ResistanceLow, StringFormat=F1}" />
-                                                    <Run Text=" - " />
-                                                    <Run Text="{Binding ResistanceHigh, StringFormat=F1}" />
-                                                    <Run Text="R" />
+                                            <Run Text="{Binding ResistanceLow, StringFormat=F1}" />
+                                            <Run Text=" - " />
+                                            <Run Text="{Binding ResistanceHigh, StringFormat=F1}" />
+                                            <Run Text="R" />
                                 </TextBlock>
                                 <TextBlock Margin="2" Foreground="Red" FontSize="18" Visibility="{Binding IsResistanceSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="{Binding WeaknessLow, StringFormat=F1}" />
-                                                    <Run Text=" - " />
-                                                    <Run Text="{Binding WeaknessHigh, StringFormat=F1}" />
-                                                    <Run Text="R" />
+                                            <Run Text="{Binding WeaknessLow, StringFormat=F1}" />
+                                            <Run Text=" - " />
+                                            <Run Text="{Binding WeaknessHigh, StringFormat=F1}" />
+                                            <Run Text="R" />
                                 </TextBlock>                                
                             </StackPanel>
                         </Border>

@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <!-- Skill Sets -->
     <ItemsControl ItemsSource="{Binding SkillSets}"
                       Grid.Row="2"
@@ -89,8 +89,8 @@
                         <Button FontFamily="{StaticResource FontAwesome}" FontSize="12" Cursor="Hand" Foreground="White" Background="Black"
                                 Width="20" Height="20" Margin="2" Content="&#xf063;" Style="{StaticResource ShinyTextButtonStyle}" Grid.Column="1" Grid.Row="1"
                                 Command="{Binding ChangeSkillLevelDownCommand}"
-                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>                        
-                        
+                                Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"/>
+
                         <!-- Symbol -->
                         <Image HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Grid.RowSpan="2"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
@@ -159,7 +159,7 @@
                                         </StackPanel>
                                     </Border>
                                 </ToolTip>
-                            </Button.ToolTip>                            
+                            </Button.ToolTip>
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <TextBlock FontFamily="{StaticResource FontAwesome}" FontSize="20" Cursor="Hand" Foreground="Red"                                       
@@ -213,4 +213,5 @@
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
+
 </UserControl>
