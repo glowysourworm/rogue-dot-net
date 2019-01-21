@@ -15,10 +15,5 @@
                 <Canvas ClipToBounds="False" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemContainerStyle>
-            <Style>
-                <Setter Property="Panel.ZIndex" Value="{Binding Path=ZIndex}" />
-            </Style>
-        </ItemsControl.ItemContainerStyle>
     </ItemsControl>
 </UserControl>

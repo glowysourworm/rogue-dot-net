@@ -265,11 +265,11 @@
                 <GradientStop Color="{Binding SmileyAuraColor}" Offset="0"/>
             </RadialGradientBrush>
         </Grid.Background>
-        
+
         <!-- Skill Point Indicator -->
         <StackPanel Grid.ColumnSpan="2">
-            
-            <!-- Instructions --> 
+
+            <!-- Instructions -->
             <TextBlock Foreground="Tan" TextWrapping="Wrap" FontSize="18" HorizontalAlignment="Stretch" Margin="10"
                    Text="Skills allow your player to develop new abilities to fend off enemies and find your way through the scenario. Choose wisely and spend your points carefully to acheive success!" />
 
@@ -279,7 +279,7 @@
                 <Run Text="{Binding SkillPoints}" />
             </TextBlock>
 
-            <!-- Point Experience -->           
+            <!-- Point Experience -->
             <commonView:ProgressBar HorizontalAlignment="Right" Width="250" Height="32" BarColor1="Purple" Margin="10" Header="Point Exp" ValueTextBrush="Transparent" Value="{Binding SkillPointExperience}" Value2="{Binding SkillPointExperience}" ValueMax="{Binding SkillPointExperienceNext}" />
         </StackPanel>
 
@@ -306,12 +306,12 @@
                  ItemTemplate="{StaticResource SkillDataTemplate}"
                  ItemContainerStyle="{StaticResource SkillItemContainerStyle}">
         </ListBox>
-        
+
         <!-- Locked Skill Detail -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
                 DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
                 Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
-            
+
             <StackPanel>
                 <Grid Margin="10">
                     <TextBlock Text="{Binding Alteration.DisplayName}" FontSize="20" Foreground="Tan" HorizontalAlignment="Left" />
@@ -361,7 +361,7 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-            
+
         </Border>
 
         <!-- Unlocked Skill Detail -->
@@ -385,7 +385,7 @@
                 <Grid Margin="10" Grid.Row="1">
                     <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
                 </Grid>
-                
+
                 <!-- Alteration Cost / Effect / Aura Effect Attributes -->
                 <ScrollViewer x:Name="scrollViewer"
                           Grid.Row="2"
@@ -471,24 +471,24 @@
                                 <Grid Margin="4"
                                       Visibility="{Binding Alteration.IsAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                     <TextBlock Text="Altered State" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
-                                    <TextBlock FontSize="18" Foreground="White" HorizontalAlignment="Right">
-                                    <Image Stretch="None">
-                                        <Image.Source>
-                                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                                <Binding Path="Alteration.AlteredState.CharacterSymbol" />
-                                                <Binding Path="Alteration.AlteredState.CharacterColor" />
-                                                <Binding Path="Alteration.AlteredState.Icon" />
-                                                <Binding Path="Alteration.AlteredState.DisplayIcon" />
-                                                <Binding Path="Alteration.AlteredState.SmileyMood" />
-                                                <Binding Path="Alteration.AlteredState.SmileyBodyColor" />
-                                                <Binding Path="Alteration.AlteredState.SmileyLineColor" />
-                                                <Binding Path="Alteration.AlteredState.SmileyAuraColor" />
-                                                <Binding Path="Alteration.AlteredState.SymbolType" />
-                                            </MultiBinding>
-                                        </Image.Source>
-                                    </Image>                        
-                                    <Run Text="{Binding Alteration.AlteredState.DisplayName}" Foreground="White" />
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Image Stretch="None">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                    <Binding Path="Alteration.AlteredState.CharacterSymbol" />
+                                                    <Binding Path="Alteration.AlteredState.CharacterColor" />
+                                                    <Binding Path="Alteration.AlteredState.Icon" />
+                                                    <Binding Path="Alteration.AlteredState.DisplayIcon" />
+                                                    <Binding Path="Alteration.AlteredState.SmileyMood" />
+                                                    <Binding Path="Alteration.AlteredState.SmileyBodyColor" />
+                                                    <Binding Path="Alteration.AlteredState.SmileyLineColor" />
+                                                    <Binding Path="Alteration.AlteredState.SmileyAuraColor" />
+                                                    <Binding Path="Alteration.AlteredState.SymbolType" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock FontSize="18" Margin="4,0,0,0" Foreground="White" Text="{Binding Alteration.AlteredState.DisplayName}" />
+                                    </StackPanel>
                                 </Grid>
 
                                 <!-- Alteration Remedied State -->
@@ -501,7 +501,7 @@
                                     <TextBlock FontSize="18" HorizontalAlignment="Left">
                                         <Run Text="Remedied State" Foreground="Tan" />
                                     </TextBlock>
-                                    <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Image Stretch="None">
                                             <Image.Source>
                                                 <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
@@ -517,8 +517,8 @@
                                                 </MultiBinding>
                                             </Image.Source>
                                         </Image>
-                                        <Run Text="{Binding Alteration.RemediedState.DisplayName}" Foreground="White" />
-                                    </TextBlock>
+                                        <TextBlock Margin="4,0,0,0" Text="{Binding Alteration.RemediedState.DisplayName}" FontSize="18" Foreground="White" />
+                                    </StackPanel>
                                 </Grid>
 
                                 <!-- Alteration Aura Altered State -->
@@ -527,28 +527,28 @@
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>                                    
+                                    </Grid.Visibility>
                                     <TextBlock FontSize="18" HorizontalAlignment="Left">
                                         <Run Text="Aura Altered State" Foreground="Tan" />
                                     </TextBlock>
-                                    <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right">
-                                    <Image Stretch="None">
-                                        <Image.Source>
-                                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                                <Binding Path="Alteration.AuraAlteredState.CharacterSymbol" />
-                                                <Binding Path="Alteration.AuraAlteredState.CharacterColor" />
-                                                <Binding Path="Alteration.AuraAlteredState.Icon" />
-                                                <Binding Path="Alteration.AuraAlteredState.DisplayIcon" />
-                                                <Binding Path="Alteration.AuraAlteredState.SmileyMood" />
-                                                <Binding Path="Alteration.AuraAlteredState.SmileyBodyColor" />
-                                                <Binding Path="Alteration.AuraAlteredState.SmileyLineColor" />
-                                                <Binding Path="Alteration.AuraAlteredState.SmileyAuraColor" />
-                                                <Binding Path="Alteration.AuraAlteredState.SymbolType" />
-                                            </MultiBinding>
-                                        </Image.Source>
-                                    </Image>
-                                    <Run Text="{Binding Alteration.AuraAlteredState.DisplayName}" Foreground="White" />
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Image Stretch="None">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                    <Binding Path="Alteration.AuraAlteredState.CharacterSymbol" />
+                                                    <Binding Path="Alteration.AuraAlteredState.CharacterColor" />
+                                                    <Binding Path="Alteration.AuraAlteredState.Icon" />
+                                                    <Binding Path="Alteration.AuraAlteredState.DisplayIcon" />
+                                                    <Binding Path="Alteration.AuraAlteredState.SmileyMood" />
+                                                    <Binding Path="Alteration.AuraAlteredState.SmileyBodyColor" />
+                                                    <Binding Path="Alteration.AuraAlteredState.SmileyLineColor" />
+                                                    <Binding Path="Alteration.AuraAlteredState.SmileyAuraColor" />
+                                                    <Binding Path="Alteration.AuraAlteredState.SymbolType" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock Margin="4,0,0,0" FontSize="18" Text="{Binding Alteration.AuraAlteredState.DisplayName}" Foreground="White" />
+                                    </StackPanel>
                                 </Grid>
 
                                 <!-- Alteration Effect Range -->
@@ -557,7 +557,7 @@
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>                                    
+                                    </Grid.Visibility>
                                     <TextBlock FontSize="18" HorizontalAlignment="Left" Text="Effect Range" Foreground="Tan" />
                                     <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right" Text="{Binding Alteration.EffectRange, StringFormat=F1}" />
                                 </Grid>
@@ -643,7 +643,7 @@
                                 </ItemsControl>
                             </StackPanel>
                         </Border>
-                        
+
                     </WrapPanel>
                 </ScrollViewer>
             </Grid>

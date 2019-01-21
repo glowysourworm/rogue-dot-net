@@ -480,6 +480,15 @@
 
 IMMEDIATE TODO'S:
 
+	- Renounce Religion / Check Affiliation before affiliating...
+
+	- Item Religion Requirements (Item Grid / Encyclopedia / Messages)
+	- Doodad Religion Requirements (Encyclopedia / Messages)
+
+	- Religious Affiliation Alterations.
+
+	- Clear out message box when re-starting.
+
 	- Religious Affiliation:  Identify on Startup - Only show those that are assignable to the Player at the start. UI only shows identified 
 							  religions.. So, must identify a religion by:
 							  
@@ -488,6 +497,10 @@ IMMEDIATE TODO'S:
 							  3) Using a doodad of the religion
 							  
 							  4) UI NEAR PLAYER TO SHOW RELIGIOUS AFFILIATION "STAMP" (Possibly ON FORHEAD OF PLAYER :))
+
+	- WasAttackedByPlayer flag - reset after IsEngaged = false.
+
+	- "Super Skill":  Requires one skill point to use (Alteration)
 							  
     - Change Experience and Point experience to start at 0 each level instead of continue		
 

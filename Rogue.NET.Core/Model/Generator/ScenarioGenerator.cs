@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Model.Generator
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
         readonly IReligionGenerator _religionGenerator;
+        readonly IAttackAttributeGenerator _attackAttributeGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
@@ -32,6 +33,7 @@ namespace Rogue.NET.Core.Model.Generator
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
             IReligionGenerator religionGenerator,
+            IAttackAttributeGenerator attackAttributeGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
         {
@@ -40,6 +42,7 @@ namespace Rogue.NET.Core.Model.Generator
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
             _religionGenerator = religionGenerator;
+            _attackAttributeGenerator = attackAttributeGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
@@ -51,16 +54,20 @@ namespace Rogue.NET.Core.Model.Generator
             // Reseed the Random number generator
             _randomSequenceGenerator.Reseed(seed);
 
+            // Generate Attack Attributes
+            scenario.AttackAttributes = configuration.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                                                                      .ToDictionary(x => x.RogueName, x => x);
+
             // Generate Religions
             scenario.Religions = configuration.Religions.Select(x => _religionGenerator.GenerateReligion(x, configuration.SkillTemplates))
                                                         .ToDictionary(x => x.RogueName, x => x);
 
             // Generate Player
-            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, religionName, scenario.Religions.Values);
+            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, religionName, scenario.Religions.Values, scenario.AttackAttributes.Values);
 
             var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
-            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.Religions.Values, survivorMode).ToList();
+            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.Religions.Values, scenario.AttackAttributes.Values, survivorMode).ToList();
 
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)

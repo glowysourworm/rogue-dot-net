@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
@@ -34,7 +35,7 @@ namespace Rogue.NET.Core.Model.Generator
             _itemGenerator = itemGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<Religion> religions)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var player = new Player();
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
@@ -106,7 +107,7 @@ namespace Rogue.NET.Core.Model.Generator
                 var religion = religions.First(x => x.RogueName == religionName);
 
                 // Start with minimum affiliation to the chosen religion
-                player.ReligiousAlteration.Affiliate(religion, ModelConstants.Religion.AffiliationIncrement);
+                player.ReligiousAlteration.Affiliate(religion, ModelConstants.Religion.AffiliationIncrement, scenarioAttributes);
 
                 // Add skill set for this religion if there is one
                 if (religion.HasBonusSkillSet &&
@@ -116,7 +117,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<Religion> religions)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -198,7 +199,8 @@ namespace Rogue.NET.Core.Model.Generator
             // Religion - Generate random affiliation level based on range
             if (enemyTemplate.HasReligiousAffiliation)
                 enemy.ReligiousAlteration.Affiliate(religions.First(x => x.RogueName == enemyTemplate.Religion.Name),
-                                                    _randomSequenceGenerator.GetRandomValue(enemyTemplate.ReligiousAffiliationLevel));
+                                                    _randomSequenceGenerator.GetRandomValue(enemyTemplate.ReligiousAffiliationLevel),
+                                                    scenarioAttributes);
 
             enemyTemplate.HasBeenGenerated = true;
             return enemy;

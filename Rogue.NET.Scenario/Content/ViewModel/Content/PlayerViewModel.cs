@@ -503,6 +503,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Alterations.Clear();
             this.Alterations.AddRange(player.Alteration.Get().Select(tuple => new AlterationViewModel(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4)));
 
+            // Religious Alterations
+
+            // -> Attribute Effect
+            if (player.ReligiousAlteration.HasAttributeEffect)
+                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.ReligiousAlteration.AttributeEffect));
+
+            // -> Attack Attribute Effect
+            if (player.ReligiousAlteration.HasAttackAttributeEffect)
+                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.ReligiousAlteration.AttackAttributeEffect));
+
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
 

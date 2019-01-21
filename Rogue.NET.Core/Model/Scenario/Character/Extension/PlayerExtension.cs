@@ -12,7 +12,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = player.FoodUsagePerTurnBase + (player.GetHaul() / ModelConstants.HaulFoodUsageDivisor);
 
+            // Alteration
             result += player.Alteration.GetAlterations().Sum(x => x.FoodUsagePerTurn);
+
+            // Religious Alteration
+            result += player.ReligiousAlteration.AttributeEffect.FoodUsagePerTurn;
 
             return Math.Max(0, result);
         }

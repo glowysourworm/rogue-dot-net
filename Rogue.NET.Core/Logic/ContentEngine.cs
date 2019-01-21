@@ -845,7 +845,7 @@ namespace Rogue.NET.Core.Logic
 
             // Create enemy from template
             var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
-            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.Religions);
+            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.Religions, _modelService.GetAttackAttributes());
             
             // Map enemy location to level
             enemy.Location = _modelService.Level.GetRandomLocation(_modelService.GetVisibleLocations()

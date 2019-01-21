@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -30,6 +31,9 @@ namespace Rogue.NET.Core.Model.Scenario
         // Religions
         public IDictionary<string, Religion> Religions { get; set; }
 
+        // Attack Attributes
+        public IDictionary<string, AttackAttribute> AttackAttributes { get; set; }
+
         public ScenarioContainer()
         {
             this.Player = new Player();
@@ -37,6 +41,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.CurrentLevel = 1;
             this.ScenarioEncyclopedia = new Dictionary<string, ScenarioMetaData>();
             this.Religions = new Dictionary<string, Religion>();
+            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();
         }

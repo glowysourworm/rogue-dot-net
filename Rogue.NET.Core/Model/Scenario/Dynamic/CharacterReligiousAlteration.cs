@@ -16,35 +16,45 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         Religion _religion;
         double _religiousAffiliationLevel;
 
+        // Keep these instantiated for pass-through usage.
+        AlterationEffect _attributeEffect = new AlterationEffect();
+        AlterationEffect _attackAttributeEffect = new AlterationEffect();
+
         public bool IsAffiliated()
         {
             return _religion != null && _religiousAffiliationLevel > 0;
         }
 
-        public IEnumerable<AnimationTemplate> Renounce()
+        public IEnumerable<AnimationTemplate> Renounce(IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var renunciationAnimations = _religion.RenunciationAnimations;
 
             _religion = null;
 
+            CreateEffects(scenarioAttributes);
+
             return renunciationAnimations;
         }
 
-        public void Affiliate(Religion religion, double affiliationLevel)
+        public void Affiliate(Religion religion, double affiliationLevel, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (_religion != null)
                 throw new Exception("Trying to affiliate religion without renouncing old religion");
 
             _religion = religion;
             _religiousAffiliationLevel = affiliationLevel;
+
+            CreateEffects(scenarioAttributes);
         }
 
-        public void SetAffiliationLevel(double affiliationLevel)
+        public void SetAffiliationLevel(double affiliationLevel, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (_religion == null)
                 throw new Exception("Not affiliated with any religion");
 
             _religiousAffiliationLevel = affiliationLevel;
+
+            CreateEffects(scenarioAttributes);
         }
 
         public string ReligionName
@@ -63,67 +73,24 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                    _religion.AttackParameters.First(x => x.EnemyReligionName == enemyReligionName);
         }
 
-        /// <summary>
-        /// Treated as an attack attribute passive effect
-        /// </summary>
         public AlterationEffect AttackAttributeEffect
         {
-            get
-            {
-                if (_religion == null || !_religion.HasBonusAttackAttributes)
-                    return null;
-
-                // Return effect scaled by affiliation
-                return new AlterationEffect()
-                {
-                    AttackAttributes = _religion.AttackAttributeAlteration.AttackAttributes.Select(x => new AttackAttribute()
-                    {
-                        Attack = x.Attack * _religiousAffiliationLevel,
-                        Resistance = x.Resistance * _religiousAffiliationLevel,
-                        Weakness = x.Weakness * _religiousAffiliationLevel,
-
-                        CharacterColor = x.CharacterColor,
-                        CharacterSymbol = x.CharacterSymbol,
-                        DisplayIcon = x.DisplayIcon,
-                        Icon = x.Icon,
-                        SmileyAuraColor = x.SmileyAuraColor,
-                        SmileyBodyColor = x.SmileyBodyColor,
-                        SmileyLineColor = x.SmileyLineColor,
-                        SmileyMood = x.SmileyMood,
-                        SymbolType = x.SymbolType,
-                        RogueName = x.RogueName
-                    }).ToList()
-                };
-            }
+            get { return _attackAttributeEffect; }
         }
 
-        /// <summary>
-        /// Treated as a passive effect
-        /// </summary>
         public AlterationEffect AttributeEffect
         {
-            get
-            {
-                if (_religion == null || !_religion.HasAttributeBonus)
-                    return null;
+            get { return _attributeEffect; }
+        }
 
-                return new AlterationEffect()
-                {
-                    Agility = _religion.AttributeAlteration.Agility * _religiousAffiliationLevel,
-                    Attack = _religion.AttributeAlteration.Attack * _religiousAffiliationLevel,
-                    AuraRadius = _religion.AttributeAlteration.AuraRadius * _religiousAffiliationLevel,
-                    CriticalHit = _religion.AttributeAlteration.CriticalHit * _religiousAffiliationLevel,
-                    Defense = _religion.AttributeAlteration.Defense * _religiousAffiliationLevel,
-                    DodgeProbability = _religion.AttributeAlteration.DodgeProbability * _religiousAffiliationLevel,
-                    FoodUsagePerTurn = _religion.AttributeAlteration.FoodUsagePerTurn * _religiousAffiliationLevel,
-                    HpPerStep = _religion.AttributeAlteration.HpPerStep * _religiousAffiliationLevel,
-                    Intelligence = _religion.AttributeAlteration.Intelligence * _religiousAffiliationLevel,
-                    MagicBlockProbability = _religion.AttributeAlteration.MagicBlockProbability * _religiousAffiliationLevel,
-                    MpPerStep = _religion.AttributeAlteration.MpPerStep * _religiousAffiliationLevel,
-                    Speed = _religion.AttributeAlteration.Speed * _religiousAffiliationLevel,
-                    Strength = _religion.AttributeAlteration.Strength * _religiousAffiliationLevel
-                };
-            }
+        public bool HasAttributeEffect
+        {
+            get { return _religion?.HasAttributeBonus ?? false; }
+        }
+
+        public bool HasAttackAttributeEffect
+        {
+            get { return _religion?.HasBonusAttackAttributes ?? false; }
         }
 
         public double Affiliation
@@ -134,6 +101,58 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public CharacterReligiousAlteration()
         {
 
+        }
+
+        protected void CreateEffects(IEnumerable<AttackAttribute> scenarioAttributes)
+        {
+            var attributeEffect = _religion?.AttributeAlteration ?? new AlterationEffect();
+
+            // Attribute Bonus Effect
+            _attributeEffect = new AlterationEffect()
+            {
+                DisplayName = (_religion?.RogueName ?? "Zero") + " Attribute Bonus",
+
+                Agility = attributeEffect.Agility * _religiousAffiliationLevel,
+                Attack = attributeEffect.Attack * _religiousAffiliationLevel,
+                AuraRadius = attributeEffect.AuraRadius * _religiousAffiliationLevel,
+                CriticalHit = attributeEffect.CriticalHit * _religiousAffiliationLevel,
+                Defense = attributeEffect.Defense * _religiousAffiliationLevel,
+                DodgeProbability = attributeEffect.DodgeProbability * _religiousAffiliationLevel,
+                FoodUsagePerTurn = attributeEffect.FoodUsagePerTurn * _religiousAffiliationLevel,
+                HpPerStep = attributeEffect.HpPerStep * _religiousAffiliationLevel,
+                Intelligence = attributeEffect.Intelligence * _religiousAffiliationLevel,
+                MagicBlockProbability = attributeEffect.MagicBlockProbability * _religiousAffiliationLevel,
+                MpPerStep = attributeEffect.MpPerStep * _religiousAffiliationLevel,
+                Speed = attributeEffect.Speed * _religiousAffiliationLevel,
+                Strength = attributeEffect.Strength * _religiousAffiliationLevel
+            };
+
+            var attackAttributes = _religion == null ? scenarioAttributes : _religion.AttackAttributeAlteration.AttackAttributes;
+
+            // Attack Attribute Bonus Effect
+            _attackAttributeEffect = new AlterationEffect()
+            {
+                DisplayName = (_religion?.RogueName ?? "Zero") + " Attack Attribute Bonus",
+
+                AttackAttributes = attackAttributes.Select(x => new AttackAttribute()
+                {
+                    Attack = x.Attack * _religiousAffiliationLevel,
+                    Resistance = x.Resistance * _religiousAffiliationLevel,
+                    Weakness = x.Weakness * _religiousAffiliationLevel,
+
+                    CharacterColor = x.CharacterColor,
+                    CharacterSymbol = x.CharacterSymbol,
+                    DisplayIcon = x.DisplayIcon,
+                    Icon = x.Icon,
+                    SmileyAuraColor = x.SmileyAuraColor,
+                    SmileyBodyColor = x.SmileyBodyColor,
+                    SmileyLineColor = x.SmileyLineColor,
+                    SmileyMood = x.SmileyMood,
+                    SymbolType = x.SymbolType,
+                    RogueName = x.RogueName
+
+                }).ToList()
+            };
         }
     }
 }

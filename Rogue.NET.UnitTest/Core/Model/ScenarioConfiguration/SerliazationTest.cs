@@ -68,6 +68,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 contentGenerator,
                 characterGenerator,
                 religionGenerator,
+                attackAttributeGenerator,
                 scenarioMetaDataGenerator,
                 randomSequenceGenerator);
 

@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
@@ -37,18 +38,19 @@ namespace Rogue.NET.Core.Model.Generator
             IEnumerable<Level> levels, 
             ScenarioConfigurationContainer configurationContainer, 
             IEnumerable<Religion> religions,
+            IEnumerable<AttackAttribute> scenarioAttributes,
             bool survivorMode)
         {
             var levelNumber = 1;
             var result = new List<Level>();
 
             for (int i=0;i<levels.Count();i++)
-                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, religions, levelNumber++, survivorMode));
+                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, religions, scenarioAttributes, levelNumber++, survivorMode));
 
             return result;
         }
 
-        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, int levelNumber, bool survivorMode)
+        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.GetRooms().ToList();
@@ -93,11 +95,11 @@ namespace Rogue.NET.Core.Model.Generator
             }
 
             // Applies to all levels - (UNMAPPED)
-            GenerateEnemies(level, configurationContainer, religions, levelNumber);
+            GenerateEnemies(level, configurationContainer, religions, scenarioAttributes, levelNumber);
             GenerateItems(level, configurationContainer, levelNumber);
             GenerateDoodads(level, configurationContainer, levelNumber);
 
-            MapLevel(level, configurationContainer, religions, levelNumber, freeCells, freeRoomCells);
+            MapLevel(level, configurationContainer, religions, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
 
             return level;
         }
@@ -121,7 +123,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, int levelNumber)
+        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
         {
             foreach (var enemyTemplate in configurationContainer.EnemyTemplates)
             {
@@ -136,7 +138,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
                                             && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate, religions));
+                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate, religions, scenarioAttributes));
                 }
             }
         }
@@ -270,7 +272,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.GetRooms();
             var partyRoomIndex = _randomSequenceGenerator.Get(0, rooms.Length);
@@ -338,14 +340,14 @@ namespace Rogue.NET.Core.Model.Generator
                     var location = GetRandomCell(true, partyRoomIndex, freeCells, freeRoomCells);
                     if (location != CellPoint.Empty)
                     { 
-                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, religions);
+                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, religions, scenarioAttributes);
                         enemy.Location = location;
                         level.AddContent(enemy);
                     }
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -374,7 +376,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.Type == LayoutType.Normal ||
                 level.Type == LayoutType.Teleport ||
                 level.Type == LayoutType.TeleportRandom))
-                AddPartyRoomContent(level, configurationContainer, religions, levelNumber, freeCells, freeRoomCells);
+                AddPartyRoomContent(level, configurationContainer, religions, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
         }
 
         private CellPoint GetRandomCell(bool inRoom, int roomIndex, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)

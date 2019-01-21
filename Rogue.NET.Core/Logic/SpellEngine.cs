@@ -614,7 +614,7 @@ namespace Rogue.NET.Core.Logic
 
             if (enemyTemplate != null)
             {
-                var minion = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions);
+                var minion = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions, _modelService.GetAttackAttributes());
 
                 minion.Location = location;
 
@@ -632,7 +632,7 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
 
-                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions);
+                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions, _modelService.GetAttackAttributes());
                 enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
                 _modelService.Level.AddContent(enemy);

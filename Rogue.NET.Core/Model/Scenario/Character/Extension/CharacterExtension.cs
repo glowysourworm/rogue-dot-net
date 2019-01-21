@@ -43,17 +43,23 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetMpRegen(this Character character)
         {
-            return character.MpRegenBase + character.Alteration.GetAlterations().Sum(x => x.MpPerStep);
+            return character.MpRegenBase + character.Alteration.GetAlterations().Sum(x => x.MpPerStep)
+                                         + character.ReligiousAlteration.AttributeEffect.MpPerStep;
         }
         public static double GetHpRegen(this Character character)
         {
-            return character.HpRegenBase + character.Alteration.GetAlterations().Sum(x => x.HpPerStep);
+            return character.HpRegenBase + character.Alteration.GetAlterations().Sum(x => x.HpPerStep)
+                                         + character.ReligiousAlteration.AttributeEffect.HpPerStep;
         }
         public static double GetStrength(this Character character)
         {
             var result = character.StrengthBase;
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.Strength);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.Strength;
 
             return Math.Max(0.1, result);
         }
@@ -61,7 +67,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = character.AgilityBase;
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.Agility);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.Agility;
 
             return Math.Max(0.1, result);
         }
@@ -69,7 +79,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = character.IntelligenceBase;
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.Intelligence);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.Intelligence;
 
             return Math.Max(0.1, result);
         }
@@ -77,7 +91,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = character.AuraRadiusBase;
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.AuraRadius);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.AuraRadius;
 
             return Math.Max(0.1, result);
         }
@@ -85,7 +103,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = character.GetMagicBlockBase();
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.MagicBlockProbability);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.MagicBlockProbability;
 
             return Math.Max(Math.Min(1, result), 0);
         }
@@ -93,13 +115,18 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var result = character.GetDodgeBase();
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.DodgeProbability);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.DodgeProbability;
 
             return Math.Max(Math.Min(1, result), 0);
         }
         public static double GetSpeed(this Character character)
         {
-            var speed = character.SpeedBase + character.Alteration.GetAlterations().Sum(x => x.Speed);
+            var speed = character.SpeedBase + character.Alteration.GetAlterations().Sum(x => x.Speed)
+                                            + character.ReligiousAlteration.AttributeEffect.Speed;
 
             // 0.1 < speed < 1
             return Math.Max(Math.Min(1, speed), 0.1);
@@ -118,6 +145,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Add on alteration contributions
             var result = attackValue + character.Alteration.GetAlterations().Sum(x => x.Attack);
 
+            // Add on religious alteration contribution
+            result += character.ReligiousAlteration.AttributeEffect.Attack;
+
             return Math.Max(0, result);
         }
         public static double GetDefense(this Character character)
@@ -133,13 +163,20 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Add on alteration contributions
             var result = defenseValue + character.Alteration.GetAlterations().Sum(x => x.Defense);
 
+            // Add on religious alteration contribution
+            result += character.ReligiousAlteration.AttributeEffect.Defense;
+
             return Math.Max(0, result);
         }
         public static double GetCriticalHitProbability(this Character character)
         {
             var result = ModelConstants.CriticalHitBase;
 
+            // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.CriticalHit);
+
+            // Religious Alteration
+            result += character.ReligiousAlteration.AttributeEffect.CriticalHit;
 
             return Math.Min(Math.Max(0, result), 1);
         }
@@ -162,6 +199,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 {
                     x.Attack += y.Attack;
                     x.Resistance += y.Resistance;
+                    x.Weakness += y.Weakness;
 
                     return x;
                 });
@@ -185,6 +223,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
+                    attribute.Weakness += passiveAttribute.Weakness;
                 }
             }
 
@@ -197,7 +236,18 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                     attribute.Attack += passiveAttribute.Attack;
                     attribute.Resistance += passiveAttribute.Resistance;
+                    attribute.Weakness += passiveAttribute.Weakness;
                 }
+            }
+
+            // Religion contributions
+            foreach (var attribute in result)
+            {
+                var religionAttribute = character.ReligiousAlteration.AttackAttributeEffect.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
+
+                attribute.Attack += religionAttribute.Attack;
+                attribute.Resistance += religionAttribute.Resistance;
+                attribute.Weakness += religionAttribute.Weakness;
             }
 
             // Filter by attributes that apply to strength based combat ONLY.
