@@ -276,7 +276,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                     // TODO: Have an issue with AlterationContainer.BlockType not saved to AlterationEffect. 
                     //       ***Needs to be refactored to split up all of the alteration types to properly support
                     //          all features. (Example: Break apart Physical / Mental Alterations entirely)
-                    result += Calculator.CalculateAttackAttributeMelee(malignAttribute.Attack, defensiveAttribute.Resistance);
+                    result += Calculator.CalculateAttackAttributeMelee(
+                                malignAttribute.Attack, 
+                                defensiveAttribute.Resistance, 
+                                defensiveAttribute.Weakness + malignAttribute.Weakness);
                 }
             }
 

@@ -142,12 +142,28 @@ namespace Rogue.NET.Core.Logic
         {
             // Fetch reference to equipment
             var equipment = _modelService.Player.Equipment[equipId];
+            var player = _modelService.Player;
             var result = false;
 
             // Check that item has level requirement met (ALSO DONE ON FRONT END)
-            if (equipment.LevelRequired > _modelService.Player.Level)
+            if (equipment.LevelRequired > player.Level)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", equipment.LevelRequired.ToString());
+                return false;
+            }
+
+            // Check Religious Affiliation Requirement
+            if (equipment.HasReligiousAffiliationRequirement &&
+               (!player.ReligiousAlteration.IsAffiliated() ||
+                 player.ReligiousAlteration.ReligionName != equipment.ReligiousAffiliationRequirement.ReligionName ||
+                 player.ReligiousAlteration.Affiliation < equipment.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Normal,
+                    "Required Religious Affiliation {0} {1} Not Met!",
+                    equipment.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
+                    equipment.ReligiousAffiliationRequirement.ReligionName);
+
                 return false;
             }
 
@@ -588,8 +604,14 @@ namespace Rogue.NET.Core.Logic
             int turns = (int)enemy.TurnCounter;
             enemy.TurnCounter = enemy.TurnCounter % 1;
 
-            for (int j = 0; j < turns; j++)
+            for (int j = 0; j < turns && enemy.Hp > 0; j++)
             {
+                // Apply Beginning of Turn
+                _enemyProcessor.ApplyBeginningOfTurn(enemy);
+
+                if (enemy.Hp < 0)
+                    break;
+
                 //Check altered states
 
                 // Can't Move (Is sleeping, paralyzed, etc..)

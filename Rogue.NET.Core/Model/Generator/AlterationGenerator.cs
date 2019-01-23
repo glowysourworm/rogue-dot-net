@@ -59,6 +59,10 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.IsStackable = spell.IsStackable;
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
+            // Religious Affiliation Increase Parameters
+            alterationContainer.ReligiousAffiliationIncrease = spell.ReligiousAffiliationIncrease;
+            alterationContainer.ReligiousAffiliationReligionName = spell.ReligiousAffiliationReligionName;
+
             return alterationContainer;
         }
         public AlterationEffect GenerateAlterationEffect(

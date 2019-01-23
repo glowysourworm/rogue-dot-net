@@ -14,5 +14,6 @@ Rogue.NET Scenario Configuration Validations
 - (Error)(DONE)   Spells have to be set on all content (NON NULL)
 - (Error)(DONE)   Remedy / Create Monster fields not set on Alterations / 
 - (Error)         Ammo spell for ammo type consumables
+- (Error)         Religious Affiliation Increase ONLY as Doodad or Consumable (NOT SKILL) (NOT PROJECTILE SPELL) (NOT AUTOMATIC DOODAD)
 
 - (Warning) 		  Check for "New Template" Alterations on content

@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
                     xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter"
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
     <ResourceDictionary.MergedDictionaries>
@@ -940,38 +941,48 @@
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="AttackAttributesCellTemplate">
-        <ItemsControl   ItemsSource="{Binding AttackAttributes}"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                        Width="Auto"
-                        Height="Auto">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Image Margin="2,0,0,0" 
-                           VerticalAlignment="Center" 
-                           HorizontalAlignment="Center">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
-                                <Binding Path="CharacterColor" />
-                                <Binding Path="CharacterSymbol" />
-                                <Binding Path="Icon" />
-                                <Binding Path="DisplayIcon" />
-                                <Binding Path="SmileyMood" />
-                                <Binding Path="SmileyAuraColor" />
-                                <Binding Path="SmileyBodyColor" />
-                                <Binding Path="SmileyLineColor" />
-                                <Binding Path="SymbolType" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Image Margin="2,1,1,1"
+               VerticalAlignment="Center" 
+               HorizontalAlignment="Center"
+               Visibility="{Binding AttackAttributes, Converter={StaticResource CollectionNonEmptyVisibilityConverter}}"
+               Source="{Binding Source={x:Static coreModelEnums:ImageResources.ImbueWeaponRed}, Converter={StaticResource ItemGridIconImageConverter}}">
+            <Image.ToolTip>
+                <ToolTip Background="Transparent"
+                         BorderBrush="Transparent">
+                    <Border BorderBrush="#8FFFFFFF"
+                            BorderThickness="0.75"
+                            Padding="4"
+                            CornerRadius="3">
+                        <ItemsControl ItemsSource="{Binding AttackAttributes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Image>
+                                        <Image.Source>
+                                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                                <Binding Path="CharacterSymbol" />
+                                                <Binding Path="CharacterColor" />
+                                                <Binding Path="Icon" />
+                                                <Binding Path="DisplayIcon" />
+                                                <Binding Path="SmileyMood" />
+                                                <Binding Path="SmileyBodyColor" />
+                                                <Binding Path="SmileyLineColor" />
+                                                <Binding Path="SmileyAuraColor" />
+                                                <Binding Path="SymbolType" />
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </ToolTip>
+            </Image.ToolTip>
+        </Image>
     </DataTemplate>
     <Style x:Key="HeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
         <Setter Property="Foreground" Value="White" />

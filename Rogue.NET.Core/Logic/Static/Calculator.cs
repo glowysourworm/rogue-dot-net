@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Logic.Static
     /// </summary>
     public static class Calculator
     {
-        public static double CalculateAttackAttributeMelee(double attack, double resistance)
+        public static double CalculateAttackAttributeMelee(double attack, double resistance, int weakness)
         {
             if (attack <= 0)
                 return 0;
@@ -25,8 +25,8 @@ namespace Rogue.NET.Core.Logic.Static
             if ((attack + resistance) <= 0)
                 return 0;
 
-            // Calculate the value based on [X = A * (1 - (R / A + R))]
-            return attack > 0 ? attack * (1 - (resistance / (attack + resistance))) : 0;
+            // Calculate the value based on [X = A * ((1 - (R / A + R)) + W)]
+            return attack > 0 ? attack * ((1 - (resistance / (attack + resistance))) + weakness) : 0;
         }
 
         /// <summary>

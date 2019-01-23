@@ -193,7 +193,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                 return new
                 {
-                    Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, defensiveAttribute.Resistance),
+                    Value = Calculator.CalculateAttackAttributeMelee(offensiveAttribute.Attack, defensiveAttribute.Resistance, defensiveAttribute.Weakness),
                     AttackAttribute = offensiveAttribute as ScenarioImage
                 };
             })

@@ -1214,6 +1214,26 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\TorchRed.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\TorchWhite.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueArmorYellow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

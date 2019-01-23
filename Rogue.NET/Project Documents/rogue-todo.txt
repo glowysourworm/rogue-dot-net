@@ -1,8 +1,6 @@
-- Attack Attributes - Use the flame sword symbol as a global symbol - replace the one in the item grid to show that there's several attributes. (TBD)
 - Outro Display (I Won! - Here's my stats!) (STATS TBD)
 - Statistics Display (High Scores) (TBD)
 - Reveal Image Transparency (TBD)
-- Dialog message Filtering - Add a simple panel of small buttons on the LHS of the Level View (TBD)
 - HINTS (TBD)
 - Layout Descriptions (To lend narrative to the story... "Evil Approaches..." .. "These are the blah blah blah of the evil blah blah blah"
 - Categorize: Skills / Spells; Equipment; Consumables; Animations (TBD)
@@ -10,60 +8,7 @@
 (BIG TBD's)
 - Player Action: Can choose to block physical (strength based), or magical (intelligence based), or maybe even to "run away" by
 - 				 granting you an extra portion of a turn. This would be instead of just attacking. (TBD)
-- Religious Affiliation:  Add religious affiliation to Alteration - so that it can be blocked or manipulated. Example "Dark Magic": would
-						  have Alteration.Affiliation = "Dark Magic", etc... Then, provide way to block spells based on religious affiliation.
-						  Also, make skill learning based on affiliation.. or bonuses from defeating enemies based on affiliation.
-						  
-						  ***BETTER IDEA:  Have religious affiliation be per Character! Then, can alter behavior of combat (alterations and melee) 
-							   			   based on religious affiliation. Example:  Player visits "Dark Shrine" .. Becomes 5% Satanic! So, when facing
-										   Lynx (20% Light) takes more damage. So, would just have to calulate the difference based on level of
-										   affiliation.
-										   
-										   BEST. ROGUE. IDEA. EVER. (probably not the first person to think so)
-										   
-										   Ideas:  Permanently alter character symbol based on level of affiliation :) :) :)
-										   
-												   Magic Block based on religious differences (thought this would be important to tune magic combat.. 
-												   too much based on a single parameter)
-												   
-												   Probably don't want to replace attack attributes for balancing melee (keep simple).. But could
-												   add some bonus damage or something.. probably better to have an affect; but keep it simple. Nothing
-												   added to items for this... Except for increasing affiliation. So, would have to design a simple way
-												   of doing this. May end up like attack attributes :(  Alot of little things to manage.
-												   
-												   Having several affiliations you'd want to choose based on "what it would do for me?" So say, "Druids"
-												   have better use of food resources. Just add FoodUsagePerTurn -= 0.01 to the permanent affiliation to
-												   increase "Druid + 5%".
-												   
-												   BALANCING IDEA: HAVE THESE BE MUTUALLY EXCLUSIVE :) Choosing one affiliation nullifies all others :)
-												   PRESENTS A PROBLEM OF UNDO-ING ALL SPECIAL ATTRIBUTES INVOLVED WITH AFFILIATION. So, probably avoid
-												   special attributes. Or, just store them like alterations that are removed from a list.
-												   
-										   Design: Add single collection of affiliations to the Alteration Effect. This would have to be updated like
-												   attack attributes from the primary collection (Scenario -> General)
-												   
-										   IDEA:   Make the affiliation "Skill Building Affiliation"
-										   
-												   - Set of affiliations described by scenario-wide list:  Name, Short Description, Attribute Bonus
-										   
-												   - Each skill has affiliation (SkillBuildingAffiliation) with a symbol attached.
-										   
-												   - Affiliation generates skill points that can be used to advance skills of that affiliation
-												   
-												   - Affiliation can be enhanced (from 5% -> 10%) by using a doodad. 
-												   
-												   - Affiliations are mutually exclusive
-												   
-												   - Affiliation attribute bonuses are granted as passive alterations (so, aren't applied and removed)
-												   
-												   - Affiliation attribute bonuses are scaled by % of belief in that affiliation. (0 -> 1.00) * (bonus)
-												   
-												   - Skill points are accrued and applied when the player wishes to apply them.
 
-												   - SPECIAL SKILL***  Use of Skill Points for a One-Off special skill for fully 
-																	   Affilliated Religion - (some kind of really really good skill).
-
-- Alteration Effect: Add points to active skill (skill learning alteration effect) (TBD)
 - Several Validation Points: 
 	- Scenario Editor: Dungeon Template Name - UNIQUE and SET and NO FILE-NON-FRIENDLY CHARACTERS
 	- Scenario: Player Name SET and UNIQUE and NO FILE-NON-FRIENDLY CHARACTERS
@@ -270,6 +215,10 @@
 					 
 - Weapons "Gain Experience" from defeating enemies. So, they would "grow" with your character. 
 
+- Weapons can have an Attack Alteration that will heal the player when attacking an enemy. This would likely be
+  a new / separate / weapons only alteration applied immediately. Could include animations; but they would be applied
+  after the alteration effects due to problems forwarding an attack alteration to the ISpellEngine.
+
 - Enemy Alteration Effect on being hit: Example: "Jelly" divides into two when hit.
 
 - Enemy "Alteration": Riddle.... Example: The riddle of the sphinx. Alteration Effect applied if answered incorrectly (?) or correctly(?)
@@ -349,40 +298,9 @@
 						  
 - PLAYER DEATH R.I.P. TOMBSTONE
 
-- Messages when objective has been acheived
-
-- Agility:  Figure out how calculations for Dodge are done
-
-		    - Should have an agility component; but not entirely because it wouldn't balance well
-
-			  Example:  Dodge = enemy.GetAgility() / player.GetAgility()
-
-						player agility = 100
-						enemy agility = 100
-
-						dodge = 1 => certain
-
-	        - Idea:  Can use trancendental function to describe dodge probability. Possibly an arctan 
-					 function or asymptotic function.
-
-					 MUST support attribute balancing.
-
-					 MEANS that you can modify it with Alterations.
-
-			  Example:  Dodge = enemy.GetDodge() + function(enemy.GetAgility(), player.GetAgility())
-
-						Where enemy.GetDodge() returns the base component (altered by all effects and equipment)
-						and the other component is the asymptotic component.
-
-						The sum should be less than or equal to 1. So, balance accordingly.
-
-			- Also:  Want to support "Miss Ratio" character stat - which has to be factored into the calculation. So,
-				     need better understanding or model for the asymptotic parts using Agility so that player can
-					 progress and balancing is more interesting.
-
-			- So... Basically - two parts to the calculations for "Dodge" and "Miss Ratio". A base part of the 
-					attribute - which is modifiable by alterations and equipment bonuses (or balances depending on class) - 
-					also by Alterations.. and an asymptotic part that is relative to the enemy's Agility.
+- Agility:  Want to support "Miss Ratio" character stat - which has to be factored into the calculation. So,
+			need better understanding or model for the asymptotic parts using Agility so that player can
+			progress and balancing is more interesting.
 
 - Enemy List:  Similar to enemy scope; but is a list of enemys just during combat. Shows all enemies in visible range
 			   and their relevant attributes - (Mostly progress Health bar would be the best).
@@ -432,6 +350,22 @@
 
 - Alteration Effect:  "Reactive Temporary/Passive"	Applies Attribute change as a counter attack. And "Attack Attribute Reactive Temporary/Passive"
 					  That applies counter attack attribute attack.
+
+- Equipment Quality Changing Alterations:  Class Change / Quality Change + plus or - minus. Example (sharpening Stone) + 0.1 to quality. Or skill of	
+											enemy changes quality -0.3 (stone golem or something chips your blade). So, new alteration types required:
+											   
+											- Decrease Weapon Quality:  Alteration used as skill by enemy (or player) to degrade character equipped weapon
+																		quality.
+																		  
+											- Decrease Armor Quality:  (similar)
+											   
+											- De-Enchant Weapon:  Alteration to degrade equipped weapon class (used by enemy or player as skill).
+										   
+											- De-Enchant Armor:   (similar)
+											   
+											- Increase Weapon Quality:  Alteration used by Player ONLY to upgrade any weapon's quality (using UI to select)
+											   
+											- Increase Armor Quality:  (similar)
 						
 ---------
 						  
@@ -442,25 +376,20 @@
 
 - Change - Maze level "Dim Gray" to something brighter or colored (Firebrick Red)
 - Change - Zealot skeleton animation to single blink
-- Change - Remove "Mood" from player status and maybe add altered state "quick panel"
 
 - ISSUE - "Standoffish" Can't calculate path to run away or open obstacles like doors
 - ISSUE - Have to put in safety checks for completely filled level (Get Random Cell will crash)
 - ISSUE - Teleporting enemies are still shown. Can see their new location
 - ISSUE - Fix door issue (not opening; but open.. can't see through)
 - ISSUE - "Blink" animations reveal the level size. Should turn those into blink for the full screen
-- ISSUE - Have to turn off Skill on Skill level up!
 - ISSUE - Uncurse pre-condition not calculated. Allowed casting of alteration (item grid). Also, "back" button on dialog was visible
 - ISSUE - Pitfall STILL VISIBLE
-- ISSUE - Add paging to ellipse panel
 - ISSUE - Need way to systematize placing level content (on the backend). So, probably best to have the IModelService place ANY contents
 		  So that it can always check for free cells to place content on. If there's no cell available - need to decide how to proceed.. may
 		  be that the content is objective and therefore has to be placed.
 - ISSUE - See Invisible isn't working.
 - ISSUE - Reveal isn't showing invisible enemies
-- ISSUE - SPEED DIVIDE BY ZERO PROBLEM - Change to check for zero speed; and return 1. Example:  chacter.GetSpeed() / player.GetSpeed()
 			  
-- Fix - Spell max level didn't shut off learning. Also need to change UI to show max level; and display the skill set icon
 - Fix - Skill learning didn't work when player learned skill AFTER required level
 - Fix - Multi-use consumables not updated after use
 - Fix - Problem with Blindness - didn't recalculate enemy visibility immediately
@@ -480,12 +409,7 @@
 
 IMMEDIATE TODO'S:
 
-	- Renounce Religion / Check Affiliation before affiliating...
-
-	- Item Religion Requirements (Item Grid / Encyclopedia / Messages)
-	- Doodad Religion Requirements (Encyclopedia / Messages)
-
-	- Religious Affiliation Alterations.
+	- Re-hook-up Weakness in attack attributes.
 
 	- Clear out message box when re-starting.
 
@@ -496,124 +420,13 @@ IMMEDIATE TODO'S:
 							  2) Identifying an item of the religion
 							  3) Using a doodad of the religion
 							  
-							  4) UI NEAR PLAYER TO SHOW RELIGIOUS AFFILIATION "STAMP" (Possibly ON FORHEAD OF PLAYER :))
 
 	- WasAttackedByPlayer flag - reset after IsEngaged = false.
 
 	- "Super Skill":  Requires one skill point to use (Alteration)
 							  
-    - Change Experience and Point experience to start at 0 each level instead of continue		
-
 	- Engage enemies if they've been hit by the player (if invisible or transmorgified)
 	
-	- Enemies that die from an alteration have a move on the queue that causes a crash
-							  
-    - Alteration Block Type:  Hook back up and add one to the Enum to have a "Non-Blockable" type. Can't be blocked by Physical, Mental, or Religion.
-	
-	- Allow Player to select specific skill from set to use
-
-	- Equipment Quality Changing Alterations:  Class Change / Quality Change + plus or - minus. Example (sharpening Stone) + 0.1 to quality. Or skill of	
-											   enemy changes quality -0.3 (stone golem or something chips your blade). So, new alteration types required:
+    - Alteration Block Type:  Hook back up and add one to the Enum to have a "Non-Blockable" type. Can't be blocked by Physical, Mental, or Religion.											   											   
 											   
-											   - Decrease Weapon Quality:  Alteration used as skill by enemy (or player) to degrade character equipped weapon
-																		  quality.
-																		  
-											   - Decrease Armor Quality:  (similar)
-											   
-											   - De-Enchant Weapon:  Alteration to degrade equipped weapon class (used by enemy or player as skill).
-											   
-											   - De-Enchant Armor:   (similar)
-											   
-											   - Increase Weapon Quality:  Alteration used by Player ONLY to upgrade any weapon's quality (using UI to select)
-											   
-											   - Increase Armor Quality:  (similar)
-											   											   
-											   
-
-	- Intelligence Scaled Alterations:  TotalValue = Value * (1 + Character.GetIntelligence()) applied to any alteration effect.		
-
-		- Idea:  Similar to Dodge and Miss Ratio - have two parts to Intelligence based combat.
-
-				 ***INTELLIGENCE BASED ALTERATIONS ONLY***
-
-				 Block = function (defender's base intelligence, defender's Alterations) + 
-						 function (defender's total intelligence, attacker's total intelligence)
-
-				 Combat Value = function (attacker's total intelligence * Alteration Paraeters) - 
-								function (defender's total intelligence)
-
-				 NOTE*** NEED FLAG ON ALTERATION TO SAY WHETHER IT'S CONSIDERED PHYSICAL OR MENTAL. This is
-						 required to show how to calculate the Block portion of combat.
-
-					     Example: Alteration called "Stun" used by an Ogre. This would be considered Physical; and
-								  should be blocked by Agility and/or Strength. NOT Intelligence.
-
-				 So, the combat value is both scaled by the attacker's BASE intelligence * Alteration Parameters
-				 AND the defense value which is a function of the defender's intelligence.
-
-				 Also, a "Block" means that the attackee has completely negated the Alteration.
-
-				 Point #1:  Each of the "Block" and "Combat Value" have 2 distinct parts. The first is a
-							function of the BASE Intelligence (for Block). This would provide scaling up based on
-							just the innate property of the character. The Attack is given extra weight because
-							it takes the attacker's TOTAL intelligence into account. The defender also has
-							a chance to utilize this total for defense.
-
-							The 2nd part of the "Block" calculation is an asymptotic function based on some ratio 
-							of each character's TOTAL intelligence. This would provide an adjustment for character level and
-							otherwise relative intelligence.
-
-				 Point #2:  The BASE part of each of these can/should be modified/modifiable by an
-						    Alteration Effect. These would provide an absolute offset to the the base. Such
-							alterations can be passive equipment bonuses (or character class if that's introduced).
-
-		- Design Problem:   Implementing target Alteration Effects with Intelligence Scaling requires that they're calculated
-							BEFORE detaching to send to the target character's Alteration list. 
-
-							This will apply to both source and target alterations to avoid ambiguity; and only for those
-							that are marked "Scale with Intelligence".
-
-		- Agility Scaled Combat:  (Described Above). Going to implement now as it's similar to intelligence scaled
-								  combat; and would provide some actual dynamics to the current relative agility 
-								  scaling of the scenario enemies. 
-
-								  Also, would want to go back and adjust balancing based on these new ideas - so should
-								  do both immediately.
-
-								  For now, JUST DO DODGE CALCULATION. That will provide enough to balance until there's
-								  enough time to go back and do character classes.
-				 
-
-	- The Bigger Problem:  Seeing issues with Attack Attribute scaling
-
-		- Problem:  Scaling combat value by intelligence suggests mismatch between physical and alteration based
-					fighting. (i.e. use in one doesn't match use in the other)
-
-					Example:  Fireball Alteration has Fire attribute scaled by intelligence.
-							  Enemy uses Fire attribute for melee.
-
-							  One is scaled by intelligence for both attack and defense. The other is
-							  not scaled at all. So, your character has trouble with one enemy but not
-							  another in terms of the Fire attribute.
-
-		- Solution:  Create scaling for both Strength and Intelligence; and use flags on the attack attributes
-					 to determine whether or not they're included in Alteration combat and Physical combat.
-
-		- Bigger Problems Solved with this:
-
-				1) Remove Weakness parameter (not scaled properly as Attack and Resistance)
-				
-				2) Remove updating of lists of Attack Attributes on each asset. Only add as required
-				   for each instance - to a specified attack attribute list.
-
-				3) Solve scaling issues for both cases - Physical and Alteration. Driven mostly by
-				   base parameters unless extra balancing is desired.
-
-				4) Fix scale of Attack and Resistance (0 - 1000)
-
-				5) Systematize Attack Attributes for futue concerns (possibly Agility scaled attributes)
-
-				6) Separate the UI to show applying either Attack or Resistance based on usage. Also 
-				   Describe "MeleeTarget" alteration as "Intelligence Based Combat".
-
-		- Nice to have:  Explain attack attributes by having a separate UI to show how they apply
+	- Nice to have:  Explain attack attributes by having a separate UI to show how they apply

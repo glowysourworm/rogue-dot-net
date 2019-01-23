@@ -103,6 +103,7 @@
     <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
+    <Compile Include="Converter\ItemGrid\ItemGridIconImageConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
@@ -148,9 +149,11 @@
     <Compile Include="Logic\Content\Enum\InteractionType.cs" />
     <Compile Include="Logic\DebugEngine.cs" />
     <Compile Include="Logic\Interface\IDebugEngine.cs" />
+    <Compile Include="Logic\Interface\IReligionEngine.cs" />
     <Compile Include="Logic\Processing\DialogUpdate.cs" />
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
+    <Compile Include="Logic\ReligionEngine.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
     <Compile Include="Logic\Static\EquipmentCalculator.cs" />
     <Compile Include="Logic\Static\MeleeCalculator.cs" />

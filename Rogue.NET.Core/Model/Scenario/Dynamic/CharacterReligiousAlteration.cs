@@ -26,6 +26,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             return this.Religion != null && this.ReligiousAffiliationLevel > 0;
         }
 
+        public bool CanRenounce()
+        {
+            return this.Religion?.AllowsRenunciation ?? false;
+        }
+
         public IEnumerable<AnimationTemplate> Renounce()
         {
             var renunciationAnimations = this.Religion.RenunciationAnimations;
@@ -139,7 +144,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                 {
                     Attack = x.Attack * this.ReligiousAffiliationLevel,
                     Resistance = x.Resistance * this.ReligiousAffiliationLevel,
-                    Weakness = x.Weakness * this.ReligiousAffiliationLevel,
+                    Weakness = (int)Math.Ceiling(x.Weakness * this.ReligiousAffiliationLevel),
 
                     CharacterColor = x.CharacterColor,
                     CharacterSymbol = x.CharacterSymbol,

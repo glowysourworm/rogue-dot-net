@@ -81,6 +81,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 consumables.GroupBy(x => x.RogueName).Select(x => x.First()),
                 this.Consumables,
                 item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName],
+                                                 modelService.Religions,
                                                  identifyConsumable,
                                                  consumables.Count(z => z.RogueName == item.RogueName),
                                                  consumables.Where(z => z.RogueName == item.RogueName).Sum(z => z.Uses),
@@ -88,7 +89,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                 (viewModel, consumable) =>
                 {
                     viewModel.UpdateConsumable(consumable, 
-                                               encyclopedia[viewModel.RogueName], 
+                                               encyclopedia[viewModel.RogueName],
+                                               modelService.Religions,
                                                identifyConsumable,
                                                consumables.Count(z => z.RogueName == consumable.RogueName),
                                                consumables.Where(z => z.RogueName == consumable.RogueName).Sum(z => z.Uses),
@@ -99,8 +101,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values,
                 this.Equipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
 
             // Identify Inventory
             SynchronizeCollection<ItemBase, ItemGridRowViewModel>(
@@ -112,16 +114,17 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     if (item is Consumable)
                         return new ItemGridRowViewModel(item as Consumable,
                                              encyclopedia[item.RogueName],
+                                             modelService.Religions,
                                              identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
                     else
-                        return new ItemGridRowViewModel(item as Equipment, encyclopedia[item.RogueName]);
+                        return new ItemGridRowViewModel(item as Equipment, encyclopedia[item.RogueName], modelService.Religions);
                 },
                 (viewModel, item) =>
                 {
                     if (item is Consumable)
-                        viewModel.UpdateConsumable(item as Consumable, encyclopedia[viewModel.RogueName], identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
+                        viewModel.UpdateConsumable(item as Consumable, encyclopedia[viewModel.RogueName], modelService.Religions, identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
                     else
-                        viewModel.UpdateEquipment(item as Equipment, encyclopedia[viewModel.RogueName]);
+                        viewModel.UpdateEquipment(item as Equipment, encyclopedia[viewModel.RogueName], modelService.Religions);
                 });
 
 
@@ -129,36 +132,36 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsCursed),
                 this.UncurseEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
 
             // Enchant Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsWeaponType()),
                 this.EnchantWeaponEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
 
             // Enchant Armor Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsArmorType()),
                 this.EnchantArmorEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
 
             // Imbue Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsWeaponType() && x.CanImbue()),
                 this.ImbueWeaponEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
 
             // Imbue Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsArmorType() && x.CanImbue()),
                 this.ImbueArmorEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.Religions),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.Religions));
         }
 
         private void SynchronizeCollection<TSource, TDest>(

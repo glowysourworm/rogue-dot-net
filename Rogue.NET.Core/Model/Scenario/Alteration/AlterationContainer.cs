@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration
@@ -18,6 +19,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public AlterationAttackAttributeType AttackAttributeType { get; set; }
         public double EffectRange { get; set; }
         public bool IsStackable { get; set; }
+
+        // Religious Affiliation Increase Parameters
+        public string ReligiousAffiliationReligionName { get; set; }
+        public double ReligiousAffiliationIncrease { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

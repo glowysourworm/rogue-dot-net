@@ -246,5 +246,24 @@ namespace Rogue.NET.Core.Logic.Content
 
             player.ApplyLimits();
         }
+
+        public void DeActivateSkills(Player player)
+        {
+            // Deactivate skill sets
+            player.SkillSets.ForEach(x =>
+            {
+                // Maintain Passive Effects
+                if (x.IsTurnedOn)
+                {
+                    x.IsTurnedOn = false;
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + x.RogueName);
+
+                    // Pass-Through method is Safe to call
+                    player.Alteration.DeactivatePassiveAlteration(x.GetCurrentSkillAlteration().Id);
+                }
+
+                x.IsActive = false;
+            });
+        }
     }
 }

@@ -32,6 +32,7 @@ namespace Rogue.NET.Core.Model.Generator
             attackAttribute.SymbolType = attackAttributeTemplate.SymbolDetails.Type;
             attackAttribute.Attack = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Attack);
             attackAttribute.Resistance = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Resistance);
+            attackAttribute.Weakness = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Weakness);
 
             return attackAttribute;
         }

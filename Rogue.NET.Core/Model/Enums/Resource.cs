@@ -581,7 +581,25 @@
         TorchFuschia = 569,
         TorchCyan = 570,
         TorchBlack = 571,
-        TorchWhite = 572
+        TorchWhite = 572,
+        ImbueWeaponRed = 573,
+        ImbueWeaponOrange = 574,
+        ImbueWeaponYellow = 575,
+        ImbueWeaponGreen = 576,
+        ImbueWeaponBlue = 577,
+        ImbueWeaponPurple = 578,
+        ImbueWeaponFuschia = 579,
+        ImbueWeaponBlack = 580,
+        ImbueWeaponWhite = 581,
+        ImbueArmorRed = 582,
+        ImbueArmorOrange = 583,
+        ImbueArmorYellow = 584,
+        ImbueArmorGreen = 585,
+        ImbueArmorBlue = 586,
+        ImbueArmorPurple = 587,
+        ImbueArmorFuschia = 588,
+        ImbueArmorBlack = 589,
+        ImbueArmorWhite = 590
     }
     public enum DisplayImageResources
     {

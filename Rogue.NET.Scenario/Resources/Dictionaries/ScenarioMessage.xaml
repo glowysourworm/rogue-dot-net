@@ -15,6 +15,7 @@
         <Style.Setters>
             <Setter Property="Foreground" Value="Beige" />
             <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextWrapping" Value="Wrap" />
         </Style.Setters>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Priority}" Value="Good">

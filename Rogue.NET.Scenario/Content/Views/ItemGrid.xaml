@@ -177,6 +177,30 @@
                                 </Style>
                             </Border.Resources>
                             <StackPanel>
+                                <Grid Margin="4,4,4,0"
+                                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                    <TextBlock Text="Required Religion" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                               Style="{StaticResource EquipmentTextBlockBrush}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Image Height="20" Width="20" VerticalAlignment="Center">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                                    <Binding Path="Religion.CharacterColor" />
+                                                    <Binding Path="Religion.CharacterSymbol" />
+                                                    <Binding Path="Religion.Icon" />
+                                                    <Binding Path="Religion.DisplayIcon" />
+                                                    <Binding Path="Religion.SmileyMood" />
+                                                    <Binding Path="Religion.SmileyAuraColor" />
+                                                    <Binding Path="Religion.SmileyBodyColor" />
+                                                    <Binding Path="Religion.SmileyLineColor" />
+                                                    <Binding Path="Religion.SymbolType" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource EquipmentTextBlockBrush}" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                </Grid>
                                 <Grid Margin="4">
                                     <TextBlock HorizontalAlignment="Left"
                                                Style="{StaticResource EquipmentTextBlockBrush}">
@@ -283,6 +307,30 @@
                                 </Style>
                             </Border.Resources>
                             <StackPanel>
+                                <Grid Margin="4,4,4,0"
+                                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                    <TextBlock Text="Required Religion" HorizontalAlignment="Left"
+                                               Style="{StaticResource EquipmentTextBlockBrush}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Image Height="20" Width="20" VerticalAlignment="Center">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                                    <Binding Path="Religion.CharacterColor" />
+                                                    <Binding Path="Religion.CharacterSymbol" />
+                                                    <Binding Path="Religion.Icon" />
+                                                    <Binding Path="Religion.DisplayIcon" />
+                                                    <Binding Path="Religion.SmileyMood" />
+                                                    <Binding Path="Religion.SmileyAuraColor" />
+                                                    <Binding Path="Religion.SmileyBodyColor" />
+                                                    <Binding Path="Religion.SmileyLineColor" />
+                                                    <Binding Path="Religion.SymbolType" />
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource EquipmentTextBlockBrush}" VerticalAlignment="Center" />
+                                    </StackPanel>
+
+                                </Grid>
                                 <Grid Margin="4">
                                     <TextBlock HorizontalAlignment="Left" Style="{StaticResource ConsumableTextBlockBrush}">
                                         <Run Text="Required Level " />
@@ -342,6 +390,8 @@
                             </StackPanel>
                         </Border>
                     </DataTemplate>
+
+                
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

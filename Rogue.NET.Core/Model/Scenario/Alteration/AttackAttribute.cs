@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
     {
         public double Attack { get; set; }
         public double Resistance { get; set; }
-        public double Weakness { get; set; }
+        public int Weakness { get; set; }
 
         public AttackAttribute()
         {

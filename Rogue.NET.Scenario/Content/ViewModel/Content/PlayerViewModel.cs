@@ -300,6 +300,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _attributeEmphasis; }
             set { this.RaiseAndSetIfChanged(ref _attributeEmphasis, value); }
         }
+        public SkillSetViewModel ActiveSkillSet
+        {
+            get { return _activeSkillSet; }
+            set { this.RaiseAndSetIfChanged(ref _activeSkillSet, value); }
+        }
         #endregion
 
         #region (public) Equipped Item Properties
@@ -437,9 +442,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var encyclopedia = _modelService.ScenarioEncyclopedia;
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
+            // Sort Skill Sets
+            var sortedSkillSets = player.SkillSets.OrderByDescending(x => x.IsLearned)
+                                                  .ThenByDescending(x => this.Level >= x.LevelLearned)
+                                                  .ThenBy(x => x.LevelLearned)
+                                                  .Actualize();
+
             // Base Collections
             SynchronizeCollection(
-                player.SkillSets, 
+                sortedSkillSets, 
                 this.SkillSets, 
                 x => new SkillSetViewModel(x, player, _modelService.ScenarioEncyclopedia, _eventAggregator),
                 (source, dest) =>
@@ -465,6 +476,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                                     (player.ReligiousAlteration.Affiliation >= skillSource.RequiredAffiliationLevel);
                     });
                 });
+
+            // Active Skill Set
+            this.ActiveSkillSet = this.SkillSets.FirstOrDefault(x => x.IsActive);
 
             // Calculate experience
             var experienceLast = player.Level == 0 ? 0 : PlayerCalculator.CalculateExperienceNext(player.Level - 1);

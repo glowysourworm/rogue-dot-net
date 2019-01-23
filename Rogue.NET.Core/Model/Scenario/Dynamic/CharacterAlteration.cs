@@ -28,19 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                 this.SpellId = container.GeneratingSpellId;
                 this.SpellRogueName = container.GeneratingSpellName;
             }
-
-            public override int GetHashCode()
-            {
-                return this.SpellId.GetHashCode();
-            }
-            public override bool Equals(object obj)
-            {
-                if (obj is SpellReference)
-                {
-                    return (obj as SpellReference).SpellId == this.SpellId;
-                }
-                return false;
-            }
         }
         #endregion
 

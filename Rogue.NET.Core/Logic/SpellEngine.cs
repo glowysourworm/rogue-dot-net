@@ -28,6 +28,7 @@ namespace Rogue.NET.Core.Logic
     {
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
+        readonly IReligionEngine _religionEngine;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IPlayerProcessor _playerProcessor;
         readonly IInteractionProcessor _interactionProcessor;
@@ -47,6 +48,7 @@ namespace Rogue.NET.Core.Logic
         public SpellEngine(
             IModelService modelService,
             ILayoutEngine layoutEngine,
+            IReligionEngine religionEngine,
             IAlterationProcessor alterationProcessor, 
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
@@ -57,6 +59,7 @@ namespace Rogue.NET.Core.Logic
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
+            _religionEngine = religionEngine;
             _alterationProcessor = alterationProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
@@ -381,8 +384,12 @@ namespace Rogue.NET.Core.Logic
                     CreateMonster(alteration.CreateMonsterEnemy);
                     break;
                 case AlterationMagicEffectType.RenounceReligion:
+                    // Forced renunciation by Alteration
+                    _religionEngine.RenounceReligion(true);
                     break;
                 case AlterationMagicEffectType.IncreaseReligiousAffiliation:
+                    _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName, 
+                                              alteration.ReligiousAffiliationIncrease);
                     break;
             }
         }

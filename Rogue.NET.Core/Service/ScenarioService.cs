@@ -23,6 +23,7 @@ namespace Rogue.NET.Core.Service
         readonly IContentEngine _contentEngine;
         readonly ILayoutEngine _layoutEngine;
         readonly ISpellEngine _spellEngine;
+        readonly IReligionEngine _religionEngine;
         readonly IDebugEngine _debugEngine;
 
         readonly IModelService _modelService;
@@ -63,6 +64,7 @@ namespace Rogue.NET.Core.Service
             IModelService modelService,
             IDebugEngine debugEngine,
             ISpellEngine spellEngine,
+            IReligionEngine religionEngine,
             IRayTracer rayTracer)
         {
             _scenarioEngine = scenarioEngine;
@@ -70,10 +72,11 @@ namespace Rogue.NET.Core.Service
             _layoutEngine = layoutEngine;
             _modelService = modelService;
             _spellEngine = spellEngine;
+            _religionEngine = religionEngine;
             _debugEngine = debugEngine;
             _rayTracer = rayTracer;
 
-            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _debugEngine };
+            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _religionEngine, _debugEngine };
 
             _animationQueue = new Queue<IAnimationUpdate>();
             _scenarioQueue = new Queue<IScenarioUpdate>();
@@ -283,7 +286,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelAction.RenounceReligion:
                     {
-                        // TODO
+                        nextAction = _religionEngine.RenounceReligion(false);
                     }
                     break;
 
@@ -343,8 +346,18 @@ namespace Rogue.NET.Core.Service
                     _scenarioEngine.ProcessEndOfTurn(false);
                     break;
                 case LevelProcessingActionType.EnemyReaction:
-                    // If enemy not available then we've made a mistake in our processing logic. So, let it crash!
-                    _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.CharacterId));
+                    // Enemy not available (Reasons)
+                    //
+                    // *** Must be because enemy reaction was queued before it was removed.
+                    //     Below are known causes
+                    //
+                    // 0) Enemy reacts twice before player turn while malign attribute effect 
+                    //    causes their death.
+
+                    // So, must check for the enemy to be available. The way to avoid this is
+                    // to either do pruning of the queues; or to do full multi-threaded decoupling (lots of work).
+                    if (_modelService.Level.Enemies.Any(x => x.Id == workItem.CharacterId))
+                        _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.CharacterId));
                     break;
                 case LevelProcessingActionType.PlayerSpell:
                     _spellEngine.ProcessPlayerMagicSpell(workItem.PlayerSpell);

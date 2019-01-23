@@ -1,7 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator
@@ -19,6 +21,7 @@ namespace Rogue.NET.Core.Model.Generator
             spell.Effect = spellTemplate.Effect;
             spell.AuraEffect = spellTemplate.AuraEffect;
             spell.Type = spellTemplate.Type;
+            spell.BlockType = spellTemplate.BlockType;
             spell.OtherEffectType = spellTemplate.OtherEffectType;
             spell.AttackAttributeType = spellTemplate.AttackAttributeType;
             spell.EffectRange = spellTemplate.EffectRange;
@@ -27,8 +30,10 @@ namespace Rogue.NET.Core.Model.Generator
             spell.DisplayName = spellTemplate.DisplayName;
             spell.IsStackable = spellTemplate.Stackable;
 
-            // TODO
-            //spell.BlockType = spellTemplate.BlockType;
+            // Religious Affiliation Change Parameters
+            spell.ReligiousAffiliationReligionName = spellTemplate.ReligiousAffiliationReligion.Name;
+            spell.ReligiousAffiliationIncrease = spellTemplate.ReligiousAffiliationIncrease;
+
             return spell;
         }
     }

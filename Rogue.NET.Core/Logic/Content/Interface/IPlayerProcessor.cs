@@ -16,6 +16,8 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         int GetNumberEquipped(Player player, EquipmentType type);
         int GetNumberOfFreeHands(Player player);
 
+        void DeActivateSkills(Player player);
+
         // Process Turn for Player
         void ApplyEndOfTurn(Player player, bool regenerate);
     }

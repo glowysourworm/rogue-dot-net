@@ -233,6 +233,21 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
+            // Check Religious Affiliation Requirement
+            if (thrownItem.HasReligiousAffiliationRequirement &&
+               (!player.ReligiousAlteration.IsAffiliated() ||
+                 player.ReligiousAlteration.ReligionName != thrownItem.ReligiousAffiliationRequirement.ReligionName ||
+                 player.ReligiousAlteration.Affiliation < thrownItem.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Normal,
+                    "Required Religious Affiliation {0} {1} Not Met!",
+                    thrownItem.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
+                    thrownItem.ReligiousAffiliationRequirement.ReligionName);
+
+                return LevelContinuationAction.DoNothing;
+            }
+
             // TBD: Create general consumable for projectiles that has melee parameters
             if (thrownItem.HasProjectileSpell)
             {
@@ -264,6 +279,21 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
+            // Check Religious Affiliation Requirement
+            if (consumable.HasReligiousAffiliationRequirement &&
+               (!player.ReligiousAlteration.IsAffiliated() ||
+                 player.ReligiousAlteration.ReligionName != consumable.ReligiousAffiliationRequirement.ReligionName ||
+                 player.ReligiousAlteration.Affiliation < consumable.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Normal,
+                    "Required Religious Affiliation {0} {1} Not Met!",
+                    consumable.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
+                    consumable.ReligiousAffiliationRequirement.ReligionName);
+
+                return LevelContinuationAction.DoNothing;
+            }
+
             // Check for targeting - including Ammo type
             if (consumable.HasSpell || consumable.SubType == ConsumableSubType.Ammo)
             {
@@ -275,6 +305,21 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
                     return LevelContinuationAction.DoNothing;
                 }
+            }
+
+            // Check for Religious Affiliation Increase
+            //
+            // 0) Player does NOT have an affiliation (OK)
+            // 1) Player has the SAME affiliation (OK)
+            // 2) Player has a DIFFERENT affiliation (NOT OK)
+            //
+            if (consumable.HasSpell && 
+                consumable.Spell.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation &&
+                player.ReligiousAlteration.IsAffiliated() &&
+                player.ReligiousAlteration.ReligionName != consumable.Spell.ReligiousAffiliationReligionName)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
+                return LevelContinuationAction.DoNothing;
             }
 
             // Proceeding with use - so check for identify on use
@@ -491,6 +536,21 @@ namespace Rogue.NET.Core.Logic
                     return LevelContinuationAction.ProcessTurn;
                 }
 
+                // Check Religious Affiliation Requirement
+                if (ammo.HasReligiousAffiliationRequirement &&
+                   (!_modelService.Player.ReligiousAlteration.IsAffiliated() ||
+                     _modelService.Player.ReligiousAlteration.ReligionName != ammo.ReligiousAffiliationRequirement.ReligionName ||
+                     _modelService.Player.ReligiousAlteration.Affiliation < ammo.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+                {
+                    _scenarioMessageService.Publish(
+                        ScenarioMessagePriority.Normal,
+                        "Required Religious Affiliation {0} {1} Not Met!",
+                        ammo.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
+                        ammo.ReligiousAffiliationRequirement.ReligionName);
+
+                    return LevelContinuationAction.ProcessTurn;
+                }
+
                 // Remove ammo from inventory
                 _modelService.Player.Consumables.Remove(ammo.Id);
 
@@ -595,11 +655,14 @@ namespace Rogue.NET.Core.Logic
                     throw new Exception("Trying to activate non-learned skill");
 
                 // 1) Deactivate currently active SkillSet / Skill
-                DeActivateSkillSets();
+                _playerProcessor.DeActivateSkills(player);
 
                 // Activate SkillSet / Skill
                 skillSet.IsActive = true;
                 skillSet.SelectSkill(skillId);
+
+                // Update Player Symbol
+                QueueLevelUpdate(LevelUpdateType.PlayerLocation, player.Id);
             }
         }
         public void CycleActiveSkillSet()
@@ -646,7 +709,7 @@ namespace Rogue.NET.Core.Logic
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
 
             // Deactivate current skill sets
-            DeActivateSkillSets();
+            _playerProcessor.DeActivateSkills(_modelService.Player);
 
             // Activate and select next skill
             if (skillSet != null)
@@ -656,13 +719,14 @@ namespace Rogue.NET.Core.Logic
             }
 
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
         }
         public void ChangeSkillLevelDown(string skillSetId)
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
 
             // Deactivate current skill sets
-            DeActivateSkillSets();
+            _playerProcessor.DeActivateSkills(_modelService.Player);
 
             // Activate and select next skill
             if (skillSet != null)
@@ -672,6 +736,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
         }
         public void ToggleActiveSkill(string skillSetId, bool activate)
         {
@@ -685,7 +750,7 @@ namespace Rogue.NET.Core.Logic
                 return;
 
             // Maintain Passive Effects
-            DeActivateSkillSets();
+            _playerProcessor.DeActivateSkills(_modelService.Player);
 
             // Activate
             if (skillSet != null)
@@ -704,6 +769,7 @@ namespace Rogue.NET.Core.Logic
 
             // Queue update for all skill sets
             QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.SkillSets.Select(x => x.Id).ToArray());
+            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
         }
         public void UnlockSkill(string skillId)
         {
@@ -836,13 +902,29 @@ namespace Rogue.NET.Core.Logic
             {
                 case DoodadType.Magic:
                     {
-                        if (doodad.IsOneUse && doodad.HasBeenUsed || !((DoodadMagic)doodad).IsInvoked)
+                        var doodadMagic = (DoodadMagic)doodad;
+
+                        if (doodadMagic.IsOneUse && doodadMagic.HasBeenUsed || !doodadMagic.IsInvoked)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens");
+
+                        // Check for Religious Affiliation Increase
+                        //
+                        // 0) Player does NOT have an affiliation (OK)
+                        // 1) Player has the SAME affiliation (OK)
+                        // 2) Player has a DIFFERENT affiliation (NOT OK)
+                        //
+                        else if (doodadMagic.IsInvoked &&
+                                 doodadMagic.InvokedSpell.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation &&
+                                 player.ReligiousAlteration.IsAffiliated() &&
+                                 player.ReligiousAlteration.ReligionName != doodadMagic.InvokedSpell.ReligiousAffiliationReligionName)
+                        {
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
+                        }
+
                         else
                         {
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + doodad.RogueName);
 
-                            var doodadMagic = (DoodadMagic)doodad;
                             doodadMagic.HasBeenUsed = true;
 
                             return _spellEngine.QueuePlayerMagicSpell(doodadMagic.InvokedSpell);
@@ -874,32 +956,6 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
-
-        #region (private) Methods
-        private void DeActivateSkillSets()
-        {
-            var player = _modelService.Player;
-
-            // Deactivate skill sets
-            player.SkillSets.ForEach(x =>
-            {
-                // Maintain Passive Effects
-                if (x.IsTurnedOn)
-                {
-                    x.IsTurnedOn = false;
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + x.RogueName);
-
-                    // Pass-Through method is Safe to call
-                    player.Alteration.DeactivatePassiveAlteration(x.GetCurrentSkillAlteration().Id);
-                }
-
-                x.IsActive = false;
-            });
-
-            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
-        }
-        #endregion
-
 
         #region (private) Event Methods
         private void QueueLevelUpdate(LevelUpdateType type, string contentId)

@@ -41,6 +41,7 @@
     <converterItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="ItemGridRowDetailsVisibilityConverter" />
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
+    <converterItemGrid:ItemGridIconImageConverter x:Key="ItemGridIconImageConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
     <converterScenarioMetaData:ScenarioMetaDataTextConverter x:Key="ScenarioMetaDataTextConverter" />
     <converterSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="SkillGridLevelLearnedTooltipConverter" />

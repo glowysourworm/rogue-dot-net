@@ -8,9 +8,12 @@ namespace Rogue.NET.Core.Logic.Content.Interface
     public interface IEnemyProcessor
     {
         /// <summary>
-        /// Processes end-of-turn changes. This does not process death of the Enemy; but 
-        /// Enemy variables could leave them dead and ready for removal from Level. This should
-        /// occur in the primary IScenarioEngine.ProcessTurn method. Player is used here to 
+        /// Processes beginning-of-turn application of malign alterations.
+        /// </summary>
+        void ApplyBeginningOfTurn(Enemy enemy);
+
+        /// <summary>
+        /// Processes end-of-turn changes. This does not process death of the Enemy. Player is used here to 
         /// calculate aura effects on the Enemy.
         /// </summary>
         void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken);

@@ -24,9 +24,14 @@ namespace Rogue.NET.Core.Logic.Content
             _modelService = modelService;
         }
 
+        public void ApplyBeginningOfTurn(Enemy enemy)
+        {
+            enemy.Hp -= enemy.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes());
+        }
+
         public void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken)
         {
-            enemy.Hp += enemy.GetHpRegen() - enemy.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes()); 
+            enemy.Hp += actionTaken ? 0 : enemy.GetHpRegen();
             enemy.Mp += enemy.GetMpRegen();
 
             // Increment event times - ignore messages to publish

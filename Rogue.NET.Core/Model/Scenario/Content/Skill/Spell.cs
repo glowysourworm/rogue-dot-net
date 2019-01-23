@@ -29,6 +29,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public string CreateMonsterEnemyName { get; set; }
         public string DisplayName { get; set; }
 
+        public string ReligiousAffiliationReligionName { get; set; }
+        public double ReligiousAffiliationIncrease { get; set; }
+
         public Spell() { }
     }
 }
