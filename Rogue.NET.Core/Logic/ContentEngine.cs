@@ -33,6 +33,7 @@ namespace Rogue.NET.Core.Logic
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
         readonly ISpellEngine _spellEngine;
+        readonly IReligionEngine _religionEngine;
         readonly IEnemyProcessor _enemyProcessor;
         readonly IPlayerProcessor _playerProcessor;        
         readonly IInteractionProcessor _interactionProcessor;
@@ -53,6 +54,7 @@ namespace Rogue.NET.Core.Logic
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
             ISpellEngine spellEngine,
+            IReligionEngine religionEngine,
             IEnemyProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
@@ -64,6 +66,7 @@ namespace Rogue.NET.Core.Logic
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
             _spellEngine = spellEngine;
+            _religionEngine = religionEngine;
             _enemyProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
@@ -152,6 +155,10 @@ namespace Rogue.NET.Core.Logic
                 return false;
             }
 
+            // Identify Religion
+            if (equipment.HasReligiousAffiliationRequirement)
+                _religionEngine.IdentifyReligion(equipment.ReligiousAffiliationRequirement.ReligionName);
+
             // Check Religious Affiliation Requirement
             if (equipment.HasReligiousAffiliationRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
@@ -166,7 +173,7 @@ namespace Rogue.NET.Core.Logic
 
                 return false;
             }
-
+           
             // Process the update
             if (equipment.IsEquipped)
                 result = UnEquip(equipment);
@@ -273,6 +280,10 @@ namespace Rogue.NET.Core.Logic
             //Set enemy identified
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
 
+            // Check for Enemy Religion to identify
+            if (enemy.ReligiousAlteration.IsAffiliated())
+                _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.ReligionName);
+
             // Publish Level update
             QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
             QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, enemy.Id);
@@ -326,7 +337,12 @@ namespace Rogue.NET.Core.Logic
                 enemy.IsEngaged = true;
 
             if (distance > enemy.BehaviorDetails.DisengageRadius)
+            {
                 enemy.IsEngaged = false;
+
+                // Reset this flag here to allow them to dis-engage at long distances
+                enemy.WasAttackedByPlayer = false;
+            }
 
             if (!enemy.IsEngaged)
                 return;
@@ -440,24 +456,28 @@ namespace Rogue.NET.Core.Logic
             var level = _modelService.Level;
             var metaData = _modelService.ScenarioEncyclopedia[doodad.RogueName];
 
-            if (character is Player)
+            var displayName = _modelService.GetDisplayName(doodad);
+
+            if (!(doodad.IsOneUse && doodad.HasBeenUsed))
             {
-                var displayName = _modelService.GetDisplayName(doodad);
-
-                if (!(doodad.IsOneUse && doodad.HasBeenUsed))
+                if (doodad.IsAutomatic)
                 {
-                    if (doodad.IsAutomatic)
-                    {
-                        // Mark that the doodad has been used
-                        doodad.HasBeenUsed = true;
+                    // Mark that the doodad has been used
+                    doodad.HasBeenUsed = true;
 
-                        // Queue magic spell with animation
+                    // Queue magic spell with animation
+                    if (character is Player)
                         _spellEngine.QueuePlayerMagicSpell(doodad.AutomaticSpell);
-                    }
+
                     else
-                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Press \"D\" to Use");
+                        _spellEngine.QueueEnemyMagicSpell(character as Enemy, doodad.AutomaticSpell);
                 }
                 else
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Press \"D\" to Use");
+            }
+            else
+            {
+                if (character is Player)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " seems to be inactive");
             }
         }

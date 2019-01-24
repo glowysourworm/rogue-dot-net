@@ -34,6 +34,7 @@ namespace Rogue.NET.Core.Logic
         readonly ILayoutEngine _layoutEngine;
         readonly IContentEngine _contentEngine;
         readonly ISpellEngine _spellEngine;
+        readonly IReligionEngine _religionEngine;
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IInteractionProcessor _interactionProcessor;
@@ -53,6 +54,7 @@ namespace Rogue.NET.Core.Logic
             ILayoutEngine layoutEngine,
             IContentEngine contentEngine,
             ISpellEngine spellEngine,
+            IReligionEngine religionEngine,
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
             IInteractionProcessor interactionProcessor,
@@ -63,6 +65,7 @@ namespace Rogue.NET.Core.Logic
             _layoutEngine = layoutEngine;
             _contentEngine = contentEngine;
             _spellEngine = spellEngine;
+            _religionEngine = religionEngine;
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _interactionProcessor = interactionProcessor;
@@ -424,6 +427,10 @@ namespace Rogue.NET.Core.Logic
             item.IsIdentified = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
+
+            // Check for Religious Affiliation and Identify
+            if (item.HasReligiousAffiliationRequirement)
+                _religionEngine.IdentifyReligion(item.ReligiousAffiliationRequirement.ReligionName);
 
             // Queue an update
             if (item is Consumable)
@@ -904,6 +911,11 @@ namespace Rogue.NET.Core.Logic
                     {
                         var doodadMagic = (DoodadMagic)doodad;
 
+                        // Identify Religion
+                        if (doodadMagic.HasReligiousAffiliationRequirement)
+                            _religionEngine.IdentifyReligion(doodadMagic.ReligiousAffiliationRequirement.ReligionName);
+
+                        // Has been exhausted
                         if (doodadMagic.IsOneUse && doodadMagic.HasBeenUsed || !doodadMagic.IsInvoked)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens");
 

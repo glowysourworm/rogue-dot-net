@@ -7,7 +7,9 @@ using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.Scenario.Views;
 using System;
@@ -114,8 +116,42 @@ namespace Rogue.NET.View
                 Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
 
             if (levelCommand != null)
-            {
-                await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+            {                
+                switch(levelCommand.Type)
+                {
+                    case ActionType.LevelAction:
+                        await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+                        break;
+                    case ActionType.ViewAction:
+                        {
+                            switch (levelCommand.ViewAction)
+                            {
+                                case ViewActionType.ShowPlayerSubpanelEquipment:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Publish();
+                                    break;
+                                case ViewActionType.ShowPlayerSubpanelConsumables:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Publish();
+                                    break;
+                                case ViewActionType.ShowPlayerSubpanelSkills:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Publish();
+                                    break;
+                                case ViewActionType.ShowPlayerSubpanelStats:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Publish();
+                                    break;
+                                case ViewActionType.ShowPlayerSubpanelAlterations:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
+                                    break;
+                                case ViewActionType.ShowPlayerSubpanelReligion:
+                                    _eventAggregator.GetEvent<ShowPlayerSubpanelReligionEvent>().Publish();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
             _blockUserInput = false;

@@ -172,12 +172,30 @@ namespace Rogue.NET.Core.Logic.Content
 
         public bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType)
         {
+            var religionComponent = 0D;
+            
+            if (attacker.ReligiousAlteration.IsAffiliated() &&
+                defender.ReligiousAlteration.IsAffiliated())
+            {
+                // Get Defender Parameters to calculate the block probability
+                var parameters = defender.ReligiousAlteration.GetParameters(attacker.ReligiousAlteration.ReligionName);
+
+                // Contribution = Intelligence * Affiliation * Block Multiplier
+                var blockValue = defender.GetIntelligence() * 
+                                 defender.ReligiousAlteration.Affiliation * 
+                                 parameters.BlockMultiplier;
+
+                religionComponent = blockValue.Clip(-1, 1);
+            }
+
             switch (blockType)
             {
                 case AlterationBlockType.Mental:
-                    return _randomSequenceGenerator.Get() < defender.GetMagicBlock();
+                    return _randomSequenceGenerator.Get() < (defender.GetMagicBlock() + religionComponent).Clip();
                 case AlterationBlockType.Physical:
-                    return _randomSequenceGenerator.Get() < defender.GetDodge();
+                    return _randomSequenceGenerator.Get() < (defender.GetDodge() + religionComponent).Clip();
+                case AlterationBlockType.NonBlockable:
+                    return false;
                 default:
                     throw new Exception("Unknwon Alteration Block Type");
             }

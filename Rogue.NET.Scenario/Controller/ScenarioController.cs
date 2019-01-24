@@ -59,7 +59,7 @@ namespace Rogue.NET.Scenario.Controller
             // First issue command
             _scenarioService.IssueCommand(new LevelCommandAction()
             {
-                Action = e.Action,
+                Action = e.LevelAction,
                 Direction = e.Direction,
                 ScenarioObjectId = e.ItemId
             });

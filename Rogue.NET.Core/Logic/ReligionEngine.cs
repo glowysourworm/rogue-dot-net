@@ -166,6 +166,24 @@ namespace Rogue.NET.Core.Logic
             }
         }
 
+        public void IdentifyReligion(string religionName)
+        {
+            var isIdentified = _modelService.ScenarioEncyclopedia[religionName].IsIdentified;
+
+            if (!isIdentified)
+            {
+                var religion = _modelService.Religions.First(x => x.RogueName == religionName);
+
+                // Identify the religion
+                _modelService.ScenarioEncyclopedia[religion.RogueName].IsIdentified = true;
+
+                // Trigger a message
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Unique, "The Religion \"{0}\" has been identified", religion.RogueName);
+
+                QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, religion.Id);
+            }
+        }
+
         public void ApplyEndOfTurn()
         {
             throw new NotImplementedException();

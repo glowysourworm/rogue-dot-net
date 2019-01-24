@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
         /// <summary>
         /// Intended player action
         /// </summary>
-        LevelAction Action { get; set; }
+        LevelActionType Action { get; set; }
 
         /// <summary>
         /// Intended direction

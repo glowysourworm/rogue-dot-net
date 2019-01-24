@@ -61,48 +61,74 @@ namespace Rogue.NET.Scenario.Service
         {
             //Searching
             if (key == _preferences.Search)
-                return new UserCommandEventArgs(LevelAction.Search, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.Search, Compass.Null, "");
             //Target
             else if (key == _preferences.Target)
-                return new UserCommandEventArgs(LevelAction.Target, Compass.E, "");
+                return new UserCommandEventArgs(LevelActionType.Target, Compass.E, "");
             //Cycle Skill
             else if (key == _preferences.Skill && shift)
-                return new UserCommandEventArgs(LevelAction.CycleSkillSet, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.CycleSkillSet, Compass.Null, "");
             //Skill Usage
             else if (key == _preferences.Skill)
-                return new UserCommandEventArgs(LevelAction.InvokeSkill, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.InvokeSkill, Compass.Null, "");
             //Doodad Usage
             else if (key == _preferences.Doodad)
-                return new UserCommandEventArgs(LevelAction.InvokeDoodad, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.InvokeDoodad, Compass.Null, "");
             //Fire Range Weapon
             else if (key == _preferences.Fire)
-                return new UserCommandEventArgs(LevelAction.Fire, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.Fire, Compass.Null, "");
             //Renounce Religion
             else if (key == _preferences.RenounceReligion)
-                return new UserCommandEventArgs(LevelAction.RenounceReligion, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.RenounceReligion, Compass.Null, "");
+
+            // Revolving Displays
+            //
+            // Equipment
+            else if (key == _preferences.ShowPlayerSubpanelEquipment && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelEquipment);
+
+            // Consumables
+            else if (key == _preferences.ShowPlayerSubpanelConsumables && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelConsumables);
+
+            // Skills
+            else if (key == _preferences.ShowPlayerSubpanelSkills && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelSkills);
+
+            // Stats
+            else if (key == _preferences.ShowPlayerSubpanelStats && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelStats);
+
+            // Alterations
+            else if (key == _preferences.ShowPlayerSubpanelAlterations && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelAlterations);
+
+            // Religion
+            else if (key == _preferences.ShowPlayerSubpanelReligion && shift)
+                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelReligion);
 
             //Debug*******
 #if DEBUG
             else if (key == Key.N)
-                return new UserCommandEventArgs(LevelAction.DebugNext, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
             else if (key == Key.W)
-                return new UserCommandEventArgs(LevelAction.DebugExperience, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.DebugExperience, Compass.Null, "");
             else if (key == Key.Q)
-                return new UserCommandEventArgs(LevelAction.DebugIdentifyAll, Compass.Null, "");
+                return new UserCommandEventArgs(LevelActionType.DebugIdentifyAll, Compass.Null, "");
 #endif
             //Debug*******
 
             else
             {
                 if (shift)
-                    return ProcessCompassLevelAction(LevelAction.ToggleDoor, key);
+                    return ProcessCompassLevelAction(LevelActionType.ToggleDoor, key);
                 else if (ctrl)
-                    return ProcessCompassLevelAction(LevelAction.Attack, key);
+                    return ProcessCompassLevelAction(LevelActionType.Attack, key);
                 else
-                    return ProcessCompassLevelAction(LevelAction.Move, key);
+                    return ProcessCompassLevelAction(LevelActionType.Move, key);
             }
         }
-        private UserCommandEventArgs ProcessCompassLevelAction(LevelAction action, Key key)
+        private UserCommandEventArgs ProcessCompassLevelAction(LevelActionType action, Key key)
         {
             if (key == _preferences.NorthWest)
                 return new UserCommandEventArgs(action, Compass.NW, "");

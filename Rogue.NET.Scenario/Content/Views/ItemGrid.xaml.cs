@@ -84,7 +84,7 @@ namespace Rogue.NET.Scenario.Content.Views
             await _eventAggregator.GetEvent<UserCommandEvent>()
                             .Publish(new UserCommandEventArgs()
                             {
-                                Action = (LevelAction)Enum.Parse(typeof(LevelAction), this.IntendedAction.ToString()),
+                                LevelAction = (LevelActionType)Enum.Parse(typeof(LevelActionType), this.IntendedAction.ToString()),
                                 Direction = Compass.Null,
                                 ItemId = itemViewModel.Id
                             });

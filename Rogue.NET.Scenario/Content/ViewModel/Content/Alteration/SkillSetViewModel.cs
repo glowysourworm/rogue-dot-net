@@ -128,21 +128,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.ChangeSkillLevelDownCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelAction.ChangeSkillLevelDown, Compass.Null, this.Id));
+                    new UserCommandEventArgs(LevelActionType.ChangeSkillLevelDown, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
 
             this.ChangeSkillLevelUpCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelAction.ChangeSkillLevelUp, Compass.Null, this.Id));
+                    new UserCommandEventArgs(LevelActionType.ChangeSkillLevelUp, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
 
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelAction.ActivateSkillSet, Compass.Null, this.Id));
+                    new UserCommandEventArgs(LevelActionType.ActivateSkillSet, Compass.Null, this.Id));
 
             }, () => this.IsLearned);
 

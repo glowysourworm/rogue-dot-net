@@ -7,5 +7,6 @@ namespace Rogue.NET.Core.Logic.Interface
     {
         LevelContinuationAction RenounceReligion(bool forceRenunciation);
         void Affiliate(string religionName, double affiliationLevel);
+        void IdentifyReligion(string religionName);
     }
 }

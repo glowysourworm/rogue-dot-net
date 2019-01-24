@@ -7,7 +7,9 @@ namespace Rogue.NET.Common.Events.Scenario
 {
     public class UserCommandEventArgs : System.EventArgs
     {
-        public LevelAction Action { get; set;}
+        public ActionType Type { get; set; } 
+        public LevelActionType LevelAction { get; set;}
+        public ViewActionType ViewAction { get; set; }
         public Compass Direction { get; set; }
 
         /// <summary>
@@ -17,15 +19,23 @@ namespace Rogue.NET.Common.Events.Scenario
 
         public UserCommandEventArgs()
         {
-            this.Action = LevelAction.Null;
+            this.Type = ActionType.LevelAction;
+            this.LevelAction = LevelActionType.None;
+            this.ViewAction = ViewActionType.None;
             this.Direction = Compass.Null;
             this.ItemId = "";
         }
-        public UserCommandEventArgs(LevelAction action, Compass direction, string id)
+        public UserCommandEventArgs(ViewActionType action)
         {
-            Action = action;
-            Direction = direction;
-            ItemId = id;
+            this.Type = ActionType.ViewAction;
+            this.ViewAction = action;
+        }
+        public UserCommandEventArgs(LevelActionType action, Compass direction, string id)
+        {
+            this.Type = ActionType.LevelAction;
+            this.LevelAction = action;
+            this.Direction = direction;
+            this.ItemId = id;
         }
     }
     public class UserCommandEvent : RogueAsyncEvent<UserCommandEventArgs>

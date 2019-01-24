@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -45,6 +46,32 @@ namespace Rogue.NET.Scenario.Views
                 this.ReligionRB
             });
 
+            // Show Specific Control Events
+            eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Subscribe(() =>
+            {
+                ShowControl(this.AlterationsCtrl);
+            });
+            eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Subscribe(() =>
+            {
+                ShowControl(this.ConsumablesCtrl);
+            });
+            eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Subscribe(() =>
+            {
+                ShowControl(this.EquipmentCtrl);
+            });
+            eventAggregator.GetEvent<ShowPlayerSubpanelReligionEvent>().Subscribe(() =>
+            {
+                ShowControl(this.ReligionCtrl);
+            });
+            eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Subscribe(() =>
+            {
+                ShowControl(this.SkillCtrl);
+            });
+            eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Subscribe(() =>
+            {
+                ShowControl(this.StatsCtrl);
+            });
+
             _radioList[0].IsChecked = true;
             this.TitleTB.Text = _radioList[0].Tag.ToString();
         }
@@ -77,6 +104,22 @@ namespace Rogue.NET.Scenario.Views
             _radioList[_ctrlList.IndexOf(nextCtrl)].IsChecked = true;
 
             this.TitleTB.Text = _radioList[_ctrlList.IndexOf(nextCtrl)].Tag.ToString();
+        }
+
+
+        private void ShowControl(FrameworkElement control)
+        {
+            // Current Control
+            var visibleCtrl = _ctrlList.FirstOrDefault(x => x.Visibility == Visibility.Visible);
+
+            if (visibleCtrl == control)
+                return;
+
+            // Indicies
+            var index = _ctrlList.IndexOf(visibleCtrl);
+            var desiredIndex = _ctrlList.IndexOf(control);
+
+            CycleControls(visibleCtrl, control, desiredIndex > index);
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)

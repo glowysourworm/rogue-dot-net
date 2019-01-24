@@ -186,12 +186,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     DrawContent();
                     break;
                 case LevelUpdateType.ContentMove:
-                    foreach (var contentId in levelUpdate.ContentIds.Where(x => _contentDict.ContainsKey(x)))
-                        UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
-                        break;
                 case LevelUpdateType.ContentUpdate:
-                    foreach (var contentId in levelUpdate.ContentIds.Where(x => _contentDict.ContainsKey(x)))
-                        UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
+                    foreach (var contentId in levelUpdate.ContentIds)
+                    {
+                        // Performance Hit - Have to look up keys instead of use dictionaries for fast access...
+                        //                   Problem is a design flaw with the backend queues. However, this is really
+                        //                   not a performance issue. Just frustrating.
+                        if (_modelService.Level.HasContent(contentId) &&
+                            _contentDict.ContainsKey(contentId))
+                            UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
+                    }
                     break;
                 case LevelUpdateType.LayoutAll:
                     DrawLayout();

@@ -106,7 +106,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
                 {
-                    Action = LevelAction.UnlockSkill,
+                    LevelAction = LevelActionType.UnlockSkill,
                     ItemId = this.Id
                 });
             });
@@ -115,7 +115,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
                 {
-                    Action = LevelAction.ActivateSkill,
+                    LevelAction = LevelActionType.ActivateSkill,
                     ItemId = this.Id
                 });
             });

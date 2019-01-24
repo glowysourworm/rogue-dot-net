@@ -109,7 +109,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Religious Alteration
             result += character.ReligiousAlteration.AttributeEffect.MagicBlockProbability;
 
-            return Math.Max(Math.Min(1, result), 0);
+            return result.Clip();
         }
         public static double GetDodge(this Character character)
         {
@@ -121,7 +121,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Religious Alteration
             result += character.ReligiousAlteration.AttributeEffect.DodgeProbability;
 
-            return Math.Max(Math.Min(1, result), 0);
+            return result.Clip();
         }
         public static double GetSpeed(this Character character)
         {
@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                                             + character.ReligiousAlteration.AttributeEffect.Speed;
 
             // 0.1 < speed < 1
-            return Math.Max(Math.Min(1, speed), 0.1);
+            return speed.Clip(0.1, 1);
         }
 
         public static double GetAttack(this Character character)
@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             // Religious Alteration
             result += character.ReligiousAlteration.AttributeEffect.CriticalHit;
 
-            return Math.Min(Math.Max(0, result), 1);
+            return result.Clip();
         }
 
         /// <summary>

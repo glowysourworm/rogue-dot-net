@@ -1234,6 +1234,64 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponWhite.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\ImbueWeaponYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HammerYellow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HandYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\HerbsYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LeafYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

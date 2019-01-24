@@ -219,6 +219,11 @@ namespace Rogue.NET.Core.Model.Scenario
             return _levelContentDict[id];
         }
 
+        public bool HasContent(string id)
+        {
+            return _levelContentDict.ContainsKey(id);
+        }
+
         /// <summary>
         /// Checks level contents to see if cell is occupied. (NOTE** Must provide player location as well)
         /// </summary>

@@ -31,4 +31,21 @@
         /// </summary>
         Random,
     }
+
+    public enum ActionType
+    {
+        LevelAction,
+        ViewAction
+    }
+
+    public enum ViewActionType
+    {
+        None,
+        ShowPlayerSubpanelEquipment,
+        ShowPlayerSubpanelConsumables,
+        ShowPlayerSubpanelSkills,
+        ShowPlayerSubpanelStats,
+        ShowPlayerSubpanelAlterations,
+        ShowPlayerSubpanelReligion
+    }
 }

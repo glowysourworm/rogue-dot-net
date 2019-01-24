@@ -11,6 +11,7 @@ using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using Rogue.NET.Common.Events.Scenario;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -29,6 +30,21 @@ namespace Rogue.NET.Scenario.Content.Views
             this.DataContext = this;
 
             InitializeComponent();
+
+            eventAggregator.GetEvent<NewScenarioEvent>().Subscribe((e) =>
+            {
+                Reset();
+            });
+
+            eventAggregator.GetEvent<ContinueScenarioEvent>().Subscribe(() =>
+            {
+                Reset();
+            });
+
+            eventAggregator.GetEvent<OpenScenarioEvent>().Subscribe((e) =>
+            {
+                Reset();
+            });
 
             eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
@@ -166,6 +182,11 @@ namespace Rogue.NET.Scenario.Content.Views
 
             if (this.ScenarioMessages.Count > MAX_MESSAGES)
                 this.ScenarioMessages.RemoveAt(this.ScenarioMessages.Count - 1);
+        }
+
+        private void Reset()
+        {
+            this.ScenarioMessages.Clear();
         }
 
         private ScenarioImageViewModel SetScenarioImageProperties(ScenarioImageViewModel scenarioImage, ScenarioImage scenarioMetaData)

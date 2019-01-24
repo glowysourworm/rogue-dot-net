@@ -24,6 +24,13 @@ namespace Rogue.NET.Model
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register("Target", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty FireProperty = DependencyProperty.Register("Fire", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty RenounceReligionProperty = DependencyProperty.Register("RenounceReligion", typeof(Key), typeof(CommandPreferencesViewModel));
+
+        public static readonly DependencyProperty ShowPlayerSubpanelEquipmentProperty = DependencyProperty.Register("ShowPlayerSubpanelEquipment", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty ShowPlayerSubpanelConsumablesProperty = DependencyProperty.Register("ShowPlayerSubpanelConsumables", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty ShowPlayerSubpanelSkillsProperty = DependencyProperty.Register("ShowPlayerSubpanelSkills", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty ShowPlayerSubpanelStatsProperty = DependencyProperty.Register("ShowPlayerSubpanelStats", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty ShowPlayerSubpanelAlterationsProperty = DependencyProperty.Register("ShowPlayerSubpanelAlterations", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty ShowPlayerSubpanelReligionProperty = DependencyProperty.Register("ShowPlayerSubpanelReligion", typeof(Key), typeof(CommandPreferencesViewModel));
         #endregion
 
         //Compass Keys
@@ -112,6 +119,37 @@ namespace Rogue.NET.Model
             set { SetValue(RenounceReligionProperty, value); }
         }
 
+        public Key ShowPlayerSubpanelEquipment
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelEquipmentProperty); }
+            set { SetValue(ShowPlayerSubpanelEquipmentProperty, value); }
+        }
+        public Key ShowPlayerSubpanelConsumables
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelConsumablesProperty); }
+            set { SetValue(ShowPlayerSubpanelConsumablesProperty, value); }
+        }
+        public Key ShowPlayerSubpanelSkills
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelSkillsProperty); }
+            set { SetValue(ShowPlayerSubpanelSkillsProperty, value); }
+        }
+        public Key ShowPlayerSubpanelStats
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelStatsProperty); }
+            set { SetValue(ShowPlayerSubpanelStatsProperty, value); }
+        }
+        public Key ShowPlayerSubpanelAlterations
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelAlterationsProperty); }
+            set { SetValue(ShowPlayerSubpanelAlterationsProperty, value); }
+        }
+        public Key ShowPlayerSubpanelReligion
+        {
+            get { return (Key)GetValue(ShowPlayerSubpanelReligionProperty); }
+            set { SetValue(ShowPlayerSubpanelReligionProperty, value); }
+        }
+
         public CommandPreferencesViewModel()
         {
             North = Key.O;
@@ -131,6 +169,13 @@ namespace Rogue.NET.Model
             Doodad = Key.D;
             Fire = Key.F;
             RenounceReligion = Key.R;
+
+            ShowPlayerSubpanelEquipment = Key.D1;
+            ShowPlayerSubpanelConsumables = Key.D2;
+            ShowPlayerSubpanelSkills = Key.D3;
+            ShowPlayerSubpanelStats = Key.D4;
+            ShowPlayerSubpanelAlterations = Key.D5;
+            ShowPlayerSubpanelReligion = Key.D6;
         }
         public static CommandPreferencesViewModel GetDefaults()
         {
@@ -153,7 +198,14 @@ namespace Rogue.NET.Model
                 Skill = Key.X,
                 Doodad = Key.D,
                 Fire = Key.F,
-                RenounceReligion = Key.R
+                RenounceReligion = Key.R,
+
+                ShowPlayerSubpanelEquipment = Key.D1,
+                ShowPlayerSubpanelConsumables = Key.D2,
+                ShowPlayerSubpanelSkills = Key.D3,
+                ShowPlayerSubpanelStats = Key.D4,
+                ShowPlayerSubpanelAlterations = Key.D5,
+                ShowPlayerSubpanelReligion = Key.D6
             };
         }
     }

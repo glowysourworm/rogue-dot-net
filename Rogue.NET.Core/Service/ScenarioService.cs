@@ -140,24 +140,24 @@ namespace Rogue.NET.Core.Service
 
             switch (command.Action)
             {
-                case LevelAction.Attack:
+                case LevelActionType.Attack:
                     {
                         _scenarioEngine.Attack(command.Direction);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
-                case LevelAction.Throw:
+                case LevelActionType.Throw:
                     {
                         nextAction = _scenarioEngine.Throw(command.ScenarioObjectId);
                     }
                     break;
-                case LevelAction.ToggleDoor:
+                case LevelActionType.ToggleDoor:
                     {
                         _layoutEngine.ToggleDoor(_modelService.Level.Grid, command.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
-                case LevelAction.Move:
+                case LevelActionType.Move:
                     {
                         var obj = _scenarioEngine.Move(command.Direction);
                         if (obj is Consumable || obj is Equipment)
@@ -167,58 +167,58 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.Search:
+                case LevelActionType.Search:
                     {
                         _layoutEngine.Search(_modelService.Level.Grid, _modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.Target:
+                case LevelActionType.Target:
                     {
                         _scenarioEngine.Target(command.Direction);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.InvokeSkill:
+                case LevelActionType.InvokeSkill:
                     {
                         nextAction = _scenarioEngine.InvokePlayerSkill();
                     }
                     break;
-                case LevelAction.InvokeDoodad:
+                case LevelActionType.InvokeDoodad:
                     {
                         nextAction = _scenarioEngine.InvokeDoodad();
                     }
                     break;
-                case LevelAction.Consume:
+                case LevelActionType.Consume:
                     {
                         nextAction = _scenarioEngine.Consume(command.ScenarioObjectId);
                     }
                     break;
-                case LevelAction.Drop:
+                case LevelActionType.Drop:
                     {
                         _scenarioEngine.Drop(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.Fire:
+                case LevelActionType.Fire:
                     {
                         nextAction = _scenarioEngine.Fire();
                     }
                     break;
-                case LevelAction.Equip:
+                case LevelActionType.Equip:
                     {
                         if (_contentEngine.Equip(command.ScenarioObjectId))
                             nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.EnchantArmor:
-                case LevelAction.EnchantWeapon:
+                case LevelActionType.EnchantArmor:
+                case LevelActionType.EnchantWeapon:
                     {
                         _scenarioEngine.Enchant(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.ImbueArmor:
+                case LevelActionType.ImbueArmor:
                     {
                         _scenarioEngine.ImbueArmor(command.ScenarioObjectId, _imbueAttackAttributes);
                         nextAction = LevelContinuationAction.ProcessTurn;
@@ -227,7 +227,7 @@ namespace Rogue.NET.Core.Service
                         _imbueAttackAttributes = null;
                     }
                     break;
-                case LevelAction.ImbueWeapon:
+                case LevelActionType.ImbueWeapon:
                     {
                         _scenarioEngine.ImbueWeapon(command.ScenarioObjectId, _imbueAttackAttributes);
                         nextAction = LevelContinuationAction.ProcessTurn;
@@ -236,74 +236,74 @@ namespace Rogue.NET.Core.Service
                         _imbueAttackAttributes = null;
                     }
                     break;
-                case LevelAction.Identify:
+                case LevelActionType.Identify:
                     {
                         _scenarioEngine.Identify(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.Uncurse:
+                case LevelActionType.Uncurse:
                     {
                         _scenarioEngine.Uncurse(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelAction.ActivateSkillSet:
+                case LevelActionType.ActivateSkillSet:
                     {
                         _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, true);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.CycleSkillSet:
+                case LevelActionType.CycleSkillSet:
                     {
                         _scenarioEngine.CycleActiveSkillSet();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.ActivateSkill:
+                case LevelActionType.ActivateSkill:
                     {
                         _scenarioEngine.ActivateSkill(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.ChangeSkillLevelDown:
+                case LevelActionType.ChangeSkillLevelDown:
                     {
                         _scenarioEngine.ChangeSkillLevelUp(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.ChangeSkillLevelUp:
+                case LevelActionType.ChangeSkillLevelUp:
                     {
                         _scenarioEngine.ChangeSkillLevelDown(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.UnlockSkill:
+                case LevelActionType.UnlockSkill:
                     {
                         _scenarioEngine.UnlockSkill(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.RenounceReligion:
+                case LevelActionType.RenounceReligion:
                     {
                         nextAction = _religionEngine.RenounceReligion(false);
                     }
                     break;
 
 #if DEBUG
-                case LevelAction.DebugNext:
+                case LevelActionType.DebugNext:
                     {
                         _debugEngine.SimulateAdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.DebugIdentifyAll:
+                case LevelActionType.DebugIdentifyAll:
                     {
                         _debugEngine.IdentifyAll();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelAction.DebugExperience:
+                case LevelActionType.DebugExperience:
                     {
                         _debugEngine.GivePlayerExperience();
                         nextAction = LevelContinuationAction.DoNothing;

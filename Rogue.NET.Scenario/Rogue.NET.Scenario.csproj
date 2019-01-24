@@ -249,6 +249,12 @@
     <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelReligion.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelAlterationsEvent.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelStatsEvent.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelSkillsEvent.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelConsumablesEvent.cs" />
+    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelEquipmentEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />

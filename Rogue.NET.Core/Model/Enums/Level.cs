@@ -19,9 +19,9 @@ namespace Rogue.NET.Core.Model.Enums
         Ordinal = 0,
         Diagonal
     }
-    public enum LevelAction : int
+    public enum LevelActionType : int
     {
-        Null = 0,
+        None = 0,
         Move,
         Attack,
         ToggleDoor,
@@ -47,6 +47,7 @@ namespace Rogue.NET.Core.Model.Enums
         ActivateSkill,
         UnlockSkill,
         RenounceReligion,
+
         DebugNext,
         DebugExperience,
         DebugIdentifyAll

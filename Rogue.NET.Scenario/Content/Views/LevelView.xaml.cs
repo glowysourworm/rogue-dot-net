@@ -9,6 +9,7 @@ using Rogue.NET.Scenario.Events.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows;
+using Rogue.NET.Common.Events.Scenario;
 
 namespace Rogue.NET.Scenario.Views
 {
