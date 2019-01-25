@@ -32,5 +32,10 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// Calculates a block to an alteration
         /// </summary>
         bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType);
+
+        /// <summary>
+        /// Calculates characters affected by alteration
+        /// </summary>
+        IEnumerable<Character> CalculateAffectedAlterationCharacters(AlterationType type, AlterationAttackAttributeType attackAttributeType, double effectRange, Character character);
     }
 }

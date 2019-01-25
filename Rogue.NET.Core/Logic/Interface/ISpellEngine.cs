@@ -24,15 +24,9 @@ namespace Rogue.NET.Core.Logic.Interface
         LevelContinuationAction QueueEnemyMagicSpell(Enemy enemy, Spell spell);
 
         /// <summary>
-        /// Process spell parameters to apply to player or targets. This should happen after animations have played
+        /// Process spell parameters to apply to affected characters. This should happen after animations have played
         /// or if it is to be invoked without processing animations first.
         /// </summary>
-        void ProcessPlayerMagicSpell(Spell spell);
-
-        /// <summary>
-        /// Process spell parameters to apply to player or enemy. This should happen after animations have played
-        /// or if it is to be invoked without processing animations first.
-        /// </summary>
-        void ProcessEnemyMagicSpell(Enemy enemy, Spell spell);
+        void ProcessMagicSpell(Character caster, Spell spell);
     }
 }

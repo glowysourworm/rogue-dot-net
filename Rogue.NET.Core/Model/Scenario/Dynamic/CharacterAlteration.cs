@@ -292,33 +292,42 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                     // throw new Exception("Passive Aura NOT SUPPORTED FOR ENEMIES");
                     break;
                 case AlterationType.TemporarySource:
+                case AlterationType.TemporaryAllInRange:
                     this.ActiveTemporaryEffects.Add(new SpellReference(alteration), alteration.Effect);
                     break;
                 // These types are handled for the target CharacterAlteration
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryAllInRangeExceptSource:
                     break;
                 // These types aren't supported here - but should be applied externally
                 case AlterationType.Remedy:
                 case AlterationType.PermanentSource:
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.PermanentAllInRangeExceptSource:
                 case AlterationType.Steal:
                 case AlterationType.RunAway:
                 case AlterationType.TeleportSelf:
                 case AlterationType.TeleportTarget:
                 case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportAllInRange:
+                case AlterationType.TeleportAllInRangeExceptSource:
                 case AlterationType.OtherMagicEffect:
                     throw new Exception("Alteration Type not supported here");
                 case AlterationType.AttackAttribute:
                     {
                         switch (alteration.AttackAttributeType)
                         {
-                            // These types are handled by for the target (not here)
+                            // These types are handled for the target (not here)
                             case AlterationAttackAttributeType.TemporaryFriendlyTarget:
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
                                 break;
                             case AlterationAttackAttributeType.MeleeTarget:
+                            case AlterationAttackAttributeType.MeleeAllInRange:
+                            case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
                             case AlterationAttackAttributeType.ImbueArmor:
                             case AlterationAttackAttributeType.ImbueWeapon:
                                 throw new Exception("Attack Attribute Alteration Type not supported here");
@@ -329,6 +338,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                                 this.AttackAttributeTemporaryFriendlyEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.TemporaryMalignSource:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRange:
                                 this.AttackAttributeTemporaryMalignEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             default:
@@ -359,6 +369,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryAllInRange:
+                case AlterationType.TemporaryAllInRangeExceptSource:
                     this.ActiveTemporaryEffects.Add(new SpellReference(alteration), alteration.Effect);
                     break;
                 // These types aren't supported here - but should be applied externally
@@ -366,11 +378,15 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                 case AlterationType.PermanentSource:
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.PermanentAllInRangeExceptSource:
                 case AlterationType.Steal:
                 case AlterationType.RunAway:
                 case AlterationType.TeleportSelf:
                 case AlterationType.TeleportTarget:
                 case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportAllInRange:
+                case AlterationType.TeleportAllInRangeExceptSource:
                 case AlterationType.OtherMagicEffect:
                     throw new Exception("Alteration Type not supported here");
                 case AlterationType.AttackAttribute:
@@ -381,8 +397,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
                                 this.AttackAttributeTemporaryFriendlyEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
                                 this.AttackAttributeTemporaryMalignEffects.Add(new SpellReference(alteration), alteration.Effect);
                                 break;
+                            case AlterationAttackAttributeType.MeleeAllInRange:
+                            case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
                             case AlterationAttackAttributeType.MeleeTarget:
                             case AlterationAttackAttributeType.ImbueArmor:
                             case AlterationAttackAttributeType.ImbueWeapon:

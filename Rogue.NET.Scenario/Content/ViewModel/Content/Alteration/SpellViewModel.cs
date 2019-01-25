@@ -210,10 +210,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 case AlterationType.TemporarySource:                    
                 case AlterationType.TemporaryTarget:
                 case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryAllInRange:
+                case AlterationType.TemporaryAllInRangeExceptSource:
                     return "Temporary";
                 case AlterationType.PermanentSource:
                 case AlterationType.PermanentTarget:
                 case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.PermanentAllInRangeExceptSource:
                     return "Permanent";
                 case AlterationType.Steal:
                     return "Steal";
@@ -222,6 +226,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 case AlterationType.TeleportSelf:
                 case AlterationType.TeleportTarget:
                 case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportAllInRange:
+                case AlterationType.TeleportAllInRangeExceptSource:
                     return "Teleport";
                 case AlterationType.OtherMagicEffect:
                     switch (otherEffectType)
@@ -273,8 +279,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                             return "Temporary (Friendly)";
                         case AlterationAttackAttributeType.TemporaryMalignSource:
                         case AlterationAttackAttributeType.TemporaryMalignTarget:
+                        case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                        case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
                             return "Temporary (Malign)";
                         case AlterationAttackAttributeType.MeleeTarget:
+                        case AlterationAttackAttributeType.MeleeAllInRange:
+                        case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
                             return "Attack";
                         default:
                             throw new Exception("Unknown Alteration Attack Attribute Type");

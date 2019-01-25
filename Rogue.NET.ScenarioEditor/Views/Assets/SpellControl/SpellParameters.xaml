@@ -184,8 +184,22 @@
         </Grid>
 
         <!-- Effect Range -->
-        <Grid Margin="10"
-              Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+        <Grid Margin="10">
+            <Grid.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRange}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRangeExceptSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllInRange}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllInRangeExceptSource}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TeleportAllInRange}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TeleportAllInRangeExceptSource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.MeleeAllInRange}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.MeleeAllInRangeExceptSource}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRange}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterVisibilityCollapsedConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource}" />
+                </MultiBinding>                
+            </Grid.Visibility>
             <TextBlock Text="Effect Range" Foreground="White" />
             <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
         </Grid>

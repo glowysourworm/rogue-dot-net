@@ -290,7 +290,14 @@ namespace Rogue.NET.Core.Service
                     case AlterationType.TeleportSelf:
                     case AlterationType.Remedy:
                     case AlterationType.OtherMagicEffect:
-                        return "Projectile spells require Target type Alterations";
+                        return "Ammo spells require Target type Alterations";
+                    case AlterationType.TemporaryAllInRange:
+                    case AlterationType.TemporaryAllInRangeExceptSource:
+                    case AlterationType.TeleportAllInRange:
+                    case AlterationType.TeleportAllInRangeExceptSource:
+                    case AlterationType.PermanentAllInRange:
+                    case AlterationType.PermanentAllInRangeExceptSource:
+                        return "Ammo spells don't support Effect Range Alterations";
                     case AlterationType.Steal:
                     case AlterationType.RunAway:
                         return "Steal / RunAway aren't supported for consumables";
@@ -304,7 +311,12 @@ namespace Rogue.NET.Core.Service
                                 case AlterationAttackAttributeType.ImbueWeapon:
                                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                                 case AlterationAttackAttributeType.TemporaryMalignSource:
-                                    return "Projectile spells require Target type Alterations";
+                                    return "Ammo spells require Target type Alterations";
+                                case AlterationAttackAttributeType.MeleeAllInRange:
+                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+                                    return "Ammo spells don't support Effect Range Alterations";
                                 default:
                                     break;
                             }
@@ -328,6 +340,13 @@ namespace Rogue.NET.Core.Service
                     case AlterationType.Remedy:
                     case AlterationType.OtherMagicEffect:
                         return "Projectile spells require Target type Alterations";
+                    case AlterationType.TemporaryAllInRange:
+                    case AlterationType.TemporaryAllInRangeExceptSource:
+                    case AlterationType.TeleportAllInRange:
+                    case AlterationType.TeleportAllInRangeExceptSource:
+                    case AlterationType.PermanentAllInRange:
+                    case AlterationType.PermanentAllInRangeExceptSource:
+                        return "Projectile spells don't support Effect Range Alterations";
                     case AlterationType.Steal:
                     case AlterationType.RunAway:
                         return "Steal / RunAway aren't supported for consumables";
@@ -342,6 +361,11 @@ namespace Rogue.NET.Core.Service
                                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                                 case AlterationAttackAttributeType.TemporaryMalignSource:
                                     return "Projectile spells require Target type Alterations";
+                                case AlterationAttackAttributeType.MeleeAllInRange:
+                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+                                    return "Projectile spells don't support Effect Range Alterations";
                                 default:
                                     break;
                             }
@@ -415,6 +439,12 @@ namespace Rogue.NET.Core.Service
                     case AlterationType.TeleportSelf:
                     case AlterationType.OtherMagicEffect:
                     case AlterationType.Remedy:
+                    case AlterationType.PermanentAllInRange:
+                    case AlterationType.PermanentAllInRangeExceptSource:
+                    case AlterationType.TeleportAllInRange:
+                    case AlterationType.TeleportAllInRangeExceptSource:
+                    case AlterationType.TemporaryAllInRange:
+                    case AlterationType.TemporaryAllInRangeExceptSource:
                         return null;
                     case AlterationType.AttackAttribute:
                         {
@@ -424,6 +454,10 @@ namespace Rogue.NET.Core.Service
                                 case AlterationAttackAttributeType.ImbueWeapon:
                                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                                 case AlterationAttackAttributeType.TemporaryMalignSource:
+                                case AlterationAttackAttributeType.MeleeAllInRange:
+                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
                                     return null;
                                 case AlterationAttackAttributeType.Passive:
                                 default:
@@ -444,6 +478,12 @@ namespace Rogue.NET.Core.Service
                     case AlterationType.TeleportSelf:
                     case AlterationType.OtherMagicEffect:
                     case AlterationType.Remedy:
+                    case AlterationType.PermanentAllInRange:
+                    case AlterationType.PermanentAllInRangeExceptSource:
+                    case AlterationType.TeleportAllInRange:
+                    case AlterationType.TeleportAllInRangeExceptSource:
+                    case AlterationType.TemporaryAllInRange:
+                    case AlterationType.TemporaryAllInRangeExceptSource:
                         return null;
                     case AlterationType.AttackAttribute:
                         {
@@ -453,6 +493,10 @@ namespace Rogue.NET.Core.Service
                                 case AlterationAttackAttributeType.ImbueWeapon:
                                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                                 case AlterationAttackAttributeType.TemporaryMalignSource:
+                                case AlterationAttackAttributeType.MeleeAllInRange:
+                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
                                     return null;
                                 case AlterationAttackAttributeType.Passive:
                                 default:

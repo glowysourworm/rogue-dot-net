@@ -189,7 +189,29 @@ namespace Rogue.NET.Core.Logic.Content
             return true;
         }
 
-        public void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
+        public void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost)
+        {
+            if (character is Player)
+                ApplyOneTimeAlterationCost(character as Player, alterationCost);
+            else
+                ApplyOneTimeAlterationCost(character as Enemy, alterationCost);
+        }
+        public void ApplyPermanentEffect(Character character, AlterationEffect alterationEffect)
+        {
+            if (character is Player)
+                ApplyPermanentEffect(character as Player, alterationEffect);
+            else
+                ApplyPermanentEffect(character as Enemy, alterationEffect);
+        }
+        public void ApplyRemedy(Character character, AlterationEffect alterationEffect)
+        {
+            if (character is Player)
+                ApplyRemedy(character as Player, alterationEffect);
+            else
+                ApplyRemedy(character as Enemy, alterationEffect);
+        }
+
+        protected void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -207,7 +229,7 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
         }
-        public void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost)
+        protected void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost)
         {
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
@@ -222,7 +244,7 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
         }
-        public void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect)
+        protected void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect)
         {
             player.StrengthBase += alterationEffect.Strength;
             player.IntelligenceBase += alterationEffect.Intelligence;
@@ -307,7 +329,7 @@ namespace Rogue.NET.Core.Logic.Content
             else if (alterationEffect.Mp < 0)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
         }
-        public void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)
+        protected void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)
         {
             enemy.StrengthBase += alterationEffect.Strength;
             enemy.IntelligenceBase += alterationEffect.Intelligence;
@@ -317,7 +339,7 @@ namespace Rogue.NET.Core.Logic.Content
             enemy.Hp += alterationEffect.Hp;
             enemy.Mp += alterationEffect.Mp;
         }
-        public void ApplyRemedy(Player player, AlterationEffect alterationEffect)
+        protected void ApplyRemedy(Player player, AlterationEffect alterationEffect)
         {
             // Alteration applies remedy to remove or modify internal collections
             var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);
@@ -325,7 +347,7 @@ namespace Rogue.NET.Core.Logic.Content
             foreach (var effect in remediedEffects)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Good, effect.DisplayName + " has been cured!");
         }
-        public void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
+        protected void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
         {
             // Alteration applies remedy to remove or modify internal collections
             var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);

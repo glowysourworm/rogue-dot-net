@@ -4,6 +4,7 @@ using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
@@ -75,6 +76,8 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, spell.Cost))
                 return LevelContinuationAction.DoNothing;
 
+            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, _modelService.Player);
+
             //Run animations before applying effects
             if (spell.Animations.Count > 0)
             {
@@ -82,7 +85,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     Animations = spell.Animations,
                     SourceLocation = _modelService.Player.Location,
-                    TargetLocations = _modelService.GetTargetedEnemies().Select(x => x.Location)
+                    TargetLocations = affectedCharacters.Select(x => x.Location).Actualize()
                 });
             }
 
@@ -101,6 +104,8 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, spell.Cost))
                 return LevelContinuationAction.ProcessTurn;
 
+            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, enemy);
+
             // Queue animations
             if (spell.Animations.Count > 0)
             {
@@ -108,7 +113,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     Animations = spell.Animations,
                     SourceLocation = enemy.Location,
-                    TargetLocations = new CellPoint[] { _modelService.Player.Location }
+                    TargetLocations = affectedCharacters.Select(x => x.Location).Actualize()
                 });
             }
             // Then queue effect processing
@@ -121,201 +126,142 @@ namespace Rogue.NET.Core.Logic
 
             return LevelContinuationAction.ProcessTurn;
         }
-        public void ProcessPlayerMagicSpell(Spell spell)
-        {
-            var player = _modelService.Player;
 
+        public void ProcessMagicSpell(Character caster, Spell spell)
+        {
             //Calculate alteration from spell's random parameters
             var alteration = _alterationGenerator.GenerateAlteration(spell);
 
             //Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
             if (alteration.Cost.Type == AlterationCostType.OneTime)
-                _alterationProcessor.ApplyOneTimeAlterationCost(_modelService.Player, alteration.Cost);
+                _alterationProcessor.ApplyOneTimeAlterationCost(caster, alteration.Cost);
 
-            switch (alteration.Type)
+            // Get all affected characters
+            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(alteration.Type, alteration.AttackAttributeType, alteration.EffectRange, caster);
+
+            // Enter loop:  Characters -> Attempt Block -> Apply Alteration -> Show Messages -> Enemy.IsEngaged = true;
+            //
+            foreach (var character in affectedCharacters)
             {
-                case AlterationType.PassiveAura:
-                case AlterationType.TemporarySource:
-                case AlterationType.PassiveSource:
-                    player.Alteration.ActivateAlteration(alteration, true);
-                    break;
-                case AlterationType.PermanentSource:
-                    _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
-                    break;
-                case AlterationType.Remedy:
-                    _alterationProcessor.ApplyRemedy(_modelService.Player, alteration.Effect);
-                    break;
-                case AlterationType.PermanentTarget:
-                case AlterationType.PermanentAllTargets:
-                case AlterationType.TemporaryTarget:
-                case AlterationType.TeleportAllTargets:
-                case AlterationType.TemporaryAllTargets:
-                    ProcessPlayerTargetAlteration(alteration);
-                    break;
-                case AlterationType.RunAway:
-                    //Not supported for player
-                    break;
-                case AlterationType.Steal:
-                    ProcessPlayerStealAlteration(alteration);
-                    break;
-                case AlterationType.TeleportSelf:
-                    TeleportRandom(_modelService.Player);
-                    break;
-                case AlterationType.TeleportTarget:
-                    TeleportRandom(_modelService.GetTargetedEnemies().First());
-                    break;
-                case AlterationType.OtherMagicEffect:
-                    ProcessPlayerOtherMagicEffect(alteration);
-                    break;
-                case AlterationType.AttackAttribute:
-                    ProcessPlayerAttackAttributeEffect(alteration);
-                    break;
-            }
+                // Enemy attempts block
+                bool blocked = character != caster && 
+                              _interactionProcessor.CalculateAlterationBlock(_modelService.Player, character, alteration.BlockType);
 
-            // Apply blanket update for player to ensure symbol alterations are processed
-            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
-            QueueLevelUpdate(LevelUpdateType.ContentUpdate, _modelService.GetTargetedEnemies().Select(x => x.Id).ToArray());
-        }
-        public void ProcessEnemyMagicSpell(Enemy enemy, Spell spell)
-        {
-            // Calculate alteration from spell's random parameters
-            var alteration = _alterationGenerator.GenerateAlteration(spell);
-
-            // Apply Alteration Cost
-            if (alteration.Cost.Type == AlterationCostType.OneTime)
-                _alterationProcessor.ApplyOneTimeAlterationCost(enemy, alteration.Cost);
-
-            // Alteration blocked by Player
-            if (_interactionProcessor.CalculateAlterationBlock(enemy, _modelService.Player, spell.BlockType))
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.Player.RogueName + " has blocked the attack!");
-                return;
-            }
-
-            //TBD - Show Stackable Alterations (in Dialog) when NOT applied
-            switch (alteration.Type)
-            {
-                case AlterationType.PassiveAura:
-                    // Not supported for Enemy
-                    break;
-                case AlterationType.TemporarySource:
-                case AlterationType.PassiveSource:
-                    enemy.Alteration.ActivateAlteration(alteration, true);
-                    break;
-                case AlterationType.PermanentSource:
-                    _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
-                    break;
-                case AlterationType.Remedy:
-                    _alterationProcessor.ApplyRemedy(enemy, alteration.Effect);
-                    break;
-                case AlterationType.TemporaryTarget:
-                case AlterationType.TemporaryAllTargets:
-                    _modelService.Player.Alteration.ActivateAlteration(alteration, false);
-                    break;
-                case AlterationType.PermanentTarget:
-                case AlterationType.PermanentAllTargets:
-                    _alterationProcessor.ApplyPermanentEffect(_modelService.Player, alteration.Effect);
-                    break;
-                case AlterationType.RunAway:
-                    _modelService.Level.RemoveContent(enemy);
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has run away!");
-
-                    QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
-                    break;
-                case AlterationType.Steal:
-                    ProcessEnemyStealAlteration(enemy, alteration);
-                    break;
-                case AlterationType.TeleportSelf:
-                    TeleportRandom(enemy);
-                    break;
-                case AlterationType.TeleportAllTargets:
-                case AlterationType.TeleportTarget:
-                    TeleportRandom(_modelService.Player);
-                    break;
-                case AlterationType.OtherMagicEffect:
-                    ProcessEnemyOtherMagicEffect(enemy, alteration);
-                    break;
-                case AlterationType.AttackAttribute:
-                    ProcessEnemyAttackAttributeEffect(enemy, alteration);
-                    break;
-            }
-
-            // Apply blanket update for player to ensure symbol alterations are processed
-            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
-            QueueLevelUpdate(LevelUpdateType.ContentUpdate, enemy.Id);
-
-            if (_modelService.Player.Hp <= 0)
-                _modelService.SetKilledBy(enemy.RogueName);
-        }
-        private void ProcessPlayerTargetAlteration(AlterationContainer alteration)
-        {
-            // Targeting is handled separately - so all targets should be processed
-            var targets = alteration.Type == AlterationType.PermanentAllTargets ||
-                          alteration.Type == AlterationType.TemporaryAllTargets ?
-                            _modelService.GetVisibleEnemies() :
-                            _modelService.GetTargetedEnemies();
-
-            foreach (var enemy in _modelService.GetTargetedEnemies())
-            {
-                bool blocked = _interactionProcessor.CalculateAlterationBlock(_modelService.Player, enemy, alteration.BlockType);
+                // Blocked -> Message and continue
                 if (blocked)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " blocked the attack!");
-
-                else
                 {
-                    if (alteration.Type == AlterationType.PermanentAllTargets ||
-                        alteration.Type == AlterationType.PermanentTarget)
-                        _alterationProcessor.ApplyPermanentEffect(enemy, alteration.Effect);
-
-                    else if (alteration.Type == AlterationType.TeleportAllTargets)
-                        TeleportRandom(enemy);
-                    else
-                        enemy.Alteration.ActivateAlteration(alteration, false);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character) + " blocked the attack!");
+                    continue;
                 }
 
-                // Engage enemy after applying alteration effects
-                enemy.IsEngaged = true;
+                // Apply Alteration
+                ApplyAlteration(alteration, character, caster);
+
+                // Casting a spell engages enemies
+                if (character is Enemy)
+                {
+                    // Flags for engagement and provocation
+                    (character as Enemy).IsEngaged = true;
+                    (character as Enemy).WasAttackedByPlayer = true;
+                }
+
+                // Apply blanket update for player to ensure symbol alterations are processed
+                QueueLevelUpdate(LevelUpdateType.ContentUpdate, character.Id);
             }
         }
-        private void ProcessPlayerStealAlteration(AlterationContainer alteration)
+
+        private void ApplyAlteration(AlterationContainer alteration, Character affectedCharacter, Character sourceCharacter)
         {
-            // Must require a target
-            var enemy = _modelService.GetTargetedEnemies().First();
-            var enemyInventory = enemy.Inventory;
-            if (!enemyInventory.Any())
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has nothing to steal");
-
-            else
+            switch (alteration.Type)
             {
-                var itemStolen = enemyInventory.ElementAt(_randomSequenceGenerator.Get(0, enemyInventory.Count()));
-                if (itemStolen.Value is Equipment)
-                {
-                    var equipment = itemStolen.Value as Equipment;
+                case AlterationType.PassiveSource:
+                case AlterationType.PassiveAura:
+                case AlterationType.TemporarySource:                
+                case AlterationType.TemporaryTarget:
+                case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryAllInRange:
+                case AlterationType.TemporaryAllInRangeExceptSource:
+                    affectedCharacter.Alteration.ActivateAlteration(alteration, true);
+                    break;
+                case AlterationType.PermanentSource:
+                case AlterationType.PermanentTarget:
+                case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.PermanentAllInRangeExceptSource:
+                    _alterationProcessor.ApplyPermanentEffect(affectedCharacter, alteration.Effect);
+                    break;
+                case AlterationType.Steal:
+                    if (affectedCharacter is Enemy)
+                        ApplyEnemyStealAlteration(affectedCharacter as Enemy, alteration);
+                    else
+                        ApplyPlayerStealAlteration(alteration);
+                    break;
+                case AlterationType.RunAway:
+                    // TODO: Create separate method
+                    if (affectedCharacter is Enemy)
+                    {
+                        _modelService.Level.RemoveContent(affectedCharacter);
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(affectedCharacter) + " has run away!");
 
-                    _modelService.Player.Equipment.Add(equipment.Id, equipment);
-
-                    // Mark equipment not-equiped (SHOULD NEVER BE EQUIPPED)
-                    equipment.IsEquipped = false;
-
-                    // Remove Equipment from enemy inventory and deactivate passive effects
-                    enemy.Equipment.Remove(equipment.Id);
-                    
-                    // These should never be turned on; but doing for good measure
-                    if (equipment.HasEquipSpell)
-                        enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
-
-                    if (equipment.HasCurseSpell)
-                        enemy.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
-                }
-                else
-                {
-                    _modelService.Player.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
-                    enemy.Consumables.Remove(itemStolen.Key);
-                }
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value));
+                        QueueLevelUpdate(LevelUpdateType.ContentRemove, affectedCharacter.Id);
+                    }
+                    break;
+                case AlterationType.TeleportSelf:
+                case AlterationType.TeleportTarget:
+                case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportAllInRange:
+                case AlterationType.TeleportAllInRangeExceptSource:
+                    TeleportRandom(affectedCharacter);
+                    break;
+                case AlterationType.OtherMagicEffect:
+                    ApplyOtherMagicEffect(alteration, affectedCharacter);
+                    break;
+                case AlterationType.AttackAttribute:
+                    ApplyAttackAttributeEffect(alteration, affectedCharacter, sourceCharacter);
+                    break;
+                case AlterationType.Remedy:
+                    _alterationProcessor.ApplyRemedy(affectedCharacter, alteration.Effect);
+                    break;
+                default:
+                    break;
             }
         }
-        private void ProcessPlayerOtherMagicEffect(AlterationContainer alteration)
+        private void ApplyAttackAttributeEffect(AlterationContainer alteration, Character affectedCharacter, Character sourceCharacter)
+        {
+            switch (alteration.AttackAttributeType)
+            {
+                case AlterationAttackAttributeType.ImbueArmor:
+                    if (affectedCharacter is Player)
+                        DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueArmor, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
+                    break;
+                case AlterationAttackAttributeType.ImbueWeapon:
+                    if (affectedCharacter is Player)
+                        DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueWeapon, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
+                    break;
+                case AlterationAttackAttributeType.Passive:
+                case AlterationAttackAttributeType.TemporaryFriendlySource:
+                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
+                case AlterationAttackAttributeType.TemporaryMalignSource:
+                case AlterationAttackAttributeType.TemporaryMalignTarget:
+                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+                    affectedCharacter.Alteration.ActivateAlteration(alteration, affectedCharacter == sourceCharacter);
+                    break;
+                case AlterationAttackAttributeType.MeleeTarget:
+                case AlterationAttackAttributeType.MeleeAllInRange:
+                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                    // Apply the Alteration Effect -> Publish the results
+                    _interactionProcessor.CalculateAttackAttributeHit(
+                        alteration.Effect.DisplayName,
+                        sourceCharacter,
+                        affectedCharacter,
+                        alteration.Effect.AttackAttributes);
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void ApplyOtherMagicEffect(AlterationContainer alteration, Character character)
         {
             switch (alteration.OtherEffectType)
             {
@@ -381,63 +327,60 @@ namespace Rogue.NET.Core.Logic
                     DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Uncurse });
                     break;
                 case AlterationMagicEffectType.CreateMonster:
-                    CreateMonster(alteration.CreateMonsterEnemy);
+                    if (character is Player)
+                        CreateMonster(alteration.CreateMonsterEnemy);
+                    else
+                        CreateMonsterMinion(character as Enemy, alteration.CreateMonsterEnemy);
                     break;
                 case AlterationMagicEffectType.RenounceReligion:
                     // Forced renunciation by Alteration
                     _religionEngine.RenounceReligion(true);
                     break;
                 case AlterationMagicEffectType.IncreaseReligiousAffiliation:
-                    _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName, 
+                    _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName,
                                               alteration.ReligiousAffiliationIncrease);
                     break;
             }
         }
-        private void ProcessPlayerAttackAttributeEffect(AlterationContainer alteration)
+        private void ApplyPlayerStealAlteration(AlterationContainer alteration)
         {
-            switch (alteration.AttackAttributeType)
+            // Must require a target
+            var enemy = _modelService.GetTargetedEnemies().First();
+            var enemyInventory = enemy.Inventory;
+            if (!enemyInventory.Any())
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has nothing to steal");
+
+            else
             {
-                case AlterationAttackAttributeType.ImbueArmor:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueArmor, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
-                    break;
-                case AlterationAttackAttributeType.ImbueWeapon:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueWeapon, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
-                    break;
-                case AlterationAttackAttributeType.Passive:
-                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                case AlterationAttackAttributeType.TemporaryMalignSource:
-                    _modelService.Player.Alteration.ActivateAlteration(alteration, true);
-                    break;
-                case AlterationAttackAttributeType.TemporaryMalignTarget:
-                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                    foreach (var enemy in _modelService.GetTargetedEnemies())
-                    {
-                        enemy.Alteration.ActivateAlteration(alteration, false);
+                var itemStolen = enemyInventory.ElementAt(_randomSequenceGenerator.Get(0, enemyInventory.Count()));
+                if (itemStolen.Value is Equipment)
+                {
+                    var equipment = itemStolen.Value as Equipment;
 
-                        // Set Enemy Engaged
-                        enemy.IsEngaged = true;
-                    }
-                    break;
-                case AlterationAttackAttributeType.MeleeTarget:
-                    _modelService
-                        .GetTargetedEnemies()
-                        .ForEach(enemy =>
-                        {
-                            // Apply the Alteration Effect -> Publish the results
-                            _interactionProcessor.CalculateAttackAttributeHit(
-                                alteration.Effect.DisplayName,
-                                _modelService.Player,
-                                enemy, 
-                                alteration.Effect.AttackAttributes);
+                    _modelService.Player.Equipment.Add(equipment.Id, equipment);
 
-                            // Set Enemy Engaged
-                            enemy.IsEngaged = true;
-                        }); 
-                    break;
+                    // Mark equipment not-equiped (SHOULD NEVER BE EQUIPPED)
+                    equipment.IsEquipped = false;
+
+                    // Remove Equipment from enemy inventory and deactivate passive effects
+                    enemy.Equipment.Remove(equipment.Id);
+                    
+                    // These should never be turned on; but doing for good measure
+                    if (equipment.HasEquipSpell)
+                        enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+
+                    if (equipment.HasCurseSpell)
+                        enemy.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
+                }
+                else
+                {
+                    _modelService.Player.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
+                    enemy.Consumables.Remove(itemStolen.Key);
+                }
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You stole a(n) " + _modelService.GetDisplayName(itemStolen.Value));
             }
         }
-
-        private void ProcessEnemyStealAlteration(Enemy enemy, AlterationContainer alteration)
+        private void ApplyEnemyStealAlteration(Enemy enemy, AlterationContainer alteration)
         {
             var inventory = _modelService.Player.Inventory;
             if (!inventory.Any())
@@ -481,38 +424,6 @@ namespace Rogue.NET.Core.Logic
             var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value);            
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
-        }
-        private void ProcessEnemyOtherMagicEffect(Enemy enemy, AlterationContainer alteration)
-        {
-            switch (alteration.OtherEffectType)
-            {
-                case AlterationMagicEffectType.CreateMonster:
-                    CreateMonsterMinion(enemy, alteration.CreateMonsterEnemy);
-                    break;
-            }
-        }
-        private void ProcessEnemyAttackAttributeEffect(Enemy enemy, AlterationContainer alteration)
-        {
-            switch (alteration.AttackAttributeType)
-            {
-                case AlterationAttackAttributeType.ImbueArmor:
-                case AlterationAttackAttributeType.ImbueWeapon:
-                    // Not supported for Enemy
-                    break;
-                case AlterationAttackAttributeType.Passive:
-                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                case AlterationAttackAttributeType.TemporaryMalignSource:
-                    enemy.Alteration.ActivateAlteration(alteration, true);
-                    break;
-                case AlterationAttackAttributeType.TemporaryMalignTarget:
-                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
-                    _modelService.Player.Alteration.ActivateAlteration(alteration, false);
-                    break;
-                case AlterationAttackAttributeType.MeleeTarget:
-                    // Apply the Alteration Effect -> Publish the results
-                    _interactionProcessor.CalculateAttackAttributeHit(alteration.Effect.DisplayName, enemy, _modelService.Player, alteration.Effect.AttackAttributes);
-                    break;
-            }
         }
 
         private void TeleportRandom(Character character)

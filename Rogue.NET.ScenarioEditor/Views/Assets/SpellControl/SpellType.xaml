@@ -82,6 +82,18 @@
                             Text="Temporary All Targets:  Spell that has a timed effect on all targets (Or Player if used by an Enemy)" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporaryAllInRange}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary All In Range:  Spell that has a timed effect on all Characters (Player and Enemy) in a specified range" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TemporaryAllInRangeExceptSource}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Temporary All In Range Except Source:  Spell that has a timed effect on all Characters in a specified range except the source." />
+                        </RadioButton.Content>
+                    </RadioButton>                    
                 </StackPanel>
                 <!-- Permanent -->
                 <RadioButton GroupName="TypeGroup" x:Name="PermanentRB" Foreground="White" Margin="8">
@@ -116,6 +128,18 @@
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
                             Text="Permanent All Targets:  Spell that has a permanent effect on all targets" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentAllInRange}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent All In Range:  Spell that has a permanent effect on all Characters (Player and Enemy) in a specified range" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PermanentAllInRangeExceptSource}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Permanent All In Range Except Source:  Spell that has a permanent effect on all Characters in a specified range except the source." />
                         </RadioButton.Content>
                     </RadioButton>
                 </StackPanel>
@@ -165,6 +189,18 @@
                             Text="Teleport All Targets:  Teleports all targets (to random spots in the level). All targets are enemies within the Player's visible range" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportAllInRange}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport All In Range:  Teleports all Characters (Player and Enemy) in a specified range" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.TeleportAllInRangeExceptSource}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                            Text="Teleport All In Range Except Source:  Teleports all Characters in a specified range except the source." />
+                        </RadioButton.Content>
+                    </RadioButton>                    
                 </StackPanel>
                 <!-- Steal / RunAway -->
                 <RadioButton GroupName="TypeGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.Steal}}" Foreground="White" Margin="8">
@@ -229,6 +265,18 @@
                                     Text="Temporary Malign Source: Attack attribute calulated hit per-step (applied to invoker). This is a temporary event; and can be remedied using Consumable remedy options. (Example: Poison Attack Attribute)" />
                         </RadioButton.Content>
                     </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRange}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    Text="Temporary Malign Source (In Range): Attack attribute calulated hit per-step (applied to all characters in Effect Range). This is a temporary event; and can be remedied using Consumable remedy options. (Example: Poison Attack Attribute)" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                    Text="Temporary Malign Source (In Range Except Source): Attack attribute calulated hit per-step (applied to all characters in Effect Range except the source character). This is a temporary event; and can be remedied using Consumable remedy options. (Example: Poison Attack Attribute)" />
+                        </RadioButton.Content>
+                    </RadioButton>                    
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
@@ -238,7 +286,19 @@
                     <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.MeleeTarget}}" Foreground="White" Margin="8">
                         <RadioButton.Content>
                             <TextBlock  TextWrapping="Wrap"
-                                        Text="Combat (Intelligence Based): Calcualtes a one-time hit to the target using Intelligence Scaling (where it's configured)" />
+                                        Text="Combat: Calcualtes a one-time hit to the target" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.MeleeAllInRange}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                        Text="Combat All In Range: Calcualtes a one-time hit to the all characters in specified range" />
+                        </RadioButton.Content>
+                    </RadioButton>
+                    <RadioButton IsChecked="{Binding AttackAttributeType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeType.MeleeAllInRangeExceptSource}}" Foreground="White" Margin="8">
+                        <RadioButton.Content>
+                            <TextBlock  TextWrapping="Wrap"
+                                        Text="Combat All In Range Except Source: Calcualtes a one-time hit to the all characters in specified range except source" />
                         </RadioButton.Content>
                     </RadioButton>
                 </StackPanel>

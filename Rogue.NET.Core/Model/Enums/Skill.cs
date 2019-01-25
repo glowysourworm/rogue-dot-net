@@ -82,7 +82,14 @@
         /// <summary>
         /// Remedies spell temporary effects - SOURCE ONLY
         /// </summary>
-        Remedy
+        Remedy,
+
+        TemporaryAllInRange,
+        TemporaryAllInRangeExceptSource,
+        PermanentAllInRange,
+        PermanentAllInRangeExceptSource,
+        TeleportAllInRange,
+        TeleportAllInRangeExceptSource
     }
     public enum AlterationAttackAttributeType
     {
@@ -124,6 +131,26 @@
         /// <summary>
         /// Applied as a one-time attack attribute melee to the target (EXAMPLE IS FIREBALL)
         /// </summary>
-        MeleeTarget
+        MeleeTarget,
+
+        /// <summary>
+        /// Applied as a one-time attack attribute melee to all characters in range
+        /// </summary>
+        MeleeAllInRange,
+
+        /// <summary>
+        /// Applied as a one-time attack attribute melee to all characters in range except source character
+        /// </summary>
+        MeleeAllInRangeExceptSource,
+
+        /// <summary>
+        /// Applied with a temporary event to be calculated as malign to all in range (EXAMPLE WOULD BE POISON)
+        /// </summary>
+        TemporaryMalignAllInRange,
+
+        /// <summary>
+        /// Applied with a temporary event to be calculated as malign to all in range except source (EXAMPLE WOULD BE POISON)
+        /// </summary>
+        TemporaryMalignAllInRangeExceptSource,
     }
 }

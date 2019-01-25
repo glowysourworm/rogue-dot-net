@@ -360,10 +360,10 @@ namespace Rogue.NET.Core.Service
                         _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.CharacterId));
                     break;
                 case LevelProcessingActionType.PlayerSpell:
-                    _spellEngine.ProcessPlayerMagicSpell(workItem.PlayerSpell);
+                    _spellEngine.ProcessMagicSpell(_modelService.Player, workItem.PlayerSpell);
                     break;
                 case LevelProcessingActionType.EnemySpell:
-                    _spellEngine.ProcessEnemyMagicSpell(workItem.Enemy, workItem.EnemySpell);
+                    _spellEngine.ProcessMagicSpell(workItem.Enemy, workItem.EnemySpell);
                     break;
             }
             return true;

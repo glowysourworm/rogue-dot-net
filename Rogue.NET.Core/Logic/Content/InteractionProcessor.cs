@@ -201,6 +201,93 @@ namespace Rogue.NET.Core.Logic.Content
             }
         }
 
+        public IEnumerable<Character> CalculateAffectedAlterationCharacters(AlterationType type, AlterationAttackAttributeType attackAttributeType, double effectRange, Character character)
+        {
+            var singleTarget = character is Player ?
+                                (Character)_modelService.GetTargetedEnemies().FirstOrDefault() :
+                                _modelService.Player;
+
+            var allTargets = character is Player ?
+                                    _modelService.GetTargetedEnemies().ToArray() :
+                                    new Character[] { _modelService.Player };
+
+            var allInRange = _modelService.Level
+                                          .Enemies
+                                          .Where(x =>
+                                          {
+                                              return Calculator.EuclideanSquareDistance(x.Location, character.Location) <=
+                                                     effectRange * effectRange;
+                                          })
+                                          .Cast<Character>()
+                                          .ToList();
+
+            allInRange.Add(_modelService.Player);
+
+            var allInRangeExceptSource = allInRange.Except(new Character[] { character });
+
+
+
+            switch (type)
+            {
+                case AlterationType.PassiveSource:
+                case AlterationType.PassiveAura:
+                case AlterationType.TemporarySource:
+                case AlterationType.PermanentSource:
+                case AlterationType.Steal:
+                case AlterationType.RunAway:
+                case AlterationType.TeleportSelf:
+                case AlterationType.Remedy:
+                    return new Character[] { character };
+                case AlterationType.TemporaryTarget:
+                case AlterationType.PermanentTarget:
+                case AlterationType.TeleportTarget:
+                    return new Character[] { singleTarget };
+                case AlterationType.TemporaryAllTargets:
+                case AlterationType.PermanentAllTargets:
+                case AlterationType.TeleportAllTargets:
+                    return allTargets;
+                case AlterationType.OtherMagicEffect:
+                    break;
+                case AlterationType.AttackAttribute:
+                    {
+                        switch (attackAttributeType)
+                        {
+                            case AlterationAttackAttributeType.ImbueArmor:
+                            case AlterationAttackAttributeType.ImbueWeapon:
+                            case AlterationAttackAttributeType.Passive:
+                            case AlterationAttackAttributeType.TemporaryFriendlySource:
+                            case AlterationAttackAttributeType.TemporaryMalignSource:
+                                return new Character[] { character };
+                            case AlterationAttackAttributeType.TemporaryFriendlyTarget:
+                            case AlterationAttackAttributeType.TemporaryMalignTarget:
+                            case AlterationAttackAttributeType.MeleeTarget:
+                                return new Character[] { singleTarget };
+                            case AlterationAttackAttributeType.MeleeAllInRange:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                                return allInRange;
+                            case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                            case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+                                return allInRangeExceptSource;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                case AlterationType.TemporaryAllInRange:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.TeleportAllInRange:
+                    return allInRange;
+                case AlterationType.TemporaryAllInRangeExceptSource:
+                case AlterationType.PermanentAllInRangeExceptSource:
+                case AlterationType.TeleportAllInRangeExceptSource:
+                    return allInRangeExceptSource;
+                default:
+                    break;
+            }
+
+            return new Character[] { };
+        }
+
         private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
                 IEnumerable<AttackAttribute> offensiveAttributes,
                 IEnumerable<AttackAttribute> defensiveAttributes)

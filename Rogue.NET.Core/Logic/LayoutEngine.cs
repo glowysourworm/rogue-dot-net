@@ -14,6 +14,8 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -448,6 +450,32 @@ namespace Rogue.NET.Core.Logic
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
+        }
+        public IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, double range)
+        {
+            var result = new List<CellPoint>();
+
+            // TODO: Optimize this by doing a little algebra...
+            var bounds = level.Grid.GetBounds();
+            var distSquared = range * range;
+
+            var minColumn = (int)(location.Column - range).LowLimit(0);
+            var maxColumn = (int)(location.Column + range).HighLimit(bounds.Right);
+            var minRow = (int)(location.Row - range).LowLimit(0);
+            var maxRow = (int)(location.Row + range).HighLimit(bounds.Bottom);
+
+            for (int i = minColumn; i < maxColumn;i++)
+            {
+                for (int j=minRow;j<maxRow;j++)
+                {
+                    var cell = level.Grid.GetCell(i, j);
+
+                    if (Calculator.EuclideanSquareDistance(location, cell.Location) <= distSquared)
+                        result.Add(cell.Location);
+                }
+            }
+
+            return result;
         }
 
         public Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2)

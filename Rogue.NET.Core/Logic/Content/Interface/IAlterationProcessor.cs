@@ -14,11 +14,8 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost);
         bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost);
 
-        void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost);
-        void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost);
-        void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect);
-        void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect);
-        void ApplyRemedy(Player player, AlterationEffect alterationEffect);
-        void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect);
+        void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost);
+        void ApplyPermanentEffect(Character character, AlterationEffect alterationEffect);
+        void ApplyRemedy(Character character, AlterationEffect alterationEffect);
     }
 }

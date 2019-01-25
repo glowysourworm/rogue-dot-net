@@ -15,6 +15,7 @@ namespace Rogue.NET.Core.Logic.Interface
         bool IsPathToAdjacentCellBlocked(Level level, CellPoint point1, CellPoint point2, bool includeBlockedByEnemy);
         CellPoint GetPointInDirection(LevelGrid grid, CellPoint cellPoint, Compass direction);
         CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells);
+        IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, double range);
         IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location);
         IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location);
         Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2);
