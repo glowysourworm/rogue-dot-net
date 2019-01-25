@@ -1292,6 +1292,31 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodWhite.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\PodYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\DiamondYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningPurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningRainbow.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

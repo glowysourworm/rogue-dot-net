@@ -28,11 +28,15 @@ namespace Rogue.NET.ScenarioEditor.Converter
                    type == AlterationType.TemporaryAllTargets ||
                    type == AlterationType.TemporarySource ||
                    type == AlterationType.TemporaryTarget ||
+                   type == AlterationType.TemporaryAllInRange ||
+                   type == AlterationType.TemporaryAllInRangeExceptSource ||
                    (type == AlterationType.AttackAttribute &&
                     (attackAttributeType == AlterationAttackAttributeType.Passive ||
                      attackAttributeType == AlterationAttackAttributeType.TemporaryFriendlySource ||
                      attackAttributeType == AlterationAttackAttributeType.TemporaryFriendlyTarget ||
                      attackAttributeType == AlterationAttackAttributeType.TemporaryMalignSource ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryMalignAllInRange ||
+                     attackAttributeType == AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource ||
                      attackAttributeType == AlterationAttackAttributeType.TemporaryMalignTarget))) ? Visibility.Visible : Visibility.Collapsed;
         }
 

@@ -45,10 +45,6 @@
             <controls:Range DataContext="{Binding MpPerStepRange}" />
         </Grid>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" Text="Hp Per Step" />
-            <controls:Range DataContext="{Binding HpPerStepRange}" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" Text="Attack" />
             <controls:Range DataContext="{Binding AttackRange}" />
         </Grid>

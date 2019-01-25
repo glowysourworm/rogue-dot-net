@@ -29,11 +29,15 @@
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRange}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRangeExceptSource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.Passive}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRange}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource}" />
                 </MultiBinding>
             </Grid.Visibility>
             <TextBlock Text="Stackable" Foreground="White" />
@@ -104,10 +108,14 @@
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRange}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllInRangeExceptSource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlySource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryFriendlyTarget}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignSource}" />
                     <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignTarget}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRange}" />
+                    <Binding Path="AttackAttributeType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource}" />
                 </MultiBinding>
             </Grid.Visibility>
             <TextBlock Foreground="White" Text="Event Time" />

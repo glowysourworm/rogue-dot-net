@@ -649,7 +649,28 @@
         LeafFuschia = 637,
         LeafCyan = 638,
         LeafBlack = 639,
-        LeafWhite = 640
+        LeafWhite = 640,
+        DiamondRed = 641,
+        DiamondOrange = 642,
+        DiamondYellow = 643,
+        DiamondGreen = 644,
+        DiamondBlue = 645,
+        DiamondPurple = 646,
+        DiamondFuschia = 647,
+        DiamondCyan = 648,
+        DiamondBlack = 649,
+        DiamondWhite = 650,
+        LightningRed = 651,
+        LightningOrange = 652,
+        LightningYellow = 653,
+        LightningGreen = 654,
+        LightningBlue = 655,
+        LightningPurple = 656,
+        LightningFuschia = 657,
+        LightningCyan = 658,
+        LightningBlack = 659,
+        LightningWhite = 660,
+        LightningRainbow = 661
     }
     public enum DisplayImageResources
     {
