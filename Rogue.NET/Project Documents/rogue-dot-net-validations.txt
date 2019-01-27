@@ -15,5 +15,6 @@ Rogue.NET Scenario Configuration Validations
 - (Error)(DONE)   Remedy / Create Monster fields not set on Alterations / 
 - (Error)         Ammo spell for ammo type consumables
 - (Error)         Religious Affiliation Increase ONLY as Doodad or Consumable (NOT SKILL) (NOT PROJECTILE SPELL) (NOT AUTOMATIC DOODAD)
+- (Error) 		  Alteration types for "All In Range Of ..." need validation with their animation types (Projectiles can't support source -> source animation)
 
 - (Warning) 		  Check for "New Template" Alterations on content

@@ -14,6 +14,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
@@ -76,10 +77,14 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, spell.Cost))
                 return LevelContinuationAction.DoNothing;
 
+            // Affected characters
             var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, _modelService.Player);
 
+            // Check for target requirements for animations
+            var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
+
             //Run animations before applying effects
-            if (spell.Animations.Count > 0)
+            if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
             {
                 AnimationUpdateEvent(this, new AnimationUpdate()
                 {
@@ -104,10 +109,14 @@ namespace Rogue.NET.Core.Logic
             if (!_alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, spell.Cost))
                 return LevelContinuationAction.ProcessTurn;
 
+            // Affected Characters
             var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, enemy);
 
+            // Check for target requirements for animations
+            var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
+
             // Queue animations
-            if (spell.Animations.Count > 0)
+            if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
             {
                 AnimationUpdateEvent(this, new AnimationUpdate()
                 {
@@ -558,6 +567,37 @@ namespace Rogue.NET.Core.Logic
                 // Notify UI
                 QueueLevelUpdate(LevelUpdateType.ContentAdd, enemy.Id);
             }
+        }
+
+        // TODO: Move this and refactor for checking target requirements
+        private bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations)
+        {
+            foreach (var animation in animations)
+            {
+                switch (animation.Type)
+                {
+                    case AnimationType.ProjectileSelfToTarget:
+                    case AnimationType.ProjectileTargetToSelf:
+                    case AnimationType.ProjectileSelfToTargetsInRange:
+                    case AnimationType.ProjectileTargetsInRangeToSelf:
+                    case AnimationType.AuraTarget:
+                    case AnimationType.BubblesTarget:
+                    case AnimationType.BarrageTarget:
+                    case AnimationType.SpiralTarget:
+                    case AnimationType.ChainSelfToTargetsInRange:
+                        return true;
+                    case AnimationType.AuraSelf:
+                    case AnimationType.BubblesSelf:
+                    case AnimationType.BubblesScreen:
+                    case AnimationType.BarrageSelf:
+                    case AnimationType.SpiralSelf:
+                    case AnimationType.ScreenBlink:
+                        break;
+                    default:
+                        throw new Exception("Animation Type not recognized for target calculation");
+                }
+            }
+            return false;
         }
 
         public void ApplyEndOfTurn()

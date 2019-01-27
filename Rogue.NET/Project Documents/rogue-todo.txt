@@ -389,6 +389,11 @@
 				   enemies. Also, want to employ a tertiary behavior.. Considering having them do something on each turn 
 				   besides wait for the player.. Brogue has them Wander -> Sleep -> Hunt.
 
+- Doodad:  Timed fire doodad. Triggered by character movement in range.
+
+- Alteration Effect:  Sanctuary... Needs design :)  
+- Alteration Effect:  Telepathy... Brogue ripoff :( But lots of fun! :)				   
+				   
 ----------------------------
 						  
 - Add - Scenario details to Open screen

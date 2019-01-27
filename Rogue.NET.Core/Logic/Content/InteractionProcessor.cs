@@ -203,29 +203,31 @@ namespace Rogue.NET.Core.Logic.Content
 
         public IEnumerable<Character> CalculateAffectedAlterationCharacters(AlterationType type, AlterationAttackAttributeType attackAttributeType, double effectRange, Character character)
         {
-            var singleTarget = character is Player ?
-                                (Character)_modelService.GetTargetedEnemies().FirstOrDefault() :
-                                _modelService.Player;
+            var result = new List<Character>();
 
-            var allTargets = character is Player ?
-                                    _modelService.GetTargetedEnemies().ToArray() :
-                                    new Character[] { _modelService.Player };
+            // Check for line of sight in calculating affected characters
+            var lineOfSightEnemies = _modelService.GetLineOfSightLocations()
+                                                  .Where(x => _modelService.Level.GetAtPoint<Enemy>(x) != null)
+                                                  .Select(x => _modelService.Level.GetAtPoint<Enemy>(x))
+                                                  .Actualize();
 
-            var allInRange = _modelService.Level
-                                          .Enemies
-                                          .Where(x =>
-                                          {
-                                              return Calculator.EuclideanSquareDistance(x.Location, character.Location) <=
-                                                     effectRange * effectRange;
-                                          })
-                                          .Cast<Character>()
-                                          .ToList();
+            // All In Range <- Enemies in line of sight within the effect range (from the source character)
+            var allInRange = lineOfSightEnemies
+                                .Where(x =>
+                                {
+                                    // Check for effect range
+                                    return (Calculator.EuclideanSquareDistance(x.Location, character.Location) <=
+                                            effectRange * effectRange);
+                                })
+                                .Cast<Character>()
+                                .ToList();
 
-            allInRange.Add(_modelService.Player);
+            // All In Range <- Add Player if within the effect range (from source character)
+            if (Calculator.EuclideanSquareDistance(_modelService.Player.Location, character.Location) <= effectRange * effectRange)
+                allInRange.Add(_modelService.Player);
 
+            // All In Range Except Source <- Remove source character
             var allInRangeExceptSource = allInRange.Except(new Character[] { character });
-
-
 
             switch (type)
             {
@@ -237,15 +239,30 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.RunAway:
                 case AlterationType.TeleportSelf:
                 case AlterationType.Remedy:
-                    return new Character[] { character };
+                    result.Add(character);
+                    break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.PermanentTarget:
                 case AlterationType.TeleportTarget:
-                    return new Character[] { singleTarget };
+                    // Player -> Add first targeted enemy or player
+                    if (character is Player && _modelService.GetTargetedEnemies().Any())
+                        result.Add(_modelService.GetTargetedEnemies().First());
+
+                    // Enemy -> Add character (Player) if in line of sight
+                    else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
+                        result.Add(character);
+                    break;
                 case AlterationType.TemporaryAllTargets:
                 case AlterationType.PermanentAllTargets:
                 case AlterationType.TeleportAllTargets:
-                    return allTargets;
+                    // Player -> Add targeted enemies
+                    if (character is Player)
+                        result.AddRange(_modelService.GetTargetedEnemies());
+
+                    // Enemy -> Add character (Player) if in line of sight
+                    else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
+                        result.Add(character);
+                    break;
                 case AlterationType.OtherMagicEffect:
                     break;
                 case AlterationType.AttackAttribute:
@@ -257,11 +274,19 @@ namespace Rogue.NET.Core.Logic.Content
                             case AlterationAttackAttributeType.Passive:
                             case AlterationAttackAttributeType.TemporaryFriendlySource:
                             case AlterationAttackAttributeType.TemporaryMalignSource:
-                                return new Character[] { character };
+                                result.Add(character);
+                                break;
                             case AlterationAttackAttributeType.TemporaryFriendlyTarget:
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
                             case AlterationAttackAttributeType.MeleeTarget:
-                                return new Character[] { singleTarget };
+                                // Player -> Add first targeted enemy or player
+                                if (character is Player && _modelService.GetTargetedEnemies().Any())
+                                    result.Add(_modelService.GetTargetedEnemies().First());
+
+                                // Enemy -> Add character (Player) if in line of sight
+                                else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
+                                    result.Add(character);
+                                break;
                             case AlterationAttackAttributeType.MeleeAllInRange:
                             case AlterationAttackAttributeType.TemporaryMalignAllInRange:
                                 return allInRange;
