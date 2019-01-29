@@ -3,6 +3,7 @@ using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
@@ -38,12 +39,9 @@ namespace Rogue.NET.Core.Logic
         readonly IScenarioMessageService _scenarioMessageService;
         readonly ICharacterGenerator _characterGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IRogueUpdateFactory _rogueUpdateFactory;
 
-        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
@@ -57,7 +55,8 @@ namespace Rogue.NET.Core.Logic
             IAlterationGenerator alterationGenerator,
             IScenarioMessageService scenarioMessageService,
             ICharacterGenerator characterGenerator,
-            IRandomSequenceGenerator randomSequenceGenerator)
+            IRandomSequenceGenerator randomSequenceGenerator,
+            IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
@@ -69,6 +68,7 @@ namespace Rogue.NET.Core.Logic
             _scenarioMessageService = scenarioMessageService;
             _characterGenerator = characterGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _rogueUpdateFactory = rogueUpdateFactory;
         }
 
         public LevelContinuationAction QueuePlayerMagicSpell(Spell spell)
@@ -78,7 +78,15 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
 
             // Affected characters
-            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, _modelService.Player);
+            var affectedCharacterExpected = false;
+            var affectedCharacters = _interactionProcessor
+                                        .CalculateAffectedAlterationCharacters(
+                                            spell.Type, 
+                                            spell.AttackAttributeType, 
+                                            spell.OtherEffectType,
+                                            spell.EffectRange, 
+                                            _modelService.Player,
+                                            out affectedCharacterExpected);
 
             // Check for target requirements for animations
             var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
@@ -86,12 +94,10 @@ namespace Rogue.NET.Core.Logic
             //Run animations before applying effects
             if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
             {
-                AnimationUpdateEvent(this, new AnimationUpdate()
-                {
-                    Animations = spell.Animations,
-                    SourceLocation = _modelService.Player.Location,
-                    TargetLocations = affectedCharacters.Select(x => x.Location).Actualize()
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(
+                                            spell.Animations,
+                                            _modelService.Player.Location,
+                                            affectedCharacters.Select(x => x.Location).Actualize()));
             }
 
             // Apply Effect on Queue
@@ -110,7 +116,15 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.ProcessTurn;
 
             // Affected Characters
-            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(spell.Type, spell.AttackAttributeType, spell.EffectRange, enemy);
+            var affectedCharacterExpected = false;
+            var affectedCharacters = _interactionProcessor
+                                        .CalculateAffectedAlterationCharacters(
+                                            spell.Type, 
+                                            spell.AttackAttributeType, 
+                                            spell.OtherEffectType,
+                                            spell.EffectRange, 
+                                            enemy,
+                                            out affectedCharacterExpected);
 
             // Check for target requirements for animations
             var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
@@ -118,12 +132,10 @@ namespace Rogue.NET.Core.Logic
             // Queue animations
             if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
             {
-                AnimationUpdateEvent(this, new AnimationUpdate()
-                {
-                    Animations = spell.Animations,
-                    SourceLocation = enemy.Location,
-                    TargetLocations = affectedCharacters.Select(x => x.Location).Actualize()
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(
+                                            spell.Animations,
+                                            enemy.Location,
+                                            affectedCharacters.Select(x => x.Location).Actualize()));
             }
             // Then queue effect processing
             LevelProcessingActionEvent(this, new LevelProcessingAction()
@@ -145,11 +157,34 @@ namespace Rogue.NET.Core.Logic
             if (alteration.Cost.Type == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(caster, alteration.Cost);
 
-            // Get all affected characters
-            var affectedCharacters = _interactionProcessor.CalculateAffectedAlterationCharacters(alteration.Type, alteration.AttackAttributeType, alteration.EffectRange, caster);
+            // Get all affected characters -> ONLY CHARACTERS WHOSE STATS ARE AFFECTED
+            var affectedCharactersExpected = false;
+            var affectedCharacters = 
+                _interactionProcessor.CalculateAffectedAlterationCharacters(
+                    alteration.Type, 
+                    alteration.AttackAttributeType, 
+                    alteration.OtherEffectType,
+                    alteration.EffectRange, 
+                    caster,
+                    out affectedCharactersExpected);
 
-            // Enter loop:  Characters -> Attempt Block -> Apply Alteration -> Show Messages -> Enemy.IsEngaged = true;
+            // PROCESS ALTERATION
             //
+            // 0) Non-Affected Character Alterations -> Return
+            // 1) Affected Character Alterations
+
+            // Non-Affected Character Alterations:  Don't allow blocking
+            if (!affectedCharacters.Any() && !affectedCharactersExpected)
+            {
+                // Apply Alteration
+                ApplyNonCharacterAlteration(alteration);
+
+                return;
+            }
+
+            // Affected Character Alterations:
+            //      
+            //    Enter loop:  Characters -> Attempt Block -> Apply Alteration -> Show Messages -> Enemy.IsEngaged = true;
             foreach (var character in affectedCharacters)
             {
                 // Enemy attempts block
@@ -164,7 +199,7 @@ namespace Rogue.NET.Core.Logic
                 }
 
                 // Apply Alteration
-                ApplyAlteration(alteration, character, caster);
+                ApplyCharacterAlteration(alteration, character, caster);
 
                 // Casting a spell engages enemies
                 if (character is Enemy)
@@ -175,11 +210,11 @@ namespace Rogue.NET.Core.Logic
                 }
 
                 // Apply blanket update for player to ensure symbol alterations are processed
-                QueueLevelUpdate(LevelUpdateType.ContentUpdate, character.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentUpdate, character.Id));
             }
         }
 
-        private void ApplyAlteration(AlterationContainer alteration, Character affectedCharacter, Character sourceCharacter)
+        private void ApplyCharacterAlteration(AlterationContainer alteration, Character affectedCharacter, Character sourceCharacter)
         {
             switch (alteration.Type)
             {
@@ -212,7 +247,7 @@ namespace Rogue.NET.Core.Logic
                         _modelService.Level.RemoveContent(affectedCharacter);
                         _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(affectedCharacter) + " has run away!");
 
-                        QueueLevelUpdate(LevelUpdateType.ContentRemove, affectedCharacter.Id);
+                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, affectedCharacter.Id));
                     }
                     break;
                 case AlterationType.TeleportSelf:
@@ -232,21 +267,13 @@ namespace Rogue.NET.Core.Logic
                     _alterationProcessor.ApplyRemedy(affectedCharacter, alteration.Effect);
                     break;
                 default:
-                    break;
+                    throw new Exception("Unhandled Alteration Type ApplyCharacterAlteration");
             }
         }
         private void ApplyAttackAttributeEffect(AlterationContainer alteration, Character affectedCharacter, Character sourceCharacter)
         {
             switch (alteration.AttackAttributeType)
             {
-                case AlterationAttackAttributeType.ImbueArmor:
-                    if (affectedCharacter is Player)
-                        DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueArmor, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
-                    break;
-                case AlterationAttackAttributeType.ImbueWeapon:
-                    if (affectedCharacter is Player)
-                        DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.ImbueWeapon, ImbueAttackAttributes = alteration.Effect.AttackAttributes });
-                    break;
                 case AlterationAttackAttributeType.Passive:
                 case AlterationAttackAttributeType.TemporaryFriendlySource:
                 case AlterationAttackAttributeType.TemporaryFriendlyTarget:
@@ -266,11 +293,75 @@ namespace Rogue.NET.Core.Logic
                         affectedCharacter,
                         alteration.Effect.AttackAttributes);
                     break;
+                case AlterationAttackAttributeType.ImbueArmor:
+                case AlterationAttackAttributeType.ImbueWeapon:
                 default:
-                    break;
+                    throw new Exception("Improper use of Attack Attribute type for character alteration");
             }
         }
         private void ApplyOtherMagicEffect(AlterationContainer alteration, Character character)
+        {
+            switch (alteration.OtherEffectType)
+            {
+                case AlterationMagicEffectType.ChangeLevelRandomDown:
+                case AlterationMagicEffectType.ChangeLevelRandomUp:
+                case AlterationMagicEffectType.EnchantArmor:
+                case AlterationMagicEffectType.EnchantWeapon:
+                case AlterationMagicEffectType.Identify:
+                case AlterationMagicEffectType.RevealFood:
+                case AlterationMagicEffectType.RevealItems:
+                case AlterationMagicEffectType.RevealLevel:
+                case AlterationMagicEffectType.RevealMonsters:
+                case AlterationMagicEffectType.RevealSavePoint:
+                case AlterationMagicEffectType.Uncurse:
+                case AlterationMagicEffectType.RenounceReligion:
+                case AlterationMagicEffectType.IncreaseReligiousAffiliation:
+                default:
+                    throw new Exception("Improper use of Other Magic Effect type for character-affecting alteration");
+                case AlterationMagicEffectType.CreateMonster:
+                    if (character is Player)
+                        CreateMonster(alteration.CreateMonsterEnemy);
+                    else
+                        CreateMonsterMinion(character as Enemy, alteration.CreateMonsterEnemy);
+                    break;
+            }
+        }
+
+        private void ApplyNonCharacterAlteration(AlterationContainer alteration)
+        {
+            switch (alteration.Type)
+            {
+                case AlterationType.PassiveSource:
+                case AlterationType.PassiveAura:
+                case AlterationType.TemporarySource:
+                case AlterationType.TemporaryTarget:
+                case AlterationType.TemporaryAllTargets:
+                case AlterationType.TemporaryAllInRange:
+                case AlterationType.TemporaryAllInRangeExceptSource:
+                case AlterationType.PermanentSource:
+                case AlterationType.PermanentTarget:
+                case AlterationType.PermanentAllTargets:
+                case AlterationType.PermanentAllInRange:
+                case AlterationType.PermanentAllInRangeExceptSource:
+                case AlterationType.Steal:
+                case AlterationType.RunAway:
+                case AlterationType.TeleportSelf:
+                case AlterationType.TeleportTarget:
+                case AlterationType.TeleportAllTargets:
+                case AlterationType.TeleportAllInRange:
+                case AlterationType.TeleportAllInRangeExceptSource:
+                case AlterationType.Remedy:
+                default:
+                    throw new Exception("Improper use of Alteration Type for non-character alteration");
+                case AlterationType.OtherMagicEffect:
+                    ApplyNonCharacterOtherMagicEffect(alteration);
+                    break;
+                case AlterationType.AttackAttribute:
+                    ApplyNonCharacterAttackAttributeEffect(alteration);
+                    break;
+            }
+        }
+        private void ApplyNonCharacterOtherMagicEffect(AlterationContainer alteration)
         {
             switch (alteration.OtherEffectType)
             {
@@ -282,13 +373,7 @@ namespace Rogue.NET.Core.Logic
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Min(randomLevel, numberOfLevels);
 
-                        ScenarioUpdateEvent(this, new ScenarioUpdate()
-                        {
-                            ScenarioUpdateType = ScenarioUpdateType.LevelChange,
-
-                            LevelNumber = level,
-                            StartLocation = PlayerStartLocation.Random
-                        });
+                        RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(level, PlayerStartLocation.Random));
                     }
                     break;
                 case AlterationMagicEffectType.ChangeLevelRandomUp:
@@ -299,23 +384,17 @@ namespace Rogue.NET.Core.Logic
                         var randomLevel = _randomSequenceGenerator.Get(minLevel, maxLevel);
                         var level = Math.Max(randomLevel, 1);
 
-                        ScenarioUpdateEvent(this, new ScenarioUpdate()
-                        {
-                            ScenarioUpdateType = ScenarioUpdateType.LevelChange,
-
-                            LevelNumber = level,
-                            StartLocation = PlayerStartLocation.Random
-                        });
+                        RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(level, PlayerStartLocation.Random));
                     }
                     break;
                 case AlterationMagicEffectType.EnchantArmor:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.EnchantArmor });
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.EnchantArmor));
                     break;
                 case AlterationMagicEffectType.EnchantWeapon:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.EnchantWeapon });
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.EnchantWeapon));
                     break;
                 case AlterationMagicEffectType.Identify:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Identify });
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Identify));
                     break;
                 case AlterationMagicEffectType.RevealFood:
                     RevealFood();
@@ -333,13 +412,7 @@ namespace Rogue.NET.Core.Logic
                     RevealSavePoint();
                     break;
                 case AlterationMagicEffectType.Uncurse:
-                    DialogUpdateEvent(this, new DialogUpdate() { Type = DialogEventType.Uncurse });
-                    break;
-                case AlterationMagicEffectType.CreateMonster:
-                    if (character is Player)
-                        CreateMonster(alteration.CreateMonsterEnemy);
-                    else
-                        CreateMonsterMinion(character as Enemy, alteration.CreateMonsterEnemy);
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Uncurse));
                     break;
                 case AlterationMagicEffectType.RenounceReligion:
                     // Forced renunciation by Alteration
@@ -349,8 +422,37 @@ namespace Rogue.NET.Core.Logic
                     _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName,
                                               alteration.ReligiousAffiliationIncrease);
                     break;
+                case AlterationMagicEffectType.CreateMonster:
+                default:
+                    throw new Exception("Improper use of Other Magic Effect type for non-character Alteration");
             }
         }
+        private void ApplyNonCharacterAttackAttributeEffect(AlterationContainer alteration)
+        {
+            switch (alteration.AttackAttributeType)
+            {
+                case AlterationAttackAttributeType.ImbueArmor:
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.ImbueArmor, alteration.Effect.AttackAttributes));
+                    break;
+                case AlterationAttackAttributeType.ImbueWeapon:
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.ImbueWeapon, alteration.Effect.AttackAttributes));
+                    break;
+                case AlterationAttackAttributeType.Passive:
+                case AlterationAttackAttributeType.TemporaryFriendlySource:
+                case AlterationAttackAttributeType.TemporaryFriendlyTarget:
+                case AlterationAttackAttributeType.TemporaryMalignSource:
+                case AlterationAttackAttributeType.TemporaryMalignTarget:
+                case AlterationAttackAttributeType.MeleeTarget:
+                case AlterationAttackAttributeType.MeleeAllInRange:
+                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+                    throw new Exception("Improper use of Attack Attribute type for Non-Character Alteration");
+                default:
+                    break;
+            }
+        }
+
         private void ApplyPlayerStealAlteration(AlterationContainer alteration)
         {
             // Must require a target
@@ -373,7 +475,7 @@ namespace Rogue.NET.Core.Logic
 
                     // Remove Equipment from enemy inventory and deactivate passive effects
                     enemy.Equipment.Remove(equipment.Id);
-                    
+
                     // These should never be turned on; but doing for good measure
                     if (equipment.HasEquipSpell)
                         enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
@@ -418,7 +520,7 @@ namespace Rogue.NET.Core.Logic
                     _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
 
                 // Update UI
-                QueueLevelUpdate(LevelUpdateType.PlayerEquipmentRemove, itemStolen.Key);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentRemove, itemStolen.Key));
             }
             else
             {
@@ -426,11 +528,11 @@ namespace Rogue.NET.Core.Logic
                 enemy.Consumables.Add(itemStolen.Key, itemStolen.Value as Consumable);
 
                 // Update UI
-                QueueLevelUpdate(LevelUpdateType.PlayerConsumableRemove, itemStolen.Key);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemStolen.Key));
             }
 
             var enemyDisplayName = _modelService.GetDisplayName(enemy);
-            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value);            
+            var itemDisplayName = _modelService.GetDisplayName(itemStolen.Value);
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "The {0} stole your {1}!", enemyDisplayName, itemDisplayName);
         }
@@ -458,7 +560,7 @@ namespace Rogue.NET.Core.Logic
             }
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense odd shrines near by...");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealMonsters()
         {
@@ -467,7 +569,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealLevel()
         {
@@ -484,7 +586,7 @@ namespace Rogue.NET.Core.Logic
             _modelService.UpdateVisibleLocations();
             _modelService.UpdateContents();
 
-            QueueLevelUpdate(LevelUpdateType.LayoutReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealStairs()
         {
@@ -496,7 +598,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense exits nearby");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealItems()
         {
@@ -508,7 +610,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealContent()
         {
@@ -520,7 +622,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void RevealFood()
         {
@@ -529,7 +631,7 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Hunger makes a good sauce.....  :)");
 
-            QueueLevelUpdate(LevelUpdateType.ContentReveal, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void CreateMonsterMinion(Enemy enemy, string monsterName)
         {
@@ -548,7 +650,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(minion);
 
                 // Notify UI
-                QueueLevelUpdate(LevelUpdateType.ContentAdd, minion.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, minion.Id));
             }
         }
         private void CreateMonster(string monsterName)
@@ -565,7 +667,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(enemy);
 
                 // Notify UI
-                QueueLevelUpdate(LevelUpdateType.ContentAdd, enemy.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
             }
         }
 
@@ -604,24 +706,5 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
-
-        #region (private) Event Update Methods
-        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = type,
-                ContentIds = new string[] { contentId }
-            });
-        }
-        private void QueueLevelUpdate(LevelUpdateType type, string[] contentIds)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = type,
-                ContentIds = contentIds
-            });
-        }
-        #endregion
     }
 }

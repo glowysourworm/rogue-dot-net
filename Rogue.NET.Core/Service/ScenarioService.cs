@@ -8,7 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
-
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -42,12 +42,11 @@ namespace Rogue.NET.Core.Service
         //          7) UI Animation is queued
         //          8) etc...
 
-        // These Have Priority:  { Animation, Scenario, Splash, UI, Data }
-        Queue<IAnimationUpdate> _animationQueue;
-        Queue<IScenarioUpdate> _scenarioQueue;
-        Queue<ISplashUpdate> _splashQueue;
-        Queue<IDialogUpdate> _dialogQueue;
-        Queue<ILevelUpdate> _uiQueue;
+        // Update Have Priority:  Process depending on the priority - with backend processed
+        //                        AFTER all updates have been processed
+        Queue<IRogueUpdate> _lowQueue;
+        Queue<IRogueUpdate> _highQueue;
+        Queue<IRogueUpdate> _criticalQueue;
         Queue<ILevelProcessingAction> _dataQueue;
 
         /// <summary>
@@ -78,40 +77,38 @@ namespace Rogue.NET.Core.Service
 
             var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _religionEngine, _debugEngine };
 
-            _animationQueue = new Queue<IAnimationUpdate>();
-            _scenarioQueue = new Queue<IScenarioUpdate>();
-            _splashQueue = new Queue<ISplashUpdate>();
-            _dialogQueue = new Queue<IDialogUpdate>();
-            _uiQueue = new Queue<ILevelUpdate>();
+            _lowQueue = new Queue<IRogueUpdate>();
+            _highQueue = new Queue<IRogueUpdate>();
+            _criticalQueue = new Queue<IRogueUpdate>();
             _dataQueue = new Queue<ILevelProcessingAction>();
             
             foreach (var engine in rogueEngines)
             {
                 // Updates
-                engine.AnimationUpdateEvent += (sender, update) =>
-                {
-                    _animationQueue.Enqueue(update);
-                };
-                engine.LevelUpdateEvent += (sender, update) =>
-                {
-                    _uiQueue.Enqueue(update);
-                };
-                engine.ScenarioUpdateEvent += (sender, update) =>
-                {
-                    _scenarioQueue.Enqueue(update);
-                };
-                engine.SplashUpdateEvent += (sender, update) =>
-                {
-                    _splashQueue.Enqueue(update);
-                };
-                engine.DialogUpdateEvent += (sender, update) =>
+                engine.RogueUpdateEvent += (sender, args) =>
                 {
                     // ONE OFF FOR IMBUE ONLY!
-                    if (update.Type == DialogEventType.ImbueArmor ||
-                        update.Type == DialogEventType.ImbueWeapon)
-                        _imbueAttackAttributes = update.ImbueAttackAttributes;
+                    if (args.Update is IDialogUpdate)
+                    {
+                        var dialogUpdate = args.Update as IDialogUpdate;
 
-                    _dialogQueue.Enqueue(update);
+                        if (dialogUpdate.Type == DialogEventType.ImbueArmor ||
+                            dialogUpdate.Type == DialogEventType.ImbueWeapon)
+                            _imbueAttackAttributes = dialogUpdate.ImbueAttackAttributes;
+                    }
+
+                    switch (args.Priority)
+                    {
+                        case RogueUpdatePriority.Low:
+                            _lowQueue.Enqueue(args.Update);
+                            break;
+                        case RogueUpdatePriority.High:
+                            _highQueue.Enqueue(args.Update);
+                            break;
+                        case RogueUpdatePriority.Critical:
+                            _criticalQueue.Enqueue(args.Update);
+                            break;
+                    }
                 };
 
                 // Actions
@@ -371,69 +368,40 @@ namespace Rogue.NET.Core.Service
 
         public void ClearQueues()
         {
-            _animationQueue.Clear();
+            _lowQueue.Clear();
+            _highQueue.Clear();
+            _criticalQueue.Clear();
             _dataQueue.Clear();
-            _scenarioQueue.Clear();
-            _splashQueue.Clear();
-            _dialogQueue.Clear();
-            _uiQueue.Clear();
         }
 
-        public bool AnyLevelEvents()
+        public bool AnyUpdates(RogueUpdatePriority priority)
         {
-            return _uiQueue.Any();
-        }
-        public bool AnyAnimationEvents()
-        {
-            return _animationQueue.Any();
-        }
-        public bool AnyScenarioEvents()
-        {
-            return _scenarioQueue.Any();
-        }
-        public bool AnySplashEvents()
-        {
-            return _splashQueue.Any();
-        }
-        public bool AnyDialogEvents()
-        {
-            return _dialogQueue.Any();
+            switch (priority)
+            {
+                case RogueUpdatePriority.Low:
+                    return _lowQueue.Any();
+                case RogueUpdatePriority.High:
+                    return _highQueue.Any();
+                case RogueUpdatePriority.Critical:
+                    return _criticalQueue.Any();
+                default:
+                    throw new Exception("Unknown Rogue Priority");
+            }
         }
 
-        public IScenarioUpdate DequeueScenarioUpdate()
+        public IRogueUpdate DequeueUpdate(RogueUpdatePriority priority)
         {
-            if (_scenarioQueue.Any())
-                return _scenarioQueue.Dequeue();
-
-            return null;
-        }
-        public ISplashUpdate DequeueSplashUpdate()
-        {
-            if (_splashQueue.Any())
-                return _splashQueue.Dequeue();
-
-            return null;
-        }
-        public IDialogUpdate DequeueDialogUpdate()
-        {
-            if (_dialogQueue.Any())
-                return _dialogQueue.Dequeue();
-
-            return null;
-        }
-        public ILevelUpdate DequeueLevelUpdate()
-        {
-            if (_uiQueue.Any())
-                return _uiQueue.Dequeue();
-
-            return null;
-        }
-        public IAnimationUpdate DequeueAnimationUpdate()
-        {
-            if (_animationQueue.Any())
-                return _animationQueue.Dequeue();
-
-            return null;
+            switch (priority)
+            {
+                case RogueUpdatePriority.Low:
+                    return _lowQueue.Dequeue();
+                case RogueUpdatePriority.High:
+                    return _highQueue.Dequeue();
+                case RogueUpdatePriority.Critical:
+                    return _criticalQueue.Dequeue();
+                default:
+                    throw new Exception("Unknown Rogue Priority");
+            }
         }
         #endregion
     }

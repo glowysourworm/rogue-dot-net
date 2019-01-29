@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Processing.Interface;
+﻿using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;

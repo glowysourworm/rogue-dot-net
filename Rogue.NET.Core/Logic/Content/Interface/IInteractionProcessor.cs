@@ -36,6 +36,12 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// <summary>
         /// Calculates characters affected by alteration
         /// </summary>
-        IEnumerable<Character> CalculateAffectedAlterationCharacters(AlterationType type, AlterationAttackAttributeType attackAttributeType, double effectRange, Character character);
+        IEnumerable<Character> CalculateAffectedAlterationCharacters(
+                            AlterationType type,
+                            AlterationAttackAttributeType attackAttributeType,
+                            AlterationMagicEffectType otherEffectType,
+                            double effectRange,
+                            Character character,
+                            out bool affectedCharacterExpected);
     }
 }

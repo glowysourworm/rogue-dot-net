@@ -22,6 +22,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Collections.Generic;
 using Rogue.NET.Core.Logic.Content.Enum;
+using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -40,12 +41,9 @@ namespace Rogue.NET.Core.Logic
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly ICharacterGenerator _characterGenerator;
+        readonly IRogueUpdateFactory _rogueUpdateFactory;
 
-        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
@@ -60,7 +58,8 @@ namespace Rogue.NET.Core.Logic
             IInteractionProcessor interactionProcessor,
             IScenarioMessageService scenarioMessageService,
             IRandomSequenceGenerator randomSequenceGenerator,
-            ICharacterGenerator characterGenerator)
+            ICharacterGenerator characterGenerator,
+            IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
             _pathFinder = pathFinder;
@@ -73,6 +72,7 @@ namespace Rogue.NET.Core.Logic
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
             _characterGenerator = characterGenerator;
+            _rogueUpdateFactory = rogueUpdateFactory;
         }
 
         #region (public) Methods
@@ -95,11 +95,7 @@ namespace Rogue.NET.Core.Logic
                 level.RemoveContent(item);
 
                 // Queue level update event for removed item
-                LevelUpdateEvent(this, new LevelUpdate()
-                {
-                    LevelUpdateType = LevelUpdateType.ContentRemove,
-                    ContentIds = new string[] { item.Id }
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, item.Id));
 
                 if (character is Player)
                 {
@@ -107,20 +103,12 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Found " + _modelService.GetDisplayName(item));
 
                     if (item is Consumable)
-                        LevelUpdateEvent(this, new LevelUpdate()
-                        {
-                            LevelUpdateType = LevelUpdateType.PlayerConsumableAddOrUpdate,
-                            ContentIds = new string[] { item.Id }
-                        });
+                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableAddOrUpdate, item.Id));
                     else if (item is Equipment)
-                        LevelUpdateEvent(this, new LevelUpdate()
-                        {
-                            LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
-                            ContentIds = new string[] { item.Id }
-                        });
+                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, item.Id));
 
                     //Update level statistics
-                    QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsItemFound, item.RogueName);
+                    RogueUpdateEvent(this, _rogueUpdateFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsItemFound, item.RogueName));
                 }
             }
             else if (character is Player)
@@ -182,7 +170,7 @@ namespace Rogue.NET.Core.Logic
                 result = Equip(equipment);
 
             // Queue player update for this item
-            QueuePlayerEquipmentAddOrUpdate(equipId);
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, equipId));
 
             return result;
         }
@@ -219,8 +207,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(equipment);
 
                 // Queue updates
-                QueuePlayerEquipmentRemove(equipment.Id);
-                QueueLevelUpdate(LevelUpdateType.ContentAll, string.Empty);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentRemove, equipment.Id));
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
             }
             if (item is Consumable)
             {
@@ -236,8 +224,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(consumable);
 
                 // Queue updates
-                QueuePlayerConsumableRemove(consumable.Id);
-                QueueLevelUpdate(LevelUpdateType.ContentAll, string.Empty);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, consumable.Id));
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
             }
 
             // Publish message
@@ -261,19 +249,14 @@ namespace Rogue.NET.Core.Logic
 
             // Queue Animation for enemy death
             if (enemy.DeathAnimations.Count > 0)
-                AnimationUpdateEvent(this, new AnimationUpdate()
-                {
-                    Animations = enemy.DeathAnimations,
-                    SourceLocation = enemy.Location,
-                    TargetLocations = new CellPoint[] { _modelService.Player.Location }
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
 
             // Calculate player gains
             _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
 
             // Update statistics / Player skills
-            QueueScenarioStatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName);
-            QueueLevelUpdate(LevelUpdateType.PlayerSkillSetRefresh, "");
+            RogueUpdateEvent(this, _rogueUpdateFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName));
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Slayed");
 
@@ -285,8 +268,8 @@ namespace Rogue.NET.Core.Logic
                 _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.ReligionName);
 
             // Publish Level update
-            QueueLevelUpdate(LevelUpdateType.ContentRemove, enemy.Id);
-            QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, enemy.Id);
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, enemy.Id));
         }
         public void CalculateEnemyReactions()
         {
@@ -373,7 +356,7 @@ namespace Rogue.NET.Core.Logic
                 doodad.IsHidden = false;
 
                 // Update metadata
-                QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, doodad.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, doodad.Id));
             }
 
             switch (doodad.NormalType)
@@ -398,10 +381,10 @@ namespace Rogue.NET.Core.Logic
 
                         // Queue update to level 
                         if (character is Enemy)
-                            QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, character.Id));
 
                         else
-                            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
                     }
                     break;
                 case DoodadNormalType.Teleport1:
@@ -421,11 +404,7 @@ namespace Rogue.NET.Core.Logic
                             level.RemoveContent(enemy);
 
                             // Queue update to the level
-                            LevelUpdateEvent(this, new LevelUpdate()
-                            {
-                                LevelUpdateType = LevelUpdateType.ContentRemove,
-                                ContentIds = new string[] {enemy.Id}
-                            });
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
                         }
                         // Enemy is trying to teleport in where Player is
                         else if (character is Enemy && character.Location == _modelService.Player.Location)
@@ -439,10 +418,10 @@ namespace Rogue.NET.Core.Logic
 
                         // Queue update to level 
                         if (character is Enemy)
-                            QueueLevelUpdate(LevelUpdateType.ContentMove, character.Id);
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, character.Id));
 
                         else
-                            QueueLevelUpdate(LevelUpdateType.PlayerLocation, _modelService.Player.Id);
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
 
                         if (character is Player)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
@@ -493,7 +472,7 @@ namespace Rogue.NET.Core.Logic
                 // Set Curse Identified
                 metaData.IsCurseIdentified = true;
 
-                QueueLevelUpdate(LevelUpdateType.EncyclopediaCurseIdentify, equipment.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaCurseIdentify, equipment.Id));
 
                 return false;
             }
@@ -679,14 +658,7 @@ namespace Rogue.NET.Core.Logic
 
                                     // Otherwise, process the animation only
                                     else if (ammo.AmmoSpell.Animations.Any())
-                                    {
-                                        AnimationUpdateEvent(this, new AnimationUpdate()
-                                        {
-                                            Animations = ammo.AmmoSpell.Animations,
-                                            SourceLocation = enemy.Location,
-                                            TargetLocations = new CellPoint[] { _modelService.Player.Location }
-                                        });
-                                    }
+                                        RogueUpdateEvent(this, _rogueUpdateFactory.Animation(ammo.AmmoSpell.Animations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
 
                                     actionTaken = true;
                                 }
@@ -825,7 +797,7 @@ namespace Rogue.NET.Core.Logic
                         _modelService.UpdateContents();
 
                         // Notify listener queue
-                        QueueLevelUpdate(LevelUpdateType.ContentMove, enemy.Id);
+                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
                     }
                 }
 
@@ -846,7 +818,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.UpdateContents();
 
                 // Notify listener queue
-                QueueLevelUpdate(LevelUpdateType.ContentMove, enemy.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
             }
 
             // Check for items
@@ -898,58 +870,7 @@ namespace Rogue.NET.Core.Logic
             _modelService.Level.AddContent(enemy);
 
             // Queue level update for added content
-            QueueLevelUpdate(LevelUpdateType.ContentAdd, enemy.Id);
-        }
-        #endregion
-
-        #region (private) Queue Methods
-        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = type,
-                ContentIds = new string[] {contentId}
-            });
-        }
-        private void QueueScenarioStatisticsUpdate(ScenarioUpdateType type, string rogueName)
-        {
-            ScenarioUpdateEvent(this, new ScenarioUpdate()
-            {
-                ScenarioUpdateType  = type,
-                ContentRogueName = rogueName
-            });
-        }
-        private void QueuePlayerEquipmentRemove(string equipmentId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
-                ContentIds = new string[] { equipmentId }
-            });
-        }
-        private void QueuePlayerEquipmentAddOrUpdate(string equipmentId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = LevelUpdateType.PlayerEquipmentAddOrUpdate,
-                ContentIds = new string[] { equipmentId }
-            });
-        }
-        private void QueuePlayerConsumableAddOrUpdate(string consumableId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = LevelUpdateType.PlayerConsumableAddOrUpdate,
-                ContentIds = new string[] { consumableId }
-            });
-        }
-        private void QueuePlayerConsumableRemove(string consumableId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = LevelUpdateType.PlayerConsumableRemove,
-                ContentIds = new string[] { consumableId }
-            });
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
         }
         #endregion
     }

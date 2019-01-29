@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
@@ -21,25 +22,24 @@ namespace Rogue.NET.Core.Logic
         readonly IContentEngine _contentEngine;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IPlayerProcessor _playerProcessor;
+        readonly IRogueUpdateFactory _rogueUpdateFactory;
 
         [ImportingConstructor]
         public DebugEngine(
             IModelService modelService, 
             IContentEngine contentEngine, 
             IScenarioMessageService scenarioMessageService,
-            IPlayerProcessor playerProcessor)
+            IPlayerProcessor playerProcessor,
+            IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
             _contentEngine = contentEngine;           
             _scenarioMessageService = scenarioMessageService;
             _playerProcessor = playerProcessor;
+            _rogueUpdateFactory = rogueUpdateFactory;
         }
 
-        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         public void ApplyEndOfTurn()
@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Logic
         {
             _modelService.Player.Experience += 10000;
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
         }
 
         public void IdentifyAll()
@@ -66,9 +66,8 @@ namespace Rogue.NET.Core.Logic
 
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
             }
-                
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
         }
 
         public void SimulateAdvanceToNextLevel()
@@ -137,9 +136,9 @@ namespace Rogue.NET.Core.Logic
             _modelService.UpdateVisibleLocations();
             _modelService.UpdateContents();
 
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.ContentAll });
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutAll });
-            LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.PlayerAll });
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutAll, ""));
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
         }
     }
 }

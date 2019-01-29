@@ -8,6 +8,7 @@ using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
+using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
@@ -81,33 +82,55 @@ namespace Rogue.NET.Scenario.Controller
             // 2) If (no further processing of either) Then completed (can accept new user command)
             while (processing)
             {
-                // First: Process all animations
-                while (_scenarioService.AnyAnimationEvents())
-                    await ProcessAnimationUpdate(_scenarioService.DequeueAnimationUpdate());
+                // High Priority
+                while (_scenarioService.AnyUpdates(RogueUpdatePriority.High))
+                    await ProcessUpdate(_scenarioService.DequeueUpdate(RogueUpdatePriority.High));
 
-                // Second: Process all Splash events
-                while (_scenarioService.AnySplashEvents())
-                    ProcessSplashUpdate(_scenarioService.DequeueSplashUpdate());
-
-                // Third: Process all Dialog events
-                while (_scenarioService.AnyDialogEvents())
-                    ProcessDialogUpdate(_scenarioService.DequeueDialogUpdate());
-
-                // Fourth: Process all UI events
-                while (_scenarioService.AnyLevelEvents())
-                    ProcessUIUpdate(_scenarioService.DequeueLevelUpdate());
-
+                // Low Priority
+                while (_scenarioService.AnyUpdates(RogueUpdatePriority.Low))
+                    await ProcessUpdate(_scenarioService.DequeueUpdate(RogueUpdatePriority.Low));
+                
                 // Fifth: Process all Scenario Events
-                while (_scenarioService.AnyScenarioEvents())
+                while (_scenarioService.AnyUpdates(RogueUpdatePriority.Critical))
                 {
                     // Have to cancel processing on certain scenario events
-                    processing = ProcessScenarioUpdate(_scenarioService.DequeueScenarioUpdate());
+                    processing = await ProcessUpdate(_scenarioService.DequeueUpdate(RogueUpdatePriority.Critical));
                 }
 
                 // Finally: Process the next backend work item. (If processing finished - then allow user command)
                 if (!_scenarioService.ProcessBackend() && processing)
                     processing = false;
             }
+        }
+
+        private async Task<bool> ProcessUpdate(IRogueUpdate update)
+        {
+            if (update is IAnimationUpdate)
+            {
+                await ProcessAnimationUpdate(update as IAnimationUpdate);
+                return true;
+            }
+            else if (update is ILevelUpdate)
+            {
+                ProcessUIUpdate(update as ILevelUpdate);
+                return true;
+            }
+            else if (update is IScenarioUpdate)
+            {
+                return ProcessScenarioUpdate(update as IScenarioUpdate);
+            }
+            else if (update is ISplashUpdate)
+            {
+                ProcessSplashUpdate(update as ISplashUpdate);
+                return true;
+            }
+            else if (update is IDialogUpdate)
+            {
+                ProcessDialogUpdate(update as IDialogUpdate);
+                return true;
+            }
+            else
+                throw new Exception("Unknown IRogueUpdate Type");
         }
 
         #region (private) Processing

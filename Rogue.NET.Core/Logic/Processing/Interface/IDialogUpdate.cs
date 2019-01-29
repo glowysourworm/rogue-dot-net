@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
-    public interface IDialogUpdate
+    public interface IDialogUpdate : IRogueUpdate
     {
         DialogEventType Type { get; set; }
 

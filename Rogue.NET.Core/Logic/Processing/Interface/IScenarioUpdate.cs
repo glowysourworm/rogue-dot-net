@@ -3,7 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
-    public interface IScenarioUpdate
+    public interface IScenarioUpdate : IRogueUpdate
     {
         ScenarioUpdateType ScenarioUpdateType { get; set; }
 

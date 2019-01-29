@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
-    public interface ILevelUpdate
+    public interface ILevelUpdate : IRogueUpdate
     {
         LevelUpdateType LevelUpdateType { get; set; }
 

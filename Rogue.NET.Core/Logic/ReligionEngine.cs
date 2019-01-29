@@ -12,6 +12,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -21,23 +22,22 @@ namespace Rogue.NET.Core.Logic
         readonly IPlayerProcessor _playerProcessor;
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
+        readonly IRogueUpdateFactory _rogueUpdateFactory;
 
-        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public ReligionEngine(
             IPlayerProcessor playerProcessor,
             IModelService modelService, 
-            IScenarioMessageService scenarioMessageService)
+            IScenarioMessageService scenarioMessageService,
+            IRogueUpdateFactory rogueUpdateFactory)
         {
             _playerProcessor = playerProcessor;
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
+            _rogueUpdateFactory = rogueUpdateFactory;
         }
 
         public void Affiliate(string religionName, double affiliationLevel)
@@ -99,7 +99,7 @@ namespace Rogue.NET.Core.Logic
                         // Cursed equipment will turn on its owner
                         if (equipment.IsCursed)
                         {
-                            QueueScenarioPlayerDeath("Cursed " + _modelService.GetDisplayName(equipment) + " turned on its onwer...");
+                            RogueUpdateEvent(this, _rogueUpdateFactory.PlayerDeath("Cursed " + _modelService.GetDisplayName(equipment) + " turned on its onwer..."));
                             return LevelContinuationAction.DoNothing;
                         }
 
@@ -128,7 +128,7 @@ namespace Rogue.NET.Core.Logic
                             _playerProcessor.DeActivateSkills(player);
 
                             // Update Player Symbol
-                            QueueLevelUpdate(LevelUpdateType.PlayerLocation, player.Id);
+                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, player.Id));
                         }
 
                         // De-Select skill
@@ -145,20 +145,15 @@ namespace Rogue.NET.Core.Logic
 
                 // Queue Animations
                 if (animations.Any())
-                    AnimationUpdateEvent(this, new AnimationUpdate()
-                    {
-                        Animations = animations,
-                        SourceLocation = player.Location,
-                        TargetLocations = _modelService.GetVisibleEnemies()
-                                                       .Select(x => x.Location)
-                                                       .Actualize()
-                    });
+                    RogueUpdateEvent(this, 
+                        _rogueUpdateFactory.Animation(animations, 
+                                                      player.Location, 
+                                                      _modelService.GetVisibleEnemies()
+                                                                   .Select(x => x.Location)
+                                                                   .Actualize()));
 
                 // Queue Player Update
-                LevelUpdateEvent(this, new LevelUpdate()
-                {
-                    LevelUpdateType = LevelUpdateType.PlayerAll
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
 
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " has renounced " + religionName);
 
@@ -180,7 +175,7 @@ namespace Rogue.NET.Core.Logic
                 // Trigger a message
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Unique, "The Religion \"{0}\" has been identified", religion.RogueName);
 
-                QueueLevelUpdate(LevelUpdateType.EncyclopediaIdentify, religion.Id);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, religion.Id));
             }
         }
 
@@ -188,24 +183,5 @@ namespace Rogue.NET.Core.Logic
         {
             throw new NotImplementedException();
         }
-
-        #region (private) Event Methods
-        private void QueueLevelUpdate(LevelUpdateType type, string contentId)
-        {
-            LevelUpdateEvent(this, new LevelUpdate()
-            {
-                LevelUpdateType = type,
-                ContentIds = new string[] { contentId }
-            });
-        }
-        private void QueueScenarioPlayerDeath(string deathMessage)
-        {
-            ScenarioUpdateEvent(this, new ScenarioUpdate()
-            {
-                ScenarioUpdateType = ScenarioUpdateType.PlayerDeath,
-                PlayerDeathMessage = deathMessage
-            });
-        }
-        #endregion
     }
 }

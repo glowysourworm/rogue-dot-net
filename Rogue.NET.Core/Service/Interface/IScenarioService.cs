@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Processing.Interface;
+﻿using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Logic.Processing.Interface;
 
 namespace Rogue.NET.Core.Service.Interface
 {
@@ -26,35 +27,8 @@ namespace Rogue.NET.Core.Service.Interface
         void IssueCommand(ILevelCommandAction levelCommand);
 
         // Methods to show queue status
-        bool AnyLevelEvents();
-        bool AnyAnimationEvents();
-        bool AnyScenarioEvents();
-        bool AnySplashEvents();
-        bool AnyDialogEvents();
+        bool AnyUpdates(RogueUpdatePriority priority);
 
-        /// <summary>
-        /// Scenario Update Events are 5th in priority (Animation -> Scenario -> Splash -> UI)
-        /// </summary>
-        IScenarioUpdate DequeueScenarioUpdate();
-
-        /// <summary>
-        /// Splash Update Events are 2nd in priority (Animation -> Scenario -> Splash -> UI)
-        /// </summary>
-        ISplashUpdate DequeueSplashUpdate();
-
-        /// <summary>
-        /// Splash Update Events are 3rd in priority (Animation -> Scenario -> Splash -> UI)
-        /// </summary>
-        IDialogUpdate DequeueDialogUpdate();
-
-        /// <summary>
-        /// Level Update Events are 4th in priority (Animation -> Scenario -> Splash -> UI)
-        /// </summary>
-        ILevelUpdate DequeueLevelUpdate();
-
-        /// <summary>
-        /// Animation Update Events are 1st in priority (Animation -> Scenario -> Splash -> UI)
-        /// </summary>
-        IAnimationUpdate DequeueAnimationUpdate();
+        IRogueUpdate DequeueUpdate(RogueUpdatePriority priority);
     }
 }

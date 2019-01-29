@@ -152,7 +152,12 @@
     <Compile Include="Logic\Interface\IReligionEngine.cs" />
     <Compile Include="Logic\Processing\DialogUpdate.cs" />
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
+    <Compile Include="Logic\Processing\Enum\RogueUpdatePriority.cs" />
+    <Compile Include="Logic\Processing\Factory\Interface\IRogueUpdateFactory.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogUpdate.cs" />
+    <Compile Include="Logic\Processing\Interface\IRogueUpdate.cs" />
+    <Compile Include="Logic\Processing\RogueUpdateEventArgs.cs" />
+    <Compile Include="Logic\Processing\Factory\RogueUpdateFactory.cs" />
     <Compile Include="Logic\ReligionEngine.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
     <Compile Include="Logic\Static\EquipmentCalculator.cs" />

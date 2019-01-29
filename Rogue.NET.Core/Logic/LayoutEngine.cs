@@ -16,6 +16,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -25,22 +26,21 @@ namespace Rogue.NET.Core.Logic
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IModelService _modelService;
+        readonly IRogueUpdateFactory _rogueUpdateFactory;
 
-        public event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        public event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        public event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        public event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        public event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         [ImportingConstructor]
         public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, 
                             IScenarioMessageService scenarioMessageService,
-                            IModelService modelService)
+                            IModelService modelService,
+                            IRogueUpdateFactory rogueUpdateFactory)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _scenarioMessageService = scenarioMessageService;
             _modelService = modelService;
+            _rogueUpdateFactory = rogueUpdateFactory;
         }
 
         #region (public) Player Action Methods
@@ -134,7 +134,7 @@ namespace Rogue.NET.Core.Logic
 
                 _modelService.UpdateVisibleLocations();
 
-                LevelUpdateEvent(this, new LevelUpdate() { LevelUpdateType = LevelUpdateType.LayoutTopology });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
@@ -161,10 +161,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.UpdateVisibleLocations();
                 _modelService.UpdateContents();
 
-                LevelUpdateEvent(this, new LevelUpdate()
-                {
-                    LevelUpdateType = LevelUpdateType.LayoutTopology
-                });
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
             }
         }
         #endregion

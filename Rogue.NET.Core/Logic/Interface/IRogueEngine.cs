@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Processing.Interface;
+﻿using Rogue.NET.Core.Logic.Processing;
+using Rogue.NET.Core.Logic.Processing.Interface;
 using System;
 
 namespace Rogue.NET.Core.Logic.Interface
@@ -10,11 +11,7 @@ namespace Rogue.NET.Core.Logic.Interface
     /// </summary>
     public interface IRogueEngine
     {
-        event EventHandler<IScenarioUpdate> ScenarioUpdateEvent;
-        event EventHandler<ISplashUpdate> SplashUpdateEvent;
-        event EventHandler<IDialogUpdate> DialogUpdateEvent;
-        event EventHandler<ILevelUpdate> LevelUpdateEvent;
-        event EventHandler<IAnimationUpdate> AnimationUpdateEvent;
+        event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
         /// <summary>

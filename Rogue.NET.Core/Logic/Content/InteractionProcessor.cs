@@ -201,9 +201,17 @@ namespace Rogue.NET.Core.Logic.Content
             }
         }
 
-        public IEnumerable<Character> CalculateAffectedAlterationCharacters(AlterationType type, AlterationAttackAttributeType attackAttributeType, double effectRange, Character character)
+        public IEnumerable<Character> CalculateAffectedAlterationCharacters(
+                    AlterationType type, 
+                    AlterationAttackAttributeType attackAttributeType, 
+                    AlterationMagicEffectType otherEffectType, 
+                    double effectRange, 
+                    Character character, 
+                    out bool affectedCharacterExpected)
         {
             var result = new List<Character>();
+
+            affectedCharacterExpected = false;
 
             // Check for line of sight in calculating affected characters
             var lineOfSightEnemies = _modelService.GetLineOfSightLocations()
@@ -222,7 +230,7 @@ namespace Rogue.NET.Core.Logic.Content
                                 .Cast<Character>()
                                 .ToList();
 
-            // All In Range <- Add Player if within the effect range (from source character)
+            // All In Range:  Add Player if within the effect range (from source character) OR if player is the source
             if (Calculator.EuclideanSquareDistance(_modelService.Player.Location, character.Location) <= effectRange * effectRange)
                 allInRange.Add(_modelService.Player);
 
@@ -239,11 +247,15 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.RunAway:
                 case AlterationType.TeleportSelf:
                 case AlterationType.Remedy:
+                    affectedCharacterExpected = true;
+
                     result.Add(character);
                     break;
                 case AlterationType.TemporaryTarget:
                 case AlterationType.PermanentTarget:
                 case AlterationType.TeleportTarget:
+                    affectedCharacterExpected = true;
+
                     // Player -> Add first targeted enemy or player
                     if (character is Player && _modelService.GetTargetedEnemies().Any())
                         result.Add(_modelService.GetTargetedEnemies().First());
@@ -255,6 +267,8 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.TemporaryAllTargets:
                 case AlterationType.PermanentAllTargets:
                 case AlterationType.TeleportAllTargets:
+                    affectedCharacterExpected = true;
+
                     // Player -> Add targeted enemies
                     if (character is Player)
                         result.AddRange(_modelService.GetTargetedEnemies());
@@ -264,6 +278,17 @@ namespace Rogue.NET.Core.Logic.Content
                         result.Add(character);
                     break;
                 case AlterationType.OtherMagicEffect:
+                    {
+                        switch (otherEffectType)
+                        {
+                            case AlterationMagicEffectType.CreateMonster:
+                                affectedCharacterExpected = true;
+                                result.Add(character);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                     break;
                 case AlterationType.AttackAttribute:
                     {
@@ -274,11 +299,15 @@ namespace Rogue.NET.Core.Logic.Content
                             case AlterationAttackAttributeType.Passive:
                             case AlterationAttackAttributeType.TemporaryFriendlySource:
                             case AlterationAttackAttributeType.TemporaryMalignSource:
+                                affectedCharacterExpected = true;
+
                                 result.Add(character);
                                 break;
                             case AlterationAttackAttributeType.TemporaryFriendlyTarget:
                             case AlterationAttackAttributeType.TemporaryMalignTarget:
                             case AlterationAttackAttributeType.MeleeTarget:
+                                affectedCharacterExpected = true;
+
                                 // Player -> Add first targeted enemy or player
                                 if (character is Player && _modelService.GetTargetedEnemies().Any())
                                     result.Add(_modelService.GetTargetedEnemies().First());
@@ -289,10 +318,16 @@ namespace Rogue.NET.Core.Logic.Content
                                 break;
                             case AlterationAttackAttributeType.MeleeAllInRange:
                             case AlterationAttackAttributeType.TemporaryMalignAllInRange:
-                                return allInRange;
+                                affectedCharacterExpected = true;
+
+                                result.AddRange(allInRange);
+                                break;
                             case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
                             case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
-                                return allInRangeExceptSource;
+                                affectedCharacterExpected = true;
+
+                                result.AddRange(allInRangeExceptSource);
+                                break;
                             default:
                                 break;
                         }
@@ -301,16 +336,22 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.TemporaryAllInRange:
                 case AlterationType.PermanentAllInRange:
                 case AlterationType.TeleportAllInRange:
-                    return allInRange;
+                    affectedCharacterExpected = true;
+
+                    result.AddRange(allInRange);
+                    break;
                 case AlterationType.TemporaryAllInRangeExceptSource:
                 case AlterationType.PermanentAllInRangeExceptSource:
                 case AlterationType.TeleportAllInRangeExceptSource:
-                    return allInRangeExceptSource;
+                    affectedCharacterExpected = true;
+
+                    result.AddRange(allInRangeExceptSource);
+                    break;
                 default:
                     break;
             }
 
-            return new Character[] { };
+            return result;
         }
 
         private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
