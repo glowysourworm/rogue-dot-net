@@ -61,6 +61,19 @@
 				  conditions for advancement (beat a monster, find a key, etc..)
 				- Monster generation per level (parameter) also, party room parameter
 				
+				- POINTS OF INTEREST:  Doodads are important to scenarios. Having special points of interest can make it possible to arrange
+									   content to suggest a narrative - which is what Rogue.NET is supposed to be about.
+									   
+									   Idea:  Have points along the wall designated as POIs. 
+									   
+									   Idea:  Have points near an entrance (on each side) designated as POIs. (Idea from Brogue Dar Blademasters)
+									   
+				- Level Tree:  Have the level generation be a tree to support probabilistically generated branches of the scenario. 
+				
+							   Idea: Could randomly choose a stairs down image to help make it more difficult for people to know where to go.
+							   
+							   Idea: Could have stairs-up be sealed off.. but would have to reconnect to the primary branch at some point.
+				
 - Windows: Would treat like an open door that you can't pass through.. (But maybe could break)
 				
 - Zones:   Related to level layouts. 
@@ -397,6 +410,30 @@
 
 - Brogue Idea:  Searching.. can have search timers for objects near player. Doodads / hidden doors. Basically, implement above
 				Brogue-style search without the "timed event". Really like how that plays.
+				
+- Brogue Idea:  Self-Identify.. One major problem in Rogue.NET and other rogue likes is the number / amount / variety of different
+				items that are important to the story. Brogue lets you self-identify over a number of turns. I'd like to turn this
+				up a notch and have items become more important and have more levels of depth (where appropriate).
+				
+				Many ideas... Have a static / dynamic number of "levels of depth" for each equipment item - allowing for identified traits at
+				each level (big design problem here).  
+				
+					Example:  "This is a short steel sword" (Level 0 Description)
+					
+							  "This is a short steel sword that belonged to someone of the British Empire. It appears to be 
+							   high quality" (Level 1 Description)
+							   
+							  "This is King William's personal guardian sword. It has this magical property" (Level 2 Description)
+							  
+					Example (Consumable):  "The scroll appears to have a red wax seal" (Level 0)
+					
+										   "The scroll has a gentle aura of goodness about it" (Level 1)
+										   
+										   "The scroll casts a spell of Healing" (Level 2)
+				
+				Progressing from one level to the next could just take a number of turns.
+				
+- Religions:  Would still like a way to naturally build your affiliation rather than relying on shrines or altars or special objects.
 				   
 ----------------------------
 						  
