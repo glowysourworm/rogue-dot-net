@@ -392,7 +392,11 @@
 - Doodad:  Timed fire doodad. Triggered by character movement in range.
 
 - Alteration Effect:  Sanctuary... Needs design :)  
-- Alteration Effect:  Telepathy... Brogue ripoff :( But lots of fun! :)				   
+- Alteration Effect:  Telepathy... Brogue ripoff :( But lots of fun! :)
+- Alteration Effect:  True Polymorph (random enemy)
+
+- Brogue Idea:  Searching.. can have search timers for objects near player. Doodads / hidden doors. Basically, implement above
+				Brogue-style search without the "timed event". Really like how that plays.
 				   
 ----------------------------
 						  
