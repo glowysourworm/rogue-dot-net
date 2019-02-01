@@ -434,6 +434,8 @@
 				Progressing from one level to the next could just take a number of turns.
 				
 - Religions:  Would still like a way to naturally build your affiliation rather than relying on shrines or altars or special objects.
+
+- Keys:  Consider getting rid of modifiers for doors / fighting.
 				   
 ----------------------------
 						  

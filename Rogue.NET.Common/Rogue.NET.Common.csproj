@@ -1317,6 +1317,18 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningWhite.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\LightningYellow.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeBlack.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeBlue.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeCyan.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeFuschia.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeGreen.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeOrange.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakePurple.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeRed.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeWhite.png" />
+    <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeYellow.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

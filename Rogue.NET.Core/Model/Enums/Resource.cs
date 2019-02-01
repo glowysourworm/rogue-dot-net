@@ -670,7 +670,17 @@
         LightningCyan = 658,
         LightningBlack = 659,
         LightningWhite = 660,
-        LightningRainbow = 661
+        LightningRainbow = 661,
+        SnowFlakeRed = 662,
+        SnowFlakeOrange = 663,
+        SnowFlakeYellow = 664,
+        SnowFlakeGreen = 665,
+        SnowFlakeCyan = 666,
+        SnowFlakeBlue = 667,
+        SnowFlakePurple = 668,
+        SnowFlakeFuschia = 669,
+        SnowFlakeBlack = 670,
+        SnowFlakeWhite = 671
     }
     public enum DisplayImageResources
     {
