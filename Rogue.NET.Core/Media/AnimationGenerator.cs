@@ -94,114 +94,114 @@ namespace Rogue.NET.Core.Media
                                      .ToList();
         }
 
-        public ITimedGraphic CreateAnimation(AnimationTemplate t, Rect bounds, Point pPlayer, Point[] pEnemy)
+        public ITimedGraphic CreateAnimation(AnimationTemplate template, Rect bounds, Point sourceLocation, Point[] targetLocations)
         {
-            switch (t.Type)
+            switch (template.Type)
             {
                 case AnimationType.AuraTarget:
-                    return CreateAuraModulation(pEnemy[0], t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateAuraModulation(targetLocations[0], template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.AnimationTime, template.RepeatCount, template.AutoReverse);
                 case AnimationType.AuraSelf:
-                    return CreateAuraModulation(pPlayer, t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateAuraModulation(sourceLocation, template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.AnimationTime, template.RepeatCount, template.AutoReverse);
                 case AnimationType.BarrageTarget:
-                    return CreateEllipseBarrage(t.ChildCount, pEnemy[0], t.RadiusFromFocus, t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1), 
-                        new Size(t.Width2, t.Height2), t.AccelerationRatio, t.Erradicity, t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateEllipseBarrage(template.ChildCount, targetLocations[0], template.RadiusFromFocus, template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1), 
+                        new Size(template.Width2, template.Height2), template.AccelerationRatio, template.Erradicity, template.AnimationTime, template.RepeatCount, template.AutoReverse);
                 case AnimationType.BarrageSelf:
-                    return CreateEllipseBarrage(t.ChildCount, pPlayer, t.RadiusFromFocus, t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.AccelerationRatio, t.Erradicity,
-                        t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateEllipseBarrage(template.ChildCount, sourceLocation, template.RadiusFromFocus, template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.AccelerationRatio, template.Erradicity,
+                        template.AnimationTime, template.RepeatCount, template.AutoReverse);
                 case AnimationType.BubblesTarget:
-                    return CreateBubbles(t.ChildCount, pEnemy[0], t.RadiusFromFocus, t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(),
-                        t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.RoamRadius, t.Erradicity, t.AnimationTime, t.RepeatCount);
+                    return CreateBubbles(template.ChildCount, targetLocations[0], template.RadiusFromFocus, template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(),
+                        template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.RoamRadius, template.Erradicity, template.AnimationTime, template.RepeatCount);
                 case AnimationType.BubblesSelf:
-                    return CreateBubbles(t.ChildCount, pPlayer, t.RadiusFromFocus, t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(),
-                         t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.RoamRadius, t.Erradicity, t.AnimationTime, t.RepeatCount);
+                    return CreateBubbles(template.ChildCount, sourceLocation, template.RadiusFromFocus, template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(),
+                         template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.RoamRadius, template.Erradicity, template.AnimationTime, template.RepeatCount);
                 case AnimationType.BubblesScreen:
-                    return CreateBubbles(t.ChildCount, bounds, t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(),
-                            t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), Math.Min(bounds.Width, bounds.Height), t.Erradicity, t.AnimationTime, t.RepeatCount);
+                    return CreateBubbles(template.ChildCount, bounds, template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(),
+                            template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), Math.Min(bounds.Width, bounds.Height), template.Erradicity, template.AnimationTime, template.RepeatCount);
                 case AnimationType.ChainSelfToTargetsInRange:
                     {
                         List<Point> list = new List<Point>();
-                        list.Add(pPlayer);
-                        list.AddRange(pEnemy);
+                        list.Add(sourceLocation);
+                        list.AddRange(targetLocations);
                         return new AnimationGroup(new Animation[]{GenerateProjectilePath(list.ToArray()
-                                , new Size(t.Width1, t.Height1)
-                                , new Size(t.Width2, t.Height2)
-                                , t.StrokeTemplate.GenerateBrush()
-                                , t.FillTemplate.GenerateBrush()
-                                , t.Opacity1, t.Opacity2, t.StrokeThickness
-                                , t.AccelerationRatio, t.Erradicity, t.AnimationTime
-                                , t.Velocity, t.RepeatCount, t.AutoReverse, t.ConstantVelocity)});
+                                , new Size(template.Width1, template.Height1)
+                                , new Size(template.Width2, template.Height2)
+                                , template.StrokeTemplate.GenerateBrush()
+                                , template.FillTemplate.GenerateBrush()
+                                , template.Opacity1, template.Opacity2, template.StrokeThickness
+                                , template.AccelerationRatio, template.Erradicity, template.AnimationTime
+                                , template.Velocity, template.RepeatCount, template.AutoReverse, template.ConstantVelocity)});
                     }
                 case AnimationType.ProjectileTargetsInRangeToSelf:
                     {
                         List<Animation> list = new List<Animation>();
-                        foreach (Point ep in pEnemy)
+                        foreach (Point ep in targetLocations)
                         {
-                            Animation a = GenerateProjectilePath(new Point[]{ep, pPlayer}
-                                , new Size(t.Width1, t.Height1)
-                                , new Size(t.Width2, t.Height2)
-                                , t.StrokeTemplate.GenerateBrush()
-                                , t.FillTemplate.GenerateBrush()
-                                , t.Opacity1, t.Opacity2, t.StrokeThickness
-                                , t.AccelerationRatio, t.Erradicity, t.AnimationTime
-                                , t.Velocity, t.RepeatCount, t.AutoReverse, t.ConstantVelocity);
+                            Animation a = GenerateProjectilePath(new Point[]{ep, sourceLocation}
+                                , new Size(template.Width1, template.Height1)
+                                , new Size(template.Width2, template.Height2)
+                                , template.StrokeTemplate.GenerateBrush()
+                                , template.FillTemplate.GenerateBrush()
+                                , template.Opacity1, template.Opacity2, template.StrokeThickness
+                                , template.AccelerationRatio, template.Erradicity, template.AnimationTime
+                                , template.Velocity, template.RepeatCount, template.AutoReverse, template.ConstantVelocity);
                             list.Add(a);
                         }
                         return new AnimationGroup(list.ToArray());
                     }
                 case AnimationType.ProjectileTargetToSelf:
-                    return CreateEllipseProjectile(pEnemy[0], pPlayer, t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(),
-                        t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2),
-                        t.AccelerationRatio, t.Erradicity, t.AnimationTime, t.Velocity, t.RepeatCount, t.AutoReverse, t.ConstantVelocity);
+                    return CreateEllipseProjectile(targetLocations[0], sourceLocation, template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(),
+                        template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2),
+                        template.AccelerationRatio, template.Erradicity, template.AnimationTime, template.Velocity, template.RepeatCount, template.AutoReverse, template.ConstantVelocity);
                 case AnimationType.ProjectileSelfToTargetsInRange:
                     {
                         List<Animation> list = new List<Animation>();
-                        foreach (Point ep in pEnemy)
+                        foreach (Point ep in targetLocations)
                         {
-                            Animation a = GenerateProjectilePath(new Point[] { pPlayer, ep }
-                                , new Size(t.Width1, t.Height1)
-                                , new Size(t.Width2, t.Height2)
-                                , t.StrokeTemplate.GenerateBrush()
-                                , t.FillTemplate.GenerateBrush()
-                                , t.Opacity1, t.Opacity2, t.StrokeThickness
-                                , t.AccelerationRatio, t.Erradicity, t.AnimationTime
-                                , t.Velocity, t.RepeatCount, t.AutoReverse, t.ConstantVelocity);
+                            Animation a = GenerateProjectilePath(new Point[] { sourceLocation, ep }
+                                , new Size(template.Width1, template.Height1)
+                                , new Size(template.Width2, template.Height2)
+                                , template.StrokeTemplate.GenerateBrush()
+                                , template.FillTemplate.GenerateBrush()
+                                , template.Opacity1, template.Opacity2, template.StrokeThickness
+                                , template.AccelerationRatio, template.Erradicity, template.AnimationTime
+                                , template.Velocity, template.RepeatCount, template.AutoReverse, template.ConstantVelocity);
                             list.Add(a);
                         }
                         return new AnimationGroup(list.ToArray());
                     }
                 case AnimationType.ProjectileSelfToTarget:
-                    return CreateEllipseProjectile(pPlayer, pEnemy[0], t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(),
-                        t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2),
-                        t.AccelerationRatio, t.Erradicity, t.AnimationTime, t.Velocity, t.RepeatCount, t.AutoReverse, t.ConstantVelocity);
+                    return CreateEllipseProjectile(sourceLocation, targetLocations[0], template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(),
+                        template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2),
+                        template.AccelerationRatio, template.Erradicity, template.AnimationTime, template.Velocity, template.RepeatCount, template.AutoReverse, template.ConstantVelocity);
                 case AnimationType.ScreenBlink:
                     {
                         RectangleGeometry rg = new RectangleGeometry(bounds);
-                        Animation a = GenerateTimedFigure(rg, t.StrokeTemplate.GenerateBrush(), t.FillTemplate.GenerateBrush(), t.StrokeThickness,
-                            t.Opacity1, t.Opacity2, t.Erradicity, t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                        Animation a = GenerateTimedFigure(rg, template.StrokeTemplate.GenerateBrush(), template.FillTemplate.GenerateBrush(), template.StrokeThickness,
+                            template.Opacity1, template.Opacity2, template.Erradicity, template.AnimationTime, template.RepeatCount, template.AutoReverse);
                         return new AnimationGroup(new Animation[] { a });
                     }
                 case AnimationType.SpiralTarget:
-                    return CreateEllipseSpiral(t.ChildCount, pEnemy[0], t.RadiusFromFocus, t.SpiralRate, t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2),t.AccelerationRatio, t.Erradicity,
-                        t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateEllipseSpiral(template.ChildCount, targetLocations[0], template.RadiusFromFocus, template.SpiralRate, template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2),template.AccelerationRatio, template.Erradicity,
+                        template.AnimationTime, template.RepeatCount, template.AutoReverse);
                 case AnimationType.SpiralSelf:
-                    return CreateEllipseSpiral(t.ChildCount, pPlayer, t.RadiusFromFocus, t.SpiralRate, t.StrokeTemplate.GenerateBrush(),
-                        t.FillTemplate.GenerateBrush(), t.StrokeThickness, t.Opacity1, t.Opacity2, new Size(t.Width1, t.Height1),
-                        new Size(t.Width2, t.Height2), t.AccelerationRatio, t.Erradicity,
-                        t.AnimationTime, t.RepeatCount, t.AutoReverse);
+                    return CreateEllipseSpiral(template.ChildCount, sourceLocation, template.RadiusFromFocus, template.SpiralRate, template.StrokeTemplate.GenerateBrush(),
+                        template.FillTemplate.GenerateBrush(), template.StrokeThickness, template.Opacity1, template.Opacity2, new Size(template.Width1, template.Height1),
+                        new Size(template.Width2, template.Height2), template.AccelerationRatio, template.Erradicity,
+                        template.AnimationTime, template.RepeatCount, template.AutoReverse);
             }
             return null;
         }
@@ -343,22 +343,23 @@ namespace Rogue.NET.Core.Media
             prim.SetAnimations(new AnimationClock[] { clock });
             return new Animation(new ITimedGraphic[] { prim });
         }
-        public Animation GenerateProjectilePath(Point[] pts, Size s1, Size s2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int velocity, int repeatCount, bool autoreverse, bool constVelocity)
+        public Animation GenerateProjectilePath(Point[] points, Size size1, Size size2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int velocity, int repeatCount, bool autoreverse, bool constVelocity)
         {
             //Generate Path geometry from points
-            PathGeometry pg = new PathGeometry();
-            PathFigure f = new PathFigure();
-            double dpath = 0;
-            for (int i = 0; i < pts.Length - 1; i++)
+            var geometry = new PathGeometry();
+            var figure = new PathFigure();
+            var pathLength = 0D;
+
+            for (int i = 0; i < points.Length - 1; i++)
             {
-                Point p1 = pts[i];
-                Point p2 = pts[i + 1];
+                Point p1 = points[i];
+                Point p2 = points[i + 1];
                 if (i == 0)
-                    f.StartPoint = p1;
-                f.Segments.Add(new LineSegment(p2, false));
-                dpath += Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2));
+                    figure.StartPoint = p1;
+                figure.Segments.Add(new LineSegment(p2, false));
+                pathLength += Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2));
             }
-            pg.Figures.Add(f);
+            geometry.Figures.Add(figure);
 
             //Check for const velocity
             if (constVelocity)
@@ -368,7 +369,7 @@ namespace Rogue.NET.Core.Media
                     velocity = DEFAULT_VELOCITY;
 
                 //convert to seconds
-                time = (int)((dpath * 1000) / velocity);
+                time = (int)((pathLength * 1000) / velocity);
                 if (time <= 0)
                     time = 500;
             }
@@ -381,12 +382,12 @@ namespace Rogue.NET.Core.Media
             DoubleAnimationUsingPath ax = new DoubleAnimationUsingPath();
             DoubleAnimationUsingPath ay = new DoubleAnimationUsingPath();
             DoubleAnimationUsingPath aa = new DoubleAnimationUsingPath();
-            DoubleAnimation sxa = new DoubleAnimation(1, s2.Width / s1.Width, d);
-            DoubleAnimation sya = new DoubleAnimation(1, s2.Height / s1.Height, d);
+            DoubleAnimation sxa = new DoubleAnimation(1, size2.Width / size1.Width, d);
+            DoubleAnimation sya = new DoubleAnimation(1, size2.Height / size1.Height, d);
             DoubleAnimation oa = new DoubleAnimation(opacity1, opacity2, dErr);
-            ax.PathGeometry = pg;
-            ay.PathGeometry = pg;
-            aa.PathGeometry = pg;
+            ax.PathGeometry = geometry;
+            ay.PathGeometry = geometry;
+            aa.PathGeometry = geometry;
             ax.RepeatBehavior = rb;
             ay.RepeatBehavior = rb;
             aa.RepeatBehavior = rb;
@@ -427,7 +428,7 @@ namespace Rogue.NET.Core.Media
             csy.Controller.Pause();
             co.Controller.Pause();
 
-            EllipseGeometry eg = new EllipseGeometry(new Point(0, 0), s1.Width, s1.Height);
+            EllipseGeometry eg = new EllipseGeometry(new Point(0, 0), size1.Width, size1.Height);
 
             RotateTransform rt = new RotateTransform();
             TranslateTransform tt = new TranslateTransform();

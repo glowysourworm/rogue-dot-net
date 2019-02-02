@@ -161,17 +161,26 @@
 
 - Animation refactoring:  Support for...
 
+		- RANDOM SEED EACH ANIMATION (NO REPEATS!)
+
 		- Fading Chain (chain lightning)
 		- Earthquake! (shaking screen)
 		- "Jumps" (Character jumps .. like a prelude to an "Earthquake" skill or something)
 		- Other shapes (square, rectangle, some, other, enumerated, types)
-		- Easing functions
+		- Easing functions (Normal easing, plus things like "Pause and go" that make it come alive!)
 		- More interesting animations (ease out, come back, etc...)
 		- Better language to describe more complex animations
 		- Slow animation speeds relative to animation time
 		- Criss Cross animation
 		- Tracers!
 		- Spiral inward
+		- Lightning
+		- Screen Shaking
+		- Gas Animation (Something like burning flames.. figure out how to "diffuse" them upward)
+		- Gaseous Projectile - Diffuse Bubbles while travelling / Also Goo (maybe have a weight parameter)
+		- "Dim the Lights" (Turns down screen brightness during animation)
+		- Explosion Animation - Something like a "half dome" over a character
+		- "Hold End" Parameter
 		
 - Water:  Player has a "Water Meter". Standing water could be a doodad to replenish your supply. Would need alterations to
 		  support water replenishment.
