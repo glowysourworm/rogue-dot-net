@@ -16,7 +16,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             result += player.Alteration.GetAlterations().Sum(x => x.FoodUsagePerTurn);
 
             // Religious Alteration
-            result += player.ReligiousAlteration.AttributeEffect.FoodUsagePerTurn;
+            if (player.ReligiousAlteration.HasAttributeEffect)
+                result += player.ReligiousAlteration.AttributeEffect.FoodUsagePerTurn;
 
             return Math.Max(0, result);
         }

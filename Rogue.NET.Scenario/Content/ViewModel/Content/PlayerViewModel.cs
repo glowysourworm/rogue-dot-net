@@ -646,7 +646,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                         .Select(x => new AttackAttributeViewModel(x)));
                 }
 
-                if (player.ReligiousAlteration.AttributeEffect != null)
+                if (player.ReligiousAlteration.HasAttributeEffect)
                 {
                     // Must be ONE attribute alteration if effect is non-null
                     var attribute = player.ReligiousAlteration

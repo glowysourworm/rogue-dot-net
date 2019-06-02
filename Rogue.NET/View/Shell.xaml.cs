@@ -2,16 +2,13 @@
 using Prism.Events;
 using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
-using Rogue.NET.Scenario.Views;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
