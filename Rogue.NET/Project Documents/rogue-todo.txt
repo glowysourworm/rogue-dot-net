@@ -495,15 +495,35 @@ IMMEDIATE TODO'S:
 	- Nice to have:  Explain attack attributes by having a separate UI to show how they apply
 ---------------
 	
-	- Cosmetic:  Widen the type selectors for layouts.
-	- Linear Corridors:  Need new corridor type to make diagonal corridors look nice
 	- Random Room Placement:  Fix missing edge on the layout - not sure why it's not rendering (maybe padding needed?)
-	- Animations:  For source = target case, prevent crash; but log a warning somewhere	
 	- PERMADEATH
 	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.
+	
+	- FIRST BIG TODO:  Refactor Animation targeting type to handle physical cases:
+	
+					   Problem:  There's an un-written "coupling" between animations and alterations. Example is "Run Away"
+								 which affects the source character only (as an alteration). Choosing "Target to Source" animation
+								 type can cause a crash or issue because they don't relate.
+								 
+					   Solution: Force animation type selection to work with physical content and alteration calculating. An example
+								 would be calculating some kind of "range". It's usual for an animation to have some kind of range 
+								 associated with it; but it relies on the considered targets. 
+								 
+							     So, "Targets in range" would become something like "Calculated Alteration Targets". If you tried
+								 to apply this to "Source.RunAway" then you'd have the following:  
+								 
+								 - Calulate Affected Characters => Source (enemy)
+								 - Calulate Altertion Targets => Source (enemy)
+								 - Apply Animation: No animation applied because there is no target apart from source
+								 
+					   Other Solution:  Add specific parameters to the animation related to the calculation. Example: Range parameter.
+								 
+					   Main Idea: If this can be accomplished without refactoring then it should be validated that any animation 
+								  support be verified before hand so that you don't have issues in game. 
+	
 	- NEXT BIG TODO:  Figure out a way to calculate combat value for items based on player parameters (Level, Strength, Agility, Intelligence)
 	- OTHER BIG TODO:  Redo enemy behavior
 	- OTHER OTHER BIG TODO:  Terrain

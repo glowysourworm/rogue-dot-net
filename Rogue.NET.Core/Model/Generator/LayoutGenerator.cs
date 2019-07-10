@@ -271,8 +271,11 @@ namespace Rogue.NET.Core.Model.Generator
                 var roomWidth = _randomSequenceGenerator.Get(template.RoomWidthMin, template.RoomWidthLimit + 1);
                 var roomHeight = _randomSequenceGenerator.Get(template.RoomHeightMin, template.RoomHeightLimit + 1);
 
-                var column = _randomSequenceGenerator.Get(0, bounds.CellWidth - roomWidth);
-                var row = _randomSequenceGenerator.Get(0, bounds.CellHeight - roomHeight);
+                // Choose placement of room - LEAVING ONE CELL PADDING
+                //
+                // NOTE*** LEFT ONE CELL PADDING FOR RENDERING REASONS
+                var column = _randomSequenceGenerator.Get(1, bounds.CellWidth - roomWidth);
+                var row = _randomSequenceGenerator.Get(1, bounds.CellHeight - roomHeight);
 
                 // Create cells to fill the room
                 for (int roomCol = column; roomCol < column + roomWidth; roomCol++)
@@ -629,9 +632,9 @@ namespace Rogue.NET.Core.Model.Generator
         /// </summary>
         private IEnumerable<Cell> CreateLinearCorridor(LevelGrid grid, Cell cell1, Cell cell2, LayoutTemplate template)
         {
-            // Check for neighboring or same-identity cell. For this case, just return an empty array
+            // Check for neighboring (cardinal) or same-identity cell. For this case, just return an empty array
             if (cell1.Location.Equals(cell2.Location) ||
-                grid.GetAdjacentLocations(cell1.Location)
+                grid.GetCardinalAdjacentCells(cell1.Location)
                     .Any(x => x.Equals(cell2.Location)))
                 return new Cell[] { };
 

@@ -24,21 +24,21 @@
             <!-- Type -->
             <Grid Margin="10">
                 <TextBlock Text="Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutType}" Width="200" HorizontalAlignment="Right" />
             </Grid>
             
             <!-- Room Placement Type -->
             <Grid Margin="10"
                   Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedRectangularRooms}}">
                 <TextBlock Text="Room Placement" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding RoomPlacementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutRoomPlacementType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding RoomPlacementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutRoomPlacementType}" Width="200" HorizontalAlignment="Right" />
             </Grid>
             
             <!-- Cellular Automata Type -->
             <Grid Margin="10"
                   Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:LayoutType.ConnectedCellularAutomata}}">
                 <TextBlock Text="Cellular Automata Type" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding CellularAutomataType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCellularAutomataType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding CellularAutomataType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCellularAutomataType}" Width="200" HorizontalAlignment="Right" />
             </Grid>            
 
             <!-- Room Connection Type -->
@@ -50,7 +50,7 @@
                     </MultiBinding>
                 </Grid.Visibility>                
                 <TextBlock Text="Room Connection" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding ConnectionType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding ConnectionType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionType}" Width="200" HorizontalAlignment="Right" />
             </Grid>
 
             <!-- Room Connection Geometry Type -->
@@ -62,7 +62,7 @@
                     </MultiBinding>
                 </Grid.Visibility>
                 <TextBlock Text="Room Connection Geometry" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding ConnectionGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionGeometryType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding ConnectionGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutConnectionGeometryType}" Width="200" HorizontalAlignment="Right" />
             </Grid>
 
             <!-- Room Corridor Geometry Type -->
@@ -74,7 +74,7 @@
                     </MultiBinding>
                 </Grid.Visibility>
                 <TextBlock Text="Room Corridor Geometry" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <views:EnumComboBox EnumValue="{Binding CorridorGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCorridorGeometryType}" Width="150" HorizontalAlignment="Right" />
+                <views:EnumComboBox EnumValue="{Binding CorridorGeometryType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:LayoutCorridorGeometryType}" Width="200" HorizontalAlignment="Right" />
             </Grid>
 
             <!-- General Parameters -->

@@ -639,6 +639,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var targets = animationData.TargetLocations.Select(x => _scenarioUIGeometryService.Cell2UI(x, true)).ToArray();
             var bounds = new Rect(0, 0, _levelWidth, _levelHeight);
 
+            // Put in a catch for overlapping targets with the source
+            //
+            // TODO: Fix any sources of this and remove
+            if (targets.Any(target => target.X == source.X && target.Y == source.Y))
+            {
+                MessageBox.Show("Animation Error:  Overlapping source and target");
+                return;
+            }
+
             //Create animations
             var animations = animationData.Animations.Select(x =>
             {

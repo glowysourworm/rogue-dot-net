@@ -88,12 +88,6 @@ namespace Rogue.NET.Core.Media
             }
         }
 
-        public IEnumerable<ITimedGraphic> CreateAnimation(IEnumerable<AnimationTemplate> animationTemplates, Rect bounds, Point sourcePoint, Point[] targetPoints)
-        {
-            return animationTemplates.Select(x => CreateAnimation(x, bounds, sourcePoint, targetPoints))
-                                     .ToList();
-        }
-
         public ITimedGraphic CreateAnimation(AnimationTemplate template, Rect bounds, Point sourceLocation, Point[] targetLocations)
         {
             switch (template.Type)
