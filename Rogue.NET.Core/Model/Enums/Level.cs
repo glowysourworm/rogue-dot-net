@@ -78,13 +78,8 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum LayoutType : int
     {
-        Normal = 0,
+        // (DON'T RENUMBER) Numbers prevent loss of data - so enums can be refactored
         Maze = 1,
-        Teleport = 2,
-        TeleportRandom = 3,
-        // (DON'T RENUMBER) Shop was removed - had to number these to support saved configuration
-        Hall = 5,
-        BigRoom = 6,
         ConnectedRectangularRooms = 7,
         ConnectedCellularAutomata = 8      
     }
@@ -110,12 +105,7 @@ namespace Rogue.NET.Core.Model.Enums
         /// <summary>
         /// Uses Minimum Spanning Tree algorithm to generate room connections
         /// </summary>
-        MinimumSpanningTree = 1,
-
-        /// <summary>
-        /// Creates connections to a central room chosen at random
-        /// </summary>
-        CentralHub = 2
+        MinimumSpanningTree = 1
     }
     public enum LayoutCorridorGeometryType : int
     {
@@ -139,17 +129,7 @@ namespace Rogue.NET.Core.Model.Enums
         /// <summary>
         /// Random placement of rectangular rooms
         /// </summary>
-        Random = 1,
-
-        /// <summary>
-        /// Cellular Automata 4-5 algorithm that leaves large open spaces
-        /// </summary>
-        CellularAutomataOpen = 2,
-
-        /// <summary>
-        /// Cellular Automata 4-5 algorithm that helps fill in large open spaces with walls
-        /// </summary>
-        CellularAutomataFilled = 3
+        Random = 1
     }
     public enum DoodadType
     {

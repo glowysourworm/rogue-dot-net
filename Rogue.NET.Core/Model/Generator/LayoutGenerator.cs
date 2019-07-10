@@ -470,9 +470,6 @@ namespace Rogue.NET.Core.Model.Generator
                 case LayoutConnectionGeometryType.MinimumSpanningTree:
                     CreateMinimumSpanningTreeCorridors(grid, template);
                     break;
-                case LayoutConnectionGeometryType.CentralHub:
-                    CreateCentralHubCorridors(grid, template);
-                    break;
                 default:
                     throw new Exception("Invalid room connection geometry type");
             }
@@ -509,44 +506,6 @@ namespace Rogue.NET.Core.Model.Generator
 
                         ConnectRooms(grid, room, otherRoom, template);
                     }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Creates corridors using a random room as a central hub
-        /// </summary>
-        private void CreateCentralHubCorridors(LevelGrid grid, LayoutTemplate template)
-        {
-            if (grid.Rooms.Count() == 1)
-                return;
-
-            // Pick a central room
-            var centralRoom = grid.Rooms.PickRandom(_randomSequenceGenerator.Get());
-
-            // Save corridor cells until the very end to avoid issues with overlapping corridors
-            var corridors = new List<IEnumerable<Cell>>();
-
-            foreach (var room in grid.Rooms)
-            {
-                if (room != centralRoom)
-                {
-                    // Locate the nearest neighbor cells
-                    Cell room1Cell = null;
-                    Cell room2Cell = null;
-                    CalculateNearestNeighborCells(template, grid, room, centralRoom, out room1Cell, out room2Cell);
-
-                    // Create the corridor cells 
-                    corridors.Add(CreateCorridor(grid, room1Cell, room2Cell, template));
-                }
-            }
-
-            // Add all corridors to the grid
-            foreach (var corridor in corridors)
-            {
-                foreach (var cell in corridor)
-                {
-                    grid[cell.Location.Column, cell.Location.Row] = cell;
                 }
             }
         }
