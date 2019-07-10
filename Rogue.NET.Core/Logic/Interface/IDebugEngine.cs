@@ -19,6 +19,11 @@ namespace Rogue.NET.Core.Logic.Interface
         void SimulateAdvanceToNextLevel();
 
         /// <summary>
+        /// Puts player on next level at stairs up
+        /// </summary>
+        void AdvanceToNextLevel();
+
+        /// <summary>
         /// Identifies all items in the player's inventory
         /// </summary>
         void IdentifyAll();
@@ -27,5 +32,10 @@ namespace Rogue.NET.Core.Logic.Interface
         /// Gives the Player 10,000 experience
         /// </summary>
         void GivePlayerExperience();
+
+        /// <summary>
+        /// Reveals all cells in the level
+        /// </summary>
+        void RevealAll();
     }
 }

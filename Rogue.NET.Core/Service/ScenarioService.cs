@@ -288,9 +288,15 @@ namespace Rogue.NET.Core.Service
                     break;
 
 #if DEBUG
-                case LevelActionType.DebugNext:
+                case LevelActionType.DebugSimulateNext:
                     {
                         _debugEngine.SimulateAdvanceToNextLevel();
+                        nextAction = LevelContinuationAction.DoNothing;
+                    }
+                    break;
+                case LevelActionType.DebugNext:
+                    {
+                        _debugEngine.AdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
@@ -304,6 +310,12 @@ namespace Rogue.NET.Core.Service
                     {
                         _debugEngine.GivePlayerExperience();
                         nextAction = LevelContinuationAction.DoNothing;
+                    }
+                    break;
+                case LevelActionType.DebugRevealAll:
+                    {
+                        _debugEngine.RevealAll();
+                        nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
 #endif

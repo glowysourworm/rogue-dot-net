@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Content.Interface
@@ -43,5 +44,10 @@ namespace Rogue.NET.Core.Logic.Content.Interface
                             double effectRange,
                             Character character,
                             out bool affectedCharacterExpected);
+
+        /// <summary>
+        /// Returns flag if the animations require a target
+        /// </summary>
+        bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations);
     }
 }

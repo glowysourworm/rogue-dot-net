@@ -25,6 +25,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Logic.Content.Enum;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -109,7 +110,7 @@ namespace Rogue.NET.Core.Logic
         public ScenarioObject Move(Compass direction)
         {
             // Desired Location
-            var desiredLocation = _layoutEngine.GetPointInDirection(_modelService.Level.Grid, _modelService.Player.Location, direction);
+            var desiredLocation = _modelService.Level.Grid.GetPointInDirection(_modelService.Player.Location, direction);
 
             // Invalid location
             if (desiredLocation == CellPoint.Empty)
@@ -135,7 +136,7 @@ namespace Rogue.NET.Core.Logic
             var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, _modelService.Player.Location, true);
 
             // Get direction for random move -> Move()
-            var direction = _layoutEngine.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation);
+            var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation);
 
             return Move(direction);
         }
@@ -194,7 +195,7 @@ namespace Rogue.NET.Core.Logic
 
             // Get points involved with the attack
             var location = _modelService.Player.Location;
-            var attackLocation = _layoutEngine.GetPointInDirection(_modelService.Level.Grid, location, direction);
+            var attackLocation = _modelService.Level.Grid.GetPointInDirection(location, direction);
 
             // Invalid attack location
             if (attackLocation == CellPoint.Empty)

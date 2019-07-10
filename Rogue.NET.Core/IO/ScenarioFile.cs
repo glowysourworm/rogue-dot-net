@@ -389,7 +389,7 @@ namespace Rogue.NET.Core.IO
             Parallel.ForEach(dungeon.LoadedLevels, (level) =>
             {
                 var data = BinarySerializer.SerializeAndCompress(level);
-                while (!compressedDictionary.TryAdd(level.Number,data)) Thread.Sleep(10);
+                while (!compressedDictionary.TryAdd(level.Number, data)) Thread.Sleep(10);
             });
 
             // Order entries by level- add data to in memory file

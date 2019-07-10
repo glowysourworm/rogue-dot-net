@@ -386,21 +386,16 @@ namespace Rogue.NET.ScenarioEditor.Service
                                                                switch (template.Type)
                                                                {
                                                                    default:
-                                                                   case LayoutType.Normal:
-                                                                   case LayoutType.Teleport:
-                                                                   case LayoutType.TeleportRandom:
-                                                                   case LayoutType.Hall:
-                                                                   case LayoutType.BigRoom:
+                                                                   case LayoutType.ConnectedRectangularRooms:
+                                                                   case LayoutType.ConnectedCellularAutomata:
 
                                                                        // Measure  = # of traversals * length of traversal for
                                                                        //            a single pass only * 4;
-                                                                       return template.RoomDivCellHeight * template.NumberRoomRows *
-                                                                              template.NumberRoomCols * 4;
+                                                                       return template.Width * template.Height * 4;
                                                                    case LayoutType.Maze:
 
                                                                        // Measure = Made up :) 
-                                                                       return 100 * template.NumberRoomCols * template.RoomDivCellWidth *
-                                                                                    template.NumberRoomRows * template.RoomDivCellHeight;
+                                                                       return 100 * template.Width * template.Height;
                                                                }
                                                            });
 

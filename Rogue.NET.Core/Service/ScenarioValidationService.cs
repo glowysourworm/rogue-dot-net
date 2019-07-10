@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Converter.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
@@ -17,9 +19,13 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(IScenarioValidationService))]
     public class ScenarioValidationService : IScenarioValidationService
     {
+        private LayoutHeightConverter _layoutHeightConverter;
+        private LayoutWidthConverter _layoutWidthConverter;
+
         public ScenarioValidationService()
         {
-
+            _layoutHeightConverter = new LayoutHeightConverter();
+            _layoutWidthConverter = new LayoutWidthConverter();
         }
 
         public IEnumerable<IScenarioValidationMessage> Validate(ScenarioConfigurationContainer configuration)
@@ -98,6 +104,68 @@ namespace Rogue.NET.Core.Service
                             Passed = false,
                             InnerMessage = "Level " + x.ToString() + " has no layout set"
                         });
+                })),
+                new ScenarioValidationRule("Layout max size must be < 10,000 cells", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var layoutSizes = configuration.DungeonTemplate
+                                                   .LayoutTemplates
+                                                   .Select(template =>
+                                                   {
+                                                       return new { Size = _layoutHeightConverter.Convert(template) * _layoutWidthConverter.Convert(template),
+                                                                    TemplateName = template.Name };
+                                                   })
+                                                   .Where(result => result.Size >= 10000)
+                                                   .Actualize();
+
+                    return layoutSizes.Select(result =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Layout Template " + result.TemplateName + " has a size of " + result.Size.ToString()
+                        });
+                })),
+                new ScenarioValidationRule("Layout Connection Geometry Type of Rectilinear should only be paired with a Room Placement Type of RectangularGrid", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var layouts = configuration.DungeonTemplate
+                                                .LayoutTemplates
+                                                .Where(template =>
+                                                {
+                                                    return template.ConnectionGeometryType == LayoutConnectionGeometryType.Rectilinear &&
+                                                           (template.RoomPlacementType != LayoutRoomPlacementType.RectangularGrid ||
+                                                            template.Type == LayoutType.ConnectedCellularAutomata);
+                                                })
+                                                .Select(template => template.Name)
+                                                .Actualize();
+
+                    return layouts.Select(layoutName =>
+                    {
+                        return new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Layout Template " + layoutName
+                        };
+                    });
+                })),
+                new ScenarioValidationRule("Layout Corridor Connection Type must be Corridor, Teleporter, or TeleporterRandom, for any Minimum Spanning Tree type (Random Room Placement or Cellular Automata)", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var layouts = configuration.DungeonTemplate
+                                                .LayoutTemplates
+                                                .Where(template =>
+                                                {
+                                                    return template.ConnectionGeometryType == LayoutConnectionGeometryType.MinimumSpanningTree &&
+                                                           template.ConnectionType == LayoutConnectionType.CorridorWithDoors;
+                                                })
+                                                .Select(template => template.Name)
+                                                .Actualize();
+
+                    return layouts.Select(layoutName =>
+                    {
+                        return new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Layout Template " + layoutName
+                        };
+                    });
                 })),
                 new ScenarioValidationRule("Alterations (and / or) Learned Skills have to be set for all configured assets", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {

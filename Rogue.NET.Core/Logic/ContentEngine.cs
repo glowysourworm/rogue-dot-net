@@ -742,7 +742,7 @@ namespace Rogue.NET.Core.Logic
                                         .FirstOrDefault();
                 case CharacterMovementType.StandOffIsh:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
-                                        .OrderBy(x => Calculator.EuclideanDistance(x, desiredLocation))
+                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(enemy.Location, _modelService.Player.Location, enemy.BehaviorDetails.DisengageRadius, enemy.BehaviorDetails.CanOpenDoors);
@@ -770,7 +770,7 @@ namespace Rogue.NET.Core.Logic
             var openingDirection2 = Compass.Null;
             var shouldMoveToOpeningPosition1 = false;
 
-            var moveDirection = _layoutEngine.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
+            var moveDirection = LevelGridExtension.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
 
             var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsPathToCellThroughDoor(
                                 _modelService.Level.Grid, 

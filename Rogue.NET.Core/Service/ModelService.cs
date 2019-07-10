@@ -203,7 +203,7 @@ namespace Rogue.NET.Core.Service
         {
             foreach (var scenarioObject in this.Level.GetContents())
             {
-                var cell = this.Level.Grid.GetCell(scenarioObject.Location);
+                var cell = this.Level.Grid[scenarioObject.Location.Column, scenarioObject.Location.Row];
 
                 scenarioObject.IsExplored = cell.IsPhysicallyVisible;
                 scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible && !scenarioObject.IsHidden;

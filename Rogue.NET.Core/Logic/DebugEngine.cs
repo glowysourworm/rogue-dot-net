@@ -4,22 +4,25 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Logic
 {
+    /// <summary>
+    /// Component with modified routines to do things solely for the purpose of debugging and programming
+    /// the scenario.
+    /// </summary>
     [Export(typeof(IDebugEngine))]
     public class DebugEngine : IDebugEngine
     {
         readonly IModelService _modelService;
         readonly IContentEngine _contentEngine;
+        readonly IReligionEngine _religionEngine;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IPlayerProcessor _playerProcessor;
         readonly IRogueUpdateFactory _rogueUpdateFactory;
@@ -28,12 +31,14 @@ namespace Rogue.NET.Core.Logic
         public DebugEngine(
             IModelService modelService, 
             IContentEngine contentEngine, 
+            IReligionEngine religionEngine,
             IScenarioMessageService scenarioMessageService,
             IPlayerProcessor playerProcessor,
             IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
-            _contentEngine = contentEngine;           
+            _contentEngine = contentEngine;
+            _religionEngine = religionEngine;
             _scenarioMessageService = scenarioMessageService;
             _playerProcessor = playerProcessor;
             _rogueUpdateFactory = rogueUpdateFactory;
@@ -70,6 +75,42 @@ namespace Rogue.NET.Core.Logic
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
         }
 
+        public void RevealAll()
+        {
+            // TODO:  Should use a spell to call the spell engine for this. 
+            foreach (var cell in _modelService.Level.Grid.GetCells())
+                cell.IsRevealed = true;
+
+            if (_modelService.Level.HasStairsDown)
+                _modelService.Level.StairsDown.IsRevealed = true;
+
+            if (_modelService.Level.HasStairsUp)
+                _modelService.Level.StairsUp.IsRevealed = true;
+
+            foreach (var consumable in _modelService.Level.Consumables)
+                consumable.IsRevealed = true;
+
+            foreach (var equipment in _modelService.Level.Equipment)
+                equipment.IsRevealed = true;
+
+            foreach (var scenarioObject in _modelService.Level.GetContents())
+            {
+                scenarioObject.IsHidden = false;
+                scenarioObject.IsRevealed = true;
+            }
+
+            foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
+                consumable.IsRevealed = true;
+
+            _modelService.UpdateVisibleLocations();
+            _modelService.UpdateContents();
+        }
+
+        public void AdvanceToNextLevel()
+        {
+            RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
+        }
+
         public void SimulateAdvanceToNextLevel()
         {
             var player = _modelService.Player;
@@ -100,8 +141,10 @@ namespace Rogue.NET.Core.Logic
             foreach (var equipment in level.Equipment)
                 player.Equipment.Add(equipment.Id, equipment);
 
-            foreach (var enemy in level.Enemies)
+            for (int i = level.Enemies.Count() - 1; i >= 0; i--)
             {
+                var enemy = level.Enemies.ElementAt(i);
+
                 foreach (var equipment in enemy.Equipment)
                 {
                     // Un-equip item before giving to the player
@@ -114,17 +157,40 @@ namespace Rogue.NET.Core.Logic
                     player.Consumables.Add(consumable.Key, consumable.Value);
 
                 // Calculate player gains
-                _playerProcessor.CalculateEnemyDeathGains(player, enemy);
+                _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
+
+                //Set enemy identified
+                _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
+
+                // Check for Enemy Religion to identify
+                if (enemy.ReligiousAlteration.IsAffiliated())
+                    _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.ReligionName);
             }
 
+            // REMOVE ALL CONTENTS
             for (int i = level.Consumables.Count() - 1; i >= 0; i--)
-                level.RemoveContent(level.Consumables.ElementAt(i));
+            {
+                var consumable = level.Consumables.ElementAt(i);
+
+                level.RemoveContent(consumable);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, consumable.Id));
+            }
 
             for (int i = level.Equipment.Count() - 1; i >= 0; i--)
-                level.RemoveContent(level.Equipment.ElementAt(i));
+            {
+                var equipment = level.Equipment.ElementAt(i);
+
+                level.RemoveContent(equipment);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, equipment.Id));
+            }
 
             for (int i = level.Enemies.Count() - 1; i >= 0; i--)
-                level.RemoveContent(level.Enemies.ElementAt(i));
+            {
+                var enemy = level.Enemies.ElementAt(i);
+
+                level.RemoveContent(enemy);
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
+            }
 
             if (level.HasStairsDown)
                 player.Location = level.StairsDown.Location;

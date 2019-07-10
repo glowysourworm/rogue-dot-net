@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         void Reseed(int seed);
 
         /// <summary>
-        /// Generates a U[0,1] random number
+        /// Generates a U[0,1) random number
         /// </summary>
         double Get();
 

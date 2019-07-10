@@ -5,16 +5,16 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Logic.Processing.Interface;
-using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.ScenarioMessage;
-using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Logic
         #region (public) Player Action Methods
         public void Search(LevelGrid grid, CellPoint location)
         {
-            Cell c = grid.GetCell(location);
+            Cell c = grid[location.Column, location.Row];
             Cell n = grid[location.Column, location.Row - 1];
             Cell s = grid[location.Column, location.Row + 1];
             Cell e = grid[location.Column + 1, location.Row];
@@ -56,76 +56,16 @@ namespace Rogue.NET.Core.Logic
             Cell se = grid[location.Column + 1, location.Row + 1];
             Cell sw = grid[location.Column - 1, location.Row + 1];
 
-            var cells = new Cell[] { c, n, s, e, w, ne, sw, se, sw };
+            var cells = new Cell[] { c, n, s, e, w, ne, sw, se, sw }.Where(x => x != null).ToArray();
+            var visibleDoors = cells.Select(x => x.VisibleDoors).ToArray();
 
-            var visibleDoors = new Compass[] {
-                c?.VisibleDoors ?? Compass.Null,
-                n?.VisibleDoors ?? Compass.Null,
-                s?.VisibleDoors ?? Compass.Null,
-                e?.VisibleDoors ?? Compass.Null,
-                w?.VisibleDoors ?? Compass.Null,
-                ne?.VisibleDoors ?? Compass.Null,
-                nw?.VisibleDoors ?? Compass.Null,
-                se?.VisibleDoors ?? Compass.Null,
-                sw?.VisibleDoors  ?? Compass.Null};
-
-            if (c != null)
-            {
-                c.NorthDoorSearchCounter--;
-                c.SouthDoorSearchCounter--;
-                c.EastDoorSearchCounter--;
-                c.WestDoorSearchCounter--;
-            }
-            if (n != null)
-            {
-                n.SouthDoorSearchCounter--;
-                n.EastDoorSearchCounter--;
-                n.WestDoorSearchCounter--;
-            }
-            if (s != null)
-            {
-                s.NorthDoorSearchCounter--;
-                s.EastDoorSearchCounter--;
-                s.WestDoorSearchCounter--;
-            }
-            if (e != null)
-            {
-                e.WestDoorSearchCounter--;
-                e.NorthDoorSearchCounter--;
-                e.SouthDoorSearchCounter--;
-            }
-            if (w != null)
-            {
-                w.EastDoorSearchCounter--;
-                w.NorthDoorSearchCounter--;
-                w.SouthDoorSearchCounter--;
-            }
-
-            if (ne != null)
-            {
-                ne.SouthDoorSearchCounter--;
-                ne.WestDoorSearchCounter--;
-            }
-            if (nw != null)
-            {
-                nw.SouthDoorSearchCounter--;
-                nw.EastDoorSearchCounter--;
-            }
-            if (se != null)
-            {
-                se.NorthDoorSearchCounter--;
-                se.WestDoorSearchCounter--;
-            }
-            if (sw != null)
-            {
-                sw.NorthDoorSearchCounter--;
-                sw.EastDoorSearchCounter--;
-            }
+            // Search all cells current and adjacent
+            cells.ForEach(cell => cell.SearchDoors());
 
             var topologyChange = false;
             for (int i=0;i<cells.Length && !topologyChange;i++)
             {
-                topologyChange = topologyChange || (cells[i]?.VisibleDoors ?? Compass.Null) != visibleDoors[i];
+                topologyChange = topologyChange || (cells[i].VisibleDoors != visibleDoors[i]);
             }
 
             if (topologyChange)
@@ -152,11 +92,11 @@ namespace Rogue.NET.Core.Logic
                 if (shouldMoveToOpeningPosition1)
                     return;
 
-                var characterCell = grid.GetCell(characterLocation);
-                var openingPositionCell = grid.GetCell(openingPosition2);
+                var characterCell = grid[characterLocation.Column, characterLocation.Row];
+                var openingPositionCell = grid[openingPosition2.Column, openingPosition2.Row];
 
-                characterCell.ToggleDoor(direction);
-                openingPositionCell.ToggleDoor(openingDirection2);
+                characterCell.OpenDoor(direction);
+                openingPositionCell.OpenDoor(openingDirection2);
 
                 _modelService.UpdateVisibleLocations();
                 _modelService.UpdateContents();
@@ -181,16 +121,16 @@ namespace Rogue.NET.Core.Logic
             openingDirection2 = Compass.Null;
             shouldMoveToOpeningPosition1 = false;
 
-            var location2 = GetPointInDirection(grid, location1, openingDirection1);
+            var location2 = grid.GetPointInDirection(location1, openingDirection1);
 
-            Cell cell1 = grid.GetCell(location1);
-            Cell cell2 = grid.GetCell(location2);
+            Cell cell1 = grid[location1.Column, location1.Row];
+            Cell cell2 = grid[location2.Column, location2.Row];
 
             if (cell1 == null || cell2 == null)
                 return false;
 
-            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
-            var oppositeDirection = GetOppositeDirection(direction);
+            var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = LevelGridExtension.GetOppositeDirection(direction);
 
             switch (direction)
             {
@@ -219,8 +159,8 @@ namespace Rogue.NET.Core.Logic
                         if (diag1 == null && diag2 == null)
                             return false;
 
-                        var cardinal1Opposite = GetOppositeDirection(cardinal1);
-                        var cardinal2Opposite = GetOppositeDirection(cardinal2);
+                        var cardinal1Opposite = LevelGridExtension.GetOppositeDirection(cardinal1);
+                        var cardinal2Opposite = LevelGridExtension.GetOppositeDirection(cardinal2);
 
                         if (diag1 != null)
                         {
@@ -285,8 +225,8 @@ namespace Rogue.NET.Core.Logic
         public bool IsPathToCellThroughWall(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
         {
             var grid = level.Grid;
-            var cell1 = grid.GetCell(location1);
-            var cell2 = grid.GetCell(location2);
+            var cell1 = grid[location1.Column, location1.Row];
+            var cell2 = grid[location2.Column, location2.Row];
 
             if (cell1 == null || cell2 == null)
                 return false;
@@ -294,8 +234,8 @@ namespace Rogue.NET.Core.Logic
             if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
                 return true;
 
-            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
-            var oppositeDirection = GetOppositeDirection(direction);
+            var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = LevelGridExtension.GetOppositeDirection(direction);
 
             switch (direction)
             {
@@ -315,8 +255,8 @@ namespace Rogue.NET.Core.Logic
                         var diag1 = grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
                         var diag2 = grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
 
-                        var oppositeCardinal1 = GetOppositeDirection(cardinal1);
-                        var oppositeCardinal2 = GetOppositeDirection(cardinal2);
+                        var oppositeCardinal1 = LevelGridExtension.GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = LevelGridExtension.GetOppositeDirection(cardinal2);
 
                         if (diag1 == null && diag2 == null)
                             return true;
@@ -343,8 +283,8 @@ namespace Rogue.NET.Core.Logic
         }
         public bool IsPathToAdjacentCellBlocked(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
         {
-            var cell1 = level.Grid.GetCell(location1);
-            var cell2 = level.Grid.GetCell(location2);
+            var cell1 = level.Grid[location1.Column, location1.Row];
+            var cell2 = level.Grid[location2.Column, location2.Row];
 
             if (cell1 == null || cell2 == null)
                 return true;
@@ -352,8 +292,8 @@ namespace Rogue.NET.Core.Logic
             if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
                 return true;
 
-            var direction = GetDirectionBetweenAdjacentPoints(location1, location2);
-            var oppositeDirection = GetOppositeDirection(direction);
+            var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
+            var oppositeDirection = LevelGridExtension.GetOppositeDirection(direction);
 
             switch (direction)
             {
@@ -374,8 +314,8 @@ namespace Rogue.NET.Core.Logic
                         var diag1 = level.Grid.GetOffDiagonalCell1(location1, direction, out cardinal1);
                         var diag2 = level.Grid.GetOffDiagonalCell2(location1, direction, out cardinal2);
 
-                        var oppositeCardinal1 = GetOppositeDirection(cardinal1);
-                        var oppositeCardinal2 = GetOppositeDirection(cardinal2);
+                        var oppositeCardinal1 = LevelGridExtension.GetOppositeDirection(cardinal1);
+                        var oppositeCardinal2 = LevelGridExtension.GetOppositeDirection(cardinal2);
 
                         if (diag1 == null && diag2 == null)
                             return true;
@@ -408,23 +348,6 @@ namespace Rogue.NET.Core.Logic
         #endregion
 
         #region (public) Get Methods
-        public CellPoint GetPointInDirection(LevelGrid grid, CellPoint cellPoint, Compass direction)
-        {
-            switch (direction)
-            {
-                case Compass.N: return grid[cellPoint.Column, cellPoint.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.S: return grid[cellPoint.Column, cellPoint.Row + 1]?.Location ?? CellPoint.Empty;
-                case Compass.E: return grid[cellPoint.Column + 1, cellPoint.Row]?.Location ?? CellPoint.Empty;
-                case Compass.W: return grid[cellPoint.Column - 1, cellPoint.Row]?.Location ?? CellPoint.Empty;
-                case Compass.NE: return grid[cellPoint.Column + 1, cellPoint.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.NW: return grid[cellPoint.Column - 1, cellPoint.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.SW: return grid[cellPoint.Column - 1, cellPoint.Row + 1]?.Location ?? CellPoint.Empty;
-                case Compass.SE: return grid[cellPoint.Column + 1, cellPoint.Row + 1]?.Location ?? CellPoint.Empty;
-                case Compass.Null:
-                default:
-                    return cellPoint;
-            }
-        }
         public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)
         {
             var adjacentLocations = level.
@@ -448,95 +371,9 @@ namespace Rogue.NET.Core.Logic
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
         }
-        public IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, double range)
-        {
-            var result = new List<CellPoint>();
-
-            // TODO: Optimize this by doing a little algebra...
-            var bounds = level.Grid.GetBounds();
-            var distSquared = range * range;
-
-            var minColumn = (int)(location.Column - range).LowLimit(0);
-            var maxColumn = (int)(location.Column + range).HighLimit(bounds.Right);
-            var minRow = (int)(location.Row - range).LowLimit(0);
-            var maxRow = (int)(location.Row + range).HighLimit(bounds.Bottom);
-
-            for (int i = minColumn; i < maxColumn;i++)
-            {
-                for (int j=minRow;j<maxRow;j++)
-                {
-                    var cell = level.Grid.GetCell(i, j);
-
-                    if (Calculator.EuclideanSquareDistance(location, cell.Location) <= distSquared)
-                        result.Add(cell.Location);
-                }
-            }
-
-            return result;
-        }
-
-        public Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2)
-        {
-            int deltaX = cell2.Column - cell1.Column;
-            int deltaY = cell2.Row - cell1.Row;
-
-            if (deltaX == -1)
-            {
-                switch (deltaY)
-                {
-                    case -1: return Compass.NW;
-                    case 0: return Compass.W;
-                    case 1: return Compass.SW;
-                }
-            }
-            if (deltaX == 0)
-            {
-                switch (deltaY)
-                {
-                    case -1: return Compass.N;
-                    case 0: return Compass.Null;
-                    case 1: return Compass.S;
-                }
-            }
-            if (deltaX == 1)
-            {
-                switch (deltaY)
-                {
-                    case -1: return Compass.NE;
-                    case 0: return Compass.E;
-                    case 1: return Compass.SE;
-                }
-            }
-            return Compass.Null;
-        }
         #endregion
 
         #region (private) Methods
-        private Compass GetOppositeDirection(Compass c)
-        {
-            switch (c)
-            {
-                case Compass.N:
-                    return Compass.S;
-                case Compass.S:
-                    return Compass.N;
-                case Compass.E:
-                    return Compass.W;
-                case Compass.W:
-                    return Compass.E;
-                case Compass.NE:
-                    return Compass.SW;
-                case Compass.NW:
-                    return Compass.SE;
-                case Compass.SE:
-                    return Compass.SW;
-                case Compass.SW:
-                    return Compass.SE;
-                default:
-                    return Compass.Null;
-            }
-        }
-
         public void ApplyEndOfTurn()
         {
             throw new NotImplementedException();

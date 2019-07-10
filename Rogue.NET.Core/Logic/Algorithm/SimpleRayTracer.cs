@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,12 @@ namespace Rogue.NET.Core.Logic.Algorithm
         public IEnumerable<CellPoint> CalculateVisibility(LevelGrid grid, CellPoint location, int lightRadius, out IEnumerable<CellPoint> lineOfSightLocations)
         {
             var result = new Dictionary<int, Cell>();
-            var locationCell = grid.GetCell(location);
-            var gridBounds = grid.GetBounds();
+            var locationCell = grid[location.Column, location.Row];
+            var gridBounds = grid.Bounds;
 
             result.Add(locationCell.GetHashCode(), locationCell);
 
-            var origin = TransformToPhysicalLayout(location);
+            var origin = LevelGridExtension.TransformToPhysicalLayout(location);
             origin.X += ModelConstants.CellWidth / 2.0F;
             origin.Y += ModelConstants.CellHeight / 2.0F;
 
@@ -77,8 +78,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         var cellY2 = (angle < 180) ? horizontalGridLines[yIndex] : horizontalGridLines[yIndex] - 1;
                         var cellX = (int)Math.Floor(nextHorizontalX / ModelConstants.CellWidth); // truncate to get location
 
-                        var cell1 = grid.GetCell(cellX, cellY1);
-                        var cell2 = grid.GetCell(cellX, cellY2);
+                        var cell1 = grid[cellX, cellY1];
+                        var cell2 = grid[cellX, cellY2];
 
                         if (cell1 == null)
                             hitWall = true;
@@ -126,8 +127,8 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         var cellX2 = (angle < 90 || angle > 270) ? verticalGridLines[xIndex] : verticalGridLines[xIndex] - 1;
                         var cellY = (int)Math.Floor(nextVerticalY / ModelConstants.CellHeight); // truncate to get location
 
-                        var cell1 = grid.GetCell(cellX1, cellY);
-                        var cell2 = grid.GetCell(cellX2, cellY);
+                        var cell1 = grid[cellX1, cellY];
+                        var cell2 = grid[cellX2, cellY];
 
                         if (cell1 == null)
                             hitWall = true;
@@ -187,18 +188,6 @@ namespace Rogue.NET.Core.Logic.Algorithm
             lineOfSightLocations = result.Values.Select(x => x.Location).ToList();
 
             return visibleLocations;
-        }
-        public PointF TransformToPhysicalLayout(CellPoint p)
-        {
-            float x = (float)(ModelConstants.CellWidth * p.Column);
-            float y = (float)(ModelConstants.CellHeight * p.Row);
-            return new PointF(x, y);
-        }
-        public System.Windows.Point Transform(CellPoint p)
-        {
-            var x = (ModelConstants.CellWidth * p.Column);
-            var y = (ModelConstants.CellHeight * p.Row);
-            return new System.Windows.Point(x, y);
         }
     }
 }

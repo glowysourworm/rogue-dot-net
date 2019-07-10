@@ -4,6 +4,7 @@
                     xmlns:converterAttackAttribute="clr-namespace:Rogue.NET.Core.Converter.AttackAttribute"
                     xmlns:converterItemGrid="clr-namespace:Rogue.NET.Core.Converter.ItemGrid"
                     xmlns:converterScenarioMetaData="clr-namespace:Rogue.NET.Core.Converter.ScenarioMetaData"
+                    xmlns:converterModelScenarioConfiguration="clr-namespace:Rogue.NET.Core.Converter.Model.ScenarioConfiguration"
                     xmlns:converterSkillGrid="clr-namespace:Rogue.NET.Core.Converter.SkillGrid">
     <converter:BoolIntConverter x:Key="BoolIntConverter" />
     <converter:BoolInverseConverter x:Key="BoolInverseConverter" />
@@ -42,6 +43,8 @@
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
     <converterItemGrid:ItemGridIconImageConverter x:Key="ItemGridIconImageConverter" />
+    <converterModelScenarioConfiguration:LayoutHeightConverter x:Key="LayoutHeightConverter" />
+    <converterModelScenarioConfiguration:LayoutWidthConverter x:Key="LayoutWidthConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
     <converterScenarioMetaData:ScenarioMetaDataTextConverter x:Key="ScenarioMetaDataTextConverter" />
     <converterSkillGrid:SkillGridLevelLearnedTooltipConverter x:Key="SkillGridLevelLearnedTooltipConverter" />

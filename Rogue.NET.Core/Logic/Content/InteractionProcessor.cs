@@ -9,6 +9,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
@@ -215,8 +216,8 @@ namespace Rogue.NET.Core.Logic.Content
 
             // Check for line of sight in calculating affected characters
             var lineOfSightEnemies = _modelService.GetLineOfSightLocations()
-                                                  .Where(x => _modelService.Level.GetAtPoint<Enemy>(x) != null)
                                                   .Select(x => _modelService.Level.GetAtPoint<Enemy>(x))
+                                                  .Where(enemy => enemy != null)
                                                   .Actualize();
 
             // All In Range <- Enemies in line of sight within the effect range (from the source character)
@@ -224,14 +225,14 @@ namespace Rogue.NET.Core.Logic.Content
                                 .Where(x =>
                                 {
                                     // Check for effect range
-                                    return (Calculator.EuclideanSquareDistance(x.Location, character.Location) <=
-                                            effectRange * effectRange);
+                                    return (Calculator.RoguianDistance(x.Location, character.Location) <=
+                                            effectRange);
                                 })
                                 .Cast<Character>()
                                 .ToList();
 
             // All In Range:  Add Player if within the effect range (from source character) OR if player is the source
-            if (Calculator.EuclideanSquareDistance(_modelService.Player.Location, character.Location) <= effectRange * effectRange)
+            if (Calculator.RoguianDistance(_modelService.Player.Location, character.Location) <= effectRange)
                 allInRange.Add(_modelService.Player);
 
             // All In Range Except Source <- Remove source character
@@ -243,8 +244,7 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.PassiveAura:
                 case AlterationType.TemporarySource:
                 case AlterationType.PermanentSource:
-                case AlterationType.Steal:
-                case AlterationType.RunAway:
+                case AlterationType.RunAway:                
                 case AlterationType.TeleportSelf:
                 case AlterationType.Remedy:
                     affectedCharacterExpected = true;
@@ -254,6 +254,7 @@ namespace Rogue.NET.Core.Logic.Content
                 case AlterationType.TemporaryTarget:
                 case AlterationType.PermanentTarget:
                 case AlterationType.TeleportTarget:
+                case AlterationType.Steal:
                     affectedCharacterExpected = true;
 
                     // Player -> Add first targeted enemy or player
@@ -262,7 +263,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                     // Enemy -> Add character (Player) if in line of sight
                     else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
-                        result.Add(character);
+                        result.Add(_modelService.Player);
                     break;
                 case AlterationType.TemporaryAllTargets:
                 case AlterationType.PermanentAllTargets:
@@ -275,7 +276,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                     // Enemy -> Add character (Player) if in line of sight
                     else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
-                        result.Add(character);
+                        result.Add(_modelService.Player);
                     break;
                 case AlterationType.OtherMagicEffect:
                     {
@@ -314,7 +315,7 @@ namespace Rogue.NET.Core.Logic.Content
 
                                 // Enemy -> Add character (Player) if in line of sight
                                 else if (lineOfSightEnemies.Any(x => x.Id == character.Id))
-                                    result.Add(character);
+                                    result.Add(_modelService.Player);
                                 break;
                             case AlterationAttackAttributeType.MeleeAllInRange:
                             case AlterationAttackAttributeType.TemporaryMalignAllInRange:
@@ -354,6 +355,36 @@ namespace Rogue.NET.Core.Logic.Content
             return result;
         }
 
+        public bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations)
+        {
+            foreach (var animation in animations)
+            {
+                switch (animation.Type)
+                {
+                    case AnimationType.ProjectileSelfToTarget:
+                    case AnimationType.ProjectileTargetToSelf:
+                    case AnimationType.ProjectileSelfToTargetsInRange:
+                    case AnimationType.ProjectileTargetsInRangeToSelf:
+                    case AnimationType.AuraTarget:
+                    case AnimationType.BubblesTarget:
+                    case AnimationType.BarrageTarget:
+                    case AnimationType.SpiralTarget:
+                    case AnimationType.ChainSelfToTargetsInRange:
+                        return true;
+                    case AnimationType.AuraSelf:
+                    case AnimationType.BubblesSelf:
+                    case AnimationType.BubblesScreen:
+                    case AnimationType.BarrageSelf:
+                    case AnimationType.SpiralSelf:
+                    case AnimationType.ScreenBlink:
+                        break;
+                    default:
+                        throw new Exception("Animation Type not recognized for target calculation");
+                }
+            }
+            return false;
+        }
+
         private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
                 IEnumerable<AttackAttribute> offensiveAttributes,
                 IEnumerable<AttackAttribute> defensiveAttributes)
@@ -371,5 +402,6 @@ namespace Rogue.NET.Core.Logic.Content
             .Where(x => x.Value > 0)
             .ToDictionary(x => x.AttackAttribute, x => x.Value);
         }
+
     }
 }

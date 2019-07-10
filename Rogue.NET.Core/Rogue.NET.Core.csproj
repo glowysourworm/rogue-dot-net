@@ -59,6 +59,18 @@
     <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Graphviz, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Graphviz.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.Composition.Registration" />
@@ -108,6 +120,8 @@
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
     <Compile Include="Converter\LessThanZeroConverter.cs" />
+    <Compile Include="Converter\Model\ScenarioConfiguration\LayoutHeightConverter.cs" />
+    <Compile Include="Converter\Model\ScenarioConfiguration\LayoutWidthConverter.cs" />
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
     <Compile Include="Converter\ParameterEqualityBoolConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityVisibleConverter.cs" />
@@ -145,6 +159,7 @@
     <Compile Include="Event\Scenario\Level\Event\LevelLoadedEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\ScenarioMessageEvent.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="Model\Scenario\Content\Extension\ArrayExtension.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
     <Compile Include="Logic\Content\Enum\InteractionType.cs" />
     <Compile Include="Logic\DebugEngine.cs" />
@@ -165,6 +180,7 @@
     <Compile Include="Logic\Static\PlayerCalculator.cs" />
     <Compile Include="Model\Enums\ValidationMessage.cs" />
     <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
+    <Compile Include="Model\Generator\Component\RoomEqualityComparer.cs" />
     <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IReligionGenerator.cs" />
     <Compile Include="Model\Generator\Interface\ISkillGenerator.cs" />
@@ -313,6 +329,8 @@
     <Compile Include="Model\Scenario\Content\Extension\LevelExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\RoomData.cs" />
     <Compile Include="Model\Scenario\Content\Religion\Religion.cs" />
     <Compile Include="Model\Scenario\Content\Religion\ReligiousAffiliationAttackParameters.cs" />
     <Compile Include="Model\Scenario\Content\Religion\ReligiousAffiliationRequirement.cs" />
@@ -374,6 +392,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dependencies\Triangle.NET\Triangle\Triangle.csproj">
+      <Project>{f7907a0a-b75f-400b-9e78-bfad00db4d6b}</Project>
+      <Name>Triangle</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rogue.NET.Common\Rogue.NET.Common.csproj">
       <Project>{6353F2F1-D936-4F9C-9898-074DC4480D71}</Project>
       <Name>Rogue.NET.Common</Name>

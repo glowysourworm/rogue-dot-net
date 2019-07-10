@@ -18,6 +18,7 @@ namespace Rogue.NET.Core.Model.Scenario
     {
         public LevelGrid Grid { get; protected set; }
         public LayoutType Type { get; protected set; }
+        public LayoutConnectionType ConnectionType { get; protected set; }
 
         public int Number { get; protected set; }
 
@@ -85,12 +86,19 @@ namespace Rogue.NET.Core.Model.Scenario
         }
 
         public Level() { } 
-        public Level(string layoutName, LevelGrid grid, LayoutType layoutType, int number, string wallColor, string doorColor)
+        public Level(string layoutName, 
+                     LevelGrid grid, 
+                     LayoutType layoutType, 
+                     LayoutConnectionType layoutConnectionType, 
+                     int number, 
+                     string wallColor, 
+                     string doorColor)
         {
             // Stored to support Debug function
             this.LayoutName = layoutName;
 
             this.Type = layoutType;
+            this.ConnectionType = layoutConnectionType;
             this.Grid = grid;
             this.Number = number;
             this.WallColor = wallColor;
@@ -107,7 +115,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.Consumables = new List<Consumable>();
 
             _levelContent = new List<ScenarioObject>();
-            _levelContentGrid = new List<ScenarioObject>[grid.GetBounds().Right, grid.GetBounds().Bottom];
+            _levelContentGrid = new List<ScenarioObject>[grid.Bounds.CellWidth, grid.Bounds.CellHeight];
             _levelContentArray = new ScenarioObject[] { };
             _levelContentDict = new Dictionary<string, ScenarioObject>();
 

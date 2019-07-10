@@ -110,11 +110,14 @@ namespace Rogue.NET.Scenario.Service
             //Debug*******
 #if DEBUG
             else if (key == Key.N)
-                return new UserCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
+                return shift ? new UserCommandEventArgs(LevelActionType.DebugSimulateNext, Compass.Null, "") :
+                               new UserCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
             else if (key == Key.W)
                 return new UserCommandEventArgs(LevelActionType.DebugExperience, Compass.Null, "");
             else if (key == Key.Q)
                 return new UserCommandEventArgs(LevelActionType.DebugIdentifyAll, Compass.Null, "");
+            else if (key == Key.E)
+                return new UserCommandEventArgs(LevelActionType.DebugRevealAll, Compass.Null, "");
 #endif
             //Debug*******
 

@@ -8,19 +8,103 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
     [Serializable]
     public class LayoutTemplate : Template
     {
+        private int _width;
+        private int _height;
+        private int _roomHeightLimit;
+        private int _roomWidthLimit;
+        private int _roomHeightMin;
+        private int _roomWidthMin;
         private int _numberRoomRows;
         private int _numberRoomCols;
-        private int _roomDivCellHeight;
-        private int _roomDivCellWidth;
+        private int _rectangularGridPadding;
+        private int _randomRoomCount;
+        private int _randomRoomSpread;
         private int _numberExtraWallRemovals;
-        private int _numberHallwayPoints;
         private double _hiddenDoorProbability;
         private double _generationRatio;
+        private double _cellularAutomataFillRatio;
         private LayoutType _type;
+        private LayoutCellularAutomataType _cellularAutomataType;
+        private LayoutRoomPlacementType _roomPlacementType;
+        private LayoutConnectionType _connectionType;
+        private LayoutConnectionGeometryType _connectionGeometryType;
+        private LayoutCorridorGeometryType _corridorGeometryType;
         private Range<int> _levelRange;
         private string _wallColor;
         private string _doorColor;
 
+        public int Width
+        {
+            get { return _width; }
+            set
+            {
+                if (_width != value)
+                {
+                    _width = value;
+                    OnPropertyChanged("Width");
+                }
+            }
+        }
+        public int Height
+        {
+            get { return _height; }
+            set
+            {
+                if (_height != value)
+                {
+                    _height = value;
+                    OnPropertyChanged("Height");
+                }
+            }
+        }
+        public int RoomWidthLimit
+        {
+            get { return _roomWidthLimit; }
+            set
+            {
+                if (_roomWidthLimit != value)
+                {
+                    _roomWidthLimit = value;
+                    OnPropertyChanged("RoomWidthLimit");
+                }
+            }
+        }
+        public int RoomHeightLimit
+        {
+            get { return _roomHeightLimit; }
+            set
+            {
+                if (_roomHeightLimit != value)
+                {
+                    _roomHeightLimit = value;
+                    OnPropertyChanged("RoomHeightLimit");
+                }
+            }
+        }
+        public int RoomWidthMin
+        {
+            get { return _roomWidthMin; }
+            set
+            {
+                if (_roomWidthMin != value)
+                {
+                    _roomWidthMin = value;
+                    OnPropertyChanged("RoomWidthMin");
+                }
+            }
+        }
+        public int RoomHeightMin
+        {
+            get { return _roomHeightMin; }
+            set
+            {
+                if (_roomHeightMin != value)
+                {
+                    _roomHeightMin = value;
+                    OnPropertyChanged("RoomHeightMin");
+                }
+            }
+        }
         public int NumberRoomRows
         {
             get { return _numberRoomRows; }
@@ -45,27 +129,39 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
-        public int RoomDivCellHeight
+        public int RectangularGridPadding
         {
-            get { return _roomDivCellHeight; }
+            get { return _rectangularGridPadding; }
             set
             {
-                if (_roomDivCellHeight != value)
+                if (_rectangularGridPadding != value)
                 {
-                    _roomDivCellHeight = value;
-                    OnPropertyChanged("RoomDivCellHeight");
+                    _rectangularGridPadding = value;
+                    OnPropertyChanged("RectangularGridPadding");
                 }
             }
         }
-        public int RoomDivCellWidth
+        public int RandomRoomCount
         {
-            get { return _roomDivCellWidth; }
+            get { return _randomRoomCount; }
             set
             {
-                if (_roomDivCellWidth != value)
+                if (_randomRoomCount != value)
                 {
-                    _roomDivCellWidth = value;
-                    OnPropertyChanged("RoomDivCellWidth");
+                    _randomRoomCount = value;
+                    OnPropertyChanged("RandomRoomCount");
+                }
+            }
+        }
+        public int RandomRoomSpread
+        {
+            get { return _randomRoomSpread; }
+            set
+            {
+                if (_randomRoomSpread != value)
+                {
+                    _randomRoomSpread = value;
+                    OnPropertyChanged("RandomRoomSpread");
                 }
             }
         }
@@ -78,18 +174,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 {
                     _numberExtraWallRemovals = value;
                     OnPropertyChanged("NumberExtraWallRemovals");
-                }
-            }
-        }
-        public int NumberHallwayPoints
-        {
-            get { return _numberHallwayPoints; }
-            set
-            {
-                if (_numberHallwayPoints != value)
-                {
-                    _numberHallwayPoints = value;
-                    OnPropertyChanged("NumberHallwayPoints");
                 }
             }
         }
@@ -117,6 +201,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 }
             }
         }
+        public double CellularAutomataFillRatio
+        {
+            get { return _cellularAutomataFillRatio; }
+            set
+            {
+                if (_cellularAutomataFillRatio != value)
+                {
+                    _cellularAutomataFillRatio = value;
+                    OnPropertyChanged("CellularAutomataFillRatio");
+                }
+            }
+        }
         public LayoutType Type
         {
             get { return _type; }
@@ -126,6 +222,66 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
                 {
                     _type = value;
                     OnPropertyChanged("Type");
+                }
+            }
+        }
+        public LayoutCellularAutomataType CellularAutomataType
+        {
+            get { return _cellularAutomataType; }
+            set
+            {
+                if (_cellularAutomataType != value)
+                {
+                    _cellularAutomataType = value;
+                    OnPropertyChanged("CellularAutomataType");
+                }
+            }
+        }
+        public LayoutRoomPlacementType RoomPlacementType
+        {
+            get { return _roomPlacementType; }
+            set
+            {
+                if (_roomPlacementType != value)
+                {
+                    _roomPlacementType = value;
+                    OnPropertyChanged("RoomPlacementType");
+                }
+            }
+        }
+        public LayoutConnectionType ConnectionType
+        {
+            get { return _connectionType; }
+            set
+            {
+                if (_connectionType != value)
+                {
+                    _connectionType = value;
+                    OnPropertyChanged("ConnectionType");
+                }
+            }
+        }
+        public LayoutConnectionGeometryType ConnectionGeometryType
+        {
+            get { return _connectionGeometryType; }
+            set
+            {
+                if (_connectionGeometryType != value)
+                {
+                    _connectionGeometryType = value;
+                    OnPropertyChanged("ConnectionGeometryType");
+                }
+            }
+        }
+        public LayoutCorridorGeometryType CorridorGeometryType
+        {
+            get { return _corridorGeometryType; }
+            set
+            {
+                if (_corridorGeometryType != value)
+                {
+                    _corridorGeometryType = value;
+                    OnPropertyChanged("CorridorGeometryType");
                 }
             }
         }
@@ -168,14 +324,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
 
         public LayoutTemplate() : base()
         {
-            this.Type = LayoutType.Normal;
+            this.Width = 600;
+            this.Height = 400;
+            this.Type = LayoutType.ConnectedRectangularRooms;
+            this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
+            this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
             this.Level = new Range<int>(1, 1, 100, 100);
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
-            this.RoomDivCellHeight = 20;
-            this.RoomDivCellWidth = 20;
             this.NumberExtraWallRemovals = 200;
-            this.NumberHallwayPoints = 10;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
 
@@ -191,21 +348,17 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             switch (this.Type)
             {
                 default:
-                case LayoutType.Normal:
-                case LayoutType.Teleport:
-                case LayoutType.TeleportRandom:
-                case LayoutType.Hall:
-                case LayoutType.BigRoom:
+                    throw new Exception("Unknown Layout Type - LayoutTemplate.GetPathLength");
 
-                    // Measure  = # of traversals * length of traversal for
-                    //            a single pass only * 4;
-                    return this.RoomDivCellHeight * this.NumberRoomRows *
-                           this.NumberRoomCols * 4;
                 case LayoutType.Maze:
-
+                case LayoutType.ConnectedCellularAutomata:
                     // Measure = Made up :) 
-                    return 100 * this.NumberRoomCols * this.RoomDivCellWidth *
-                                 this.NumberRoomRows * this.RoomDivCellHeight;
+                    return 4 * this.Width * this.Height;
+
+                case LayoutType.ConnectedRectangularRooms:
+                    // Measure  = # of traversals * length of traversal for
+                    //            a single pass only * 1;
+                    return this.Width * this.Height * 1;
             }
         }
     }

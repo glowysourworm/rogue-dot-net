@@ -236,7 +236,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private void DrawLayout()
         {
             var level = _modelService.Level;
-            var bounds = _scenarioUIGeometryService.Cell2UIRect(level.Grid.GetBounds());
+            var bounds = _scenarioUIGeometryService.Cell2UIRect(level.Grid.Bounds);
 
             this.LevelWidth = (int)bounds.Width;
             this.LevelHeight = (int)bounds.Height;

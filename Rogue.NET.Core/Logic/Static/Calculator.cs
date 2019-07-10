@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,10 +79,17 @@ namespace Rogue.NET.Core.Logic.Static
 
             return (x * x) + (y * y);
         }
-        public static double RoguianDistance(CellPoint location1, CellPoint location2)
+        public static double EuclideanSquareDistance(PointF location1, PointF location2)
         {
-            double x = Math.Abs(location2.Column - location1.Column);
-            double y = Math.Abs(location2.Row - location1.Row);
+            double x = location2.X - location1.X;
+            double y = location2.Y - location1.Y;
+
+            return (x * x) + (y * y);
+        }
+        public static int RoguianDistance(CellPoint location1, CellPoint location2)
+        {
+            int x = Math.Abs(location2.Column - location1.Column);
+            int y = Math.Abs(location2.Row - location1.Row);
             return Math.Max(x, y);
         }
     }

@@ -62,7 +62,7 @@ namespace Rogue.NET.Scenario.Views
                 contentMarker.Fill = content is Enemy ? Brushes.Red : Brushes.LightBlue;
                 contentMarker.Fill = content is ItemBase ? Brushes.YellowGreen : contentMarker.Fill;
 
-                var levelUIBounds = scenarioUIGeometryService.Cell2UIRect(modelService.Level.Grid.GetBounds());
+                var levelUIBounds = scenarioUIGeometryService.Cell2UIRect(modelService.Level.Grid.Bounds);
 
                 var xneg = false;
                 var yneg = false;

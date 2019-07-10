@@ -49,8 +49,10 @@ namespace Rogue.NET.Core.Model.Enums
         RenounceReligion,
 
         DebugNext,
+        DebugSimulateNext,
         DebugExperience,
-        DebugIdentifyAll
+        DebugIdentifyAll,
+        DebugRevealAll
     }
 
     /// <summary>
@@ -83,6 +85,71 @@ namespace Rogue.NET.Core.Model.Enums
         // (DON'T RENUMBER) Shop was removed - had to number these to support saved configuration
         Hall = 5,
         BigRoom = 6,
+        ConnectedRectangularRooms = 7,
+        ConnectedCellularAutomata = 8      
+    }
+    public enum LayoutCellularAutomataType : int
+    {
+        Open = 0,
+        Filled = 1
+    }
+    public enum LayoutConnectionType : int
+    {
+        Corridor = 0,
+        CorridorWithDoors = 1,
+        Teleporter = 2,
+        TeleporterRandom = 3
+    }
+    public enum LayoutConnectionGeometryType : int
+    {
+        /// <summary>
+        /// Available for RectangularGrid room placement type
+        /// </summary>
+        Rectilinear = 0,
+
+        /// <summary>
+        /// Uses Minimum Spanning Tree algorithm to generate room connections
+        /// </summary>
+        MinimumSpanningTree = 1,
+
+        /// <summary>
+        /// Creates connections to a central room chosen at random
+        /// </summary>
+        CentralHub = 2
+    }
+    public enum LayoutCorridorGeometryType : int
+    {
+        /// <summary>
+        /// Straight line connecting cells from two rooms
+        /// </summary>
+        Linear = 0,
+        
+        /// <summary>
+        /// A turn at the midpoint between two rooms
+        /// </summary>
+        MidpointTurn = 1,
+    }
+    public enum LayoutRoomPlacementType : int
+    {
+        /// <summary>
+        /// Rectangular grid of rooms
+        /// </summary>
+        RectangularGrid = 0,
+
+        /// <summary>
+        /// Random placement of rectangular rooms
+        /// </summary>
+        Random = 1,
+
+        /// <summary>
+        /// Cellular Automata 4-5 algorithm that leaves large open spaces
+        /// </summary>
+        CellularAutomataOpen = 2,
+
+        /// <summary>
+        /// Cellular Automata 4-5 algorithm that helps fill in large open spaces with walls
+        /// </summary>
+        CellularAutomataFilled = 3
     }
     public enum DoodadType
     {

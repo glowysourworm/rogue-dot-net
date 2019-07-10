@@ -66,10 +66,16 @@ namespace Rogue.NET.View
 
             _eventAggregator.GetEvent<SplashEvent>().Subscribe((e) =>
             {
+#if DEBUG
+                // Don't want to show during debugging unless modifying the UI
+                // for the loading event. (It's just really annoying)
+#else
                 if (e.SplashAction == SplashAction.Hide)
                     HideSplash();
                 else
                     ShowSplash(e.SplashType);
+#endif
+
             });
 
             _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>

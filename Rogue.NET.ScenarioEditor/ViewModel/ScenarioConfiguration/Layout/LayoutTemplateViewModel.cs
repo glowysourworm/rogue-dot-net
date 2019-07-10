@@ -5,19 +5,61 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 {
     public class LayoutTemplateViewModel : TemplateViewModel
     {
+        private int _width;
+        private int _height;
         private int _numberRoomRows;
         private int _numberRoomCols;
-        private int _roomDivCellHeight;
-        private int _roomDivCellWidth;
+        private int _roomHeightLimit;
+        private int _roomWidthLimit;
+        private int _roomHeightMin;
+        private int _roomWidthMin;
+        private int _rectangularGridPadding;
+        private int _randomRoomCount;
+        private int _randomRoomSpread;
         private int _numberExtraWallRemovals;
-        private int _numberHallwayPoints;
         private double _hiddenDoorProbability;
         private double _generationRatio;
+        private double _cellularAutomataFillRatio;
         private LayoutType _type;
+        private LayoutCellularAutomataType _cellularAutomataType;
+        private LayoutRoomPlacementType _roomPlacementType;
+        private LayoutConnectionType _connectionType;
+        private LayoutConnectionGeometryType _connectionGeometryType;
+        private LayoutCorridorGeometryType _corridorGeometryType;
         private RangeViewModel<int> _levelRange;
         private string _wallColor;
         private string _doorColor;
 
+        public int Width
+        {
+            get { return _width; }
+            set { this.RaiseAndSetIfChanged(ref _width, value); }
+        }
+        public int Height
+        {
+            get { return _height; }
+            set { this.RaiseAndSetIfChanged(ref _height, value); }
+        }
+        public int RoomWidthLimit
+        {
+            get { return _roomWidthLimit; }
+            set { this.RaiseAndSetIfChanged(ref _roomWidthLimit, value); }
+        }
+        public int RoomHeightLimit
+        {
+            get { return _roomHeightLimit; }
+            set { this.RaiseAndSetIfChanged(ref _roomHeightLimit, value); }
+        }
+        public int RoomWidthMin
+        {
+            get { return _roomWidthMin; }
+            set { this.RaiseAndSetIfChanged(ref _roomWidthMin, value); }
+        }
+        public int RoomHeightMin
+        {
+            get { return _roomHeightMin; }
+            set { this.RaiseAndSetIfChanged(ref _roomHeightMin, value); }
+        }
         public int NumberRoomRows
         {
             get { return _numberRoomRows; }
@@ -28,25 +70,25 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _numberRoomCols; }
             set { this.RaiseAndSetIfChanged(ref _numberRoomCols, value); }
         }
-        public int RoomDivCellHeight
+        public int RectangularGridPadding
         {
-            get { return _roomDivCellHeight; }
-            set { this.RaiseAndSetIfChanged(ref _roomDivCellHeight, value); }
+            get { return _rectangularGridPadding; }
+            set { this.RaiseAndSetIfChanged(ref _rectangularGridPadding, value); }
         }
-        public int RoomDivCellWidth
+        public int RandomRoomCount
         {
-            get { return _roomDivCellWidth; }
-            set { this.RaiseAndSetIfChanged(ref _roomDivCellWidth, value); }
+            get { return _randomRoomCount; }
+            set { this.RaiseAndSetIfChanged(ref _randomRoomCount, value); }
+        }
+        public int RandomRoomSpread
+        {
+            get { return _randomRoomSpread; }
+            set { this.RaiseAndSetIfChanged(ref _randomRoomSpread, value); }
         }
         public int NumberExtraWallRemovals
         {
             get { return _numberExtraWallRemovals; }
             set { this.RaiseAndSetIfChanged(ref _numberExtraWallRemovals, value); }
-        }
-        public int NumberHallwayPoints
-        {
-            get { return _numberHallwayPoints; }
-            set { this.RaiseAndSetIfChanged(ref _numberHallwayPoints, value); }
         }
         public double HiddenDoorProbability
         {
@@ -58,10 +100,40 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             get { return _generationRatio; }
             set { this.RaiseAndSetIfChanged(ref _generationRatio, value); }
         }
+        public double CellularAutomataFillRatio
+        {
+            get { return _cellularAutomataFillRatio; }
+            set { this.RaiseAndSetIfChanged(ref _cellularAutomataFillRatio, value); }
+        }
         public LayoutType Type
         {
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
+        }
+        public LayoutCellularAutomataType CellularAutomataType
+        {
+            get { return _cellularAutomataType; }
+            set { this.RaiseAndSetIfChanged(ref _cellularAutomataType, value); }
+        }
+        public LayoutRoomPlacementType RoomPlacementType
+        {
+            get { return _roomPlacementType; }
+            set { this.RaiseAndSetIfChanged(ref _roomPlacementType, value); }
+        }
+        public LayoutConnectionType ConnectionType
+        {
+            get { return _connectionType; }
+            set { this.RaiseAndSetIfChanged(ref _connectionType, value); }
+        }
+        public LayoutConnectionGeometryType ConnectionGeometryType
+        {
+            get { return _connectionGeometryType; }
+            set { this.RaiseAndSetIfChanged(ref _connectionGeometryType, value); }
+        }
+        public LayoutCorridorGeometryType CorridorGeometryType
+        {
+            get { return _corridorGeometryType; }
+            set { this.RaiseAndSetIfChanged(ref _corridorGeometryType, value); }
         }
         public RangeViewModel<int> Level
         {
@@ -81,14 +153,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
 
         public LayoutTemplateViewModel() : base()
         {
-            this.Type = LayoutType.Normal;
+            this.Width = 80;
+            this.Height = 50;
+            this.Type = LayoutType.ConnectedRectangularRooms;
+            this.CellularAutomataType = LayoutCellularAutomataType.Open;
+            this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
+            this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
+            this.ConnectionGeometryType = LayoutConnectionGeometryType.Rectilinear;
+            this.CorridorGeometryType = LayoutCorridorGeometryType.MidpointTurn;
             this.Level = new RangeViewModel<int>(1, 1, 100, 100);
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
-            this.RoomDivCellHeight = 20;
-            this.RoomDivCellWidth = 20;
             this.NumberExtraWallRemovals = 200;
-            this.NumberHallwayPoints = 10;
             this.HiddenDoorProbability = 0.2;
             this.GenerationRate = 0.5;
         }

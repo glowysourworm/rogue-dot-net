@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration;
@@ -53,11 +54,9 @@ namespace Rogue.NET.Core.Model.Generator
         private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
         {
             // Create lists to know what cells are free
-            var rooms = level.Grid.GetRooms().ToList();
+            var rooms = level.Grid.Rooms.ToList();
             var freeCells = level.Grid.GetCells().Select(x => x.Location).ToList();
-            var freeRoomCells = rooms.Count > 0 ? freeCells.GroupBy(x => rooms.FindIndex(r => r.Contains(x)))
-                                                           .ToDictionary(x => x.Key, y => y.ToList())
-                                                : new Dictionary<int, List<CellPoint>>();
+            var freeRoomCells = level.Grid.Rooms.ToDictionary(room => room, room => room.Cells.ToList());
 
             // NOTE*** ADD MAPPED CONTENT FIRST - BUT MUST IGNORE DURING THE MAPPING PHASE. THIS INCLUDES
             //         ANY NORMAL DOODADS
@@ -66,31 +65,31 @@ namespace Rogue.NET.Core.Model.Generator
             if (levelNumber != configurationContainer.DungeonTemplate.NumberOfLevels)
             {
                 var stairsDown = new DoodadNormal(DoodadNormalType.StairsDown, ModelConstants.DoodadStairsDownRogueName, "");
-                stairsDown.Location = GetRandomCell(false, -1, freeCells, freeRoomCells);
+                stairsDown.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
                 level.AddStairsDown(stairsDown);
             }
 
             //Stairs up - every level has one - (MAPPED)
             var stairsUp = new DoodadNormal(DoodadNormalType.StairsUp, ModelConstants.DoodadStairsUpRogueName, "");
-            stairsUp.Location = GetRandomCell(false, -1, freeCells, freeRoomCells);
+            stairsUp.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
             level.AddStairsUp(stairsUp);
 
             // Add teleporter level content - (MAPPED)
-            switch (level.Type)
-            {
-                case LayoutType.Teleport:
-                    AddTeleporterLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
-                    break;
-                case LayoutType.TeleportRandom:
-                    AddTeleportRandomLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
-                    break;
-            }
+            if ((level.Type == LayoutType.ConnectedRectangularRooms ||
+                 level.Type == LayoutType.ConnectedCellularAutomata) &&
+                level.ConnectionType == LayoutConnectionType.Teleporter)
+                AddTeleporterLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
+
+            if ((level.Type == LayoutType.ConnectedRectangularRooms ||
+                 level.Type == LayoutType.ConnectedCellularAutomata) &&
+                level.ConnectionType == LayoutConnectionType.TeleporterRandom)
+                AddTeleportRandomLevelContent(level, configurationContainer, levelNumber, freeCells, freeRoomCells);
 
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
             {
                 var savePoint = new DoodadNormal(DoodadNormalType.SavePoint, ModelConstants.DoodadSavePointRogueName, "");
-                savePoint.Location = GetRandomCell(false, -1, freeCells, freeRoomCells);
+                savePoint.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
                 level.AddSavePoint(savePoint);
             }
 
@@ -181,18 +180,18 @@ namespace Rogue.NET.Core.Model.Generator
             }
         }
 
-        private void AddTeleporterLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void AddTeleporterLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
         {
-            var rooms = level.Grid.GetRooms();
+            var rooms = level.Grid.Rooms.ToList();
 
             // Connect rooms with teleporters sequentially to make sure can reach all rooms
-            for (int i = 0; i < rooms.Length - 1; i++)
+            for (int i = 0; i < rooms.Count - 1; i++)
             {
                 var teleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
                 var teleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, teleport1.Id);
 
-                var location1 = GetRandomCell(true, i, freeCells, freeRoomCells);
-                var location2 = GetRandomCell(true, i + 1, freeCells, freeRoomCells);
+                var location1 = GetRandomCell(true, rooms.ElementAt(i), freeCells, freeRoomCells);
+                var location2 = GetRandomCell(true, rooms.ElementAt(i + 1), freeCells, freeRoomCells);
 
                 if (location1 == CellPoint.Empty)
                     throw new Exception("Trying to place teleporter but ran out of room!");
@@ -212,8 +211,8 @@ namespace Rogue.NET.Core.Model.Generator
             var lastRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
             var firstRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, lastRoomTeleport.Id);
 
-            var lastRoomLocation = GetRandomCell(true, rooms.Length - 1, freeCells, freeRoomCells);
-            var firstRoomLocation = GetRandomCell(true, 0, freeCells, freeRoomCells);
+            var lastRoomLocation = GetRandomCell(true, rooms.ElementAt(rooms.Count - 1), freeCells, freeRoomCells);
+            var firstRoomLocation = GetRandomCell(true, rooms.ElementAt(0), freeCells, freeRoomCells);
 
             if (lastRoomLocation == CellPoint.Empty)
                 throw new Exception("Trying to place teleporter but ran out of room!");
@@ -230,13 +229,13 @@ namespace Rogue.NET.Core.Model.Generator
             level.AddContent(firstRoomTeleport);
 
             //Add some extra ones (one per room)
-            for (int i = 0; i < rooms.Length; i++)
+            for (int i = 0; i < rooms.Count; i++)
             {
                 var extraTeleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
                 var extraTeleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, extraTeleport1.Id);
 
-                var extraLocation1 = GetRandomCell(false, -1, freeCells, freeRoomCells);
-                var extraLocation2 = GetRandomCell(false, -1, freeCells, freeRoomCells);
+                var extraLocation1 = GetRandomCell(false, null, freeCells, freeRoomCells);
+                var extraLocation2 = GetRandomCell(false, null, freeCells, freeRoomCells);
 
                 if (extraLocation1 == CellPoint.Empty)
                     throw new Exception("Trying to place teleporter but ran out of room!");
@@ -254,16 +253,16 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(extraTeleport2);
             }
         }
-        private void AddTeleportRandomLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void AddTeleportRandomLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
         {
-            var rooms = level.Grid.GetRooms();
+            var rooms = level.Grid.Rooms.ToList();
 
             // Random teleporters send character to random point in the level. Add
             // one per room
-            for (int i = 0; i < rooms.Length; i++)
+            for (int i = 0; i < rooms.Count; i++)
             {
                 var doodad = new DoodadNormal(DoodadNormalType.TeleportRandom, ModelConstants.DoodadTeleporterRandomRogueName, "");
-                var location = GetRandomCell(true, i, freeCells, freeRoomCells);
+                var location = GetRandomCell(true, rooms[i], freeCells, freeRoomCells);
 
                 if (location == CellPoint.Empty)
                     throw new Exception("Trying to place teleporter but ran out of room!");
@@ -272,10 +271,10 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
         {
-            var rooms = level.Grid.GetRooms();
-            var partyRoomIndex = _randomSequenceGenerator.Get(0, rooms.Length);
+            var rooms = level.Grid.Rooms.ToList();
+            var partyRoom = rooms.PickRandom(_randomSequenceGenerator.Get());
 
             // Party room equipment - generate for each 
             foreach (var template in configurationContainer.EquipmentTemplates)
@@ -291,7 +290,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                             && !(template.IsUnique && template.HasBeenGenerated); i++)
                 {
-                    var location = GetRandomCell(true, partyRoomIndex, freeCells, freeRoomCells);
+                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
                     if (location != CellPoint.Empty)
                     {
@@ -315,7 +314,7 @@ namespace Rogue.NET.Core.Model.Generator
                     for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                                 && !(template.IsUnique && template.HasBeenGenerated); i++)
                     {
-                        var location = GetRandomCell(true, partyRoomIndex, freeCells, freeRoomCells);
+                        var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
 
                         if (location != CellPoint.Empty)
                         {
@@ -337,7 +336,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
                                             && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
-                    var location = GetRandomCell(true, partyRoomIndex, freeCells, freeRoomCells);
+                    var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
                     if (location != CellPoint.Empty)
                     { 
                         var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, religions, scenarioAttributes);
@@ -347,7 +346,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -360,7 +359,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (levelContents[i] is DoodadNormal)
                     continue;
 
-                var location = GetRandomCell(false, -1, freeCells, freeRoomCells);
+                var location = GetRandomCell(false, null, freeCells, freeRoomCells);
 
                 // Entire grid is occupied
                 if (location == CellPoint.Empty)
@@ -370,16 +369,12 @@ namespace Rogue.NET.Core.Model.Generator
             }
 
             // Create party room if there's a room to use and the rate is greater than U[0,1]
-
             if ((configurationContainer.DungeonTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) &&
-                (level.Type == LayoutType.BigRoom ||
-                level.Type == LayoutType.Normal ||
-                level.Type == LayoutType.Teleport ||
-                level.Type == LayoutType.TeleportRandom))
+                (level.Type == LayoutType.ConnectedRectangularRooms))
                 AddPartyRoomContent(level, configurationContainer, religions, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
         }
 
-        private CellPoint GetRandomCell(bool inRoom, int roomIndex, IList<CellPoint> freeCells, Dictionary<int, List<CellPoint>> freeRoomCells)
+        private CellPoint GetRandomCell(bool inRoom, RoomData room, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
         {
             // Check overall collection of cells for remaining locations
             if (freeCells.Count == 0)
@@ -387,7 +382,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             if (inRoom)
             {
-                var roomCells = freeRoomCells[roomIndex];
+                var roomCells = freeRoomCells[room];
 
                 if (roomCells.Count == 0)
                     return CellPoint.Empty;

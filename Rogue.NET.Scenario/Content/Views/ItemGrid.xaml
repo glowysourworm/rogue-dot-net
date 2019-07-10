@@ -310,7 +310,7 @@
                                 <Grid Margin="4,4,4,0"
                                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                     <TextBlock Text="Required Religion" HorizontalAlignment="Left"
-                                               Style="{StaticResource EquipmentTextBlockBrush}" />
+                                               Style="{StaticResource ConsumableTextBlockBrush}" />
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                         <Image Height="20" Width="20" VerticalAlignment="Center">
                                             <Image.Source>
@@ -327,7 +327,7 @@
                                                 </MultiBinding>
                                             </Image.Source>
                                         </Image>
-                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource EquipmentTextBlockBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource ConsumableTextBlockBrush}" VerticalAlignment="Center" />
                                     </StackPanel>
 
                                 </Grid>

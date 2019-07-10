@@ -89,7 +89,8 @@ namespace Rogue.NET.Core.Logic
                                             out affectedCharacterExpected);
 
             // Check for target requirements for animations
-            var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
+            var animationRequirementsNotMet = !affectedCharacters.Any() && 
+                                              _interactionProcessor.GetAnimationRequiresTarget(spell.Animations);
 
             //Run animations before applying effects
             if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
@@ -127,7 +128,8 @@ namespace Rogue.NET.Core.Logic
                                             out affectedCharacterExpected);
 
             // Check for target requirements for animations
-            var animationRequirementsNotMet = !affectedCharacters.Any() && GetAnimationRequiresTarget(spell.Animations);
+            var animationRequirementsNotMet = !affectedCharacters.Any() && 
+                                              _interactionProcessor.GetAnimationRequiresTarget(spell.Animations);
 
             // Queue animations
             if (spell.Animations.Count > 0 && !animationRequirementsNotMet)
@@ -236,9 +238,9 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationType.Steal:
                     if (affectedCharacter is Enemy)
-                        ApplyEnemyStealAlteration(affectedCharacter as Enemy, alteration);
+                        ApplyPlayerStealAlteration(affectedCharacter as Enemy, alteration);
                     else
-                        ApplyPlayerStealAlteration(alteration);
+                        ApplyEnemyStealAlteration(sourceCharacter as Enemy, alteration);
                     break;
                 case AlterationType.RunAway:
                     // TODO: Create separate method
@@ -343,7 +345,6 @@ namespace Rogue.NET.Core.Logic
                 case AlterationType.PermanentAllTargets:
                 case AlterationType.PermanentAllInRange:
                 case AlterationType.PermanentAllInRangeExceptSource:
-                case AlterationType.Steal:
                 case AlterationType.RunAway:
                 case AlterationType.TeleportSelf:
                 case AlterationType.TeleportTarget:
@@ -453,10 +454,9 @@ namespace Rogue.NET.Core.Logic
             }
         }
 
-        private void ApplyPlayerStealAlteration(AlterationContainer alteration)
+        private void ApplyPlayerStealAlteration(Enemy enemy, AlterationContainer alteration)
         {
             // Must require a target
-            var enemy = _modelService.GetTargetedEnemies().First();
             var enemyInventory = enemy.Inventory;
             if (!enemyInventory.Any())
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(enemy) + " has nothing to steal");
@@ -669,37 +669,6 @@ namespace Rogue.NET.Core.Logic
                 // Notify UI
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
             }
-        }
-
-        // TODO: Move this and refactor for checking target requirements
-        private bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations)
-        {
-            foreach (var animation in animations)
-            {
-                switch (animation.Type)
-                {
-                    case AnimationType.ProjectileSelfToTarget:
-                    case AnimationType.ProjectileTargetToSelf:
-                    case AnimationType.ProjectileSelfToTargetsInRange:
-                    case AnimationType.ProjectileTargetsInRangeToSelf:
-                    case AnimationType.AuraTarget:
-                    case AnimationType.BubblesTarget:
-                    case AnimationType.BarrageTarget:
-                    case AnimationType.SpiralTarget:
-                    case AnimationType.ChainSelfToTargetsInRange:
-                        return true;
-                    case AnimationType.AuraSelf:
-                    case AnimationType.BubblesSelf:
-                    case AnimationType.BubblesScreen:
-                    case AnimationType.BarrageSelf:
-                    case AnimationType.SpiralSelf:
-                    case AnimationType.ScreenBlink:
-                        break;
-                    default:
-                        throw new Exception("Animation Type not recognized for target calculation");
-                }
-            }
-            return false;
         }
 
         public void ApplyEndOfTurn()

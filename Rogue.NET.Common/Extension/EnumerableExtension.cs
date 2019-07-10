@@ -109,5 +109,26 @@ namespace Rogue.NET.Common.Extension
         {
             return collection.ToList();
         }
+
+        /// <summary>
+        /// Selects a random element from the sequence using the supplied random number draw U[0,1).
+        /// </summary>
+        public static T PickRandom<T>(this IEnumerable<T> collection, double randomNumber)
+        {
+            return collection.ElementAt((int)(collection.Count() * randomNumber));
+        }
+
+        /// <summary>
+        /// Copies elements either by reference or by value into a new collection
+        /// </summary>
+        public static IEnumerable<T> Copy<T>(this IEnumerable<T> collection)
+        {
+            var result = new List<T>(collection.Count());
+
+            foreach (var item in collection)
+                result.Add(item);
+
+            return result;
+        }
     }
 }

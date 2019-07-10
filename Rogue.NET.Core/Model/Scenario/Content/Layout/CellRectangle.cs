@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Rogue.NET.Core.Logic.Static;
+using System;
+
+using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 {
@@ -17,24 +20,86 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public CellRectangle(CellPoint location, int cellwidth, int cellheight)
         {
-            this.Location = location;
+            // Copy the cell point to avoid data corruption (should make CellPoint value type)
+            this.Location = new CellPoint(location.Row, location.Column);
             this.CellHeight = cellheight;
             this.CellWidth = cellwidth;
         }
+        public CellRectangle(int left, int top, int right, int bottom)
+        {
+            this.Location = new CellPoint(top, left);
+            
+            // Don't forget that the index math is off of the total dimensions by one.
+            this.CellHeight = bottom - top + 1;
+            this.CellWidth = right - left + 1;
+        }
+        
         public int Left { get { return this.Location.Column; } }
-        public int Right { get { return this.Location.Column + this.CellWidth; } }
+        public int Right { get { return (this.Location.Column + this.CellWidth) - 1; } }
         public int Top { get { return this.Location.Row; } }
-        public int Bottom { get { return this.Location.Row + this.CellHeight; } }
+        public int Bottom { get { return (this.Location.Row + this.CellHeight) - 1; } }
+
+        public CellPoint TopLeft { get { return this.Location; } }
+        public CellPoint TopRight { get { return new CellPoint(this.Top, this.Right); } }
+        public CellPoint BottomRight { get { return new CellPoint(this.Bottom, this.Right); } }
+        public CellPoint BottomLeft { get { return new CellPoint(this.Bottom, this.Left); } }
+
+        public CellPoint[] Corners { get { return new CellPoint[] { this.TopLeft,
+                                                                    this.TopRight,
+                                                                    this.BottomRight,
+                                                                    this.BottomLeft }; } }
+
+        public CellPoint Center
+        {
+            get
+            {
+                var row = (int)((this.Top + this.Bottom) / 2D);
+                var column = (int)((this.Left + this.Right) / 2D);
+
+                if (this.CellHeight <= 1)
+                    row = this.Top;
+
+                if (this.CellWidth <= 1)
+                    column = this.Left;
+
+                return new CellPoint(row, column);
+            }
+        }
 
         public override string ToString()
         {
-            return "X=" + Location.Column + "Y=" + Location.Row + "Width=" + CellWidth + "Height=" + CellHeight;
+            return "X=" + Location.Column + " Y=" + Location.Row + " Width=" + CellWidth + " Height=" + CellHeight;
         }
-        public static CellRectangle Join(CellRectangle r1, CellRectangle r2)
+
+        /// <summary>
+        /// Expands rectangle to include provided location
+        /// </summary>
+        public void Expand(CellPoint location)
         {
-            var topLeft = new CellPoint(Math.Min(r1.Location.Row, r2.Location.Row), Math.Min(r1.Location.Column, r2.Location.Column));
-            var bottomRight = new CellPoint(Math.Max(r1.Location.Row + r1.CellHeight, r2.Location.Row + r2.CellHeight), Math.Max(r1.Location.Column + r1.CellWidth, r2.Location.Column + r2.CellWidth));
-            return new CellRectangle(topLeft, bottomRight.Column - topLeft.Column, bottomRight.Row - topLeft.Row);
+            if (this.Left > location.Column)
+                this.Location.Column = location.Column;
+
+            if (this.Right < location.Column)
+                this.CellWidth += (location.Column - this.Right);
+
+            if (this.Top > location.Row)
+                this.Location.Row = location.Row;
+
+            if (this.Bottom < location.Row)
+                this.CellHeight += (location.Row - this.Bottom);
+        }
+        /// <summary>
+        /// Create a new cell rectangle by combining it with another - taking the extremum of both.
+        /// </summary>
+        /// <param name="rectangle"></param>
+        public CellRectangle Union(CellRectangle rectangle)
+        {
+            var top = Math.Min(this.Top, rectangle.Top);
+            var bottom = Math.Max(this.Bottom, rectangle.Bottom);
+            var left = Math.Min(this.Left, rectangle.Left);
+            var right = Math.Max(this.Right, rectangle.Right);
+
+            return new CellRectangle(left, top, right, bottom);
         }
         public override bool Equals(object obj)
         {
@@ -54,32 +119,112 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// </summary>
         public bool Contains(CellPoint cellPoint)
         {
-            if (cellPoint.Column < Location.Column)
+            if (cellPoint.Column < this.Left)
                 return false;
 
-            if (cellPoint.Column > Location.Column + CellWidth)
+            if (cellPoint.Column > this.Right)
                 return false;
 
-            if (cellPoint.Row < Location.Row)
+            if (cellPoint.Row < this.Top)
                 return false;
 
-            if (cellPoint.Row > Location.Row + CellHeight)
+            if (cellPoint.Row > this.Bottom)
+                return false;
+
+            return true;
+        }
+        /// <summary>
+        /// Includes Boundary
+        /// </summary>
+        public bool Contains(int column, int row)
+        {
+            if (column < this.Left)
+                return false;
+
+            if (column > this.Right)
+                return false;
+
+            if (row < this.Top)
+                return false;
+
+            if (row > this.Bottom)
                 return false;
 
             return true;
         }
         public bool Contains(CellRectangle cellRectangle)
         {
-            if (!Contains(cellRectangle.Location))
+            if (cellRectangle.Right > this.Right)
                 return false;
 
-            if (cellRectangle.Location.Column + cellRectangle.CellWidth >= this.Location.Column + this.CellWidth)
+            if (cellRectangle.Left < this.Left)
                 return false;
 
-            if (cellRectangle.Location.Row + cellRectangle.CellHeight >= this.Location.Row + this.CellHeight)
+            if (cellRectangle.Top < this.Top)
+                return false;
+
+            if (cellRectangle.Bottom > this.Bottom)
                 return false;
 
             return true;
+        }
+        public bool Overlaps(CellRectangle cellRectangle)
+        {
+            if (cellRectangle.Left > this.Right)
+                return false;
+
+            if (cellRectangle.Right < this.Left)
+                return false;
+
+            if (cellRectangle.Top > this.Bottom)
+                return false;
+
+            if (cellRectangle.Bottom < this.Top)
+                return false;
+
+            return true;
+        }
+        /// <summary>
+        /// Calculates minimum distance between two rectangles - with overlapping rectangles defined as 0 
+        /// distance
+        /// </summary>
+        public int RoguianDistance(CellRectangle cellRectangle)
+        {
+            var left = cellRectangle.Right < this.Left;
+            var right = cellRectangle.Left > this.Right;
+            var top = cellRectangle.Bottom < this.Top;
+            var bottom = cellRectangle.Top > this.Bottom;
+
+            if (left && top)
+                return Calculator.RoguianDistance(this.Location, cellRectangle.BottomRight);
+            else if (right && top)
+                return Calculator.RoguianDistance(this.Location, cellRectangle.BottomLeft);
+            else if (right && bottom)
+                return Calculator.RoguianDistance(this.Location, cellRectangle.TopLeft);
+            else if (left && bottom)
+                return Calculator.RoguianDistance(this.Location, cellRectangle.TopRight);
+            else if (left)
+                return this.Left - cellRectangle.Right;
+            else if (top)
+                return this.Top - cellRectangle.Bottom;
+            else if (right)
+                return cellRectangle.Left - this.Right;
+            else if (bottom)
+                return cellRectangle.Top - this.Bottom;
+            else
+                return 0; // Overlapping
+        }
+        /// <summary>
+        /// Calculates maximum possible distance between two cells within the rectangles.
+        /// </summary>
+        public int MaximumRoguianDistance(CellRectangle cellRectangle)
+        {
+            return this.Corners
+                       .SelectMany(corner =>
+                       {
+                           return cellRectangle.Corners.Select(otherCorner => Calculator.RoguianDistance(corner, otherCorner));
+                       })
+                       .Max();
         }
     }
 }

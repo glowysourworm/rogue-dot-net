@@ -11,25 +11,57 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     public class LevelGrid : ISerializable
     {
         private Cell[,] _grid;
-        private CellRectangle[,] _roomGrid;
-
-        private IList<Cell> _doors;
-        private IList<Cell> _cells;
-        private IList<CellRectangle> _rooms;
+        private CellRectangle _bounds;
 
         private Cell[] _doorArray;
         private Cell[] _cellArray;
-        private CellRectangle[] _roomArray;
+        private RoomData[] _roomArray;
 
-        public LevelGrid(int width, int height, int roomWidth, int roomHeight)
+        #region Properties / Indexers
+        public Cell this[int column, int row]
         {
-            _grid = new Cell[width, height];
-            _roomGrid = new CellRectangle[roomWidth, roomHeight];
-            _doors = new List<Cell>();
-            _cells = new List<Cell>();
-            _rooms = new List<CellRectangle>();
+            //NOTE*** Returns null as a convention
+            get
+            {
+                if (column >= 0 &&
+                    row >= 0 &&
+                    column < _grid.GetLength(0) &&
+                    row < _grid.GetLength(1))
+                    return _grid[column, row];
 
-            RebuildArrays();
+                return null;
+            }
+            set
+            {
+                // Allow out-of-bounds exceptions
+                _grid[column, row] = value;
+
+                // Invalidate cell arrays
+                _cellArray = null;
+                _doorArray = null;
+            }
+        }
+        public CellRectangle Bounds
+        {
+            get { return _bounds; }
+        }
+        public IEnumerable<RoomData> Rooms { get { return _roomArray; } }
+        #endregion
+
+        /// <summary>
+        /// Constructs LevelGrid from the provided 2D cell array and the room data array. The cells
+        /// in the cell array are by reference; and are not re-created. The room data array contains
+        /// cell points that are treated as a value type. These are recreated during serialization (not
+        /// unique) apart from the cell reference objects.
+        /// 
+        /// USAGE:  Create Cell[,] first with room cells already in it. Also, create Room[] first with
+        ///         all data prepared. Corridors may be created afterwards using the public indexer.
+        /// </summary>
+        public LevelGrid(Cell[,] grid, RoomData[] rooms)
+        {
+            _grid = grid;
+            _bounds = new CellRectangle(new CellPoint(0, 0), grid.GetLength(0), grid.GetLength(1));
+            _roomArray = rooms;
         }
 
         #region ISerializable
@@ -38,14 +70,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var width = info.GetInt32("Width");
             var height = info.GetInt32("Height");
             var count = info.GetInt32("Count");
-            var roomWidth = info.GetInt32("RoomWidth");
-            var roomHeight = info.GetInt32("RoomHeight");
+            var roomCount = info.GetInt32("RoomCount");
 
             _grid = new Cell[width, height];
-            _roomGrid = new CellRectangle[roomWidth, roomHeight];
-            _cells = new List<Cell>();
-            _doors = new List<Cell>();
-            _rooms = new List<CellRectangle>();
+            _bounds = new CellRectangle(new CellPoint(0, 0), width, height);
+
+            var roomData = new List<RoomData>();
 
             // Populate cell grid
             for (int i=0;i<count;i++)
@@ -53,208 +83,82 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 var cell = (Cell)info.GetValue("Cell" + i.ToString(), typeof(Cell));
 
                 _grid[cell.Location.Column, cell.Location.Row] = cell;
-
-                _cells.Add(cell);
-
-                if (cell.IsDoor)
-                    _doors.Add(cell);
             }
 
-            // Populate room grid
-            for (int i=0;i<roomWidth;i++)
+            // Populate rooms
+            for (int i = 0; i < roomCount; i++)
             {
-                for (int j=0; j<roomHeight;j++)
-                {
-                    var room = (CellRectangle)info.GetValue(string.Join(":", "Room", i, j), typeof(CellRectangle));
+                var room = (RoomData)info.GetValue("Room" + i.ToString(), typeof(RoomData));
 
-                    // New Room
-                    if (!_rooms.Any(x => x.Equals(room)))
-                    {
-                        _roomGrid[i, j] = room;
-                        _rooms.Add(room);
-                    }
-
-                    // Duplicate Room (used for BigRoom layout type)
-                    else
-                    {
-                        var existingRoom = _rooms.First(x => x.Equals(room));
-                        var found = false;
-
-                        for (int n = 0;n < _roomGrid.GetLength(0) && !found;n++)
-                        {
-                            for (int m = 0;m < _roomGrid.GetLength(1) && !found;m++)
-                            {
-                                if (_roomGrid[n, m] == existingRoom)
-                                {
-                                    _roomGrid[i, j] = existingRoom;
-                                    found = true;
-                                }
-                            }
-                        }
-                    }
-                }
+                roomData.Add(room);
             }
 
-            RebuildArrays();
+            _roomArray = roomData.ToArray();
+
+            // Leave these invalid until iteration is necessary
+            _doorArray = null;
+            _cellArray = null;
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            // Have to use collections to serialize data
+            if (_cellArray == null)
+                RebuildArrays();
+
             info.AddValue("Width", _grid.GetLength(0));
             info.AddValue("Height", _grid.GetLength(1));
-            info.AddValue("Count", _cells.Count);
-            info.AddValue("RoomWidth", _roomGrid.GetLength(0));
-            info.AddValue("RoomHeight", _roomGrid.GetLength(1));
+            info.AddValue("Count", _cellArray.Length);
+            info.AddValue("RoomCount", _roomArray.Length);
 
-            for (int i = 0; i < _cells.Count; i++)
-                info.AddValue("Cell" + i.ToString(), _cells[i]);
+            for (int i = 0; i < _cellArray.Length; i++)
+                info.AddValue("Cell" + i.ToString(), _cellArray[i]);
 
-            for (int i=0;i<_roomGrid.GetLength(0);i++)
-            {
-                for (int j=0;j<_roomGrid.GetLength(1);j++)
-                    info.AddValue(string.Join(":", "Room", i, j), _roomGrid[i, j]);
-            }
+            for (int i = 0; i < _roomArray.Length; i++)
+                info.AddValue("Room" + i.ToString(), _roomArray[i]);
         }
         #endregion
 
-        public Cell this[int column, int row]
-        {
-            get { return GetCell(column, row); }
-            set { AddCell(value); }
-        }
-        public void AddCell(Cell cell)
-        {
-            if (cell.Location.Column < 0 || cell.Location.Column >= _grid.GetLength(0))
-                throw new Exception("Trying to add cell to out of range slot");
-
-            if (cell.Location.Row < 0 || cell.Location.Row >= _grid.GetLength(1))
-                throw new Exception("Trying to add cell to out of range slot");
-
-            if (_grid[cell.Location.Column, cell.Location.Row] != null)
-                return;
-
-            _grid[cell.Location.Column, cell.Location.Row] = cell;
-
-            _cells.Add(cell);
-
-            if (cell.IsDoor)
-                _doors.Insert(0, cell);
-
-            RebuildArrays();
-        }
-        public Cell GetCell(int x, int y)
-        {
-            if (x < 0 || x >= this.GetBounds().Right)
-                return null;
-
-            if (y < 0 || y >= this.GetBounds().Bottom)
-                return null;
-
-            return _grid[x, y];
-        }
-        public Cell GetCell(CellPoint cp)
-        {
-            return GetCell(cp.Column, cp.Row);
-        }
-
-        /// <summary>
-        /// Returns 1st of 2 off diagonal cells in the specified non-cardinal direction (Exapmle: NE -> N cell)
-        /// </summary>
-        /// <param name="direction">NE, NW, SE, SW</param>
-        public Cell GetOffDiagonalCell1(CellPoint location, Compass direction, out Compass cardinalDirection1)
-        {
-            switch (direction)
-            {
-                case Compass.NE:
-                case Compass.NW:
-                    cardinalDirection1 = Compass.N;
-                    return GetCell(location.Column, location.Row - 1);
-                case Compass.SE:
-                case Compass.SW:
-                    cardinalDirection1 = Compass.S;
-                    return GetCell(location.Column, location.Row + 1);
-                default:
-                    throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Exapmle: NE -> E cell)
-        /// </summary>
-        /// <param name="direction">NE, NW, SE, SW</param>
-        public Cell GetOffDiagonalCell2(CellPoint location, Compass direction, out Compass cardinalDirection2)
-        {
-            switch (direction)
-            {
-                case Compass.NE:
-                case Compass.SE:
-                    cardinalDirection2 = Compass.E;
-                    return GetCell(location.Column + 1, location.Row);
-                case Compass.SW:
-                case Compass.NW:
-                    cardinalDirection2 = Compass.W;
-                    return GetCell(location.Column - 1, location.Row);
-                default:
-                    throw new Exception("Off-Diagonal directions don't include " + direction.ToString());
-            }
-        }
-        public CellRectangle GetRoom(int column, int row)
-        {
-            return _roomGrid[column, row];
-        }
-        public int GetRoomGridWidth()
-        {
-            return _roomGrid.GetLength(0);
-        }
-        public int GetRoomGridHeight()
-        {
-            return _roomGrid.GetLength(1);
-        }
-
-        public void SetRoom(CellRectangle cellRectangle, int roomColumn, int roomRow)
-        {
-            _roomGrid[roomColumn, roomRow] = cellRectangle;
-
-            // Rebuild list (** NO DUPLICATES)
-            _rooms.Clear();
-            for (int i = 0; i < _roomGrid.GetLength(0); i++)
-            {
-                for (int j = 0; j < _roomGrid.GetLength(1); j++)
-                {
-                    if (!_rooms.Contains(_roomGrid[i, j]))
-                        _rooms.Add(_roomGrid[i, j]);
-                }
-            }
-
-            RebuildArrays();
-        }
-
-        public CellRectangle GetBounds()
-        {
-            return new CellRectangle(new CellPoint(0, 0), _grid.GetLength(0), _grid.GetLength(1));
-        }
-
-
+        #region Array Access
         /// <summary>
         /// For efficiency, maintain arrays of elements in arrays for calling methods. NOTE*** If this is a performance
         /// problem during the generation process then will have to defer building these until it's completed.
         /// </summary>
         private void RebuildArrays()
         {
-            _cellArray = _cells.ToArray();
-            _doorArray = _doors.ToArray();
-            _roomArray = _rooms.ToArray();
+            var cells = new List<Cell>();
+            var doorCells = new List<Cell>();
+
+            for (int i=0;i<_grid.GetLength(0);i++)
+            {
+                for (int j=0;j<_grid.GetLength(1);j++)
+                {
+                    if (_grid[i, j] == null)
+                        continue;
+
+                    cells.Add(_grid[i, j]);
+
+                    if (_grid[i, j].IsDoor)
+                        doorCells.Add(_grid[i, j]);
+                }
+            }
+
+            _cellArray = cells.ToArray();
+            _doorArray = doorCells.ToArray();
         }
         public Cell[] GetDoors()
         {
+            if (_cellArray == null)
+                RebuildArrays();
+
             return _doorArray;
-        }
-        public CellRectangle[] GetRooms()
-        {
-            return _roomArray;
         }
         public Cell[] GetCells()
         {
+            if (_cellArray == null)
+                RebuildArrays();
+
             return _cellArray;
         }
+        #endregion
     }
 }
