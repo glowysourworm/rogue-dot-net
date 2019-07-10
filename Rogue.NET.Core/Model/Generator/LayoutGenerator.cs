@@ -606,8 +606,18 @@ namespace Rogue.NET.Core.Model.Generator
             Cell room2Cell = null;
             CalculateNearestNeighborCells(template, grid, room1, room2, out room1Cell, out room2Cell);
 
+            IEnumerable<Cell> corridor = null;
+
             // Create the corridor cells and assign them to the grid
-            var corridor = CreateCorridor(grid, room1Cell, room2Cell, template);
+            switch (template.CorridorGeometryType)
+            {
+                case LayoutCorridorGeometryType.Linear:
+                    corridor = CreateLinearCorridor(grid, room1Cell, room2Cell, template);
+                    break;
+                default:
+                    throw new Exception("Unknown Corridor Geometry Type");
+            }
+            
 
             // Add cells to the grid
             foreach (var cell in corridor)
@@ -615,9 +625,9 @@ namespace Rogue.NET.Core.Model.Generator
         }
 
         /// <summary>
-        /// Creates new corridor cells in the provided grid
+        /// Creates new corridor cells for a linear corridor from cell1 to cell2
         /// </summary>
-        private IEnumerable<Cell> CreateCorridor(LevelGrid grid, Cell cell1, Cell cell2, LayoutTemplate template)
+        private IEnumerable<Cell> CreateLinearCorridor(LevelGrid grid, Cell cell1, Cell cell2, LayoutTemplate template)
         {
             // Check for neighboring or same-identity cell. For this case, just return an empty array
             if (cell1.Location.Equals(cell2.Location) ||
@@ -845,6 +855,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             return corridor;
         }
+        
         private void CreateDoor(Cell cell, Compass direction, int hiddenDoorCounter)
         {
             

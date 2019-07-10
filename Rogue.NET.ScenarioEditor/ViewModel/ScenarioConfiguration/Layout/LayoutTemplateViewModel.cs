@@ -160,7 +160,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
             this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
             this.ConnectionGeometryType = LayoutConnectionGeometryType.Rectilinear;
-            this.CorridorGeometryType = LayoutCorridorGeometryType.MidpointTurn;
+            this.CorridorGeometryType = LayoutCorridorGeometryType.Linear;
             this.Level = new RangeViewModel<int>(1, 1, 100, 100);
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;

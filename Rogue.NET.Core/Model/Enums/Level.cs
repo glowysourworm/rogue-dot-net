@@ -113,11 +113,6 @@ namespace Rogue.NET.Core.Model.Enums
         /// Straight line connecting cells from two rooms
         /// </summary>
         Linear = 0,
-        
-        /// <summary>
-        /// A turn at the midpoint between two rooms
-        /// </summary>
-        MidpointTurn = 1,
     }
     public enum LayoutRoomPlacementType : int
     {

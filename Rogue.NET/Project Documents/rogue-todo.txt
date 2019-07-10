@@ -497,14 +497,13 @@ IMMEDIATE TODO'S:
 	
 	- Cosmetic:  Widen the type selectors for layouts.
 	- Linear Corridors:  Need new corridor type to make diagonal corridors look nice
-	- Jail Cell Level:   Consistently chose the same connection points (Investigate)
-	- Random Room Placement:  Need spreading parameter; padding to fix wall error on layout; and set max size based on these.
-	- Random Room Placement:  Need to check the case of overlapping rooms - might want to use Flood Fill to identify them.
+	- Random Room Placement:  Fix missing edge on the layout - not sure why it's not rendering (maybe padding needed?)
 	- Animations:  For source = target case, prevent crash; but log a warning somewhere	
-	- Validation:  For certain types of layout combinations - have to auto-set some of the parameters that aren't used (so they pass validation)
 	- PERMADEATH
 	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
+	- Dependencies:  Take the algorithm from Traingle.NET and remove code
+	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.
 	- NEXT BIG TODO:  Figure out a way to calculate combat value for items based on player parameters (Level, Strength, Agility, Intelligence)
 	- OTHER BIG TODO:  Redo enemy behavior
 	- OTHER OTHER BIG TODO:  Terrain
