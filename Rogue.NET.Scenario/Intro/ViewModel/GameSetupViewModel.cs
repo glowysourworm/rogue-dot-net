@@ -145,14 +145,12 @@ namespace Rogue.NET.Intro.ViewModel
                     {
                         HasBonusAttackAttributes = x.HasBonusAttackAttributes,
                         HasBonusAttribute = x.HasAttributeBonus,
-                        HasBonusSkillSet = x.HasBonusSkillSet,
                         BonusAttackAttributes = new ObservableCollection<AttackAttribute>(x.BonusAttackAttributes
                                                                                            .Where(z => z.Attack.IsSet() || z.Resistance.IsSet() || z.Weakness.IsSet())
                                                                                            .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
                         BonusAttribute = x.BonusAttribute,
                         BonusAttributeValue = x.BonusAttributeValue,
                         ReligionMetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
-                        SkillSetMetaData = x.HasBonusSkillSet ? new ScenarioMetaDataViewModel(skillSets.First(z => z.RogueName == x.BonusSkillSetName), _scenarioResourceService) : null,
                         RogueName = x.Name,
 
                         Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)

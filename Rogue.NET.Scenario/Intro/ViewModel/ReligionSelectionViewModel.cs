@@ -10,10 +10,8 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
     {
         public string RogueName { get; set; }
         public ScenarioMetaDataViewModel ReligionMetaData { get; set; }
-        public bool HasBonusSkillSet { get; set; }
         public bool HasBonusAttribute { get; set; }
         public bool HasBonusAttackAttributes { get; set; }
-        public ScenarioMetaDataViewModel SkillSetMetaData { get; set; }
         public CharacterAttribute BonusAttribute { get; set; }
         public double BonusAttributeValue { get; set; }
         public ObservableCollection<AttackAttribute> BonusAttackAttributes { get; set; }

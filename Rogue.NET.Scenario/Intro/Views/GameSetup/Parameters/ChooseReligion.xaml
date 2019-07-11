@@ -86,25 +86,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <!-- Bonus Skill Set -->
-            <TextBlock Margin="10,10,0,0" Foreground="Tan" FontSize="20" FontStyle="Italic" HorizontalAlignment="Left" 
-                       Visibility="{Binding ElementName=ReligionLB, Path=SelectedItem.HasBonusSkillSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <Run Text="Bonus Skill - " />
-                <Run Text="{Binding ElementName=ReligionLB, Path=SelectedItem.SkillSetMetaData.RogueName}" />
-            </TextBlock>
-
-            <Grid Margin="10,10,0,0" Visibility="{Binding ElementName=ReligionLB, Path=SelectedItem.HasBonusSkillSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Border VerticalAlignment="Top" CornerRadius="8" BorderBrush="White" BorderThickness="0.75" Padding="8">
-                    <Image Height="60" Width="60" VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Source="{Binding ElementName=ReligionLB, Path=SelectedItem.SkillSetMetaData.Source}" />
-                </Border>
-                <TextBlock Grid.Column="1" Margin="10,0,10,0" TextWrapping="Wrap" Foreground="White" FontSize="16" Text="{Binding ElementName=ReligionLB, Path=SelectedItem.SkillSetMetaData.LongDescription}" />
-            </Grid>
             
         </StackPanel>
     </Grid>

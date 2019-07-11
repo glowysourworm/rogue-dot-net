@@ -74,7 +74,6 @@ namespace Rogue.NET.Core.Model.Generator
                 DisplayIcon = template.SymbolDetails.DisplayIcon,
                 HasAttributeBonus = template.HasAttributeBonus,
                 HasBonusAttackAttributes = template.HasBonusAttackAttributes,
-                HasBonusSkillSet = template.HasBonusSkillSet,
                 Icon = template.SymbolDetails.Icon,
                 RenunciationAnimations = new List<AnimationTemplate>(template.RenunciationAnimations),
                 RogueName = template.Name,

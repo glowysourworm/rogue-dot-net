@@ -16,7 +16,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         bool _canStartWith;
         double _bonusAttributeValue;
         CharacterAttribute _bonusAttribute;
-        string _bonusSkillSetName;
 
         public bool HasAttributeBonus
         {
@@ -27,11 +26,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _hasBonusAttackAttributes; }
             set { this.RaiseAndSetIfChanged(ref _hasBonusAttackAttributes, value); }
-        }
-        public bool HasBonusSkillSet
-        {
-            get { return _hasBonusSkillSet; }
-            set { this.RaiseAndSetIfChanged(ref _hasBonusSkillSet, value); }
         }
         public bool AllowsRenunciation
         {
@@ -63,11 +57,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _bonusAttribute; }
             set { this.RaiseAndSetIfChanged(ref _bonusAttribute, value); }
         }
-        public string BonusSkillSetName
-        {
-            get { return _bonusSkillSetName; }
-            set { this.RaiseAndSetIfChanged(ref _bonusSkillSetName, value); }
-        }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> BonusAttackAttributes { get; set; }
         public ObservableCollection<AnimationTemplateViewModel> RenunciationAnimations { get; set; }
@@ -76,13 +65,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             this.BonusAttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.RenunciationAnimations = new ObservableCollection<AnimationTemplateViewModel>();
-            this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;
             this.HasAttributeBonus = false;
             this.HasBonusAttackAttributes = false;
-            this.HasBonusSkillSet = false;
         }
     }
 }

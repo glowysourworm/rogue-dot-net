@@ -855,14 +855,23 @@ namespace Rogue.NET.Core.Logic
             if (enemyTemplates.Count <= 0)
                 return;
 
+            // Check to see that there is an empty cell available
+            var availableLocation = _modelService.Level
+                                                 .GetRandomLocation(_modelService
+                                                                        .GetVisibleLocations()
+                                                                        .Union(new List<CellPoint>() { _modelService.Player.Location }),
+                                                                    true,
+                                                                    _randomSequenceGenerator);
+
+            if (availableLocation == CellPoint.Empty)
+                return;
+
             // Create enemy from template
             var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
             var enemy = _characterGenerator.GenerateEnemy(template, _modelService.Religions, _modelService.GetAttackAttributes());
             
             // Map enemy location to level
-            enemy.Location = _modelService.Level.GetRandomLocation(_modelService.GetVisibleLocations()
-                                                                                .Union(new List<CellPoint>() { _modelService.Player.Location }),
-                                                                                true, _randomSequenceGenerator);
+            enemy.Location = availableLocation;
 
             // Add content to level
             _modelService.Level.AddContent(enemy);

@@ -36,12 +36,19 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 return cells[randomSequenceGenerator.Get(0, cells.Length)].Location;
             }
         }
+
+        /// <summary>
+        /// Returns random location or CellPoint.Empty
+        /// </summary>
         public static CellPoint GetRandomLocation(this Level level, IEnumerable<CellPoint> otherExcludedLocations, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
         {
             var locations = level.Grid.GetCells()
                                   .Select(x => x.Location)
                                   .Except(otherExcludedLocations)
                                   .ToList();
+
+            if (locations.Count <= 0)
+                return CellPoint.Empty;
 
             // Slower operation
             if (excludeOccupiedLocations)
@@ -51,7 +58,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = locations.Except(occupiedLocations);
 
                 // Return random cell
-                return freeCells.ElementAt(randomSequenceGenerator.Get(0, freeCells.Count()));
+                return freeCells.Count() <= 0 ? 
+                            CellPoint.Empty :
+                            freeCells.ElementAt(randomSequenceGenerator.Get(0, freeCells.Count()));
             }
             // O(1)
             else

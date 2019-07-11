@@ -206,20 +206,6 @@ namespace Rogue.NET.ScenarioEditor.Service
                     consumable.HasLearnedSkill = false;
             }
 
-            // Religion Starting Skill Set
-            foreach (var religion in configuration.Religions)
-            {
-                if (religion.HasBonusSkillSet)
-                {
-                    var skillSet = configuration.SkillTemplates.FirstOrDefault(x => x.Name == religion.Name);
-
-                    if (skillSet != null)
-                        religion.BonusSkillSetName = skillSet.Name;
-                    else
-                        religion.HasBonusSkillSet = false;
-                }
-            }
-
             // Player Starting Skills
             UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
         }

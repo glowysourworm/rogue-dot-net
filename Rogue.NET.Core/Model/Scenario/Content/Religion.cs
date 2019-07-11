@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     {
         public bool HasAttributeBonus { get; set; }
         public bool HasBonusAttackAttributes { get; set; }
-        public bool HasBonusSkillSet { get; set; }
         public bool AllowsRenunciation { get; set; }
         public bool AllowsReAffiliation { get; set; }
 

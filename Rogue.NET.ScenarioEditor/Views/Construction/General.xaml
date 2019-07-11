@@ -197,58 +197,8 @@
                                             </Grid>
                                         </StackPanel>
                                     </TabItem>
-                                    <TabItem Header="Attack Parameters" Background="Black">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="250" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="*" />
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Text="Opposing Religion" Margin="10" Foreground="White" HorizontalAlignment="Left" />
-                                                <ListBox x:Name="EnemyReligionLB" 
-                                                         Margin="10,0,10,10"                                                         
-                                                         Grid.Row="1"
-                                                         DisplayMemberPath="EnemyReligionName"
-                                                         ItemsSource="{Binding AttackParameters}">
-                                                </ListBox>
-                                            </Grid>
-                                            <StackPanel Grid.Column="1"
-                                                        DataContext="{Binding ElementName=EnemyReligionLB, Path=SelectedItem}">
-                                                <Grid Margin="10">
-                                                    <TextBlock Foreground="White" Text="Attack Multiplier" FontSize="16" HorizontalAlignment="Left" />
-                                                    <toolkit:DoubleUpDown Width="150" Minimum="0" Maximum="100" Value="{Binding AttackMultiplier}"  HorizontalAlignment="Right" />
-                                                </Grid>
-                                                <Grid Margin="10">
-                                                    <TextBlock Foreground="White" Text="Defehse Multiplier" FontSize="16" HorizontalAlignment="Left" />
-                                                    <toolkit:DoubleUpDown Width="150" Minimum="-100" Maximum="100" Value="{Binding DefenseMultiplier}"  HorizontalAlignment="Right" />
-                                                </Grid>
-                                                <Grid Margin="10">
-                                                    <TextBlock Foreground="White" Text="(Mental Alteration) Block Multiplier" FontSize="16" HorizontalAlignment="Left" />
-                                                    <toolkit:DoubleUpDown Width="150" Minimum="-1" Maximum="1" Increment="0.01" Value="{Binding BlockMultiplier}"  HorizontalAlignment="Right" />
-                                                </Grid>
-                                            </StackPanel>
-                                        </Grid>
-                                    </TabItem>
                                     <TabItem Header="Other Parameters" Background="Black">
                                         <StackPanel>
-                                            <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Has Bonus Skill Set" FontSize="16" HorizontalAlignment="Left" />
-                                                <CheckBox IsChecked="{Binding HasBonusSkillSet}" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10" Visibility="{Binding HasBonusSkillSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                <TextBlock Foreground="White" Text="Bonus Skill Set" FontSize="16" HorizontalAlignment="Left" />
-                                                <ComboBox x:Name="BonusSkillSetCB"  
-                                                          ItemsSource="{Binding DataContext.SkillTemplates, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:General}}}"
-                                                          DisplayMemberPath="Name"
-                                                          SelectedValuePath="Name"
-                                                          SelectedValue="{Binding BonusSkillSetName}"
-                                                          Width="200" 
-                                                          HorizontalAlignment="Right" />
-                                            </Grid>
                                             <Grid Margin="10">
                                                 <StackPanel>
                                                     <TextBlock Foreground="White" Text="Renunciation Animation" Margin="0,0,0,10" FontSize="16" HorizontalAlignment="Left" />

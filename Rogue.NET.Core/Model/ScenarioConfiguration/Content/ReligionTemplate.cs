@@ -12,13 +12,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttributes;
-        bool _hasBonusSkillSet;
         bool _allowsRenunciation;
         bool _allowsReAffiliation;
         bool _isIdentified;
         bool _canStartWith;
         double _bonusAttributeValue;
-        string _bonusSkillSetName;
         CharacterAttribute _bonusAttribute;
 
         public bool HasAttributeBonus
@@ -42,18 +40,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasBonusAttackAttributes = value;
                     OnPropertyChanged("HasBonusAttackAttribute");
-                }
-            }
-        }
-        public bool HasBonusSkillSet
-        {
-            get { return _hasBonusSkillSet; }
-            set
-            {
-                if (_hasBonusSkillSet != value)
-                {
-                    _hasBonusSkillSet = value;
-                    OnPropertyChanged("HasBonusSkillSet");
                 }
             }
         }
@@ -129,18 +115,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public string BonusSkillSetName
-        {
-            get { return _bonusSkillSetName; }
-            set
-            {
-                if (_bonusSkillSetName != value)
-                {
-                    _bonusSkillSetName = value;
-                    OnPropertyChanged("BonusSkillSetName");
-                }
-            }
-        }
 
         public List<AttackAttributeTemplate> BonusAttackAttributes { get; set; }
         public List<AnimationTemplate> RenunciationAnimations { get; set; }
@@ -149,12 +123,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.BonusAttackAttributes = new List<AttackAttributeTemplate>();
             this.RenunciationAnimations = new List<AnimationTemplate>();
-            this.BonusSkillSetName = "";
 
             this.AllowsRenunciation = true;
             this.AllowsReAffiliation = false;
             this.HasBonusAttackAttributes = false;
-            this.HasBonusSkillSet = false;
         }
     }
 }
