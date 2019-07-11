@@ -16,14 +16,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasSpell;
-        private bool _hasReligiousAffiliationRequirement;
+        private bool _hasReligionRequirement;
         private bool _isProjectile;
         private bool _identifyOnUse;
         private SpellTemplate _spellTemplate;
         private SkillSetTemplate _learnedSkill;
         private SpellTemplate _projectileSpellTemplate;
-        private SpellTemplate _ammoSpellTemplate;
-        private ReligiousAffiliationRequirementTemplate _religiousAffiliationRequirement;
+        private SpellTemplate _ammoSpellTemplate;        
         private string _noteMessage;
 
         public ConsumableType Type
@@ -110,15 +109,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
+            get { return _hasReligionRequirement; }
             set
             {
-                if (_hasReligiousAffiliationRequirement != value)
+                if (_hasReligionRequirement != value)
                 {
-                    _hasReligiousAffiliationRequirement = value;
-                    OnPropertyChanged("HasReligiousAffiliationRequirement");
+                    _hasReligionRequirement = value;
+                    OnPropertyChanged("HasReligionRequirement");
                 }
             }
         }
@@ -194,18 +193,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligiousAffiliationRequirementTemplate ReligiousAffiliationRequirement
-        {
-            get { return _religiousAffiliationRequirement; }
-            set
-            {
-                if (_religiousAffiliationRequirement != value)
-                {
-                    _religiousAffiliationRequirement = value;
-                    OnPropertyChanged("ReligiousAffiliationRequirement");
-                }
-            }
-        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -227,13 +214,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.SpellTemplate = new SpellTemplate();
             this.AmmoSpellTemplate = new SpellTemplate();
             this.LearnedSkill = new SkillSetTemplate();
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
             this.UseCount = new Range<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligiousAffiliationRequirement = false;
+            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
         public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
@@ -244,13 +230,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.SpellTemplate = new SpellTemplate();
             this.AmmoSpellTemplate = new SpellTemplate();
             this.LearnedSkill = new SkillSetTemplate();
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
             this.UseCount = new Range<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligiousAffiliationRequirement = false;
+            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
     }

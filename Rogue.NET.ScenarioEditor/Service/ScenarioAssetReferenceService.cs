@@ -115,39 +115,39 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
 
             // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligiousAffiliationRequirement))
-            {
-                consumable.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, consumable.ReligiousAffiliationRequirement.Religion);
+            //foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligiousAffiliationRequirement))
+            //{
+            //    consumable.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, consumable.ReligiousAffiliationRequirement.Religion);
 
-                if (consumable.ReligiousAffiliationRequirement.Religion == null)
-                    consumable.HasReligiousAffiliationRequirement = false;
-            }
+            //    if (consumable.ReligiousAffiliationRequirement.Religion == null)
+            //        consumable.HasReligiousAffiliationRequirement = false;
+            //}
 
-            // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligiousAffiliationRequirement))
-            {
-                equipment.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, equipment.ReligiousAffiliationRequirement.Religion);
+            //// Equipment
+            //foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
+            //{
+            //    equipment.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, equipment.ReligiousAffiliationRequirement.Religion);
 
-                if (equipment.ReligiousAffiliationRequirement.Religion == null)
-                    equipment.HasReligiousAffiliationRequirement = false;
-            }
+            //    if (equipment.ReligiousAffiliationRequirement.Religion == null)
+            //        equipment.HasReligionRequirement = false;
+            //}
 
-            // Doodads
-            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligiousAffiliationRequirement))
-            {
-                doodad.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, doodad.ReligiousAffiliationRequirement.Religion);
+            //// Doodads
+            //foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
+            //{
+            //    doodad.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, doodad.ReligiousAffiliationRequirement.Religion);
 
-                if (doodad.ReligiousAffiliationRequirement.Religion == null)
-                    doodad.HasReligiousAffiliationRequirement = false;
-            }
+            //    if (doodad.ReligiousAffiliationRequirement.Religion == null)
+            //        doodad.HasReligionRequirement = false;
+            //}
 
             // Enemies
-            foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligiousAffiliation))
+            foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligion))
             {
                 enemy.Religion = MatchByName(configuration.Religions, enemy.Religion);
 
                 if (enemy.Religion == null)
-                    enemy.HasReligiousAffiliation = false;
+                    enemy.HasReligion = false;
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 using System.Collections.Generic;
 
@@ -9,8 +8,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     public class SkillSetTemplate : DungeonObjectTemplate
     {
         private int _levelLearned;
-        private bool _hasReligiousAffiliationRequirement;
-        private ReligiousAffiliationRequirementTemplate _religiousAffiliationRequirement;
+        private bool _hasReligionRequirement;
 
         public List<SkillTemplate> Skills { get; set; }
 
@@ -26,27 +24,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
+            get { return _hasReligionRequirement; }
             set
             {
-                if (_hasReligiousAffiliationRequirement != value)
+                if (_hasReligionRequirement != value)
                 {
-                    _hasReligiousAffiliationRequirement = value;
-                    OnPropertyChanged("HasReligiousAffiliationRequirement");
-                }
-            }
-        }
-        public ReligiousAffiliationRequirementTemplate ReligiousAffiliationRequirement
-        {
-            get { return _religiousAffiliationRequirement; }
-            set
-            {
-                if (_religiousAffiliationRequirement != value)
-                {
-                    _religiousAffiliationRequirement = value;
-                    OnPropertyChanged("ReligiousAffiliationRequirement");
+                    _hasReligionRequirement = value;
+                    OnPropertyChanged("HasReligionRequirement");
                 }
             }
         }
@@ -54,15 +40,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         public SkillSetTemplate()
         {
             this.Skills = new List<SkillTemplate>();
-            this.HasReligiousAffiliationRequirement = false;
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
+            this.HasReligionRequirement = false;
         }
         public SkillSetTemplate(DungeonObjectTemplate obj)
             : base(obj)
         {
             this.Skills = new List<SkillTemplate>();
-            this.HasReligiousAffiliationRequirement = false;
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
+            this.HasReligionRequirement = false;
         }
     }
 }

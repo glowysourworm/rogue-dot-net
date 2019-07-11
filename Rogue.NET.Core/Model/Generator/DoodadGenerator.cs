@@ -46,8 +46,8 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.HasBeenUsed = false;
 
             // Religious Affiliation Requirement
-            if (doodad.HasReligionRequirement)
-                doodad.ReligionName = doodadTemplate.ReligiousAffiliationRequirement.Religion.Name;
+            //if (doodad.HasReligionRequirement)
+            //    doodad.ReligionName = doodadTemplate.ReligiousAffiliationRequirement.Religion.Name;
 
             doodadTemplate.HasBeenGenerated = true;
 

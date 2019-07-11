@@ -200,7 +200,7 @@ namespace Rogue.NET.Core.Model.Generator
             // Religion -> Initialize() -> Generate random affiliation level based on range
             enemy.ReligiousAlteration.Initialize(scenarioAttributes);
 
-            if (enemyTemplate.HasReligiousAffiliation)
+            if (enemyTemplate.HasReligion)
                 enemy.ReligiousAlteration.Affiliate(religions.First(x => x.RogueName == enemyTemplate.Religion.Name));
 
             enemyTemplate.HasBeenGenerated = true;

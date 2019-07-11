@@ -21,8 +21,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
-        private bool _hasReligiousAffiliationRequirement;
-        private ReligiousAffiliationRequirementTemplate _religiousAffiliationRequirement;
+        private bool _hasReligionRequirement;
 
         public Range<int> Class
         {
@@ -144,27 +143,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
+            get { return _hasReligionRequirement; }
             set
             {
-                if (_hasReligiousAffiliationRequirement != value)
+                if (_hasReligionRequirement != value)
                 {
-                    _hasReligiousAffiliationRequirement = value;
-                    OnPropertyChanged("HasReligiousAffiliationRequirement");
-                }
-            }
-        }
-        public ReligiousAffiliationRequirementTemplate ReligiousAffiliationRequirement
-        {
-            get { return _religiousAffiliationRequirement; }
-            set
-            {
-                if (_religiousAffiliationRequirement != value)
-                {
-                    _religiousAffiliationRequirement = value;
-                    OnPropertyChanged("ReligiousAffiliationRequirement");
+                    _hasReligionRequirement = value;
+                    OnPropertyChanged("HasReligionRequirement");
                 }
             }
         }
@@ -179,8 +166,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
-            this.HasReligiousAffiliationRequirement = false;
+            this.HasReligionRequirement = false;
         }
         public EquipmentTemplate(DungeonObjectTemplate tmp)
             : base(tmp)
@@ -192,8 +178,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirementTemplate();
-            this.HasReligiousAffiliationRequirement = false;
+            this.HasReligionRequirement = false;
         }
     }
 }

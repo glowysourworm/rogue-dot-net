@@ -13,21 +13,21 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         private bool _generateOnStep;
         private bool _isInvisible;
-        private bool _hasReligiousAffiliation;
+        private bool _hasReligion;
         private Range<double> _experienceGiven;
         private Range<double> _religiousAffiliationLevel;
         private BehaviorDetailsTemplate _behaviorDetails;
         private ReligionTemplate _religion;
 
-        public bool HasReligiousAffiliation
+        public bool HasReligion
         {
-            get { return _hasReligiousAffiliation; }
+            get { return _hasReligion; }
             set
             {
-                if (_hasReligiousAffiliation != value)
+                if (_hasReligion != value)
                 {
-                    _hasReligiousAffiliation = value;
-                    OnPropertyChanged("HasReligiousAffiliation");
+                    _hasReligion = value;
+                    OnPropertyChanged("HasReligion");
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public EnemyTemplate()
         {
-            this.HasReligiousAffiliation = false;
+            this.HasReligion = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.ReligiousAffiliationLevel = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
-            this.HasReligiousAffiliation = false;
+            this.HasReligion = false;
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.ReligiousAffiliationLevel = new Range<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
