@@ -1,11 +1,10 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
 
-namespace Rogue.NET.Core.Model.Scenario.Content.Religion
+namespace Rogue.NET.Core.Model.Scenario.Content
 {
     [Serializable]
     public class Religion : ScenarioImage
@@ -21,7 +20,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Religion
         public AlterationEffect AttributeAlteration { get; set; }
         public AlterationEffect AttackAttributeAlteration { get; set; }
 
-        public List<ReligiousAffiliationAttackParameters> AttackParameters { get; set; }
         public List<AnimationTemplate> RenunciationAnimations { get; set; }
 
         public SkillSet SkillSet { get; set; }
@@ -30,7 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Religion
         {
             this.AttackAttributeAlteration = new AlterationEffect();
             this.AttributeAlteration = new AlterationEffect();
-            this.AttackParameters = new List<ReligiousAffiliationAttackParameters>();
             this.RenunciationAnimations = new List<AnimationTemplate>();
             this.SkillSet = new SkillSet();
         }

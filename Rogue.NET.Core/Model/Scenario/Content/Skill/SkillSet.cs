@@ -1,6 +1,4 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -16,8 +14,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public bool IsTurnedOn { get; set; }
         public bool IsLearned { get; set; }
 
-        public bool HasReligiousAffiliationRequirement { get; set; }
-        public ReligiousAffiliationRequirement ReligiousAffiliationRequirement { get; set; }
+        public bool HasReligionRequirement { get; set; }
+        public string ReligionName { get; set; }
 
         public Skill SelectedSkill { get; private set; }
 
@@ -66,7 +64,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
             this.IsActive = false;
             this.IsLearned = false;
             this.Skills = new List<Skill>();
-            this.ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement();
+            this.ReligionName = null;
         } 
     }
 }

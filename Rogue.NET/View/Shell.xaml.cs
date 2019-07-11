@@ -144,9 +144,6 @@ namespace Rogue.NET.View
                                 case ViewActionType.ShowPlayerSubpanelAlterations:
                                     _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
                                     break;
-                                case ViewActionType.ShowPlayerSubpanelReligion:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelReligionEvent>().Publish();
-                                    break;
                                 default:
                                     break;
                             }

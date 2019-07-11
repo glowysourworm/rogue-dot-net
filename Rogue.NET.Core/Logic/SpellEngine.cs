@@ -420,8 +420,7 @@ namespace Rogue.NET.Core.Logic
                     _religionEngine.RenounceReligion(true);
                     break;
                 case AlterationMagicEffectType.IncreaseReligiousAffiliation:
-                    _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName,
-                                              alteration.ReligiousAffiliationIncrease);
+                    _religionEngine.Affiliate(alteration.ReligiousAffiliationReligionName);
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                 default:

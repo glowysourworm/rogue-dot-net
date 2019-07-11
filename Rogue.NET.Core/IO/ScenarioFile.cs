@@ -6,14 +6,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows;
 using System.Collections.Concurrent;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Common.Utility;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Core.IO
 {

@@ -33,8 +33,7 @@ namespace Rogue.NET.Scenario.Views
                 this.ConsumablesCtrl,
                 this.SkillCtrl,
                 this.StatsCtrl,
-                this.AlterationsCtrl,
-                this.ReligionCtrl
+                this.AlterationsCtrl
             });
 
             _radioList = new List<RadioButton>(new RadioButton[]{
@@ -42,8 +41,7 @@ namespace Rogue.NET.Scenario.Views
                 this.CosumablesRB,
                 this.SkillsRB,
                 this.StatsRB,
-                this.AlterationsRB,
-                this.ReligionRB
+                this.AlterationsRB
             });
 
             // Show Specific Control Events
@@ -58,10 +56,6 @@ namespace Rogue.NET.Scenario.Views
             eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Subscribe(() =>
             {
                 ShowControl(this.EquipmentCtrl);
-            });
-            eventAggregator.GetEvent<ShowPlayerSubpanelReligionEvent>().Subscribe(() =>
-            {
-                ShowControl(this.ReligionCtrl);
             });
             eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Subscribe(() =>
             {

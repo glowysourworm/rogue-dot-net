@@ -1,11 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario
 {

@@ -103,10 +103,6 @@ namespace Rogue.NET.Scenario.Service
             else if (key == _preferences.ShowPlayerSubpanelAlterations && shift)
                 return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelAlterations);
 
-            // Religion
-            else if (key == _preferences.ShowPlayerSubpanelReligion && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelReligion);
-
             //Debug*******
 #if DEBUG
             else if (key == Key.N)

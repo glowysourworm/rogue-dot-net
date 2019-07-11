@@ -1,9 +1,6 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -27,14 +24,10 @@ namespace Rogue.NET.Core.Model.Generator
                 CharacterColor = skillSetTemplate.SymbolDetails.CharacterColor,
                 CharacterSymbol = skillSetTemplate.SymbolDetails.CharacterSymbol,
                 DisplayIcon = skillSetTemplate.SymbolDetails.DisplayIcon,
-                HasReligiousAffiliationRequirement = skillSetTemplate.HasReligiousAffiliationRequirement,
+                HasReligionRequirement = skillSetTemplate.HasReligiousAffiliationRequirement,
                 Icon = skillSetTemplate.SymbolDetails.Icon,
                 LevelLearned = skillSetTemplate.LevelLearned,
-                ReligiousAffiliationRequirement = new ReligiousAffiliationRequirement()
-                {
-                    ReligionName = skillSetTemplate.ReligiousAffiliationRequirement.Religion.Name,
-                    RequiredAffiliationLevel = skillSetTemplate.ReligiousAffiliationRequirement.RequiredAffiliationLevel
-                },
+                ReligionName = skillSetTemplate.ReligiousAffiliationRequirement.Religion.Name,
                 RogueName = skillSetTemplate.Name,
                 Skills = skillSetTemplate.Skills.Select(x => _skillGenerator.GenerateSkill(x)).ToList(),
                 SmileyAuraColor = skillSetTemplate.SymbolDetails.SmileyAuraColor,

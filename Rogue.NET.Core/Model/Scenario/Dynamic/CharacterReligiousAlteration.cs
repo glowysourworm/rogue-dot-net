@@ -1,12 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic
 {
@@ -17,13 +14,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public AlterationEffect AttributeEffect { get; protected set; }
 
         protected Religion Religion { get; set; }
-        protected double ReligiousAffiliationLevel { get; set; }
 
         protected IEnumerable<AttackAttribute> ScenarioAttackAttributes { get; set; }
 
         public bool IsAffiliated()
         {
-            return this.Religion != null && this.ReligiousAffiliationLevel > 0;
+            return this.Religion != null;
         }
 
         public bool CanRenounce()
@@ -42,13 +38,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             return renunciationAnimations;
         }
 
-        public void Affiliate(Religion religion, double affiliationLevel)
+        public void Affiliate(Religion religion)
         {
             if (this.Religion != null)
                 throw new Exception("Trying to affiliate religion without renouncing old religion");
 
             this.Religion = religion;
-            this.ReligiousAffiliationLevel = affiliationLevel;
 
             CreateEffects();
         }
@@ -57,8 +52,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         {
             if (this.Religion == null)
                 throw new Exception("Not affiliated with any religion");
-
-            this.ReligiousAffiliationLevel = affiliationLevel;
 
             CreateEffects();
         }
@@ -73,11 +66,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             get { return this.Religion; }
         }
 
-        public ReligiousAffiliationAttackParameters GetParameters(string enemyReligionName)
-        {
-            return this.Religion?.AttackParameters.First(x => x.EnemyReligionName == enemyReligionName);
-        }
-
         public bool HasAttributeEffect
         {
             get { return this.Religion?.HasAttributeBonus ?? false; }
@@ -86,11 +74,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public bool HasAttackAttributeEffect
         {
             get { return this.Religion?.HasBonusAttackAttributes ?? false; }
-        }
-
-        public double Affiliation
-        {
-            get { return this.ReligiousAffiliationLevel; }
         }
 
         public CharacterReligiousAlteration()
@@ -117,19 +100,19 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             {
                 DisplayName = (this.Religion?.RogueName ?? "Zero") + " Attribute Bonus",
 
-                Agility = attributeEffect.Agility * this.ReligiousAffiliationLevel,
-                Attack = attributeEffect.Attack * this.ReligiousAffiliationLevel,
-                AuraRadius = attributeEffect.AuraRadius * this.ReligiousAffiliationLevel,
-                CriticalHit = attributeEffect.CriticalHit * this.ReligiousAffiliationLevel,
-                Defense = attributeEffect.Defense * this.ReligiousAffiliationLevel,
-                DodgeProbability = attributeEffect.DodgeProbability * this.ReligiousAffiliationLevel,
-                FoodUsagePerTurn = attributeEffect.FoodUsagePerTurn * this.ReligiousAffiliationLevel,
-                HpPerStep = attributeEffect.HpPerStep * this.ReligiousAffiliationLevel,
-                Intelligence = attributeEffect.Intelligence * this.ReligiousAffiliationLevel,
-                MagicBlockProbability = attributeEffect.MagicBlockProbability * this.ReligiousAffiliationLevel,
-                MpPerStep = attributeEffect.MpPerStep * this.ReligiousAffiliationLevel,
-                Speed = attributeEffect.Speed * this.ReligiousAffiliationLevel,
-                Strength = attributeEffect.Strength * this.ReligiousAffiliationLevel
+                Agility = attributeEffect.Agility,
+                Attack = attributeEffect.Attack,
+                AuraRadius = attributeEffect.AuraRadius,
+                CriticalHit = attributeEffect.CriticalHit,
+                Defense = attributeEffect.Defense,
+                DodgeProbability = attributeEffect.DodgeProbability,
+                FoodUsagePerTurn = attributeEffect.FoodUsagePerTurn,
+                HpPerStep = attributeEffect.HpPerStep,
+                Intelligence = attributeEffect.Intelligence,
+                MagicBlockProbability = attributeEffect.MagicBlockProbability,
+                MpPerStep = attributeEffect.MpPerStep,
+                Speed = attributeEffect.Speed,
+                Strength = attributeEffect.Strength
             };
 
             var attackAttributes = this.Religion == null ? this.ScenarioAttackAttributes : 
@@ -142,9 +125,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
                 AttackAttributes = attackAttributes.Select(x => new AttackAttribute()
                 {
-                    Attack = x.Attack * this.ReligiousAffiliationLevel,
-                    Resistance = x.Resistance * this.ReligiousAffiliationLevel,
-                    Weakness = (int)Math.Ceiling(x.Weakness * this.ReligiousAffiliationLevel),
+                    Attack = x.Attack,
+                    Resistance = x.Resistance,
+                    Weakness = x.Weakness,
 
                     CharacterColor = x.CharacterColor,
                     CharacterSymbol = x.CharacterSymbol,

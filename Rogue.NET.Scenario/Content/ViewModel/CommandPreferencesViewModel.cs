@@ -30,7 +30,6 @@ namespace Rogue.NET.Model
         public static readonly DependencyProperty ShowPlayerSubpanelSkillsProperty = DependencyProperty.Register("ShowPlayerSubpanelSkills", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty ShowPlayerSubpanelStatsProperty = DependencyProperty.Register("ShowPlayerSubpanelStats", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty ShowPlayerSubpanelAlterationsProperty = DependencyProperty.Register("ShowPlayerSubpanelAlterations", typeof(Key), typeof(CommandPreferencesViewModel));
-        public static readonly DependencyProperty ShowPlayerSubpanelReligionProperty = DependencyProperty.Register("ShowPlayerSubpanelReligion", typeof(Key), typeof(CommandPreferencesViewModel));
         #endregion
 
         //Compass Keys
@@ -144,11 +143,6 @@ namespace Rogue.NET.Model
             get { return (Key)GetValue(ShowPlayerSubpanelAlterationsProperty); }
             set { SetValue(ShowPlayerSubpanelAlterationsProperty, value); }
         }
-        public Key ShowPlayerSubpanelReligion
-        {
-            get { return (Key)GetValue(ShowPlayerSubpanelReligionProperty); }
-            set { SetValue(ShowPlayerSubpanelReligionProperty, value); }
-        }
 
         public CommandPreferencesViewModel()
         {
@@ -175,7 +169,6 @@ namespace Rogue.NET.Model
             ShowPlayerSubpanelSkills = Key.D3;
             ShowPlayerSubpanelStats = Key.D4;
             ShowPlayerSubpanelAlterations = Key.D5;
-            ShowPlayerSubpanelReligion = Key.D6;
         }
         public static CommandPreferencesViewModel GetDefaults()
         {
@@ -204,8 +197,7 @@ namespace Rogue.NET.Model
                 ShowPlayerSubpanelConsumables = Key.D2,
                 ShowPlayerSubpanelSkills = Key.D3,
                 ShowPlayerSubpanelStats = Key.D4,
-                ShowPlayerSubpanelAlterations = Key.D5,
-                ShowPlayerSubpanelReligion = Key.D6
+                ShowPlayerSubpanelAlterations = Key.D5
             };
         }
     }

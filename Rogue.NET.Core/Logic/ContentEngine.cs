@@ -144,20 +144,18 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Identify Religion
-            if (equipment.HasReligiousAffiliationRequirement)
-                _religionEngine.IdentifyReligion(equipment.ReligiousAffiliationRequirement.ReligionName);
+            if (equipment.HasReligionRequirement)
+                _religionEngine.IdentifyReligion(equipment.ReligionName);
 
             // Check Religious Affiliation Requirement
-            if (equipment.HasReligiousAffiliationRequirement &&
+            if (equipment.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.ReligionName != equipment.ReligiousAffiliationRequirement.ReligionName ||
-                 player.ReligiousAlteration.Affiliation < equipment.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+                 player.ReligiousAlteration.ReligionName != equipment.ReligionName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} {1} Not Met!",
-                    equipment.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
-                    equipment.ReligiousAffiliationRequirement.ReligionName);
+                    "Required Religious Affiliation {0} Not Met!",
+                    equipment.ReligionName);
 
                 return false;
             }

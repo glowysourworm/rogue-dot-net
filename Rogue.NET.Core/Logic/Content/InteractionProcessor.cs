@@ -102,34 +102,6 @@ namespace Rogue.NET.Core.Logic.Content
             // Add Results to attack
             attack += specializedHits.Sum(x => x.Value);
 
-            // Calculate Religion Interaction
-            if (attacker.ReligiousAlteration.IsAffiliated() &&
-                defender.ReligiousAlteration.IsAffiliated())
-            {
-                var attackerReligion = attacker.ReligiousAlteration.ReligionName;
-                var defenderReligion = defender.ReligiousAlteration.ReligionName;
-
-                var attackerParameters = attacker.ReligiousAlteration.GetParameters(defenderReligion);
-                var defenderParameters = defender.ReligiousAlteration.GetParameters(attackerReligion);
-
-                // Attack = I_A * M_A * A_A - I_D * M_D * D_D
-                var religiousAttack = attacker.GetIntelligence() *
-                                      attackerParameters.AttackMultiplier *
-                                      attacker.ReligiousAlteration.Affiliation;
-
-                var religiousDefense = defender.GetIntelligence() *
-                                       defenderParameters.DefenseMultiplier *
-                                       defender.ReligiousAlteration.Affiliation;
-
-                var hit = Math.Max(0, religiousAttack - religiousDefense);
-
-                if (hit > 0)
-                {
-                    attack += hit;
-                    specializedHits.Add(attacker.ReligiousAlteration.Symbol, hit);
-                }
-            }
-
             if (attack <= 0 || dodge)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, attacker.RogueName + " Misses");
 
@@ -175,20 +147,6 @@ namespace Rogue.NET.Core.Logic.Content
         {
             var religionComponent = 0D;
             
-            if (attacker.ReligiousAlteration.IsAffiliated() &&
-                defender.ReligiousAlteration.IsAffiliated())
-            {
-                // Get Defender Parameters to calculate the block probability
-                var parameters = defender.ReligiousAlteration.GetParameters(attacker.ReligiousAlteration.ReligionName);
-
-                // Contribution = Intelligence * Affiliation * Block Multiplier
-                var blockValue = defender.GetIntelligence() * 
-                                 defender.ReligiousAlteration.Affiliation * 
-                                 parameters.BlockMultiplier;
-
-                religionComponent = blockValue.Clip(-1, 1);
-            }
-
             switch (blockType)
             {
                 case AlterationBlockType.Mental:

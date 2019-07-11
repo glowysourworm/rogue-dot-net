@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
@@ -39,14 +39,6 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 AllowsReAffiliation = template.AllowsReAffiliation,
                 AllowsRenunciation = template.AllowsRenunciation,
-                AttackParameters = new List<ReligiousAffiliationAttackParameters>(template.AttackParameters
-                                                                                          .Select(x => new ReligiousAffiliationAttackParameters()
-                {
-                    AttackMultiplier = x.AttackMultiplier,
-                    BlockMultiplier = x.BlockMultiplier,
-                    DefenseMultiplier = x.DefenseMultiplier,
-                    EnemyReligionName = x.EnemyReligionName
-                })),
 
                 // Create an alteration for the attack attribute bonus
                 AttackAttributeAlteration = new AlterationEffect()

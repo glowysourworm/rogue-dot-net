@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using System;
@@ -11,7 +10,6 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 
 namespace Rogue.NET.Core.Logic
@@ -40,7 +38,7 @@ namespace Rogue.NET.Core.Logic
             _rogueUpdateFactory = rogueUpdateFactory;
         }
 
-        public void Affiliate(string religionName, double affiliationLevel)
+        public void Affiliate(string religionName)
         {
             var player = _modelService.Player;
 
@@ -51,15 +49,10 @@ namespace Rogue.NET.Core.Logic
                 var religion = _modelService.Religions.First(x => x.RogueName == religionName);
 
                 // Set new affiliation
-                player.ReligiousAlteration.Affiliate(religion, affiliationLevel);
+                player.ReligiousAlteration.Affiliate(religion);
             }
             // Keeps current religion
-            else if (player.ReligiousAlteration.ReligionName == religionName)
-            {
-                // Increase existing affiliation level
-                player.ReligiousAlteration.SetAffiliationLevel(player.ReligiousAlteration.Affiliation + affiliationLevel);
-            }
-            else
+            else if (player.ReligiousAlteration.ReligionName != religionName)
                 throw new Exception("Trying to affiliate to new religion before renouncing");
         }
 
@@ -93,8 +86,8 @@ namespace Rogue.NET.Core.Logic
                 // Religious Affiliated Equipmpent
                 foreach (var equipment in player.Equipment.Values.Where(x => x.IsEquipped))
                 {
-                    if (equipment.HasReligiousAffiliationRequirement &&
-                        equipment.ReligiousAffiliationRequirement.ReligionName == religionName)
+                    if (equipment.HasReligionRequirement &&
+                        equipment.ReligionName == religionName)
                     {
                         // Cursed equipment will turn on its owner
                         if (equipment.IsCursed)
@@ -115,8 +108,8 @@ namespace Rogue.NET.Core.Logic
                 // Religious Affiliated Skills
                 foreach (var skillSet in player.SkillSets.Where(x => x.IsLearned))
                 {
-                    if (skillSet.HasReligiousAffiliationRequirement &&
-                        skillSet.ReligiousAffiliationRequirement.ReligionName == religionName)
+                    if (skillSet.HasReligionRequirement &&
+                        skillSet.ReligionName == religionName)
                     {
                         // Un-Learn skill set
                         skillSet.IsLearned = false;

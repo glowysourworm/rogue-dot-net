@@ -1,9 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator

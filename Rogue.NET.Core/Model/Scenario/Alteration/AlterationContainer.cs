@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration

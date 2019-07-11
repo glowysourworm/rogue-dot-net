@@ -15,7 +15,6 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 
 namespace Rogue.NET.Core.Service
 {

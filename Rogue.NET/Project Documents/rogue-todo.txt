@@ -495,7 +495,6 @@ IMMEDIATE TODO'S:
 	- Nice to have:  Explain attack attributes by having a separate UI to show how they apply
 ---------------
 	
-	- Random Room Placement:  Fix missing edge on the layout - not sure why it's not rendering (maybe padding needed?)
 	- PERMADEATH
 	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	

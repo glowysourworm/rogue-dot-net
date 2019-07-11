@@ -19,10 +19,8 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Scenario.Content.ViewModel.Content.Religion;
 using Rogue.NET.Core.Logic.Static;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
@@ -472,8 +470,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         skill.IsSkillPointRequirementMet = player.SkillPoints >= skillSource.SkillPointRequirement;
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
                         skill.IsReligiousAffiliationRequirementMet = player.ReligiousAlteration.IsAffiliated() &&
-                                                                    (player.ReligiousAlteration.ReligionName == skill.ReligiousAffiliationRequirementName) &&
-                                                                    (player.ReligiousAlteration.Affiliation >= skillSource.RequiredAffiliationLevel);
+                                                                    (player.ReligiousAlteration.ReligionName == skill.ReligionName);
                     });
                 });
 
@@ -626,7 +623,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                // TODO:  Force view model updates to wait until after IModelService is loaded
             {
                 this.Religion.DisplayName = player.ReligiousAlteration.ReligionName;
-                this.Religion.AffiliationLevel = player.ReligiousAlteration.Affiliation;
                 this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
                 this.Religion.HasAttributeBonus = player.ReligiousAlteration.AttributeEffect != null;
                 this.Religion.IsAffiliated = true;
@@ -660,28 +656,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
                 // Attack Parameters
                 var playerReligion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
-
-                // Add / Update
-                playerReligion
-                    .AttackParameters
-                    .Where(x => _modelService.ScenarioEncyclopedia[x.EnemyReligionName].IsIdentified)
-                    .ForEach(x =>
-                    {
-                        // Existing Attack Parameters
-                        var existingParameters = this.Religion.AttackParameters.FirstOrDefault(z => z.RogueName == x.EnemyReligionName);
-                        if (existingParameters != null)
-                            existingParameters.Update(x, this.Religion.AffiliationLevel);
-
-                        // New Attack Parameters
-                        else
-                        {
-                            this.Religion.AttackParameters.Add(new ReligionAttackParametersViewModel(
-                                    x,
-                                    player.ReligiousAlteration.Affiliation,
-                                    _modelService.Religions.First(z => z.RogueName == x.EnemyReligionName),
-                                    _scenarioResourceService));
-                        }
-                    });
             }
             else
                 this.Religion.IsAffiliated = false;

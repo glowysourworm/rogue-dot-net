@@ -169,8 +169,7 @@
     <Compile Include="Content\ViewModel\Content\Alteration\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Religion\ReligionAttackParametersViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Religion\ReligionViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\ReligionViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\RogueBaseViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaData\RogueEncyclopediaCategoryViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaData\RogueEncyclopediaViewModel.cs" />
@@ -223,9 +222,6 @@
     <Compile Include="Content\Views\PlayerSubpanel.xaml.cs">
       <DependentUpon>PlayerSubpanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\ReligionCtrl.xaml.cs">
-      <DependentUpon>ReligionCtrl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Content\Views\ScenarioMessageView.xaml.cs">
       <DependentUpon>ScenarioMessageView.xaml</DependentUpon>
     </Compile>
@@ -249,7 +245,6 @@
     <Compile Include="Converter\ItemGridRowImageSourceMultiConverter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelReligion.cs" />
     <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelAlterationsEvent.cs" />
     <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelStatsEvent.cs" />
     <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelSkillsEvent.cs" />
@@ -371,10 +366,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Content\Views\PlayerSubpanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Content\Views\ReligionCtrl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

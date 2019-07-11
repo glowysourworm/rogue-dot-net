@@ -124,7 +124,7 @@ namespace Rogue.NET.Core.Model.Generator
             LevelGrid grid = null;
 
             // Used for rectilinear room creation
-            RoomData[,] roomGrid = null;
+            Room[,] roomGrid = null;
 
             // Connected Rooms
             if (template.Type == LayoutType.ConnectedRectangularRooms)
@@ -185,7 +185,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// <summary>
         /// Creates rooms on a rectangular grid - returns the grid with which the rooms were structured
         /// </summary>
-        private LevelGrid CreateRectangularGridRooms(LayoutTemplate template, out RoomData[,] roomGrid)
+        private LevelGrid CreateRectangularGridRooms(LayoutTemplate template, out Room[,] roomGrid)
         {
             var bounds = new CellRectangle(new CellPoint(0, 0), template.Width, template.Height);
             var gridDivisionWidth = template.RoomWidthLimit + (2 * template.RectangularGridPadding);
@@ -195,10 +195,10 @@ namespace Rogue.NET.Core.Model.Generator
             var grid = new Cell[bounds.CellWidth, bounds.CellHeight];
 
             // Calculate room grid here for use in corridor computation
-            roomGrid = new RoomData[template.NumberRoomCols, template.NumberRoomRows];
+            roomGrid = new Room[template.NumberRoomCols, template.NumberRoomRows];
 
             // Collect room data to pass to level grid constructor
-            var rooms = new List<RoomData>();
+            var rooms = new List<Room>();
 
             // Create rooms according to template parameters
             for (int i=0;i<template.NumberRoomCols;i++)
@@ -249,7 +249,7 @@ namespace Rogue.NET.Core.Model.Generator
                     }
 
                     // Save room data
-                    var room = new RoomData(roomCells.ToArray(), edgeCells.ToArray(), roomBounds);
+                    var room = new Room(roomCells.ToArray(), edgeCells.ToArray(), roomBounds);
                     rooms.Add(room);
                     roomGrid[i, j] = room;
                 }
@@ -407,7 +407,7 @@ namespace Rogue.NET.Core.Model.Generator
             // Use the Cell[,] passed back from the fill algorithm to check for cell's room identity
 
             // Collect room data to pass to level grid constructor
-            var rooms = new List<RoomData>();
+            var rooms = new List<Room>();
 
             // Collect cell data on new rooms to know what locations have been found
             // to be in one of the rooms (during iteration)
@@ -426,7 +426,7 @@ namespace Rogue.NET.Core.Model.Generator
                         //    for an upstairs, downstairs, and 2 teleporters (accomodates all level types).
 
                         Cell[,] roomGrid = null;
-                        RoomData room = null;
+                        Room room = null;
 
                         var success = ApplyFloodFill(grid, grid[i, j].Location, true, out roomGrid, out room);
 
@@ -455,7 +455,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                 var locations = new CellPoint[] { cell1.Location, cell2.Location, cell3.Location, cell4.Location };
 
-                rooms.Add(new RoomData(locations, locations, new CellRectangle(0, 0, 1, 1)));
+                rooms.Add(new Room(locations, locations, new CellRectangle(0, 0, 1, 1)));
             }
 
             return new LevelGrid(grid, rooms.ToArray());
@@ -463,7 +463,7 @@ namespace Rogue.NET.Core.Model.Generator
         #endregion
 
         #region (private) Corridor Generation
-        private void CreateCorridors(LevelGrid grid, LayoutTemplate template, RoomData[,] roomGrid)
+        private void CreateCorridors(LevelGrid grid, LayoutTemplate template, Room[,] roomGrid)
         {
             switch (template.ConnectionGeometryType)
             {
@@ -482,7 +482,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// Creates corridors on a grid - horizontally and vertically between the rectangular grid
         /// layout
         /// </summary>
-        private void CreateRectilinearCorridors(LevelGrid grid, LayoutTemplate template, RoomData[,] roomGrid)
+        private void CreateRectilinearCorridors(LevelGrid grid, LayoutTemplate template, Room[,] roomGrid)
         {
             if (grid.Rooms.Count() == 1)
                 return;
@@ -540,7 +540,7 @@ namespace Rogue.NET.Core.Model.Generator
             var bounds = grid.Bounds;
 
             // Use QuickGraph to find the minimum spanning tree of room points
-            var graph = new UndirectedGraph<RoomData, Edge<RoomData>>(
+            var graph = new UndirectedGraph<Room, Edge<Room>>(
                             true,
                             (edge, room1, room2) =>
                             {
@@ -587,7 +587,7 @@ namespace Rogue.NET.Core.Model.Generator
                 var room2 = grid.Rooms.First(room => room.GetHashCode() == vertex2.ID);
 
                 // Add edge for a possible corridor
-                graph.AddEdge(new Edge<RoomData>(room1, room2));
+                graph.AddEdge(new Edge<Room>(room1, room2));
             }
 
             // Calculate minimum spanning tree (closest neighboring rooms) using the euclidean distance as the weight
@@ -602,7 +602,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// <summary>
         /// Connects two rooms by calculating nearest neighbor cells
         /// </summary>
-        private void ConnectRooms(LevelGrid grid, RoomData room1, RoomData room2, LayoutTemplate template)
+        private void ConnectRooms(LevelGrid grid, Room room1, Room room2, LayoutTemplate template)
         {
             // Locate the nearest neighbor cells
             Cell room1Cell = null;
@@ -919,7 +919,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// <paramref name="roomError">Identifies error with room creation (ROOM SIZE MUST BE >= 4)</paramref>
         /// <paramref name="removeRoomErrors">This removes rooms that don't fit the criteria (Size >= 4)</paramref>
         /// </summary>
-        private bool ApplyFloodFill(Cell[,] grid, CellPoint testLocation, bool removeRoomErrors, out Cell[,] roomGrid, out RoomData room)
+        private bool ApplyFloodFill(Cell[,] grid, CellPoint testLocation, bool removeRoomErrors, out Cell[,] roomGrid, out Room room)
         {
             if (grid[testLocation.Column, testLocation.Row] == null)
                 throw new Exception("Trying to locate cell that is non-existent:  LayoutGenerator.GetConnectedCells");
@@ -996,7 +996,7 @@ namespace Rogue.NET.Core.Model.Generator
             }
 
             // Assign room data to new room
-            room = new RoomData(roomCells.ToArray(), edgeCells.ToArray(), roomBounds);
+            room = new Room(roomCells.ToArray(), edgeCells.ToArray(), roomBounds);
 
             return true;
         }
@@ -1006,7 +1006,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// linked corridor. This routine uses a RANDOM cell from the starting room. This was chosen to 
         /// greatly reduce the time involved trying to calculate edges.
         /// </summary>
-        private void CalculateNearestNeighborCells(LayoutTemplate template, LevelGrid grid, RoomData room1, RoomData room2, out Cell room1Cell, out Cell room2Cell)
+        private void CalculateNearestNeighborCells(LayoutTemplate template, LevelGrid grid, Room room1, Room room2, out Cell room1Cell, out Cell room2Cell)
         {
             // Procedure
             //
@@ -1434,7 +1434,7 @@ namespace Rogue.NET.Core.Model.Generator
                     }
                 }
             }
-            return new LevelGrid(grid, new RoomData[] { new RoomData(roomCells.ToArray(), edgeCells.ToArray(), roomBounds) });
+            return new LevelGrid(grid, new Room[] { new Room(roomCells.ToArray(), edgeCells.ToArray(), roomBounds) });
         }
         #endregion
 

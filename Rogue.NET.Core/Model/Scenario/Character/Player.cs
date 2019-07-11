@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.Scenario.Dynamic;
 using System;

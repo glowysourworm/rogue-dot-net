@@ -3,9 +3,9 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System;
 using System.Collections.Generic;
@@ -180,7 +180,7 @@ namespace Rogue.NET.Core.Model.Generator
             }
         }
 
-        private void AddTeleporterLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
+        private void AddTeleporterLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -253,7 +253,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(extraTeleport2);
             }
         }
-        private void AddTeleportRandomLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
+        private void AddTeleportRandomLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
 
@@ -271,7 +271,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
             var partyRoom = rooms.PickRandom(_randomSequenceGenerator.Get());
@@ -346,7 +346,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
+        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -374,7 +374,7 @@ namespace Rogue.NET.Core.Model.Generator
                 AddPartyRoomContent(level, configurationContainer, religions, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
         }
 
-        private CellPoint GetRandomCell(bool inRoom, RoomData room, IList<CellPoint> freeCells, Dictionary<RoomData, List<CellPoint>> freeRoomCells)
+        private CellPoint GetRandomCell(bool inRoom, Room room, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             // Check overall collection of cells for remaining locations
             if (freeCells.Count == 0)

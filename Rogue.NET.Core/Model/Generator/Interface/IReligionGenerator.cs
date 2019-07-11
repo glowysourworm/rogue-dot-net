@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Religion;
+﻿using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System.Collections.Generic;

@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
 
         private Cell[] _doorArray;
         private Cell[] _cellArray;
-        private RoomData[] _roomArray;
+        private Room[] _roomArray;
 
         #region Properties / Indexers
         public Cell this[int column, int row]
@@ -45,7 +45,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         {
             get { return _bounds; }
         }
-        public IEnumerable<RoomData> Rooms { get { return _roomArray; } }
+        public IEnumerable<Room> Rooms { get { return _roomArray; } }
         #endregion
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// USAGE:  Create Cell[,] first with room cells already in it. Also, create Room[] first with
         ///         all data prepared. Corridors may be created afterwards using the public indexer.
         /// </summary>
-        public LevelGrid(Cell[,] grid, RoomData[] rooms)
+        public LevelGrid(Cell[,] grid, Room[] rooms)
         {
             _grid = grid;
             _bounds = new CellRectangle(new CellPoint(0, 0), grid.GetLength(0), grid.GetLength(1));
@@ -75,7 +75,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _grid = new Cell[width, height];
             _bounds = new CellRectangle(new CellPoint(0, 0), width, height);
 
-            var roomData = new List<RoomData>();
+            var roomData = new List<Room>();
 
             // Populate cell grid
             for (int i=0;i<count;i++)
@@ -88,7 +88,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             // Populate rooms
             for (int i = 0; i < roomCount; i++)
             {
-                var room = (RoomData)info.GetValue("Room" + i.ToString(), typeof(RoomData));
+                var room = (Room)info.GetValue("Room" + i.ToString(), typeof(Room));
 
                 roomData.Add(room);
             }

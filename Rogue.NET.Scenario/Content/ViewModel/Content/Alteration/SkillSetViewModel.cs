@@ -23,11 +23,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public bool _isActive;
         public bool _isTurnedOn;
         public bool _isLearned;
-        public bool _hasReligiousAffiliationRequirement;
+        public bool _hasReligionRequirement;
         public bool _hasLearnedSkills;
         public double _skillProgress;
-        public double _religiousAffiliationRequirementLevel;
-        public string _religiousAffiliationRequirementName;
+        public string _religionName;
 
         SkillViewModel _activeSkill;
 
@@ -63,18 +62,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         }
         public bool HasReligiousAffiliationRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); InvalidateCommands(); }
+            get { return _hasReligionRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); InvalidateCommands(); }
         }
-        public string ReligiousAffiliationRequirementName
+        public string ReligionName
         {
-            get { return _religiousAffiliationRequirementName; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirementName, value); }
-        }
-        public double ReligiousAffiliationRequirementLevel
-        {
-            get { return _religiousAffiliationRequirementLevel; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirementLevel, value); }
+            get { return _religionName; }
+            set { this.RaiseAndSetIfChanged(ref _religionName, value); }
         }
         public SkillViewModel ActiveSkill
         {
@@ -98,9 +92,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.IsLearned = skillSet.IsLearned;
 
             this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
-            this.HasReligiousAffiliationRequirement = skillSet.HasReligiousAffiliationRequirement;
-            this.ReligiousAffiliationRequirementName = skillSet.ReligiousAffiliationRequirement.ReligionName;
-            this.ReligiousAffiliationRequirementLevel = skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel;
+            this.HasReligiousAffiliationRequirement = skillSet.HasReligionRequirement;
+            this.ReligionName = skillSet.ReligionName;
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {
@@ -111,13 +104,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,
-                    IsReligiousAffiliationRequirementMet = skillSet.HasReligiousAffiliationRequirement && 
-                                                           player.ReligiousAlteration.IsAffiliated() && 
-                                                          (player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel),
-                    ReligiousAffiliationRequirementLevel = x.RequiredAffiliationLevel,
-                    ReligiousAffiliationRequirementName = skillSet.ReligiousAffiliationRequirement.ReligionName,
+                    IsReligiousAffiliationRequirementMet = skillSet.HasReligionRequirement && 
+                                                           player.ReligiousAlteration.IsAffiliated(),
+                    ReligionName = skillSet.ReligionName,
                     SkillPointRequirement = x.SkillPointRequirement,
-                    HasReligiousAffiliationRequirement = skillSet.HasReligiousAffiliationRequirement,                    
+                    HasReligionRequirement = skillSet.HasReligionRequirement,                    
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

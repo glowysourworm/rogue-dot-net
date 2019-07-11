@@ -11,9 +11,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
     {
         int _levelRequirement;
         int _skillPointRequirement;
-        bool _hasReligiousAffiliationRequirement;
-        double _religiousAffiliationRequirementLevel;
-        string _religiousAffiliationRequirementName;
+        bool _hasReligionRequirement;
+        string _religionName;
         string _description;
         SpellViewModel _alteration;
 
@@ -33,20 +32,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _skillPointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _skillPointRequirement, value); }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
+            get { return _hasReligionRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
         }
-        public double ReligiousAffiliationRequirementLevel
+        public string ReligionName
         {
-            get { return _religiousAffiliationRequirementLevel; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirementLevel, value); }
-        }
-        public string ReligiousAffiliationRequirementName
-        {
-            get { return _religiousAffiliationRequirementName; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationRequirementName, value); }
+            get { return _religionName; }
+            set { this.RaiseAndSetIfChanged(ref _religionName, value); }
         }
         public string Description
         {
@@ -92,7 +86,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             {
                 return _isSkillPointRequirementMet &&
                        _isLevelRequirementMet &&
-                       (!_hasReligiousAffiliationRequirement ||
+                       (!_hasReligionRequirement ||
                          _isReligiousAffiliationRequirementMet);
             }
         }

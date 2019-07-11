@@ -11,7 +11,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
     {
         public int LevelRequirement { get; set; }
         public int SkillPointRequirement { get; set; }
-        public double RequiredAffiliationLevel { get; set; }
         public Spell Alteration { get; set; }
 
         public bool IsLearned { get; set; }

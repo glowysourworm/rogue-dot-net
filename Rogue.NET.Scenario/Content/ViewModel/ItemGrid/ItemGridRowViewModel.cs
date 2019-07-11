@@ -2,19 +2,14 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Media;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
-using Rogue.NET.Scenario.Content.ViewModel.Content.Religion;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Core.Model.Scenario.Content.Religion;
+using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 {
@@ -43,11 +38,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _isEquipment;
         bool _isWeapon;
         bool _isArmor;
-        bool _hasReligiousAffiliationRequirement;
+        bool _hasReligionRequirement;
         int _quantity;
         string _uses;
         int _requiredLevel;
-        string _requiredReligiousAffiliation;
         string _type;
         EquipmentType _equipType;
         string _class;
@@ -162,10 +156,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _isArmor; }
             set { this.RaiseAndSetIfChanged(ref _isArmor, value); }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
-            get { return _hasReligiousAffiliationRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligiousAffiliationRequirement, value); }
+            get { return _hasReligionRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
         }
         public int Quantity
         {
@@ -181,11 +175,6 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             get { return _requiredLevel; }
             set { this.RaiseAndSetIfChanged(ref _requiredLevel, value); }
-        }
-        public string RequiredReligiousAffiliation
-        {
-            get { return _requiredReligiousAffiliation; }
-            set { this.RaiseAndSetIfChanged(ref _requiredReligiousAffiliation, value); }
         }
         public string Type
         {
@@ -331,12 +320,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.IsWeapon = false;
 
             // Religious Affiliation
-            this.HasReligiousAffiliationRequirement = consumable.HasReligiousAffiliationRequirement;
-            if (consumable.HasReligiousAffiliationRequirement)
-            {
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == consumable.ReligiousAffiliationRequirement.ReligionName));
-                this.RequiredReligiousAffiliation = consumable.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P0");
-            }
+            this.HasReligionRequirement = consumable.HasReligionRequirement;
+            if (consumable.HasReligionRequirement)
+                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == consumable.ReligionName));
                                                 
 
             this.Quantity = totalQuantity;
@@ -423,12 +409,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                                                      equipment.IsIdentified ? "-" : "?";
 
             // Religious Affiliation
-            this.HasReligiousAffiliationRequirement = equipment.HasReligiousAffiliationRequirement;
-            if (equipment.HasReligiousAffiliationRequirement)
-            {
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == equipment.ReligiousAffiliationRequirement.ReligionName));
-                this.RequiredReligiousAffiliation = equipment.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P0");
-            }
+            this.HasReligionRequirement = equipment.HasReligionRequirement;
+            if (equipment.HasReligionRequirement)
+                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == equipment.ReligionName));
 
             // Attack and Defense Value
             if (!equipment.IsIdentified)

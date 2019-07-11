@@ -238,16 +238,14 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Check Religious Affiliation Requirement
-            if (thrownItem.HasReligiousAffiliationRequirement &&
+            if (thrownItem.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.ReligionName != thrownItem.ReligiousAffiliationRequirement.ReligionName ||
-                 player.ReligiousAlteration.Affiliation < thrownItem.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+                 player.ReligiousAlteration.ReligionName != thrownItem.ReligionName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} {1} Not Met!",
-                    thrownItem.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
-                    thrownItem.ReligiousAffiliationRequirement.ReligionName);
+                    "Required Religious Affiliation {0} Not Met!",
+                    thrownItem.ReligionName);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -284,16 +282,14 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Check Religious Affiliation Requirement
-            if (consumable.HasReligiousAffiliationRequirement &&
+            if (consumable.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.ReligionName != consumable.ReligiousAffiliationRequirement.ReligionName ||
-                 player.ReligiousAlteration.Affiliation < consumable.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+                 player.ReligiousAlteration.ReligionName != consumable.ReligionName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} {1} Not Met!",
-                    consumable.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
-                    consumable.ReligiousAffiliationRequirement.ReligionName);
+                    "Required Religious Affiliation {0} Not Met!",
+                    consumable.ReligionName);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -425,8 +421,8 @@ namespace Rogue.NET.Core.Logic
             _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
 
             // Check for Religious Affiliation and Identify
-            if (item.HasReligiousAffiliationRequirement)
-                _religionEngine.IdentifyReligion(item.ReligiousAffiliationRequirement.ReligionName);
+            if (item.HasReligionRequirement)
+                _religionEngine.IdentifyReligion(item.ReligionName);
 
             // Queue an update
             if (item is Consumable)
@@ -540,16 +536,14 @@ namespace Rogue.NET.Core.Logic
                 }
 
                 // Check Religious Affiliation Requirement
-                if (ammo.HasReligiousAffiliationRequirement &&
+                if (ammo.HasReligionRequirement &&
                    (!_modelService.Player.ReligiousAlteration.IsAffiliated() ||
-                     _modelService.Player.ReligiousAlteration.ReligionName != ammo.ReligiousAffiliationRequirement.ReligionName ||
-                     _modelService.Player.ReligiousAlteration.Affiliation < ammo.ReligiousAffiliationRequirement.RequiredAffiliationLevel))
+                     _modelService.Player.ReligiousAlteration.ReligionName != ammo.ReligionName))
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
-                        "Required Religious Affiliation {0} {1} Not Met!",
-                        ammo.ReligiousAffiliationRequirement.RequiredAffiliationLevel.ToString("P2"),
-                        ammo.ReligiousAffiliationRequirement.ReligionName);
+                        "Required Religious Affiliation {0} Not Met!",
+                        ammo.ReligionName);
 
                     return LevelContinuationAction.ProcessTurn;
                 }
@@ -784,20 +778,14 @@ namespace Rogue.NET.Core.Logic
 
                 // Skill Set Requirements
                 var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
-                                             (!skillSet.HasReligiousAffiliationRequirement ||
-                                              (skillSet.HasReligiousAffiliationRequirement &&
+                                             (!skillSet.HasReligionRequirement ||
+                                              (skillSet.HasReligionRequirement &&
                                                player.ReligiousAlteration.IsAffiliated() &&
-                                               player.ReligiousAlteration.Affiliation >= skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel &&
-                                               player.ReligiousAlteration.ReligionName == skillSet.ReligiousAffiliationRequirement.ReligionName));
+                                               player.ReligiousAlteration.ReligionName == skillSet.ReligionName));
 
                 // Skill Requirements
                 var skillRequirementsMet = player.Level >= skill.LevelRequirement &&
-                                           player.SkillPoints >= skill.SkillPointRequirement &&
-                                           (!skillSet.HasReligiousAffiliationRequirement ||
-                                            (skillSet.HasReligiousAffiliationRequirement &&
-                                               player.ReligiousAlteration.IsAffiliated() &&
-                                               player.ReligiousAlteration.Affiliation >=
-                                               skill.RequiredAffiliationLevel));
+                                           player.SkillPoints >= skill.SkillPointRequirement;
 
                 // If both requirements met then can learn the skill
                 if (skillSetRequirementsMet && skillRequirementsMet)
@@ -907,8 +895,8 @@ namespace Rogue.NET.Core.Logic
                         var doodadMagic = (DoodadMagic)doodad;
 
                         // Identify Religion
-                        if (doodadMagic.HasReligiousAffiliationRequirement)
-                            _religionEngine.IdentifyReligion(doodadMagic.ReligiousAffiliationRequirement.ReligionName);
+                        if (doodadMagic.HasReligionRequirement)
+                            _religionEngine.IdentifyReligion(doodadMagic.ReligionName);
 
                         // Has been exhausted
                         if (doodadMagic.IsOneUse && doodadMagic.HasBeenUsed || !doodadMagic.IsInvoked)

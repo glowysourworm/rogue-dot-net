@@ -45,7 +45,6 @@
         ShowPlayerSubpanelConsumables,
         ShowPlayerSubpanelSkills,
         ShowPlayerSubpanelStats,
-        ShowPlayerSubpanelAlterations,
-        ShowPlayerSubpanelReligion
+        ShowPlayerSubpanelAlterations
     }
 }

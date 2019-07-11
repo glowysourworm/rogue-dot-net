@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Generator.Component
 {
-    public class RoomEqualityComparer : IEqualityComparer<RoomData>
+    public class RoomEqualityComparer : IEqualityComparer<Room>
     {
-        public bool Equals(RoomData room1, RoomData room2)
+        public bool Equals(Room room1, Room room2)
         {
             if (room1 == null)
                 return room2 == null;
@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator.Component
             return center1.Equals(center2);
         }
 
-        public int GetHashCode(RoomData obj)
+        public int GetHashCode(Room obj)
         {
             return obj.GetHashCode();
         }

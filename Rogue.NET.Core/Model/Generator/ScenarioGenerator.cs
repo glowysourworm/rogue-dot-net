@@ -110,22 +110,12 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
 
-                // Also setup skill set IsLearned flag based on player level and religious affiliation
-                skillSet.IsLearned = (scenario.Player.Level >= skillSet.LevelLearned) &&
-                                     (!skillSet.HasReligiousAffiliationRequirement ||
-                                      (skillSet.HasReligiousAffiliationRequirement &&
-                                       scenario.Player.ReligiousAlteration.Affiliation >=
-                                       skillSet.ReligiousAffiliationRequirement.RequiredAffiliationLevel));
+                // Also setup skill set IsLearned flag based on player level 
+                skillSet.IsLearned = (scenario.Player.Level >= skillSet.LevelLearned);
 
+                // Also setup skill IsLearned flag based on player level
                 foreach (var skill in skillSet.Skills)
-                {
-                    // Also setup skill IsLearned flag based on player level and religious affiliation
-                    skill.IsLearned = (scenario.Player.Level >= skill.LevelRequirement) &&
-                                     (!skillSet.HasReligiousAffiliationRequirement ||
-                                      (skillSet.HasReligiousAffiliationRequirement &&
-                                       scenario.Player.ReligiousAlteration.Affiliation >=
-                                       skill.RequiredAffiliationLevel));
-                }
+                    skill.IsLearned = (scenario.Player.Level >= skill.LevelRequirement);
             }
 
             foreach (var equipment in scenario.Player.Equipment.Values)

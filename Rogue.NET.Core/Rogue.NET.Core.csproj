@@ -330,10 +330,7 @@
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\RoomData.cs" />
-    <Compile Include="Model\Scenario\Content\Religion\Religion.cs" />
-    <Compile Include="Model\Scenario\Content\Religion\ReligiousAffiliationAttackParameters.cs" />
-    <Compile Include="Model\Scenario\Content\Religion\ReligiousAffiliationRequirement.cs" />
+    <Compile Include="Model\Scenario\Content\Religion.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SpellExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Skill.cs" />
     <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
