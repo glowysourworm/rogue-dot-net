@@ -29,7 +29,6 @@ namespace Rogue.NET.Core.Model.Generator
 
             // Religious Affiliation Change Parameters
             spell.ReligiousAffiliationReligionName = spellTemplate.ReligiousAffiliationReligion.Name;
-            spell.ReligiousAffiliationIncrease = spellTemplate.ReligiousAffiliationIncrease;
 
             return spell;
         }

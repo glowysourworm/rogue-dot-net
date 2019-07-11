@@ -28,7 +28,7 @@
         RenounceReligion,
 
         /// <summary>
-        /// Invoker increases religious affiliation by 10%
+        /// TODO: CHANGE THIS TO AffiliateReligion
         /// </summary>
         IncreaseReligiousAffiliation
     }

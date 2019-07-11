@@ -19,7 +19,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
-        private double _religiousAffiliationIncrease;
         private bool _stackable;
         private string _createMonsterEnemy;
         private string _displayName;
@@ -119,18 +118,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _effectRange = value;
                     OnPropertyChanged("EffectRange");
-                }
-            }
-        }
-        public double ReligiousAffiliationIncrease
-        {
-            get { return _religiousAffiliationIncrease; }
-            set
-            {
-                if (_religiousAffiliationIncrease != value)
-                {
-                    _religiousAffiliationIncrease = value;
-                    OnPropertyChanged("ReligiousAffiliationIncrease");
                 }
             }
         }

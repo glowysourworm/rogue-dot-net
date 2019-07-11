@@ -21,7 +21,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
 
         // Religious Affiliation Increase Parameters
         public string ReligiousAffiliationReligionName { get; set; }
-        public double ReligiousAffiliationIncrease { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
@@ -60,7 +59,6 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
             // Religious Affiliation Increase Parameters
-            alterationContainer.ReligiousAffiliationIncrease = spell.ReligiousAffiliationIncrease;
             alterationContainer.ReligiousAffiliationReligionName = spell.ReligiousAffiliationReligionName;
 
             return alterationContainer;

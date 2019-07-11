@@ -16,7 +16,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationBlockType _blockType;
         private AlterationMagicEffectType _otherEffectType;
         private AlterationAttackAttributeType _attackAttributeType;
-        private double _religiousAffiliationIncrease;
         private double _effectRange;
         private bool _stackable;
         private string _createMonsterEnemy;
@@ -63,11 +62,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _effectRange; }
             set { this.RaiseAndSetIfChanged(ref _effectRange, value); }
-        }
-        public double ReligiousAffiliationIncrease
-        {
-            get { return _religiousAffiliationIncrease; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationIncrease, value); }
         }
         public bool Stackable
         {
