@@ -776,28 +776,30 @@ namespace Rogue.NET.Core.Logic
             {
                 var skill = skillSet.Skills.First(x => x.Id == skillId);
 
+                // TODO:SKILLSET
                 // Skill Set Requirements
-                var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
-                                             (!skillSet.HasReligionRequirement ||
-                                              (skillSet.HasReligionRequirement &&
-                                               player.ReligiousAlteration.IsAffiliated() &&
-                                               player.ReligiousAlteration.Religion == skillSet.Religion));
+                //var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
+                //                             (!skillSet.HasReligionRequirement ||
+                //                              (skillSet.HasReligionRequirement &&
+                //                               player.ReligiousAlteration.IsAffiliated() &&
+                //                               player.ReligiousAlteration.Religion == skillSet.Religion));
 
                 // Skill Requirements
                 var skillRequirementsMet = player.Level >= skill.LevelRequirement &&
                                            player.SkillPoints >= skill.SkillPointRequirement;
 
+                // TODO:SKILLSET
                 // If both requirements met then can learn the skill
-                if (skillSetRequirementsMet && skillRequirementsMet)
-                {
-                    player.SkillPoints -= skill.SkillPointRequirement;
+                //if (skillSetRequirementsMet && skillRequirementsMet)
+                //{
+                //    player.SkillPoints -= skill.SkillPointRequirement;
 
-                    skill.IsLearned = true;
+                //    skill.IsLearned = true;
 
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
+                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
 
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
-                }
+                //    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
+                //}
             }
         }
         public LevelContinuationAction InvokePlayerSkill()

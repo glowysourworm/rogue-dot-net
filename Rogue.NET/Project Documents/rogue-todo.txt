@@ -499,6 +499,8 @@ IMMEDIATE TODO'S:
 	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
 				 
+				 - Search on TODO:SKILLSET
+				 
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.
 	

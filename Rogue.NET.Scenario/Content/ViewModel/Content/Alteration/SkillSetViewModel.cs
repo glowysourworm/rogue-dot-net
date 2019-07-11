@@ -85,15 +85,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IEventAggregator eventAggregator) : base(skillSet)
         {
-            this.LevelMax = skillSet.Skills.Count;
-            this.LevelLearned = skillSet.LevelLearned;
+            this.LevelMax = skillSet.Skills.Count; //TODO: SKILLSET
+            //this.LevelLearned = skillSet.Skills.Min(skill => skill.LevelRequirement);
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;
             this.IsLearned = skillSet.IsLearned;
 
             this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
-            this.HasReligionRequirement = skillSet.HasReligionRequirement;
-            this.ReligionName = skillSet.Religion.RogueName;
+            // TODO:SKILLSET
+            //this.HasReligionRequirement = skillSet.Skills.Any(skill => skill.HasReligionREqui);
+            //this.ReligionName = skillSet.Religion.RogueName;
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {

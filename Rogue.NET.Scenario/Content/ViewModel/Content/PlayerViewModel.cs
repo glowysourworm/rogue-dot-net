@@ -441,10 +441,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Sort Skill Sets
-            var sortedSkillSets = player.SkillSets.OrderByDescending(x => x.IsLearned)
-                                                  .ThenByDescending(x => this.Level >= x.LevelLearned)
-                                                  .ThenBy(x => x.LevelLearned)
-                                                  .Actualize();
+            var sortedSkillSets = player.SkillSets.OrderByDescending(x => x.IsLearned) //TODO: SKILLSET
+                                                   //.ThenByDescending(x => this.Level >= x.Skills.Min(skill => skill.LevelRequirement))
+                                                   //.ThenBy(x => x.Skills.Min(skill => skill.LevelRequirement))
+                                                   .Actualize();
 
             // Base Collections
             SynchronizeCollection(
