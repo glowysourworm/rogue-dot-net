@@ -231,19 +231,17 @@ namespace Rogue.NET.Core.Model.Generator
             //Add some extra ones (one per room)
             for (int i = 0; i < rooms.Count; i++)
             {
-                var extraTeleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
-                var extraTeleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, extraTeleport1.Id);
-
                 var extraLocation1 = GetRandomCell(false, null, freeCells, freeRoomCells);
                 var extraLocation2 = GetRandomCell(false, null, freeCells, freeRoomCells);
 
-                if (extraLocation1 == CellPoint.Empty)
-                    throw new Exception("Trying to place teleporter but ran out of room!");
+                // If we ran out of room then just return since these are extra
+                if (extraLocation1 == CellPoint.Empty ||
+                    extraLocation2 == CellPoint.Empty)
+                    return;
 
-                if (extraLocation2 == CellPoint.Empty)
-                    throw new Exception("Trying to place teleporter but ran out of room!");
+                var extraTeleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
+                var extraTeleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, extraTeleport1.Id);
 
-                // Pick 2 random rooms
                 extraTeleport1.Location = extraLocation1;
                 extraTeleport2.Location = extraLocation2;
 

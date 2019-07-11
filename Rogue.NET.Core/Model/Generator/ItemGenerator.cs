@@ -107,6 +107,8 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
             consumable.NoteMessage = consumableTemplate.NoteMessage;
 
+            consumable.HasReligionRequirement = consumableTemplate.HasReligionRequirement;
+
             // Religious Affiliation Requirement
             if (consumable.HasReligionRequirement)
                 consumable.Religion = religions.First(religion => religion.RogueName == consumableTemplate.Religion.Name);

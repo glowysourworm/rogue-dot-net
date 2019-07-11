@@ -109,7 +109,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Alterations
             foreach (var alteration in configuration.MagicSpells
                                                     .Where(x => x.Type == AlterationType.OtherMagicEffect &&
-                                                                x.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation))
+                                                                x.OtherEffectType == AlterationMagicEffectType.AffiliateReligion))
             {
                 alteration.ReligiousAffiliationReligion = MatchByName(configuration.Religions, alteration.ReligiousAffiliationReligion);
             }

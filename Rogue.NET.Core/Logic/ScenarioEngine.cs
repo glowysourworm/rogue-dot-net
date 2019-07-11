@@ -314,7 +314,7 @@ namespace Rogue.NET.Core.Logic
             // 2) Player has a DIFFERENT affiliation (NOT OK)
             //
             if (consumable.HasSpell &&
-                consumable.Spell.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation &&
+                consumable.Spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
                 player.ReligiousAlteration.IsAffiliated() &&
                 player.ReligiousAlteration.Religion.RogueName != consumable.Spell.Religion.RogueName)
             {
@@ -909,7 +909,7 @@ namespace Rogue.NET.Core.Logic
                         // 2) Player has a DIFFERENT affiliation (NOT OK)
                         //
                         else if (doodadMagic.IsInvoked &&
-                                 doodadMagic.InvokedSpell.OtherEffectType == AlterationMagicEffectType.IncreaseReligiousAffiliation &&
+                                 doodadMagic.InvokedSpell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
                                  player.ReligiousAlteration.IsAffiliated() &&
                                  player.ReligiousAlteration.Religion != doodadMagic.InvokedSpell.Religion)
                         {

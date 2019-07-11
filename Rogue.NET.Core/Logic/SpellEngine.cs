@@ -317,7 +317,7 @@ namespace Rogue.NET.Core.Logic
                 case AlterationMagicEffectType.RevealSavePoint:
                 case AlterationMagicEffectType.Uncurse:
                 case AlterationMagicEffectType.RenounceReligion:
-                case AlterationMagicEffectType.IncreaseReligiousAffiliation:
+                case AlterationMagicEffectType.AffiliateReligion:
                 default:
                     throw new Exception("Improper use of Other Magic Effect type for character-affecting alteration");
                 case AlterationMagicEffectType.CreateMonster:
@@ -419,7 +419,7 @@ namespace Rogue.NET.Core.Logic
                     // Forced renunciation by Alteration
                     _religionEngine.RenounceReligion(true);
                     break;
-                case AlterationMagicEffectType.IncreaseReligiousAffiliation:
+                case AlterationMagicEffectType.AffiliateReligion:
                     _religionEngine.Affiliate(alteration.Religion);
                     break;
                 case AlterationMagicEffectType.CreateMonster:

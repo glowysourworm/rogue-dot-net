@@ -197,7 +197,7 @@
                                                 </MultiBinding>
                                             </Image.Source>
                                         </Image>
-                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource EquipmentTextBlockBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Religion.DisplayName}" Style="{StaticResource EquipmentTextBlockBrush}" VerticalAlignment="Center" />
                                     </StackPanel>
 
                                 </Grid>
@@ -327,7 +327,7 @@
                                                 </MultiBinding>
                                             </Image.Source>
                                         </Image>
-                                        <TextBlock Text="{Binding RequiredReligiousAffiliation}" Style="{StaticResource ConsumableTextBlockBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Religion.DisplayName}" Style="{StaticResource ConsumableTextBlockBrush}" VerticalAlignment="Center" />
                                     </StackPanel>
 
                                 </Grid>

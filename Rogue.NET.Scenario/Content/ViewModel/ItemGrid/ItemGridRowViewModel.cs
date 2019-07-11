@@ -305,7 +305,9 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Make sure identifyConsumable applies to consume an identify item (there's at least one thing to identify)
             bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
 
+            // Level and Religion requirements are handled by other code. Allow user to TRY to consume for those
             bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || 
+                                 (consumable.HasLearnedSkillSet) ||
                                  (consumable.SubType == ConsumableSubType.Note) || // Always allow using notes
                                  (isIdentify && identifyConsumable);
 

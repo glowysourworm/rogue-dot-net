@@ -217,7 +217,7 @@
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
-                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.IncreaseReligiousAffiliation}" />
+                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.AffiliateReligion}" />
                 </MultiBinding>
             </Grid.Visibility>
             <TextBlock Text="Religion (Religious Affiliation Increase)" Foreground="White" />
@@ -235,7 +235,7 @@
             <Grid.Visibility>
                 <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
                     <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.OtherMagicEffect}" />
-                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.IncreaseReligiousAffiliation}" />
+                    <Binding Path="OtherMagicEffect" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationMagicEffectType.AffiliateReligion}" />
                 </MultiBinding>
             </Grid.Visibility>            
             <TextBlock Text="Amount (Religious Affiliation Increase)" Foreground="White" />

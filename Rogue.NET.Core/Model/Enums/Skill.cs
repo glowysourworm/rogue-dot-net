@@ -6,31 +6,27 @@
     /// </summary>
     public enum AlterationMagicEffectType
     {
-        None,
-        ChangeLevelRandomUp,
-        ChangeLevelRandomDown,
-        Identify,
-        Uncurse,    
-        EnchantArmor,
-        EnchantWeapon,
+        None = 0,
+        ChangeLevelRandomUp = 1,
+        ChangeLevelRandomDown = 2,
+        Identify = 3,
+        Uncurse = 4,    
+        EnchantArmor = 5,
+        EnchantWeapon = 6,
         
-        RevealItems,
-        RevealMonsters,
-        RevealSavePoint,
-        RevealFood,
-        RevealLevel,
+        RevealItems = 7,
+        RevealMonsters = 8,
+        RevealSavePoint = 9,
+        RevealFood = 10,
+        RevealLevel = 11,
 
-        CreateMonster,
+        CreateMonster = 12,
 
         /// <summary>
         /// Forces renunciation of religious affiliation
         /// </summary>
-        RenounceReligion,
-
-        /// <summary>
-        /// TODO: CHANGE THIS TO AffiliateReligion
-        /// </summary>
-        IncreaseReligiousAffiliation
+        RenounceReligion = 13,
+        AffiliateReligion = 14
     }
     public enum AlterationCostType
     {

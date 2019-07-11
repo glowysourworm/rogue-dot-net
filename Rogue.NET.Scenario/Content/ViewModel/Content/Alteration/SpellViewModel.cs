@@ -260,8 +260,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                             return "Create Monster";
                         case AlterationMagicEffectType.RenounceReligion:
                             return "Renounce Religion";
-                        case AlterationMagicEffectType.IncreaseReligiousAffiliation:
-                            return "Increase Religious Affiliation";
+                        case AlterationMagicEffectType.AffiliateReligion:
+                            return "Affiliate Religion";
                         default:
                             throw new Exception("Unknown Other Alteration Effect Type");
                     }

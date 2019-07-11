@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
@@ -31,7 +32,7 @@ namespace Rogue.NET.Core.Model.Generator
             spell.IsStackable = spellTemplate.Stackable;
 
             // Religious Affiliation Change Parameters
-            if (spell.OtherEffectType == Enums.AlterationMagicEffectType.IncreaseReligiousAffiliation)
+            if (spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion)
                 spell.Religion = religions.First(religion => religion.RogueName == spellTemplate.ReligiousAffiliationReligion.Name);
 
             return spell;

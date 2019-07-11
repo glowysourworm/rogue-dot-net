@@ -285,6 +285,26 @@ namespace Rogue.NET.Core.Service
                         InnerMessage = x.Name + " has no monster set"
                     });
                 })),
+                new ScenarioValidationRule("Affiliate Religion Alteration must have Religion set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var alterations = configuration.MagicSpells
+                                                  .Where(alteration =>
+                                                  {
+                                                      return alteration.Type == AlterationType.OtherMagicEffect &&
+                                                             alteration.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
+                                                             !configuration.Religions.Any(religion => religion == alteration.ReligiousAffiliationReligion);
+                                                  })
+                                                  .Actualize();
+
+                    return alterations.Select(alteration =>
+                    {
+                        return new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = "Alteration " + alteration.Name + " needs Religion"
+                        };
+                    });
+                })),
 
                 // Warnings
                 new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
