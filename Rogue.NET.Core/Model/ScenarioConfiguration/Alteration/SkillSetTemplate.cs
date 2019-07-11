@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         private int _levelLearned;
         private bool _hasReligionRequirement;
+        private ReligionTemplate _religion;
 
         public List<SkillTemplate> Skills { get; set; }
 
@@ -33,6 +35,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _hasReligionRequirement = value;
                     OnPropertyChanged("HasReligionRequirement");
+                }
+            }
+        }
+        public ReligionTemplate Religion
+        {
+            get { return _religion; }
+            set
+            {
+                if (_religion != value)
+                {
+                    _religion = value;
+                    OnPropertyChanged("Religion");
                 }
             }
         }

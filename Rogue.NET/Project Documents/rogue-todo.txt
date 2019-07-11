@@ -505,6 +505,11 @@ IMMEDIATE TODO'S:
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.
 	
+	- IDEA!!!:  To deal with global collections - Attack Attributes; Altered States; Religions; etc... Create a static container
+				for creating the scenario!! :)  It's just like the idea of IOC - except for the actual model. So, a couples ideas
+				are 1) a static container class or 2) an injectible service .. or some kind of static lookup for the container
+				that is aware of the game state.
+	
 	- FIRST BIG TODO:  Refactor Animation targeting type to handle physical cases:
 	
 					   Problem:  There's an un-written "coupling" between animations and alterations. Example is "Run Away"

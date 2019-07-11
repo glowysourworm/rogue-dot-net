@@ -20,6 +20,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
         private SpellTemplateViewModel _ammoSpellTemplate;
+        private ReligionTemplateViewModel _religion;
         private string _noteMessage;
 
 
@@ -93,7 +94,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _ammoSpellTemplate; }
             set { this.RaiseAndSetIfChanged(ref _ammoSpellTemplate, value); }
         }
-
+        public ReligionTemplateViewModel Religion
+        {
+            get { return _religion; }
+            set { this.RaiseAndSetIfChanged(ref _religion, value); }
+        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -115,6 +120,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IdentifyOnUse = false;
             this.HasReligionRequirement = false;
             this.NoteMessage = "";
+            this.Religion = new ReligionTemplateViewModel();
         }
         public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
         {
@@ -131,6 +137,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IdentifyOnUse = false;
             this.HasReligionRequirement = false;
             this.NoteMessage = "";
+            this.Religion = new ReligionTemplateViewModel();
         }
     }
 }
