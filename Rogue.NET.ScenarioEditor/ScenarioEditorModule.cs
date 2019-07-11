@@ -229,17 +229,8 @@ namespace Rogue.NET.ScenarioEditor
                 //         THE STACK
                 _undoService.Block();
 
-                // Add Combat Attribute to the scenario
+                // Add Religion to the scenario
                 _scenarioEditorController.CurrentConfig.Religions.Add(e);
-
-                // Update all other religions
-                foreach (var religion in _scenarioEditorController.CurrentConfig.Religions)
-                {
-                    religion.AttackParameters.Add(new ReligiousAffiliationAttackParametersTemplateViewModel()
-                    {
-                        EnemyReligionName = e.Name
-                    });
-                }
 
                 // Update Scenario object references
                 _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);
@@ -257,12 +248,8 @@ namespace Rogue.NET.ScenarioEditor
                 //         THE STACK
                 _undoService.Block();
 
-                // Remove Combat Attribute from the scenario
+                // Remove Religion from the scenario
                 _scenarioEditorController.CurrentConfig.Religions.Remove(e);
-
-                // Update all other religions
-                foreach (var religion in _scenarioEditorController.CurrentConfig.Religions)
-                    religion.AttackParameters.Filter(x => x.EnemyReligionName == e.Name);
 
                 // Update Scenario object references
                 _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);

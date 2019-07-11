@@ -131,14 +131,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             religion.SymbolDetails.Type = SymbolTypes.DisplayImage;
             religion.SymbolDetails.DisplayIcon = this.ReligionSymbolCB.Value;
 
-            // Initialize Attack Parameters list
-            foreach (var existingReligion in config.Religions)
-                religion.AttackParameters.Add(new ReligiousAffiliationAttackParametersTemplateViewModel()
-                {
-                    EnemyReligionName = existingReligion.Name
-                });
-            
-
             _eventAggregator.GetEvent<AddReligionEvent>().Publish(religion);
 
             this.ReligionTB.Text = "";

@@ -347,7 +347,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Content\ReligiousAffiliationAttackParametersTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ReligionTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ReligiousAffiliationRequirementTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />

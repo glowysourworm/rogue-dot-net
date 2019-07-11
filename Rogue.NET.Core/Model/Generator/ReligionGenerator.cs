@@ -72,7 +72,6 @@ namespace Rogue.NET.Core.Model.Generator
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 DisplayIcon = template.SymbolDetails.DisplayIcon,
-                FollowerName = template.FollowerName,
                 HasAttributeBonus = template.HasAttributeBonus,
                 HasBonusAttackAttributes = template.HasBonusAttackAttributes,
                 HasBonusSkillSet = template.HasBonusSkillSet,

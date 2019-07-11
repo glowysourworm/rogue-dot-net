@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class ReligionTemplate : DungeonObjectTemplate
     {
-        string _followerName;
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttributes;
         bool _hasBonusSkillSet;
@@ -22,18 +21,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         string _bonusSkillSetName;
         CharacterAttribute _bonusAttribute;
 
-        public string FollowerName
-        {
-            get { return _followerName; }
-            set
-            {
-                if (_followerName != value)
-                {
-                    _followerName = value;
-                    OnPropertyChanged("FollowerName");
-                }
-            }
-        }
         public bool HasAttributeBonus
         {
             get { return _hasBonusAttribute; }
@@ -156,14 +143,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         }
 
         public List<AttackAttributeTemplate> BonusAttackAttributes { get; set; }
-        public List<ReligiousAffiliationAttackParametersTemplate> AttackParameters { get; set; }
         public List<AnimationTemplate> RenunciationAnimations { get; set; }
 
         public ReligionTemplate()
         {
-            this.FollowerName = "Christian";
-
-            this.AttackParameters = new List<ReligiousAffiliationAttackParametersTemplate>();
             this.BonusAttackAttributes = new List<AttackAttributeTemplate>();
             this.RenunciationAnimations = new List<AnimationTemplate>();
             this.BonusSkillSetName = "";

@@ -9,8 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     [Serializable]
     public class Religion : ScenarioImage
     {
-        public string FollowerName { get; set; }
-
         public bool HasAttributeBonus { get; set; }
         public bool HasBonusAttackAttributes { get; set; }
         public bool HasBonusSkillSet { get; set; }

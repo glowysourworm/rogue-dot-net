@@ -1,6 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.Collections.ObjectModel;
 
@@ -8,7 +7,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class ReligionTemplateViewModel : DungeonObjectTemplateViewModel
     {
-        string _followerName;
         bool _hasBonusAttribute;
         bool _hasBonusAttackAttributes;
         bool _hasBonusSkillSet;
@@ -20,11 +18,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         CharacterAttribute _bonusAttribute;
         string _bonusSkillSetName;
 
-        public string FollowerName
-        {
-            get { return _followerName; }
-            set { this.RaiseAndSetIfChanged(ref _followerName, value); }
-        }
         public bool HasAttributeBonus
         {
             get { return _hasBonusAttribute; }
@@ -77,14 +70,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> BonusAttackAttributes { get; set; }
-        public ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel> AttackParameters { get; set; }
         public ObservableCollection<AnimationTemplateViewModel> RenunciationAnimations { get; set; }
 
         public ReligionTemplateViewModel()
         {
-            this.FollowerName = "Christian";
-
-            this.AttackParameters = new ObservableCollection<ReligiousAffiliationAttackParametersTemplateViewModel>();
             this.BonusAttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.RenunciationAnimations = new ObservableCollection<AnimationTemplateViewModel>();
             this.BonusSkillSetName = "";

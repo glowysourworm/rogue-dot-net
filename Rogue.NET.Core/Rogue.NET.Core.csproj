@@ -297,7 +297,6 @@
     <Compile Include="Model\ScenarioConfiguration\Content\PlayerTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\ProbabilityConsumableTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\ProbabilityEquipmentTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Content\ReligiousAffiliationAttackParametersTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\ReligionTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\ReligiousAffiliationRequirementTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Layout\DungeonTemplate.cs" />
