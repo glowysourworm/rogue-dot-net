@@ -11,8 +11,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
     {
         int _levelRequirement;
         int _skillPointRequirement;
-        bool _hasReligionRequirement;
-        string _religionName;
         string _description;
         SpellViewModel _alteration;
 
@@ -20,7 +18,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         bool _isActive;
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
-        bool _isReligiousAffiliationRequirementMet;
 
         public int LevelRequirement
         {
@@ -31,16 +28,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             get { return _skillPointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _skillPointRequirement, value); }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
-        }
-        public string ReligionName
-        {
-            get { return _religionName; }
-            set { this.RaiseAndSetIfChanged(ref _religionName, value); }
         }
         public string Description
         {
@@ -75,19 +62,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _isLevelRequirementMet; }
             set { this.RaiseAndSetIfChanged(ref _isLevelRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
         }
-        public bool IsReligiousAffiliationRequirementMet
-        {
-            get { return _isReligiousAffiliationRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isReligiousAffiliationRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
-        }
         public bool AreAllRequirementsMet
         {
             get
             {
                 return _isSkillPointRequirementMet &&
-                       _isLevelRequirementMet &&
-                       (!_hasReligionRequirement ||
-                         _isReligiousAffiliationRequirementMet);
+                       _isLevelRequirementMet;
             }
         }
 

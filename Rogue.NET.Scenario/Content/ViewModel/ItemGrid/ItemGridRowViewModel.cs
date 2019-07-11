@@ -322,7 +322,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Religious Affiliation
             this.HasReligionRequirement = consumable.HasReligionRequirement;
             if (consumable.HasReligionRequirement)
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == consumable.ReligionName));
+                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == consumable.Religion.RogueName));
                                                 
 
             this.Quantity = totalQuantity;
@@ -411,7 +411,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Religious Affiliation
             this.HasReligionRequirement = equipment.HasReligionRequirement;
             if (equipment.HasReligionRequirement)
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == equipment.ReligionName));
+                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == equipment.Religion.RogueName));
 
             // Attack and Defense Value
             if (!equipment.IsIdentified)

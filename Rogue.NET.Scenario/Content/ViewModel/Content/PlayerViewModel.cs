@@ -469,8 +469,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         skill.IsActive = source.IsActive && (source.SelectedSkill.Id == skill.Id);
                         skill.IsSkillPointRequirementMet = player.SkillPoints >= skillSource.SkillPointRequirement;
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
-                        skill.IsReligiousAffiliationRequirementMet = player.ReligiousAlteration.IsAffiliated() &&
-                                                                    (player.ReligiousAlteration.ReligionName == skill.ReligionName);
                     });
                 });
 
@@ -622,7 +620,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 _modelService.Religions.Any()) // Check that model is loaded (could be that no model has loaded for the level)
                                                // TODO:  Force view model updates to wait until after IModelService is loaded
             {
-                this.Religion.DisplayName = player.ReligiousAlteration.ReligionName;
+                this.Religion.DisplayName = player.ReligiousAlteration.Religion.RogueName;
                 this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
                 this.Religion.HasAttributeBonus = player.ReligiousAlteration.AttributeEffect != null;
                 this.Religion.IsAffiliated = true;
@@ -655,7 +653,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 }
 
                 // Attack Parameters
-                var playerReligion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.ReligionName);
+                var playerReligion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.Religion.RogueName);
             }
             else
                 this.Religion.IsAffiliated = false;

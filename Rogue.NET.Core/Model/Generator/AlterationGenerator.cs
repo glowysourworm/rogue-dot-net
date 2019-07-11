@@ -59,7 +59,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
 
             // Religious Affiliation Increase Parameters
-            alterationContainer.ReligiousAffiliationReligionName = spell.ReligiousAffiliationReligionName;
+            alterationContainer.Religion = spell.Religion;
 
             return alterationContainer;
         }

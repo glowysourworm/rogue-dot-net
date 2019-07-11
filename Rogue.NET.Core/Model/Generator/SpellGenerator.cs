@@ -1,7 +1,10 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace Rogue.NET.Core.Model.Generator
 {
@@ -10,7 +13,7 @@ namespace Rogue.NET.Core.Model.Generator
     {
         public SpellGenerator() { }
 
-        public Spell GenerateSpell(SpellTemplate spellTemplate)
+        public Spell GenerateSpell(SpellTemplate spellTemplate, IEnumerable<Religion> religions)
         {
             Spell spell = new Spell();
             spell.RogueName = spellTemplate.Name;
@@ -28,7 +31,8 @@ namespace Rogue.NET.Core.Model.Generator
             spell.IsStackable = spellTemplate.Stackable;
 
             // Religious Affiliation Change Parameters
-            spell.ReligiousAffiliationReligionName = spellTemplate.ReligiousAffiliationReligion.Name;
+            if (spell.OtherEffectType == Enums.AlterationMagicEffectType.IncreaseReligiousAffiliation)
+                spell.Religion = religions.First(religion => religion.RogueName == spellTemplate.ReligiousAffiliationReligion.Name);
 
             return spell;
         }

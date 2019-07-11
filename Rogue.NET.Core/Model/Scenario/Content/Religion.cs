@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 using System.Collections.Generic;
@@ -20,14 +19,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public List<AnimationTemplate> RenunciationAnimations { get; set; }
 
-        public SkillSet SkillSet { get; set; }
-
         public Religion()
         {
             this.AttackAttributeAlteration = new AlterationEffect();
             this.AttributeAlteration = new AlterationEffect();
             this.RenunciationAnimations = new List<AnimationTemplate>();
-            this.SkillSet = new SkillSet();
         }
     }
 }

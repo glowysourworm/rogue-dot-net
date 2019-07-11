@@ -72,11 +72,9 @@
                                                     <Run Text="{Binding LevelLearned}" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
-                                                           Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                           Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                     <Run Text="Required Religion: " />
-                                                    <Run Text="{Binding ReligiousAffiliationRequirementName}" />
-                                                    <Run Text=" " />
-                                                    <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
+                                                    <Run Text="{Binding Religion.Name}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>
@@ -167,11 +165,9 @@
                                                     <Run Text="{Binding LevelLearned}" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
-                                                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                       Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                         <Run Text="Required Religion: " />
-                                                        <Run Text="{Binding ReligiousAffiliationRequirementName}" />
-                                                        <Run Text=" " />
-                                                        <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
+                                                        <Run Text="{Binding Religion.Name}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>
@@ -348,15 +344,6 @@
                         <TextBlock FontSize="18">
                             <Run Text="Skill Points: " Foreground="Tan" />
                             <Run Text="{Binding SkillPointRequirement}" Foreground="{Binding IsSkillPointRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
-                        </TextBlock>
-                        <TextBlock FontSize="18"
-                                   Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                            <Run Text="Religious Affiliation Requirement: " Foreground="Tan" />
-                            <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" 
-                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
-                            <Run Text=" " />
-                            <Run Text="{Binding ReligiousAffiliationRequirementName}" 
-                                 Foreground="{Binding IsReligiousAffiliationRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
                     </StackPanel>
                 </Grid>

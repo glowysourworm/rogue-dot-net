@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public bool IsLearned { get; set; }
 
         public bool HasReligionRequirement { get; set; }
-        public string ReligionName { get; set; }
+        public Religion Religion { get; set; }
 
         public Skill SelectedSkill { get; private set; }
 
@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
             this.IsActive = false;
             this.IsLearned = false;
             this.Skills = new List<Skill>();
-            this.ReligionName = null;
+            this.Religion = new Religion();
         } 
     }
 }

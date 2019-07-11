@@ -178,7 +178,7 @@
                             </Border.Resources>
                             <StackPanel>
                                 <Grid Margin="4,4,4,0"
-                                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                      Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                     <TextBlock Text="Required Religion" HorizontalAlignment="Left" VerticalAlignment="Center"
                                                Style="{StaticResource EquipmentTextBlockBrush}" />
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -308,7 +308,7 @@
                             </Border.Resources>
                             <StackPanel>
                                 <Grid Margin="4,4,4,0"
-                                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                      Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                     <TextBlock Text="Required Religion" HorizontalAlignment="Left"
                                                Style="{StaticResource ConsumableTextBlockBrush}" />
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

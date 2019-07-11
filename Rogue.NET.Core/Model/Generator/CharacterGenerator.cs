@@ -75,7 +75,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                 for (int i = 0; i < generationNumber; i++)
                 {
-                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate);
+                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate, religions);
                     player.Consumables.Add(consumable.Id, consumable);
                 }
             }
@@ -90,7 +90,7 @@ namespace Rogue.NET.Core.Model.Generator
                 int generationNumber = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationProbability);
                 for (int i = 0; i < generationNumber; i++)
                 {
-                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate);
+                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate, religions);
                     equipment.IsEquipped = template.EquipOnStartup;
                     player.Equipment.Add(equipment.Id, equipment);
                 }
@@ -98,7 +98,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
-                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x))
+                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x, religions))
                                           .ToList();
 
             // Starting Religion
@@ -109,11 +109,6 @@ namespace Rogue.NET.Core.Model.Generator
                 // Start with affiliation to the chosen religion
                 player.ReligiousAlteration.Initialize(scenarioAttributes);
                 player.ReligiousAlteration.Affiliate(religion);
-
-                // Add skill set for this religion if there is one
-                if (religion.HasBonusSkillSet &&
-                   !player.SkillSets.Any(x => x.RogueName == religion.SkillSet.RogueName))
-                    player.SkillSets.Add(religion.SkillSet);
             }
 
             return player;
@@ -147,8 +142,8 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.IsInvisible = enemyTemplate.IsInvisible;
 
             enemy.BehaviorDetails = new BehaviorDetails();
-            enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);
-            enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior);
+            enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior, religions);
+            enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior, religions);
             enemy.BehaviorDetails.SecondaryProbability = enemyTemplate.BehaviorDetails.SecondaryProbability;
             enemy.BehaviorDetails.SecondaryReason = enemyTemplate.BehaviorDetails.SecondaryReason;
             enemy.BehaviorDetails.CanOpenDoors = enemyTemplate.BehaviorDetails.CanOpenDoors;
@@ -172,7 +167,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var consumable = _itemGenerator.GenerateConsumable(template);
+                var consumable = _itemGenerator.GenerateConsumable(template, religions);
 
                 enemy.Consumables.Add(consumable.Id, consumable);
             }
@@ -188,7 +183,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var equipment = _itemGenerator.GenerateEquipment(template);
+                var equipment = _itemGenerator.GenerateEquipment(template, religions);
 
                 // Equip on Startup
                 if (equipmentTemplate.EquipOnStartup)

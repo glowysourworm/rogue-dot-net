@@ -78,7 +78,6 @@ namespace Rogue.NET.Core.Model.Generator
                 Icon = template.SymbolDetails.Icon,
                 RenunciationAnimations = new List<AnimationTemplate>(template.RenunciationAnimations),
                 RogueName = template.Name,
-                SkillSet = template.HasBonusSkillSet ? _skillSetGenerator.GenerateSkillSet(skillSetTemplates.First(x => x.Name == template.BonusSkillSetName)) : new SkillSet(),
                 SmileyAuraColor = template.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = template.SymbolDetails.SmileyLineColor,

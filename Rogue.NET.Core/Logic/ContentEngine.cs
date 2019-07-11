@@ -145,17 +145,17 @@ namespace Rogue.NET.Core.Logic
 
             // Identify Religion
             if (equipment.HasReligionRequirement)
-                _religionEngine.IdentifyReligion(equipment.ReligionName);
+                _religionEngine.IdentifyReligion(equipment.Religion);
 
             // Check Religious Affiliation Requirement
             if (equipment.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.ReligionName != equipment.ReligionName))
+                 player.ReligiousAlteration.Religion != equipment.Religion))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
                     "Required Religious Affiliation {0} Not Met!",
-                    equipment.ReligionName);
+                    equipment.Religion.RogueName);
 
                 return false;
             }
@@ -263,7 +263,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check for Enemy Religion to identify
             if (enemy.ReligiousAlteration.IsAffiliated())
-                _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.ReligionName);
+                _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.Religion);
 
             // Publish Level update
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));

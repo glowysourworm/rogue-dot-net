@@ -195,11 +195,9 @@
                                                     <Run Text="{Binding LevelLearned}" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="LightGray" FontSize="14" Margin="4"
-                                                           Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                           Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                         <Run Text="Required Religion: " />
-                                                        <Run Text="{Binding ReligiousAffiliationRequirementName}" />
-                                                        <Run Text=" " />
-                                                        <Run Text="{Binding ReligiousAffiliationRequirementLevel, StringFormat=P0}" />
+                                                        <Run Text="{Binding Religion.Name}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>

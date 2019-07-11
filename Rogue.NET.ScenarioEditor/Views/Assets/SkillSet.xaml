@@ -92,32 +92,21 @@
                     <toolkit:IntegerUpDown Value="{Binding LevelLearned, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Foreground="White" Maximum="500" Minimum="0" Increment="1" Width="150" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,10,10,5">
-                    <TextBlock Foreground="White" Text="Has Religious Affiliation" VerticalAlignment="Center" />
+                    <TextBlock Foreground="White" Text="Has Religion Requirement" VerticalAlignment="Center" />
                     <CheckBox IsChecked="{Binding HasReligiousAffiliationRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,10,10,5"
                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <TextBlock Foreground="White" Text="Religion Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
                     <ComboBox x:Name="ReligionCB" DisplayMemberPath="Name"
                                   Margin="10"
-                                  SelectedItem="{Binding ReligiousAffiliationRequirement.Religion}"
-                                  SelectedValue="{Binding ReligiousAffiliationRequirement.Religion.Name}"
+                                  SelectedItem="{Binding Religion}"
+                                  SelectedValue="{Binding Religion.Name}"
                                   SelectedValuePath="Name"
                                   VerticalAlignment="Center" 
                                   Width="200"                              
                                   HorizontalAlignment="Right" />
                 </Grid>
-                <Grid Margin="10,10,10,5"
-                      Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <TextBlock Foreground="White" Text="Required Affiliation Level" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                    <toolkit:DoubleUpDown Value="{Binding ReligiousAffiliationRequirement.RequiredAffiliationLevel}" 
-                                              Minimum="0.1"
-                                              Maximum="1"
-                                              Increment="0.1"
-                                              Width="80"
-                                              Margin="10,0,10,10"
-                                              HorizontalAlignment="Right" />
-                </Grid>                
                 <Grid Margin="10,5,10,5">
                     <GroupBox Header="Select Skills">
                         <StackPanel>

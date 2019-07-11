@@ -60,7 +60,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _hasLearnedSkills; }
             set { this.RaiseAndSetIfChanged(ref _hasLearnedSkills, value); InvalidateCommands(); }
         }
-        public bool HasReligiousAffiliationRequirement
+        public bool HasReligionRequirement
         {
             get { return _hasReligionRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); InvalidateCommands(); }
@@ -92,8 +92,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.IsLearned = skillSet.IsLearned;
 
             this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
-            this.HasReligiousAffiliationRequirement = skillSet.HasReligionRequirement;
-            this.ReligionName = skillSet.ReligionName;
+            this.HasReligionRequirement = skillSet.HasReligionRequirement;
+            this.ReligionName = skillSet.Religion.RogueName;
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {
@@ -104,11 +104,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,
-                    IsReligiousAffiliationRequirementMet = skillSet.HasReligionRequirement && 
-                                                           player.ReligiousAlteration.IsAffiliated(),
-                    ReligionName = skillSet.ReligionName,
                     SkillPointRequirement = x.SkillPointRequirement,
-                    HasReligionRequirement = skillSet.HasReligionRequirement,                    
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

@@ -13,16 +13,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public bool IsInvoked { get; set; }
 
         public bool HasReligionRequirement { get; set; }
-        public string ReligionName { get; set; }
+        public Religion Religion { get; set; }
 
         public DoodadMagic() : base()
         {
             this.Type = DoodadType.Magic;
             this.AutomaticSpell = new Spell();
             this.InvokedSpell = new Spell();
-            this.ReligionName = null;
+            this.Religion = new Religion();
         }
-        public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon)
+        public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon, Religion religion)
             : base(name, icon)
         {
             this.Type = DoodadType.Magic;
@@ -30,7 +30,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
             this.InvokedSpell = invokeSpell;
             this.IsAutomatic = isauto;
             this.IsInvoked = isinvoke;
-            this.ReligionName = null;
+            this.Religion = religion;
         }
     }
 }

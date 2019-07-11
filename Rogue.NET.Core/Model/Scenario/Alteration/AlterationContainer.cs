@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration
@@ -19,8 +20,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public double EffectRange { get; set; }
         public bool IsStackable { get; set; }
 
-        // Religious Affiliation Increase Parameters
-        public string ReligiousAffiliationReligionName { get; set; }
+        // Religious Affiliation Effect
+        public Religion Religion { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

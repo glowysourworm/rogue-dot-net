@@ -1,12 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Generator
 {
@@ -21,11 +18,11 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Skill GenerateSkill(SkillTemplate skillTemplate)
+        public Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<Religion> religions)
         {
             return new Skill()
             { 
-                Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration),
+                Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration, religions),
                 LevelRequirement = skillTemplate.LevelRequirement,
                 SkillPointRequirement = skillTemplate.PointRequirement
             };

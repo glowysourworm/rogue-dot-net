@@ -164,7 +164,7 @@ namespace Rogue.NET.Core.Logic
 
                 // Check for Enemy Religion to identify
                 if (enemy.ReligiousAlteration.IsAffiliated())
-                    _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.ReligionName);
+                    _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.Religion);
             }
 
             // REMOVE ALL CONTENTS

@@ -11,6 +11,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
+using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -38,21 +39,18 @@ namespace Rogue.NET.Core.Logic
             _rogueUpdateFactory = rogueUpdateFactory;
         }
 
-        public void Affiliate(string religionName)
+        public void Affiliate(Religion religion)
         {
             var player = _modelService.Player;
 
             // Non-Affiliated
             if (!player.ReligiousAlteration.IsAffiliated())
             {
-                // Get Religion
-                var religion = _modelService.Religions.First(x => x.RogueName == religionName);
-
                 // Set new affiliation
                 player.ReligiousAlteration.Affiliate(religion);
             }
             // Keeps current religion
-            else if (player.ReligiousAlteration.ReligionName != religionName)
+            else if (player.ReligiousAlteration.Religion != religion)
                 throw new Exception("Trying to affiliate to new religion before renouncing");
         }
 
@@ -70,7 +68,7 @@ namespace Rogue.NET.Core.Logic
             // Can't Renounce
             else if (!player.ReligiousAlteration.CanRenounce() && !forceRenunciation)
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.ReligiousAlteration.ReligionName + " does not allow Renunciation!");
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.ReligiousAlteration.Religion.RogueName + " does not allow Renunciation!");
                 return LevelContinuationAction.DoNothing;
             }
 
@@ -78,7 +76,7 @@ namespace Rogue.NET.Core.Logic
             else
             {
                 // Religion Name
-                var religionName = player.ReligiousAlteration.ReligionName;
+                var religion = player.ReligiousAlteration.Religion;
 
                 // Renunciation Animations
                 var animations = player.ReligiousAlteration.Renounce();
@@ -87,7 +85,7 @@ namespace Rogue.NET.Core.Logic
                 foreach (var equipment in player.Equipment.Values.Where(x => x.IsEquipped))
                 {
                     if (equipment.HasReligionRequirement &&
-                        equipment.ReligionName == religionName)
+                        equipment.Religion == religion)
                     {
                         // Cursed equipment will turn on its owner
                         if (equipment.IsCursed)
@@ -109,7 +107,7 @@ namespace Rogue.NET.Core.Logic
                 foreach (var skillSet in player.SkillSets.Where(x => x.IsLearned))
                 {
                     if (skillSet.HasReligionRequirement &&
-                        skillSet.ReligionName == religionName)
+                        skillSet.Religion == religion)
                     {
                         // Un-Learn skill set
                         skillSet.IsLearned = false;
@@ -148,20 +146,18 @@ namespace Rogue.NET.Core.Logic
                 // Queue Player Update
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
 
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " has renounced " + religionName);
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " has renounced " + religion.RogueName);
 
                 return LevelContinuationAction.ProcessTurn;
             }
         }
 
-        public void IdentifyReligion(string religionName)
+        public void IdentifyReligion(Religion religion)
         {
-            var isIdentified = _modelService.ScenarioEncyclopedia[religionName].IsIdentified;
+            var isIdentified = _modelService.ScenarioEncyclopedia[religion.RogueName].IsIdentified;
 
             if (!isIdentified)
             {
-                var religion = _modelService.Religions.First(x => x.RogueName == religionName);
-
                 // Identify the religion
                 _modelService.ScenarioEncyclopedia[religion.RogueName].IsIdentified = true;
 

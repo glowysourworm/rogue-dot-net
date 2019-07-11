@@ -115,31 +115,31 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
 
             // Consumables
-            //foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligiousAffiliationRequirement))
-            //{
-            //    consumable.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, consumable.ReligiousAffiliationRequirement.Religion);
+            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligionRequirement))
+            {
+                consumable.Religion = MatchByName(configuration.Religions, consumable.Religion);
 
-            //    if (consumable.ReligiousAffiliationRequirement.Religion == null)
-            //        consumable.HasReligiousAffiliationRequirement = false;
-            //}
+                if (consumable.Religion == null)
+                    consumable.HasReligionRequirement= false;
+            }
 
-            //// Equipment
-            //foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
-            //{
-            //    equipment.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, equipment.ReligiousAffiliationRequirement.Religion);
+            // Equipment
+            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
+            {
+                equipment.Religion = MatchByName(configuration.Religions, equipment.Religion);
 
-            //    if (equipment.ReligiousAffiliationRequirement.Religion == null)
-            //        equipment.HasReligionRequirement = false;
-            //}
+                if (equipment.Religion == null)
+                    equipment.HasReligionRequirement = false;
+            }
 
-            //// Doodads
-            //foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
-            //{
-            //    doodad.ReligiousAffiliationRequirement.Religion = MatchByName(configuration.Religions, doodad.ReligiousAffiliationRequirement.Religion);
+            // Doodads
+            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
+            {
+                doodad.Religion = MatchByName(configuration.Religions, doodad.Religion);
 
-            //    if (doodad.ReligiousAffiliationRequirement.Religion == null)
-            //        doodad.HasReligionRequirement = false;
-            //}
+                if (doodad.Religion == null)
+                    doodad.HasReligionRequirement = false;
+            }
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligion))

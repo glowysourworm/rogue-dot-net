@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
         public AlterationEffect AttackAttributeEffect { get; protected set; }
         public AlterationEffect AttributeEffect { get; protected set; }
 
-        protected Religion Religion { get; set; }
+        public Religion Religion { get; protected set; }
 
         protected IEnumerable<AttackAttribute> ScenarioAttackAttributes { get; set; }
 
@@ -48,19 +48,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
             CreateEffects();
         }
 
-        public void SetAffiliationLevel(double affiliationLevel)
-        {
-            if (this.Religion == null)
-                throw new Exception("Not affiliated with any religion");
-
-            CreateEffects();
-        }
-
-        public string ReligionName
-        {
-            get { return this.Religion?.RogueName ?? string.Empty; }
-        }
-
         public ScenarioImage Symbol
         {
             get { return this.Religion; }
@@ -78,7 +65,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic
 
         public CharacterReligiousAlteration()
         {
-
+            this.Religion = null;
         }
 
         /// <summary>

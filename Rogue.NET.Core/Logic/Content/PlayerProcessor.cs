@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Logic.Content
                                              (!skillSet.HasReligionRequirement ||
                                               (skillSet.HasReligionRequirement &&
                                                player.ReligiousAlteration.IsAffiliated() &&
-                                               player.ReligiousAlteration.ReligionName == skillSet.ReligionName));
+                                               player.ReligiousAlteration.Religion == skillSet.Religion));
 
                 // If Player fell below level requirements then have to de-activate the skills and mark them not learned
                 if (!skillSetRequirementsMet && skillSet.IsTurnedOn)

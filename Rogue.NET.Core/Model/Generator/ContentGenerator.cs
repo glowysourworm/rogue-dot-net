@@ -95,14 +95,14 @@ namespace Rogue.NET.Core.Model.Generator
 
             // Applies to all levels - (UNMAPPED)
             GenerateEnemies(level, configurationContainer, religions, scenarioAttributes, levelNumber);
-            GenerateItems(level, configurationContainer, levelNumber);
-            GenerateDoodads(level, configurationContainer, levelNumber);
+            GenerateItems(level, configurationContainer, levelNumber, religions);
+            GenerateDoodads(level, configurationContainer, levelNumber, religions);
 
             MapLevel(level, configurationContainer, religions, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
 
             return level;
         }
-        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
+        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<Religion> religions)
         {
             foreach (var doodadTemplate in configurationContainer.DoodadTemplates)
             {
@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated))
                                             && !(doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate));
+                    level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate, religions));
                 }
             }
         }
@@ -141,7 +141,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
+        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<Religion> religions)
         {
             // Equipment for the level
             foreach (var template in configurationContainer.EquipmentTemplates)
@@ -157,7 +157,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                             && !(template.IsUnique && template.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_itemGenerator.GenerateEquipment(template));
+                    level.AddContent(_itemGenerator.GenerateEquipment(template, religions));
                 }
             }
 
@@ -174,7 +174,7 @@ namespace Rogue.NET.Core.Model.Generator
                     for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                                 && !(template.IsUnique && template.HasBeenGenerated); i++)
                     {
-                        level.AddContent(_itemGenerator.GenerateConsumable(template));
+                        level.AddContent(_itemGenerator.GenerateConsumable(template, religions));
                     }
                 }
             }
@@ -294,7 +294,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                     if (location != CellPoint.Empty)
                     {
-                        var equipment = _itemGenerator.GenerateEquipment(template);
+                        var equipment = _itemGenerator.GenerateEquipment(template, religions);
                         equipment.Location = location;
                         level.AddContent(equipment);
                     }
@@ -318,7 +318,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                         if (location != CellPoint.Empty)
                         {
-                            var consumable = _itemGenerator.GenerateConsumable(template);
+                            var consumable = _itemGenerator.GenerateConsumable(template, religions);
                             consumable.Location = location;
                             level.AddContent(consumable);
                         }
