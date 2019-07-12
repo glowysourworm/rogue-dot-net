@@ -1,12 +1,8 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Controls;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +20,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
             {
                 this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
-                this.ReligionCB.ItemsSource = configuration.Religions;
             });
 
             this.SkillSetBuilder.AddEvent += SkillSetBuilder_AddEvent;

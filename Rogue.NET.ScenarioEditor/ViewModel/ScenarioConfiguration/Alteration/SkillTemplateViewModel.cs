@@ -6,7 +6,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        double _requiredAffiliationLevel;
         SpellTemplateViewModel _alteration;
 
         public int LevelRequirement
@@ -18,11 +17,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _pointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _pointRequirement, value); }
-        }
-        public double RequiredAffiliationLevel
-        {
-            get { return _requiredAffiliationLevel; }
-            set { this.RaiseAndSetIfChanged(ref _requiredAffiliationLevel, value); }
         }
         public SpellTemplateViewModel Alteration
         {

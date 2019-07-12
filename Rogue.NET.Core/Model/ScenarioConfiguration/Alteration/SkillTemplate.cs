@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        double _requiredAffiliationLevel;
         SpellTemplate _alteration;
 
         public int LevelRequirement
@@ -33,18 +32,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _pointRequirement = value;
                     OnPropertyChanged("PointRequirement");
-                }
-            }
-        }
-        public double RequiredAffiliationLevel
-        {
-            get { return _requiredAffiliationLevel; }
-            set
-            {
-                if (_requiredAffiliationLevel != value)
-                {
-                    _requiredAffiliationLevel = value;
-                    OnPropertyChanged("RequiredAffiliationLevel");
                 }
             }
         }
