@@ -18,8 +18,8 @@ namespace Rogue.NET.Scenario.Content.Views
 
             this.Loaded += (sender, e) =>
             {
-                if (playerViewModel.SkillSets.Any(x => x.IsLearned))
-                    this.SkillSetLB.SelectedItem = playerViewModel.SkillSets.First(x => x.IsLearned);
+                if (playerViewModel.SkillSets.Any(x => x.HasLearnedSkills))
+                    this.SkillSetLB.SelectedItem = playerViewModel.SkillSets.First(x => x.HasLearnedSkills);
             };
 
             this.SkillSetLB.SelectionChanged += (sender, e) =>

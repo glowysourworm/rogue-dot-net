@@ -54,7 +54,7 @@
                         <!-- Locked / Unlocked -->
                         <TextBlock Grid.Column="2" FontFamily="{StaticResource FontAwesome}" FontSize="18" Foreground="DarkGray"
                                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4" Opacity="1"
-                                   Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
+                                   Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Text="&#xf023;">
                             <TextBlock.ToolTip>
                                 <!-- Tooltip with Purple Smiley -->
@@ -65,18 +65,7 @@
                                     <Border Background="Black" Padding="10" BorderBrush="Purple" BorderThickness="1.5" CornerRadius="8">
                                         <StackPanel Orientation="Horizontal">
                                             <coreView:Smiley VerticalAlignment="Center" Margin="4" SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
-                                            <StackPanel>
-                                                <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
-                                                <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0">
-                                                    <Run Text="Required Level: " />
-                                                    <Run Text="{Binding LevelLearned}" />
-                                                </TextBlock>
-                                                <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
-                                                           Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="Required Religion: " />
-                                                    <Run Text="{Binding Religion.Name}" />
-                                                </TextBlock>
-                                            </StackPanel>
+                                            <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
                                         </StackPanel>
                                     </Border>
                                 </ToolTip>
@@ -164,10 +153,21 @@
                                                     <Run Text="Required Level: " />
                                                     <Run Text="{Binding LevelLearned}" />
                                                 </TextBlock>
+                                                <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0">
+                                                    <Run Text="Skill Points: " Foreground="Tan" />
+                                                    <Run Text="{Binding SkillPointRequirement}" />
+                                                </TextBlock>
                                                 <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
-                                                       Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                        <Run Text="Required Religion: " />
-                                                        <Run Text="{Binding Religion.Name}" />
+                                                           Visibility="{Binding HasAttributeRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="Attribute Requirement: " Foreground="Tan" />
+                                                    <Run Text="{Binding AttributeRequirement}" />
+                                                    <Run Text=" of " />
+                                                    <Run Text="{Binding AttributeLevelRequirement}" />
+                                                </TextBlock>
+                                                <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
+                                                           Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="Required Religion: " />
+                                                    <Run Text="{Binding Religion.Name}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>
@@ -345,6 +345,31 @@
                             <Run Text="Skill Points: " Foreground="Tan" />
                             <Run Text="{Binding SkillPointRequirement}" Foreground="{Binding IsSkillPointRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
+                        <TextBlock FontSize="18">
+                            <Run Text="Attribute Requirement: " Foreground="Tan" />
+                            <Run Text="{Binding AttributeRequirement}" Foreground="{Binding IsAttributeRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                            <Run Text=" of " />
+                            <Run Text="{Binding AttributeLevelRequirement}" Foreground="{Binding IsAttributeRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                        </TextBlock>
+                        <TextBlock FontSize="18">
+                            <Run Text="Religion Requirement: " Foreground="Tan" />
+                            <Image HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="None" Margin="2">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                                        <Binding Path="Religion.CharacterSymbol" />
+                                        <Binding Path="Religion.CharacterColor" />
+                                        <Binding Path="Religion.Icon" />
+                                        <Binding Path="Religion.DisplayIcon" />
+                                        <Binding Path="Religion.SmileyMood" />
+                                        <Binding Path="Religion.SmileyBodyColor" />
+                                        <Binding Path="Religion.SmileyLineColor" />
+                                        <Binding Path="Religion.SmileyAuraColor" />
+                                        <Binding Path="Religion.SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>                            
+                            <Run Text="{Binding Religion.DisplayName}" Foreground="{Binding IsReligionRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                        </TextBlock>                        
                     </StackPanel>
                 </Grid>
             </StackPanel>

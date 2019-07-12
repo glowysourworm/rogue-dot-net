@@ -1,4 +1,6 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 {
@@ -6,6 +8,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
+        bool _hasReligionRequirement;
+        bool _hasAttributeRequirement;
+        double _attributeLevelRequirement;
+        CharacterAttribute _attributeRequirement;
+        ReligionTemplateViewModel _religion;
         SpellTemplateViewModel _alteration;
 
         public int LevelRequirement
@@ -18,6 +25,31 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _pointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _pointRequirement, value); }
         }
+        public bool HasReligionRequirement
+        {
+            get { return _hasReligionRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
+        }
+        public bool HasAttributeRequirement
+        {
+            get { return _hasAttributeRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasAttributeRequirement, value); }
+        }
+        public double AttributeLevelRequirement
+        {
+            get { return _attributeLevelRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _attributeLevelRequirement, value); }
+        }
+        public CharacterAttribute AttributeRequirement
+        {
+            get { return _attributeRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _attributeRequirement, value); }
+        }
+        public ReligionTemplateViewModel Religion
+        {
+            get { return _religion; }
+            set { this.RaiseAndSetIfChanged(ref _religion, value); }
+        }
         public SpellTemplateViewModel Alteration
         {
             get { return _alteration; }
@@ -27,6 +59,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         public SkillTemplateViewModel()
         {
             this.Alteration = new SpellTemplateViewModel();
+            this.AttributeRequirement = CharacterAttribute.Agility;
+            this.Religion = new ReligionTemplateViewModel();
         }
     }
 }

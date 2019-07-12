@@ -441,10 +441,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Sort Skill Sets
-            var sortedSkillSets = player.SkillSets.OrderByDescending(x => x.IsLearned) //TODO: SKILLSET
-                                                   //.ThenByDescending(x => this.Level >= x.Skills.Min(skill => skill.LevelRequirement))
-                                                   //.ThenBy(x => x.Skills.Min(skill => skill.LevelRequirement))
-                                                   .Actualize();
+            var sortedSkillSets = player.SkillSets.OrderByDescending(x =>
+                                                   {
+                                                       return x.Skills.Count == 0 ? 0 :
+                                                              x.Skills.Min(skill => skill.LevelRequirement);
+                                                   })
+                                                  .Actualize();
 
             // Base Collections
             SynchronizeCollection(
@@ -455,7 +457,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 {
                     // Update
                     dest.IsActive = source.IsActive;
-                    dest.IsLearned = source.IsLearned;
                     dest.IsTurnedOn = source.IsTurnedOn;
                     dest.HasLearnedSkills = source.Skills.Any(x => x.IsLearned);
                     dest.ActiveSkill = source.SelectedSkill == null ? null :

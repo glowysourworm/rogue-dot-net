@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Character;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Skill
 {
@@ -11,12 +12,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
 
         public bool IsActive { get; set; }
         public bool IsTurnedOn { get; set; }
-        public bool IsLearned { get; set; }
 
         public Skill SelectedSkill { get; private set; }
 
         #region (public) Methods
-        public void SelectSkillUp()
+        public void SelectSkillUp(Player player)
         {
             if (this.SelectedSkill == null)
                 this.SelectedSkill = this.Skills.FirstOrDefault(x => x.IsLearned);
@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
                                                                      x != this.SelectedSkill) ?? this.SelectedSkill;
             }
         }
-        public void SelectSkillDown()
+        public void SelectSkillDown(Player player)
         {
             if (this.SelectedSkill == null)
                 this.SelectedSkill = this.Skills.FirstOrDefault(x => x.IsLearned);
@@ -58,7 +58,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public SkillSet()
         {
             this.IsActive = false;
-            this.IsLearned = false;
             this.Skills = new List<Skill>();
         } 
     }

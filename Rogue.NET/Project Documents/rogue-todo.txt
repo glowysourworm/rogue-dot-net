@@ -481,6 +481,7 @@
 - Fix - "Vile Mother has used 'Create Vile' on"
 - Fix - Identify for non-class items should identify all future non-class items with the same RogueName
 - Fix - Identify All isn't updating the Encyclopedia view
+- Fix - Wraith's drain experience doesn't knock player down a level (need this one for item / equipment / skill requirements)
 						
 - Balancing (Paladin) - Add some skills for learning: Disciple, Satanic Priest, maybe one or two other.. but EViL! >_<
 
@@ -500,6 +501,7 @@ IMMEDIATE TODO'S:
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
 				 
 				 - Search on TODO:SKILLSET
+				 - Test deserialization of Religion (on any asset) and check that it == the one in the global collection (by reference)
 				 
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.

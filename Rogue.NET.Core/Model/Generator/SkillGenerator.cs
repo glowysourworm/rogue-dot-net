@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
@@ -22,8 +23,14 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new Skill()
             { 
-                Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration, religions),
+                Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration, religions),     
+                AttributeLevelRequirement = skillTemplate.AttributeLevelRequirement,
+                AttributeRequirement = skillTemplate.AttributeRequirement,
+                HasAttributeRequirement = skillTemplate.HasAttributeRequirement,
+                HasReligionRequirement = skillTemplate.HasReligionRequirement,                
                 LevelRequirement = skillTemplate.LevelRequirement,
+                PointRequirement = skillTemplate.PointRequirement,
+                Religion = skillTemplate.HasReligionRequirement ? religions.First(religion => religion.RogueName == skillTemplate.Religion.Name) : new Religion(),
                 SkillPointRequirement = skillTemplate.PointRequirement
             };
         }

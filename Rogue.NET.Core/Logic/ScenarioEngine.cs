@@ -647,7 +647,7 @@ namespace Rogue.NET.Core.Logic
             {
                 var skill = skillSet.Skills.First(x => x.Id == skillId);
 
-                if (!skillSet.IsLearned || !skill.IsLearned)
+                if (!skill.IsLearned)
                     throw new Exception("Trying to activate non-learned skill");
 
                 // 1) Deactivate currently active SkillSet / Skill
@@ -664,7 +664,7 @@ namespace Rogue.NET.Core.Logic
         public void CycleActiveSkillSet()
         {
             var activeSkill = _modelService.Player.SkillSets.FirstOrDefault(x => x.IsActive);
-            var learnedSkills = _modelService.Player.SkillSets.Where(x => x.IsLearned && x.Skills.Any(z => z.IsLearned));
+            var learnedSkills = _modelService.Player.SkillSets.Where(x => x.Skills.Any(z => z.IsLearned));
 
             if (!learnedSkills.Any())
                 return;
@@ -710,7 +710,7 @@ namespace Rogue.NET.Core.Logic
             // Activate and select next skill
             if (skillSet != null)
             {
-                skillSet.SelectSkillUp();
+                skillSet.SelectSkillUp(_modelService.Player);
                 skillSet.IsActive = true;
             }
 
@@ -727,7 +727,7 @@ namespace Rogue.NET.Core.Logic
             // Activate and select next skill
             if (skillSet != null)
             {
-                skillSet.SelectSkillDown();
+                skillSet.SelectSkillDown(_modelService.Player);
                 skillSet.IsActive = true;
             }
 
@@ -757,7 +757,7 @@ namespace Rogue.NET.Core.Logic
                 {
                     // If no skill selected then select first skill
                     if (skillSet.SelectedSkill == null)
-                        skillSet.SelectSkillDown();
+                        skillSet.SelectSkillDown(_modelService.Player);
 
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Activating " + skillSet.RogueName);
                 }
@@ -776,30 +776,19 @@ namespace Rogue.NET.Core.Logic
             {
                 var skill = skillSet.Skills.First(x => x.Id == skillId);
 
-                // TODO:SKILLSET
-                // Skill Set Requirements
-                //var skillSetRequirementsMet = player.Level >= skillSet.LevelLearned &&
-                //                             (!skillSet.HasReligionRequirement ||
-                //                              (skillSet.HasReligionRequirement &&
-                //                               player.ReligiousAlteration.IsAffiliated() &&
-                //                               player.ReligiousAlteration.Religion == skillSet.Religion));
+                // Check skill requirements
+                if (skill.AreRequirementsMet(player))
+                {
+                    // Decrement skill points
+                    player.SkillPoints -= skill.SkillPointRequirement;
 
-                // Skill Requirements
-                var skillRequirementsMet = player.Level >= skill.LevelRequirement &&
-                                           player.SkillPoints >= skill.SkillPointRequirement;
+                    // Set IsLearned true
+                    skill.IsLearned = true;
 
-                // TODO:SKILLSET
-                // If both requirements met then can learn the skill
-                //if (skillSetRequirementsMet && skillRequirementsMet)
-                //{
-                //    player.SkillPoints -= skill.SkillPointRequirement;
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
 
-                //    skill.IsLearned = true;
-
-                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
-
-                //    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
-                //}
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
+                }
             }
         }
         public LevelContinuationAction InvokePlayerSkill()

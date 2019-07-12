@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,48 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             if (player.Experience < 0)
                 player.Experience = 0;
+        }
+
+        /// <summary>
+        /// Gets character attribute using provided enum
+        /// </summary>
+        public static double Get(this Player player, CharacterAttribute attribute)
+        {
+            switch (attribute)
+            {
+                case CharacterAttribute.Hp:
+                    return player.Hp;
+                case CharacterAttribute.Mp:
+                    return player.Mp;
+                case CharacterAttribute.Strength:
+                    return player.GetStrength();
+                case CharacterAttribute.Agility:
+                    return player.GetAgility();
+                case CharacterAttribute.Intelligence:
+                    return player.GetIntelligence();
+                case CharacterAttribute.Speed:
+                    return player.GetSpeed();
+                case CharacterAttribute.HpRegen:
+                    return player.GetHpRegen();
+                case CharacterAttribute.MpRegen:
+                    return player.GetMpRegen();
+                case CharacterAttribute.LightRadius:
+                    return player.GetAuraRadius();
+                case CharacterAttribute.Attack:
+                    return player.GetAttack();
+                case CharacterAttribute.Defense:
+                    return player.GetDefense();
+                case CharacterAttribute.Dodge:
+                    return player.GetDodge();
+                case CharacterAttribute.MagicBlock:
+                    return player.GetMagicBlock();
+                case CharacterAttribute.CriticalHit:
+                    return player.GetCriticalHitProbability();
+                case CharacterAttribute.FoodUsagePerTurn:
+                    return player.GetFoodUsagePerTurn();
+                default:
+                    throw new Exception("Unknown CharacterAttribute PlayerExtension.Get");
+            }
         }
     }
 }

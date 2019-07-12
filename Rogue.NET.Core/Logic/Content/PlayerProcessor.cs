@@ -17,6 +17,7 @@ using System.Windows.Media;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -172,33 +173,32 @@ namespace Rogue.NET.Core.Logic.Content
             // Check for Skill Set Requirements
             foreach (var skillSet in player.SkillSets)
             {
-                var skillSetLearned = skillSet.IsLearned;
+                // If Player fell below level requirements then have to de-activate the skills
+                if (skillSet.IsTurnedOn && skillSet.SelectedSkill.AreRequirementsMet(player))
+                {
+                    skillSet.IsTurnedOn = false;
 
-                // TODO:SKILLSET
-                //var skillSetRequirementsMet = skillSet.Skills.Any()
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
 
-                //// If Player fell below level requirements then have to de-activate the skills and mark them not learned
-                //if (!skillSetRequirementsMet && skillSet.IsTurnedOn)
-                //{
-                //    skillSet.IsTurnedOn = false;
+                    // Pass-Through method is Safe to call
+                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
+                }
 
-                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
+                // Check for skills that have requirements met / or lost
+                foreach (var skill in skillSet.Skills.Where(x => x.IsLearned))
+                {
+                    var areRequirementsMet = skill.AreRequirementsMet(player);
+                    var wereRequirementsMet = skill.AreRequirementsMet;
 
-                //    // Pass-Through method is Safe to call
-                //    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
+                    if (!wereRequirementsMet && areRequirementsMet)
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " has regained use of the Skill " + _modelService.GetDisplayName(skillSet));
 
-                //    // SET ALL SKILLS TO NOT-LEARNED
-                //    skillSet.Skills.ForEach(x => x.IsLearned = false);
-                //}
+                    else if (wereRequirementsMet && !areRequirementsMet)
+                        _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " can no longer use the Skill " + _modelService.GetDisplayName(skillSet));
 
-                //// Level Requirement Only
-                //skillSet.IsLearned = skillSetRequirementsMet;
-
-                //if (!skillSetLearned && skillSetRequirementsMet)
-                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned the Skill " + _modelService.GetDisplayName(skillSet));
-
-                //else if (skillSetLearned && !skillSetRequirementsMet)
-                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " can no longer use the Skill " + _modelService.GetDisplayName(skillSet));
+                    // Store flag to know if requirements change
+                    skill.AreRequirementsMet = areRequirementsMet;
+                }
             }
 
             // Normal temporary effects

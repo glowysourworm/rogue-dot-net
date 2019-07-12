@@ -3,9 +3,10 @@ using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Scenario.Events.Content;
 using System.Collections.Generic;
@@ -18,28 +19,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
     public class SkillSetViewModel : ScenarioImageViewModel
     {
-        public int _levelMax;
-        public int _levelLearned;
-        public bool _isActive;
-        public bool _isTurnedOn;
-        public bool _isLearned;
-        public bool _hasReligionRequirement;
-        public bool _hasLearnedSkills;
-        public double _skillProgress;
-        public string _religionName;
+        bool _isActive;
+        bool _isTurnedOn;
+        bool _isLearned;
+        bool _hasLearnedSkills;
 
         SkillViewModel _activeSkill;
 
-        public int LevelMax
-        {
-            get { return _levelMax; }
-            set { this.RaiseAndSetIfChanged(ref _levelMax, value); }
-        }
-        public int LevelLearned
-        {
-            get { return _levelLearned; }
-            set { this.RaiseAndSetIfChanged(ref _levelLearned, value); }
-        }
         public bool IsActive
         {
             get { return _isActive; }
@@ -50,25 +36,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _isTurnedOn; }
             set { this.RaiseAndSetIfChanged(ref _isTurnedOn, value); InvalidateCommands(); }
         }
-        public bool IsLearned
-        {
-            get { return _isLearned; }
-            set { this.RaiseAndSetIfChanged(ref _isLearned, value); InvalidateCommands(); }
-        }
         public bool HasLearnedSkills
         {
             get { return _hasLearnedSkills; }
             set { this.RaiseAndSetIfChanged(ref _hasLearnedSkills, value); InvalidateCommands(); }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); InvalidateCommands(); }
-        }
-        public string ReligionName
-        {
-            get { return _religionName; }
-            set { this.RaiseAndSetIfChanged(ref _religionName, value); }
         }
         public SkillViewModel ActiveSkill
         {
@@ -85,27 +56,30 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IEventAggregator eventAggregator) : base(skillSet)
         {
-            this.LevelMax = skillSet.Skills.Count; //TODO: SKILLSET
-            //this.LevelLearned = skillSet.Skills.Min(skill => skill.LevelRequirement);
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;
-            this.IsLearned = skillSet.IsLearned;
-
             this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
-            // TODO:SKILLSET
-            //this.HasReligionRequirement = skillSet.Skills.Any(skill => skill.HasReligionREqui);
-            //this.ReligionName = skillSet.Religion.RogueName;
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {
                 return new SkillViewModel(x, eventAggregator)
                 {
                     Alteration = new SpellViewModel(x.Alteration),
+                    AttributeRequirement = x.AttributeRequirement,
+                    AttributeLevelRequirement = x.AttributeLevelRequirement,
                     Description = encyclopedia[x.Alteration.RogueName].LongDescription,
+                    HasAttributeRequirement = x.HasAttributeRequirement,
+                    HasReligionRequirement = x.HasReligionRequirement,
                     IsLearned = x.IsLearned,
-                    IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement,
+                    IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement || x.IsLearned,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,
+                    IsAttributeRequirementMet = !x.HasAttributeRequirement || 
+                                                 player.Get(x.AttributeRequirement) > x.AttributeLevelRequirement,
+                    IsReligionRequirementMet = !x.HasReligionRequirement ||
+                                                (player.ReligiousAlteration.IsAffiliated() &&
+                                                 player.ReligiousAlteration.Religion == x.Religion),
                     SkillPointRequirement = x.SkillPointRequirement,
+                    Religion =  new ScenarioImageViewModel(x.Religion),
                     LevelRequirement = x.LevelRequirement,
                 };
             }));
@@ -118,21 +92,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelActionType.ChangeSkillLevelDown, Compass.Null, this.Id));
 
-            }, () => this.IsLearned);
+            }, () => this.HasLearnedSkills);
 
             this.ChangeSkillLevelUpCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelActionType.ChangeSkillLevelUp, Compass.Null, this.Id));
 
-            }, () => this.IsLearned);
+            }, () => this.HasLearnedSkills);
 
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new UserCommandEventArgs(LevelActionType.ActivateSkillSet, Compass.Null, this.Id));
 
-            }, () => this.IsLearned);
+            }, () => this.HasLearnedSkills);
 
             this.ViewSkillsCommand = new DelegateCommand(() =>
             {

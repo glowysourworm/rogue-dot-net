@@ -151,7 +151,7 @@
                                          Margin="0">
                                     <Border Background="Black" Padding="4" BorderBrush="Purple" BorderThickness="2" CornerRadius="8">
                                         <StackPanel Orientation="Horizontal">
-                                            <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="5" SmileyLineThickness="2" />
+                                            <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" SmileyLineThickness="1" />
                                             <StackPanel>
                                                 <TextBlock Text="Spend Skill Points to Unlock!" Foreground="LightSteelBlue" FontSize="18" Margin="4" VerticalAlignment="Center" />
                                                 <TextBlock Text="(click to view skill detail)" Foreground="LightSteelBlue" FontSize="12" Margin="4" VerticalAlignment="Center" />

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Prism.Events;
+using Rogue.NET.ScenarioEditor.Controller.Interface;
+using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using System;
 using System.Collections;
 using System.ComponentModel.Composition;
 using System.Windows;

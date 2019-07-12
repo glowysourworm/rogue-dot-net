@@ -59,7 +59,8 @@ namespace Rogue.NET.Common.View
         }
         protected virtual void SetItemSource()
         {
-            if (this.EnumType.IsEnum)
+            if (this.EnumType != null &&
+                this.EnumType.IsEnum)
                 this.TheComboBox.ItemsSource = Enum.GetValues(this.EnumType);
         }
 

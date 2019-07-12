@@ -1,9 +1,12 @@
-﻿using System.Windows.Input;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using System.Windows.Input;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
 {
     public interface IEditorViewModel
     {
+        ScenarioConfigurationContainerViewModel Configuration { get; }
+
         string ScenarioName { get; set; }
 
         ICommand ExitCommand { get; }

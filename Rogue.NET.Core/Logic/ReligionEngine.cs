@@ -103,38 +103,6 @@ namespace Rogue.NET.Core.Logic
                     }
                 }
 
-                // TODO:SKILLSET
-                // Religious Affiliated Skills
-                //foreach (var skillSet in player.SkillSets.Where(x => x.IsLearned))
-                //{
-                //    if (skillSet.HasReligionRequirement &&
-                //        skillSet.Religion == religion)
-                //    {
-                //        // Un-Learn skill set
-                //        skillSet.IsLearned = false;
-                //        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " has lost use of the skill " + skillSet.RogueName);
-
-                //        // Deactivate Skill
-                //        if (skillSet.IsTurnedOn || skillSet.IsActive)
-                //        {
-                //            _playerProcessor.DeActivateSkills(player);
-
-                //            // Update Player Symbol
-                //            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, player.Id));
-                //        }
-
-                //        // De-Select skill
-                //        skillSet.DeSelectSkill();
-
-                //        // Un-Learn skills
-                //        skillSet.Skills.Where(x => x.IsLearned).ForEach(x =>
-                //        {
-                //            x.IsLearned = false;
-                //            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, player.RogueName + " has lost use of the skill " + x.Alteration.DisplayName);
-                //        });
-                //    }
-                //}
-
                 // Queue Animations
                 if (animations.Any())
                     RogueUpdateEvent(this, 

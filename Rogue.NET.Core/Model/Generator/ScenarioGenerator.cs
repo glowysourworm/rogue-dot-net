@@ -7,6 +7,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 
 using Prism.Events;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 
 namespace Rogue.NET.Core.Model.Generator
 {
@@ -106,13 +107,9 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
 
-                // TODO:SKILLSET
-                // Also setup skill set IsLearned flag based on player level 
-                // skillSet.IsLearned = (scenario.Player.Level >= skillSet.LevelLearned);
-
                 // Also setup skill IsLearned flag based on player level
                 foreach (var skill in skillSet.Skills)
-                    skill.IsLearned = (scenario.Player.Level >= skill.LevelRequirement);
+                    skill.IsLearned = skill.AreRequirementsMet(scenario.Player);
             }
 
             foreach (var equipment in scenario.Player.Equipment.Values)

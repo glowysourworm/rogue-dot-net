@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 
@@ -9,6 +10,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
+        bool _hasReligionRequirement;
+        bool _hasAttributeRequirement;
+        double _attributeLevelRequirement;
+        CharacterAttribute _attributeRequirement;
+        ReligionTemplate _religion;
         SpellTemplate _alteration;
 
         public int LevelRequirement
@@ -35,6 +41,66 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        public bool HasReligionRequirement
+        {
+            get { return _hasReligionRequirement; }
+            set
+            {
+                if (_hasReligionRequirement != value)
+                {
+                    _hasReligionRequirement = value;
+                    OnPropertyChanged("HasReligionRequirement");
+                }
+            }
+        }
+        public bool HasAttributeRequirement
+        {
+            get { return _hasAttributeRequirement; }
+            set
+            {
+                if (_hasAttributeRequirement != value)
+                {
+                    _hasAttributeRequirement = value;
+                    OnPropertyChanged("HasAttributeRequirement");
+                }
+            }
+        }
+        public double AttributeLevelRequirement
+        {
+            get { return _attributeLevelRequirement; }
+            set
+            {
+                if (_attributeLevelRequirement != value)
+                {
+                    _attributeLevelRequirement = value;
+                    OnPropertyChanged("AttributeLevelRequirement");
+                }
+            }
+        }
+        public CharacterAttribute AttributeRequirement
+        {
+            get { return _attributeRequirement; }
+            set
+            {
+                if (_attributeRequirement != value)
+                {
+                    _attributeRequirement = value;
+                    OnPropertyChanged("AttributeRequirement");
+                }
+            }
+        }
+        public ReligionTemplate Religion
+        {
+            get { return _religion; }
+            set
+            {
+                if (_religion != value)
+                {
+                    _religion = value;
+                    OnPropertyChanged("Religion");
+                }
+            }
+        }
         public SpellTemplate Alteration
         {
             get { return _alteration; }
@@ -51,6 +117,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         public SkillTemplate()
         {
             this.Alteration = new SpellTemplate();
+            this.AttributeRequirement = CharacterAttribute.Agility;
+            this.Religion = new ReligionTemplate();
         }
     }
 }

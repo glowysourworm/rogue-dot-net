@@ -13,6 +13,7 @@ using Rogue.NET.Core.Model.Enums;
 using System;
 using Microsoft.Win32;
 using System.IO;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -24,6 +25,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         string _scenarioName;
 
+        // Required configuration reference for binding global collections
+        public ScenarioConfigurationContainerViewModel Configuration { get; private set; }
         public string ScenarioName
         {
             get { return _scenarioName; }
@@ -55,6 +58,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             // Listen to scenario config loaded event
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((e) =>
             {
+                this.Configuration = e;
                 this.ScenarioName = e.DungeonTemplate.Name;
             });
 
