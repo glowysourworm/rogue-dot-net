@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill.Extension
         public static bool AreRequirementsMet(this Skill skill, Player player)
         {
             // Point Requirement
-            if (player.SkillPoints < skill.PointRequirement &&
+            if ((player.SkillPoints < skill.PointRequirement) &&
                 !skill.IsLearned)
                 return false;
 

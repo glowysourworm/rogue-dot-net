@@ -107,9 +107,9 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;
 
-                // Also setup skill IsLearned flag based on player level
+                // Also setup skill AreRequirementsMet flag based on player level for skills that have zero cost
                 foreach (var skill in skillSet.Skills)
-                    skill.IsLearned = skill.AreRequirementsMet(scenario.Player);
+                    skill.AreRequirementsMet = skill.AreRequirementsMet(scenario.Player);
             }
 
             foreach (var equipment in scenario.Player.Equipment.Values)

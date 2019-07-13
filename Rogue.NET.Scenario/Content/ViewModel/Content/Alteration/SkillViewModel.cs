@@ -4,12 +4,19 @@ using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
     public class SkillViewModel : RogueBaseViewModel
     {
+        public static readonly DependencyProperty IsLearnedProperty =
+            DependencyProperty.Register("IsLearned", typeof(bool), typeof(SkillViewModel), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty AreAllRequirementsMetProperty =
+            DependencyProperty.Register("AreAllRequirementsMet", typeof(bool), typeof(SkillViewModel), new PropertyMetadata(false));
+
         int _levelRequirement;
         int _skillPointRequirement;
         double _attributeLevelRequirement;
@@ -18,11 +25,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         ScenarioImageViewModel _religion;
         SpellViewModel _alteration;        
 
-        bool _isLearned;
         bool _isActive;
-
-        bool _hasAttributeRequirement;
-        bool _hasReligionRequirement;
 
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
@@ -67,8 +70,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public bool IsLearned
         {
-            get { return _isLearned; }
-            set { this.RaiseAndSetIfChanged(ref _isLearned, value); }
+            get { return (bool)GetValue(IsLearnedProperty); }
+            set { SetValue(IsLearnedProperty, value); }
         }
         public bool IsActive
         {
@@ -76,46 +79,29 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             set { this.RaiseAndSetIfChanged(ref _isActive, value); }
         }
 
-        public bool HasAttributeRequirement
-        {
-            get { return _hasAttributeRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasAttributeRequirement, value); }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
-        }
-
         public bool IsSkillPointRequirementMet
         {
             get { return _isSkillPointRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isSkillPointRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
+            set { this.RaiseAndSetIfChanged(ref _isSkillPointRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
         public bool IsLevelRequirementMet
         {
             get { return _isLevelRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isLevelRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
+            set { this.RaiseAndSetIfChanged(ref _isLevelRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
         public bool IsAttributeRequirementMet
         {
             get { return _isAttributeRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isAttributeRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
+            set { this.RaiseAndSetIfChanged(ref _isAttributeRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
         public bool IsReligionRequirementMet
         {
             get { return _isReligionRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isReligionRequirementMet, value); OnPropertyChanged("AreAllRequirementsMet"); }
+            set { this.RaiseAndSetIfChanged(ref _isReligionRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
         public bool AreAllRequirementsMet
         {
-            get
-            {
-                return _isSkillPointRequirementMet &&
-                       _isLevelRequirementMet &&
-                       _isReligionRequirementMet &&
-                       _isAttributeRequirementMet;
-            }
+            get { return (bool)GetValue(AreAllRequirementsMetProperty); }
         }
 
         public ICommand UnlockCommand { get; set; }
@@ -140,6 +126,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     ItemId = this.Id
                 });
             });
+        }
+
+        protected void UpdateAreAllRequirementsMet()
+        {
+            SetValue(AreAllRequirementsMetProperty, _isSkillPointRequirementMet &&
+                                                    _isLevelRequirementMet &&
+                                                    _isReligionRequirementMet &&
+                                                    _isAttributeRequirementMet);
+
+            OnPropertyChanged("AreAllRequirementsMet");
         }
     }
 }

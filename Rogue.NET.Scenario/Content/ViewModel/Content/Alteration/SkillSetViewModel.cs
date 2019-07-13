@@ -12,6 +12,7 @@ using Rogue.NET.Scenario.Events.Content;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
 
@@ -19,10 +20,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
     public class SkillSetViewModel : ScenarioImageViewModel
     {
+        public static readonly DependencyProperty HasLearnedUnavailableSkillsProperty =
+            DependencyProperty.Register("HasLearnedUnavailableSkills", typeof(bool), typeof(SkillSetViewModel), new PropertyMetadata(false));
+
         bool _isActive;
         bool _isTurnedOn;
-        bool _isLearned;
         bool _hasLearnedSkills;
+        bool _hasUnlearnedSkills;
+        bool _hasUnlearnedAvailableSkills;
 
         SkillViewModel _activeSkill;
 
@@ -40,6 +45,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             get { return _hasLearnedSkills; }
             set { this.RaiseAndSetIfChanged(ref _hasLearnedSkills, value); InvalidateCommands(); }
+        }
+        public bool HasUnlearnedSkills
+        {
+            get { return _hasUnlearnedSkills; }
+            set { this.RaiseAndSetIfChanged(ref _hasUnlearnedSkills, value); InvalidateCommands(); }
+        }
+        public bool HasUnlearnedAvailableSkills
+        {
+            get { return _hasUnlearnedAvailableSkills; }
+            set { this.RaiseAndSetIfChanged(ref _hasUnlearnedAvailableSkills, value); InvalidateCommands(); }
+        }
+        public bool HasLearnedUnavailableSkills
+        {
+            get { return (bool)GetValue(HasLearnedUnavailableSkillsProperty); }
+            set { SetValue(HasLearnedUnavailableSkillsProperty, value); InvalidateCommands(); }
         }
         public SkillViewModel ActiveSkill
         {
@@ -59,6 +79,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;
             this.HasLearnedSkills = skillSet.Skills.Any(x => x.IsLearned);
+            this.HasUnlearnedSkills = skillSet.Skills.Any(x => !x.IsLearned);
+            this.HasUnlearnedAvailableSkills = skillSet.Skills.Any(x => !x.IsLearned && x.AreRequirementsMet(player));
+            this.HasLearnedUnavailableSkills = skillSet.Skills.Any(x => x.IsLearned && !x.AreRequirementsMet(player));
 
             this.Skills = new ObservableCollection<SkillViewModel>(skillSet.Skills.Select(x =>
             {
@@ -68,8 +91,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     AttributeRequirement = x.AttributeRequirement,
                     AttributeLevelRequirement = x.AttributeLevelRequirement,
                     Description = encyclopedia[x.Alteration.RogueName].LongDescription,
-                    HasAttributeRequirement = x.HasAttributeRequirement,
-                    HasReligionRequirement = x.HasReligionRequirement,
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement || x.IsLearned,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,

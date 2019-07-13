@@ -22,6 +22,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -441,7 +442,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Sort Skill Sets
-            var sortedSkillSets = player.SkillSets.OrderByDescending(x =>
+            var sortedSkillSets = player.SkillSets.OrderBy(x =>
                                                    {
                                                        return x.Skills.Count == 0 ? 0 :
                                                               x.Skills.Min(skill => skill.LevelRequirement);
@@ -459,17 +460,26 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                     dest.IsActive = source.IsActive;
                     dest.IsTurnedOn = source.IsTurnedOn;
                     dest.HasLearnedSkills = source.Skills.Any(x => x.IsLearned);
+                    dest.HasUnlearnedSkills = source.Skills.Any(x => !x.IsLearned);
+                    dest.HasUnlearnedAvailableSkills = source.Skills.Any(x => !x.IsLearned && x.AreRequirementsMet(player));
+                    dest.HasLearnedUnavailableSkills = source.Skills.Any(x => x.IsLearned && !x.AreRequirementsMet(player));
                     dest.ActiveSkill = source.SelectedSkill == null ? null :
                                        dest.Skills.FirstOrDefault(x => x.Id == source.SelectedSkill.Id);
 
                     dest.Skills.ForEach(skill =>
                     {
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);
-
+                        
                         skill.IsLearned = skillSource.IsLearned;
                         skill.IsActive = source.IsActive && (source.SelectedSkill.Id == skill.Id);
-                        skill.IsSkillPointRequirementMet = player.SkillPoints >= skillSource.SkillPointRequirement;
+                        skill.IsSkillPointRequirementMet = skillSource.IsLearned || player.SkillPoints >= skillSource.SkillPointRequirement;
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
+                        skill.IsAttributeRequirementMet = !skillSource.HasAttributeRequirement ||
+                                                           player.Get(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
+                        skill.IsReligionRequirementMet = !skillSource.HasReligionRequirement ||
+                                                         (skillSource.HasReligionRequirement &&
+                                                         player.ReligiousAlteration.IsAffiliated() &&
+                                                         player.ReligiousAlteration.Religion == skillSource.Religion);
                     });
                 });
 
@@ -659,7 +669,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             else
                 this.Religion.IsAffiliated = false;
         }
-
 
         private void SynchronizeCollection<TSource, TDest>(
                         IEnumerable<TSource> sourceCollection, 

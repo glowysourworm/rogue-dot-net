@@ -1,0 +1,5 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="SkillGridWarningBrush" Color="#1FFF0000" />
+    <SolidColorBrush x:Key="SkillGridWarningSelectedBrush" Color="#2FFF0000" />
+</ResourceDictionary>

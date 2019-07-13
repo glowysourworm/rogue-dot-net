@@ -185,15 +185,15 @@ namespace Rogue.NET.Core.Logic.Content
                 }
 
                 // Check for skills that have requirements met / or lost
-                foreach (var skill in skillSet.Skills.Where(x => x.IsLearned))
+                foreach (var skill in skillSet.Skills)
                 {
                     var areRequirementsMet = skill.AreRequirementsMet(player);
                     var wereRequirementsMet = skill.AreRequirementsMet;
 
-                    if (!wereRequirementsMet && areRequirementsMet)
+                    if (!wereRequirementsMet && areRequirementsMet && skill.IsLearned)
                         _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " has regained use of the Skill " + _modelService.GetDisplayName(skillSet));
 
-                    else if (wereRequirementsMet && !areRequirementsMet)
+                    else if (wereRequirementsMet && !areRequirementsMet && skill.IsLearned)
                         _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " can no longer use the Skill " + _modelService.GetDisplayName(skillSet));
 
                     // Store flag to know if requirements change

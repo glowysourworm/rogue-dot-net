@@ -10,6 +10,7 @@
     <converter:BoolInverseConverter x:Key="BoolInverseConverter" />
     <converter:BoolInverseVisibilityHiddenConverter x:Key="BoolInverseVisibilityHiddenConverter" />
     <converter:BoolORMultiConverter x:Key="BoolORMultiConverter" />
+    <converter:BoolANDParameterConverter x:Key="BoolANDParameterConverter" />
     <converter:BoolANDMultiConverter x:Key="BoolANDMultiConverter" />
     <converter:BoolORVisibilityMultiConverter x:Key="BoolORVisibilityMultiConverter" />
     <converter:BoolANDVisibilityMultiConverter x:Key="BoolANDVisibilityMultiConverter" />

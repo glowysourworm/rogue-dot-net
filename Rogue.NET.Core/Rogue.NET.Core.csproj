@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="Converter\AttackAttribute\AttackAttributeNonZeroConverter.cs" />
     <Compile Include="Converter\AttackAttribute\AttackAttributeVibilityCollapsedConverter.cs" />
+    <Compile Include="Converter\BoolANDParameterConverter.cs" />
     <Compile Include="Converter\BoolIntConverter.cs" />
     <Compile Include="Converter\BoolInverseConverter.cs" />
     <Compile Include="Converter\BoolInverseVisibilityCollapseConverter.cs" />
