@@ -95,10 +95,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement || x.IsLearned,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,
                     IsAttributeRequirementMet = !x.HasAttributeRequirement || 
-                                                 player.Get(x.AttributeRequirement) > x.AttributeLevelRequirement,
+                                                 player.GetAttribute(x.AttributeRequirement) > x.AttributeLevelRequirement,
                     IsReligionRequirementMet = !x.HasReligionRequirement ||
                                                 (player.ReligiousAlteration.IsAffiliated() &&
-                                                 player.ReligiousAlteration.Religion == x.Religion),
+                                                 player.ReligiousAlteration.Religion.RogueName == x.Religion.RogueName),
                     SkillPointRequirement = x.SkillPointRequirement,
                     Religion =  new ScenarioImageViewModel(x.Religion),
                     LevelRequirement = x.LevelRequirement,

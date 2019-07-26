@@ -113,6 +113,7 @@
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroConverter.cs" />
+    <Compile Include="Converter\GreaterThanZeroVisibilityInverseConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Converter\LessThanZeroConverter.cs" />
     <Compile Include="Converter\Model\ScenarioConfiguration\LayoutHeightConverter.cs" />
     <Compile Include="Converter\Model\ScenarioConfiguration\LayoutWidthConverter.cs" />
+    <Compile Include="Converter\NonNullBoolConverter.cs" />
     <Compile Include="Converter\NonNullVisibilityConverter.cs" />
     <Compile Include="Converter\ParameterEqualityBoolConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityVisibleConverter.cs" />

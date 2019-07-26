@@ -150,7 +150,7 @@ namespace Rogue.NET.Core.Logic
             // Check Religious Affiliation Requirement
             if (equipment.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion != equipment.Religion))
+                 player.ReligiousAlteration.Religion.RogueName != equipment.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,

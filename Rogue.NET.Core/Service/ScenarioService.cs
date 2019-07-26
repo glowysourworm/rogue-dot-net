@@ -247,7 +247,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelActionType.ActivateSkillSet:
                     {
-                        _scenarioEngine.ToggleActiveSkill(command.ScenarioObjectId, true);
+                        _scenarioEngine.ToggleActiveSkillSet(command.ScenarioObjectId, true);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
@@ -257,9 +257,9 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.ActivateSkill:
+                case LevelActionType.SelectSkill:
                     {
-                        _scenarioEngine.ActivateSkill(command.ScenarioObjectId);
+                        _scenarioEngine.SelectSkill(command.ScenarioObjectId);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;

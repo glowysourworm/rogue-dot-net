@@ -370,6 +370,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         #endregion
 
         public ObservableCollection<SkillSetViewModel> SkillSets { get; set; }
+        public ObservableCollection<SkillSetViewModel> SkillSetsLearned { get; set; }
 
         /// <summary>
         /// Set of aggregate attack attributes used for melee calculations
@@ -398,6 +399,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             _scenarioResourceService = scenarioResourceService;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
+            this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
             this.Alterations = new ObservableCollection<AlterationViewModel>();
             this.Religion = new ReligionViewModel();
@@ -442,12 +444,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var equippedItems = player.Equipment.Values.Where(x => x.IsEquipped);
 
             // Sort Skill Sets
-            var sortedSkillSets = player.SkillSets.OrderBy(x =>
-                                                   {
-                                                       return x.Skills.Count == 0 ? 0 :
-                                                              x.Skills.Min(skill => skill.LevelRequirement);
-                                                   })
-                                                  .Actualize();
+            var sortedSkillSets = player.SkillSets
+                                        .OrderBy(x =>
+                                        {
+                                            return x.Skills.Count == 0 ? 0 :
+                                                   x.Skills.Min(skill => skill.LevelRequirement);
+                                        })
+                                        .Actualize();
 
             // Base Collections
             SynchronizeCollection(
@@ -471,17 +474,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         var skillSource = source.Skills.First(x => x.Id == skill.Id);
                         
                         skill.IsLearned = skillSource.IsLearned;
-                        skill.IsActive = source.IsActive && (source.SelectedSkill.Id == skill.Id);
+                        skill.IsSelected = (source.SelectedSkill != null) && (source.SelectedSkill.Id == skill.Id);
                         skill.IsSkillPointRequirementMet = skillSource.IsLearned || player.SkillPoints >= skillSource.SkillPointRequirement;
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
                         skill.IsAttributeRequirementMet = !skillSource.HasAttributeRequirement ||
-                                                           player.Get(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
+                                                           player.GetAttribute(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
                         skill.IsReligionRequirementMet = !skillSource.HasReligionRequirement ||
                                                          (skillSource.HasReligionRequirement &&
                                                          player.ReligiousAlteration.IsAffiliated() &&
-                                                         player.ReligiousAlteration.Religion == skillSource.Religion);
+                                                         player.ReligiousAlteration.Religion.RogueName == skillSource.Religion.RogueName);
                     });
                 });
+
+            // Create a (reference) copy of the skill sets that are learned for easier binding
+            this.SkillSetsLearned.Clear();
+            this.SkillSetsLearned.AddRange(this.SkillSets.Where(x => x.HasLearnedSkills));
 
             // Active Skill Set
             this.ActiveSkillSet = this.SkillSets.FirstOrDefault(x => x.IsActive);

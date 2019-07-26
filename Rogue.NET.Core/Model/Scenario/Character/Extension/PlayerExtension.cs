@@ -68,7 +68,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         /// <summary>
         /// Gets character attribute using provided enum
         /// </summary>
-        public static double Get(this Player player, CharacterAttribute attribute)
+        public static double GetAttribute(this Player player, CharacterAttribute attribute)
         {
             switch (attribute)
             {

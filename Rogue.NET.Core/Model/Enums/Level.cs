@@ -44,7 +44,7 @@ namespace Rogue.NET.Core.Model.Enums
         ChangeSkillLevelDown,
         ActivateSkillSet,
         CycleSkillSet,
-        ActivateSkill,
+        SelectSkill,
         UnlockSkill,
         RenounceReligion,
 

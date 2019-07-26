@@ -25,7 +25,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         ScenarioImageViewModel _religion;
         SpellViewModel _alteration;        
 
-        bool _isActive;
+        bool _isSelected;
 
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
@@ -73,10 +73,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return (bool)GetValue(IsLearnedProperty); }
             set { SetValue(IsLearnedProperty, value); }
         }
-        public bool IsActive
+        public bool IsSelected
         {
-            get { return _isActive; }
-            set { this.RaiseAndSetIfChanged(ref _isActive, value); }
+            get { return _isSelected; }
+            set { this.RaiseAndSetIfChanged(ref _isSelected, value); }
         }
 
         public bool IsSkillPointRequirementMet
@@ -105,7 +105,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         }
 
         public ICommand UnlockCommand { get; set; }
-        public ICommand ActivateCommand { get; set; }
+        public ICommand SelectCommand { get; set; }
 
         public SkillViewModel(Skill skill, IEventAggregator eventAggregator) : base(skill)
         {
@@ -118,11 +118,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 });
             });
 
-            this.ActivateCommand = new DelegateCommand(async () =>
+            this.SelectCommand = new DelegateCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
                 {
-                    LevelAction = LevelActionType.ActivateSkill,
+                    LevelAction = LevelActionType.SelectSkill,
                     ItemId = this.Id
                 });
             });

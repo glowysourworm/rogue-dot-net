@@ -18,13 +18,14 @@
 
         <TextBlock Text="No Active Alterations" Margin="8" FontSize="20" Foreground="White" HorizontalAlignment="Center">
             <TextBlock.Visibility>
-                <Binding Path="Alterations.Count" Converter="{StaticResource GreaterThanZeroVisibilityConverter}" />
+                <Binding Path="Alterations.Count" Converter="{StaticResource GreaterThanZeroVisibilityInverseConverter}" />
             </TextBlock.Visibility>
         </TextBlock>
 
         <ListBox ItemsSource="{Binding Alterations}"
                  ItemContainerStyle="{StaticResource DarkListBoxContainerStyle}"
                  Style="{StaticResource DarkListBoxStyle}"
+                 Visibility="{Binding Alterations.Count, Converter={StaticResource GreaterThanZeroVisibilityConverter}}"
                  BorderBrush="Transparent">
             <ListBox.ItemTemplate>
                 <DataTemplate>

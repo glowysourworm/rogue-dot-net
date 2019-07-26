@@ -240,7 +240,7 @@ namespace Rogue.NET.Core.Logic
             // Check Religious Affiliation Requirement
             if (thrownItem.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion != thrownItem.Religion))
+                 player.ReligiousAlteration.Religion.RogueName != thrownItem.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -284,7 +284,7 @@ namespace Rogue.NET.Core.Logic
             // Check Religious Affiliation Requirement
             if (consumable.HasReligionRequirement &&
                (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion != consumable.Religion))
+                 player.ReligiousAlteration.Religion.RogueName != consumable.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -307,7 +307,7 @@ namespace Rogue.NET.Core.Logic
                 }
             }
 
-            // Check for Religious Affiliation Increase
+            // Check for Religious Affiliation
             //
             // 0) Player does NOT have an affiliation (OK)
             // 1) Player has the SAME affiliation (OK)
@@ -538,7 +538,7 @@ namespace Rogue.NET.Core.Logic
                 // Check Religious Affiliation Requirement
                 if (ammo.HasReligionRequirement &&
                    (!_modelService.Player.ReligiousAlteration.IsAffiliated() ||
-                     _modelService.Player.ReligiousAlteration.Religion != ammo.Religion))
+                     _modelService.Player.ReligiousAlteration.Religion.RogueName != ammo.Religion.RogueName))
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
@@ -638,7 +638,7 @@ namespace Rogue.NET.Core.Logic
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.TargetingStart, target.Id));
             }
         }
-        public void ActivateSkill(string skillId)
+        public void SelectSkill(string skillId)
         {
             var player = _modelService.Player;
             var skillSet = player.SkillSets.FirstOrDefault(x => x.Skills.Any(z => z.Id == skillId));
@@ -648,16 +648,13 @@ namespace Rogue.NET.Core.Logic
                 var skill = skillSet.Skills.First(x => x.Id == skillId);
 
                 if (!skill.IsLearned)
-                    throw new Exception("Trying to activate non-learned skill");
+                    throw new Exception("Trying to select non-learned skill");
 
-                // 1) Deactivate currently active SkillSet / Skill
-                _playerProcessor.DeActivateSkills(player);
-
-                // Activate SkillSet / Skill
-                skillSet.IsActive = true;
+                // Select the skill
                 skillSet.SelectSkill(skillId);
 
                 // Update Player Symbol
+                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, player.Id));
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, player.Id));
             }
         }
@@ -674,7 +671,7 @@ namespace Rogue.NET.Core.Logic
             {
                 var firstLearnedSkill = learnedSkills.FirstOrDefault();
                 if (firstLearnedSkill != null)
-                    ToggleActiveSkill(firstLearnedSkill.Id, true);
+                    ToggleActiveSkillSet(firstLearnedSkill.Id, true);
                 else
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Learned Skills");
             }
@@ -695,7 +692,7 @@ namespace Rogue.NET.Core.Logic
                 // Set active skill
                 var nextSkill = skillList[nextIndex];
                 if (nextSkill != null)
-                    ToggleActiveSkill(nextSkill.Id, true);
+                    ToggleActiveSkillSet(nextSkill.Id, true);
                 else
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Other Learned Skills");
             }
@@ -734,7 +731,7 @@ namespace Rogue.NET.Core.Logic
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
         }
-        public void ToggleActiveSkill(string skillSetId, bool activate)
+        public void ToggleActiveSkillSet(string skillSetId, bool activate)
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.Id == skillSetId);
             bool isActive = skillSet.IsActive;
@@ -786,6 +783,10 @@ namespace Rogue.NET.Core.Logic
                     skill.IsLearned = true;
 
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
+
+                    // Select skill if none selected
+                    if (skillSet.SelectedSkill == null)
+                        skillSet.SelectSkill(skillId);
 
                     RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
                 }
@@ -893,7 +894,7 @@ namespace Rogue.NET.Core.Logic
                         if (doodadMagic.IsOneUse && doodadMagic.HasBeenUsed || !doodadMagic.IsInvoked)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens");
 
-                        // Check for Religious Affiliation Increase
+                        // Check for Religious Affiliation
                         //
                         // 0) Player does NOT have an affiliation (OK)
                         // 1) Player has the SAME affiliation (OK)
@@ -902,7 +903,7 @@ namespace Rogue.NET.Core.Logic
                         else if (doodadMagic.IsInvoked &&
                                  doodadMagic.InvokedSpell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
                                  player.ReligiousAlteration.IsAffiliated() &&
-                                 player.ReligiousAlteration.Religion != doodadMagic.InvokedSpell.Religion)
+                                 player.ReligiousAlteration.Religion.RogueName != doodadMagic.InvokedSpell.Religion.RogueName)
                         {
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
                         }

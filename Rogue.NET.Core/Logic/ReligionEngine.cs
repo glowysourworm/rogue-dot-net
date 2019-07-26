@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Logic
                 player.ReligiousAlteration.Affiliate(religion);
             }
             // Keeps current religion
-            else if (player.ReligiousAlteration.Religion != religion)
+            else if (player.ReligiousAlteration.Religion.RogueName != religion.RogueName)
                 throw new Exception("Trying to affiliate to new religion before renouncing");
         }
 
@@ -85,7 +85,7 @@ namespace Rogue.NET.Core.Logic
                 foreach (var equipment in player.Equipment.Values.Where(x => x.IsEquipped))
                 {
                     if (equipment.HasReligionRequirement &&
-                        equipment.Religion == religion)
+                        equipment.Religion.RogueName == religion.RogueName)
                     {
                         // Cursed equipment will turn on its owner
                         if (equipment.IsCursed)

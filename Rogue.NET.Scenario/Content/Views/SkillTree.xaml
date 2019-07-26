@@ -89,6 +89,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <!-- Symbol -->
@@ -112,9 +113,16 @@
                         <TextBlock Grid.Column="1" FontSize="18" Foreground="Tan" HorizontalAlignment="Left" 
                                    VerticalAlignment="Center" Margin="4"
                                    Text="{Binding Alteration.DisplayName}" />
-                        
+
+                        <!-- Set Active -->
+                        <RadioButton Grid.Column="2" GroupName="ActiveSkillGroup" FontSize="14" Foreground="White" VerticalAlignment="Center"
+                                     HorizontalAlignment="Center" Style="{StaticResource RadioButtonFlatStyle}" Margin="2" Padding="2" Cursor="Hand"
+                                     IsChecked="{Binding IsSelected}"
+                                     Content="Activate" Command="{Binding SelectCommand}" Height="28" Width="54"
+                                     Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+
                         <!-- Skill Point Cost -->
-                        <TextBlock Grid.Column="2" FontSize="16" VerticalAlignment="Center"
+                        <TextBlock Grid.Column="3" FontSize="16" VerticalAlignment="Center"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Margin="4">
                             <TextBlock.Style>
@@ -135,7 +143,7 @@
                         </TextBlock>
                         
                         <!-- Locked / Unlocked -->
-                        <TextBlock Grid.Column="3" FontFamily="{StaticResource FontAwesome}" FontSize="18" Foreground="DarkGray"
+                        <TextBlock Grid.Column="4" FontFamily="{StaticResource FontAwesome}" FontSize="18" Foreground="DarkGray"
                                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Text="&#xf023;">
