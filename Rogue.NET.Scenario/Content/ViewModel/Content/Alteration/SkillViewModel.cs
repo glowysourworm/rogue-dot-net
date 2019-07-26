@@ -27,6 +27,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         bool _isSelected;
 
+        bool _hasAttributeRequirement;
+        bool _hasReligionRequirement;
+
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
         bool _isAttributeRequirementMet;
@@ -77,6 +80,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             get { return _isSelected; }
             set { this.RaiseAndSetIfChanged(ref _isSelected, value); }
+        }
+
+        public bool HasAttributeRequirement
+        {
+            get { return _hasAttributeRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasAttributeRequirement, value); }
+        }
+        public bool HasReligionRequirement
+        {
+            get { return _hasReligionRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
         }
 
         public bool IsSkillPointRequirementMet

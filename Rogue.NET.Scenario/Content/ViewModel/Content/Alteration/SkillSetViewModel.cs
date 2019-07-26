@@ -91,6 +91,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     AttributeRequirement = x.AttributeRequirement,
                     AttributeLevelRequirement = x.AttributeLevelRequirement,
                     Description = encyclopedia[x.Alteration.RogueName].LongDescription,
+                    HasAttributeRequirement = x.HasAttributeRequirement,
+                    HasReligionRequirement = x.HasReligionRequirement,
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement || x.IsLearned,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,

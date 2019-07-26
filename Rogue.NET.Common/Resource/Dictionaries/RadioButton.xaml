@@ -51,7 +51,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#3F3FFF00" />
+                                <Setter TargetName="border" Property="Background" Value="#3F0000FF" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#0FFFFFFF" />

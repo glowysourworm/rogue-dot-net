@@ -28,6 +28,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         
                         <!-- Symbol -->
@@ -52,8 +53,15 @@
                                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" 
                                    Text="{Binding DisplayName}" />
 
+                        <!-- Skill Set Warning -->
+                        <TextBlock Grid.Column="2" FontSize="20" FontFamily="{StaticResource FontAwesome}" Foreground="Red"                                       
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" Text="&#xf06a;"
+                                   Visibility="{Binding HasLearnedUnavailableSkills, Converter={StaticResource BoolVisibilityCollapseConverter}}"
+                                   ToolTip="Some Of These Skills Are Currently Unavailable">
+                        </TextBlock>
+
                         <!-- Locked / Unlocked -->
-                        <TextBlock Grid.Column="2" FontFamily="{StaticResource FontAwesome}" FontSize="18" Foreground="DarkGray"
+                        <TextBlock Grid.Column="3" FontFamily="{StaticResource FontAwesome}" FontSize="20" Foreground="DarkGray"
                                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4" Opacity="1"
                                    Visibility="{Binding HasLearnedSkills, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Text="&#xf023;">
@@ -90,6 +98,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <!-- Symbol -->
@@ -118,11 +127,29 @@
                         <RadioButton Grid.Column="2" GroupName="ActiveSkillGroup" FontSize="14" Foreground="White" VerticalAlignment="Center"
                                      HorizontalAlignment="Center" Style="{StaticResource RadioButtonFlatStyle}" Margin="2" Padding="2" Cursor="Hand"
                                      IsChecked="{Binding IsSelected}"
-                                     Content="Activate" Command="{Binding SelectCommand}" Height="28" Width="54"
-                                     Visibility="{Binding IsLearned, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
+                                     Content="Activate" Command="{Binding SelectCommand}" Height="28" Width="54">
+                            <RadioButton.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                    <Binding Path="IsLearned" />
+                                    <Binding Path="AreAllRequirementsMet" />
+                                </MultiBinding>
+                            </RadioButton.Visibility>
+                        </RadioButton>
 
+                        <!-- Skill Warning -->
+                        <TextBlock Grid.Column="3" FontSize="20" FontFamily="{StaticResource FontAwesome}" Foreground="Red"                                       
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" Text="&#xf06a;"
+                                   ToolTip="This Skill's Requirements Are Currently Not Met">
+                            <TextBlock.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}">
+                                    <Binding Path="IsLearned" />
+                                    <Binding Path="AreAllRequirementsMet" Converter="{StaticResource BoolInverseConverter}" />
+                                </MultiBinding>
+                            </TextBlock.Visibility>
+                        </TextBlock>                        
+                        
                         <!-- Skill Point Cost -->
-                        <TextBlock Grid.Column="3" FontSize="16" VerticalAlignment="Center"
+                        <TextBlock Grid.Column="4" FontSize="18" VerticalAlignment="Center"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Margin="4">
                             <TextBlock.Style>
@@ -143,7 +170,7 @@
                         </TextBlock>
                         
                         <!-- Locked / Unlocked -->
-                        <TextBlock Grid.Column="4" FontFamily="{StaticResource FontAwesome}" FontSize="18" Foreground="DarkGray"
+                        <TextBlock Grid.Column="5" FontFamily="{StaticResource FontAwesome}" FontSize="20" Foreground="DarkGray"
                                    HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4"
                                    Visibility="{Binding IsLearned, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}"
                                    Text="&#xf023;">
@@ -219,46 +246,9 @@
                                 <DataTrigger Binding="{Binding IsLearned}" Value="False">
                                     <Setter Property="IsEnabled" Value="False" />
                                 </DataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />                                        
-                                        <Condition Binding="{Binding HasLearnedUnavailableSkills}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningBrush}" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding HasLearnedUnavailableSkills}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="#8F111111" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding HasLearnedUnavailableSkills}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningSelectedBrush}" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding HasLearnedUnavailableSkills}" Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="#8F555555" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding HasLearnedUnavailableSkills}" Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningSelectedBrush}" />
-                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding HasLearnedUnavailableSkills}" Value="True">
+                                    <Setter TargetName="border" Property="BorderBrush" Value="Red" />
+                                </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -282,48 +272,12 @@
                                 </Trigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
+                                        <Condition Binding="{Binding AreAllRequirementsMet}" Value="False" />
                                         <Condition Binding="{Binding IsLearned}" Value="True" />
-                                        <Condition Binding="{Binding AreAllRequirementsMet}"  Value="False" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningBrush}" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding IsLearned}" Value="True" />
-                                        <Condition Binding="{Binding AreAllRequirementsMet}"  Value="True" />                                        
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="#8F111111" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="False" />
-                                        <Condition Binding="{Binding IsLearned}" Value="True" />
-                                        <Condition Binding="{Binding AreAllRequirementsMet}"  Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningSelectedBrush}" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsLearned}" Value="True" />
-                                        <Condition Binding="{Binding AreAllRequirementsMet}"  Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="#8F555555" />
-                                </MultiDataTrigger>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True" />
-                                        <Condition Binding="{Binding IsLearned}" Value="True" />
-                                        <Condition Binding="{Binding AreAllRequirementsMet}"  Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Background" Value="{StaticResource SkillGridWarningSelectedBrush}" />
+                                    <MultiDataTrigger.Setters>
+                                        <Setter TargetName="border" Property="BorderBrush" Value="Red" />
+                                    </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -395,8 +349,13 @@
 
         <!-- Locked Skill Detail -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
-                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
-                Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}">
+            <Border.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}" FallbackValue="Collapsed">
+                    <Binding ElementName="SkillLB" Path="SelectedItem.IsLearned" Converter="{StaticResource BoolInverseConverter}" />
+                    <Binding ElementName="SkillLB" Path="SelectedItem.AreAllRequirementsMet" Converter="{StaticResource BoolInverseConverter}" />
+                </MultiBinding>
+            </Border.Visibility>
 
             <StackPanel>
                 <Grid Margin="10">
@@ -468,9 +427,13 @@
 
         <!-- Unlocked Skill Detail -->
         <Border Grid.Column="2" Grid.RowSpan="2" Background="#3F000000" CornerRadius="10" BorderBrush="Transparent" BorderThickness="1"
-                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}"
-                Visibility="{Binding ElementName=SkillLB, Path=SelectedItem.IsLearned, FallbackValue=Collapsed, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-
+                DataContext="{Binding ElementName=SkillLB, Path=SelectedItem}">
+            <Border.Visibility>
+                <MultiBinding Converter="{StaticResource BoolANDVisibilityMultiConverter}" FallbackValue="Collapsed">
+                    <Binding ElementName="SkillLB" Path="SelectedItem.IsLearned" />
+                    <Binding ElementName="SkillLB" Path="SelectedItem.AreAllRequirementsMet" />
+                </MultiBinding>
+            </Border.Visibility>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
