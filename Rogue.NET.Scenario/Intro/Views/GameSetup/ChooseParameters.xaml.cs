@@ -80,28 +80,13 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             if (viewModel == null)
                 return;
 
-            if (_currentParametersDisplayType == typeof(ChooseName))
+            // If there are religions in the scenario then allow user to select relegion
+            if (_currentParametersDisplayType == typeof(ChooseName) &&
+                viewModel.SelectedConfiguration.Religions.Count > 0)
             {
-                // If there are religions in the scenario then allow user to select relegion
-                if (viewModel.SelectedConfiguration.Religions.Count > 0)
-                {
-                    _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
+                _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
 
-                    _currentParametersDisplayType = typeof(ChooseReligion);
-                }
-                else
-                {
-                    _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseAttribute));
-
-                    _currentParametersDisplayType = typeof(ChooseAttribute);
-                }
-            }
-            else if (_currentParametersDisplayType == typeof(ChooseReligion))
-            {
-                // Load the first parameters display
-                _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseAttribute));
-
-                _currentParametersDisplayType = typeof(ChooseAttribute);
+                _currentParametersDisplayType = typeof(ChooseReligion);
             }
             else
             {
@@ -111,8 +96,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
                     ScenarioName = viewModel.SelectedConfiguration.Name,
                     ReligionName = viewModel.SelectedReligion != null ? viewModel.SelectedReligion.RogueName : string.Empty,
                     Seed = viewModel.Seed,
-                    SurvivorMode = viewModel.SurvivorMode,
-                    AttributeEmphasis = viewModel.AttributeEmphasis
+                    SurvivorMode = viewModel.SurvivorMode
                 });
             }
         }

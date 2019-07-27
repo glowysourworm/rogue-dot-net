@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Logic.Processing.Enum
         Help,
         Commands,
         Objective,
-        Note
+        Note,
+        PlayerAdvancement
     }
 }

@@ -7,11 +7,5 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     public interface IDialogUpdate : IRogueUpdate
     {
         DialogEventType Type { get; set; }
-
-        // Parameters to support notes
-        string NoteTitle { get; set; }
-        string NoteMessage { get; set; }
-
-        IEnumerable<AttackAttribute> ImbueAttackAttributes { get; set; }
     }
 }

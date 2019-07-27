@@ -19,6 +19,6 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
         /// <summary>
         /// Id for the object involved in the action
         /// </summary>
-        string ScenarioObjectId { get; set; }
+        string Id { get; set; }
     }
 }

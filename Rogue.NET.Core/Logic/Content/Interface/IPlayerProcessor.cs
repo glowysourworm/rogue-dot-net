@@ -19,6 +19,6 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         void DeActivateSkills(Player player);
 
         // Process Turn for Player
-        void ApplyEndOfTurn(Player player, bool regenerate);
+        void ApplyEndOfTurn(Player player, bool regenerate, out bool playerAdvancement);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;
@@ -24,5 +25,6 @@ namespace Rogue.NET.Core.Logic.Processing.Factory.Interface
         RogueUpdateEventArgs Dialog(DialogEventType type);
         RogueUpdateEventArgs Dialog(DialogEventType type, IEnumerable<AttackAttribute> attackAttributes);
         RogueUpdateEventArgs DialogNote(string noteMessage, string noteTitle);
+        RogueUpdateEventArgs DialogPlayerAdvancement(Player player, int playerPoints);
     }
 }

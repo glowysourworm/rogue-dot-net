@@ -22,9 +22,15 @@ namespace Rogue.NET.Core.Service.Interface
         void ClearQueues();
 
         /// <summary>
-        /// Issues primary player command 
+        /// Issues primary level command (commands involving level actions)
         /// </summary>
         void IssueCommand(ILevelCommandAction levelCommand);
+
+        /// <summary>
+        /// Issues player commands (often returns data from dialog interactions)
+        /// </summary>
+        /// <param name="playerCommand"></param>
+        void IssuePlayerCommand(IPlayerCommandAction playerCommand);
 
         // Methods to show queue status
         bool AnyUpdates(RogueUpdatePriority priority);

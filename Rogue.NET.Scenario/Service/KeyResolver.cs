@@ -1,6 +1,5 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common.EventArgs;
-using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Model;
 using Rogue.NET.Scenario.Service.Interface;
@@ -61,59 +60,59 @@ namespace Rogue.NET.Scenario.Service
         {
             //Searching
             if (key == _preferences.Search)
-                return new UserCommandEventArgs(LevelActionType.Search, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.Search, Compass.Null, "");
             //Target
             else if (key == _preferences.Target)
-                return new UserCommandEventArgs(LevelActionType.Target, Compass.E, "");
+                return new LevelCommandEventArgs(LevelActionType.Target, Compass.E, "");
             //Cycle Skill
             else if (key == _preferences.Skill && shift)
-                return new UserCommandEventArgs(LevelActionType.CycleSkillSet, Compass.Null, "");
+                return new PlayerCommandEventArgs(PlayerActionType.CycleSkillSet, "");
             //Skill Usage
             else if (key == _preferences.Skill)
-                return new UserCommandEventArgs(LevelActionType.InvokeSkill, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.InvokeSkill, Compass.Null, "");
             //Doodad Usage
             else if (key == _preferences.Doodad)
-                return new UserCommandEventArgs(LevelActionType.InvokeDoodad, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.InvokeDoodad, Compass.Null, "");
             //Fire Range Weapon
             else if (key == _preferences.Fire)
-                return new UserCommandEventArgs(LevelActionType.Fire, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.Fire, Compass.Null, "");
             //Renounce Religion
             else if (key == _preferences.RenounceReligion)
-                return new UserCommandEventArgs(LevelActionType.RenounceReligion, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.RenounceReligion, Compass.Null, "");
 
             // Revolving Displays
             //
             // Equipment
             else if (key == _preferences.ShowPlayerSubpanelEquipment && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelEquipment);
+                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelEquipment);
 
             // Consumables
             else if (key == _preferences.ShowPlayerSubpanelConsumables && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelConsumables);
+                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelConsumables);
 
             // Skills
             else if (key == _preferences.ShowPlayerSubpanelSkills && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelSkills);
+                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelSkills);
 
             // Stats
             else if (key == _preferences.ShowPlayerSubpanelStats && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelStats);
+                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelStats);
 
             // Alterations
             else if (key == _preferences.ShowPlayerSubpanelAlterations && shift)
-                return new UserCommandEventArgs(ViewActionType.ShowPlayerSubpanelAlterations);
+                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelAlterations);
 
             //Debug*******
 #if DEBUG
             else if (key == Key.N)
-                return shift ? new UserCommandEventArgs(LevelActionType.DebugSimulateNext, Compass.Null, "") :
-                               new UserCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
+                return shift ? new LevelCommandEventArgs(LevelActionType.DebugSimulateNext, Compass.Null, "") :
+                               new LevelCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
             else if (key == Key.W)
-                return new UserCommandEventArgs(LevelActionType.DebugExperience, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.DebugExperience, Compass.Null, "");
             else if (key == Key.Q)
-                return new UserCommandEventArgs(LevelActionType.DebugIdentifyAll, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.DebugIdentifyAll, Compass.Null, "");
             else if (key == Key.E)
-                return new UserCommandEventArgs(LevelActionType.DebugRevealAll, Compass.Null, "");
+                return new LevelCommandEventArgs(LevelActionType.DebugRevealAll, Compass.Null, "");
 #endif
             //Debug*******
 
@@ -130,21 +129,21 @@ namespace Rogue.NET.Scenario.Service
         private UserCommandEventArgs ProcessCompassLevelAction(LevelActionType action, Key key)
         {
             if (key == _preferences.NorthWest)
-                return new UserCommandEventArgs(action, Compass.NW, "");
+                return new LevelCommandEventArgs(action, Compass.NW, "");
             else if (key == _preferences.North)
-                return new UserCommandEventArgs(action, Compass.N, "");
+                return new LevelCommandEventArgs(action, Compass.N, "");
             else if (key == _preferences.NorthEast)
-                return new UserCommandEventArgs(action, Compass.NE, "");
+                return new LevelCommandEventArgs(action, Compass.NE, "");
             else if (key == _preferences.West)
-                return new UserCommandEventArgs(action, Compass.W, "");
+                return new LevelCommandEventArgs(action, Compass.W, "");
             else if (key == _preferences.East)
-                return new UserCommandEventArgs(action, Compass.E, "");
+                return new LevelCommandEventArgs(action, Compass.E, "");
             else if (key == _preferences.SouthWest)
-                return new UserCommandEventArgs(action, Compass.SW, "");
+                return new LevelCommandEventArgs(action, Compass.SW, "");
             else if (key == _preferences.South)
-                return new UserCommandEventArgs(action, Compass.S, "");
+                return new LevelCommandEventArgs(action, Compass.S, "");
             else if (key == _preferences.SouthEast)
-                return new UserCommandEventArgs(action, Compass.SE, "");
+                return new LevelCommandEventArgs(action, Compass.SE, "");
 
             return null;
         }

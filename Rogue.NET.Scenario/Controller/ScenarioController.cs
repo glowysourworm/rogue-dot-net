@@ -1,6 +1,7 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -58,12 +59,58 @@ namespace Rogue.NET.Scenario.Controller
                 return;
 
             // First issue command
-            _scenarioService.IssueCommand(new LevelCommandAction()
+            if (e is LevelCommandEventArgs)
             {
-                Action = e.LevelAction,
-                Direction = e.Direction,
-                ScenarioObjectId = e.ItemId
-            });
+                var args = e as LevelCommandEventArgs;
+
+                _scenarioService.IssueCommand(new LevelCommandAction()
+                {
+                    Action = args.LevelAction,
+                    Direction = args.Direction,
+                    Id = args.Id
+                });
+            }
+
+            else if (e is PlayerImbueCommandEventArgs)
+            {
+                var args = e as PlayerImbueCommandEventArgs;
+
+                _scenarioService.IssuePlayerCommand(new PlayerImbueCommandAction()
+                {
+                    Id = args.Id,
+                    Type = args.Type,
+                    ImbueAttackAttributes = args.ImbueAttackAttributes
+                });
+            }
+
+            else if (e is PlayerAdvancementCommandEventArgs)
+            {
+                var args = e as PlayerAdvancementCommandEventArgs;
+
+                _scenarioService.IssuePlayerCommand(new PlayerAdvancementCommandAction()
+                {
+                    Id = args.Id,
+                    Type = args.Type,
+                    Agility = args.Agility,
+                    Intelligence = args.Intelligence,
+                    Strength = args.Strength,
+                    SkillPoints = args.SkillPoints
+                });
+            }
+
+            else if (e is PlayerCommandEventArgs)
+            {
+                var args = e as PlayerCommandEventArgs;
+
+                _scenarioService.IssuePlayerCommand(new PlayerCommandAction()
+                {
+                    Id = args.Id,
+                    Type = args.Type
+                });
+            }
+
+            else
+                throw new Exception("Unknown User Command Args Type");
 
             // Then, process all message queues
             await Work();

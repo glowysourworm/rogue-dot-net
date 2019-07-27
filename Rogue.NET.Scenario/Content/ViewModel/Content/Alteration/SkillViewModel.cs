@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
@@ -125,20 +126,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             this.UnlockCommand = new DelegateCommand(async () =>
             {
-                await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
-                {
-                    LevelAction = LevelActionType.UnlockSkill,
-                    ItemId = this.Id
-                });
+                await eventAggregator.GetEvent<UserCommandEvent>()
+                                     .Publish(new PlayerCommandEventArgs(PlayerActionType.UnlockSkill, this.Id));
             });
 
             this.SelectCommand = new DelegateCommand(async () =>
             {
-                await eventAggregator.GetEvent<UserCommandEvent>().Publish(new UserCommandEventArgs()
-                {
-                    LevelAction = LevelActionType.SelectSkill,
-                    ItemId = this.Id
-                });
+                await eventAggregator.GetEvent<UserCommandEvent>()
+                                     .Publish(new PlayerCommandEventArgs(PlayerActionType.SelectSkill, this.Id));
             });
         }
 

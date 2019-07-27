@@ -3,6 +3,7 @@ using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;
@@ -172,7 +173,7 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
         {
             return new RogueUpdateEventArgs()
             {
-                Update = new DialogUpdate()
+                Update = new DialogImbueUpdate()
                 {
                     Type = type,
                     ImbueAttackAttributes = attackAttributes
@@ -184,11 +185,27 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
         {
             return new RogueUpdateEventArgs()
             {
-                Update = new DialogUpdate()
+                Update = new DialogNoteUpdate()
                 {
                     NoteMessage = noteMessage,
                     NoteTitle = noteTitle,
                     Type = DialogEventType.Note
+                },
+                Priority = RogueUpdatePriority.High
+            };
+        }
+        public RogueUpdateEventArgs DialogPlayerAdvancement(Player player, int playerPoints)
+        {
+            return new RogueUpdateEventArgs()
+            {
+                Update = new DialogPlayerAdvancementUpdate()
+                {
+                    Type = DialogEventType.PlayerAdvancement,
+                    Agility = player.AgilityBase,
+                    Intelligence = player.IntelligenceBase,
+                    Strength = player.StrengthBase,
+                    PlayerPoints = playerPoints,
+                    SkillPoints = player.SkillPoints
                 },
                 Priority = RogueUpdatePriority.High
             };

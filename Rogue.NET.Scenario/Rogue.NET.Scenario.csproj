@@ -267,9 +267,6 @@
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">
       <DependentUpon>ChooseParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseAttribute.xaml.cs">
-      <DependentUpon>ChooseAttribute.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Intro\Views\GameSetup\Parameters\ChooseName.xaml.cs">
       <DependentUpon>ChooseName.xaml</DependentUpon>
     </Compile>
@@ -386,10 +383,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Intro\Views\GameSetup\ChooseParameters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Intro\Views\GameSetup\Parameters\ChooseAttribute.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

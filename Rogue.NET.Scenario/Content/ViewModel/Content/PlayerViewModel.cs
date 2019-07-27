@@ -90,7 +90,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         EquipmentViewModel _equippedRightHandWeapon;
         EquipmentViewModel _equippedRightRing;
         EquipmentViewModel _equippedShoulder;
-        AttributeEmphasis _attributeEmphasis;
         #endregion
 
         #region (public) Properties
@@ -98,11 +97,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _level; }
             set { this.RaiseAndSetIfChanged(ref _level, value); }
-        }
-        public int SkillPointsEarned
-        {
-            get { return _skillPointsEarned; }
-            set { this.RaiseAndSetIfChanged(ref _skillPointsEarned, value); }
         }
         public int SkillPoints
         {
@@ -123,16 +117,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _experienceNext; }
             set { this.RaiseAndSetIfChanged(ref _experienceNext, value); }
-        }
-        public double SkillPointExperience
-        {
-            get { return _skillPointExperience; }
-            set { this.RaiseAndSetIfChanged(ref _skillPointExperience, value); }
-        }
-        public double SkillPointExperienceNext
-        {
-            get { return _skillPointExperienceNext; }
-            set { this.RaiseAndSetIfChanged(ref _skillPointExperienceNext, value); }
         }
         public double Hunger
         {
@@ -293,11 +277,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             get { return _speedBase; }
             set { this.RaiseAndSetIfChanged(ref _speedBase, value); }
-        }
-        public AttributeEmphasis AttributeEmphasis
-        {
-            get { return _attributeEmphasis; }
-            set { this.RaiseAndSetIfChanged(ref _attributeEmphasis, value); }
         }
         public SkillSetViewModel ActiveSkillSet
         {
@@ -495,23 +474,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             // Calculate experience
             var experienceLast = player.Level == 0 ? 0 : PlayerCalculator.CalculateExperienceNext(player.Level - 1);
-            var pointExperienceLast = player.SkillPointsEarned == 0 ? 0 : PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned - 1, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
             var experienceNext = PlayerCalculator.CalculateExperienceNext(player.Level);
-            var pointExperienceNext = PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
 
             var deltaExperience = player.Experience - experienceLast;
             var deltaExperienceNext = experienceNext - experienceLast;
-
-            var deltaPointExperience = player.Experience - pointExperienceLast;
-            var deltaPointExperienceNext = pointExperienceNext - pointExperienceLast;
 
             // Player Stats
             this.Level = player.Level;
             this.Class = player.Class;
             this.Experience = deltaExperience;
             this.ExperienceNext = deltaExperienceNext;
-            this.SkillPointExperience = deltaPointExperience;
-            this.SkillPointExperienceNext = deltaPointExperienceNext;
             this.Haul = player.GetHaul();
             this.HaulMax = player.GetHaulMax();
             this.Hp = player.Hp;
@@ -519,12 +491,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Hunger = player.Hunger;
             this.Mp = player.Mp;
             this.MpMax = player.MpMax;
-            this.SkillPointsEarned = player.SkillPointsEarned;
             this.SkillPoints = player.SkillPoints;
             this.RogueName = player.RogueName;
-
-            // Attribute Emphasis
-            this.AttributeEmphasis = player.AttributeEmphasis;
 
             // Alterations
             this.Alterations.Clear();

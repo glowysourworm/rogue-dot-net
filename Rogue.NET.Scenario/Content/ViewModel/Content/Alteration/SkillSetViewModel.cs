@@ -2,6 +2,8 @@
 using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
@@ -67,8 +69,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             set { this.RaiseAndSetIfChanged(ref _activeSkill, value); }
         }
 
-        public IAsyncCommand ChangeSkillLevelUpCommand { get; set; }
-        public IAsyncCommand ChangeSkillLevelDownCommand { get; set; }
         public IAsyncCommand ActivateSkillCommand { get; set; }
         public ICommand ViewSkillsCommand { get; set; }
 
@@ -110,24 +110,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.ActiveSkill = skillSet.SelectedSkill != null ? this.Skills.First(x => x.Id == skillSet.SelectedSkill.Id) : null;
 
             // Hook-up commands
-            this.ChangeSkillLevelDownCommand = new AsyncCommand(async () =>
-            {
-                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelActionType.ChangeSkillLevelDown, Compass.Null, this.Id));
-
-            }, () => this.HasLearnedSkills);
-
-            this.ChangeSkillLevelUpCommand = new AsyncCommand(async () =>
-            {
-                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelActionType.ChangeSkillLevelUp, Compass.Null, this.Id));
-
-            }, () => this.HasLearnedSkills);
-
             this.ActivateSkillCommand = new AsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new UserCommandEventArgs(LevelActionType.ActivateSkillSet, Compass.Null, this.Id));
+                    new PlayerCommandEventArgs(PlayerActionType.ActivateSkillSet, this.Id));
 
             }, () => this.HasLearnedSkills);
 
@@ -141,12 +127,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             if (this.ActivateSkillCommand != null)
                 this.ActivateSkillCommand.RaiseCanExecuteChanged();
-
-            if (this.ChangeSkillLevelDownCommand != null)
-                this.ChangeSkillLevelDownCommand.RaiseCanExecuteChanged();
-
-            if (this.ChangeSkillLevelUpCommand != null)
-                this.ChangeSkillLevelUpCommand.RaiseCanExecuteChanged();
         }
     }
 }

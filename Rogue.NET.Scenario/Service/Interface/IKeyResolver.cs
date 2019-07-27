@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.EventArgs;
-using Rogue.NET.Common.Events.Scenario;
+﻿using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using System.Windows.Input;
 

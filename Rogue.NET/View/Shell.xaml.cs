@@ -1,14 +1,16 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Prism.Events;
 using Rogue.NET.Common.Events;
-using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
+using Rogue.NET.ViewModel;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -119,39 +121,36 @@ namespace Rogue.NET.View
                 Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
 
             if (levelCommand != null)
-            {                
-                switch(levelCommand.Type)
+            {
+                if (levelCommand is LevelCommandEventArgs ||
+                    levelCommand is PlayerCommandEventArgs)
+                    await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+
+                else if (levelCommand is ViewCommandEventArgs)
                 {
-                    case ActionType.LevelAction:
-                        await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
-                        break;
-                    case ActionType.ViewAction:
-                        {
-                            switch (levelCommand.ViewAction)
-                            {
-                                case ViewActionType.ShowPlayerSubpanelEquipment:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Publish();
-                                    break;
-                                case ViewActionType.ShowPlayerSubpanelConsumables:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Publish();
-                                    break;
-                                case ViewActionType.ShowPlayerSubpanelSkills:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Publish();
-                                    break;
-                                case ViewActionType.ShowPlayerSubpanelStats:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Publish();
-                                    break;
-                                case ViewActionType.ShowPlayerSubpanelAlterations:
-                                    _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
+                    switch ((levelCommand as ViewCommandEventArgs).ViewAction)
+                    {
+                        case ViewActionType.ShowPlayerSubpanelEquipment:
+                            _eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Publish();
+                            break;
+                        case ViewActionType.ShowPlayerSubpanelConsumables:
+                            _eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Publish();
+                            break;
+                        case ViewActionType.ShowPlayerSubpanelSkills:
+                            _eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Publish();
+                            break;
+                        case ViewActionType.ShowPlayerSubpanelStats:
+                            _eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Publish();
+                            break;
+                        case ViewActionType.ShowPlayerSubpanelAlterations:
+                            _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                else
+                    throw new Exception("Unknown User Command Type");
             }
 
             _blockUserInput = false;
@@ -221,8 +220,8 @@ namespace Rogue.NET.View
                     {
                         // TODO: Use Binding Somehow...
                         var view = GetInstance<NoteView>();
-                        view.TitleTB.Text = update.NoteTitle;
-                        view.MessageTB.Text = update.NoteMessage;
+                        view.TitleTB.Text = (update as IDialogNoteUpdate).NoteTitle;
+                        view.MessageTB.Text = (update as IDialogNoteUpdate).NoteMessage;
 
                         return view;
                     }
@@ -238,6 +237,30 @@ namespace Rogue.NET.View
                     return GetInstance<ImbueArmorView>();
                 case DialogEventType.ImbueWeapon:
                     return GetInstance<ImbueWeaponView>();
+                case DialogEventType.PlayerAdvancement:
+                    {
+                        var view = GetInstance<PlayerAdvancementView>();
+                        var playerUpdate = update as IDialogPlayerAdvancementUpdate;
+
+                        view.DataContext = new PlayerAdvancementViewModel()
+                        {
+                            Agility = playerUpdate.Agility,                            
+                            Intelligence = playerUpdate.Intelligence,
+                            Strength = playerUpdate.Strength,
+                            SkillPoints = playerUpdate.SkillPoints,
+
+                            // Initialize the new variables
+                            NewAgility = playerUpdate.Agility,
+                            NewIntelligence = playerUpdate.Intelligence,
+                            NewStrength = playerUpdate.Strength,
+                            NewSkillPoints = playerUpdate.SkillPoints,
+
+                            // Points to spend
+                            PlayerPoints = playerUpdate.PlayerPoints
+                        };
+
+                        return view;
+                    }
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }

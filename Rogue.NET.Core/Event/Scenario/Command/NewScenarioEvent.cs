@@ -11,7 +11,6 @@ namespace Rogue.NET.Common.Events.Scenario
         public string ReligionName { get; set; }
         public int Seed { get; set; }
         public bool SurvivorMode { get; set; }
-        public AttributeEmphasis AttributeEmphasis { get; set; }
     }
     public class NewScenarioEvent : RogueEvent<NewScenarioEventArgs>
     {

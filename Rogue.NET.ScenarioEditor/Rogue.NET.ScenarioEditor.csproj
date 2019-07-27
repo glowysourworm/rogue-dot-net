@@ -250,7 +250,6 @@
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
-    <Compile Include="Converter\SkillPointMultiplierExampleConverter.cs" />
     <Compile Include="Converter\SymbolDetailsImageSourceConverter.cs" />
     <Compile Include="Converter\SymbolDetailsMultiConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />

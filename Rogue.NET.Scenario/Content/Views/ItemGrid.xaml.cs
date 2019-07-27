@@ -10,6 +10,8 @@ using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 
 using Prism.Events;
 using System.Windows.Threading;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -81,13 +83,34 @@ namespace Rogue.NET.Scenario.Content.Views
 
             var itemViewModel = (sender as Button).Tag as ItemGridRowViewModel;
 
-            await _eventAggregator.GetEvent<UserCommandEvent>()
-                            .Publish(new UserCommandEventArgs()
-                            {
-                                LevelAction = (LevelActionType)Enum.Parse(typeof(LevelActionType), this.IntendedAction.ToString()),
-                                Direction = Compass.Null,
-                                ItemId = itemViewModel.Id
-                            });
+            LevelActionType levelAction;
+            PlayerActionType playerAction;
+
+            if (Enum.TryParse<LevelActionType>(this.IntendedAction.ToString(), out levelAction))
+            {
+                await _eventAggregator.GetEvent<UserCommandEvent>()
+                                      .Publish(new LevelCommandEventArgs(levelAction, Compass.Null, itemViewModel.Id));
+            }
+
+            else if (Enum.TryParse<PlayerActionType>(this.IntendedAction.ToString(), out playerAction))
+            {
+                switch (playerAction)
+                {
+                    case PlayerActionType.ImbueWeapon:
+                    case PlayerActionType.ImbueArmor:
+                        await _eventAggregator.GetEvent<UserCommandEvent>()
+                                              .Publish(new PlayerImbueCommandEventArgs(playerAction, itemViewModel.Id));
+                        break;
+                    case PlayerActionType.PlayerAdvancement:
+                        throw new Exception("Trying to invoke player advancement from item grid");
+                    default:
+                        await _eventAggregator.GetEvent<UserCommandEvent>()
+                                              .Publish(new PlayerCommandEventArgs(playerAction, itemViewModel.Id));
+                        break;
+                }
+            }
+            else
+                throw new Exception("Unknown Item Grid Action Type");
 
             // ISSUE WITH VIEW UPDATING - NOT SURE WHY BUT VIEW MODEL FOR ITEM GRID NOT UP TO DATE WHEN 
             // FIRING THE NEXT EVENT! GOING TO TRY TO FORCE WAIT FOR APPLICATION IDLE TO ALLOW BINDING TO CATCH UP.

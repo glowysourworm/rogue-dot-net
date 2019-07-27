@@ -56,9 +56,7 @@
                             </Grid>
                             <Grid Margin="10,5,10,5">
                                 <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White">
-                                    <Run Text="Skill Point Multiplier (Number of Points at Level 30=" />
-                                    <Run Text="{Binding SkillPointMultiplier, Converter={StaticResource SkillPointMultiplierExampleConverter}}" />
-                                    <Run Text=")" />
+                                    <Run Text="Skill Point Multiplier" />
                                 </TextBlock>
                                 <toolkit:DoubleUpDown Value="{Binding SkillPointMultiplier, Mode=TwoWay}" Minimum="1" Maximum="100" Width="150" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
                             </Grid>                            

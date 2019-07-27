@@ -492,16 +492,23 @@ IMMEDIATE TODO'S:
 	- Clear out message box when re-starting.
 
 	- Use points to increase stats instead of randomly doing it when gaining a level.
+	
+		- SMALL REFACTORING:  Create a few different types of level commands:  Normal; 
+							  View Action Command; Imbue Equipment Command; Player Advancement Command.
+							  
+							  Need to expand this some to include actions with new data.  This is mainly
+							  for new dialogs with other data fed back to the backend.
 							  
 	- Nice to have:  Explain attack attributes by having a separate UI to show how they apply
 ---------------
-	
+		
 	- PERMADEATH
 	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
 				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
 				 
 				 - Search on TODO:SKILLSET
 				 - Test deserialization of Religion (on any asset) and check that it == the one in the global collection (by reference)
+				   DOESN'T WORK*** So, had to revert to comparing religion name.
 				 
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.

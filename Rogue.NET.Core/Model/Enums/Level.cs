@@ -19,9 +19,9 @@ namespace Rogue.NET.Core.Model.Enums
         Ordinal = 0,
         Diagonal
     }
-    public enum LevelActionType : int
+    public enum LevelActionType
     {
-        None = 0,
+        None,
         Move,
         Attack,
         ToggleDoor,
@@ -32,27 +32,31 @@ namespace Rogue.NET.Core.Model.Enums
         InvokeDoodad,
         Consume,
         Equip,
+        Drop,
+        Fire,
+        RenounceReligion,
+
+        // Only supported for debug configuration
+        DebugNext,
+        DebugSimulateNext,
+        DebugExperience,
+        DebugIdentifyAll,
+        DebugRevealAll
+    }
+
+    public enum PlayerActionType
+    {
         EnchantWeapon,
         EnchantArmor,
         ImbueWeapon,
         ImbueArmor,
         Uncurse,
         Identify,
-        Drop,
-        Fire,
-        ChangeSkillLevelUp,
-        ChangeSkillLevelDown,
         ActivateSkillSet,
         CycleSkillSet,
         SelectSkill,
         UnlockSkill,
-        RenounceReligion,
-
-        DebugNext,
-        DebugSimulateNext,
-        DebugExperience,
-        DebugIdentifyAll,
-        DebugRevealAll
+        PlayerAdvancement
     }
 
     /// <summary>

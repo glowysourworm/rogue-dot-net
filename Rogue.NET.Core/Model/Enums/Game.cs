@@ -32,12 +32,6 @@
         Random,
     }
 
-    public enum ActionType
-    {
-        LevelAction,
-        ViewAction
-    }
-
     public enum ViewActionType
     {
         None,

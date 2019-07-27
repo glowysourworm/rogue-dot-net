@@ -48,11 +48,6 @@ namespace Rogue.NET.Core.Logic.Content
             return PlayerCalculator.CalculateExperienceNext(player.Level);
         }
 
-        public double CalculateSkillPointExperienceNext(Player player)
-        {
-            return PlayerCalculator.CalculateExperienceNextSkillPoint(player.SkillPointsEarned, _modelService.ScenarioConfiguration.DungeonTemplate.SkillPointMultiplier);
-        }
-
         public void CalculateLevelGains(Player player)
         {
             var attributesChanged = new List<Tuple<string, double, Color>>();
@@ -66,24 +61,6 @@ namespace Rogue.NET.Core.Logic.Content
             change = PlayerCalculator.CalculateMpGain(player.IntelligenceBase * _randomSequenceGenerator.Get());
             player.MpMax += change;
             attributesChanged.Add(new Tuple<string, double, Color>("MP", change, Colors.Blue));
-
-            // Strength
-            change = PlayerCalculator.CalculateStrengthGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Strength);
-            player.StrengthBase += change;
-
-            attributesChanged.Add(new Tuple<string, double, Color>("Strength", change, Colors.Salmon));
-
-            // Intelligence
-            change = PlayerCalculator.CalculateIntelligenceGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Intelligence);
-            player.IntelligenceBase += change;
-
-            attributesChanged.Add(new Tuple<string, double, Color>("Intelligence", change, Colors.LightBlue));
-
-            // Agility
-            change = PlayerCalculator.CalculateAgilityGain(_randomSequenceGenerator.Get(), player.AttributeEmphasis == AttributeEmphasis.Agility);
-            player.AgilityBase += change;
-
-            attributesChanged.Add(new Tuple<string, double, Color>("Agility", change, Colors.Tan));
 
             // Level :)
             player.Level++;
@@ -116,8 +93,11 @@ namespace Rogue.NET.Core.Logic.Content
             return handsFree;
         }
 
-        public void ApplyEndOfTurn(Player player, bool regenerate)
+        public void ApplyEndOfTurn(Player player, bool regenerate, out bool playerAdvancement)
         {
+            // Initialize Player Advancement
+            playerAdvancement = false;
+
             //Normal turn stuff
             player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes());
             player.Mp += player.GetMpRegen();
@@ -156,18 +136,12 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 CalculateLevelGains(player);
 
-                //Bonus health and magic refill
+                // Refill HP and MP as a bonus
                 player.Hp = player.HpMax;
                 player.Mp = player.MpMax;
-            }
 
-            // Player Gains a Skill Point
-            if (player.Experience >= CalculateSkillPointExperienceNext(player))
-            {
-                player.SkillPoints++;
-                player.SkillPointsEarned++;
-
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Unique, player.RogueName + " has earned a Skill Point");
+                // Mark player advancement
+                playerAdvancement = true;
             }
 
             // Check for Skill Set Requirements

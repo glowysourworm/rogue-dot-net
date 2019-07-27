@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Rogue.NET.View.PlayerAdvancementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             Background="Transparent">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border BorderBrush="White" Background="Black" BorderThickness="2" CornerRadius="8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="250" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="10" />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="10" />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Grid.Column="1" Margin="8" HorizontalAlignment="Right" FontSize="18" Foreground="Tan">
+                <Run Text="Character Points Remaining: " />
+                <Run Text="{Binding PlayerPoints}" />
+            </TextBlock>
+
+            <!-- Separator -->
+            <Rectangle Grid.Row="1" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
+
+            <!-- Attribute Text -->
+            <TextBlock Grid.Row="2" Margin="8" Text="Strength" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Red" />
+            <TextBlock Grid.Row="3" Margin="8" Text="Agility" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="YellowGreen" />
+            <TextBlock Grid.Row="4" Margin="8" Text="Intelligence" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Blue" />
+
+            <!-- Attribute +/- Text and Buttons -->
+            <TextBlock Grid.Row="2" Grid.Column="1" Margin="8" Text="{Binding NewStrength, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Margin="8" Text="{Binding NewAgility, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Margin="8" Text="{Binding NewIntelligence, StringFormat=F2}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+
+            <StackPanel Grid.Row="2" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="StrengthPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+                <Button x:Name="StrengthMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="AgilityPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+                <Button x:Name="AgilityMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            </StackPanel>
+            <StackPanel Grid.Row="4" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="IntelligencePlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+                <Button x:Name="IntelligenceMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            </StackPanel>
+
+            <!-- Separator -->
+            <Rectangle Grid.Row="5" Grid.ColumnSpan="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="Silver" />
+
+            <!-- Skill Points -->
+            <TextBlock Grid.Row="6" Text="Skill Points (3 Per Point):" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Tan" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Margin="8" Text="{Binding NewSkillPoints}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" Foreground="Goldenrod" />
+            <StackPanel Grid.Row="6" Grid.Column="1" Margin="8" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button x:Name="SkillPointsPlusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf067;" Foreground="White" Background="Black" />
+                <Button x:Name="SkillPointsMinusButton" Style="{StaticResource ShinyTextButtonStyle}" Cursor="Hand" Height="20" Width="20" FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" Foreground="White" Background="Black" />
+            </StackPanel>
+
+            <!-- Dismiss Button -->
+            <Button x:Name="AcceptButton" Grid.Row="7" Grid.Column="1" Cursor="Hand" Margin="8" Height="48" Width="48" Style="{StaticResource ShinyTextButtonStyle}" Content="OK" FontSize="18" Foreground="White" Background="Black" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                <interactivity:Interaction.Triggers>
+                    <interactivity:EventTrigger EventName="Click">
+                        <extension:CustomDialogResultTrigger DialogResult="True" IsEnabled="True" />
+                    </interactivity:EventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Button>
+
+        </Grid>
+    </Border>
+</UserControl>

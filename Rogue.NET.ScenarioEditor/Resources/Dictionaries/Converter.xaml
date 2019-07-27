@@ -9,5 +9,4 @@
     <scenarioEditorConverter:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <scenarioEditorConverter:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
     <scenarioEditorConverter:SymbolDetailsMultiConverter x:Key="SymbolDetailsMultiConverter" />
-    <scenarioEditorConverter:SkillPointMultiplierExampleConverter x:Key="SkillPointMultiplierExampleConverter" />
 </ResourceDictionary>

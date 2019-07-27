@@ -26,6 +26,7 @@ using Rogue.NET.Core.Logic.Content.Enum;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using System.Windows.Media;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -150,9 +151,14 @@ namespace Rogue.NET.Core.Logic
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
+            var playerAdvancement = false;
 
             // Player: End-Of-Turn
-            _playerProcessor.ApplyEndOfTurn(player, regenerate);
+            _playerProcessor.ApplyEndOfTurn(player, regenerate, out playerAdvancement);
+
+            // Player Advancement Event
+            if (playerAdvancement)
+                RogueUpdateEvent(this, _rogueUpdateFactory.DialogPlayerAdvancement(player, 1));
 
             // Update player stats
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerStats, _modelService.Player.Id));
@@ -697,40 +703,6 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Other Learned Skills");
             }
         }
-        public void ChangeSkillLevelUp(string skillSetId)
-        {
-            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
-
-            // Deactivate current skill sets
-            _playerProcessor.DeActivateSkills(_modelService.Player);
-
-            // Activate and select next skill
-            if (skillSet != null)
-            {
-                skillSet.SelectSkillUp(_modelService.Player);
-                skillSet.IsActive = true;
-            }
-
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
-        }
-        public void ChangeSkillLevelDown(string skillSetId)
-        {
-            var skillSet = _modelService.Player.SkillSets.FirstOrDefault(x => x.Id == skillSetId);
-
-            // Deactivate current skill sets
-            _playerProcessor.DeActivateSkills(_modelService.Player);
-
-            // Activate and select next skill
-            if (skillSet != null)
-            {
-                skillSet.SelectSkillDown(_modelService.Player);
-                skillSet.IsActive = true;
-            }
-
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
-        }
         public void ToggleActiveSkillSet(string skillSetId, bool activate)
         {
             var skillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.Id == skillSetId);
@@ -937,6 +909,48 @@ namespace Rogue.NET.Core.Logic
             }
 
             return LevelContinuationAction.ProcessTurn;
+        }
+        public void PlayerAdvancement(double strength, double agility, double intelligence, int skillPoints)
+        {
+            var player = _modelService.Player;
+
+            var attributeList = new List<Tuple<string, double, Color>>();
+
+            if (player.StrengthBase != strength)
+            {
+                attributeList.Add(new Tuple<string, double, Color>("Strength", strength, Colors.Red));
+
+                player.StrengthBase = strength;
+            }
+
+            if (player.AgilityBase != agility)
+            {
+                attributeList.Add(new Tuple<string, double, Color>("Agility", agility, Colors.YellowGreen));
+
+                player.AgilityBase = agility;
+            }
+
+            if (player.IntelligenceBase != intelligence)
+            {
+                attributeList.Add(new Tuple<string, double, Color>("Intelligence", intelligence, Colors.Blue));
+
+                player.IntelligenceBase = intelligence;
+            }
+
+            if (player.SkillPoints != skillPoints)
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Unique, 
+                    string.Format("{0} has earned {1} Skill Points",
+                                  player.RogueName,
+                                  (skillPoints - player.SkillPoints).ToString()));
+
+                player.SkillPoints = skillPoints;
+            }
+
+            // Publish advancement messages
+            if (attributeList.Count > 0)
+                _scenarioMessageService.PublishPlayerAdvancement(ScenarioMessagePriority.Good, player.RogueName, player.Level, attributeList);
         }
 
         public void ApplyEndOfTurn()

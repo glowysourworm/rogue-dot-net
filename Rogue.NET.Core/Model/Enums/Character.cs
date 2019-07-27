@@ -103,12 +103,6 @@ namespace Rogue.NET.Core.Model.Enums
         Scared,
         Mischievous
     }
-    public enum AttributeEmphasis
-    {
-        Strength,
-        Agility,
-        Intelligence
-    }
 
     /// <summary>
     /// Represents charater base attributes

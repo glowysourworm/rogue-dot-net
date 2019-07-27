@@ -49,12 +49,6 @@ namespace Rogue.NET.Core.Service
         Queue<IRogueUpdate> _criticalQueue;
         Queue<ILevelProcessingAction> _dataQueue;
 
-        /// <summary>
-        /// ***ATTACK ATTRIBUTES INTERCEPTED FROM THE DIALOG QUEUE AND STORED FOR A ONE-OFF
-        /// IMBUE ALTERATION. 
-        /// </summary>
-        IEnumerable<AttackAttribute> _imbueAttackAttributes;
-
         [ImportingConstructor]
         public ScenarioService(
             IScenarioEngine scenarioEngine,
@@ -87,16 +81,6 @@ namespace Rogue.NET.Core.Service
                 // Updates
                 engine.RogueUpdateEvent += (sender, args) =>
                 {
-                    // ONE OFF FOR IMBUE ONLY!
-                    if (args.Update is IDialogUpdate)
-                    {
-                        var dialogUpdate = args.Update as IDialogUpdate;
-
-                        if (dialogUpdate.Type == DialogEventType.ImbueArmor ||
-                            dialogUpdate.Type == DialogEventType.ImbueWeapon)
-                            _imbueAttackAttributes = dialogUpdate.ImbueAttackAttributes;
-                    }
-
                     switch (args.Priority)
                     {
                         case RogueUpdatePriority.Low:
@@ -145,7 +129,7 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelActionType.Throw:
                     {
-                        nextAction = _scenarioEngine.Throw(command.ScenarioObjectId);
+                        nextAction = _scenarioEngine.Throw(command.Id);
                     }
                     break;
                 case LevelActionType.ToggleDoor:
@@ -188,12 +172,12 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelActionType.Consume:
                     {
-                        nextAction = _scenarioEngine.Consume(command.ScenarioObjectId);
+                        nextAction = _scenarioEngine.Consume(command.Id);
                     }
                     break;
                 case LevelActionType.Drop:
                     {
-                        _scenarioEngine.Drop(command.ScenarioObjectId);
+                        _scenarioEngine.Drop(command.Id);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
@@ -204,81 +188,8 @@ namespace Rogue.NET.Core.Service
                     break;
                 case LevelActionType.Equip:
                     {
-                        if (_contentEngine.Equip(command.ScenarioObjectId))
+                        if (_contentEngine.Equip(command.Id))
                             nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelActionType.EnchantArmor:
-                case LevelActionType.EnchantWeapon:
-                    {
-                        _scenarioEngine.Enchant(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelActionType.ImbueArmor:
-                    {
-                        _scenarioEngine.ImbueArmor(command.ScenarioObjectId, _imbueAttackAttributes);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-
-                        // *** SET TO NULL TO INDICATE USED
-                        _imbueAttackAttributes = null;
-                    }
-                    break;
-                case LevelActionType.ImbueWeapon:
-                    {
-                        _scenarioEngine.ImbueWeapon(command.ScenarioObjectId, _imbueAttackAttributes);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-
-                        // *** SET TO NULL TO INDICATE USED
-                        _imbueAttackAttributes = null;
-                    }
-                    break;
-                case LevelActionType.Identify:
-                    {
-                        _scenarioEngine.Identify(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelActionType.Uncurse:
-                    {
-                        _scenarioEngine.Uncurse(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelActionType.ActivateSkillSet:
-                    {
-                        _scenarioEngine.ToggleActiveSkillSet(command.ScenarioObjectId, true);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelActionType.CycleSkillSet:
-                    {
-                        _scenarioEngine.CycleActiveSkillSet();
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelActionType.SelectSkill:
-                    {
-                        _scenarioEngine.SelectSkill(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelActionType.ChangeSkillLevelDown:
-                    {
-                        _scenarioEngine.ChangeSkillLevelUp(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelActionType.ChangeSkillLevelUp:
-                    {
-                        _scenarioEngine.ChangeSkillLevelDown(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
-                    }
-                    break;
-                case LevelActionType.UnlockSkill:
-                    {
-                        _scenarioEngine.UnlockSkill(command.ScenarioObjectId);
-                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelActionType.RenounceReligion:
@@ -326,6 +237,52 @@ namespace Rogue.NET.Core.Service
             {
                 EndOfTurn(nextAction == LevelContinuationAction.ProcessTurn);
                 return;
+            }
+        }
+
+        public void IssuePlayerCommand(IPlayerCommandAction command)
+        {
+            // Player commands don't involve level actions - so no need to check for altered states.
+            switch (command.Type)
+            {
+                case PlayerActionType.EnchantWeapon:
+                case PlayerActionType.EnchantArmor:
+                    _scenarioEngine.Enchant(command.Id);
+                    break;
+                case PlayerActionType.ImbueWeapon:
+                case PlayerActionType.ImbueArmor:
+                    _scenarioEngine.ImbueArmor(command.Id, (command as IPlayerImbueCommandAction).ImbueAttackAttributes);
+                    break;
+                case PlayerActionType.Uncurse:
+                    _scenarioEngine.Uncurse(command.Id);
+                    break;
+                case PlayerActionType.Identify:
+                    _scenarioEngine.Identify(command.Id);
+                    break;
+                case PlayerActionType.ActivateSkillSet:
+                    _scenarioEngine.ToggleActiveSkillSet(command.Id, true);
+                    break;
+                case PlayerActionType.CycleSkillSet:
+                    _scenarioEngine.CycleActiveSkillSet();
+                    break;
+                case PlayerActionType.SelectSkill:
+                    _scenarioEngine.SelectSkill(command.Id);
+                    break;
+                case PlayerActionType.UnlockSkill:
+                    _scenarioEngine.UnlockSkill(command.Id);
+                    break;
+                case PlayerActionType.PlayerAdvancement:
+                    {
+                        var advancementCommand = command as IPlayerAdvancementCommandAction;
+
+                        _scenarioEngine.PlayerAdvancement(advancementCommand.Strength, 
+                                                          advancementCommand.Agility,
+                                                          advancementCommand.Intelligence,
+                                                          advancementCommand.SkillPoints);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 

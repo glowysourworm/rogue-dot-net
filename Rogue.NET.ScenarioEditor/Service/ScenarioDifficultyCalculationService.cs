@@ -45,11 +45,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                     .Select((levelNumber) =>
                     {
-                        playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,
-                                                       usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
+                        playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
 
-                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets,
-                                                        usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
+                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                         // Select enemies whose level range overlaps this level and whose generation rate is
                         // greater than zero.
@@ -143,8 +141,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                     .Select((levelNumber) =>
                     {
-                        playerLow = SimulatePlayer(playerLow, levelNumber, true, false, configuration, includedAssets, AttributeEmphasis.Agility);
-                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, false, configuration, includedAssets, AttributeEmphasis.Agility);
+                        playerLow = SimulatePlayer(playerLow, levelNumber, true, false, configuration, includedAssets);
+                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, false, configuration, includedAssets);
 
                         var high = playerHigh.Consumables
                                             .Values
@@ -203,11 +201,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                     .Select((levelNumber) =>
                     {
-                        playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,
-                                                       usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
+                        playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
 
-                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets,
-                                                        usePlayerStrengthAttributeEmphasis ? AttributeEmphasis.Strength : AttributeEmphasis.Agility);
+                        playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                         // Select enemies whose level range overlaps this level and whose generation rate is
                         // greater than zero.
@@ -253,8 +249,8 @@ namespace Rogue.NET.ScenarioEditor.Service
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                         .Select((levelNumber) =>
                         {
-                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets,AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -279,8 +275,8 @@ namespace Rogue.NET.ScenarioEditor.Service
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                         .Select((levelNumber) =>
                         {
-                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -305,8 +301,8 @@ namespace Rogue.NET.ScenarioEditor.Service
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                         .Select((levelNumber) =>
                         {
-                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -330,8 +326,8 @@ namespace Rogue.NET.ScenarioEditor.Service
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                         .Select((levelNumber) =>
                         {
-                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -355,8 +351,8 @@ namespace Rogue.NET.ScenarioEditor.Service
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
                         .Select((levelNumber) =>
                         {
-                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets, AttributeEmphasis.Agility);
-                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets, AttributeEmphasis.Agility);
+                            playerLow = SimulatePlayer(playerLow, levelNumber, true, true, configuration, includedAssets);
+                            playerHigh = SimulatePlayer(playerHigh, levelNumber, false, true, configuration, includedAssets);
 
                             return new ProjectedQuantityViewModel()
                             {
@@ -420,8 +416,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             bool simulateLow, // false for high
             bool simulateEating,
             ScenarioConfigurationContainerViewModel configuration,
-            IEnumerable<IDifficultyAssetViewModel> includedAssets,
-            AttributeEmphasis attributeEmphasis)
+            IEnumerable<IDifficultyAssetViewModel> includedAssets)
         {
             // Create a new player to use for the simulation
             if (player == null)
@@ -481,10 +476,6 @@ namespace Rogue.NET.ScenarioEditor.Service
 
                 player.Hp += PlayerCalculator.CalculateHpGain(simulatedRandom * player.StrengthBase);
                 player.Mp += PlayerCalculator.CalculateMpGain(simulatedRandom * player.IntelligenceBase);
-
-                player.StrengthBase += PlayerCalculator.CalculateStrengthGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Strength);
-                player.IntelligenceBase += PlayerCalculator.CalculateIntelligenceGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Intelligence);
-                player.AgilityBase += PlayerCalculator.CalculateAgilityGain(simulatedRandom, attributeEmphasis == AttributeEmphasis.Agility);
 
                 player.Level++;
             }

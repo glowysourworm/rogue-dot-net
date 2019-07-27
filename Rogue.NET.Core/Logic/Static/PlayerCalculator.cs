@@ -23,23 +23,6 @@ namespace Rogue.NET.Core.Logic.Static
             return (level == 0) ? 100 : ((10 * Math.Pow(level + 1, 3)) + (300 + level));
         }
 
-        /// <summary>
-        /// Calculates experience required for next point - based on level experience and a multiplier
-        /// </summary>
-        /// <param name="pointsEarned"></param>
-        /// <returns></returns>
-        public static double CalculateExperienceNextSkillPoint(int pointsEarned, double skillPointMultiplier)
-        {
-            if (pointsEarned <= 0)
-                return PlayerCalculator.CalculateExperienceNext(0);
-
-            if (skillPointMultiplier < 1)
-                skillPointMultiplier = 1;
-
-            return skillPointMultiplier * 
-                   (PlayerCalculator.CalculateExperienceNext(pointsEarned) / (double)pointsEarned);
-        }
-
         public static double CalculateHpGain(double baseValue)
         {
             return (baseValue * ModelConstants.LevelGains.LevelGainBase 
@@ -49,24 +32,6 @@ namespace Rogue.NET.Core.Logic.Static
         {
             return (baseValue * ModelConstants.LevelGains.LevelGainBase
                               * ModelConstants.LevelGains.MpGainMultiplier) + ModelConstants.LevelGains.LinearOffset;
-        }
-        public static double CalculateStrengthGain(double baseValue, bool emphasis)
-        {
-            return (baseValue * 
-                    ModelConstants.LevelGains.LevelGainBase *
-                   (emphasis ? ModelConstants.LevelGains.AttributeEmphasisMultiplier : 1)) + ModelConstants.LevelGains.LinearOffset;
-        }
-        public static double CalculateAgilityGain(double baseValue, bool emphasis)
-        {
-            return (baseValue *
-                    ModelConstants.LevelGains.LevelGainBase *
-                   (emphasis ? ModelConstants.LevelGains.AttributeEmphasisMultiplier : 1)) + ModelConstants.LevelGains.LinearOffset;
-        }
-        public static double CalculateIntelligenceGain(double baseValue, bool emphasis)
-        {
-            return (baseValue *
-                    ModelConstants.LevelGains.LevelGainBase *
-                   (emphasis ? ModelConstants.LevelGains.AttributeEmphasisMultiplier : 1)) + ModelConstants.LevelGains.LinearOffset;
         }
     }
 }

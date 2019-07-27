@@ -30,7 +30,6 @@ namespace Rogue.NET.Intro.ViewModel
         string _rogueName = "";
         int _seed = 1;
         bool _survivorMode = false;
-        AttributeEmphasis _emphasis = AttributeEmphasis.Strength;
         ScenarioViewModel _selectedConfiguration;
         SavedGameViewModel _selectedGame;
         ReligionSelectionViewModel _selectedReligion;
@@ -60,11 +59,6 @@ namespace Rogue.NET.Intro.ViewModel
         {
             get { return _rogueName; }
             set { this.RaiseAndSetIfChanged(ref _rogueName, value); }
-        }
-        public AttributeEmphasis AttributeEmphasis
-        {
-            get { return _emphasis; }
-            set { this.RaiseAndSetIfChanged(ref _emphasis, value); }
         }
         public int Seed
         {
