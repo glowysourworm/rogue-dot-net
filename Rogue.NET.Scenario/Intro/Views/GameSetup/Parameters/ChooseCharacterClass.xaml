@@ -33,7 +33,7 @@
         <ListBox x:Name="CharacterClassLB"
                  Grid.Row="1"
                  VerticalAlignment="Stretch"
-                 ItemsSource="{Binding SelectedConfiguration.CharacterClass}"
+                 ItemsSource="{Binding SelectedConfiguration.CharacterClasses}"
                  SelectedItem="{Binding SelectedCharacterClass}"
                  Background="Black"
                  BorderBrush="Transparent"
