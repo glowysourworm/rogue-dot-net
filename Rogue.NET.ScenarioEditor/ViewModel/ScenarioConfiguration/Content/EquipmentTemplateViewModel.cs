@@ -21,7 +21,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
-        private bool _hasReligionRequirement;
 
         public RangeViewModel<int> Class
         {
@@ -73,11 +72,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCurseSpell; }
             set { this.RaiseAndSetIfChanged(ref _hasCurseSpell, value); }
         }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
-        }
 
 
         public EquipmentTemplateViewModel()
@@ -89,7 +83,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.HasReligionRequirement = false;
         }
         public EquipmentTemplateViewModel(DungeonObjectTemplateViewModel tmp)
             : base(tmp)
@@ -101,7 +94,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.HasReligionRequirement = false;
         }
     }
 }

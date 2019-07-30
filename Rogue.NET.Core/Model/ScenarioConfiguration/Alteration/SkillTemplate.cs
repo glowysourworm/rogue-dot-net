@@ -10,7 +10,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        bool _hasReligionRequirement;
         bool _hasAttributeRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
@@ -37,18 +36,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _pointRequirement = value;
                     OnPropertyChanged("PointRequirement");
-                }
-            }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set
-            {
-                if (_hasReligionRequirement != value)
-                {
-                    _hasReligionRequirement = value;
-                    OnPropertyChanged("HasReligionRequirement");
                 }
             }
         }

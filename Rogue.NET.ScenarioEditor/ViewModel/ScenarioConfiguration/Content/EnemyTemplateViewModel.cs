@@ -12,16 +12,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         private bool _generateOnStep;
         private bool _isInvisible;
-        private bool _hasReligion;
         private RangeViewModel<double> _experienceGiven;
-        private RangeViewModel<double> _religiousAffiliationLevel;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
 
-        public bool HasReligion
-        {
-            get { return _hasReligion; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligion, value); }
-        }
         public bool GenerateOnStep
         {
             get { return _generateOnStep; }
@@ -37,11 +30,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _experienceGiven; }
             set { this.RaiseAndSetIfChanged(ref _experienceGiven, value); }
         }
-        public RangeViewModel<double> ReligiousAffiliationLevel
-        {
-            get { return _religiousAffiliationLevel; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationLevel, value); }
-        }
         public BehaviorDetailsTemplateViewModel BehaviorDetails
         {
             get { return _behaviorDetails; }
@@ -50,20 +38,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public EnemyTemplateViewModel()
         {
-            this.HasReligion = false;
             this.GenerateOnStep = true;
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
-            this.ReligiousAffiliationLevel = new RangeViewModel<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
         }
         public EnemyTemplateViewModel(DungeonObjectTemplateViewModel template) : base(template)
         {
-            this.HasReligion = false;
             this.GenerateOnStep = true;
             this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
-            this.ReligiousAffiliationLevel = new RangeViewModel<double>(0.01, 0.03, 0.05, 1);
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();

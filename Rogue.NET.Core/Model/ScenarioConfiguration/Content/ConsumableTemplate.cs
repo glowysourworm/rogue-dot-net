@@ -16,7 +16,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasSpell;
-        private bool _hasReligionRequirement;
         private bool _isProjectile;
         private bool _identifyOnUse;
         private SpellTemplate _spellTemplate;
@@ -106,18 +105,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasSpell = value;
                     OnPropertyChanged("HasSpell");
-                }
-            }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set
-            {
-                if (_hasReligionRequirement != value)
-                {
-                    _hasReligionRequirement = value;
-                    OnPropertyChanged("HasReligionRequirement");
                 }
             }
         }
@@ -219,7 +206,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
         public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
@@ -235,7 +221,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
     }

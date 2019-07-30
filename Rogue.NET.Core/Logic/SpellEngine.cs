@@ -313,8 +313,6 @@ namespace Rogue.NET.Core.Logic
                 case AlterationMagicEffectType.RevealMonsters:
                 case AlterationMagicEffectType.RevealSavePoint:
                 case AlterationMagicEffectType.Uncurse:
-                case AlterationMagicEffectType.RenounceReligion:
-                case AlterationMagicEffectType.AffiliateReligion:
                 default:
                     throw new Exception("Improper use of Other Magic Effect type for character-affecting alteration");
                 case AlterationMagicEffectType.CreateMonster:
@@ -411,10 +409,6 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationMagicEffectType.Uncurse:
                     RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Uncurse));
-                    break;
-                case AlterationMagicEffectType.RenounceReligion:
-                    break;
-                case AlterationMagicEffectType.AffiliateReligion:
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                 default:

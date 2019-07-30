@@ -8,7 +8,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
     {
         int _levelRequirement;
         int _pointRequirement;
-        bool _hasReligionRequirement;
         bool _hasAttributeRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
@@ -23,11 +22,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _pointRequirement; }
             set { this.RaiseAndSetIfChanged(ref _pointRequirement, value); }
-        }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
         }
         public bool HasAttributeRequirement
         {

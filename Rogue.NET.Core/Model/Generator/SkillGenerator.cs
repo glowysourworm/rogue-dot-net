@@ -27,7 +27,8 @@ namespace Rogue.NET.Core.Model.Generator
                 AttributeLevelRequirement = skillTemplate.AttributeLevelRequirement,
                 AttributeRequirement = skillTemplate.AttributeRequirement,
                 HasAttributeRequirement = skillTemplate.HasAttributeRequirement,
-                HasReligionRequirement = skillTemplate.HasReligionRequirement,                
+                // TODO:RELIGION
+                //HasReligionRequirement = skillTemplate.HasReligionRequirement,                
                 LevelRequirement = skillTemplate.LevelRequirement,
                 PointRequirement = skillTemplate.PointRequirement,
                 // TODO:RELIGION

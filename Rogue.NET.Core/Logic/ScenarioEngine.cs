@@ -310,21 +310,6 @@ namespace Rogue.NET.Core.Logic
                 }
             }
 
-            // Check for Religious Affiliation
-            //
-            // 0) Player does NOT have an affiliation (OK)
-            // 1) Player has the SAME affiliation (OK)
-            // 2) Player has a DIFFERENT affiliation (NOT OK)
-            //
-            if (consumable.HasSpell &&
-                consumable.Spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
-                player.CharacterClassAlteration.HasCharacterClass() &&
-                player.CharacterClassAlteration.CharacterClass.RogueName != consumable.Spell.Religion.RogueName)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
-                return LevelContinuationAction.DoNothing;
-            }
-
             // Proceeding with use - so check for identify on use
             if (consumable.IdentifyOnUse)
             {

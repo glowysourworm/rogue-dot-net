@@ -15,7 +15,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasSpell;
         private bool _isProjectile;
         private bool _identifyOnUse;
-        private bool _hasReligionRequirement;
         private SpellTemplateViewModel _spellTemplate;
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
@@ -68,11 +67,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _identifyOnUse; }
             set { this.RaiseAndSetIfChanged(ref _identifyOnUse, value); }
         }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
-        }
         public SpellTemplateViewModel SpellTemplate
         {
             get { return _spellTemplate; }
@@ -112,7 +106,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
         public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
@@ -128,7 +121,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
-            this.HasReligionRequirement = false;
             this.NoteMessage = "";
         }
     }

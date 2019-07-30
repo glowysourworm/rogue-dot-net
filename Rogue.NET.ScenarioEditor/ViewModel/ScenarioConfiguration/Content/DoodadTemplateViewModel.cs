@@ -11,7 +11,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _isVisible;
         private bool _isInvoked;
         private bool _isOneUse;
-        private bool _hasReligionRequirement;
 
         public SpellTemplateViewModel AutomaticMagicSpellTemplate
         {
@@ -43,11 +42,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isOneUse; }
             set { this.RaiseAndSetIfChanged(ref _isOneUse, value); }
         }
-        public bool HasReligionRequirement
-        {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
-        }
 
         public DoodadTemplateViewModel()
         {
@@ -55,7 +49,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
-            this.HasReligionRequirement = false;
         }
         public DoodadTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
         {
@@ -63,7 +56,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
-            this.HasReligionRequirement = false;
         }
     }
 }

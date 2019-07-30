@@ -20,13 +20,7 @@
         RevealFood = 10,
         RevealLevel = 11,
 
-        CreateMonster = 12,
-
-        /// <summary>
-        /// Forces renunciation of religious affiliation
-        /// </summary>
-        RenounceReligion = 13,
-        AffiliateReligion = 14
+        CreateMonster = 12
     }
     public enum AlterationCostType
     {
@@ -147,6 +141,6 @@
         /// <summary>
         /// Applied with a temporary event to be calculated as malign to all in range except source (EXAMPLE WOULD BE POISON)
         /// </summary>
-        TemporaryMalignAllInRangeExceptSource,
+        TemporaryMalignAllInRangeExceptSource
     }
 }

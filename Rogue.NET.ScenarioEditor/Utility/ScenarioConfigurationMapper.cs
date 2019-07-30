@@ -60,56 +60,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            // TODO:RELIGION
-            var consumableReligionRemove = new Action<ConsumableTemplate>((template) =>
-            {
-                template.HasReligionRequirement = false;
-
-                if (template.HasLearnedSkill)
-                    foreach (var skill in template.LearnedSkill.Skills)
-                    {
-                        skill.HasReligionRequirement = false;
-                        //skill.Religion = null;
-                    }
-            });
-            var equipmentReligionRemove = new Action<EquipmentTemplate>(template =>
-            {
-                template.HasReligionRequirement = false;
-
-                if (template.AmmoTemplate != null)
-                    consumableReligionRemove(template.AmmoTemplate);
-            });
-
-            // Remove All References to ReligionTemplate
-            foreach (var template in configuration.ConsumableTemplates)
-                consumableReligionRemove(template);
-
-            foreach (var template in configuration.DoodadTemplates)
-            {
-                template.HasReligionRequirement = false;
-            }
-
-            foreach (var template in configuration.EnemyTemplates)
-            {
-                template.HasReligion = false;
-
-                foreach (var item in template.StartingConsumables)
-                    consumableReligionRemove(item.TheTemplate);
-
-                foreach (var item in template.StartingEquipment)
-                    equipmentReligionRemove(item.TheTemplate);
-            }
-
-            foreach (var template in configuration.EquipmentTemplates)
-                equipmentReligionRemove(template);
-             
-            foreach (var template in configuration.SkillTemplates)
-                foreach (var skill in template.Skills)
-                {
-                    //skill.Religion = null;
-                    skill.HasReligionRequirement = false;
-                }
-
             return configuration;
         }
 

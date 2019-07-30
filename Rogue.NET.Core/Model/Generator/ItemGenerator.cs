@@ -65,8 +65,8 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.AttackAttributes = equipmentTemplate.AttackAttributes
                                                           .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                           .ToList();
-
-            equipment.HasReligionRequirement = equipmentTemplate.HasReligionRequirement;
+            // TODO:RELIGION
+            // equipment.HasReligionRequirement = equipmentTemplate.HasReligionRequirement;
 
             // TODO:RELIGION
             // Religious Affiliation Requirement
@@ -108,7 +108,8 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
             consumable.NoteMessage = consumableTemplate.NoteMessage;
 
-            consumable.HasReligionRequirement = consumableTemplate.HasReligionRequirement;
+            // TODO:RELIGION
+            //consumable.HasReligionRequirement = consumableTemplate.HasReligionRequirement;
 
             // TODO:RELIGION
             // Religious Affiliation Requirement
