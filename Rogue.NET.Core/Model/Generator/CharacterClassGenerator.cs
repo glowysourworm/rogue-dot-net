@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Model.Generator
                     MagicBlockProbability = template.BonusAttribute == CharacterAttribute.MagicBlock ? template.BonusAttributeValue : 0,
                     MpPerStep = template.BonusAttribute == CharacterAttribute.MpRegen ? template.BonusAttributeValue : 0,
                     Speed = template.BonusAttribute == CharacterAttribute.Speed ? template.BonusAttributeValue : 0,
-                    Strength = template.BonusAttribute == CharacterAttribute.Strength ? template.BonusAttributeValue : 0,
+                    Strength = template.BonusAttribute == CharacterAttribute.Strength ? template.BonusAttributeValue : 0
                 },
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,

@@ -132,18 +132,6 @@
                                                 <TextBox Text="{Binding Name}" IsReadOnly="True" Width="300" HorizontalAlignment="Right" />
                                             </Grid>                                            
                                             <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Follower Name" FontSize="16" HorizontalAlignment="Left" />
-                                                <TextBox Text="{Binding FollowerName}" Width="300" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Is Identified (On Startup)" FontSize="16" HorizontalAlignment="Left" />
-                                                <CheckBox IsChecked="{Binding IsIdentified}" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Player Can Choose (On Startup)" FontSize="16" HorizontalAlignment="Left" />
-                                                <CheckBox IsChecked="{Binding CanStartWith}" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10">
                                                 <TextBlock Text="Short Description" Foreground="White" />
                                                 <TextBox Text="{Binding ShortDescription}" 
                                                             HorizontalAlignment="Right" 
@@ -176,14 +164,6 @@
                                             <Grid Margin="10">
                                                 <TextBlock Foreground="White" Text="Has Attack Attribute Bonus" FontSize="16" HorizontalAlignment="Left" />
                                                 <CheckBox IsChecked="{Binding HasBonusAttackAttributes}" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Allows Renunciation" FontSize="16" HorizontalAlignment="Left" />
-                                                <CheckBox IsChecked="{Binding AllowsRenunciation}" HorizontalAlignment="Right" />
-                                            </Grid>
-                                            <Grid Margin="10">
-                                                <TextBlock Foreground="White" Text="Allows Re-Affiliation" FontSize="16" HorizontalAlignment="Left" />
-                                                <CheckBox IsChecked="{Binding AllowsReAffiliation}" HorizontalAlignment="Right" />
                                             </Grid>
                                             <Grid Margin="10" Visibility="{Binding HasAttributeBonus, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                                 <TextBlock Foreground="White" Text="Bonus Attribute" FontSize="16" HorizontalAlignment="Left" />
