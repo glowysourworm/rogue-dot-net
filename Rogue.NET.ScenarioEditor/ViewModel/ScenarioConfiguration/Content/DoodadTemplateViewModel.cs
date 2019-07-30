@@ -11,6 +11,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _isVisible;
         private bool _isInvoked;
         private bool _isOneUse;
+        private bool _hasCharacterClassRequirement;
+        private CharacterClassTemplateViewModel _characterClass;
 
         public SpellTemplateViewModel AutomaticMagicSpellTemplate
         {
@@ -42,6 +44,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isOneUse; }
             set { this.RaiseAndSetIfChanged(ref _isOneUse, value); }
         }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
+        public CharacterClassTemplateViewModel CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
+        }
 
         public DoodadTemplateViewModel()
         {
@@ -49,6 +61,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
         }
         public DoodadTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
         {
@@ -56,6 +70,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private int _levelRequired;
         private RangeViewModel<int> _useCount;
         private bool _hasLearnedSkill;
+        private bool _hasCharacterClassRequirement;
         private bool _hasSpell;
         private bool _isProjectile;
         private bool _identifyOnUse;
@@ -19,6 +20,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
         private SpellTemplateViewModel _ammoSpellTemplate;
+        private CharacterClassTemplateViewModel _characterClass;
         private string _noteMessage;
 
 
@@ -92,6 +94,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _noteMessage; }
             set { this.RaiseAndSetIfChanged(ref _noteMessage, value); }
         }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
+        public CharacterClassTemplateViewModel CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
+        }
 
         public ConsumableTemplateViewModel()
         {
@@ -106,6 +118,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
             this.NoteMessage = "";
         }
         public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
@@ -121,6 +135,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
             this.NoteMessage = "";
         }
     }

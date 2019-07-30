@@ -9,9 +9,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         int _levelRequirement;
         int _pointRequirement;
         bool _hasAttributeRequirement;
+        bool _hasCharacterClassRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SpellTemplateViewModel _alteration;
+        CharacterClassTemplateViewModel _characterClass;
 
         public int LevelRequirement
         {
@@ -28,6 +30,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _hasAttributeRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasAttributeRequirement, value); }
         }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
         public double AttributeLevelRequirement
         {
             get { return _attributeLevelRequirement; }
@@ -43,11 +50,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _alteration; }
             set { this.RaiseAndSetIfChanged(ref _alteration, value); }
         }
+        public CharacterClassTemplateViewModel CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
+        }
 
         public SkillTemplateViewModel()
         {
             this.Alteration = new SpellTemplateViewModel();
             this.AttributeRequirement = CharacterAttribute.Agility;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
         }
     }
 }

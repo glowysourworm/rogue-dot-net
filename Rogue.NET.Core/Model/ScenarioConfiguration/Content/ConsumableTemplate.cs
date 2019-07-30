@@ -24,6 +24,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SpellTemplate _ammoSpellTemplate;
         private string _noteMessage;
 
+        private bool _hasCharacterClassRequirement;
+        private CharacterClassTemplate _characterClass;
+
         public ConsumableType Type
         {
             get { return _type; }
@@ -189,6 +192,31 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _noteMessage = value;
                     OnPropertyChanged("NoteMessage");
+                }
+            }
+        }
+
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set
+            {
+                if (_hasCharacterClassRequirement != value)
+                {
+                    _hasCharacterClassRequirement = value;
+                    OnPropertyChanged("HasCharacterClassRequirement");
+                }
+            }
+        }
+        public CharacterClassTemplate CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                   _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

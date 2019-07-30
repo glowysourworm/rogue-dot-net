@@ -21,6 +21,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
+        private bool _hasCharacterClassRequirement;
+        private CharacterClassTemplate _characterClass;
 
         public Range<int> Class
         {
@@ -139,6 +141,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasCurseSpell = value;
                     OnPropertyChanged("HasCurseSpell");
+                }
+            }
+        }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set
+            {
+                if (_hasCharacterClassRequirement != value)
+                {
+                    _hasCharacterClassRequirement = value;
+                    OnPropertyChanged("HasCharacterClassRequirement");
+                }
+            }
+        }
+        public CharacterClassTemplate CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

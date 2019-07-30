@@ -13,6 +13,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isVisible;
         private bool _isInvoked;
         private bool _isOneUse;
+        private bool _hasCharacterClassRequirement;
+        private CharacterClassTemplate _characterClass;
 
         public SpellTemplate AutomaticMagicSpellTemplate
         {
@@ -83,6 +85,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _isOneUse = value;
                     OnPropertyChanged("IsOneUse");
+                }
+            }
+        }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set
+            {
+                if (_hasCharacterClassRequirement != value)
+                {
+                    _hasCharacterClassRequirement = value;
+                    OnPropertyChanged("HasCharacterClassRequirement");
+                }
+            }
+        }
+        public CharacterClassTemplate CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

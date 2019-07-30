@@ -21,6 +21,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private int _levelRequired;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
+        private bool _hasCharacterClassRequirement;
+        private CharacterClassTemplateViewModel _characterClass;
 
         public RangeViewModel<int> Class
         {
@@ -72,6 +74,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCurseSpell; }
             set { this.RaiseAndSetIfChanged(ref _hasCurseSpell, value); }
         }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
+        public CharacterClassTemplateViewModel CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
+        }
 
 
         public EquipmentTemplateViewModel()
@@ -83,6 +95,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
         }
         public EquipmentTemplateViewModel(DungeonObjectTemplateViewModel tmp)
             : base(tmp)
@@ -94,6 +108,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplateViewModel();
         }
     }
 }

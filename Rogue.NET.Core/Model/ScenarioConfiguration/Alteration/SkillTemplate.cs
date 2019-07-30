@@ -11,9 +11,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         int _levelRequirement;
         int _pointRequirement;
         bool _hasAttributeRequirement;
+        bool _hasCharacterClassRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SpellTemplate _alteration;
+        CharacterClassTemplate _characterClass;
 
         public int LevelRequirement
         {
@@ -48,6 +50,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _hasAttributeRequirement = value;
                     OnPropertyChanged("HasAttributeRequirement");
+                }
+            }
+        }
+        public bool HasCharacterClassRequirement
+        {
+            get { return _hasCharacterClassRequirement; }
+            set
+            {
+                if (_hasCharacterClassRequirement != value)
+                {
+                    _hasCharacterClassRequirement = value;
+                    OnPropertyChanged("HasCharacterClassRequirement");
                 }
             }
         }
@@ -87,11 +101,25 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        public CharacterClassTemplate CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
+                }
+            }
+        }
 
         public SkillTemplate()
         {
             this.Alteration = new SpellTemplate();
             this.AttributeRequirement = CharacterAttribute.Agility;
+            this.HasCharacterClassRequirement = false;
+            this.CharacterClass = new CharacterClassTemplate();
         }
     }
 }
