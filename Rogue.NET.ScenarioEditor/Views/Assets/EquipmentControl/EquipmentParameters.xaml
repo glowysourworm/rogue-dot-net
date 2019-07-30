@@ -46,10 +46,10 @@
             <Grid Margin="10"
                       Visibility="{Binding HasReligiousAffiliationRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Foreground="White" Text="Religion Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                <ComboBox x:Name="ReligionCB" 
+                <ComboBox x:Name="CharacterClassCB" 
                           DisplayMemberPath="Name"
-                          SelectedItem="{Binding Religion}"
-                          SelectedValue="{Binding Religion.Name}"
+                          SelectedItem="{Binding CharacterClass}"
+                          SelectedValue="{Binding CharacterClass.Name}"
                           SelectedValuePath="Name"
                           VerticalAlignment="Center" 
                           Width="200"                              

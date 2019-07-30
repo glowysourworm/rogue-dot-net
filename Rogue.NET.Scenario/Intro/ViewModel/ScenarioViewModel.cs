@@ -11,11 +11,11 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
         public Color SmileyLineColor { get; set; }
         public string Description { get; set; }
 
-        public ObservableCollection<ReligionSelectionViewModel> Religions { get; set; }
+        public ObservableCollection<CharacterClassSelectionViewModel> CharacterClasses { get; set; }
 
         public ScenarioViewModel()
         {
-            this.Religions = new ObservableCollection<ReligionSelectionViewModel>();
+            this.CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>();
         }
     }
 }

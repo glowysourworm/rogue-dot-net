@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Generator
         public IEnumerable<Level> CreateContents(
             IEnumerable<Level> levels, 
             ScenarioConfigurationContainer configurationContainer, 
-            IEnumerable<Religion> religions,
+            IEnumerable<CharacterClass> religions,
             IEnumerable<AttackAttribute> scenarioAttributes,
             bool survivorMode)
         {
@@ -51,7 +51,7 @@ namespace Rogue.NET.Core.Model.Generator
             return result;
         }
 
-        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
+        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.Rooms.ToList();
@@ -102,7 +102,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             return level;
         }
-        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<Religion> religions)
+        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<CharacterClass> religions)
         {
             foreach (var doodadTemplate in configurationContainer.DoodadTemplates)
             {
@@ -122,7 +122,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
+        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
         {
             foreach (var enemyTemplate in configurationContainer.EnemyTemplates)
             {
@@ -141,7 +141,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<Religion> religions)
+        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<CharacterClass> religions)
         {
             // Equipment for the level
             foreach (var template in configurationContainer.EquipmentTemplates)
@@ -269,7 +269,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
             var partyRoom = rooms.PickRandom(_randomSequenceGenerator.Get());
@@ -344,7 +344,7 @@ namespace Rogue.NET.Core.Model.Generator
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
+        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 

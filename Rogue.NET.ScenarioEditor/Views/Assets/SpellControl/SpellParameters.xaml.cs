@@ -22,7 +22,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
                 this.AlteredStateCB.ItemsSource = configuration.AlteredCharacterStates;
                 this.AlteredStateAuraCB.ItemsSource = configuration.AlteredCharacterStates;
                 this.AnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
-                this.ReligiousAffiliationReligionCB.ItemsSource = configuration.Religions;
             });
 
             this.AnimationsLB.AddEvent += AnimationsLB_AddEvent;

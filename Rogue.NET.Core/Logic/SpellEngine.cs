@@ -31,7 +31,6 @@ namespace Rogue.NET.Core.Logic
     {
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
-        readonly IReligionEngine _religionEngine;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IPlayerProcessor _playerProcessor;
         readonly IInteractionProcessor _interactionProcessor;
@@ -48,7 +47,6 @@ namespace Rogue.NET.Core.Logic
         public SpellEngine(
             IModelService modelService,
             ILayoutEngine layoutEngine,
-            IReligionEngine religionEngine,
             IAlterationProcessor alterationProcessor, 
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
@@ -60,7 +58,6 @@ namespace Rogue.NET.Core.Logic
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
-            _religionEngine = religionEngine;
             _alterationProcessor = alterationProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
@@ -416,11 +413,8 @@ namespace Rogue.NET.Core.Logic
                     RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Uncurse));
                     break;
                 case AlterationMagicEffectType.RenounceReligion:
-                    // Forced renunciation by Alteration
-                    _religionEngine.RenounceReligion(true);
                     break;
                 case AlterationMagicEffectType.AffiliateReligion:
-                    _religionEngine.Affiliate(alteration.Religion);
                     break;
                 case AlterationMagicEffectType.CreateMonster:
                 default:
@@ -642,7 +636,7 @@ namespace Rogue.NET.Core.Logic
 
             if (enemyTemplate != null)
             {
-                var minion = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions, _modelService.GetAttackAttributes());
+                var minion = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.CharacterClasses, _modelService.GetAttackAttributes());
 
                 minion.Location = location;
 
@@ -660,7 +654,7 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
 
-                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.Religions, _modelService.GetAttackAttributes());
+                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.CharacterClasses, _modelService.GetAttackAttributes());
                 enemy.Location = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
 
                 _modelService.Level.AddContent(enemy);

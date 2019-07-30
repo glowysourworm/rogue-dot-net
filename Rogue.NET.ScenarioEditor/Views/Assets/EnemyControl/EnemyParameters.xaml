@@ -71,12 +71,12 @@
         </Grid>
         <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <TextBlock Foreground="White" Text="Religious Affiliation" VerticalAlignment="Center" />
-            <ComboBox x:Name="ReligionCB" 
+            <ComboBox x:Name="CharacterClassCB" 
                       DisplayMemberPath="Name" 
-                      SelectedValue="{Binding Religion.Name}"
+                      SelectedValue="{Binding CharacterClass.Name}"
                       SelectedValuePath="Name"
                       Width="200" 
-                      SelectedItem="{Binding Religion}"
+                      SelectedItem="{Binding CharacterClass}"
                       VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Grid>
         <Grid Visibility="{Binding HasReligiousAffiliation, Converter={StaticResource BoolVisibilityCollapseConverter}}">

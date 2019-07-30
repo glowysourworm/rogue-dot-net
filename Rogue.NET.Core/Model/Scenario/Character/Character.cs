@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Mp { get; set; }
 
         public abstract CharacterAlteration Alteration { get; set; }
-        public virtual CharacterReligiousAlteration ReligiousAlteration { get; set; }
+        public virtual CharacterClassAlteration CharacterClassAlteration { get; set; }
 
         public Character() : base() 
         {
@@ -63,8 +63,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         {
             this.Equipment = new Dictionary<string, Equipment>();
             this.Consumables = new Dictionary<string, Consumable>();
-
-            this.ReligiousAlteration = new CharacterReligiousAlteration();
+            this.CharacterClassAlteration = new CharacterClassAlteration();
         }
     }
 }

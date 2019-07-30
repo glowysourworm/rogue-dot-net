@@ -112,36 +112,36 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         }
         #endregion
 
-        #region Religion
-        private void AddReligionButton_Click(object sender, RoutedEventArgs e)
+        #region Character Classes
+        private void AddCharacterClassButton_Click(object sender, RoutedEventArgs e)
         {
             var config = this.DataContext as ScenarioConfigurationContainerViewModel;
-            if (config == null || string.IsNullOrEmpty(this.ReligionTB.Text))
+            if (config == null || string.IsNullOrEmpty(this.CharacterClassTB.Text))
                 return;
 
-            if (config.Religions.Any(x => x.Name == this.ReligionTB.Text))
+            if (config.CharacterClasses.Any(x => x.Name == this.CharacterClassTB.Text))
                 return;
 
-            var religion = new ReligionTemplateViewModel()
+            var characterClass = new CharacterClassTemplateViewModel()
             {
-                Name = this.ReligionTB.Text,
+                Name = this.CharacterClassTB.Text,
                 BonusAttackAttributes = config.AttackAttributes.DeepClone()
             };
 
-            religion.SymbolDetails.Type = SymbolTypes.DisplayImage;
-            religion.SymbolDetails.DisplayIcon = this.ReligionSymbolCB.Value;
+            characterClass.SymbolDetails.Type = SymbolTypes.DisplayImage;
+            characterClass.SymbolDetails.DisplayIcon = this.CharacterClassSymbolCB.Value;
 
-            _eventAggregator.GetEvent<AddReligionEvent>().Publish(religion);
+            _eventAggregator.GetEvent<AddCharacterClassEvent>().Publish(characterClass);
 
-            this.ReligionTB.Text = "";
+            this.CharacterClassTB.Text = "";
         }
 
-        private void RemoveReligionButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveCharacterClassButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.ReligionLB.SelectedItem as ReligionTemplateViewModel;
+            var selectedItem = this.CharacterClassLB.SelectedItem as CharacterClassTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<RemoveReligionEvent>().Publish(selectedItem);
+                _eventAggregator.GetEvent<RemoveCharacterClassEvent>().Publish(selectedItem);
             }
         }
         #endregion

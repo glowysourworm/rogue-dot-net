@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.Generator
             _itemGenerator = itemGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var player = new Player();
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
@@ -75,7 +75,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                 for (int i = 0; i < generationNumber; i++)
                 {
-                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate, religions);
+                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate, characterClasses);
                     player.Consumables.Add(consumable.Id, consumable);
                 }
             }
@@ -90,7 +90,7 @@ namespace Rogue.NET.Core.Model.Generator
                 int generationNumber = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationProbability);
                 for (int i = 0; i < generationNumber; i++)
                 {
-                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate, religions);
+                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate, characterClasses);
                     equipment.IsEquipped = template.EquipOnStartup;
                     player.Equipment.Add(equipment.Id, equipment);
                 }
@@ -98,22 +98,21 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
-                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x, religions))
+                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x, characterClasses))
                                           .ToList();
 
-            // Starting Religion
-            if (!string.IsNullOrEmpty(religionName))
+            // Character Class
+            if (!string.IsNullOrEmpty(characterClassName))
             {
-                var religion = religions.First(x => x.RogueName == religionName);
+                var characterClass = characterClasses.First(x => x.RogueName == characterClassName);
 
                 // Start with affiliation to the chosen religion
-                player.ReligiousAlteration.Initialize(scenarioAttributes);
-                player.ReligiousAlteration.Affiliate(religion);
+                player.CharacterClassAlteration.Initialize(characterClass, scenarioAttributes);
             }
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -191,12 +190,6 @@ namespace Rogue.NET.Core.Model.Generator
 
                 enemy.Equipment.Add(equipment.Id, equipment);
             }
-
-            // Religion -> Initialize() -> Generate random affiliation level based on range
-            enemy.ReligiousAlteration.Initialize(scenarioAttributes);
-
-            if (enemyTemplate.HasReligion)
-                enemy.ReligiousAlteration.Affiliate(religions.First(x => x.RogueName == enemyTemplate.Religion.Name));
 
             enemyTemplate.HasBeenGenerated = true;
             return enemy;

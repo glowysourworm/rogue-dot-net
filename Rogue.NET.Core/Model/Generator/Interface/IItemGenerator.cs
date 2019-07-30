@@ -7,18 +7,18 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IItemGenerator
     {
-        Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<Religion> religions);
+        Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> religions);
 
-        Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<Religion> religions);
-
-        /// <summary>
-        /// Generates a single consumable for a given probability 0 < x < 1
-        /// </summary>
-        Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<Religion> religions);
+        Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<CharacterClass> religions);
 
         /// <summary>
         /// Generates a single consumable for a given probability 0 < x < 1
         /// </summary>
-        Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<Religion> religions, bool equipOnStartup = false);
+        Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<CharacterClass> religions);
+
+        /// <summary>
+        /// Generates a single consumable for a given probability 0 < x < 1
+        /// </summary>
+        Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<CharacterClass> religions, bool equipOnStartup = false);
     }
 }

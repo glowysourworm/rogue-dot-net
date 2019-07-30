@@ -34,7 +34,6 @@ namespace Rogue.NET.Core.Logic
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
         readonly ISpellEngine _spellEngine;
-        readonly IReligionEngine _religionEngine;
         readonly IEnemyProcessor _enemyProcessor;
         readonly IPlayerProcessor _playerProcessor;        
         readonly IInteractionProcessor _interactionProcessor;
@@ -52,7 +51,6 @@ namespace Rogue.NET.Core.Logic
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
             ISpellEngine spellEngine,
-            IReligionEngine religionEngine,
             IEnemyProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
@@ -65,7 +63,6 @@ namespace Rogue.NET.Core.Logic
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
             _spellEngine = spellEngine;
-            _religionEngine = religionEngine;
             _enemyProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
@@ -143,14 +140,10 @@ namespace Rogue.NET.Core.Logic
                 return false;
             }
 
-            // Identify Religion
-            if (equipment.HasReligionRequirement)
-                _religionEngine.IdentifyReligion(equipment.Religion);
-
-            // Check Religious Affiliation Requirement
+            // Check Character Class Requirement
             if (equipment.HasReligionRequirement &&
-               (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion.RogueName != equipment.Religion.RogueName))
+               (!player.CharacterClassAlteration.HasCharacterClass() ||
+                 player.CharacterClassAlteration.CharacterClass.RogueName != equipment.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -260,10 +253,6 @@ namespace Rogue.NET.Core.Logic
 
             //Set enemy identified
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
-
-            // Check for Enemy Religion to identify
-            if (enemy.ReligiousAlteration.IsAffiliated())
-                _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.Religion);
 
             // Publish Level update
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
@@ -868,7 +857,7 @@ namespace Rogue.NET.Core.Logic
 
             // Create enemy from template
             var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
-            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.Religions, _modelService.GetAttackAttributes());
+            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.CharacterClasses, _modelService.GetAttackAttributes());
             
             // Map enemy location to level
             enemy.Location = availableLocation;

@@ -22,7 +22,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
         private bool _hasReligionRequirement;
-        private ReligionTemplate _religion;
 
         public Range<int> Class
         {
@@ -156,18 +155,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligionTemplate Religion
-        {
-            get { return _religion; }
-            set
-            {
-                if (_religion != value)
-                {
-                    _religion = value;
-                    OnPropertyChanged("Religion");
-                }
-            }
-        }
 
 
         public EquipmentTemplate()
@@ -180,7 +167,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
         }
         public EquipmentTemplate(DungeonObjectTemplate tmp)
             : base(tmp)
@@ -193,7 +179,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
         }
     }
 }

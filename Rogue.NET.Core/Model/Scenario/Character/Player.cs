@@ -17,8 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public int SkillPoints { get; set; }
 
-        public override CharacterAlteration Alteration { get; set; }
-
+        public override CharacterAlteration Alteration { get; set; }        
         public IList<SkillSet> SkillSets { get; set; }
 
         public Player() : base()
@@ -26,6 +25,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             this.SkillSets = new List<SkillSet>();
             this.IsPhysicallyVisible = true;
             this.Alteration = new PlayerAlteration();
+            this.CharacterClassAlteration = new CharacterClassAlteration();
         }
         public Player(string name, SmileyMoods mood, string bodyColor, string lineColor, string auraColor) 
             : base(name, mood, bodyColor, lineColor, auraColor)
@@ -33,6 +33,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             this.SkillSets = new List<SkillSet>();
             this.IsPhysicallyVisible = true;
             this.Alteration = new PlayerAlteration();
+            this.CharacterClassAlteration = new CharacterClassAlteration();
         }
     }
 }

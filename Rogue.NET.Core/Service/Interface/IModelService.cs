@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Service.Interface
                 Level level,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration,
-                IEnumerable<Religion> religions);
+                IEnumerable<CharacterClass> religions);
 
         void Unload();
 
@@ -48,7 +48,7 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Religions for the scenario
         /// </summary>
-        IEnumerable<Religion> Religions { get; }
+        IEnumerable<CharacterClass> CharacterClasses { get; }
 
         /// <summary>
         /// Primary method to process an update to the contents. This should be called after

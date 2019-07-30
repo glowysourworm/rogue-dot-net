@@ -12,7 +12,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         bool _hasAttributeRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
-        ReligionTemplateViewModel _religion;
         SpellTemplateViewModel _alteration;
 
         public int LevelRequirement
@@ -45,11 +44,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _attributeRequirement; }
             set { this.RaiseAndSetIfChanged(ref _attributeRequirement, value); }
         }
-        public ReligionTemplateViewModel Religion
-        {
-            get { return _religion; }
-            set { this.RaiseAndSetIfChanged(ref _religion, value); }
-        }
         public SpellTemplateViewModel Alteration
         {
             get { return _alteration; }
@@ -60,7 +54,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             this.Alteration = new SpellTemplateViewModel();
             this.AttributeRequirement = CharacterAttribute.Agility;
-            this.Religion = new ReligionTemplateViewModel();
         }
     }
 }

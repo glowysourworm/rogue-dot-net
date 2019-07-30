@@ -22,7 +22,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private bool _stackable;
         private string _createMonsterEnemy;
         private string _displayName;
-        private ReligionTemplate _religiousAffiliationReligion;
 
         public List<AnimationTemplate> Animations { get; set; }
         public AlterationCostTemplate Cost
@@ -157,19 +156,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public ReligionTemplate ReligiousAffiliationReligion
-        {
-            get { return _religiousAffiliationReligion; }
-            set
-            {
-                if (_religiousAffiliationReligion != value)
-                {
-                    _religiousAffiliationReligion = value;
-                    OnPropertyChanged("ReligiousAffiliationReligion");
-                }
-            }
-        }
-
 
         public SpellTemplate()
         {
@@ -177,7 +163,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
             this.Cost = new AlterationCostTemplate();
             this.Effect = new AlterationEffectTemplate();
             this.AuraEffect = new AlterationEffectTemplate();
-            this.ReligiousAffiliationReligion = new ReligionTemplate();
 
             this.CreateMonsterEnemy = "";
             this.DisplayName = "";

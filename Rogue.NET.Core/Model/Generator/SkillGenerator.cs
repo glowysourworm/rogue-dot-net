@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<Religion> religions)
+        public Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<CharacterClass> religions)
         {
             return new Skill()
             { 
@@ -30,7 +30,8 @@ namespace Rogue.NET.Core.Model.Generator
                 HasReligionRequirement = skillTemplate.HasReligionRequirement,                
                 LevelRequirement = skillTemplate.LevelRequirement,
                 PointRequirement = skillTemplate.PointRequirement,
-                Religion = skillTemplate.HasReligionRequirement ? religions.First(religion => religion.RogueName == skillTemplate.Religion.Name) : new Religion(),
+                // TODO:RELIGION
+                //Religion = skillTemplate.HasReligionRequirement ? religions.First(religion => religion.RogueName == skillTemplate.Religion.Name) : new CharacterClass(),
                 SkillPointRequirement = skillTemplate.PointRequirement
             };
         }

@@ -37,7 +37,6 @@ namespace Rogue.NET.Core.Logic
         readonly ILayoutEngine _layoutEngine;
         readonly IContentEngine _contentEngine;
         readonly ISpellEngine _spellEngine;
-        readonly IReligionEngine _religionEngine;
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IInteractionProcessor _interactionProcessor;
@@ -54,7 +53,6 @@ namespace Rogue.NET.Core.Logic
             ILayoutEngine layoutEngine,
             IContentEngine contentEngine,
             ISpellEngine spellEngine,
-            IReligionEngine religionEngine,
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
             IInteractionProcessor interactionProcessor,
@@ -66,7 +64,6 @@ namespace Rogue.NET.Core.Logic
             _layoutEngine = layoutEngine;
             _contentEngine = contentEngine;
             _spellEngine = spellEngine;
-            _religionEngine = religionEngine;
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _interactionProcessor = interactionProcessor;
@@ -245,8 +242,8 @@ namespace Rogue.NET.Core.Logic
 
             // Check Religious Affiliation Requirement
             if (thrownItem.HasReligionRequirement &&
-               (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion.RogueName != thrownItem.Religion.RogueName))
+               (!player.CharacterClassAlteration.HasCharacterClass() ||
+                 player.CharacterClassAlteration.CharacterClass.RogueName != thrownItem.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -289,8 +286,8 @@ namespace Rogue.NET.Core.Logic
 
             // Check Religious Affiliation Requirement
             if (consumable.HasReligionRequirement &&
-               (!player.ReligiousAlteration.IsAffiliated() ||
-                 player.ReligiousAlteration.Religion.RogueName != consumable.Religion.RogueName))
+               (!player.CharacterClassAlteration.HasCharacterClass() ||
+                 player.CharacterClassAlteration.CharacterClass.RogueName != consumable.Religion.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -321,8 +318,8 @@ namespace Rogue.NET.Core.Logic
             //
             if (consumable.HasSpell &&
                 consumable.Spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
-                player.ReligiousAlteration.IsAffiliated() &&
-                player.ReligiousAlteration.Religion.RogueName != consumable.Spell.Religion.RogueName)
+                player.CharacterClassAlteration.HasCharacterClass() &&
+                player.CharacterClassAlteration.CharacterClass.RogueName != consumable.Spell.Religion.RogueName)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
                 return LevelContinuationAction.DoNothing;
@@ -425,10 +422,6 @@ namespace Rogue.NET.Core.Logic
             item.IsIdentified = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
-
-            // Check for Religious Affiliation and Identify
-            if (item.HasReligionRequirement)
-                _religionEngine.IdentifyReligion(item.Religion);
 
             // Queue an update
             if (item is Consumable)
@@ -543,8 +536,8 @@ namespace Rogue.NET.Core.Logic
 
                 // Check Religious Affiliation Requirement
                 if (ammo.HasReligionRequirement &&
-                   (!_modelService.Player.ReligiousAlteration.IsAffiliated() ||
-                     _modelService.Player.ReligiousAlteration.Religion.RogueName != ammo.Religion.RogueName))
+                   (!_modelService.Player.CharacterClassAlteration.HasCharacterClass() ||
+                     _modelService.Player.CharacterClassAlteration.CharacterClass.RogueName != ammo.Religion.RogueName))
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
@@ -858,27 +851,9 @@ namespace Rogue.NET.Core.Logic
                     {
                         var doodadMagic = (DoodadMagic)doodad;
 
-                        // Identify Religion
-                        if (doodadMagic.HasReligionRequirement)
-                            _religionEngine.IdentifyReligion(doodadMagic.Religion);
-
                         // Has been exhausted
                         if (doodadMagic.IsOneUse && doodadMagic.HasBeenUsed || !doodadMagic.IsInvoked)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens");
-
-                        // Check for Religious Affiliation
-                        //
-                        // 0) Player does NOT have an affiliation (OK)
-                        // 1) Player has the SAME affiliation (OK)
-                        // 2) Player has a DIFFERENT affiliation (NOT OK)
-                        //
-                        else if (doodadMagic.IsInvoked &&
-                                 doodadMagic.InvokedSpell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion &&
-                                 player.ReligiousAlteration.IsAffiliated() &&
-                                 player.ReligiousAlteration.Religion.RogueName != doodadMagic.InvokedSpell.Religion.RogueName)
-                        {
-                            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You must first Renounce your Religion (Press \"R\" to Renounce)");
-                        }
 
                         else
                         {

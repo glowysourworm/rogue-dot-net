@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration
         public bool IsStackable { get; set; }
 
         // Religious Affiliation Effect
-        public Religion Religion { get; set; }
+        public CharacterClass Religion { get; set; }
 
         /// <summary>
         /// Spell Id used as a reference for lookup

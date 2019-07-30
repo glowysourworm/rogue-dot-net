@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface ISpellGenerator
     {
-        Spell GenerateSpell(SpellTemplate spellTemplate, IEnumerable<Religion> religions);
+        Spell GenerateSpell(SpellTemplate spellTemplate, IEnumerable<CharacterClass> religions);
     }
 }

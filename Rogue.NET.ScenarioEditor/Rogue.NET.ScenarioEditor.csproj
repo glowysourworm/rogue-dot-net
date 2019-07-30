@@ -257,7 +257,7 @@
     <Compile Include="Events\AddAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddAttackAttributeEvent.cs" />
-    <Compile Include="Events\AddReligionEvent.cs" />
+    <Compile Include="Events\AddCharacterClassEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
@@ -268,7 +268,7 @@
     <Compile Include="Events\RemoveAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
     <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
-    <Compile Include="Events\RemoveReligionEvent.cs" />
+    <Compile Include="Events\RemoveCharacterClassEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
@@ -346,6 +346,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\CharacterClassTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ReligionTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />

@@ -99,56 +99,57 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
 
-            // Religions
-            foreach (var religion in configuration.Religions)
+            // Character Classes
+            foreach (var religion in configuration.CharacterClasses)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, religion.BonusAttackAttributes);
         }
 
-        public void UpdateReligions(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Alterations
-            foreach (var alteration in configuration.MagicSpells
-                                                    .Where(x => x.Type == AlterationType.OtherMagicEffect &&
-                                                                x.OtherEffectType == AlterationMagicEffectType.AffiliateReligion))
-            {
-                alteration.ReligiousAffiliationReligion = MatchByName(configuration.Religions, alteration.ReligiousAffiliationReligion);
-            }
+            // TODO:RELIGION
+            //// Alterations
+            //foreach (var alteration in configuration.MagicSpells
+            //                                        .Where(x => x.Type == AlterationType.OtherMagicEffect &&
+            //                                                    x.OtherEffectType == AlterationMagicEffectType.AffiliateReligion))
+            //{
+            //    alteration.ReligiousAffiliationReligion = MatchByName(configuration.Religions, alteration.ReligiousAffiliationReligion);
+            //}
 
-            // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligionRequirement))
-            {
-                consumable.Religion = MatchByName(configuration.Religions, consumable.Religion);
+            //// Consumables
+            //foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligionRequirement))
+            //{
+            //    consumable.Religion = MatchByName(configuration.Religions, consumable.Religion);
 
-                if (consumable.Religion == null)
-                    consumable.HasReligionRequirement= false;
-            }
+            //    if (consumable.Religion == null)
+            //        consumable.HasReligionRequirement= false;
+            //}
 
-            // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
-            {
-                equipment.Religion = MatchByName(configuration.Religions, equipment.Religion);
+            //// Equipment
+            //foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
+            //{
+            //    equipment.Religion = MatchByName(configuration.Religions, equipment.Religion);
 
-                if (equipment.Religion == null)
-                    equipment.HasReligionRequirement = false;
-            }
+            //    if (equipment.Religion == null)
+            //        equipment.HasReligionRequirement = false;
+            //}
 
-            // Doodads
-            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
-            {
-                doodad.Religion = MatchByName(configuration.Religions, doodad.Religion);
+            //// Doodads
+            //foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
+            //{
+            //    doodad.Religion = MatchByName(configuration.Religions, doodad.Religion);
 
-                if (doodad.Religion == null)
-                    doodad.HasReligionRequirement = false;
-            }
+            //    if (doodad.Religion == null)
+            //        doodad.HasReligionRequirement = false;
+            //}
 
-            // Enemies
-            foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligion))
-            {
-                enemy.Religion = MatchByName(configuration.Religions, enemy.Religion);
+            //// Enemies
+            //foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligion))
+            //{
+            //    enemy.Religion = MatchByName(configuration.Religions, enemy.Religion);
 
-                if (enemy.Religion == null)
-                    enemy.HasReligion = false;
-            }
+            //    if (enemy.Religion == null)
+            //        enemy.HasReligion = false;
+            //}
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)

@@ -18,7 +18,7 @@ namespace Rogue.NET.Core.Model.Generator
         readonly ILayoutGenerator _layoutGenerator;
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
-        readonly IReligionGenerator _religionGenerator;
+        readonly ICharacterClassGenerator _characterClassGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
-            IReligionGenerator religionGenerator,
+            ICharacterClassGenerator religionGenerator,
             IAttackAttributeGenerator attackAttributeGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
@@ -38,13 +38,13 @@ namespace Rogue.NET.Core.Model.Generator
             _layoutGenerator = layoutGenerator;
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
-            _religionGenerator = religionGenerator;
+            _characterClassGenerator = religionGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string religionName, int seed, bool survivorMode)
+        public ScenarioContainer CreateScenario(ScenarioConfigurationContainer configuration, string characterClassName, int seed, bool survivorMode)
         {
             ScenarioContainer scenario = new ScenarioContainer();
 
@@ -52,19 +52,21 @@ namespace Rogue.NET.Core.Model.Generator
             _randomSequenceGenerator.Reseed(seed);
 
             // Generate Attack Attributes
-            scenario.AttackAttributes = configuration.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                                      .ToDictionary(x => x.RogueName, x => x);
+            scenario.AttackAttributes = configuration.AttackAttributes
+                                                     .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                                                     .ToDictionary(x => x.RogueName, x => x);
 
-            // Generate Religions
-            scenario.Religions = configuration.Religions.Select(x => _religionGenerator.GenerateReligion(x, configuration.SkillTemplates))
-                                                        .ToDictionary(x => x.RogueName, x => x);
+            // Generate Character Classes
+            scenario.CharacterClasses = configuration.CharacterClasses
+                                                     .Select(x => _characterClassGenerator.GenerateCharacterClass(x, configuration.SkillTemplates))
+                                                     .ToDictionary(x => x.RogueName, x => x);
 
             // Generate Player
-            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, religionName, scenario.Religions.Values, scenario.AttackAttributes.Values);
+            scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, characterClassName, scenario.CharacterClasses.Values, scenario.AttackAttributes.Values);
 
             var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
-            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.Religions.Values, scenario.AttackAttributes.Values, survivorMode).ToList();
+            scenario.LoadedLevels = _contentGenerator.CreateContents(levels, configuration, scenario.CharacterClasses.Values, scenario.AttackAttributes.Values, survivorMode).ToList();
 
             //Load Encyclopedia Rogue-Tanica (Consumables)
             foreach (var template in configuration.ConsumableTemplates)
@@ -90,8 +92,8 @@ namespace Rogue.NET.Core.Model.Generator
             foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.Alteration)))
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
-            //Load Encyclopedia Rogue-Tanica (Religions)
-            foreach (var template in configuration.Religions)
+            //Load Encyclopedia Rogue-Tanica (Character Classes)
+            foreach (var template in configuration.CharacterClasses)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
             //Load Encyclopedia Rogue-Tanica (Normal Doodads)
@@ -124,9 +126,9 @@ namespace Rogue.NET.Core.Model.Generator
                 consumable.IsIdentified = true;
             }
 
-            foreach (var template in configuration.Religions)
+            foreach (var template in configuration.CharacterClasses)
             {
-                scenario.ScenarioEncyclopedia[template.Name].IsIdentified = template.IsIdentified;
+                scenario.ScenarioEncyclopedia[template.Name].IsIdentified = true;
             }
 
             return scenario;

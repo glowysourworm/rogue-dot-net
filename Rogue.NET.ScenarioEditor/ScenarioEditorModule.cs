@@ -223,17 +223,17 @@ namespace Rogue.NET.ScenarioEditor
             });
 
             // Religion Events
-            _eventAggregator.GetEvent<AddReligionEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<AddCharacterClassEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
                 // Add Religion to the scenario
-                _scenarioEditorController.CurrentConfig.Religions.Add(e);
+                _scenarioEditorController.CurrentConfig.CharacterClasses.Add(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
@@ -242,17 +242,17 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<RemoveReligionEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<RemoveCharacterClassEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
                 // Remove Religion from the scenario
-                _scenarioEditorController.CurrentConfig.Religions.Remove(e);
+                _scenarioEditorController.CurrentConfig.CharacterClasses.Remove(e);
 
                 // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateReligions(_scenarioEditorController.CurrentConfig);
+                _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();

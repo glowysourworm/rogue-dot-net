@@ -21,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
                 this.ProjectileSpellCB.ItemsSource = configuration.MagicSpells;
                 this.AmmoSpellCB.ItemsSource = configuration.MagicSpells;
                 this.LearnedSkillCB.ItemsSource = configuration.SkillTemplates;
-                this.ReligionCB.ItemsSource = configuration.Religions;
+                this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
             });
         }
     }

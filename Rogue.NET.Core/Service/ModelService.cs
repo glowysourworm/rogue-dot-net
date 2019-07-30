@@ -64,13 +64,13 @@ namespace Rogue.NET.Core.Service
             Level level, 
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration,
-            IEnumerable<Religion> religions)
+            IEnumerable<CharacterClass> characterClasses)
         {
             this.Level = level;
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
-            this.Religions = religions;
+            this.CharacterClasses = characterClasses;
 
             switch (startLocation)
             {
@@ -101,7 +101,7 @@ namespace Rogue.NET.Core.Service
             this.Player = null;
             this.ScenarioConfiguration = null;
             this.ScenarioEncyclopedia = null;
-            this.Religions = null;
+            this.CharacterClasses = null;
 
             _exploredLocations = new List<CellPoint>();
             _lineOfSightLocations = new List<CellPoint>();
@@ -118,7 +118,7 @@ namespace Rogue.NET.Core.Service
 
         public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
 
-        public IEnumerable<Religion> Religions { get; private set; }
+        public IEnumerable<CharacterClass> CharacterClasses { get; private set; }
 
         public IEnumerable<AttackAttribute> GetAttackAttributes()
         {

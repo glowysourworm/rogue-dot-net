@@ -57,7 +57,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             else
             {
                 // If there are religions in the scenario then allow user to re-select relegion
-                if (viewModel.SelectedConfiguration.Religions.Count > 0)
+                if (viewModel.SelectedConfiguration.CharacterClasses.Count > 0)
                 {
                     // Load the first parameters display
                     _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
@@ -82,7 +82,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 
             // If there are religions in the scenario then allow user to select relegion
             if (_currentParametersDisplayType == typeof(ChooseName) &&
-                viewModel.SelectedConfiguration.Religions.Count > 0)
+                viewModel.SelectedConfiguration.CharacterClasses.Count > 0)
             {
                 _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
 

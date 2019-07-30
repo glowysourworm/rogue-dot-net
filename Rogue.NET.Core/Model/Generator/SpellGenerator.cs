@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.Generator
     {
         public SpellGenerator() { }
 
-        public Spell GenerateSpell(SpellTemplate spellTemplate, IEnumerable<Religion> religions)
+        public Spell GenerateSpell(SpellTemplate spellTemplate, IEnumerable<CharacterClass> religions)
         {
             Spell spell = new Spell();
             spell.RogueName = spellTemplate.Name;
@@ -31,9 +31,10 @@ namespace Rogue.NET.Core.Model.Generator
             spell.DisplayName = spellTemplate.DisplayName;
             spell.IsStackable = spellTemplate.Stackable;
 
+            // TODO:RELIGION
             // Religious Affiliation Change Parameters
-            if (spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion)
-                spell.Religion = religions.First(religion => religion.RogueName == spellTemplate.ReligiousAffiliationReligion.Name);
+            //if (spell.OtherEffectType == AlterationMagicEffectType.AffiliateReligion)
+            //    spell.Religion = religions.First(religion => religion.RogueName == spellTemplate.ReligiousAffiliationReligion.Name);
 
             return spell;
         }

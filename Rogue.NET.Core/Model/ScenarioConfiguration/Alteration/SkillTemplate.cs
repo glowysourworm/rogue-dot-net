@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         bool _hasAttributeRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
-        ReligionTemplate _religion;
         SpellTemplate _alteration;
 
         public int LevelRequirement
@@ -89,18 +88,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public ReligionTemplate Religion
-        {
-            get { return _religion; }
-            set
-            {
-                if (_religion != value)
-                {
-                    _religion = value;
-                    OnPropertyChanged("Religion");
-                }
-            }
-        }
         public SpellTemplate Alteration
         {
             get { return _alteration; }
@@ -118,7 +105,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         {
             this.Alteration = new SpellTemplate();
             this.AttributeRequirement = CharacterAttribute.Agility;
-            this.Religion = new ReligionTemplate();
         }
     }
 }

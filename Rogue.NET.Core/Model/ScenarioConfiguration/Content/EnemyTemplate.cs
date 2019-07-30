@@ -17,7 +17,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _experienceGiven;
         private Range<double> _religiousAffiliationLevel;
         private BehaviorDetailsTemplate _behaviorDetails;
-        private ReligionTemplate _religion;
 
         public bool HasReligion
         {
@@ -91,18 +90,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligionTemplate Religion
-        {
-            get { return _religion; }
-            set
-            {
-                if (_religion != value)
-                {
-                    _religion = value;
-                    OnPropertyChanged("Religion");
-                }
-            }
-        }
 
         public EnemyTemplate()
         {
@@ -112,7 +99,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
-            this.Religion = new ReligionTemplate();
         }
         public EnemyTemplate(DungeonObjectTemplate template) : base(template)
         {
@@ -122,7 +108,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
-            this.Religion = new ReligionTemplate();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters
                         this.ReligionLB.SelectedItem = viewModel.SelectedReligion;
 
                     else if (viewModel.SelectedConfiguration != null)
-                        this.ReligionLB.SelectedItem = viewModel.SelectedConfiguration.Religions.FirstOrDefault();
+                        this.ReligionLB.SelectedItem = viewModel.SelectedConfiguration.CharacterClasses.FirstOrDefault();
                 }
             };
         }

@@ -14,6 +14,9 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using Rogue.NET.Core.Model.Scenario.Content;
+using System.Collections.Generic;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -32,7 +35,7 @@ namespace Rogue.NET.Intro.ViewModel
         bool _survivorMode = false;
         ScenarioViewModel _selectedConfiguration;
         SavedGameViewModel _selectedGame;
-        ReligionSelectionViewModel _selectedReligion;
+        CharacterClassSelectionViewModel _selectedReligion;
         #endregion
 
         #region Properties
@@ -49,7 +52,7 @@ namespace Rogue.NET.Intro.ViewModel
             get { return _selectedGame; }
             set { this.RaiseAndSetIfChanged(ref _selectedGame, value); }
         }
-        public ReligionSelectionViewModel SelectedReligion
+        public CharacterClassSelectionViewModel SelectedReligion
         {
             get { return _selectedReligion; }
             set { this.RaiseAndSetIfChanged(ref _selectedReligion, value); }
@@ -133,9 +136,9 @@ namespace Rogue.NET.Intro.ViewModel
                     SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyBodyColor),
                     SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    Religions = new ObservableCollection<Scenario.Intro.ViewModel.ReligionSelectionViewModel>(config.Religions.Where(x => x.CanStartWith)
-                                                                                            .Select(x => 
-                    new Scenario.Intro.ViewModel.ReligionSelectionViewModel()
+                    CharacterClasses = new ObservableCollection<Scenario.Intro.ViewModel.CharacterClassSelectionViewModel>(config.CharacterClasses
+                                                                                        .Select(x => 
+                    new Scenario.Intro.ViewModel.CharacterClassSelectionViewModel()
                     {
                         HasBonusAttackAttributes = x.HasBonusAttackAttributes,
                         HasBonusAttribute = x.HasAttributeBonus,
@@ -144,7 +147,7 @@ namespace Rogue.NET.Intro.ViewModel
                                                                                            .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
                         BonusAttribute = x.BonusAttribute,
                         BonusAttributeValue = x.BonusAttributeValue,
-                        ReligionMetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
+                        MetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
                         RogueName = x.Name,
 
                         Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)

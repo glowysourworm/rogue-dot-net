@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<Religion> religions)
+        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> religions)
         {
             if (equipmentTemplate.IsUnique && equipmentTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
@@ -68,14 +68,15 @@ namespace Rogue.NET.Core.Model.Generator
 
             equipment.HasReligionRequirement = equipmentTemplate.HasReligionRequirement;
 
+            // TODO:RELIGION
             // Religious Affiliation Requirement
-            if (equipment.HasReligionRequirement)
-                equipment.Religion = religions.First(religion => religion.RogueName == equipmentTemplate.Religion.Name);
+            //if (equipment.HasReligionRequirement)
+            //    equipment.Religion = religions.First(religion => religion.RogueName == equipmentTemplate.Religion.Name);
 
             equipmentTemplate.HasBeenGenerated = true;
             return equipment;
         }
-        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<Religion> religions)
+        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<CharacterClass> religions)
         {
             if (consumableTemplate.IsUnique && consumableTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
@@ -109,9 +110,10 @@ namespace Rogue.NET.Core.Model.Generator
 
             consumable.HasReligionRequirement = consumableTemplate.HasReligionRequirement;
 
+            // TODO:RELIGION
             // Religious Affiliation Requirement
-            if (consumable.HasReligionRequirement)
-                consumable.Religion = religions.First(religion => religion.RogueName == consumableTemplate.Religion.Name);
+            //if (consumable.HasReligionRequirement)
+            //    consumable.Religion = religions.First(religion => religion.RogueName == consumableTemplate.Religion.Name);
 
             consumableTemplate.HasBeenGenerated = true;
 
@@ -119,14 +121,14 @@ namespace Rogue.NET.Core.Model.Generator
         }
 
 
-        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<Religion> religions)
+        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<CharacterClass> religions)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 
             return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate, religions) : null;
         }
 
-        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<Religion> religions, bool equipOnStartup = false)
+        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<CharacterClass> religions, bool equipOnStartup = false)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 

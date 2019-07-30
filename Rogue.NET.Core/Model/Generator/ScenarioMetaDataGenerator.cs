@@ -266,28 +266,28 @@ namespace Rogue.NET.Core.Model.Generator
 
         }
 
-        public ScenarioMetaData CreateScenarioMetaData(ReligionTemplate religionTemplate)
+        public ScenarioMetaData CreateScenarioMetaData(CharacterClassTemplate template)
         {
             return new ScenarioMetaData()
             {
-                AttackAttributes = new List<AttackAttributeTemplate>(religionTemplate.BonusAttackAttributes),
-                CharacterColor = religionTemplate.SymbolDetails.CharacterColor,
-                CharacterSymbol = religionTemplate.SymbolDetails.CharacterSymbol,
-                Description = religionTemplate.LongDescription,
-                DisplayIcon = religionTemplate.SymbolDetails.DisplayIcon,
-                Icon = religionTemplate.SymbolDetails.Icon,
+                AttackAttributes = new List<AttackAttributeTemplate>(template.BonusAttackAttributes),
+                CharacterColor = template.SymbolDetails.CharacterColor,
+                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
+                Description = template.LongDescription,
+                DisplayIcon = template.SymbolDetails.DisplayIcon,
+                Icon = template.SymbolDetails.Icon,
                 IsCursed = false,
                 IsCurseIdentified = false,
-                IsIdentified = religionTemplate.IsIdentified,                
+                IsIdentified = true,                
                 IsObjective = false,                
                 IsUnique = false,
-                LongDescription = religionTemplate.LongDescription,                
-                RogueName = religionTemplate.Name,
-                SmileyAuraColor = religionTemplate.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = religionTemplate.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = religionTemplate.SymbolDetails.SmileyLineColor,
-                SmileyMood = religionTemplate.SymbolDetails.SmileyMood,
-                SymbolType = religionTemplate.SymbolDetails.Type,
+                LongDescription = template.LongDescription,                
+                RogueName = template.Name,
+                SmileyAuraColor = template.SymbolDetails.SmileyAuraColor,
+                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
+                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
+                SmileyMood = template.SymbolDetails.SmileyMood,
+                SymbolType = template.SymbolDetails.Type,
                 Type = "Religion"
             };
         }

@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<Religion> religions)
+        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> religions)
         {
             if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a unique Doodad twice");
@@ -48,9 +48,10 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.SymbolType = doodadTemplate.SymbolDetails.Type;
             doodad.HasBeenUsed = false;
 
+            // TODO:RELIGION
             // Religious Affiliation Requirement
-            if (doodad.HasReligionRequirement)
-                doodad.Religion = religions.First(religion => religion.RogueName == doodadTemplate.Religion.Name);
+            //if (doodad.HasReligionRequirement)
+            //    doodad.Religion = religions.First(religion => religion.RogueName == doodadTemplate.Religion.Name);
 
             doodadTemplate.HasBeenGenerated = true;
 

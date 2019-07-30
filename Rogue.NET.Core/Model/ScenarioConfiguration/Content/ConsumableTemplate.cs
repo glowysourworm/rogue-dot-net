@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private SkillSetTemplate _learnedSkill;
         private SpellTemplate _projectileSpellTemplate;
         private SpellTemplate _ammoSpellTemplate;
-        private ReligionTemplate _religion;
         private string _noteMessage;
 
         public ConsumableType Type
@@ -194,18 +193,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligionTemplate Religion
-        {
-            get { return _religion; }
-            set
-            {
-                if (_religion != value)
-                {
-                    _religion = value;
-                    OnPropertyChanged("Religion");
-                }
-            }
-        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -233,7 +220,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
             this.NoteMessage = "";
         }
         public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
@@ -250,7 +236,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsProjectile = false;
             this.IdentifyOnUse = false;
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
             this.NoteMessage = "";
         }
     }

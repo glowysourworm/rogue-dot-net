@@ -13,16 +13,16 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public bool IsInvoked { get; set; }
 
         public bool HasReligionRequirement { get; set; }
-        public Religion Religion { get; set; }
+        public CharacterClass Religion { get; set; }
 
         public DoodadMagic() : base()
         {
             this.Type = DoodadType.Magic;
             this.AutomaticSpell = new Spell();
             this.InvokedSpell = new Spell();
-            this.Religion = new Religion();
+            this.Religion = new CharacterClass();
         }
-        public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon, Religion religion)
+        public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon, CharacterClass religion)
             : base(name, icon)
         {
             this.Type = DoodadType.Magic;

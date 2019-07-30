@@ -76,9 +76,6 @@ namespace Rogue.NET.Scenario.Service
             //Fire Range Weapon
             else if (key == _preferences.Fire)
                 return new LevelCommandEventArgs(LevelActionType.Fire, Compass.Null, "");
-            //Renounce Religion
-            else if (key == _preferences.RenounceReligion)
-                return new LevelCommandEventArgs(LevelActionType.RenounceReligion, Compass.Null, "");
 
             // Revolving Displays
             //

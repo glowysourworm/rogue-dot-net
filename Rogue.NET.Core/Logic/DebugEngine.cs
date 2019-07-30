@@ -22,7 +22,6 @@ namespace Rogue.NET.Core.Logic
     {
         readonly IModelService _modelService;
         readonly IContentEngine _contentEngine;
-        readonly IReligionEngine _religionEngine;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IPlayerProcessor _playerProcessor;
         readonly IRogueUpdateFactory _rogueUpdateFactory;
@@ -31,14 +30,12 @@ namespace Rogue.NET.Core.Logic
         public DebugEngine(
             IModelService modelService, 
             IContentEngine contentEngine, 
-            IReligionEngine religionEngine,
             IScenarioMessageService scenarioMessageService,
             IPlayerProcessor playerProcessor,
             IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
             _contentEngine = contentEngine;
-            _religionEngine = religionEngine;
             _scenarioMessageService = scenarioMessageService;
             _playerProcessor = playerProcessor;
             _rogueUpdateFactory = rogueUpdateFactory;
@@ -161,10 +158,6 @@ namespace Rogue.NET.Core.Logic
 
                 //Set enemy identified
                 _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
-
-                // Check for Enemy Religion to identify
-                if (enemy.ReligiousAlteration.IsAffiliated())
-                    _religionEngine.IdentifyReligion(enemy.ReligiousAlteration.Religion);
             }
 
             // REMOVE ALL CONTENTS

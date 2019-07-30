@@ -261,7 +261,7 @@
     <Compile Include="Events\RequestNaviateParametersDisplayEvent.cs" />
     <Compile Include="Events\OutroFinishedEvent.cs" />
     <Compile Include="Events\ToggleLevelViewControlsEvent.cs" />
-    <Compile Include="Intro\ViewModel\ReligionSelectionViewModel.cs" />
+    <Compile Include="Intro\ViewModel\CharacterClassSelectionViewModel.cs" />
     <Compile Include="Intro\ViewModel\SavedGameViewModel.cs" />
     <Compile Include="Intro\ViewModel\ScenarioViewModel.cs" />
     <Compile Include="Intro\Views\GameSetup\ChooseParameters.xaml.cs">

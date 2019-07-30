@@ -21,10 +21,10 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill.Extension
                 player.GetAttribute(skill.AttributeRequirement) < skill.AttributeLevelRequirement)
                 return false;
 
-            // Religion Requirement
+            // Character Class Requirement
             if (skill.HasReligionRequirement &&
-               (!player.ReligiousAlteration.IsAffiliated() ||
-                skill.Religion.RogueName != player.ReligiousAlteration.Religion.RogueName))
+               (!player.CharacterClassAlteration.HasCharacterClass() ||
+                skill.Religion.RogueName != player.CharacterClassAlteration.CharacterClass.RogueName))
                 return false;
 
             return true;

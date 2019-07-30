@@ -15,7 +15,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isOneUse;
 
         private bool _hasReligionRequirement;
-        ReligionTemplate _religion;
 
         public SpellTemplate AutomaticMagicSpellTemplate
         {
@@ -102,18 +101,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public ReligionTemplate Religion
-        {
-            get { return _religion; }
-            set
-            {
-                if (_religion != value)
-                {
-                    _religion = value;
-                    OnPropertyChanged("Religion");
-                }
-            }
-        }
 
         public DoodadTemplate()
         {
@@ -122,7 +109,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsOneUse = false;
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
         }
         public DoodadTemplate(DungeonObjectTemplate tmp) : base(tmp)
         {
@@ -131,7 +117,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IsOneUse = false;
             this.HasReligionRequirement = false;
-            this.Religion = new ReligionTemplate();
         }
     }
 }

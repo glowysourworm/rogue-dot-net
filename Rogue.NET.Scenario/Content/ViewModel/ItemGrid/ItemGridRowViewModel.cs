@@ -285,19 +285,19 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         }
         #endregion
 
-        public ItemGridRowViewModel(Equipment equipment, ScenarioMetaData metaData, IEnumerable<Religion> religions)
+        public ItemGridRowViewModel(Equipment equipment, ScenarioMetaData metaData, IEnumerable<CharacterClass> characterClasses)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
-            UpdateEquipment(equipment, metaData, religions);
+            UpdateEquipment(equipment, metaData, characterClasses);
         }
-        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, IEnumerable<Religion> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
             UpdateConsumable(consumable, metaData, religions, identifyConsumable, totalQuantity, totalUses, totalWeight);
         }
-        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, IEnumerable<Religion> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
             this.Id = consumable.Id;
             this.RogueName = consumable.RogueName;
@@ -386,7 +386,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     this.DisplayName = consumable.RogueName;
             }
         }
-        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData, IEnumerable<Religion> religions)
+        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions)
         {
             this.Id = equipment.Id;
             this.RogueName = equipment.RogueName;

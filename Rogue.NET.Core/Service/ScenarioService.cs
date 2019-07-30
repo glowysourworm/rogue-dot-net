@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Service
         readonly IContentEngine _contentEngine;
         readonly ILayoutEngine _layoutEngine;
         readonly ISpellEngine _spellEngine;
-        readonly IReligionEngine _religionEngine;
         readonly IDebugEngine _debugEngine;
 
         readonly IModelService _modelService;
@@ -57,7 +56,6 @@ namespace Rogue.NET.Core.Service
             IModelService modelService,
             IDebugEngine debugEngine,
             ISpellEngine spellEngine,
-            IReligionEngine religionEngine,
             IRayTracer rayTracer)
         {
             _scenarioEngine = scenarioEngine;
@@ -65,11 +63,10 @@ namespace Rogue.NET.Core.Service
             _layoutEngine = layoutEngine;
             _modelService = modelService;
             _spellEngine = spellEngine;
-            _religionEngine = religionEngine;
             _debugEngine = debugEngine;
             _rayTracer = rayTracer;
 
-            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _religionEngine, _debugEngine };
+            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _debugEngine };
 
             _lowQueue = new Queue<IRogueUpdate>();
             _highQueue = new Queue<IRogueUpdate>();
@@ -190,11 +187,6 @@ namespace Rogue.NET.Core.Service
                     {
                         if (_contentEngine.Equip(command.Id))
                             nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelActionType.RenounceReligion:
-                    {
-                        nextAction = _religionEngine.RenounceReligion(false);
                     }
                     break;
 

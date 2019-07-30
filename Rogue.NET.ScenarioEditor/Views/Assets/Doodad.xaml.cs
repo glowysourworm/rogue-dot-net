@@ -23,7 +23,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             {
                 this.AutomaticSpellCB.ItemsSource = configuration.MagicSpells;
                 this.InvokedSpellCB.ItemsSource = configuration.MagicSpells;
-                this.ReligionCB.ItemsSource = configuration.Religions;
+                this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
             });
         }
 

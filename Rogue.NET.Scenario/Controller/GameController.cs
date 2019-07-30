@@ -284,7 +284,7 @@ namespace Rogue.NET.Scenario.Controller
                     nextLevel, 
                     _scenarioContainer.ScenarioEncyclopedia, 
                     _scenarioContainer.Configuration,
-                    _scenarioContainer.Religions.Values);
+                    _scenarioContainer.CharacterClasses.Values);
 
                 // Notify Listeners - Level Loaded -> Game Update
                 _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();

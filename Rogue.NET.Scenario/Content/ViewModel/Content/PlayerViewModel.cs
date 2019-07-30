@@ -460,8 +460,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                            player.GetAttribute(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
                         skill.IsReligionRequirementMet = !skillSource.HasReligionRequirement ||
                                                          (skillSource.HasReligionRequirement &&
-                                                         player.ReligiousAlteration.IsAffiliated() &&
-                                                         player.ReligiousAlteration.Religion.RogueName == skillSource.Religion.RogueName);
+                                                         player.CharacterClassAlteration.HasCharacterClass() &&
+                                                         player.CharacterClassAlteration.CharacterClass.RogueName == skillSource.Religion.RogueName);
                     });
                 });
 
@@ -501,12 +501,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             // Religious Alterations
 
             // -> Attribute Effect
-            if (player.ReligiousAlteration.HasAttributeEffect)
-                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.ReligiousAlteration.AttributeEffect));
+            if (player.CharacterClassAlteration.HasAttributeEffect)
+                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.CharacterClassAlteration.AttributeEffect));
 
             // -> Attack Attribute Effect
-            if (player.ReligiousAlteration.HasAttackAttributeEffect)
-                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.ReligiousAlteration.AttackAttributeEffect));
+            if (player.CharacterClassAlteration.HasAttackAttributeEffect)
+                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.CharacterClassAlteration.AttackAttributeEffect));
 
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
@@ -602,34 +602,34 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MeleeAttackAttributes.AddRange(attackAttributes);
 
             // Religion 
-            if (player.ReligiousAlteration.IsAffiliated() &&
-                _modelService.Religions.Any()) // Check that model is loaded (could be that no model has loaded for the level)
+            if (player.CharacterClassAlteration.HasCharacterClass() &&
+                _modelService.CharacterClasses.Any()) // Check that model is loaded (could be that no model has loaded for the level)
                                                // TODO:  Force view model updates to wait until after IModelService is loaded
             {
-                this.Religion.DisplayName = player.ReligiousAlteration.Religion.RogueName;
-                this.Religion.HasAttackAttributeBonus = player.ReligiousAlteration.AttackAttributeEffect != null;
-                this.Religion.HasAttributeBonus = player.ReligiousAlteration.AttributeEffect != null;
+                this.Religion.DisplayName = player.CharacterClassAlteration.CharacterClass.RogueName;
+                this.Religion.HasAttackAttributeBonus = player.CharacterClassAlteration.AttackAttributeEffect != null;
+                this.Religion.HasAttributeBonus = player.CharacterClassAlteration.AttributeEffect != null;
                 this.Religion.IsAffiliated = true;
 
-                this.Religion.UpdateSymbol(player.ReligiousAlteration.Symbol);
+                this.Religion.UpdateSymbol(player.CharacterClassAlteration.Symbol);
 
                 // Bonus Attack Attributes
-                if (player.ReligiousAlteration.AttackAttributeEffect != null)
+                if (player.CharacterClassAlteration.AttackAttributeEffect != null)
                 {
                     this.Religion.AttackAttributeBonus.Clear();
                     this.Religion
                         .AttackAttributeBonus
-                        .AddRange(player.ReligiousAlteration
+                        .AddRange(player.CharacterClassAlteration
                                         .AttackAttributeEffect
                                         .AttackAttributes
                                         .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
                                         .Select(x => new AttackAttributeViewModel(x)));
                 }
 
-                if (player.ReligiousAlteration.HasAttributeEffect)
+                if (player.CharacterClassAlteration.HasAttributeEffect)
                 {
                     // Must be ONE attribute alteration if effect is non-null
-                    var attribute = player.ReligiousAlteration
+                    var attribute = player.CharacterClassAlteration
                                            .AttributeEffect
                                            .GetUIAttributes()
                                            .First();
@@ -639,7 +639,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 }
 
                 // Attack Parameters
-                var playerReligion = _modelService.Religions.First(x => x.RogueName == player.ReligiousAlteration.Religion.RogueName);
+                var playerReligion = _modelService.CharacterClasses.First(x => x.RogueName == player.CharacterClassAlteration.CharacterClass.RogueName);
             }
             else
                 this.Religion.IsAffiliated = false;

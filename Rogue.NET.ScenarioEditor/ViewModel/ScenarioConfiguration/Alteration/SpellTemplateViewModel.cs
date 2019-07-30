@@ -20,8 +20,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private bool _stackable;
         private string _createMonsterEnemy;
         private string _displayName;
-        private ReligionTemplateViewModel _religiousAffiliationReligion;
-
 
         public AlterationCostTemplateViewModel Cost
         {
@@ -78,11 +76,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _displayName; }
             set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
-        public ReligionTemplateViewModel ReligiousAffiliationReligion
-        {
-            get { return _religiousAffiliationReligion; }
-            set { this.RaiseAndSetIfChanged(ref _religiousAffiliationReligion, value); }
-        }
 
         public SpellTemplateViewModel()
         {
@@ -90,7 +83,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             this.Cost = new AlterationCostTemplateViewModel();
             this.Effect = new AlterationEffectTemplateViewModel();
             this.AuraEffect = new AlterationEffectTemplateViewModel();
-            this.ReligiousAffiliationReligion = new ReligionTemplateViewModel();
 
             this.CreateMonsterEnemy = "";
             this.DisplayName = "";

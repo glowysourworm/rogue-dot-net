@@ -18,7 +18,7 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate, IEnumerable<Religion> religions)
+        public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate, IEnumerable<CharacterClass> religions)
         {
             Behavior behavior = new Behavior();
             behavior.AttackType = behaviorTemplate.AttackType;

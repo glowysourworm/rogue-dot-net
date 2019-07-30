@@ -99,10 +99,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsAttributeRequirementMet = !x.HasAttributeRequirement || 
                                                  player.GetAttribute(x.AttributeRequirement) > x.AttributeLevelRequirement,
                     IsReligionRequirementMet = !x.HasReligionRequirement ||
-                                                (player.ReligiousAlteration.IsAffiliated() &&
-                                                 player.ReligiousAlteration.Religion.RogueName == x.Religion.RogueName),
+                                                (player.CharacterClassAlteration.HasCharacterClass() &&
+                                                 player.CharacterClassAlteration.CharacterClass.RogueName == x.Religion.RogueName),
                     SkillPointRequirement = x.SkillPointRequirement,
-                    Religion =  new ScenarioImageViewModel(x.Religion),
+                    // TODO:RELIGION
+                    //Religion =  new ScenarioImageViewModel(x.Religion),
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

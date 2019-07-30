@@ -14,15 +14,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public int LevelRequired { get; set; }
 
         public bool HasReligionRequirement { get; set; }
-        public Religion Religion { get; set; }
+        public CharacterClass Religion { get; set; }
 
         public ItemBase()
         {
-            this.Religion = new Religion();
+            this.Religion = new CharacterClass();
         }
         public ItemBase(string name, ImageResources icon) : base(name, icon)
         {
-            this.Religion = new Religion();
+            this.Religion = new CharacterClass();
         }
     }
 }

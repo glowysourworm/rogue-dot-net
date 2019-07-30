@@ -180,12 +180,12 @@
     <Compile Include="Logic\Processing\PlayerAdvancementCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerImbueCommandAction.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\CharacterClassTemplate.cs" />
     <Compile Include="Model\Scenario\Content\Extension\ArrayExtension.cs" />
     <Compile Include="Extension\SerializerExtension.cs" />
     <Compile Include="Logic\Content\Enum\InteractionType.cs" />
     <Compile Include="Logic\DebugEngine.cs" />
     <Compile Include="Logic\Interface\IDebugEngine.cs" />
-    <Compile Include="Logic\Interface\IReligionEngine.cs" />
     <Compile Include="Logic\Processing\DialogUpdate.cs" />
     <Compile Include="Logic\Processing\Enum\DialogEventType.cs" />
     <Compile Include="Logic\Processing\Enum\RogueUpdatePriority.cs" />
@@ -194,7 +194,6 @@
     <Compile Include="Logic\Processing\Interface\IRogueUpdate.cs" />
     <Compile Include="Logic\Processing\RogueUpdateEventArgs.cs" />
     <Compile Include="Logic\Processing\Factory\RogueUpdateFactory.cs" />
-    <Compile Include="Logic\ReligionEngine.cs" />
     <Compile Include="Logic\Static\Calculator.cs" />
     <Compile Include="Logic\Static\EquipmentCalculator.cs" />
     <Compile Include="Logic\Static\MeleeCalculator.cs" />
@@ -203,9 +202,9 @@
     <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
     <Compile Include="Model\Generator\Component\RoomEqualityComparer.cs" />
     <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
-    <Compile Include="Model\Generator\Interface\IReligionGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\ICharacterClassGenerator.cs" />
     <Compile Include="Model\Generator\Interface\ISkillGenerator.cs" />
-    <Compile Include="Model\Generator\ReligionGenerator.cs" />
+    <Compile Include="Model\Generator\CharacterClassGenerator.cs" />
     <Compile Include="Model\Generator\SkillGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
@@ -349,7 +348,7 @@
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
-    <Compile Include="Model\Scenario\Content\Religion.cs" />
+    <Compile Include="Model\Scenario\Content\CharacterClass.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SkillExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SpellExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Skill.cs" />
@@ -372,7 +371,7 @@
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Spell.cs" />
     <Compile Include="Model\Scenario\Dynamic\PlayerAlteration.cs" />
-    <Compile Include="Model\Scenario\Dynamic\CharacterReligiousAlteration.cs" />
+    <Compile Include="Model\Scenario\Dynamic\CharacterClassAlteration.cs" />
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
     <Compile Include="Model\Scenario\ScenarioMetaData.cs" />

@@ -44,7 +44,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
             var alteredStateGenerator = new AlteredStateGenerator();
             var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator);
-            var religionGenerator = new ReligionGenerator(spellGenerator, attackAttributeGenerator, alterationGenerator, skillSetGenerator);
+            var religionGenerator = new CharacterClassGenerator(spellGenerator, attackAttributeGenerator, alterationGenerator, skillSetGenerator);
             var itemGenerator = new ItemGenerator(
                 randomSequenceGenerator,
                 attackAttributeGenerator,

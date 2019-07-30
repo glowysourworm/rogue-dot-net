@@ -34,7 +34,6 @@ namespace Rogue.NET.Core.Model.Enums
         Equip,
         Drop,
         Fire,
-        RenounceReligion,
 
         // Only supported for debug configuration
         DebugNext,

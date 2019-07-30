@@ -8,8 +8,8 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface ICharacterGenerator
     {
-        Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes);
+        Player GeneratePlayer(PlayerTemplate playerTemplate, string religionName, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes);
 
-        Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<Religion> religions, IEnumerable<AttackAttribute> scenarioAttributes);
+        Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes);
     }
 }

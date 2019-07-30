@@ -26,8 +26,8 @@ namespace Rogue.NET.Core.Model.Scenario
         // Store Item Metadata
         public IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; set; }
 
-        // Religions
-        public IDictionary<string, Religion> Religions { get; set; }
+        // Character Classes
+        public IDictionary<string, CharacterClass> CharacterClasses { get; set; }
 
         // Attack Attributes
         public IDictionary<string, AttackAttribute> AttackAttributes { get; set; }
@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.LoadedLevels = new List<Level>();
             this.CurrentLevel = 1;
             this.ScenarioEncyclopedia = new Dictionary<string, ScenarioMetaData>();
-            this.Religions = new Dictionary<string, Religion>();
+            this.CharacterClasses = new Dictionary<string, CharacterClass>();
             this.AttackAttributes = new Dictionary<string, AttackAttribute>();
             this.SaveLocation = PlayerStartLocation.StairsUp;
             this.Statistics = new ScenarioStatistics();

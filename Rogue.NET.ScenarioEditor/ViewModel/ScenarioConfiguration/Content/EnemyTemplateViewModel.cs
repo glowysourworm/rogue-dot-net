@@ -16,7 +16,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _experienceGiven;
         private RangeViewModel<double> _religiousAffiliationLevel;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
-        private ReligionTemplateViewModel _religion;
 
         public bool HasReligion
         {
@@ -48,11 +47,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _behaviorDetails; }
             set { this.RaiseAndSetIfChanged(ref _behaviorDetails, value); }
         }
-        public ReligionTemplateViewModel Religion
-        {
-            get { return _religion; }
-            set { this.RaiseAndSetIfChanged(ref _religion, value); }
-        }
 
         public EnemyTemplateViewModel()
         {
@@ -63,7 +57,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
-            this.Religion = new ReligionTemplateViewModel();
         }
         public EnemyTemplateViewModel(DungeonObjectTemplateViewModel template) : base(template)
         {
@@ -74,7 +67,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
-            this.Religion = new ReligionTemplateViewModel();
         }
     }
 }

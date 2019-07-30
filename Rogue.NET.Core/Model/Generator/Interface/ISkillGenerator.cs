@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface ISkillGenerator
     {
-        Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<Religion> religions);
+        Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<CharacterClass> religions);
     }
 }

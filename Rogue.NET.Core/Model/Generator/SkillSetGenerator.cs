@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.Generator
             _skillGenerator = skillGenerator;
         }
 
-        public SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate, IEnumerable<Religion> religions)
+        public SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate, IEnumerable<CharacterClass> religions)
         {
             return new SkillSet()
             {

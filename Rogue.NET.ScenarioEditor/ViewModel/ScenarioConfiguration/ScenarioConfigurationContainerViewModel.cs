@@ -36,7 +36,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; set; }
-        public ObservableCollection<ReligionTemplateViewModel> Religions { get; set; }
+        public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; set; }
 
         public ScenarioConfigurationContainerViewModel()
         {
@@ -53,7 +53,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.PenTemplates = new ObservableCollection<PenTemplateViewModel>();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
-            this.Religions = new ObservableCollection<ReligionTemplateViewModel>();
+            this.CharacterClasses = new ObservableCollection<CharacterClassTemplateViewModel>();
         }
 
         public event PropertyChangingEventHandler PropertyChanging;
