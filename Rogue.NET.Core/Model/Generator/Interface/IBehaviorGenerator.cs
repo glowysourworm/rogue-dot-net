@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IBehaviorGenerator
     {
-        Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate, IEnumerable<CharacterClass> religions);
+        Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate);
     }
 }

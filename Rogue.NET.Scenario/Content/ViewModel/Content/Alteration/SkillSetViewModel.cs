@@ -92,18 +92,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     AttributeLevelRequirement = x.AttributeLevelRequirement,
                     Description = encyclopedia[x.Alteration.RogueName].LongDescription,
                     HasAttributeRequirement = x.HasAttributeRequirement,
-                    HasReligionRequirement = x.HasReligionRequirement,
+                    HasCharacterClassRequirement = x.HasCharacterClassRequirement,
                     IsLearned = x.IsLearned,
                     IsSkillPointRequirementMet = player.SkillPoints >= x.SkillPointRequirement || x.IsLearned,
                     IsLevelRequirementMet = player.Level >= x.LevelRequirement,
                     IsAttributeRequirementMet = !x.HasAttributeRequirement || 
                                                  player.GetAttribute(x.AttributeRequirement) > x.AttributeLevelRequirement,
-                    IsReligionRequirementMet = !x.HasReligionRequirement ||
+                    IsCharacterClassRequirementMet = !x.HasCharacterClassRequirement ||
                                                 (player.CharacterClassAlteration.HasCharacterClass() &&
-                                                 player.CharacterClassAlteration.CharacterClass.RogueName == x.Religion.RogueName),
+                                                 player.CharacterClassAlteration.CharacterClass.RogueName == x.CharacterClass.RogueName),
                     SkillPointRequirement = x.SkillPointRequirement,
-                    // TODO:RELIGION
-                    //Religion =  new ScenarioImageViewModel(x.Religion),
+                    CharacterClass =  new ScenarioImageViewModel(x.CharacterClass),
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

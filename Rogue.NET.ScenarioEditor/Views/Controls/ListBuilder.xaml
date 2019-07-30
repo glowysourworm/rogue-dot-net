@@ -121,18 +121,18 @@
                                               Minimum="0" Maximum="50" Margin="2" Width="50" />
                     </StackPanel>
 
-                    <!-- Religion Requirement -->
-                    <TextBlock Text="Religion Requirement" 
+                    <!-- Character Class Requirement -->
+                    <TextBlock Text="Character Class Requirement" 
                                Grid.Column="0" Grid.Row="3"
                                Foreground="White" FontSize="16" 
                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2" />
                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right">
-                        <CheckBox IsChecked="{Binding HasReligionRequirement}" 
+                        <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" 
                                   VerticalAlignment="Center"
                                   Margin="2" />
-                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.Religions, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
-                                   SelectedValue="{Binding Religion.Name}" 
-                                   SelectedItem="{Binding Religion}"
+                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
+                                   SelectedValue="{Binding CharacterClass.Name}" 
+                                   SelectedItem="{Binding CharacterClass}"
                                    SelectedValuePath="Name"
                                    DisplayMemberPath="Name"
                                    VerticalAlignment="Center"

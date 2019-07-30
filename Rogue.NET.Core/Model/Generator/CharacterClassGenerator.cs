@@ -42,7 +42,7 @@ namespace Rogue.NET.Core.Model.Generator
                 {
                     DisplayName = template.Name + " - Attack Attributes",
 
-                    // Don't allow symbol alterations for religion (TBD)
+                    // Don't allow symbol alterations for character class (TBD)
                     IsSymbolAlteration = false,
                     AttackAttributes = new List<AttackAttribute>(template.BonusAttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)))
                 },
@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Model.Generator
                 {
                     DisplayName = template.Name + " - Attribute",
                     
-                    // Don't allow symbol alterations for religion (TBD)
+                    // Don't allow symbol alterations for character class (TBD)
                     IsSymbolAlteration = false,
                     Agility = template.BonusAttribute == CharacterAttribute.Agility ? template.BonusAttributeValue : 0,
                     Attack = template.BonusAttribute == CharacterAttribute.Attack ? template.BonusAttributeValue : 0,

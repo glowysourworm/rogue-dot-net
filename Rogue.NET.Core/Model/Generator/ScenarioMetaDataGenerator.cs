@@ -288,7 +288,7 @@ namespace Rogue.NET.Core.Model.Generator
                 SmileyLineColor = template.SymbolDetails.SmileyLineColor,
                 SmileyMood = template.SymbolDetails.SmileyMood,
                 SymbolType = template.SymbolDetails.Type,
-                Type = "Religion"
+                Type = "Character Class"
             };
         }
     }

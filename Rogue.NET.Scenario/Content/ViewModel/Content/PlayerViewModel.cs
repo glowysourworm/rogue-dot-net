@@ -361,7 +361,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// </summary>
         public ObservableCollection<AlterationViewModel> Alterations { get; set; }
 
-        public ReligionViewModel Religion { get; set; }
+        public CharacterClassViewModel CharacterClass { get; set; }
 
         [ImportingConstructor]
         public PlayerViewModel(
@@ -381,7 +381,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
             this.Alterations = new ObservableCollection<AlterationViewModel>();
-            this.Religion = new ReligionViewModel();
+            this.CharacterClass = new CharacterClassViewModel();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
@@ -405,7 +405,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 case LevelUpdateType.PlayerSkillSetAdd:
                 case LevelUpdateType.PlayerSkillSetRefresh:
                 case LevelUpdateType.PlayerStats:
-                case LevelUpdateType.PlayerReligion:
                 case LevelUpdateType.PlayerAll:
                 case LevelUpdateType.EncyclopediaCurseIdentify:
                 case LevelUpdateType.EncyclopediaIdentify:
@@ -458,10 +457,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         skill.IsLevelRequirementMet = player.Level >= skillSource.LevelRequirement;
                         skill.IsAttributeRequirementMet = !skillSource.HasAttributeRequirement ||
                                                            player.GetAttribute(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
-                        skill.IsReligionRequirementMet = !skillSource.HasReligionRequirement ||
-                                                         (skillSource.HasReligionRequirement &&
-                                                         player.CharacterClassAlteration.HasCharacterClass() &&
-                                                         player.CharacterClassAlteration.CharacterClass.RogueName == skillSource.Religion.RogueName);
+                        skill.IsCharacterClassRequirementMet = !skillSource.HasCharacterClassRequirement ||
+                                                                 (skillSource.HasCharacterClassRequirement &&
+                                                                 player.CharacterClassAlteration.HasCharacterClass() &&
+                                                                 player.CharacterClassAlteration.CharacterClass.RogueName == skillSource.CharacterClass.RogueName);
                     });
                 });
 
@@ -601,23 +600,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
 
-            // Religion 
+            // Character Class 
             if (player.CharacterClassAlteration.HasCharacterClass() &&
                 _modelService.CharacterClasses.Any()) // Check that model is loaded (could be that no model has loaded for the level)
-                                               // TODO:  Force view model updates to wait until after IModelService is loaded
+                                                      // TODO:  Force view model updates to wait until after IModelService is loaded
             {
-                this.Religion.DisplayName = player.CharacterClassAlteration.CharacterClass.RogueName;
-                this.Religion.HasAttackAttributeBonus = player.CharacterClassAlteration.AttackAttributeEffect != null;
-                this.Religion.HasAttributeBonus = player.CharacterClassAlteration.AttributeEffect != null;
-                this.Religion.IsAffiliated = true;
+                this.CharacterClass.DisplayName = player.CharacterClassAlteration.CharacterClass.RogueName;
+                this.CharacterClass.HasAttackAttributeBonus = player.CharacterClassAlteration.AttackAttributeEffect != null;
+                this.CharacterClass.HasAttributeBonus = player.CharacterClassAlteration.AttributeEffect != null;
+                this.CharacterClass.HasCharacterClass = true;
 
-                this.Religion.UpdateSymbol(player.CharacterClassAlteration.Symbol);
+                this.CharacterClass.UpdateSymbol(player.CharacterClassAlteration.Symbol);
 
                 // Bonus Attack Attributes
                 if (player.CharacterClassAlteration.AttackAttributeEffect != null)
                 {
-                    this.Religion.AttackAttributeBonus.Clear();
-                    this.Religion
+                    this.CharacterClass.AttackAttributeBonus.Clear();
+                    this.CharacterClass
                         .AttackAttributeBonus
                         .AddRange(player.CharacterClassAlteration
                                         .AttackAttributeEffect
@@ -635,14 +634,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                            .First();
 
                     // Show SINGLE attribute bonus as a string
-                    this.Religion.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
+                    this.CharacterClass.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
                 }
-
-                // Attack Parameters
-                var playerReligion = _modelService.CharacterClasses.First(x => x.RogueName == player.CharacterClassAlteration.CharacterClass.RogueName);
             }
             else
-                this.Religion.IsAffiliated = false;
+                this.CharacterClass.HasCharacterClass = false;
         }
 
         private void SynchronizeCollection<TSource, TDest>(

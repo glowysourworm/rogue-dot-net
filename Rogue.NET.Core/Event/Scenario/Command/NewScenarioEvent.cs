@@ -8,7 +8,7 @@ namespace Rogue.NET.Common.Events.Scenario
     {
         public string ScenarioName { get; set; }
         public string RogueName { get; set; }
-        public string ReligionName { get; set; }
+        public string CharacterClassName { get; set; }
         public int Seed { get; set; }
         public bool SurvivorMode { get; set; }
     }

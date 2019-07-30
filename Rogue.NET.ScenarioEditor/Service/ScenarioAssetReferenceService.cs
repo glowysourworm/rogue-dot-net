@@ -100,56 +100,50 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
 
             // Character Classes
-            foreach (var religion in configuration.CharacterClasses)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, religion.BonusAttackAttributes);
+            foreach (var characterClass in configuration.CharacterClasses)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, characterClass.BonusAttackAttributes);
         }
 
         public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
         {
-            // TODO:RELIGION
-            //// Alterations
-            //foreach (var alteration in configuration.MagicSpells
-            //                                        .Where(x => x.Type == AlterationType.OtherMagicEffect &&
-            //                                                    x.OtherEffectType == AlterationMagicEffectType.AffiliateReligion))
-            //{
-            //    alteration.ReligiousAffiliationReligion = MatchByName(configuration.Religions, alteration.ReligiousAffiliationReligion);
-            //}
+            // Consumables
+            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasCharacterClassRequirement))
+            {
+                consumable.CharacterClass = MatchByName(configuration.CharacterClasses, consumable.CharacterClass);
 
-            //// Consumables
-            //foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasReligionRequirement))
-            //{
-            //    consumable.Religion = MatchByName(configuration.Religions, consumable.Religion);
+                if (consumable.CharacterClass == null)
+                    consumable.HasCharacterClassRequirement = false;
+            }
 
-            //    if (consumable.Religion == null)
-            //        consumable.HasReligionRequirement= false;
-            //}
+            // Equipment
+            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasCharacterClassRequirement))
+            {
+                equipment.CharacterClass = MatchByName(configuration.CharacterClasses, equipment.CharacterClass);
 
-            //// Equipment
-            //foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasReligionRequirement))
-            //{
-            //    equipment.Religion = MatchByName(configuration.Religions, equipment.Religion);
+                if (equipment.CharacterClass == null)
+                    equipment.HasCharacterClassRequirement = false;
+            }
 
-            //    if (equipment.Religion == null)
-            //        equipment.HasReligionRequirement = false;
-            //}
+            // Doodads
+            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasCharacterClassRequirement))
+            {
+                doodad.CharacterClass = MatchByName(configuration.CharacterClasses, doodad.CharacterClass);
 
-            //// Doodads
-            //foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasReligionRequirement))
-            //{
-            //    doodad.Religion = MatchByName(configuration.Religions, doodad.Religion);
+                if (doodad.CharacterClass == null)
+                    doodad.HasCharacterClassRequirement = false;
+            }
 
-            //    if (doodad.Religion == null)
-            //        doodad.HasReligionRequirement = false;
-            //}
+            // Skills
+            foreach (var skillSet in configuration.SkillTemplates)
+            {
+                foreach (var skill in skillSet.Skills)
+                {
+                    skill.CharacterClass = MatchByName(configuration.CharacterClasses, skill.CharacterClass);
 
-            //// Enemies
-            //foreach (var enemy in configuration.EnemyTemplates.Where(x => x.HasReligion))
-            //{
-            //    enemy.Religion = MatchByName(configuration.Religions, enemy.Religion);
-
-            //    if (enemy.Religion == null)
-            //        enemy.HasReligion = false;
-            //}
+                    if (skill.CharacterClass == null)
+                        skill.HasCharacterClassRequirement = false;
+                }
+            }
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)

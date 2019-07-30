@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Service.Interface
                 Level level,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration,
-                IEnumerable<CharacterClass> religions);
+                IEnumerable<CharacterClass> characterClasses);
 
         void Unload();
 
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Service.Interface
         ScenarioConfigurationContainer ScenarioConfiguration { get; }
 
         /// <summary>
-        /// Religions for the scenario
+        /// Character Classes for the scenario
         /// </summary>
         IEnumerable<CharacterClass> CharacterClasses { get; }
 

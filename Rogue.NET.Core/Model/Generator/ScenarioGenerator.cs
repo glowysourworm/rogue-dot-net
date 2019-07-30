@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,
-            ICharacterClassGenerator religionGenerator,
+            ICharacterClassGenerator characterClassGenerator,
             IAttackAttributeGenerator attackAttributeGenerator,
             IScenarioMetaDataGenerator scenarioMetaDataGenerator,
             IRandomSequenceGenerator randomSequenceGenerator)
@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Generator
             _layoutGenerator = layoutGenerator;
             _contentGenerator = contentGenerator;
             _characterGenerator = characterGenerator;
-            _characterClassGenerator = religionGenerator;
+            _characterClassGenerator = characterClassGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
@@ -104,7 +104,7 @@ namespace Rogue.NET.Core.Model.Generator
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterBRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.Teleport2));
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadTeleporterRandomRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.TeleportRandom));
 
-            //Identify player skills / equipment / consumables / and identified religions
+            //Identify player skills / equipment / consumables / and character classes
             foreach (var skillSet in scenario.Player.SkillSets)
             {
                 scenario.ScenarioEncyclopedia[skillSet.RogueName].IsIdentified = true;

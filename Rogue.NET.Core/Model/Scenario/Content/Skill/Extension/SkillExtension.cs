@@ -22,9 +22,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill.Extension
                 return false;
 
             // Character Class Requirement
-            if (skill.HasReligionRequirement &&
+            if (skill.HasCharacterClassRequirement &&
                (!player.CharacterClassAlteration.HasCharacterClass() ||
-                skill.Religion.RogueName != player.CharacterClassAlteration.CharacterClass.RogueName))
+                skill.CharacterClass.RogueName != player.CharacterClassAlteration.CharacterClass.RogueName))
                 return false;
 
             return true;

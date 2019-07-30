@@ -442,8 +442,6 @@
 				
 				Progressing from one level to the next could just take a number of turns.
 				
-- Religions:  Would still like a way to naturally build your affiliation rather than relying on shrines or altars or special objects.
-
 - Keys:  Consider getting rid of modifiers for doors / fighting.
 				   
 ----------------------------
@@ -503,21 +501,8 @@ IMMEDIATE TODO'S:
 ---------------
 		
 	- PERMADEATH
-	- Religion:  Get rid of interactions completely EXCEPT for blocking Alterations. 
-				 Just keep it as a requirement for using items, doodads, and skills. Also, get rid of affiliation level.	
-				 
-				 - Search on TODO:SKILLSET
-				 - Test deserialization of Religion (on any asset) and check that it == the one in the global collection (by reference)
-				   DOESN'T WORK*** So, had to revert to comparing religion name.
-				 
 	- Dependencies:  Take the algorithm from Traingle.NET and remove code
 	- Dependencies:  Look for source for Dotaway - OR just write:  a desaturation algorithm; and a pixelation algorithm.
-	
-	- IDEA!!!:  To deal with global collections - Attack Attributes; Altered States; Religions; etc... Create a static container
-				for creating the scenario!! :)  It's just like the idea of IOC - except for the actual model. So, a couples ideas
-				are 1) a static container class or 2) an injectible service .. or some kind of static lookup for the container
-				that is aware of the game state.
-	
 	- FIRST BIG TODO:  Refactor Animation targeting type to handle physical cases:
 	
 					   Problem:  There's an un-written "coupling" between animations and alterations. Example is "Run Away"

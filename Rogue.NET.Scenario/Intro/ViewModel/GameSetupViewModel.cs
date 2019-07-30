@@ -35,7 +35,7 @@ namespace Rogue.NET.Intro.ViewModel
         bool _survivorMode = false;
         ScenarioViewModel _selectedConfiguration;
         SavedGameViewModel _selectedGame;
-        CharacterClassSelectionViewModel _selectedReligion;
+        CharacterClassSelectionViewModel _selectedCharacterClass;
         #endregion
 
         #region Properties
@@ -52,10 +52,10 @@ namespace Rogue.NET.Intro.ViewModel
             get { return _selectedGame; }
             set { this.RaiseAndSetIfChanged(ref _selectedGame, value); }
         }
-        public CharacterClassSelectionViewModel SelectedReligion
+        public CharacterClassSelectionViewModel SelectedCharacterClass
         {
-            get { return _selectedReligion; }
-            set { this.RaiseAndSetIfChanged(ref _selectedReligion, value); }
+            get { return _selectedCharacterClass; }
+            set { this.RaiseAndSetIfChanged(ref _selectedCharacterClass, value); }
         }
 
         public string RogueName

@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface IDoodadGenerator
     {
-        DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> religions);
+        DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> characterClasses);
     }
 }

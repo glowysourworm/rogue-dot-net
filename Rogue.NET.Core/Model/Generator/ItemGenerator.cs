@@ -29,17 +29,17 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> religions)
+        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> characterClasses)
         {
             if (equipmentTemplate.IsUnique && equipmentTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
 
             Equipment equipment = new Equipment();
             if (equipmentTemplate.HasEquipSpell)
-                equipment.EquipSpell = _spellGenerator.GenerateSpell(equipmentTemplate.EquipSpell, religions);
+                equipment.EquipSpell = _spellGenerator.GenerateSpell(equipmentTemplate.EquipSpell);
 
             if (equipmentTemplate.HasCurseSpell)
-                equipment.CurseSpell = _spellGenerator.GenerateSpell(equipmentTemplate.CurseSpell, religions);
+                equipment.CurseSpell = _spellGenerator.GenerateSpell(equipmentTemplate.CurseSpell);
 
             equipment.CharacterColor = equipmentTemplate.SymbolDetails.CharacterColor;
             equipment.CharacterSymbol = equipmentTemplate.SymbolDetails.CharacterSymbol;
@@ -65,28 +65,27 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.AttackAttributes = equipmentTemplate.AttackAttributes
                                                           .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                           .ToList();
-            // TODO:RELIGION
-            // equipment.HasReligionRequirement = equipmentTemplate.HasReligionRequirement;
 
-            // TODO:RELIGION
-            // Religious Affiliation Requirement
-            //if (equipment.HasReligionRequirement)
-            //    equipment.Religion = religions.First(religion => religion.RogueName == equipmentTemplate.Religion.Name);
+            equipment.HasCharacterClassRequirement = equipmentTemplate.HasCharacterClassRequirement;
+
+            // Character Class Requirement
+            if (equipmentTemplate.HasCharacterClassRequirement)
+                equipment.CharacterClass = characterClasses.First(x => x.RogueName == equipmentTemplate.CharacterClass.Name);
 
             equipmentTemplate.HasBeenGenerated = true;
             return equipment;
         }
-        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<CharacterClass> religions)
+        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<CharacterClass> characterClasses)
         {
             if (consumableTemplate.IsUnique && consumableTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
 
             Consumable consumable = new Consumable();
             consumable.RogueName = consumableTemplate.Name;
-            consumable.Spell = _spellGenerator.GenerateSpell(consumableTemplate.SpellTemplate, religions);
-            consumable.ProjectileSpell = _spellGenerator.GenerateSpell(consumableTemplate.ProjectileSpellTemplate, religions);
-            consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill, religions);
-            consumable.AmmoSpell = _spellGenerator.GenerateSpell(consumableTemplate.AmmoSpellTemplate, religions);
+            consumable.Spell = _spellGenerator.GenerateSpell(consumableTemplate.SpellTemplate);
+            consumable.ProjectileSpell = _spellGenerator.GenerateSpell(consumableTemplate.ProjectileSpellTemplate);
+            consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill, characterClasses);
+            consumable.AmmoSpell = _spellGenerator.GenerateSpell(consumableTemplate.AmmoSpellTemplate);
             consumable.HasLearnedSkillSet = consumableTemplate.HasLearnedSkill;
             consumable.HasProjectileSpell = consumableTemplate.IsProjectile;
             consumable.HasSpell = consumableTemplate.HasSpell;
@@ -108,13 +107,11 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.IdentifyOnUse = consumableTemplate.IdentifyOnUse;
             consumable.NoteMessage = consumableTemplate.NoteMessage;
 
-            // TODO:RELIGION
-            //consumable.HasReligionRequirement = consumableTemplate.HasReligionRequirement;
+            consumable.HasCharacterClassRequirement = consumableTemplate.HasCharacterClassRequirement;
 
-            // TODO:RELIGION
             // Religious Affiliation Requirement
-            //if (consumable.HasReligionRequirement)
-            //    consumable.Religion = religions.First(religion => religion.RogueName == consumableTemplate.Religion.Name);
+            if (consumableTemplate.HasCharacterClassRequirement)
+                consumable.CharacterClass = characterClasses.First(x => x.RogueName == consumableTemplate.CharacterClass.Name);
 
             consumableTemplate.HasBeenGenerated = true;
 
@@ -122,18 +119,18 @@ namespace Rogue.NET.Core.Model.Generator
         }
 
 
-        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<CharacterClass> religions)
+        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<CharacterClass> characterClasses)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 
-            return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate, religions) : null;
+            return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate, characterClasses) : null;
         }
 
-        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<CharacterClass> religions, bool equipOnStartup = false)
+        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<CharacterClass> characterClasses, bool equipOnStartup = false)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 
-            var equipment = (num > 0) ? GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate, religions) : null;
+            var equipment = (num > 0) ? GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate, characterClasses) : null;
 
             if (equipment != null)
                 equipment.IsEquipped = probabilityTemplate.EquipOnStartup && equipOnStartup;

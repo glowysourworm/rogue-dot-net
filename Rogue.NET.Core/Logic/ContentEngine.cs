@@ -141,14 +141,14 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Check Character Class Requirement
-            if (equipment.HasReligionRequirement &&
+            if (equipment.HasCharacterClassRequirement &&
                (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != equipment.Religion.RogueName))
+                 player.CharacterClassAlteration.CharacterClass.RogueName != equipment.CharacterClass.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} Not Met!",
-                    equipment.Religion.RogueName);
+                    "Required Character Class Not Met!",
+                    equipment.CharacterClass.RogueName);
 
                 return false;
             }

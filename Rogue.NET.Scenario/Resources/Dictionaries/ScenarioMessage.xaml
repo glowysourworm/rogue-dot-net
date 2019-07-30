@@ -199,7 +199,7 @@
                         <Run Text="{Binding BaseHit, StringFormat=F1}" />
                     </TextBlock>
 
-                    <!-- + Specialized Hits (Attack Attributes, Religions, etc...) -->
+                    <!-- + Specialized Hits (Attack Attributes, etc...) -->
                     <TextBlock Text=" + "  Style="{StaticResource ScenarioMessageTextBlockStyle}" Visibility="{Binding AnySpecializedHits, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
 
                     <!-- Specialized Hits -->

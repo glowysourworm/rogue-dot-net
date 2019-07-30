@@ -38,7 +38,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _isEquipment;
         bool _isWeapon;
         bool _isArmor;
-        bool _hasReligionRequirement;
+        bool _hasCharacterClassRequirement;
         int _quantity;
         string _uses;
         int _requiredLevel;
@@ -60,7 +60,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         string _smileyLineColor;
         string _smileyAuraColor;
         SymbolTypes _symbolType;
-        ScenarioImageViewModel _religion;
+        ScenarioImageViewModel _characterClass;
         #endregion
 
         #region (public) Properties
@@ -156,10 +156,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _isArmor; }
             set { this.RaiseAndSetIfChanged(ref _isArmor, value); }
         }
-        public bool HasReligionRequirement
+        public bool HasCharacterClassRequirement
         {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
         }
         public int Quantity
         {
@@ -231,10 +231,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _displayName; }
             set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
-        public ScenarioImageViewModel Religion
+        public ScenarioImageViewModel CharacterClass
         {
-            get { return _religion; }
-            set { this.RaiseAndSetIfChanged(ref _religion, value); }
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
 
         // Symbol Details
@@ -291,13 +291,13 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
             UpdateEquipment(equipment, metaData, characterClasses);
         }
-        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> characterClasses, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
-            UpdateConsumable(consumable, metaData, religions, identifyConsumable, totalQuantity, totalUses, totalWeight);
+            UpdateConsumable(consumable, metaData, characterClasses, identifyConsumable, totalQuantity, totalUses, totalWeight);
         }
-        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, IEnumerable<CharacterClass> characterClasses, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
         {
             this.Id = consumable.Id;
             this.RogueName = consumable.RogueName;
@@ -305,7 +305,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Make sure identifyConsumable applies to consume an identify item (there's at least one thing to identify)
             bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
 
-            // Level and Religion requirements are handled by other code. Allow user to TRY to consume for those
+            // Level and Character Class requirements are handled by other code. Allow user to TRY to consume for those
             bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || 
                                  (consumable.HasLearnedSkillSet) ||
                                  (consumable.SubType == ConsumableSubType.Note) || // Always allow using notes
@@ -321,10 +321,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.IsArmor = false;
             this.IsWeapon = false;
 
-            // Religious Affiliation
-            this.HasReligionRequirement = consumable.HasReligionRequirement;
-            if (consumable.HasReligionRequirement)
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == consumable.Religion.RogueName));
+            // Character Class
+            this.HasCharacterClassRequirement = consumable.HasCharacterClassRequirement;
+            if (consumable.HasCharacterClassRequirement)
+                this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == consumable.CharacterClass.RogueName));
                                                 
 
             this.Quantity = totalQuantity;
@@ -386,7 +386,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     this.DisplayName = consumable.RogueName;
             }
         }
-        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData, IEnumerable<CharacterClass> religions)
+        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData, IEnumerable<CharacterClass> characterClasses)
         {
             this.Id = equipment.Id;
             this.RogueName = equipment.RogueName;
@@ -410,10 +410,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.Class = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Class.ToString("F0") :
                                                      equipment.IsIdentified ? "-" : "?";
 
-            // Religious Affiliation
-            this.HasReligionRequirement = equipment.HasReligionRequirement;
-            if (equipment.HasReligionRequirement)
-                this.Religion = new ScenarioImageViewModel(religions.First(x => x.RogueName == equipment.Religion.RogueName));
+            // Character Class
+            this.HasCharacterClassRequirement = equipment.HasCharacterClassRequirement;
+            if (equipment.HasCharacterClassRequirement)
+                this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == equipment.CharacterClass.RogueName));
 
             // Attack and Defense Value
             if (!equipment.IsIdentified)

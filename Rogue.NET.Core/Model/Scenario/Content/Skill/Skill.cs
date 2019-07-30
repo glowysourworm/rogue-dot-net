@@ -9,11 +9,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public int LevelRequirement { get; set; }
         public int SkillPointRequirement { get; set; }
         public int PointRequirement { get; set; }
-        public bool HasReligionRequirement { get; set; }
+        public bool HasCharacterClassRequirement { get; set; }
         public bool HasAttributeRequirement { get; set; }
         public double AttributeLevelRequirement { get; set; }
         public CharacterAttribute AttributeRequirement { get; set; }
-        public CharacterClass Religion { get; set; }
+        public CharacterClass CharacterClass { get; set; }
         public Spell Alteration { get; set; }
 
         public bool IsLearned { get; set; }

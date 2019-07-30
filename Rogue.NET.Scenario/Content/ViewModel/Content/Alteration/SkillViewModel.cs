@@ -23,18 +23,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         string _description;
-        ScenarioImageViewModel _religion;
+        ScenarioImageViewModel _characterClass;
         SpellViewModel _alteration;        
 
         bool _isSelected;
 
         bool _hasAttributeRequirement;
-        bool _hasReligionRequirement;
+        bool _hasCharacterClassRequirement;
 
         bool _isSkillPointRequirementMet;
         bool _isLevelRequirementMet;
         bool _isAttributeRequirementMet;
-        bool _isReligionRequirementMet;
+        bool _isCharacterClassRequirementMet;
 
         public int LevelRequirement
         {
@@ -61,10 +61,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _description; }
             set { this.RaiseAndSetIfChanged(ref _description, value); }
         }
-        public ScenarioImageViewModel Religion
+        public ScenarioImageViewModel CharacterClass
         {
-            get { return _religion; }
-            set { this.RaiseAndSetIfChanged(ref _religion, value); }
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
         public SpellViewModel Alteration
         {
@@ -88,10 +88,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _hasAttributeRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasAttributeRequirement, value); }
         }
-        public bool HasReligionRequirement
+        public bool HasCharacterClassRequirement
         {
-            get { return _hasReligionRequirement; }
-            set { this.RaiseAndSetIfChanged(ref _hasReligionRequirement, value); }
+            get { return _hasCharacterClassRequirement; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
         }
 
         public bool IsSkillPointRequirementMet
@@ -109,10 +109,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _isAttributeRequirementMet; }
             set { this.RaiseAndSetIfChanged(ref _isAttributeRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
-        public bool IsReligionRequirementMet
+        public bool IsCharacterClassRequirementMet
         {
-            get { return _isReligionRequirementMet; }
-            set { this.RaiseAndSetIfChanged(ref _isReligionRequirementMet, value); UpdateAreAllRequirementsMet(); }
+            get { return _isCharacterClassRequirementMet; }
+            set { this.RaiseAndSetIfChanged(ref _isCharacterClassRequirementMet, value); UpdateAreAllRequirementsMet(); }
         }
         public bool AreAllRequirementsMet
         {
@@ -141,7 +141,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             SetValue(AreAllRequirementsMetProperty, _isSkillPointRequirementMet &&
                                                     _isLevelRequirementMet &&
-                                                    _isReligionRequirementMet &&
+                                                    _isCharacterClassRequirementMet &&
                                                     _isAttributeRequirementMet);
 
             OnPropertyChanged("AreAllRequirementsMet");

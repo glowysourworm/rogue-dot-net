@@ -42,7 +42,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
-        /// Updates Religion references on Enemies, Equipment, Consumables, and Doodads. This will
+        /// Updates Character Class references on Enemies, Equipment, Consumables, and Doodads. This will
         /// ensure that the reference is broken if it has been removed.
         /// </summary>
         void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration);

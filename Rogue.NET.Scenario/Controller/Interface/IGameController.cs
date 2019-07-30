@@ -8,7 +8,7 @@ namespace Rogue.NET.Scenario.Controller.Interface
     {
         void Initialize();
 
-        void New(ScenarioConfigurationContainer config, string rogueName, string religionName, int seed, bool survivorMode);
+        void New(ScenarioConfigurationContainer config, string rogueName, string characterClassName, int seed, bool survivorMode);
         void Open(string file);
         void Save();
 

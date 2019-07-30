@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
-    public class ReligionViewModel : ScenarioImageViewModel
+    public class CharacterClassViewModel : ScenarioImageViewModel
     {
         string _attributeBonus;
-        bool _isAffiliated;
+        bool _hasCharacterClass;
         bool _hasAttributeBonus;
         bool _hasAttackAttributeBonus;
 
@@ -16,10 +16,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             get { return _attributeBonus; }
             set { this.RaiseAndSetIfChanged(ref _attributeBonus, value); }
         }
-        public bool IsAffiliated
+        public bool HasCharacterClass
         {
-            get { return _isAffiliated; }
-            set { this.RaiseAndSetIfChanged(ref _isAffiliated, value); }
+            get { return _hasCharacterClass; }
+            set { this.RaiseAndSetIfChanged(ref _hasCharacterClass, value); }
         }
         public bool HasAttributeBonus
         {
@@ -34,7 +34,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         public ObservableCollection<AttackAttributeViewModel> AttackAttributeBonus { get; set; }
 
-        public ReligionViewModel()
+        public CharacterClassViewModel()
         {
             this.AttackAttributeBonus = new ObservableCollection<AttackAttributeViewModel>();
         }

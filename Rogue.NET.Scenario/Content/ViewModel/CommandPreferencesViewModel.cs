@@ -23,7 +23,6 @@ namespace Rogue.NET.Model
         public static readonly DependencyProperty SkillProperty = DependencyProperty.Register("Skill", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register("Target", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty FireProperty = DependencyProperty.Register("Fire", typeof(Key), typeof(CommandPreferencesViewModel));
-        public static readonly DependencyProperty RenounceReligionProperty = DependencyProperty.Register("RenounceReligion", typeof(Key), typeof(CommandPreferencesViewModel));
 
         public static readonly DependencyProperty ShowPlayerSubpanelEquipmentProperty = DependencyProperty.Register("ShowPlayerSubpanelEquipment", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty ShowPlayerSubpanelConsumablesProperty = DependencyProperty.Register("ShowPlayerSubpanelConsumables", typeof(Key), typeof(CommandPreferencesViewModel));
@@ -112,11 +111,6 @@ namespace Rogue.NET.Model
             get { return (Key)GetValue(FireProperty); }
             set { SetValue(FireProperty, value); }
         }
-        public Key RenounceReligion
-        {
-            get { return (Key)GetValue(RenounceReligionProperty); }
-            set { SetValue(RenounceReligionProperty, value); }
-        }
 
         public Key ShowPlayerSubpanelEquipment
         {
@@ -162,7 +156,6 @@ namespace Rogue.NET.Model
             Skill = Key.X;
             Doodad = Key.D;
             Fire = Key.F;
-            RenounceReligion = Key.R;
 
             ShowPlayerSubpanelEquipment = Key.D1;
             ShowPlayerSubpanelConsumables = Key.D2;
@@ -191,7 +184,6 @@ namespace Rogue.NET.Model
                 Skill = Key.X,
                 Doodad = Key.D,
                 Fire = Key.F,
-                RenounceReligion = Key.R,
 
                 ShowPlayerSubpanelEquipment = Key.D1,
                 ShowPlayerSubpanelConsumables = Key.D2,

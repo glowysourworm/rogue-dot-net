@@ -201,9 +201,9 @@
                                                     <Run Text="{Binding AttributeLevelRequirement}" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0"
-                                                           Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                                                    <Run Text="Required Religion: " />
-                                                    <Run Text="{Binding Religion.Name}" />
+                                                           Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                                                    <Run Text="Required Character Class: " />
+                                                    <Run Text="{Binding CharacterClass.Name}" />
                                                 </TextBlock>
                                             </StackPanel>
                                         </StackPanel>
@@ -400,24 +400,24 @@
                             <Run Text=" of "  Foreground="{Binding IsAttributeRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                             <Run Text="{Binding AttributeLevelRequirement}" Foreground="{Binding IsAttributeRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>
-                        <TextBlock FontSize="18" Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                            <Run Text="Religion Requirement: " Foreground="Tan" />
+                        <TextBlock FontSize="18" Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                            <Run Text="Character Class Requirement: " Foreground="Tan" />
                             <Image HorizontalAlignment="Left" VerticalAlignment="Center" Stretch="None" Margin="2">
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                        <Binding Path="Religion.CharacterSymbol" />
-                                        <Binding Path="Religion.CharacterColor" />
-                                        <Binding Path="Religion.Icon" />
-                                        <Binding Path="Religion.DisplayIcon" />
-                                        <Binding Path="Religion.SmileyMood" />
-                                        <Binding Path="Religion.SmileyBodyColor" />
-                                        <Binding Path="Religion.SmileyLineColor" />
-                                        <Binding Path="Religion.SmileyAuraColor" />
-                                        <Binding Path="Religion.SymbolType" />
+                                        <Binding Path="CharacterClass.CharacterSymbol" />
+                                        <Binding Path="CharacterClass.CharacterColor" />
+                                        <Binding Path="CharacterClass.Icon" />
+                                        <Binding Path="CharacterClass.DisplayIcon" />
+                                        <Binding Path="CharacterClass.SmileyMood" />
+                                        <Binding Path="CharacterClass.SmileyBodyColor" />
+                                        <Binding Path="CharacterClass.SmileyLineColor" />
+                                        <Binding Path="CharacterClass.SmileyAuraColor" />
+                                        <Binding Path="CharacterClass.SymbolType" />
                                     </MultiBinding>
                                 </Image.Source>
                             </Image>                            
-                            <Run Text="{Binding Religion.DisplayName}" Foreground="{Binding IsReligionRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
+                            <Run Text="{Binding CharacterClass.DisplayName}" Foreground="{Binding IsCharacterClassRequirementMet, ConverterParameter=White, Converter={StaticResource BoolToValidationForegroundConverter}}" />
                         </TextBlock>                        
                     </StackPanel>
                 </Grid>

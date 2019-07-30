@@ -240,15 +240,15 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
-            // Check Religious Affiliation Requirement
-            if (thrownItem.HasReligionRequirement &&
+            // Check Character Class Requirement
+            if (thrownItem.HasCharacterClassRequirement &&
                (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != thrownItem.Religion.RogueName))
+                 player.CharacterClassAlteration.CharacterClass.RogueName != thrownItem.CharacterClass.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} Not Met!",
-                    thrownItem.Religion.RogueName);
+                    "Required Character Class Not Met!",
+                    thrownItem.CharacterClass.RogueName);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -284,15 +284,15 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
-            // Check Religious Affiliation Requirement
-            if (consumable.HasReligionRequirement &&
+            // Check Character Class Requirement
+            if (consumable.HasCharacterClassRequirement &&
                (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != consumable.Religion.RogueName))
+                 player.CharacterClassAlteration.CharacterClass.RogueName != consumable.CharacterClass.RogueName))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
-                    "Required Religious Affiliation {0} Not Met!",
-                    consumable.Religion.RogueName);
+                    "Required Character Class Not Met!",
+                    consumable.CharacterClass.RogueName);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -519,15 +519,15 @@ namespace Rogue.NET.Core.Logic
                     return LevelContinuationAction.ProcessTurn;
                 }
 
-                // Check Religious Affiliation Requirement
-                if (ammo.HasReligionRequirement &&
+                // Check Character Class Requirement
+                if (ammo.HasCharacterClassRequirement &&
                    (!_modelService.Player.CharacterClassAlteration.HasCharacterClass() ||
-                     _modelService.Player.CharacterClassAlteration.CharacterClass.RogueName != ammo.Religion.RogueName))
+                     _modelService.Player.CharacterClassAlteration.CharacterClass.RogueName != ammo.CharacterClass.RogueName))
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
-                        "Required Religious Affiliation {0} Not Met!",
-                        ammo.Religion.RogueName);
+                        "Required Character Class Not Met!",
+                        ammo.CharacterClass.RogueName);
 
                     return LevelContinuationAction.ProcessTurn;
                 }

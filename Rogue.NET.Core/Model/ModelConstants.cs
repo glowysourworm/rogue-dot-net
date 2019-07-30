@@ -80,10 +80,5 @@
             public const double VeryHungryThreshold = 70D;
             public const double CriticalThreshold = 90D;
         }
-
-        public static class Religion
-        {
-            public const double AffiliationIncrement = 0.1D;
-        }
     }
 }

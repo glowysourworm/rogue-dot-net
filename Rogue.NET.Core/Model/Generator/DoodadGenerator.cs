@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> religions)
+        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> characterClasses)
         {
             if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a unique Doodad twice");
@@ -28,10 +28,10 @@ namespace Rogue.NET.Core.Model.Generator
             var doodad = new DoodadMagic();
 
             if (doodadTemplate.IsAutomatic)
-                doodad.AutomaticSpell = _spellGenerator.GenerateSpell(doodadTemplate.AutomaticMagicSpellTemplate, religions);
+                doodad.AutomaticSpell = _spellGenerator.GenerateSpell(doodadTemplate.AutomaticMagicSpellTemplate);
 
             if (doodadTemplate.IsInvoked)
-                doodad.InvokedSpell = _spellGenerator.GenerateSpell(doodadTemplate.InvokedMagicSpellTemplate, religions);
+                doodad.InvokedSpell = _spellGenerator.GenerateSpell(doodadTemplate.InvokedMagicSpellTemplate);
 
             doodad.IsAutomatic = doodadTemplate.IsAutomatic;
             doodad.IsHidden = !doodadTemplate.IsVisible;
@@ -47,11 +47,11 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.SmileyLineColor = doodadTemplate.SymbolDetails.SmileyLineColor;
             doodad.SymbolType = doodadTemplate.SymbolDetails.Type;
             doodad.HasBeenUsed = false;
+            doodad.HasCharacterClassRequirement = doodadTemplate.HasCharacterClassRequirement;
 
-            // TODO:RELIGION
-            // Religious Affiliation Requirement
-            //if (doodad.HasReligionRequirement)
-            //    doodad.Religion = religions.First(religion => religion.RogueName == doodadTemplate.Religion.Name);
+            // Character Class Requirement
+            if (doodadTemplate.HasCharacterClassRequirement)
+                doodad.CharacterClass = characterClasses.First(x => x.RogueName == doodadTemplate.CharacterClass.Name);
 
             doodadTemplate.HasBeenGenerated = true;
 

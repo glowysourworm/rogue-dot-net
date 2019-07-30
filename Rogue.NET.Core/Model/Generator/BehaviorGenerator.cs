@@ -1,8 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator
@@ -18,11 +16,11 @@ namespace Rogue.NET.Core.Model.Generator
             _spellGenerator = spellGenerator;
         }
 
-        public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate, IEnumerable<CharacterClass> religions)
+        public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate)
         {
             Behavior behavior = new Behavior();
             behavior.AttackType = behaviorTemplate.AttackType;
-            behavior.EnemySkill = _spellGenerator.GenerateSpell(behaviorTemplate.EnemySpell, religions);
+            behavior.EnemySkill = _spellGenerator.GenerateSpell(behaviorTemplate.EnemySpell);
             behavior.MovementType = behaviorTemplate.MovementType;
             return behavior;
         }

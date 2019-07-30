@@ -222,14 +222,14 @@ namespace Rogue.NET.ScenarioEditor
                 LoadConstruction("General");
             });
 
-            // Religion Events
+            // Character Class Events
             _eventAggregator.GetEvent<AddCharacterClassEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
-                // Add Religion to the scenario
+                // Add Character Class to the scenario
                 _scenarioEditorController.CurrentConfig.CharacterClasses.Add(e);
 
                 // Update Scenario object references
@@ -248,7 +248,7 @@ namespace Rogue.NET.ScenarioEditor
                 //         THE STACK
                 _undoService.Block();
 
-                // Remove Religion from the scenario
+                // Remove Character Class from the scenario
                 _scenarioEditorController.CurrentConfig.CharacterClasses.Remove(e);
 
                 // Update Scenario object references

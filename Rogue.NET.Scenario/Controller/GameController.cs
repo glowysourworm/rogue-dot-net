@@ -70,7 +70,7 @@ namespace Rogue.NET.Scenario.Controller
             {
                 var config = _scenarioResourceService.GetScenarioConfiguration(e.ScenarioName);
                 if (config != null)
-                    New(config, e.RogueName, e.ReligionName, e.Seed, e.SurvivorMode);
+                    New(config, e.RogueName, e.CharacterClassName, e.Seed, e.SurvivorMode);
             });
 
             // Open
@@ -119,7 +119,7 @@ namespace Rogue.NET.Scenario.Controller
             });
         }
 
-        public void New(ScenarioConfigurationContainer configuration, string characterName, string religionName, int seed, bool survivorMode)
+        public void New(ScenarioConfigurationContainer configuration, string characterName, string characterClassName, int seed, bool survivorMode)
         {
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
             {
@@ -138,7 +138,7 @@ namespace Rogue.NET.Scenario.Controller
             }
 
             //Create expanded dungeon contents in memory
-            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, religionName, seed, survivorMode);
+            _scenarioContainer = _scenarioGenerator.CreateScenario(configuration, characterClassName, seed, survivorMode);
 
             _scenarioContainer.Seed = seed;
             _scenarioContainer.Player.RogueName = characterName;

@@ -107,12 +107,12 @@
                     <TextBlock Foreground="White" Text="One Use (as opposed to unlimited uses)" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 </Grid>
                 <Grid Margin="10">
-                    <TextBlock Foreground="White" Text="Has Religion Requirement" VerticalAlignment="Center" />
-                    <CheckBox IsChecked="{Binding HasReligionRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                    <TextBlock Foreground="White" Text="Has Character Class Requirement" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10"
-                      Visibility="{Binding HasReligionRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <TextBlock Foreground="White" Text="Religion Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                      Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <TextBlock Foreground="White" Text="Character Class Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
                     <ComboBox x:Name="CharacterClassCB" DisplayMemberPath="Name"
                                   SelectedItem="{Binding CharacterClass}"
                                   SelectedValue="{Binding CharacterClass.Name}"

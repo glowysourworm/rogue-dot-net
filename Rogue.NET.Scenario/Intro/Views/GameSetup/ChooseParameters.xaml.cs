@@ -1,6 +1,5 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
@@ -47,7 +46,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
                     NextDisplayType = typeof(NewOpenEdit)
                 });
             }
-            else if (_currentParametersDisplayType == typeof(ChooseReligion))
+            else if (_currentParametersDisplayType == typeof(ChooseCharacterClass))
             {
                 // Load the first parameters display
                 _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseName));
@@ -56,13 +55,13 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             }
             else
             {
-                // If there are religions in the scenario then allow user to re-select relegion
+                // If there are character classes in the scenario then allow user to re-select character class
                 if (viewModel.SelectedConfiguration.CharacterClasses.Count > 0)
                 {
                     // Load the first parameters display
-                    _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
+                    _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseCharacterClass));
 
-                    _currentParametersDisplayType = typeof(ChooseReligion);
+                    _currentParametersDisplayType = typeof(ChooseCharacterClass);
                 }
                 else
                 {
@@ -80,13 +79,13 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
             if (viewModel == null)
                 return;
 
-            // If there are religions in the scenario then allow user to select relegion
+            // If there are character classes in the scenario then allow user to select character class
             if (_currentParametersDisplayType == typeof(ChooseName) &&
                 viewModel.SelectedConfiguration.CharacterClasses.Count > 0)
             {
-                _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseReligion));
+                _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseCharacterClass));
 
-                _currentParametersDisplayType = typeof(ChooseReligion);
+                _currentParametersDisplayType = typeof(ChooseCharacterClass);
             }
             else
             {
@@ -94,7 +93,7 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
                 {
                     RogueName = viewModel.RogueName,
                     ScenarioName = viewModel.SelectedConfiguration.Name,
-                    ReligionName = viewModel.SelectedReligion != null ? viewModel.SelectedReligion.RogueName : string.Empty,
+                    CharacterClassName = viewModel.SelectedCharacterClass != null ? viewModel.SelectedCharacterClass.RogueName : string.Empty,
                     Seed = viewModel.Seed,
                     SurvivorMode = viewModel.SurvivorMode
                 });

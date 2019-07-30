@@ -169,7 +169,7 @@
     <Compile Include="Content\ViewModel\Content\Alteration\AttackAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\ReligionViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\CharacterClassViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\RogueBaseViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaData\RogueEncyclopediaCategoryViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ScenarioMetaData\RogueEncyclopediaViewModel.cs" />
@@ -236,9 +236,6 @@
     <Compile Include="Controller\ScenarioController.cs" />
     <Compile Include="Control\EllipsePanel.cs" />
     <Compile Include="Control\EllipsePanelAnimation.cs" />
-    <Compile Include="Control\ReligionParametersControl.xaml.cs">
-      <DependentUpon>ReligionParametersControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converter\ItemGridButtonVisibilityConverter.cs" />
     <Compile Include="Converter\ItemGridIntendedActionTextConverter.cs" />
     <Compile Include="Converter\ItemGridRowButtonVisibilitiyConverter.cs" />
@@ -270,8 +267,8 @@
     <Compile Include="Intro\Views\GameSetup\Parameters\ChooseName.xaml.cs">
       <DependentUpon>ChooseName.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseReligion.xaml.cs">
-      <DependentUpon>ChooseReligion.xaml</DependentUpon>
+    <Compile Include="Intro\Views\GameSetup\Parameters\ChooseCharacterClass.xaml.cs">
+      <DependentUpon>ChooseCharacterClass.xaml</DependentUpon>
     </Compile>
     <Compile Include="Intro\Views\GameSetup\ChooseSavedGame.xaml.cs">
       <DependentUpon>ChooseSavedGame.xaml</DependentUpon>
@@ -374,10 +371,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Control\ReligionParametersControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Intro\Views\GameSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -390,7 +383,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Intro\Views\GameSetup\Parameters\ChooseReligion.xaml">
+    <Page Include="Intro\Views\GameSetup\Parameters\ChooseCharacterClass.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

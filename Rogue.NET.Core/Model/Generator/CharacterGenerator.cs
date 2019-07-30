@@ -106,13 +106,13 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 var characterClass = characterClasses.First(x => x.RogueName == characterClassName);
 
-                // Start with affiliation to the chosen religion
+                // Start with chosen character class
                 player.CharacterClassAlteration.Initialize(characterClass, scenarioAttributes);
             }
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<CharacterClass> religions, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -141,8 +141,8 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.IsInvisible = enemyTemplate.IsInvisible;
 
             enemy.BehaviorDetails = new BehaviorDetails();
-            enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior, religions);
-            enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior, religions);
+            enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);
+            enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior);
             enemy.BehaviorDetails.SecondaryProbability = enemyTemplate.BehaviorDetails.SecondaryProbability;
             enemy.BehaviorDetails.SecondaryReason = enemyTemplate.BehaviorDetails.SecondaryReason;
             enemy.BehaviorDetails.CanOpenDoors = enemyTemplate.BehaviorDetails.CanOpenDoors;
@@ -166,7 +166,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var consumable = _itemGenerator.GenerateConsumable(template, religions);
+                var consumable = _itemGenerator.GenerateConsumable(template, characterClasses);
 
                 enemy.Consumables.Add(consumable.Id, consumable);
             }
@@ -182,7 +182,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var equipment = _itemGenerator.GenerateEquipment(template, religions);
+                var equipment = _itemGenerator.GenerateEquipment(template, characterClasses);
 
                 // Equip on Startup
                 if (equipmentTemplate.EquipOnStartup)

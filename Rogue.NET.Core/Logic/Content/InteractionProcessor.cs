@@ -145,14 +145,12 @@ namespace Rogue.NET.Core.Logic.Content
 
         public bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType)
         {
-            var religionComponent = 0D;
-            
             switch (blockType)
             {
                 case AlterationBlockType.Mental:
-                    return _randomSequenceGenerator.Get() < (defender.GetMagicBlock() + religionComponent).Clip();
+                    return _randomSequenceGenerator.Get() < defender.GetMagicBlock().Clip();
                 case AlterationBlockType.Physical:
-                    return _randomSequenceGenerator.Get() < (defender.GetDodge() + religionComponent).Clip();
+                    return _randomSequenceGenerator.Get() < defender.GetDodge().Clip();
                 case AlterationBlockType.NonBlockable:
                     return false;
                 default:

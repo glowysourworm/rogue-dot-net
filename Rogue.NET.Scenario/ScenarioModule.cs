@@ -160,7 +160,7 @@ namespace Rogue.NET.Scenario
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
             _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
             _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseName));
-            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseReligion));
+            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseCharacterClass));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
             _regionManager.RegisterViewWithRegion("MainRegion", typeof(OutroDisplay));

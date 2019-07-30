@@ -175,9 +175,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 template.Effect.RemediedState = Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
                 template.AuraEffect.RemediedState = Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-
-                // TODO:RELIGION
-                //template.ReligiousAffiliationReligion = Match(configuration.CharacterClasses, template.ReligiousAffiliationReligion);
             }
 
             // Skill Sets
@@ -259,9 +256,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 template.Effect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
                 template.AuraEffect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-
-                // TODO:RELIGION
-                //template.ReligiousAffiliationReligion = MatchVM(configuration.Religions, template.ReligiousAffiliationReligion);
             }
 
             // Skill Sets

@@ -43,29 +43,29 @@
                 </TextBlock>
 
                 <StackPanel Orientation="Horizontal"
-                            Visibility="{Binding Religion.IsAffiliated, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                            Visibility="{Binding CharacterClass.HasCharacterClass, Converter={StaticResource BoolVisibilityCollapseConverter}}">
 
-                    <!-- Religion Image -> Tooltip -> Religion Details -->
+                    <!-- Character Class Image -> Tooltip -> Character Class Details -->
                     <Image Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center">
                         <Image.Source>
                             <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                <Binding Path="Religion.CharacterSymbol" />
-                                <Binding Path="Religion.CharacterColor" />
-                                <Binding Path="Religion.Icon" />
-                                <Binding Path="Religion.DisplayIcon" />
-                                <Binding Path="Religion.SmileyMood" />
-                                <Binding Path="Religion.SmileyBodyColor" />
-                                <Binding Path="Religion.SmileyLineColor" />
-                                <Binding Path="Religion.SmileyAuraColor" />
-                                <Binding Path="Religion.SymbolType" />
+                                <Binding Path="CharacterClass.CharacterSymbol" />
+                                <Binding Path="CharacterClass.CharacterColor" />
+                                <Binding Path="CharacterClass.Icon" />
+                                <Binding Path="CharacterClass.DisplayIcon" />
+                                <Binding Path="CharacterClass.SmileyMood" />
+                                <Binding Path="CharacterClass.SmileyBodyColor" />
+                                <Binding Path="CharacterClass.SmileyLineColor" />
+                                <Binding Path="CharacterClass.SmileyAuraColor" />
+                                <Binding Path="CharacterClass.SymbolType" />
                             </MultiBinding>
                         </Image.Source>
-                    </Image>                    
-                    
-                    <!-- Religion Name -->
+                    </Image>
+
+                    <!-- Character Class Name -->
                     <TextBlock FontSize="18" Margin="4,0">
-                        <Run Text="{Binding Religion.DisplayName}" Foreground="#FFFFE56E" />
-                        <Run Text="{Binding Religion.AffiliationLevel, StringFormat=P0}" Foreground="White" />
+                        <Run Text="{Binding CharacterClass.DisplayName}" Foreground="#FFFFE56E" />
+                        <Run Text="{Binding CharacterClass.AffiliationLevel, StringFormat=P0}" Foreground="White" />
                     </TextBlock>
 
                 </StackPanel>

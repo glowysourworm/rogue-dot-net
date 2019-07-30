@@ -252,16 +252,16 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 }
             }
 
-            // Religion contributions
+            // Character Class contributions
             if (character.CharacterClassAlteration.HasAttackAttributeEffect)
             {
                 foreach (var attribute in result)
                 {
-                    var religionAttribute = character.CharacterClassAlteration.AttackAttributeEffect.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
+                    var characterClassAttribute = character.CharacterClassAlteration.AttackAttributeEffect.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
 
-                    attribute.Attack += religionAttribute.Attack;
-                    attribute.Resistance += religionAttribute.Resistance;
-                    attribute.Weakness += religionAttribute.Weakness;
+                    attribute.Attack += characterClassAttribute.Attack;
+                    attribute.Resistance += characterClassAttribute.Resistance;
+                    attribute.Weakness += characterClassAttribute.Weakness;
                 }
             }
 
