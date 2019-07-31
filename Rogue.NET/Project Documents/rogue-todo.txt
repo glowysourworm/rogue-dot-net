@@ -312,13 +312,13 @@
 
 		2) Use Aura Effect Range to create new aura on top of the light radius. 
 
-		3) Choose whether to change Light Color or to apply Aura on top of Light Circle
+		3) Choose whether to change Light Color or to apply Aura on top of Light Circle (OR JUST SHOW AURA DURING USE)
 
 		4) Show effect range in the Alterations screen.
 
 		Effectively this should separate the two and show them independently
 						  
-- PLAYER DEATH R.I.P. TOMBSTONE
+- PLAYER DEATH R.I.P. TOMBSTONE (ALSO  PERMADEATH)
 
 - Agility:  Want to support "Miss Ratio" character stat - which has to be factored into the calculation. So,
 			need better understanding or model for the asymptotic parts using Agility so that player can
@@ -397,19 +397,37 @@
 							**Could also have the calculation based on how quickly you make moves - (i.e. the time between
 							  moves). Would be kind of neat :)
 
-- Strength Requirement for Equipment
+- Strength Requirement for Equipment (PROBABLY JUST USE HAUL)
 
 - Contraptions:  Consumables that can set up a doodad in the level. 
 
 - Doodad Effect:  Have it automatically hit all enemies without having to target.  Also, want to support "Everyone in Range"
 				  and "Everyone except source in Range"
 				  
-				  Another Effect:  Attracts Enemies (Need another character state called "Aggrevated" to have an effect on
-				  enemies and maybe also Player.
+				  ANOTHER EFFECT:  ATTRACTS ENEMIES (NEED ANOTHER CHARACTER STATE CALLED "AGGREVATED" TO HAVE AN EFFECT ON
+				  ENEMIES AND MAYBE ALSO PLAYER.
 				  
 - Enemy Behavior:  Want to expand on current behaviors and starting positions. Would like to support groups or hordes of 
 				   enemies. Also, want to employ a tertiary behavior.. Considering having them do something on each turn 
 				   besides wait for the player.. Brogue has them Wander -> Sleep -> Hunt.
+				   
+				   - Idea: Support a dynamic list of behaviors - with one default (being attack player). This list acts as
+						   a state machine - with conditions for the state to be active.
+						   
+						   - Condition:  Turn counter (internal to Behavior) is less than 10 (resets with each state change)
+						   
+						   - Condition:  Character stat is above / below some threshold
+						   
+						   - Condition:  Character is able to perform attack action (skill cost is met)
+						   
+				   - So, the enemy's behavior could roll-over from one to the next for as many as they've been configured with. Also,
+				     the default behavior would catch if the rest of them feel through.
+				   
+				   - Idea: Add "Randomizer" to the behavior set. This would perform the function of selecting one behavior at
+						   random every "X" number of turns.
+						   
+				   Also, want to better support Standoffish behavior by adding a parameter to specify the number of cells to
+				   "stand off" before attacking. Then, create a new movement type called "Runs and Hides".
 
 - Doodad:  Timed fire doodad. Triggered by character movement in range.
 
