@@ -44,6 +44,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         int _requiredLevel;
         string _type;
         EquipmentType _equipType;
+        CharacterBaseAttribute _combatType;
         string _class;
         string _weight;
         string _quality;
@@ -185,6 +186,11 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             get { return _equipType; }
             set { this.RaiseAndSetIfChanged(ref _equipType, value); }
+        }
+        public CharacterBaseAttribute CombatType
+        {
+            get { return _combatType; }
+            set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
         public string AttackValue
         {
@@ -393,6 +399,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.DisplayName = metaData.IsIdentified ? equipment.RogueName : "???";
             this.Type = equipment.Type.ToString();
             this.EquipType = equipment.Type;
+            this.CombatType = equipment.CombatType;
 
             this.IsEquiped = equipment.IsEquipped;
             this.IsCursed = equipment.IsCursed && metaData.IsCurseIdentified;

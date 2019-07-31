@@ -125,4 +125,11 @@ namespace Rogue.NET.Core.Model.Enums
         CriticalHit,
         FoodUsagePerTurn
     }
+
+    public enum CharacterBaseAttribute
+    {
+        Strength,
+        Agility,
+        Intelligence
+    }
 }

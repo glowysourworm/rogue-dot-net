@@ -12,6 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public int Class { get; set; }
         public double Quality { get; set; }
         public EquipmentType Type { get; set; }
+        public CharacterBaseAttribute CombatType { get; set; }
 
         public bool IsEquipped { get; set; }
         public bool IsCursed { get; set; }
@@ -28,6 +29,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         {
             this.IsEquipped = false;
             this.Type = EquipmentType.Armor;
+            this.CombatType = CharacterBaseAttribute.Strength;
             this.EquipSpell = new Spell();
             this.CurseSpell = new Spell();
             this.AmmoName = "";
@@ -36,6 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public Equipment(EquipmentType type, string name, ImageResources icon) : base(name, icon)
         {
             this.Type = type;
+            this.CombatType = CharacterBaseAttribute.Strength;
             this.IsEquipped = false;
             this.EquipSpell = new Spell();
             this.CurseSpell = new Spell();

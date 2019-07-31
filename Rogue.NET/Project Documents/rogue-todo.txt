@@ -548,3 +548,4 @@ IMMEDIATE TODO'S:
 	- OTHER BIG TODO:  Make pathfinding algorithm more efficient.
 	- OTHER OTHER BIG TODO:  Terrain
 	- TODO: Path-finding efficiency
+	- TODO: Fix up the simulator for equipment attack / defense values based on attributes; and anything else that has changed.

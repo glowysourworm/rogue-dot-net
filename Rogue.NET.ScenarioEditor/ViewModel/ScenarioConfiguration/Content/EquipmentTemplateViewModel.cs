@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<int> _class;
         private RangeViewModel<double> _quality;
         private EquipmentType _type;
+        private CharacterBaseAttribute _combatType;
         private SpellTemplateViewModel _equipSpell;
         private SpellTemplateViewModel _curseSpell;
         private ConsumableTemplateViewModel _ammoTemplate;
@@ -48,6 +49,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
+        }
+        public CharacterBaseAttribute CombatType
+        {
+            get { return _combatType; }
+            set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
         public SpellTemplateViewModel EquipSpell
         {

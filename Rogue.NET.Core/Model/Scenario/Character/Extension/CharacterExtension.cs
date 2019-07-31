@@ -143,18 +143,25 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
         public static double GetAttack(this Character character)
         {
-            var equipmentAttackValue = character.Equipment
-                                             .Values
-                                             .Where(x => x.IsEquipped && x.IsWeaponType())
-                                             .Sum(x => x.GetAttackValue());
+            var attack = 0D;
 
-            // Calculate strength * equipment base attack value
-            var attackValue = MeleeCalculator.GetAttackValue(equipmentAttackValue, character.GetStrength());
+            foreach (var equipment in character.Equipment
+                                               .Values
+                                               .Where(x => x.IsEquipped && x.IsWeaponType()))
+            {
+                // Get the character attribute for calculating the attack value
+                var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
+                                              equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
+                                              character.GetIntelligence();
+
+                // Calculate strength * equipment base attack value
+                attack += MeleeCalculator.GetAttackValue(equipment.GetAttackValue(), characterAttributeValue);
+            }           
 
             // Add on alteration contributions
-            var result = attackValue + character.Alteration.GetAlterations().Sum(x => x.Attack);
+            var result = attack + character.Alteration.GetAlterations().Sum(x => x.Attack);
 
-            // Add on religious alteration contribution
+            // Add on character class contribution
             if (character.CharacterClassAlteration.HasAttributeEffect)
                 result += character.CharacterClassAlteration.AttributeEffect.Attack;
 
@@ -162,18 +169,25 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetDefense(this Character character)
         {
-            var equipmentDefenseValue = character.Equipment
-                                                 .Values
-                                                 .Where(x => x.IsEquipped && x.IsArmorType())
-                                                 .Sum(x => x.GetDefenseValue());
+            var defense = 0D;
 
-            // Calculate strength * equipment base defense value
-            var defenseValue = MeleeCalculator.GetDefenseValue(equipmentDefenseValue, character.GetStrength());
+            foreach (var equipment in character.Equipment
+                                               .Values
+                                               .Where(x => x.IsEquipped && x.IsArmorType()))
+            {
+                // Get the character attribute for calculating the attack value
+                var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
+                                              equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
+                                              character.GetIntelligence();
+
+                // Calculate strength * equipment base defense value
+                defense += MeleeCalculator.GetDefenseValue(equipment.GetDefenseValue(), characterAttributeValue);
+            }
 
             // Add on alteration contributions
-            var result = defenseValue + character.Alteration.GetAlterations().Sum(x => x.Defense);
+            var result = defense + character.Alteration.GetAlterations().Sum(x => x.Defense);
 
-            // Add on religious alteration contribution
+            // Add on character class contribution
             if (character.CharacterClassAlteration.HasAttributeEffect)
                 result += character.CharacterClassAlteration.AttributeEffect.Defense;
 

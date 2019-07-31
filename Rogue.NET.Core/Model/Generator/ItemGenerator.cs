@@ -53,6 +53,7 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.HasEquipSpell = equipmentTemplate.HasEquipSpell;
             equipment.HasCurseSpell = equipmentTemplate.HasCurseSpell;
             equipment.Type = equipmentTemplate.Type;
+            equipment.CombatType = equipmentTemplate.CombatType;
             equipment.Class = _randomSequenceGenerator.GetRandomValue(equipmentTemplate.Class);
             equipment.IsEquipped = false;
             equipment.IsCursed = equipmentTemplate.IsCursed;

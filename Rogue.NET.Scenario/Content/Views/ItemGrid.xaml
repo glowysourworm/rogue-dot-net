@@ -236,6 +236,10 @@
                                             <Run Text="Quality: " />
                                             <Run Text="{Binding Quality}" />
                                         </TextBlock>
+                                        <TextBlock Style="{StaticResource EquipmentTextBlockBrush}">
+                                            <Run Text="Combat Type: " />
+                                            <Run Text="{Binding CombatType}" />
+                                        </TextBlock>
                                         <TextBlock Style="{StaticResource EquipmentTextBlockBrush}"
                                                    Visibility="{Binding IsWeapon, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                             <Run Text="Attack Value: " />

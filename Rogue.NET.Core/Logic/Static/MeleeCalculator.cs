@@ -10,19 +10,19 @@ namespace Rogue.NET.Core.Logic.Static
     public static class MeleeCalculator
     {
         /// <summary>
-        /// Calculates an attack value based on calculated equipment attack value and total character strength.
+        /// Calculates an attack value based on calculated equipment attack value and total character attribute.
         /// </summary>
         /// <param name="equipmentAttackValue">Attack value calculated from equipment</param>
-        /// <param name="strength">Total Character Strength</param>
+        /// <param name="attribute">Total Character Attribute (Strength, Agility, or Intelligence)</param>
         /// <returns>Attack Value</returns>
-        public static double GetAttackValue(double equipmentAttackValue, double strength)
+        public static double GetAttackValue(double equipmentAttackValue, double attribute)
         {
-            return (1 + equipmentAttackValue) * strength * ModelConstants.Melee.AttackBaseMultiplier;
+            return (1 + equipmentAttackValue) * attribute * ModelConstants.Melee.AttackBaseMultiplier;
         }
 
-        public static double GetDefenseValue(double equipmentDefenseValue, double strength)
+        public static double GetDefenseValue(double equipmentDefenseValue, double attribute)
         {
-            return (1 + equipmentDefenseValue) * strength * ModelConstants.Melee.DefenseBaseMultiplier;
+            return (1 + equipmentDefenseValue) * attribute * ModelConstants.Melee.DefenseBaseMultiplier;
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<int> _class;
         private Range<double> _quality;
         private EquipmentType _type;
+        private CharacterBaseAttribute _combatType;
         private SpellTemplate _equipSpell;
         private SpellTemplate _curseSpell;
         private ConsumableTemplate _ammoTemplate;
@@ -81,6 +82,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _type = value;
                     OnPropertyChanged("Type");
+                }
+            }
+        }
+        public CharacterBaseAttribute CombatType
+        {
+            get { return _combatType; }
+            set
+            {
+                if (_combatType != value)
+                {
+                    _combatType = value;
+                    OnPropertyChanged("CombatType");
                 }
             }
         }
@@ -173,6 +186,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.Class = new Range<int>(0, 10);
             this.Type = EquipmentType.Ring;
+            this.CombatType = CharacterBaseAttribute.Strength;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
@@ -184,6 +198,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.Class = new Range<int>(0, 10);
             this.Type = EquipmentType.Ring;
+            this.CombatType = CharacterBaseAttribute.Strength;
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
