@@ -141,15 +141,18 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.IsInvisible = enemyTemplate.IsInvisible;
 
             enemy.BehaviorDetails = new BehaviorDetails();
-            enemy.BehaviorDetails.PrimaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.PrimaryBehavior);
-            enemy.BehaviorDetails.SecondaryBehavior = _behaviorGenerator.GenerateBehavior(enemyTemplate.BehaviorDetails.SecondaryBehavior);
-            enemy.BehaviorDetails.SecondaryProbability = enemyTemplate.BehaviorDetails.SecondaryProbability;
-            enemy.BehaviorDetails.SecondaryReason = enemyTemplate.BehaviorDetails.SecondaryReason;
+
+            // Create Behavior "State Machine"
+            foreach (var behaviorTemplate in enemyTemplate.BehaviorDetails.Behaviors)
+                enemy.BehaviorDetails.Behaviors.Add(_behaviorGenerator.GenerateBehavior(behaviorTemplate));
+
             enemy.BehaviorDetails.CanOpenDoors = enemyTemplate.BehaviorDetails.CanOpenDoors;
             enemy.BehaviorDetails.CounterAttackProbability = enemyTemplate.BehaviorDetails.CounterAttackProbability;
             enemy.BehaviorDetails.CriticalRatio = enemyTemplate.BehaviorDetails.CriticalRatio;
             enemy.BehaviorDetails.DisengageRadius = enemyTemplate.BehaviorDetails.DisengageRadius;
             enemy.BehaviorDetails.EngageRadius = enemyTemplate.BehaviorDetails.EngageRadius;
+            enemy.BehaviorDetails.RandomizerTurnCount = enemyTemplate.BehaviorDetails.RandomizerTurnCount;
+            enemy.BehaviorDetails.UseRandomizer = enemyTemplate.BehaviorDetails.UseRandomizer;
 
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                    .ToDictionary(x => x.RogueName);

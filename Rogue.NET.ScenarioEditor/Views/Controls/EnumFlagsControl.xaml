@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.EnumFlagsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <GroupBox x:Name="EnumGroupBox">
+            <ItemsControl x:Name="EnumItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox Checked="CheckBox_Checked" 
+                                  Unchecked="CheckBox_Checked" 
+                                  Width="150"
+                                  Margin="4"
+                                  Content="{Binding Name}" 
+                                  IsChecked="{Binding IsChecked}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" HorizontalAlignment="Right" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </GroupBox>
+    </Grid>
+</UserControl>

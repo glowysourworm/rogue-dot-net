@@ -184,13 +184,12 @@ namespace Rogue.NET.Core.Service
                                                                  (x.IsInvoked && x.InvokedMagicSpellTemplate == null));
 
                     var enemiesNotSet = configuration.EnemyTemplates
-                                                     .Where(x => ((x.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill ||
-                                                                   x.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                                                                   x.BehaviorDetails.PrimaryBehavior.EnemySpell == null) ||
-                                                                 ((x.BehaviorDetails.SecondaryReason != SecondaryBehaviorInvokeReason.SecondaryNotInvoked) &&
-                                                                 ((x.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill ||
-                                                                   x.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                                                                   x.BehaviorDetails.SecondaryBehavior.EnemySpell == null)));
+                                                     .Where(x =>
+                                                            x.BehaviorDetails.Behaviors.Any(behavior =>
+                                                                (behavior.AttackType == CharacterAttackType.Skill ||
+                                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                                                                 behavior.EnemySpell == null))
+                                                     .Actualize();
 
                     return consumablesNotSet
                                 .Cast<DungeonObjectTemplate>()
@@ -221,18 +220,28 @@ namespace Rogue.NET.Core.Service
                                                      .Where(x => x.Issue != null);
 
                     var enemiesIssues = configuration.EnemyTemplates
-                                                     .Select(x => new { Issue = ValidateEnemyAlterationTypes(x), AssetName = x.Name })
-                                                     .Where(x => x.Issue != null);
+                                                     .Select(x => new { Issues = ValidateEnemyAlterationTypes(x), AssetName = x.Name });
+
+                    // Flatten out these issues per enemy
+                    var enemyIssuesFlattened = new List<ScenarioValidationResult>();
+
+                    foreach (var item in enemiesIssues)
+                        foreach (var issue in item.Issues)
+                            enemyIssuesFlattened.Add(new ScenarioValidationResult()
+                            {
+                                Passed = false,
+                                InnerMessage = item.AssetName + " - " + issue
+                            });
 
                     return consumablesIssues
                             .Union(equipmentIssues)
                             .Union(doodadsIssues)
-                            .Union(enemiesIssues)
                             .Select(x => new ScenarioValidationResult()
                             {
                                 Passed = false,
                                 InnerMessage = x.AssetName + " - " + x.Issue
-                            });
+                            })
+                            .Union(enemyIssuesFlattened);
                 })),
                 new ScenarioValidationRule("Scenario Name Not Set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
@@ -579,78 +588,50 @@ namespace Rogue.NET.Core.Service
             return null;
         }
 
-        private string ValidateEnemyAlterationTypes(EnemyTemplate template)
+        private IEnumerable<string> ValidateEnemyAlterationTypes(EnemyTemplate template)
         {
-            if ((template.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.Skill ||
-                 template.BehaviorDetails.PrimaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                 template.BehaviorDetails.PrimaryBehavior.EnemySpell != null)
+            var result = new List<string>();
+
+            foreach (var behavior in template.BehaviorDetails.Behaviors)
             {
-                switch (template.BehaviorDetails.PrimaryBehavior.EnemySpell.Type)
+                if ((behavior.AttackType == CharacterAttackType.Skill ||
+                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                     behavior.EnemySpell != null)
                 {
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.BehaviorDetails.PrimaryBehavior.EnemySpell.AttackAttributeType)
+                    switch (behavior.EnemySpell.Type)
+                    {
+                        case AlterationType.AttackAttribute:
                             {
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.Passive:
-                                    return template.BehaviorDetails.PrimaryBehavior.EnemySpell.AttackAttributeType.ToString() +
-                                            " Attack Attribute Alteration type is not supported for enemies";
+                                switch (behavior.EnemySpell.AttackAttributeType)
+                                {
+                                    case AlterationAttackAttributeType.ImbueArmor:
+                                    case AlterationAttackAttributeType.ImbueWeapon:
+                                    case AlterationAttackAttributeType.Passive:
+                                        result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
+                                                " Attack Attribute Alteration type is not supported for enemies");
+                                        break;
+                                }
+                                break;
                             }
-                            break;
-                        }
-                    case AlterationType.OtherMagicEffect:
-                        {
-                            switch (template.BehaviorDetails.PrimaryBehavior.EnemySpell.OtherEffectType)
+                        case AlterationType.OtherMagicEffect:
                             {
-                                case AlterationMagicEffectType.CreateMonster:
-                                    return null;
+                                switch (behavior.EnemySpell.OtherEffectType)
+                                {
+                                    case AlterationMagicEffectType.CreateMonster:
+                                        break;
+                                }
+                                break;
                             }
+                        case AlterationType.Remedy:
+                        case AlterationType.PassiveAura:
+                            result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
+                                        " Alteration type is not supported for enemies");
                             break;
-                        }
-                    case AlterationType.Remedy:
-                    case AlterationType.PassiveAura:
-                        return template.BehaviorDetails.PrimaryBehavior.EnemySpell.AttackAttributeType.ToString() +
-                                " Alteration type is not supported for enemies";
+                    }
                 }
             }
 
-            if (template.BehaviorDetails.SecondaryReason != SecondaryBehaviorInvokeReason.SecondaryNotInvoked &&
-                ((template.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.Skill ||
-                  template.BehaviorDetails.SecondaryBehavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                  template.BehaviorDetails.SecondaryBehavior.EnemySpell != null))
-            {
-                switch (template.BehaviorDetails.SecondaryBehavior.EnemySpell.Type)
-                {
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.BehaviorDetails.SecondaryBehavior.EnemySpell.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.Passive:
-                                    return template.BehaviorDetails.SecondaryBehavior.EnemySpell.AttackAttributeType.ToString() +
-                                            " Attack Attribute Alteration type is not supported for enemies";
-                            }
-                            break;
-                        }
-                    case AlterationType.OtherMagicEffect:
-                        {
-                            switch (template.BehaviorDetails.PrimaryBehavior.EnemySpell.OtherEffectType)
-                            {
-                                case AlterationMagicEffectType.CreateMonster:
-                                    return null;
-                            }
-                            break;
-                        }
-                    case AlterationType.Remedy:
-                    case AlterationType.PassiveAura:
-                        return template.BehaviorDetails.SecondaryBehavior.EnemySpell.AttackAttributeType.ToString() +
-                                " Alteration type is not supported for enemies";
-                }
-            }
-
-            return null;
+            return result;
         }
     }
 }

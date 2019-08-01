@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
     <scenarioEditorConverter:AlterationHasEffectSymbolChangeVisibilityConverter x:Key="AlterationHasEffectSymbolChangeVisibilityConverter" />
+    <scenarioEditorConverter:BehaviorHeaderConverter x:Key="BehaviorHeaderConverter" />
     <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
     <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />
     <scenarioEditorConverter:LayoutConnectionGeometryVisibilityConverter x:Key="LayoutConnectionGeometryVisibilityConverter" />

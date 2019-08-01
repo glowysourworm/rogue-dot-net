@@ -218,8 +218,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
                     template.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
 
                 // Behavior Skills
-                template.BehaviorDetails.PrimaryBehavior.EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.PrimaryBehavior.EnemySpell);
-                template.BehaviorDetails.SecondaryBehavior.EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.SecondaryBehavior.EnemySpell);
+                for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
+                    template.BehaviorDetails.Behaviors[i].EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.Behaviors[i].EnemySpell);
             }
 
             // Player
@@ -299,8 +299,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
                     template.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
 
                 // Behavior Skills
-                template.BehaviorDetails.PrimaryBehavior.EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.PrimaryBehavior.EnemySpell);
-                template.BehaviorDetails.SecondaryBehavior.EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.SecondaryBehavior.EnemySpell);
+                for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
+                    template.BehaviorDetails.Behaviors[i].EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.Behaviors[i].EnemySpell);
             }
 
             // Player

@@ -1,112 +1,120 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl.EnemyBehavior"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-             xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter"
-             Background="Black"
-             mc:Ignorable="d" FontSize="14">
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:editorViews="clr-namespace:Rogue.NET.ScenarioEditor.Views"
+             Background="Black" FontSize="14">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml">
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
-                <ResourceDictionary>
-                    <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
-                    <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl Background="Black">
-        <TabItem Header="Behavior">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!-- General Parameters -->
+        <StackPanel>
             <Grid>
-                <StackPanel>
-                    <Grid Margin="10,10,10,0">
-                        <TextBlock Foreground="White" Text="Secondary Behavior Invoke Reason" VerticalAlignment="Center" Margin="10" />
-                        <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.SecondaryReason, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:SecondaryBehaviorInvokeReason}" />
-                    </Grid>
-                    <Grid Margin="10,0,10,0" Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.Random}}">
-                        <toolkit:DoubleUpDown Minimum="0" Maximum="1" Value="{Binding BehaviorDetails.SecondaryProbability, Mode=TwoWay}" FormatString="F2" Increment="0.01" HorizontalAlignment="Right" Width="200" Height="24"  Grid.Column="1" Grid.Row="1" />
-                        <TextBlock Foreground="White" Text="Secondary Invoke Probability" VerticalAlignment="Center" Margin="10" />
-                    </Grid>
-                    <Grid>
-                        <TextBlock Grid.Row="2" Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
-                        <CheckBox IsChecked="{Binding BehaviorDetails.CanOpenDoors, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid>
-                        <TextBlock Grid.Row="3" Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
-                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.EngageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
-                    </Grid>
-                    <Grid>
-                        <TextBlock Grid.Row="4" Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
-                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
-                    </Grid>
-                    <Grid>
-                        <TextBlock Grid.Row="5" Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
-                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
-                    </Grid>
-                    <Grid>
-                        <TextBlock Grid.Row="6" Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
-                        <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
-                    </Grid>
-                </StackPanel>
+                <TextBlock Foreground="White" Margin="10" FontSize="16" TextWrapping="Wrap" Width="600" HorizontalAlignment="Left"
+                           Text="Enemy behavior is treated like a state machine. You can set up the list of behaviors (states) here. Each state is treated in turn - with 'entry' and 'exit' conditions to use the behavior. The 'Behavior Counter' is internal to the enemy behavior object and resets after a new state is selected. If no state is valid for use there is a default state that will take effect to control the behavior." />
             </Grid>
-        </TabItem>        
-        <TabItem Header="Primary Behavior Selection">
-            <Grid Margin="10">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <TextBlock Foreground="White" Text="Add Behavior" VerticalAlignment="Center" Margin="10" />
+                <Button x:Name="AddBehaviorButton" Content="Add Behavior" Click="AddBehaviorButton_Click" HorizontalAlignment="Right" Padding="4" VerticalAlignment="Center" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Opens Doors" VerticalAlignment="Center" Margin="10" />
+                <CheckBox IsChecked="{Binding BehaviorDetails.CanOpenDoors, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Engage Radius" VerticalAlignment="Center" Margin="10" />
+                <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.EngageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="1" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="3" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Disengage Radius" VerticalAlignment="Center" Margin="10" />
+                <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.DisengageRadius, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="{Binding EngageRadius}" Maximum="50" FormatString="N0" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="4" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Critical Hit Ratio" VerticalAlignment="Center" Margin="10" />
+                <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CriticalRatio, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="1" Increment="0.01" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="5" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Counter Attack Ratio" VerticalAlignment="Center" Margin="10" />
+                <toolkit:DoubleUpDown Value="{Binding BehaviorDetails.CounterAttackProbability, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Increment="0.01" Minimum="0" Maximum="1" FormatString="F2" HorizontalAlignment="Right" Height="24" Width="200" Grid.Column="1" Grid.Row="6" />
+            </Grid>
+            <Grid>
+                <TextBlock Foreground="White" Text="Use Randomizer" VerticalAlignment="Center" Margin="10" />
+                <CheckBox IsChecked="{Binding BehaviorDetails.UseRandomizer, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+            </Grid>
+            <Grid Visibility="{Binding BehaviorDetails.UseRandomizer, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Foreground="White" Text="Randomizer Turn Counter" VerticalAlignment="Center" Margin="10" />
+                <toolkit:IntegerUpDown Minimum="1" Maximum="1000" Value="{Binding BehaviorDetails.RandomizerTurnCount, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Height="24" Width="200" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Behavior List -->
+        <TabControl Background="Black" Grid.Row="1" Margin="0, 10, 0, 0" ItemsSource="{Binding BehaviorDetails.Behaviors}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 4, 0" />
+                        <Button x:Name="RemoveBehaviorButton" Click="RemoveBehaviorButton_Click" Grid.Column="1"
+                                        Style="{StaticResource ShinyTextButtonStyle}" Height="20" Width="20" Cursor="Hand"
+                                        FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" Background="Black" />
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
                     <StackPanel>
                         <Grid>
-                            <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.MovementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
+                            <controls:EnumFlagsControl Header="Entry Condition" EnumValue="{Binding BehaviorCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorCondition}" />
                         </Grid>
                         <Grid>
-                            <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
+                            <controls:EnumFlagsControl Header="Exit Condition" EnumValue="{Binding BehaviorExitCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorExitCondition}" />
                         </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.PrimaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
+                        <Grid>
+                            <TextBlock Foreground="White" Text="Behavior Turn Counter" VerticalAlignment="Center" Margin="10" />
+                            <toolkit:IntegerUpDown Minimum="1" Maximum="1000" Value="{Binding BehaviorTurnCounter, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Height="24" Width="200" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
+                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding MovementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
+                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
+                        </Grid>
+                        <Grid Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
                             <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
                             <ComboBox x:Name="PrimaryAttackSkillCB" 
-                                        SelectedItem="{Binding BehaviorDetails.PrimaryBehavior.EnemySpell}" 
-                                        SelectedValue="{Binding BehaviorDetails.PrimaryBehavior.EnemySpell.Name}"
-                                        SelectedValuePath="Name"
-                                        DisplayMemberPath="Name" 
-                                        HorizontalAlignment="Right" Height="24" Width="200" />
+                                      ItemsSource="{Binding DataContext.Configuration.MagicSpells, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type editorViews:Editor}}}"
+                                      SelectedItem="{Binding EnemySpell}" 
+                                      SelectedValue="{Binding EnemySpell.Name}"
+                                      SelectedValuePath="Name"
+                                      DisplayMemberPath="Name" 
+                                      HorizontalAlignment="Right" Height="24" Width="200" />
                         </Grid>
                     </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Secondary Behavior Selection" 
-                 Visibility="{Binding BehaviorDetails.SecondaryReason, Converter={StaticResource ParameterVisibilityVisibleConverter}, ConverterParameter={x:Static coreModelEnums:SecondaryBehaviorInvokeReason.SecondaryNotInvoked}}">
-            <Grid Margin="10">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.MovementType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Grid.Row="1" Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox EnumValue="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
-                        </Grid>
-                        <Grid Visibility="{Binding BehaviorDetails.SecondaryBehavior.AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
-                            <TextBlock Grid.Row="6" Foreground="White" Text="Attack Skill" VerticalAlignment="Center" Margin="10" />
-                            <ComboBox x:Name="SecondaryAttackSkillCB" 
-                                        SelectedItem="{Binding BehaviorDetails.SecondaryBehavior.EnemySpell}" 
-                                        SelectedValue="{Binding BehaviorDetails.SecondaryBehavior.EnemySpell.Name}"
-                                        SelectedValuePath="Name"
-                                        DisplayMemberPath="Name" 
-                                        HorizontalAlignment="Right" Height="24" Width="200" />
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </TabItem>
-    </TabControl>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
 </UserControl>
 
     

@@ -14,12 +14,14 @@ namespace Rogue.NET.Core.Logic.Content
     [Export(typeof(IEnemyProcessor))]
     public class EnemyProcessor : IEnemyProcessor
     {
+        readonly IAlterationProcessor _alterationProcessor;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IModelService _modelService;
 
         [ImportingConstructor]
-        public EnemyProcessor(IRandomSequenceGenerator randomSequenceGenerator, IModelService modelService)
+        public EnemyProcessor(IAlterationProcessor alterationProcessor, IRandomSequenceGenerator randomSequenceGenerator, IModelService modelService)
         {
+            _alterationProcessor = alterationProcessor;
             _randomSequenceGenerator = randomSequenceGenerator;
             _modelService = modelService;
         }
@@ -46,30 +48,10 @@ namespace Rogue.NET.Core.Logic.Content
             // Set Effect to Enemies in range
             enemy.Alteration.SetAuraEffects(playerAuraEffects.Where(x => x.EffectRange >= distance));
 
-            ApplyBehaviorRules(enemy, actionTaken);
-            enemy.ApplyLimits();
-        }
+            // Increment Behavior Turn Counter / Select next behavior
+            enemy.BehaviorDetails.IncrementBehavior(enemy, _alterationProcessor, actionTaken, _randomSequenceGenerator.Get());
 
-        private void ApplyBehaviorRules(Enemy enemy, bool actionTaken)
-        {
-            switch (enemy.BehaviorDetails.SecondaryReason)
-            {
-                case SecondaryBehaviorInvokeReason.SecondaryNotInvoked:
-                    enemy.BehaviorDetails.IsSecondaryBehavior = false;
-                    break;
-                case SecondaryBehaviorInvokeReason.PrimaryInvoked:
-                    enemy.BehaviorDetails.IsSecondaryBehavior = enemy.BehaviorDetails.IsSecondaryBehavior || actionTaken;
-                    break;
-                case SecondaryBehaviorInvokeReason.HpLow: // Hp is less than 10%
-                    if ((enemy.Hp / enemy.HpMax) < ModelConstants.HpLowFraction)
-                        enemy.BehaviorDetails.IsSecondaryBehavior = true;
-                    break;
-                case SecondaryBehaviorInvokeReason.Random:
-                    enemy.BehaviorDetails.IsSecondaryBehavior = (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.SecondaryProbability);
-                    break;
-                default:
-                    break;
-            }
+            enemy.ApplyLimits();
         }
     }
 }

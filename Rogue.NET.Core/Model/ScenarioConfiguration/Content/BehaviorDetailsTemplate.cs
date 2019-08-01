@@ -2,67 +2,31 @@
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 
 using System;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
     public class BehaviorDetailsTemplate : Template
     {
-        private BehaviorTemplate _primaryBehavior;
-        private BehaviorTemplate _secondaryBehavior;
-        private SecondaryBehaviorInvokeReason _secondaryReason;
-        private double _secondaryProbability;
+        private List<BehaviorTemplate> _behaviors;
         private bool _canOpenDoors;
+        private bool _useRandomizer;
+        private int _randomizerTurnCount;
         private double _engageRadius;
         private double _disengageRadius;
         private double _criticalRatio;
         private double _counterAttackProbability;
 
-        public BehaviorTemplate PrimaryBehavior
+        public List<BehaviorTemplate> Behaviors
         {
-            get { return _primaryBehavior; }
+            get { return _behaviors; }
             set
             {
-                if (_primaryBehavior != value)
+                if (_behaviors != value)
                 {
-                    _primaryBehavior = value;
-                    OnPropertyChanged("PrimaryBehavior");
-                }
-            }
-        }
-        public BehaviorTemplate SecondaryBehavior
-        {
-            get { return _secondaryBehavior; }
-            set
-            {
-                if (_secondaryBehavior != value)
-                {
-                    _secondaryBehavior = value;
-                    OnPropertyChanged("SecondaryBehavior");
-                }
-            }
-        }
-        public SecondaryBehaviorInvokeReason SecondaryReason
-        {
-            get { return _secondaryReason; }
-            set
-            {
-                if (_secondaryReason != value)
-                {
-                    _secondaryReason = value;
-                    OnPropertyChanged("SecondaryReason");
-                }
-            }
-        }
-        public double SecondaryProbability
-        {
-            get { return _secondaryProbability; }
-            set
-            {
-                if (_secondaryProbability != value)
-                {
-                    _secondaryProbability = value;
-                    OnPropertyChanged("SecondaryProbability");
+                    _behaviors = value;
+                    OnPropertyChanged("Behaviors");
                 }
             }
         }
@@ -75,6 +39,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _canOpenDoors = value;
                     OnPropertyChanged("CanOpenDoors");
+                }
+            }
+        }
+        public bool UseRandomizer
+        {
+            get { return _useRandomizer; }
+            set
+            {
+                if (_useRandomizer != value)
+                {
+                    _useRandomizer = value;
+                    OnPropertyChanged("UseRandomizer");
+                }
+            }
+        }
+        public int RandomizerTurnCount
+        {
+            get { return _randomizerTurnCount; }
+            set
+            {
+                if (_randomizerTurnCount != value)
+                {
+                    _randomizerTurnCount = value;
+                    OnPropertyChanged("RandomizerTurnCount");
                 }
             }
         }
@@ -129,8 +117,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public BehaviorDetailsTemplate()
         {
-            this.PrimaryBehavior = new BehaviorTemplate();
-            this.SecondaryBehavior = new BehaviorTemplate();
+            this.Behaviors = new List<BehaviorTemplate>();
+            this.UseRandomizer = false;
+            this.RandomizerTurnCount = 10;
         }
     }
 }

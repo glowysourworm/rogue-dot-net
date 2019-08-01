@@ -20,6 +20,9 @@ namespace Rogue.NET.Core.Model.Generator
         {
             Behavior behavior = new Behavior();
             behavior.AttackType = behaviorTemplate.AttackType;
+            behavior.BehaviorCondition = behaviorTemplate.BehaviorCondition;
+            behavior.BehaviorExitCondition = behaviorTemplate.BehaviorExitCondition;
+            behavior.BehaviorTurnCounter = behaviorTemplate.BehaviorTurnCounter;
             behavior.EnemySkill = _spellGenerator.GenerateSpell(behaviorTemplate.EnemySpell);
             behavior.MovementType = behaviorTemplate.MovementType;
             return behavior;

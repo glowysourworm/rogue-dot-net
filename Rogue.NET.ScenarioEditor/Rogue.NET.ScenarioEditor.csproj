@@ -247,6 +247,7 @@
     <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
     <Compile Include="Controller\ScenarioAssetController.cs" />
     <Compile Include="Converter\AlterationHasEffectSymbolChangeVisibilityConverter.cs" />
+    <Compile Include="Converter\BehaviorHeaderConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
@@ -508,6 +509,9 @@
     <Compile Include="Views\Controls\DisplayImageEnumComboBox.xaml.cs">
       <DependentUpon>DisplayImageEnumComboBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\EnumFlagsControl.xaml.cs">
+      <DependentUpon>EnumFlagsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\ImageEnumComboBox.xaml.cs">
       <DependentUpon>ImageEnumComboBox.xaml</DependentUpon>
     </Compile>
@@ -768,6 +772,10 @@
     <Page Include="Views\Controls\DisplayImageEnumComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\EnumFlagsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\ImageEnumComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>

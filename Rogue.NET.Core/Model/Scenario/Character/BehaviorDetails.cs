@@ -1,37 +1,108 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
     [Serializable]
     public class BehaviorDetails : RogueBase
     {
+        private Behavior _currentBehavior;
+
+        public List<Behavior> Behaviors { get; set; }
         public Behavior CurrentBehavior
         {
-            get
-            {
-                if (this.SecondaryReason == SecondaryBehaviorInvokeReason.SecondaryNotInvoked)
-                    return this.PrimaryBehavior;
-
-                else
-                    return this.IsSecondaryBehavior ? this.SecondaryBehavior : this.PrimaryBehavior; 
-            }
+            get { return _currentBehavior ?? Behavior.Default; }
         }
-        public Behavior PrimaryBehavior { get; set; }
-        public Behavior SecondaryBehavior { get; set; }
-        public SecondaryBehaviorInvokeReason SecondaryReason { get; set; }
-        public double SecondaryProbability { get; set; }
-        public bool IsSecondaryBehavior { get; set; }
         public bool CanOpenDoors { get; set; }
+        public bool UseRandomizer { get; set; }
+        public int RandomizerTurnCount { get; set; }
         public double EngageRadius { get; set; }
         public double DisengageRadius { get; set; }
         public double CriticalRatio { get; set; }
         public double CounterAttackProbability { get; set; }
 
+        /// <summary>
+        /// Turn counter internal to the Behavior Details that is for use by the
+        /// pseudo state machine. It is reset every time the Behavior changes states.
+        /// </summary>
+        protected int BehaviorTurnCounter { get; set; }
+
+        /// <summary>
+        /// Turn counter for the randomizer - separate from the behavior turn counter
+        /// </summary>
+        protected int RandomizerTurnCounter { get; set; }
+
         public BehaviorDetails()
         {
-            this.PrimaryBehavior = new Behavior();
-            this.SecondaryBehavior = new Behavior();
+            this.Behaviors = new List<Behavior>();
+        }
+
+        public void IncrementBehavior(Enemy enemy, IAlterationProcessor alterationProcessor, bool actionTaken, double randomNumber)
+        {
+            // Increment Turn Counters
+            this.BehaviorTurnCounter++;
+            this.RandomizerTurnCounter++;
+
+            // Entry Conditions => (AND), Exit Conditions => (OR)
+            var validBehaviors = this.Behaviors.Where(behavior =>
+            {
+                var entryConditionsFail = false;
+                var exitConditionMet = false;
+
+                // Enemy must be able to use Skill
+                if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
+                   (behavior.AttackType == CharacterAttackType.Skill ||
+                    behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                   !alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, behavior.EnemySkill.Cost))
+                    entryConditionsFail = true;
+
+                // Enemy must have Low (<= 10%) HP for this behavior
+                if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.HpLow) &&
+                   ((enemy.Hp / enemy.HpMax) > ModelConstants.HpLowFraction))
+                    entryConditionsFail = true;
+
+                // Behavior turn counter exit condition
+                if (behavior.BehaviorExitCondition.HasFlag(BehaviorExitCondition.BehaviorCounterExpired) &&
+                    this.BehaviorTurnCounter >= behavior.BehaviorTurnCounter &&
+                    behavior == _currentBehavior) // Counter can ONLY apply to current behavior
+                    exitConditionMet = true;
+
+                // Enemy has Low (<= 10%) HP exit condition
+                if (behavior.BehaviorExitCondition.HasFlag(BehaviorExitCondition.HpLow) &&
+                    ((enemy.Hp / enemy.HpMax) <= ModelConstants.HpLowFraction))
+                    exitConditionMet = true;
+
+                // Must have ALL Entry conditions met AND NO Exit conditions
+                return !entryConditionsFail && !exitConditionMet;
+            });
+
+            var nextBehavior = Behavior.Default;
+
+            // Check for Randomizer
+            if (this.UseRandomizer && (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0))
+                nextBehavior = validBehaviors.Any() ?
+                                   validBehaviors.PickRandom(randomNumber) :
+                                   Behavior.Default;
+
+            // Else, pick first or default (null -> Behavior.Default)
+            else
+                nextBehavior = validBehaviors.FirstOrDefault();
+
+            // Reset turn counter when appropriate
+            if (nextBehavior == Behavior.Default ||
+                nextBehavior != _currentBehavior)
+                this.BehaviorTurnCounter = 0;
+
+            // Reset randomizer turn counter if expired
+            if (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0)
+                this.RandomizerTurnCounter = 0;
+
+            // Finally, set current behavior
+            _currentBehavior = nextBehavior;
         }
     }
 }

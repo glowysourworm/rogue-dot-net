@@ -84,12 +84,32 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         None
     }
-    public enum SecondaryBehaviorInvokeReason
+    [Flags]
+    public enum BehaviorCondition : int
     {
-        SecondaryNotInvoked,
-        PrimaryInvoked,
-        HpLow,
-        Random,
+        /// <summary>
+        /// Can attack using the prescribed behavior attack method (skill costs met)
+        /// </summary>
+        AttackConditionsMet = 1,
+
+        /// <summary>
+        /// Some behaviors may rely on having low HP
+        /// </summary>
+        HpLow = 2
+    }
+    [Flags]
+    public enum BehaviorExitCondition : int
+    {
+        /// <summary>
+        /// Behavior has a sub-counter that acts to change selected behavior in the
+        /// "state machine" (of behaviors)
+        /// </summary>
+        BehaviorCounterExpired = 1,
+
+        /// <summary>
+        /// Some behaviors may exit on low HP - others may switch on (see BehaviorCondition)
+        /// </summary>
+        HpLow = 2
     }
     public enum SmileyMoods
     {
@@ -105,7 +125,7 @@ namespace Rogue.NET.Core.Model.Enums
     }
 
     /// <summary>
-    /// Represents charater base attributes
+    /// Represents charater attributes
     /// </summary>
     public enum CharacterAttribute
     {
@@ -126,6 +146,9 @@ namespace Rogue.NET.Core.Model.Enums
         FoodUsagePerTurn
     }
 
+    /// <summary>
+    /// Represents Character Base Attributes (non-derived)
+    /// </summary>
     public enum CharacterBaseAttribute
     {
         Strength,
