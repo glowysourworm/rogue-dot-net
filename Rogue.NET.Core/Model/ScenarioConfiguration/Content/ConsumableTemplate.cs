@@ -1,7 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
@@ -17,11 +18,16 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasLearnedSkill;
         private bool _hasSpell;
         private bool _isProjectile;
+        private bool _hasAlteration;
+        private bool _hasProjectileAlteration;
         private bool _identifyOnUse;
         private SpellTemplate _spellTemplate;
         private SkillSetTemplate _learnedSkill;
         private SpellTemplate _projectileSpellTemplate;
         private SpellTemplate _ammoSpellTemplate;
+        private ConsumableAlterationTemplate _consumableAlteration;
+        private ConsumableProjectileAlterationTemplate _consumableProjectileAlteration;
+        private AnimationGroupTemplate _ammoAnimationGroup;
         private string _noteMessage;
 
         private bool _hasCharacterClassRequirement;
@@ -123,6 +129,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public bool HasAlteration
+        {
+            get { return _hasAlteration; }
+            set
+            {
+                if (_hasAlteration != value)
+                {
+                    _hasAlteration = value;
+                    OnPropertyChanged("HasAlteration");
+                }
+            }
+        }
+        public bool HasProjectileAlteration
+        {
+            get { return _hasProjectileAlteration; }
+            set
+            {
+                if (_hasProjectileAlteration != value)
+                {
+                    _hasProjectileAlteration = value;
+                    OnPropertyChanged("HasProjectileAlteration");
+                }
+            }
+        }
         public bool IdentifyOnUse
         {
             get { return _identifyOnUse; }
@@ -183,6 +213,42 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public ConsumableAlterationTemplate ConsumableAlteration
+        {
+            get { return _consumableAlteration; }
+            set
+            {
+                if (_consumableAlteration != value)
+                {
+                    _consumableAlteration = value;
+                    OnPropertyChanged("ConsumableAlteration");
+                }
+            }
+        }
+        public ConsumableProjectileAlterationTemplate ConsumableProjectileAlteration
+        {
+            get { return _consumableProjectileAlteration; }
+            set
+            {
+                if (_consumableProjectileAlteration != value)
+                {
+                    _consumableProjectileAlteration = value;
+                    OnPropertyChanged("ConsumableProjectileAlteration");
+                }
+            }
+        }
+        public AnimationGroupTemplate AmmoAnimationGroup
+        {
+            get { return _ammoAnimationGroup; }
+            set
+            {
+                if (_ammoAnimationGroup != value)
+                {
+                    _ammoAnimationGroup = value;
+                    OnPropertyChanged("AmmoAnimationGroup");
+                }
+            }
+        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -228,6 +294,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.ProjectileSpellTemplate = new SpellTemplate();
             this.SpellTemplate = new SpellTemplate();
             this.AmmoSpellTemplate = new SpellTemplate();
+            this.ConsumableAlteration = new ConsumableAlterationTemplate();
+            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
+            this.AmmoAnimationGroup = new AnimationGroupTemplate();
             this.LearnedSkill = new SkillSetTemplate();
             this.UseCount = new Range<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
@@ -243,6 +312,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.ProjectileSpellTemplate = new SpellTemplate();
             this.SpellTemplate = new SpellTemplate();
             this.AmmoSpellTemplate = new SpellTemplate();
+            this.ConsumableAlteration = new ConsumableAlterationTemplate();
+            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
+            this.AmmoAnimationGroup = new AnimationGroupTemplate();
             this.LearnedSkill = new SkillSetTemplate();
             this.UseCount = new Range<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;

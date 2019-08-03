@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
@@ -9,6 +10,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     {
         private SpellTemplate _automaticMagicSpellTemplate;
         private SpellTemplate _invokedMagicSpellTemplate;
+        private DoodadAlterationTemplate _automaticAlteration;
+        private DoodadAlterationTemplate _invokedAlteration;
         private bool _isAutomatic;
         private bool _isVisible;
         private bool _isInvoked;
@@ -37,6 +40,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _invokedMagicSpellTemplate = value;
                     OnPropertyChanged("InvokedMagicSpellTemplate");
+                }
+            }
+        }
+        public DoodadAlterationTemplate AutomaticAlteration
+        {
+            get { return _automaticAlteration; }
+            set
+            {
+                if (_automaticAlteration != value)
+                {
+                    _automaticAlteration = value;
+                    OnPropertyChanged("AutomaticAlteration");
+                }
+            }
+        }
+        public DoodadAlterationTemplate InvokedAlteration
+        {
+            get { return _invokedAlteration; }
+            set
+            {
+                if (_invokedAlteration != value)
+                {
+                    _invokedAlteration = value;
+                    OnPropertyChanged("InvokedAlteration");
                 }
             }
         }
@@ -117,6 +144,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.AutomaticMagicSpellTemplate = new SpellTemplate();
             this.InvokedMagicSpellTemplate = new SpellTemplate();
+            this.AutomaticAlteration = new DoodadAlterationTemplate();
+            this.InvokedAlteration = new DoodadAlterationTemplate();
             this.IsUnique = false;
             this.IsOneUse = false;
         }
@@ -124,6 +153,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.AutomaticMagicSpellTemplate = new SpellTemplate();
             this.InvokedMagicSpellTemplate = new SpellTemplate();
+            this.AutomaticAlteration = new DoodadAlterationTemplate();
+            this.InvokedAlteration = new DoodadAlterationTemplate();
             this.IsUnique = false;
             this.IsOneUse = false;
         }

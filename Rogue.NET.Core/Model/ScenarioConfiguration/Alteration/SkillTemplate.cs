@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 
@@ -15,6 +16,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SpellTemplate _alteration;
+        SkillAlterationTemplate _skillAlteration;
         CharacterClassTemplate _characterClass;
 
         public int LevelRequirement
@@ -101,6 +103,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+        public SkillAlterationTemplate SkillAlteration
+        {
+            get { return _skillAlteration; }
+            set
+            {
+                if (_skillAlteration != value)
+                {
+                    _skillAlteration = value;
+                    OnPropertyChanged("SkillAlteration");
+                }
+            }
+        }
         public CharacterClassTemplate CharacterClass
         {
             get { return _characterClass; }
@@ -117,6 +131,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         public SkillTemplate()
         {
             this.Alteration = new SpellTemplate();
+            this.SkillAlteration = new SkillAlterationTemplate(); 
             this.AttributeRequirement = CharacterAttribute.Agility;
             this.HasCharacterClassRequirement = false;
             this.CharacterClass = new CharacterClassTemplate();

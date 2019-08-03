@@ -83,10 +83,10 @@
                 <DataTemplate>
                     <StackPanel>
                         <Grid>
-                            <controls:EnumFlagsControl Header="Entry Condition" EnumValue="{Binding BehaviorCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorCondition}" />
+                            <controls:EnumFlagsControl Header="Entry Condition(s) (These are Logical AND)" EnumValue="{Binding BehaviorCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorCondition}" />
                         </Grid>
                         <Grid>
-                            <controls:EnumFlagsControl Header="Exit Condition" EnumValue="{Binding BehaviorExitCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorExitCondition}" />
+                            <controls:EnumFlagsControl Header="Exit Condition(s) (These are Logical OR)" EnumValue="{Binding BehaviorExitCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorExitCondition}" />
                         </Grid>
                         <Grid>
                             <TextBlock Foreground="White" Text="Behavior Turn Counter" VerticalAlignment="Center" Margin="10" />

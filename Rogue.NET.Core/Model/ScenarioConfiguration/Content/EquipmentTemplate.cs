@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment;
 using System;
 using System.Collections.Generic;
 
@@ -17,9 +18,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private CharacterBaseAttribute _combatType;
         private SpellTemplate _equipSpell;
         private SpellTemplate _curseSpell;
+        private EquipmentAttackAlterationTemplate _equipmentAttackAlteration;
+        private EquipmentEquipAlterationTemplate _equipmentEquipAlteration;
+        private EquipmentCurseAlterationTemplate _equipmentCurseAlteration;
         private ConsumableTemplate _ammoTemplate;
         private double _weight;
         private int _levelRequired;
+        private bool _hasAttackAlteration;
+        private bool _hasEquipAlteration;
+        private bool _hasCurseAlteration;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
         private bool _hasCharacterClassRequirement;
@@ -121,6 +128,42 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public EquipmentAttackAlterationTemplate EquipmentAttackAlteration
+        {
+            get { return _equipmentAttackAlteration; }
+            set
+            {
+                if (_equipmentAttackAlteration != value)
+                {
+                    _equipmentAttackAlteration = value;
+                    OnPropertyChanged("EquipmentAttackAlteration");
+                }
+            }
+        }
+        public EquipmentEquipAlterationTemplate EquipmentEquipAlteration
+        {
+            get { return _equipmentEquipAlteration; }
+            set
+            {
+                if (_equipmentEquipAlteration != value)
+                {
+                    _equipmentEquipAlteration = value;
+                    OnPropertyChanged("EquipmentEquipAlteration");
+                }
+            }
+        }
+        public EquipmentCurseAlterationTemplate EquipmentCurseAlteration
+        {
+            get { return _equipmentCurseAlteration; }
+            set
+            {
+                if (_equipmentCurseAlteration != value)
+                {
+                    _equipmentCurseAlteration = value;
+                    OnPropertyChanged("EquipmentCurseAlteration");
+                }
+            }
+        }
         public ConsumableTemplate AmmoTemplate
         {
             get { return _ammoTemplate; }
@@ -130,6 +173,42 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _ammoTemplate = value;
                     OnPropertyChanged("AmmoTemplate");
+                }
+            }
+        }
+        public bool HasAttackAlteration
+        {
+            get { return _hasAttackAlteration; }
+            set
+            {
+                if (_hasAttackAlteration != value)
+                {
+                    _hasAttackAlteration = value;
+                    OnPropertyChanged("HasAttackAlteration");
+                }
+            }
+        }
+        public bool HasEquipAlteration
+        {
+            get { return _hasEquipAlteration; }
+            set
+            {
+                if (_hasEquipAlteration != value)
+                {
+                    _hasEquipAlteration = value;
+                    OnPropertyChanged("HasEquipAlteration");
+                }
+            }
+        }
+        public bool HasCurseAlteration
+        {
+            get { return _hasCurseAlteration; }
+            set
+            {
+                if (_hasCurseAlteration != value)
+                {
+                    _hasCurseAlteration = value;
+                    OnPropertyChanged("HasCurseAlteration");
                 }
             }
         }
@@ -190,6 +269,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
+            this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
+            this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
+            this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
         }
@@ -202,6 +284,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Quality = new Range<double>(0, 0, 100, 100);
             this.EquipSpell = new SpellTemplate();
             this.CurseSpell = new SpellTemplate();
+            this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
+            this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
+            this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();
             this.AmmoTemplate = new ConsumableTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
         }

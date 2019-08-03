@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
@@ -15,11 +17,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasCharacterClassRequirement;
         private bool _hasSpell;
         private bool _isProjectile;
+        private bool _hasAlteration;
+        private bool _hasProjectileAlteration;
         private bool _identifyOnUse;
         private SpellTemplateViewModel _spellTemplate;
         private SkillSetTemplateViewModel _learnedSkill;
         private SpellTemplateViewModel _projectileSpellTemplate;
         private SpellTemplateViewModel _ammoSpellTemplate;
+        private ConsumableAlterationTemplateViewModel _consumableAlteration;
+        private ConsumableProjectileAlterationTemplateViewModel _consumableProjectileAlteration;
+        private AnimationGroupTemplateViewModel _ammoAnimationGroup;
         private CharacterClassTemplateViewModel _characterClass;
         private string _noteMessage;
 
@@ -64,6 +71,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _isProjectile; }
             set { this.RaiseAndSetIfChanged(ref _isProjectile, value); }
         }
+        public bool HasAlteration
+        {
+            get { return _hasAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _hasAlteration, value); }
+        }
+        public bool HasProjectileAlteration
+        {
+            get { return _hasProjectileAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _hasProjectileAlteration, value); }
+        }
         public bool IdentifyOnUse
         {
             get { return _identifyOnUse; }
@@ -89,6 +106,21 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _ammoSpellTemplate; }
             set { this.RaiseAndSetIfChanged(ref _ammoSpellTemplate, value); }
         }
+        public ConsumableAlterationTemplateViewModel ConsumableAlteration
+        {
+            get { return _consumableAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _consumableAlteration, value); }
+        }
+        public ConsumableProjectileAlterationTemplateViewModel ConsumableProjectileAlteration
+        {
+            get { return _consumableProjectileAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _consumableProjectileAlteration, value); }
+        }
+        public AnimationGroupTemplateViewModel AmmoAnimationGroup
+        {
+            get { return _ammoAnimationGroup; }
+            set { this.RaiseAndSetIfChanged(ref _ammoAnimationGroup, value); }
+        }
         public string NoteMessage
         {
             get { return _noteMessage; }
@@ -112,6 +144,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.ProjectileSpellTemplate = new SpellTemplateViewModel();
             this.SpellTemplate = new SpellTemplateViewModel();
             this.AmmoSpellTemplate = new SpellTemplateViewModel();
+            this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
+            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
+            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel();
             this.LearnedSkill = new SkillSetTemplateViewModel();
             this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
@@ -128,6 +163,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.SubType = ConsumableSubType.Food;
             this.ProjectileSpellTemplate = new SpellTemplateViewModel();
             this.SpellTemplate = new SpellTemplateViewModel();
+            this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
+            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
+            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel();
             this.AmmoSpellTemplate = new SpellTemplateViewModel();
             this.LearnedSkill = new SkillSetTemplateViewModel();
             this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);

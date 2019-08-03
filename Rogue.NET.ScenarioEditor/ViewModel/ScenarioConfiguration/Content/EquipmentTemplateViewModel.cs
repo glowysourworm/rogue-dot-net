@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
 using System.Collections.ObjectModel;
 
 
@@ -17,9 +17,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private CharacterBaseAttribute _combatType;
         private SpellTemplateViewModel _equipSpell;
         private SpellTemplateViewModel _curseSpell;
+        private EquipmentAttackAlterationTemplateViewModel _equipmentAttackAlteration;
+        private EquipmentEquipAlterationTemplateViewModel _equipmentEquipAlteration;
+        private EquipmentCurseAlterationTemplateViewModel _equipmentCurseAlteration;
         private ConsumableTemplateViewModel _ammoTemplate;
         private double _weight;
         private int _levelRequired;
+        private bool _hasAttackAlteration;
+        private bool _hasEquipAlteration;
+        private bool _hasCurseAlteration;
         private bool _hasEquipSpell;
         private bool _hasCurseSpell;
         private bool _hasCharacterClassRequirement;
@@ -65,10 +71,40 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _curseSpell; }
             set { this.RaiseAndSetIfChanged(ref _curseSpell, value); }
         }
+        public EquipmentAttackAlterationTemplateViewModel EquipmentAttackAlteration
+        {
+            get { return _equipmentAttackAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _equipmentAttackAlteration, value); }
+        }
+        public EquipmentEquipAlterationTemplateViewModel EquipmentEquipAlteration
+        {
+            get { return _equipmentEquipAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _equipmentEquipAlteration, value); }
+        }
+        public EquipmentCurseAlterationTemplateViewModel EquipmentCurseAlteration
+        {
+            get { return _equipmentCurseAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _equipmentCurseAlteration, value); }
+        }
         public ConsumableTemplateViewModel AmmoTemplate
         {
             get { return _ammoTemplate; }
             set { this.RaiseAndSetIfChanged(ref _ammoTemplate, value); }
+        }
+        public bool HasAttackAlteration
+        {
+            get { return _hasAttackAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _hasAttackAlteration, value); }
+        }
+        public bool HasEquipAlteration
+        {
+            get { return _hasEquipAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _hasEquipAlteration, value); }
+        }
+        public bool HasCurseAlteration
+        {
+            get { return _hasCurseAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _hasCurseAlteration, value); }
         }
         public bool HasEquipSpell
         {

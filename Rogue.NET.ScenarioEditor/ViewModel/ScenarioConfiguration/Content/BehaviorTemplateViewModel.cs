@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Enemy;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
@@ -14,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private CharacterMovementType _movementType;
         private CharacterAttackType _attackType;
         private SpellTemplateViewModel _enemySpell;
+        private EnemyAlterationTemplateViewModel _enemyAlteration;
 
         public BehaviorCondition BehaviorCondition
         {
@@ -45,10 +47,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _enemySpell; }
             set { this.RaiseAndSetIfChanged(ref _enemySpell, value); }
         }
+        public EnemyAlterationTemplateViewModel EnemyAlteration
+        {
+            get { return _enemyAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _enemyAlteration, value); }
+        }
 
         public BehaviorTemplateViewModel()
         {
             this.EnemySpell = new SpellTemplateViewModel();
+            this.EnemyAlteration = new EnemyAlterationTemplateViewModel();
             this.BehaviorCondition = BehaviorCondition.AttackConditionsMet;
             this.BehaviorExitCondition = BehaviorExitCondition.BehaviorCounterExpired;
             this.BehaviorTurnCounter = 1;

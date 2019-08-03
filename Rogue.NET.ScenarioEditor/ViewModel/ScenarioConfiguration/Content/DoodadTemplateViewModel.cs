@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
@@ -7,6 +8,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     {
         private SpellTemplateViewModel _automaticMagicSpellTemplate;
         private SpellTemplateViewModel _invokedMagicSpellTemplate;
+        private DoodadAlterationTemplateViewModel _automaticAlteration;
+        private DoodadAlterationTemplateViewModel _invokedAlteration;
         private bool _isAutomatic;
         private bool _isVisible;
         private bool _isInvoked;
@@ -23,6 +26,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _invokedMagicSpellTemplate; }
             set { this.RaiseAndSetIfChanged(ref _invokedMagicSpellTemplate, value); }
+        }
+        public DoodadAlterationTemplateViewModel AutomaticAlteration
+        {
+            get { return _automaticAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _automaticAlteration, value); }
+        }
+        public DoodadAlterationTemplateViewModel InvokedAlteration
+        {
+            get { return _invokedAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _invokedAlteration, value); }
         }
         public bool IsAutomatic
         {

@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
@@ -16,6 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private CharacterMovementType _movementType;
         private CharacterAttackType _attackType;
         private SpellTemplate _enemySpell;
+        private EnemyAlterationTemplate _enemyAlteration;
 
         /// <summary>
         /// Treated as flags (many)
@@ -98,10 +100,23 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public EnemyAlterationTemplate EnemyAlteration
+        {
+            get { return _enemyAlteration; }
+            set
+            {
+                if (_enemyAlteration != value)
+                {
+                    _enemyAlteration = value;
+                    OnPropertyChanged("EnemySpell");
+                }
+            }
+        }
 
         public BehaviorTemplate()
         {
             this.EnemySpell = new SpellTemplate();
+            this.EnemyAlteration = new EnemyAlterationTemplate();
             this.BehaviorCondition = BehaviorCondition.AttackConditionsMet;
             this.BehaviorExitCondition = BehaviorExitCondition.BehaviorCounterExpired;
         }

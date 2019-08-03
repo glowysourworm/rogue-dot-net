@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
@@ -13,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SpellTemplateViewModel _alteration;
+        SkillAlterationTemplateViewModel _skillAlteration;
         CharacterClassTemplateViewModel _characterClass;
 
         public int LevelRequirement
@@ -50,6 +52,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _alteration; }
             set { this.RaiseAndSetIfChanged(ref _alteration, value); }
         }
+        public SkillAlterationTemplateViewModel SkillAlteration
+        {
+            get { return _skillAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _skillAlteration, value); }
+        }
         public CharacterClassTemplateViewModel CharacterClass
         {
             get { return _characterClass; }
@@ -59,6 +66,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         public SkillTemplateViewModel()
         {
             this.Alteration = new SpellTemplateViewModel();
+            this.SkillAlteration = new SkillAlterationTemplateViewModel();
             this.AttributeRequirement = CharacterAttribute.Agility;
             this.HasCharacterClassRequirement = false;
             this.CharacterClass = new CharacterClassTemplateViewModel();

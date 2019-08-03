@@ -1,5 +1,10 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Enemy;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
@@ -10,9 +15,10 @@ using System.Runtime.CompilerServices;
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 {
     public class ScenarioConfigurationContainerViewModel : INotifyPropertyChanged, INotifyPropertyChanging
-    {
+    {        
         DungeonTemplateViewModel _dungeonTemplate;
         PlayerTemplateViewModel _playerTemplate;
+        ScenarioConfigurationAlterationContainerViewModel _alterationContainer;
 
         public DungeonTemplateViewModel DungeonTemplate
         {
@@ -23,6 +29,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         {
             get { return _playerTemplate; }
             set { this.RaiseAndSetIfChanged(ref _playerTemplate, value); }
+        }
+        public ScenarioConfigurationAlterationContainerViewModel AlterationContainer
+        {
+            get { return _alterationContainer; }
+            set { this.RaiseAndSetIfChanged(ref _alterationContainer, value); }
         }
 
         public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
