@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 using System;
@@ -14,6 +15,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public bool HasSpell { get; set; }
         public bool HasProjectileSpell { get; set; }
         public bool HasLearnedSkillSet { get; set; }
+
+        public ConsumableAlteration Alteration { get; set; }
+        public ConsumableProjectileAlteration ProjectileAlteration { get; set; }
+        public bool HasAlteration { get; set; }
+        public bool HasProjectileAlteration { get; set; }
 
         public bool IdentifyOnUse { get; set; }
 

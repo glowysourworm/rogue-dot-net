@@ -34,6 +34,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         public double Mp { get; set; }
         public double CriticalHit { get; set; }
 
+        // TODO:ALTERATION fill this part of the template in
+        public bool IsStackable { get; set; }
+
         public TemporaryAlterationEffect()
         {
             this.SymbolAlteration = new SymbolDeltaTemplate();

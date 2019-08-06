@@ -18,6 +18,7 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -99,7 +100,7 @@ namespace Rogue.NET.Core.Logic.Content
             playerAdvancement = false;
 
             //Normal turn stuff
-            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes());
+            player.Hp += (regenerate ? player.GetHpRegen() : 0D) - player.GetMalignAttackAttributeHit(_modelService.AttackAttributes);
             player.Mp += player.GetMpRegen();
 
             // Set Killed By if malign attribute hit is great enough
@@ -183,7 +184,7 @@ namespace Rogue.NET.Core.Logic.Content
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, effect.DisplayName + " has worn off");
 
             //Apply per step alteration costs
-            foreach (AlterationCost alterationCost in player.Alteration.GetAlterationCosts())
+            foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
                 player.AgilityBase -= alterationCost.Agility;
                 player.AuraRadiusBase -= alterationCost.AuraRadius;

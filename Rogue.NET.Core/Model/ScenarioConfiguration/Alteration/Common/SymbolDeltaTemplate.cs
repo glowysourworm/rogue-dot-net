@@ -218,6 +218,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             }
         }
 
+        public bool HasSymbolDelta()
+        {
+            return this.IsFullSymbolDelta ||
+                   this.IsImageDelta ||
+                   this.IsMoodDelta ||
+                   this.IsBodyDelta ||
+                   this.IsLineDelta ||
+                   this.IsAuraDelta ||
+                   this.IsCharacterDelta ||
+                   this.IsColorDelta;
+        }
+
         public SymbolDeltaTemplate()
         {
             this.Type = SymbolTypes.Image;

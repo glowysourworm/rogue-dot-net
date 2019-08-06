@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Collections.Generic;
 

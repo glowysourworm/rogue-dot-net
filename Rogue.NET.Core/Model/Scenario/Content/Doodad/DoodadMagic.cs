@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using System;
 
@@ -11,6 +12,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public Spell InvokedSpell { get; set; }
         public bool IsAutomatic { get; set; }
         public bool IsInvoked { get; set; }
+
+        public DoodadAlteration AutomaticAlteration { get; set; }
+        public DoodadAlteration InvokedAlteration { get; set; }
 
         public bool HasCharacterClassRequirement { get; set; }
         public CharacterClass CharacterClass { get; set; }

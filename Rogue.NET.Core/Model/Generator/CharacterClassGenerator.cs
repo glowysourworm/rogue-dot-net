@@ -1,10 +1,9 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;

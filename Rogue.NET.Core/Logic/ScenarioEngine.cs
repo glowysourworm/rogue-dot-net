@@ -27,6 +27,7 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using System.Windows.Media;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Core.Logic
 {

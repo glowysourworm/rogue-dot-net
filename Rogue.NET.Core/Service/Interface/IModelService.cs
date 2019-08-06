@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
-using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -135,6 +135,6 @@ namespace Rogue.NET.Core.Service.Interface
         /// Returns Empty (Attack = 0, Resistence = 0) Attack Attribute collection copied (Cloned) from
         /// the configuration. This contains definitions for all attack attributes.
         /// </summary>
-        IEnumerable<AttackAttribute> GetAttackAttributes();
+        IEnumerable<AttackAttribute> AttackAttributes { get; }
     }
 }

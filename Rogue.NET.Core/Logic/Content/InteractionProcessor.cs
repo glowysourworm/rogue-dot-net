@@ -6,6 +6,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -43,7 +44,7 @@ namespace Rogue.NET.Core.Logic.Content
         public void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
         {
             // Create detached attributes to send along the message publisher
-            var baseAttributes = _modelService.GetAttackAttributes();
+            var baseAttributes = _modelService.AttackAttributes;
 
             // Get the defender's attributes
             var defenseAttributes = defender.GetMeleeAttributes(baseAttributes);
@@ -92,7 +93,7 @@ namespace Rogue.NET.Core.Logic.Content
             var criticalHit = _randomSequenceGenerator.Get() <= attacker.GetCriticalHitProbability();
 
             // Attack attributes
-            var baseAttributes = _modelService.GetAttackAttributes();
+            var baseAttributes = _modelService.AttackAttributes;
             var attackerAttributes = attacker.GetMeleeAttributes(baseAttributes);
             var defenderAttributes = defender.GetMeleeAttributes(baseAttributes);
 

@@ -18,6 +18,15 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
 
         public List<AttackAttribute> AttackAttributes { get; set; }
 
+        // TODO:ALTERATION fill this part of the template in
+        public AlteredCharacterState AlteredState { get; set; }
+
+        // TODO:ALTERATION fill this part of the template in
+        public bool IsStackable { get; set; }
+
+        // TODO:ALTERATION fill this part of the template in
+        public int EventTime { get; set; }
+
         public AttackAttributeTemporaryAlterationEffect()
         {
             this.AttackAttributes = new List<AttackAttribute>();

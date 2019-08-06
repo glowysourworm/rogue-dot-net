@@ -7,11 +7,11 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
     [Serializable]
     public class AnimationContainer : RogueBase
     {
-        public List<AnimationTemplate> Animations { get; set; }
+        public List<AnimationData> Animations { get; set; }
 
         public AnimationContainer()
         {
-            this.Animations = new List<AnimationTemplate>();
+            this.Animations = new List<AnimationData>();
         }
     }
 }

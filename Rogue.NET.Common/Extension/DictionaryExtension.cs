@@ -9,7 +9,7 @@ namespace Rogue.NET.Common.Extension
     public static class DictionaryExtension
     {
         /// <summary>
-        /// Removes items from the dictionary specified by the given filter
+        /// Removes items from the dictionary specified by the given filter and returns those item values
         /// </summary>
         /// <typeparam name="K">Key Type</typeparam>
         /// <typeparam name="V">Value Type</typeparam>

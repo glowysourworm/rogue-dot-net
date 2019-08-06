@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Data;
 
-using AttackAttributeClass = Rogue.NET.Core.Model.Scenario.Alteration.AttackAttribute;
+using AttackAttributeClass = Rogue.NET.Core.Model.Scenario.Alteration.Common.AttackAttribute;
 
 namespace Rogue.NET.Core.Converter.AttackAttribute
 {

@@ -23,6 +23,7 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {

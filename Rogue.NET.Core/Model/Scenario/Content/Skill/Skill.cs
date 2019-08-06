@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Skill
@@ -15,6 +16,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public CharacterAttribute AttributeRequirement { get; set; }
         public CharacterClass CharacterClass { get; set; }
         public Spell Alteration { get; set; }
+
+        public SkillAlteration Alteration_NEW { get; set; }
 
         public bool IsLearned { get; set; }
         public bool AreRequirementsMet { get; set; }

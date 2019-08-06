@@ -1,5 +1,8 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using System;
 using System.Collections.Generic;
@@ -22,6 +25,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public Spell EquipSpell { get; set; }
         public Spell CurseSpell { get; set; }
         public string AmmoName { get; set; }
+
+        public EquipmentAttackAlteration AttackAlteration { get; set; }
+        public EquipmentEquipAlteration EquipAlteration { get; set; }
+        public EquipmentCurseAlteration CurseAlteration { get; set; }
+        public bool HasAttackAlteration { get; set; }
+        public bool HasEquipAlteration { get; set; }
+        public bool HasCurseAlteration { get; set; }
 
         public IList<AttackAttribute> AttackAttributes { get; set; }
 

@@ -44,7 +44,8 @@ namespace Rogue.NET.Core.Model.Enums
     {
         Passive = 1,
         Temporary = 2,
-        Melee = 3
+        Melee = 3,
+        Aura = 4
     }
     public enum AlterationAttackAttributeCombatType : int
     {

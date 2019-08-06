@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 

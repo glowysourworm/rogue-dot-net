@@ -17,6 +17,7 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Model.Scenario.Content;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Intro.ViewModel
 {

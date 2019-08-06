@@ -15,6 +15,7 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Core.Service
 {
@@ -120,12 +121,15 @@ namespace Rogue.NET.Core.Service
 
         public IEnumerable<CharacterClass> CharacterClasses { get; private set; }
 
-        public IEnumerable<AttackAttribute> GetAttackAttributes()
+        public IEnumerable<AttackAttribute> AttackAttributes
         {
-            return this.ScenarioConfiguration
-                       .AttackAttributes
-                       .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                       .Actualize();
+            get
+            {
+                return this.ScenarioConfiguration
+                      .AttackAttributes
+                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                      .Actualize();
+            }
         }
 
         public string GetDisplayName(ScenarioObject scenarioObject)

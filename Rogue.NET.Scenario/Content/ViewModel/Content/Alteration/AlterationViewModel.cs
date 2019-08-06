@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {

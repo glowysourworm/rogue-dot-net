@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Logic.Content
 
         public void ApplyBeginningOfTurn(Enemy enemy)
         {
-            enemy.Hp -= enemy.GetMalignAttackAttributeHit(_modelService.GetAttackAttributes());
+            enemy.Hp -= enemy.GetMalignAttackAttributeHit(_modelService.AttackAttributes);
         }
 
         public void ApplyEndOfTurn(Enemy enemy, Player player, bool actionTaken)

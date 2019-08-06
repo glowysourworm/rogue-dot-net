@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content;
 using System;
 
-namespace Rogue.NET.Core.Model.Scenario.Alteration
+namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
 {
     [Serializable]
     public class AttackAttribute : ScenarioImage

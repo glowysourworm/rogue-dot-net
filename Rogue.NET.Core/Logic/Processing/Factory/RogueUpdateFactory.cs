@@ -3,6 +3,7 @@ using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
