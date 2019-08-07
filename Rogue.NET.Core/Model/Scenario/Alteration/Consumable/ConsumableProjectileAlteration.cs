@@ -10,7 +10,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
         public ConsumableProjectileAlteration()
         {
         }
-
+        public ConsumableProjectileAlteration(string guid) : base(guid)
+        {
+        }
         protected override bool ValidateEffectInterfaceType()
         {
             return this.Effect is IConsumableProjectileAlterationEffect;

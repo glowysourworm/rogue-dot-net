@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public CharacterAttackType AttackType { get; set; }
         public Spell EnemySkill { get; set; }
 
-        public EnemyAlteration EnemyAlteration { get; set; }
+        public EnemyAlterationTemplate EnemyAlteration { get; set; }
 
         public Behavior()
         {

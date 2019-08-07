@@ -16,6 +16,11 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
             this.AuraParameters = new AuraSourceParameters();
         }
 
+        public SkillAlteration(string guid) : base(guid)
+        {
+            this.AuraParameters = new AuraSourceParameters();
+        }
+
         protected override bool ValidateEffectInterfaceType()
         {
             return this.Effect is ISkillAlterationEffect;

@@ -13,6 +13,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
         {
             this.AuraParameters = new AuraSourceParameters();
         }
+        public EquipmentCurseAlteration(string guid) : base(guid)
+        {
+            this.AuraParameters = new AuraSourceParameters();
+        }
 
         protected override bool ValidateEffectInterfaceType()
         {

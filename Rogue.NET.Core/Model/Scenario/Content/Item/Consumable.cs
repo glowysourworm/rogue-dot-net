@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
-
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Item
@@ -16,8 +15,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public bool HasProjectileSpell { get; set; }
         public bool HasLearnedSkillSet { get; set; }
 
-        public ConsumableAlteration Alteration { get; set; }
-        public ConsumableProjectileAlteration ProjectileAlteration { get; set; }
+        public ConsumableAlterationTemplate Alteration { get; set; }
+        public ConsumableProjectileAlterationTemplate ProjectileAlteration { get; set; }
         public bool HasAlteration { get; set; }
         public bool HasProjectileAlteration { get; set; }
 
@@ -42,19 +41,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
             this.AmmoSpell = new Spell();
             this.LearnedSkill = new SkillSet();
             this.Weight = 0.5;
-            this.NoteMessage = "";
-        }
-        public Consumable(ConsumableType type, ConsumableSubType subType, string name, ImageResources icon)
-            : base(name, icon)
-        {
-            this.Type = type;
-            this.SubType = subType;
-            this.RogueName = name;
-            this.HasSpell = false;
-            this.IdentifyOnUse = false;
-            this.LearnedSkill = new SkillSet();
-            this.Spell = new Spell();
-            this.AmmoSpell = new Spell();
             this.NoteMessage = "";
         }
     }

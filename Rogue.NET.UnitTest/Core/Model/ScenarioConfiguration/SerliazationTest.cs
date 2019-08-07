@@ -32,6 +32,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         private IScenarioGenerator CreateScenarioGenerator(int seed)
         {
 
+            var animationGenerator = new AnimationGenerator();
             var scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
             var randomSequenceGenerator = new RandomSequenceGenerator();
             randomSequenceGenerator.Reseed(seed);
@@ -43,7 +44,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             var behaviorGenerator = new BehaviorGenerator(spellGenerator);
             var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
             var alteredStateGenerator = new AlteredStateGenerator();
-            var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator);
+            var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator, animationGenerator);
             var characterClassGenerator = new CharacterClassGenerator(spellGenerator, attackAttributeGenerator, alterationGenerator, skillSetGenerator);
             var itemGenerator = new ItemGenerator(
                 randomSequenceGenerator,

@@ -36,7 +36,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         }
 
         public AlterationCost Cost { get; set; }
-        public AnimationContainer AnimationGroup { get; set; }
+        public AnimationGroup AnimationGroup { get; set; }
         public AlterationBlockType BlockType { get; set; }
 
         /// <summary>
@@ -268,7 +268,12 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         public AlterationBase()
         {
             this.Cost = new AlterationCost();
-            this.AnimationGroup = new AnimationContainer();
+            this.AnimationGroup = new AnimationGroup();
+        }
+
+        public AlterationBase(string guid) : base(guid)
+        {
+
         }
 
 

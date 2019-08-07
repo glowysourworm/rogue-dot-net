@@ -7,13 +7,10 @@ using System.ComponentModel.Composition;
 using Prism.Events;
 
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
-using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Model.Events;
-using Rogue.NET.Common.Utility;
-using Rogue.NET.Scenario.Views;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -41,8 +38,7 @@ namespace Rogue.NET.Scenario.Content.Views
         [ImportingConstructor]
         public LevelCanvas(
             LevelCanvasViewModel viewModel, 
-            IEventAggregator eventAggregator, 
-            IAnimationGenerator animationGenerator)
+            IEventAggregator eventAggregator)
         {
             this.DataContext = viewModel;
 

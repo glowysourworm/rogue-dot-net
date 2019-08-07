@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface
 {
-    public interface IEquipmentAttackAlterationEffectTemplate
+    public interface IEquipmentAttackAlterationEffectTemplate : IAlterationEffectTemplate
     {
     }
 }

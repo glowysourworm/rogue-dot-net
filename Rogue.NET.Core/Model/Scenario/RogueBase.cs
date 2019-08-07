@@ -13,21 +13,14 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             this.Id = Guid.NewGuid().ToString();
         }
-        public RogueBase(string name)
+        public RogueBase(string id)
         {
-            this.Id = Guid.NewGuid().ToString();
+            this.Id = id;
+        }
+        public RogueBase(string id, string name)
+        {
+            this.Id = id;
             this.RogueName = name;
         }
-        //public RogueBase(SerializationInfo info, StreamingContext context)
-        //{
-        //    this.Id = info.GetString("Id");
-        //    this.RogueName = info.GetString("RogueName");
-        //}
-
-        //public void GetObjectData(SerializationInfo info, StreamingContext context)
-        //{
-        //    info.AddValue("Id", this.Id);
-        //    info.AddValue("RogueName", this.RogueName);
-        //}
     }
 }

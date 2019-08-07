@@ -14,6 +14,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Enemy
         public EnemyAlteration()
         {
         }
+        public EnemyAlteration(string guid) : base(guid)
+        {
+        }
 
         protected override bool ValidateEffectInterfaceType()
         {

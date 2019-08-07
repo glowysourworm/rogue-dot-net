@@ -22,7 +22,6 @@ using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.ScenarioMessage;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
@@ -392,12 +391,12 @@ namespace Rogue.NET.Core.Logic
                     // Remove Equipment from actee's inventory and deactivate passive effects
                     actee.Equipment.Remove(equipment.Id);
 
-                    // These should never be turned on; but doing for good measure
+                    // Be sure to de-activate alterations
                     if (equipment.HasEquipAlteration)
-                        actee.Alteration_NEW.Remove(equipment.EquipAlteration.Id);
+                        actee.Alteration_NEW.Remove(equipment.EquipAlteration.Guid);
 
                     if (equipment.HasCurseAlteration)
-                        actee.Alteration_NEW.Remove(equipment.CurseAlteration.Id);
+                        actee.Alteration_NEW.Remove(equipment.CurseAlteration.Guid);
 
                     // Update UI
                     if (actor is Player)

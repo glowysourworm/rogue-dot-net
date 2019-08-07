@@ -12,16 +12,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
     [Export]
     public partial class AnimationPreviewControl : UserControl
     {
-        readonly IAnimationGenerator _animationGenerator;
+        readonly IAnimationCreator _animationCreator;
 
         ITimedGraphic _animation = null;
 
         bool _updating = false;
 
         [ImportingConstructor]
-        public AnimationPreviewControl(IAnimationGenerator animationGenerator)
+        public AnimationPreviewControl(IAnimationCreator animationCreator)
         {
-            _animationGenerator = animationGenerator;
+            _animationCreator = animationCreator;
 
             InitializeComponent();
         }
@@ -79,7 +79,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             en2.Y += 8;
             en3.X += 5;
             en3.Y += 8;
-            return _animationGenerator.CreateAnimation(tmp, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
+            return _animationCreator.CreateAnimation(tmp, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)

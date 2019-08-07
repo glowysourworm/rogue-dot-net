@@ -1,6 +1,6 @@
 ﻿namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface
 {
-    public interface ISkillAlterationEffectTemplate
+    public interface ISkillAlterationEffectTemplate : IAlterationEffectTemplate
     {
     }
 }

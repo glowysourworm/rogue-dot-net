@@ -185,6 +185,8 @@
     <Compile Include="Logic\Processing\PlayerCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerImbueCommandAction.cs" />
     <Compile Include="Model\Enums\Alteration.cs" />
+    <Compile Include="Model\Generator\AnimationGenerator.cs" />
+    <Compile Include="Model\Generator\Interface\IAnimationGenerator.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributeAuraAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributePassiveAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributeTemporaryAlterationEffectTemplate.cs" />
@@ -199,6 +201,8 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\PermanentAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\RemedyAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\RevealAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\RunAwayAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\StealAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TemporaryAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Consumable\ConsumableAlterationTemplate.cs" />
@@ -208,6 +212,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentAttackAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentCurseAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentEquipAlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IConsumableAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IConsumableProjectileAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IDoodadAlterationEffectTemplate.cs" />
@@ -226,7 +231,7 @@
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IAlterationEffect.cs" />
-    <Compile Include="Model\Scenario\Animation\AnimationContainer.cs" />
+    <Compile Include="Model\Scenario\Animation\AnimationGroup.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributeAuraAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributeMeleeAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributePassiveAlterationEffect.cs" />
@@ -300,11 +305,11 @@
     <Compile Include="Logic\Processing\ScenarioUpdate.cs" />
     <Compile Include="Logic\Processing\SplashUpdate.cs" />
     <Compile Include="Media\Animation.cs" />
-    <Compile Include="Media\AnimationGenerator.cs" />
-    <Compile Include="Media\AnimationGroup.cs" />
+    <Compile Include="Media\AnimationCreator.cs" />
+    <Compile Include="Media\AnimationQueue.cs" />
     <Compile Include="Media\AnimationPrimitive.cs" />
     <Compile Include="Media\Graphic.cs" />
-    <Compile Include="Media\Interface\IAnimationGenerator.cs" />
+    <Compile Include="Media\Interface\IAnimationCreator.cs" />
     <Compile Include="Media\ITimedGraphic.cs" />
     <Compile Include="Media\TimedFigure.cs" />
     <Compile Include="Model\Event\LocationChangedEventArgs.cs" />

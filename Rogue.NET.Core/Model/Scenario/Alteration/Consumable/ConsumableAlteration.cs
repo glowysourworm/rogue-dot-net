@@ -13,7 +13,12 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
 
         public ConsumableAlteration()
         {
-            this.AnimationGroup = new AnimationContainer();
+            this.AnimationGroup = new AnimationGroup();
+        }
+
+        public ConsumableAlteration(string guid) : base(guid)
+        {
+
         }
 
         protected override bool ValidateEffectInterfaceType()

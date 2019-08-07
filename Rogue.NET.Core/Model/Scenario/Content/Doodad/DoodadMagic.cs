@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
@@ -13,8 +13,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public bool IsAutomatic { get; set; }
         public bool IsInvoked { get; set; }
 
-        public DoodadAlteration AutomaticAlteration { get; set; }
-        public DoodadAlteration InvokedAlteration { get; set; }
+        public DoodadAlterationTemplate AutomaticAlteration { get; set; }
+        public DoodadAlterationTemplate InvokedAlteration { get; set; }
 
         public bool HasCharacterClassRequirement { get; set; }
         public CharacterClass CharacterClass { get; set; }
@@ -25,16 +25,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
             this.AutomaticSpell = new Spell();
             this.InvokedSpell = new Spell();
             this.CharacterClass = new CharacterClass();
-        }
-        public DoodadMagic(string name, Spell autoSpell, Spell invokeSpell, bool isauto, bool isinvoke, ImageResources icon, CharacterClass characterClass)
-            : base(name, icon)
-        {
-            this.Type = DoodadType.Magic;
-            this.AutomaticSpell = autoSpell;
-            this.InvokedSpell = invokeSpell;
-            this.IsAutomatic = isauto;
-            this.IsInvoked = isinvoke;
-            this.CharacterClass = characterClass;
         }
     }
 }

@@ -12,7 +12,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
         public EquipmentAttackAlteration()
         {
         }
-
+        public EquipmentAttackAlteration(string guid) : base(guid)
+        {
+        }
         protected override bool ValidateEffectInterfaceType()
         {
             return this.Effect is IEquipmentAttackAlterationEffect;

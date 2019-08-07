@@ -38,7 +38,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         readonly IScenarioUIGeometryService _scenarioUIGeometryService;
         readonly IScenarioResourceService _resourceService;
         readonly IModelService _modelService;
-        readonly IAnimationGenerator _animationGenerator;
+        readonly IAnimationCreator _animationCreator;
         readonly IAlterationProcessor _alterationProcessor;
 
         // Identifies the layout entry in the content dictionary
@@ -71,14 +71,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             IScenarioUIGeometryService scenarioUIGeometryService,
             IScenarioResourceService resourceService, 
             IEventAggregator eventAggregator, 
-            IAnimationGenerator animationGenerator,
+            IAnimationCreator animationCreator,
             IModelService modelService,
             IAlterationProcessor alterationProcessor)
         {
             _scenarioUIGeometryService = scenarioUIGeometryService;
             _resourceService = resourceService;
             _modelService = modelService;
-            _animationGenerator = animationGenerator;
+            _animationCreator = animationCreator;
             _alterationProcessor = alterationProcessor;
 
             this.Contents = new ObservableCollection<FrameworkElement>();
@@ -651,7 +651,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             //Create animations
             var animations = animationData.Animations.Select(x =>
             {
-                return new { AnimationGroup = _animationGenerator.CreateAnimation(x, bounds, source, targets), AnimationTemplate = x };
+                return new { AnimationGroup = _animationCreator.CreateAnimation(x, bounds, source, targets), AnimationTemplate = x };
             });
 
             foreach (var animation in animations)
@@ -667,7 +667,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 animation.AnimationGroup.Start();
 
                 // Wait for completion
-                var waitTime = _animationGenerator.CalculateRunTime(animation.AnimationTemplate, source, targets);
+                var waitTime = _animationCreator.CalculateRunTime(animation.AnimationTemplate, source, targets);
 
                 await Task.Delay(waitTime);
             }
@@ -691,7 +691,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                                       .ToArray();
 
             // Start the animation group
-            foreach (var animation in _animationGenerator.CreateTargetingAnimation(points))
+            foreach (var animation in _animationCreator.CreateTargetingAnimation(points))
             {
                 foreach (var graphic in animation.GetGraphics())
                 {
