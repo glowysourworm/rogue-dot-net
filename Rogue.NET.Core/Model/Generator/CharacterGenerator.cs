@@ -48,7 +48,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.MpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Mp);
             player.Hp = player.HpMax;
             player.Mp = player.MpMax;
-            player.AuraRadiusBase = playerTemplate.AuraRadius;
+            player.LightRadiusBase = playerTemplate.AuraRadius;
 
             player.Icon = playerTemplate.SymbolDetails.Icon;
             player.CharacterSymbol = playerTemplate.SymbolDetails.CharacterSymbol;

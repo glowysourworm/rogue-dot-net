@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 using System.Collections.Generic;
@@ -61,8 +62,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _enemyAlterationList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _enemyAlterationList.Add(typeof(CreateMonsterAlterationEffect));
             _enemyAlterationList.Add(typeof(EquipmentModifyAlterationEffect));
-            _enemyAlterationList.Add(typeof(OtherAlterationEffect));
             _enemyAlterationList.Add(typeof(PermanentAlterationEffect));
+            _enemyAlterationList.Add(typeof(RunAwayAlterationEffect));
+            _enemyAlterationList.Add(typeof(StealAlterationEffect));
             _enemyAlterationList.Add(typeof(TeleportAlterationEffect));
 
             // ISkillAlterationEffect
@@ -76,11 +78,41 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _skillAlterationList.Add(typeof(TeleportAlterationEffect));
         }
 
-        #region (public) Validate Methods
+        public void Validate(IAlterationEffect effect)
+        {
+            if (effect is IConsumableAlterationEffect)
+                Validate(effect as IConsumableAlterationEffect);
+
+            else if (effect is IConsumableProjectileAlterationEffect)
+                Validate(effect as IConsumableProjectileAlterationEffect);
+
+            else if (effect is IDoodadAlterationEffect)
+                Validate(effect as IDoodadAlterationEffect);
+
+            else if (effect is IEquipmentAttackAlterationEffect)
+                Validate(effect as IEquipmentAttackAlterationEffect);
+
+            else if (effect is IEquipmentCurseAlterationEffect)
+                Validate(effect as IEquipmentCurseAlterationEffect);
+
+            else if (effect is IEquipmentEquipAlterationEffect)
+                Validate(effect as IEquipmentEquipAlterationEffect);
+
+            else if (effect is IEnemyAlterationEffect)
+                Validate(effect as IEnemyAlterationEffect);
+
+            else if (effect is ISkillAlterationEffect)
+                Validate(effect as ISkillAlterationEffect);
+
+            else
+                throw new Exception("Unknwon IAlterationEffect Type");
+        }
+
+        #region (protected) Validate Methods
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IConsumableAlterationEffect effect)
+        protected void Validate(IConsumableAlterationEffect effect)
         {
             var implementationType = effect.GetType();
 
@@ -94,7 +126,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IConsumableProjectileAlterationEffect effect)
+        protected void Validate(IConsumableProjectileAlterationEffect effect)
         {
             var implementationType = effect.GetType();
 
@@ -108,7 +140,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IDoodadAlterationEffect effect)
+        protected void Validate(IDoodadAlterationEffect effect)
         {
             var implementationType = effect.GetType();
 
@@ -122,7 +154,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IEnemyAlterationEffect effect)
+        protected void Validate(IEnemyAlterationEffect effect)
         {
             var implementationType = effect.GetType();
 
@@ -136,7 +168,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IEquipmentCurseAlterationEffect effect)
+        protected void Validate(IEquipmentCurseAlterationEffect effect)
         {
             return;
         }
@@ -144,7 +176,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(IEquipmentEquipAlterationEffect effect)
+        protected void Validate(IEquipmentEquipAlterationEffect effect)
         {
             return;
         }
@@ -152,7 +184,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Throws appropriate exception if type is not supposed to be processed by CharacterAlteration.
         /// </summary>
-        public void Validate(ISkillAlterationEffect effect)
+        protected void Validate(ISkillAlterationEffect effect)
         {
             var implementationType = effect.GetType();
 

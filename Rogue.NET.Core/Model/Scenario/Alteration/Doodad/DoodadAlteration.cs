@@ -1,18 +1,23 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
-using Rogue.NET.Core.Model.Scenario.Animation;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Doodad
 {
     [Serializable]
-    public class DoodadAlteration : RogueBase
+    public class DoodadAlteration : AlterationBase
     {
-        public AnimationContainer Animation { get; set; }
-        public IDoodadAlterationEffect Effect { get; set; }
+        // TODO:ALTERATION
+        public AlterationTargetType TargetType { get; set; }
 
         public DoodadAlteration()
         {
-            this.Animation = new AnimationContainer();
+        }
+
+        protected override bool ValidateEffectInterfaceType()
+        {
+            return this.Effect is IDoodadAlterationEffect;
         }
     }
 }

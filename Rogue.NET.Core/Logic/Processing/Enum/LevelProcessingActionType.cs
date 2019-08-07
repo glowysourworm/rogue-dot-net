@@ -3,19 +3,14 @@
     public enum LevelProcessingActionType
     {
         /// <summary>
-        /// Process Enemy Reaction
+        /// Process Character Reaction
         /// </summary>
-        EnemyReaction,
+        Reaction,
 
         /// <summary>
-        /// Process Player Spell
+        /// Process Character Alteration
         /// </summary>
-        PlayerSpell,
-
-        /// <summary>
-        /// Process Enemy Magic spell (happens after enemy reaction)
-        /// </summary>
-        EnemySpell,
+        CharacterAlteration,
 
         /// <summary>
         /// Primary End-Of-Turn for Scenario. { Player End-Of-Turn, Content End-Of-Turn }

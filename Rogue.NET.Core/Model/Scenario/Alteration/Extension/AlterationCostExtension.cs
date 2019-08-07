@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 new KeyValuePair<string, double>("Experience", cost.Experience),
                 new KeyValuePair<string, double>("Hunger", cost.Hunger),
                 new KeyValuePair<string, double>("Food Usage", cost.FoodUsagePerTurn),
-                new KeyValuePair<string, double>("Light Radius", cost.AuraRadius)
+                new KeyValuePair<string, double>("Light Radius", cost.LightRadius)
             }.Where(x => x.Value != 0);
         }
     }

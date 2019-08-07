@@ -274,8 +274,8 @@ namespace Rogue.NET.Core.Logic
                 else
                     LevelProcessingActionEvent(this, new LevelProcessingAction()
                     {
-                        CharacterId = enemy.Id,
-                        Type = LevelProcessingActionType.EnemyReaction
+                        Actor = enemy,
+                        Type = LevelProcessingActionType.Reaction
                     });
             }
         }

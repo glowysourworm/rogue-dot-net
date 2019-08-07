@@ -30,6 +30,9 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
         public double SpiralRate { get; set; }
         public double RoamRadius { get; set; }
 
+        // TODO:ALTERATION
+        public AnimationType_NEW Type_NEW { get; set; }
+
         public AnimationData()
         {
             this.FillTemplate = new BrushTemplate()

@@ -134,6 +134,8 @@ namespace Rogue.NET.Core.Service
 
         public string GetDisplayName(ScenarioObject scenarioObject)
         {
+            // TODO - HANDLE PROPER NOUNS (Example:  Player (assumed proper noun), Enemy that is Unique
+
             if (scenarioObject is Player)
                 return scenarioObject.RogueName;
 
@@ -219,7 +221,7 @@ namespace Rogue.NET.Core.Service
         }
         public void UpdateVisibleLocations()
         {
-            var lightRadius = this.Player.GetAuraRadius();
+            var lightRadius = this.Player.GetLightRadius();
 
             // Perform Visibility Calculation - if player is blind then use light radius of 1.
             IEnumerable<CellPoint> lineOfSightLocations = null;

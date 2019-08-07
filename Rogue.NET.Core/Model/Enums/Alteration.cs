@@ -17,10 +17,8 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum AlterationOtherEffectType : int
     {
-        Steal = 1,
-        RunAway = 2,
-        Identify = 3,
-        Uncurse = 4
+        Identify = 1,
+        Uncurse = 2
     }
     [Flags]
     public enum AlterationRevealType : int

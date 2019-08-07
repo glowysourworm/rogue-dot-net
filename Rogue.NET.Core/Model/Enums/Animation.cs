@@ -18,4 +18,18 @@
         ChainSelfToTargetsInRange = 13,
         ScreenBlink = 14
     }
+
+    // TODO:ALTERATION - Create new AnimationType enum that assumes always affected characters
+    public enum AnimationType_NEW
+    {
+        Projectile = 0,
+        ProjectileReverse = 1,
+        Aura = 2,
+        Bubbles = 3,
+        Barrage = 4,
+        Spiral = 5,
+        Chain = 6,
+        ChainReverse = 7,
+        ScreenBlink = 8
+    }
 }

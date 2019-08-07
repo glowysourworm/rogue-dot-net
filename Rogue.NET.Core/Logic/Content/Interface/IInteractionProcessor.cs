@@ -12,11 +12,11 @@ namespace Rogue.NET.Core.Logic.Content.Interface
     public interface IInteractionProcessor
     {
         /// <summary>
-        /// Used to calculate an attack attribute offensive strike created by an Alteration -> AttackAttribute -> MeleeTarget
+        /// Used to calculate an attack attribute offensive strike created by an Alteration -> AttackAttribute -> Melee
         /// </summary>
         /// <param name="alterationDisplayName">Alteration Display Name (AlterationEffect.DisplayName)</param>
         /// <param name="offenseAttributes">Attack Attributes coming from the Alteration</param>
-        void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
+        void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
 
         /// <summary>
         /// Calculates increment to enemy turn counter based on relative speed of characters

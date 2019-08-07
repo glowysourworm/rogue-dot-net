@@ -115,7 +115,7 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         public static T PickRandom<T>(this IEnumerable<T> collection, double randomNumber)
         {
-            return collection.ElementAt((int)(collection.Count() * randomNumber));
+            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * randomNumber));
         }
 
         /// <summary>

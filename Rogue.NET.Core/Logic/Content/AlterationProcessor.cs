@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -122,6 +123,86 @@ namespace Rogue.NET.Core.Logic.Content
             return false;
         }
 
+        public bool CalculateMeetsAlterationCost(Character character, AlterationCost cost)
+        {
+            var isPlayer = character is Player;
+
+            if (character.AgilityBase - cost.Agility < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Agility");
+
+                return false;
+            }
+
+            if (character.SpeedBase - cost.Speed < ModelConstants.MinSpeed)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Speed");
+
+                return false;
+            }
+
+            if (character.Hp - cost.Hp < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
+
+                return false;
+            }
+
+            if (character.IntelligenceBase - cost.Intelligence < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Intelligence");
+
+                return false;
+            }
+
+            if (character.Mp - cost.Mp < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
+
+                return false;
+            }
+
+            if (character.StrengthBase - cost.Strength < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Strength");
+
+                return false;
+            }
+
+            if (character.LightRadiusBase - cost.LightRadius < 0)
+            {
+                if (isPlayer)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Will go Blind!");
+
+                return false;
+            }
+
+            // Player-Only
+            if (isPlayer)
+            {
+                var player = character as Player;
+
+                if (player.Experience - cost.Experience < 0)
+                {
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Experience");
+                    return false;
+                }
+
+                if (player.Hunger + cost.Hunger > 100)
+                {
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You'll starve! (This is making you Hungry!)");
+                    return false;
+                }
+            }
+
+            return true;
+        }
         public bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost)
         {
             return (enemy.AgilityBase - cost.Agility) >= 0 &&
@@ -169,7 +250,7 @@ namespace Rogue.NET.Core.Logic.Content
                 return false;
             }
 
-            if (player.AuraRadiusBase - cost.AuraRadius < 0)
+            if (player.LightRadiusBase - cost.AuraRadius < 0)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Will go Blind!");
                 return false;
@@ -204,6 +285,88 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 ApplyPermanentEffect(character as Enemy, alterationEffect);
         }
+        public void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect)
+        {
+            character.StrengthBase += alterationEffect.Strength;
+            character.IntelligenceBase += alterationEffect.Intelligence;
+            character.AgilityBase += alterationEffect.Agility;
+            character.SpeedBase += alterationEffect.Speed;
+            character.LightRadiusBase += alterationEffect.LightRadius;
+            character.Hp += alterationEffect.Hp;
+            character.Mp += alterationEffect.Mp;
+
+            // Player Specific - (Also Publish Messages)
+            if (character is Player)
+            {
+                var player = character as Player;
+
+                player.Experience += alterationEffect.Experience;
+                player.Hunger += alterationEffect.Hunger;
+
+                // Strength
+                if (alterationEffect.Strength > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Strength has changed by " + alterationEffect.Strength.ToString("F2"));
+
+                else if (alterationEffect.Strength < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Strength has changed by " + alterationEffect.Strength.ToString("F2"));
+
+                // Intelligence
+                if (alterationEffect.Intelligence > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Intelligence has changed by " + alterationEffect.Intelligence.ToString("F2"));
+
+                else if (alterationEffect.Intelligence < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Intelligence has changed by " + alterationEffect.Intelligence.ToString("F2"));
+
+                // Agility
+                if (alterationEffect.Agility > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Agility has changed by " + alterationEffect.Agility.ToString("F2"));
+
+                else if (alterationEffect.Agility < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Agility has changed by " + alterationEffect.Agility.ToString("F2"));
+
+                // Speed
+                if (alterationEffect.Speed > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Speed has changed by " + alterationEffect.Speed.ToString("F2"));
+
+                else if (alterationEffect.Speed < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Speed has changed by " + alterationEffect.Speed.ToString("F2"));
+
+                // LightRadius
+                if (alterationEffect.LightRadius > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Light Radius has changed by " + alterationEffect.LightRadius.ToString("F2"));
+
+                else if (alterationEffect.LightRadius < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Light Radius has changed by " + alterationEffect.LightRadius.ToString("F2"));
+
+                // Experience
+                if (alterationEffect.Experience > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Experience has changed by " + alterationEffect.Experience.ToString("N0"));
+
+                else if (alterationEffect.Experience < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Experience has changed by " + alterationEffect.Experience.ToString("N0"));
+
+                // Hunger
+                if (alterationEffect.Hunger > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
+
+                else if (alterationEffect.Hunger < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
+
+                // Hp
+                if (alterationEffect.Hp > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
+
+                else if (alterationEffect.Hp < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
+
+                // Mp
+                if (alterationEffect.Mp > 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
+
+                else if (alterationEffect.Mp < 0)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
+            }
+        }
         public void ApplyRemedy(Character character, AlterationEffect alterationEffect)
         {
             if (character is Player)
@@ -217,7 +380,7 @@ namespace Rogue.NET.Core.Logic.Content
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
                 player.AgilityBase -= alterationCost.Agility;
-                player.AuraRadiusBase -= alterationCost.AuraRadius;
+                player.LightRadiusBase -= alterationCost.LightRadius;
                 player.Experience -= alterationCost.Experience;
                 player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
                 player.Hp -= alterationCost.Hp;
@@ -235,7 +398,7 @@ namespace Rogue.NET.Core.Logic.Content
             if (alterationCost.Type == AlterationCostType.OneTime)
             {
                 enemy.AgilityBase -= alterationCost.Agility;
-                enemy.AuraRadiusBase -= alterationCost.AuraRadius;
+                enemy.LightRadiusBase -= alterationCost.LightRadius;
                 enemy.SpeedBase -= alterationCost.Speed;
                 enemy.Hp -= alterationCost.Hp;
                 enemy.IntelligenceBase -= alterationCost.Intelligence;
@@ -251,7 +414,7 @@ namespace Rogue.NET.Core.Logic.Content
             player.IntelligenceBase += alterationEffect.Intelligence;
             player.AgilityBase += alterationEffect.Agility;
             player.SpeedBase += alterationEffect.Speed;
-            player.AuraRadiusBase += alterationEffect.AuraRadius;
+            player.LightRadiusBase += alterationEffect.AuraRadius;
             player.FoodUsagePerTurnBase += alterationEffect.FoodUsagePerTurn;
             player.Experience += alterationEffect.Experience;
             player.Hunger += alterationEffect.Hunger;
@@ -336,7 +499,7 @@ namespace Rogue.NET.Core.Logic.Content
             enemy.IntelligenceBase += alterationEffect.Intelligence;
             enemy.AgilityBase += alterationEffect.Agility;
             enemy.SpeedBase += alterationEffect.Speed;
-            enemy.AuraRadiusBase += alterationEffect.AuraRadius;
+            enemy.LightRadiusBase += alterationEffect.AuraRadius;
             enemy.Hp += alterationEffect.Hp;
             enemy.Mp += alterationEffect.Mp;
         }

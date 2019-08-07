@@ -5,7 +5,6 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
@@ -41,7 +40,7 @@ namespace Rogue.NET.Core.Logic.Content
             _playerProcessor = playerProcessor;
         }
 
-        public void CalculateAttackAttributeHit(string alterationDisplayName, Character attacker, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
+        public void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes)
         {
             // Create detached attributes to send along the message publisher
             var baseAttributes = _modelService.AttackAttributes;
@@ -149,7 +148,7 @@ namespace Rogue.NET.Core.Logic.Content
             switch (blockType)
             {
                 case AlterationBlockType.Mental:
-                    return _randomSequenceGenerator.Get() < defender.GetMagicBlock().Clip();
+                    return _randomSequenceGenerator.Get() < defender.GetMentalBlock().Clip();
                 case AlterationBlockType.Physical:
                     return _randomSequenceGenerator.Get() < defender.GetDodge().Clip();
                 case AlterationBlockType.NonBlockable:

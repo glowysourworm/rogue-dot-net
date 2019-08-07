@@ -16,5 +16,6 @@ namespace Rogue.NET.Core.Logic.Interface
         CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells);
         IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location);
         IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location);
+        IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, int cellRange);
     }
 }

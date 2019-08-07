@@ -24,6 +24,7 @@
     }
     public enum AlterationCostType
     {
+        None,
         OneTime,
         PerStep
     }

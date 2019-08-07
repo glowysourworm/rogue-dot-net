@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
     public static class CharacterExtension
     {
-        public static double GetMagicBlockBase(this Character character)
+        public static double GetMentalBlockBase(this Character character)
         {
             return character.IntelligenceBase / 100;
         }
@@ -93,27 +93,27 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
             return Math.Max(0.1, result);
         }
-        public static double GetAuraRadius(this Character character)
+        public static double GetLightRadius(this Character character)
         {
-            var result = character.AuraRadiusBase;
+            var result = character.LightRadiusBase;
 
             // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.AuraRadius);
 
-            // Religious Alteration
+            // Character Class Alteration
             if (character.CharacterClassAlteration.HasAttributeEffect)
                 result += character.CharacterClassAlteration.AttributeEffect.AuraRadius;
 
             return Math.Max(0.1, result);
         }
-        public static double GetMagicBlock(this Character character)
+        public static double GetMentalBlock(this Character character)
         {
-            var result = character.GetMagicBlockBase();
+            var result = character.GetMentalBlockBase();
 
             // Alteration
             result += character.Alteration.GetAlterations().Sum(x => x.MagicBlockProbability);
 
-            // Religious Alteration
+            // Character Class Alteration
             if (character.CharacterClassAlteration.HasAttributeEffect)
                 result += character.CharacterClassAlteration.AttributeEffect.MagicBlockProbability;
 

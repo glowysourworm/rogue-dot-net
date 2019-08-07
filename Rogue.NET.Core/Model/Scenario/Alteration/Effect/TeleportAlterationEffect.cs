@@ -2,7 +2,7 @@
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 
-namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
+namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 {
     [Serializable]
     public class TeleportAlterationEffect
@@ -12,6 +12,12 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
                      ISkillAlterationEffect
     {
         public AlterationRandomPlacementType TeleportType { get; set; }
+
+        // TODO:ALTERATION
+        /// <summary>
+        /// Range that is applied to InRangeOfCharacter teleport type
+        /// </summary>
+        public int Range { get; set; }
 
         public TeleportAlterationEffect()
         {

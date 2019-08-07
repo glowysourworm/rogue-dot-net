@@ -303,7 +303,7 @@ namespace Rogue.NET.Core.Service
                 case LevelProcessingActionType.EndOfTurnNoRegenerate:
                     _scenarioEngine.ProcessEndOfTurn(false);
                     break;
-                case LevelProcessingActionType.EnemyReaction:
+                case LevelProcessingActionType.Reaction:
                     // Enemy not available (Reasons)
                     //
                     // *** Must be because enemy reaction was queued before it was removed.
@@ -314,14 +314,11 @@ namespace Rogue.NET.Core.Service
 
                     // So, must check for the enemy to be available. The way to avoid this is
                     // to either do pruning of the queues; or to do full multi-threaded decoupling (lots of work).
-                    if (_modelService.Level.Enemies.Any(x => x.Id == workItem.CharacterId))
-                        _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.CharacterId));
+                    if (_modelService.Level.Enemies.Any(x => x.Id == workItem.Actor.Id))
+                        _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.Actor.Id));
                     break;
-                case LevelProcessingActionType.PlayerSpell:
-                    _spellEngine.ProcessMagicSpell(_modelService.Player, workItem.PlayerSpell);
-                    break;
-                case LevelProcessingActionType.EnemySpell:
-                    _spellEngine.ProcessMagicSpell(workItem.Enemy, workItem.EnemySpell);
+                case LevelProcessingActionType.CharacterAlteration:
+                    _spellEngine.ProcessMagicSpell(workItem.Actor, workItem.Spell);
                     break;
             }
             return true;

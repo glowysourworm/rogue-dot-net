@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
@@ -162,9 +163,85 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
         #region (public) Apply Methods
         /// <summary>
+        /// Applies alteration based on type inspection
+        /// </summary>
+        public void Apply(AlterationBase alteration)
+        {
+            if (alteration is ConsumableAlteration)
+                ApplyAlteration(alteration as ConsumableAlteration);
+
+            else if (alteration is ConsumableProjectileAlteration)
+                ApplyAlteration(alteration as ConsumableProjectileAlteration);
+
+            else if (alteration is DoodadAlteration)
+                ApplyAlteration(alteration as DoodadAlteration);
+
+            else if (alteration is EnemyAlteration)
+                ApplyAlteration(alteration as EnemyAlteration);
+
+            else if (alteration is EquipmentAttackAlteration)
+                Apply(alteration as EquipmentAttackAlteration);
+
+            else if (alteration is EquipmentCurseAlteration)
+                ApplyAlteration(alteration as EquipmentCurseAlteration);
+
+            else if (alteration is EquipmentEquipAlteration)
+                ApplyAlteration(alteration as EquipmentEquipAlteration);
+
+            else if (alteration is SkillAlteration)
+                ApplyAlteration(alteration as SkillAlteration);
+
+            else
+                throw new Exception("Unhandled Alteration type");
+        }
+
+        /// <summary>
+        /// Sets all Aura Effects that act ON THE CHARACTER
+        /// </summary>
+        public void ApplyTargetAuraEffects(IEnumerable<AttackAttributeAuraAlterationEffect> alterationEffects)
+        {
+            this.AttackAttributeAuraTargetCollector.Apply(alterationEffects);
+        }
+
+        /// <summary>
+        /// Sets all Aura Effects that act ON THE CHARACTER
+        /// </summary>
+        public void ApplyTargetAuraEffects(IEnumerable<AuraAlterationEffect> alterationEffects)
+        {
+            this.AuraTargetCollector.Apply(alterationEffects);
+        }
+
+        /// <summary>
+        /// Removes appropriate (passive or aura type) alterations. Essentially, anything that should
+        /// be removed or managed by the calling code.
+        /// </summary>
+        /// <param name="alterationId">This RogueBase.Id property from AlterationBase</param>
+        public void Remove(string alterationId)
+        {
+            // Filter out Attack Attribute Aura Alterations
+            this.AttackAttributeAuraSourceCollector.Filter(alterationId);
+
+            // Filter out Aura Alterations
+            this.AuraSourceCollector.Filter(alterationId);
+
+            // Filter out Attack Attribute Passive Alterations
+            this.AttackAttributePassiveCollector.Filter(alterationId);
+
+            // Filter out Passive Alterations
+            this.PassiveCollector.Filter(alterationId);
+        }
+
+        public void DecrementEventTimes()
+        {
+            _turnBasedCollectors.ForEach(collector => collector.ApplyEndOfTurn());
+        }
+        #endregion
+
+        #region (private) Apply Methods
+        /// <summary>
         /// Applies ConsumableAlteration type. Returns false if application fails because it's not stackable.
         /// </summary>
-        public bool ApplyAlteration(ConsumableAlteration alteration)
+        private void ApplyAlteration(ConsumableAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
@@ -174,12 +251,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
                 this.AttackAttributeTemporaryCollector.ApplyRemedy(effect);
                 this.TemporaryCollector.ApplyRemedy(effect);
-
-                return true;
             }
 
             else if (alteration.Effect.GetType() == typeof(TemporaryAlterationEffect))
-                return this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
+                this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
 
             else
                 throw new Exception("Unhandled IConsumableAlterationEffect implementation type");
@@ -188,15 +263,15 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies ConsumableProjectileAlteration type. Returns false if application fails because it's not stackable.
         /// </summary>
-        public bool ApplyAlteration(ConsumableProjectileAlteration alteration)
+        private void ApplyAlteration(ConsumableProjectileAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
             if (alteration.Effect.GetType() == typeof(AttackAttributeTemporaryAlterationEffect))
-                return this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
+                this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
 
             else if (alteration.Effect.GetType() == typeof(TemporaryAlterationEffect))
-                return this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
+                this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
 
             else
                 throw new Exception("Unhandled IConsumableProjectileAlterationEffect implementation type");
@@ -205,12 +280,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies DoodadAlteration type. Returns false if application fails because it's not stackable.
         /// </summary>
-        public bool ApplyAlteration(DoodadAlteration alteration)
+        private void ApplyAlteration(DoodadAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
             if (alteration.Effect.GetType() == typeof(AttackAttributeTemporaryAlterationEffect))
-                return this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
+                this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
 
             else if (alteration.Effect.GetType() == typeof(RemedyAlterationEffect))
             {
@@ -218,12 +293,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
                 this.AttackAttributeTemporaryCollector.ApplyRemedy(effect);
                 this.TemporaryCollector.ApplyRemedy(effect);
-
-                return true;
             }
 
             else if (alteration.Effect.GetType() == typeof(TemporaryAlterationEffect))
-                return this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
+                this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
 
             else
                 throw new Exception("Unhandled IDoodadAlterationEffect implementation type");
@@ -232,15 +305,15 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies EnemyAlteration type. Returns false if application fails because it's not stackable.
         /// </summary>
-        public bool ApplyAlteration(EnemyAlteration alteration)
+        private void ApplyAlteration(EnemyAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
             if (alteration.Effect.GetType() == typeof(AttackAttributeTemporaryAlterationEffect))
-                return this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
+                this.AttackAttributeTemporaryCollector.Apply(alteration.Id, alteration.Effect as AttackAttributeTemporaryAlterationEffect);
 
             else if (alteration.Effect.GetType() == typeof(TemporaryAlterationEffect))
-                return this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
+                this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
 
             else
                 throw new Exception("Unhandled IEnemyAlterationEffect implementation type");
@@ -249,7 +322,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies EquipmentCurseAlteration type
         /// </summary>
-        public void ApplyAlteration(EquipmentCurseAlteration alteration)
+        private void ApplyAlteration(EquipmentCurseAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
@@ -272,7 +345,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies EquipmentEquipAlteration type
         /// </summary>
-        public void ApplyAlteration(EquipmentEquipAlteration alteration)
+        private void ApplyAlteration(EquipmentEquipAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
@@ -295,7 +368,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies SkillAlteration type
         /// </summary>
-        public void ApplyAlteration(SkillAlteration alteration)
+        private void ApplyAlteration(SkillAlteration alteration)
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
@@ -314,50 +387,19 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             else if (alteration.Effect.GetType() == typeof(PassiveAlterationEffect))
                 this.PassiveCollector.Apply(alteration.Id, alteration.Effect as PassiveAlterationEffect);
 
+            else if (alteration.Effect.GetType() == typeof(RemedyAlterationEffect))
+            {
+                var effect = alteration.Effect as RemedyAlterationEffect;
+
+                this.AttackAttributeTemporaryCollector.ApplyRemedy(effect);
+                this.TemporaryCollector.ApplyRemedy(effect);
+            }
+
             else if (alteration.Effect.GetType() == typeof(TemporaryAlterationEffect))
                 this.TemporaryCollector.Apply(alteration.Id, alteration.Effect as TemporaryAlterationEffect);
 
             else
                 throw new Exception("Unhandled IEquipmentEquipAlterationEffect implementation type");
-        }
-
-        /// <summary>
-        /// Sets all Aura Effects that act ON THE CHARACTER
-        /// </summary>
-        public void ApplyTargetAuraEffects(IEnumerable<AttackAttributeAuraAlterationEffect> alterationEffects)
-        {
-            this.AttackAttributeAuraTargetCollector.Apply(alterationEffects);
-        }
-
-        /// <summary>
-        /// Sets all Aura Effects that act ON THE CHARACTER
-        /// </summary>
-        public void ApplyTargetAuraEffects(IEnumerable<AuraAlterationEffect> alterationEffects)
-        {
-            this.AuraTargetCollector.Apply(alterationEffects);
-        }
-
-        public void DeactivatePassiveAlteration(string alterationId)
-        {
-            // Filter out Attack Attribute Passive Alterations
-            this.AttackAttributePassiveCollector.Filter(alterationId);
-
-            // Filter out Passive Alterations
-            this.PassiveCollector.Filter(alterationId);
-        }
-
-        public void DeactivateAuraAlteration(string alterationId)
-        {
-            // Filter out Attack Attribute Aura Alterations
-            this.AttackAttributeAuraSourceCollector.Filter(alterationId);
-
-            // Filter out Aura Alterations
-            this.AuraSourceCollector.Filter(alterationId);
-        }
-
-        public void DecrementEventTimes()
-        {
-            _turnBasedCollectors.ForEach(collector => collector.ApplyEndOfTurn());
         }
         #endregion
     }

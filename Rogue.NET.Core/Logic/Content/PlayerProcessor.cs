@@ -187,7 +187,7 @@ namespace Rogue.NET.Core.Logic.Content
             foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
                 player.AgilityBase -= alterationCost.Agility;
-                player.AuraRadiusBase -= alterationCost.AuraRadius;
+                player.LightRadiusBase -= alterationCost.LightRadius;
                 player.Experience -= alterationCost.Experience;
                 player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
                 player.Hp -= alterationCost.Hp;

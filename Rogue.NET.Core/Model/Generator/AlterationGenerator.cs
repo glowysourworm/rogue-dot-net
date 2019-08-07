@@ -35,7 +35,7 @@ namespace Rogue.NET.Core.Model.Generator
             alterationCost.Type = spell.Cost.Type;
             alterationCost.Agility = spell.Cost.Agility;
             alterationCost.Speed = spell.Cost.Speed;
-            alterationCost.AuraRadius = spell.Cost.AuraRadius;
+            alterationCost.LightRadius = spell.Cost.AuraRadius;
             alterationCost.Experience = spell.Cost.Experience;
             alterationCost.FoodUsagePerTurn = spell.Cost.FoodUsagePerTurn;
             alterationCost.Hp = spell.Cost.Hp;

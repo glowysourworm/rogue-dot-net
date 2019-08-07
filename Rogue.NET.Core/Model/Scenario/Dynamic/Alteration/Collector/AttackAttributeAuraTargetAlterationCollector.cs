@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {

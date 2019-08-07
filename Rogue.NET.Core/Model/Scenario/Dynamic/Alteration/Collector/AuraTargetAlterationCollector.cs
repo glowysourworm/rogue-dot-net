@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
 using System.Linq;

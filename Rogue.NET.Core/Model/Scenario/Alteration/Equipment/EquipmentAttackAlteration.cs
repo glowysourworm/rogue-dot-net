@@ -7,16 +7,15 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentAttackAlteration : RogueBase
+    public class EquipmentAttackAlteration : AlterationBase
     {
-        public AnimationContainer Animation { get; set; }
-        public AlterationCost Cost { get; set; }
-        public IEquipmentAttackAlterationEffect Effect { get; set; }
-        public AlterationBlockType BlockType { get; set; }
-
         public EquipmentAttackAlteration()
         {
-            this.Animation = new AnimationContainer();
+        }
+
+        protected override bool ValidateEffectInterfaceType()
+        {
+            return this.Effect is IEquipmentAttackAlterationEffect;
         }
     }
 }

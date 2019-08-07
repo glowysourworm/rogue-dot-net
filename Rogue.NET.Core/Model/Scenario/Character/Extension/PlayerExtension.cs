@@ -55,8 +55,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             if (player.IntelligenceBase < 0)
                 player.IntelligenceBase = 0;
 
-            if (player.AuraRadiusBase < 0)
-                player.AuraRadiusBase = 0;
+            if (player.LightRadiusBase < 0)
+                player.LightRadiusBase = 0;
 
             if (player.FoodUsagePerTurnBase < 0)
                 player.FoodUsagePerTurnBase = 0;
@@ -89,7 +89,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 case CharacterAttribute.MpRegen:
                     return player.GetMpRegen();
                 case CharacterAttribute.LightRadius:
-                    return player.GetAuraRadius();
+                    return player.GetLightRadius();
                 case CharacterAttribute.Attack:
                     return player.GetAttack();
                 case CharacterAttribute.Defense:
@@ -97,7 +97,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 case CharacterAttribute.Dodge:
                     return player.GetDodge();
                 case CharacterAttribute.MagicBlock:
-                    return player.GetMagicBlock();
+                    return player.GetMentalBlock();
                 case CharacterAttribute.CriticalHit:
                     return player.GetCriticalHitProbability();
                 case CharacterAttribute.FoodUsagePerTurn:

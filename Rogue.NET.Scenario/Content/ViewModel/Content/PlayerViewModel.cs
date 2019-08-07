@@ -525,8 +525,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.AgilityBase = player.AgilityBase;
             this.Attack = player.GetAttack();
             this.AttackBase = player.GetAttackBase();
-            this.AuraRadius = player.GetAuraRadius();
-            this.AuraRadiusBase = player.AuraRadiusBase;
+            this.AuraRadius = player.GetLightRadius();
+            this.AuraRadiusBase = player.LightRadiusBase;
             this.CriticalHitProbability = player.GetCriticalHitProbability();
             this.Defense = player.GetDefense();
             this.DefenseBase = player.GetDefenseBase();
@@ -538,8 +538,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.HpRegenBase = player.HpRegenBase;
             this.Intelligence = player.GetIntelligence();
             this.IntelligenceBase = player.IntelligenceBase;
-            this.MagicBlock = player.GetMagicBlock();
-            this.MagicBlockBase = player.GetMagicBlockBase();
+            this.MagicBlock = player.GetMentalBlock();
+            this.MagicBlockBase = player.GetMentalBlockBase();
             this.MpRegen = player.GetMpRegen();
             this.MpRegenBase = player.MpRegenBase;
             this.Strength = player.GetStrength();

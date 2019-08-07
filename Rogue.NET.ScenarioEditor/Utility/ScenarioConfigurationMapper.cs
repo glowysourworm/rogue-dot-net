@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
@@ -379,20 +380,23 @@ namespace Rogue.NET.ScenarioEditor.Utility
                         Name = spell.DisplayName,
                         TeleportType = AlterationRandomPlacementType.InLevel
                     };
+                    // TODO:ALTERATION
+                    /*
                 case AlterationType.Steal:
-                    return new OtherAlterationEffectTemplate()
+                    return new StealAlterationEffectTemplate()
                     {
                         Guid = Guid.NewGuid().ToString(),
                         Name = spell.DisplayName,
                         Type = AlterationOtherEffectType.Steal
                     };
                 case AlterationType.RunAway:
-                    return new OtherAlterationEffectTemplate()
+                    return new RunAwayAlterationEffectTemplate()
                     {
                         Guid = Guid.NewGuid().ToString(),
                         Name = spell.DisplayName,
                         Type = AlterationOtherEffectType.RunAway
                     };
+                    */
                 case AlterationType.OtherMagicEffect:
                     {
                         switch (spell.OtherEffectType)

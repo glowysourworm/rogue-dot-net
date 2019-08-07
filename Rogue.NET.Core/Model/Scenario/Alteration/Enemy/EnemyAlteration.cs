@@ -7,17 +7,18 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Enemy
 {
     [Serializable]
-    public class EnemyAlteration : RogueBase
+    public class EnemyAlteration : AlterationBase
     {
-        public AnimationContainer Animation { get; set; }
-        public AlterationCost Cost { get; set; }
-        public IEnemyAlterationEffect Effect { get; set; }
-        public AlterationBlockType BlockType { get; set; }
+        // TODO:ALTERATION
+        public AlterationTargetType TargetType { get; set; }
 
         public EnemyAlteration()
         {
-            this.Animation = new AnimationContainer();
-            this.Cost = new AlterationCost();
+        }
+
+        protected override bool ValidateEffectInterfaceType()
+        {
+            return this.Effect is IEnemyAlterationEffect;
         }
     }
 }

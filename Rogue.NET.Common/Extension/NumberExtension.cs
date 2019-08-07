@@ -18,6 +18,11 @@ namespace Rogue.NET.Common.Extension
             return Math.Abs(number);
         }
 
+        public static int Clip(this int number, int lowLimit = 0, int highLimit = 1)
+        {
+            return Math.Min(Math.Max(lowLimit, number), highLimit);
+        }
+
         public static double Clip(this double number, double lowLimit = 0, double highLimit = 1)
         {
             return Math.Min(Math.Max(lowLimit, number), highLimit);

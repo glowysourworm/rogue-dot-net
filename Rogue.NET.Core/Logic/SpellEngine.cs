@@ -101,8 +101,9 @@ namespace Rogue.NET.Core.Logic
             // Apply Effect on Queue
             LevelProcessingActionEvent(this, new LevelProcessingAction()
             {
-                Type = LevelProcessingActionType.PlayerSpell,
-                PlayerSpell = spell
+                Type = LevelProcessingActionType.CharacterAlteration,
+                Actor = _modelService.Player,
+                Spell = spell
             });
 
             return LevelContinuationAction.ProcessTurn;
@@ -139,9 +140,9 @@ namespace Rogue.NET.Core.Logic
             // Then queue effect processing
             LevelProcessingActionEvent(this, new LevelProcessingAction()
             {
-                Type = LevelProcessingActionType.EnemySpell,
-                EnemySpell = spell,
-                Enemy = enemy
+                Type = LevelProcessingActionType.CharacterAlteration,
+                Spell = spell,
+                Actor = enemy
             });
 
             return LevelContinuationAction.ProcessTurn;
@@ -288,7 +289,6 @@ namespace Rogue.NET.Core.Logic
                     // Apply the Alteration Effect -> Publish the results
                     _interactionProcessor.CalculateAttackAttributeHit(
                         alteration.Effect.DisplayName,
-                        sourceCharacter,
                         affectedCharacter,
                         alteration.Effect.AttackAttributes);
                     break;

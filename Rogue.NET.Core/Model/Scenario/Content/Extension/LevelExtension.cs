@@ -1,10 +1,8 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Extension
 {
@@ -15,6 +13,9 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
     /// </summary>
     public static class LevelExtension
     {
+        /// <summary>
+        /// Returns random location from the level OR CellPoint.Empty (if result is empty)
+        /// </summary>
         public static CellPoint GetRandomLocation(this Level level, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
         {
             // Get cell array from the grid
@@ -28,13 +29,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = cells.Where(x => !occupiedLocations.Contains(x.Location));
 
                 // Return random cell
-                return freeCells.ElementAt(randomSequenceGenerator.Get(0, freeCells.Count())).Location;
+                return freeCells.PickRandom(randomSequenceGenerator.Get())?.Location ?? CellPoint.Empty;
             }
             // O(1)
             else
-            {
-                return cells[randomSequenceGenerator.Get(0, cells.Length)].Location;
-            }
+                return cells.PickRandom(randomSequenceGenerator.Get())?.Location ?? CellPoint.Empty;
         }
 
         /// <summary>
@@ -58,15 +57,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = locations.Except(occupiedLocations);
 
                 // Return random cell
-                return freeCells.Count() <= 0 ? 
-                            CellPoint.Empty :
-                            freeCells.ElementAt(randomSequenceGenerator.Get(0, freeCells.Count()));
+                return freeCells.PickRandom(randomSequenceGenerator.Get()) ?? CellPoint.Empty;
             }
             // O(1)
             else
-            {
-                return locations[randomSequenceGenerator.Get(0, locations.Count)];
-            }
+                return locations.PickRandom(randomSequenceGenerator.Get()) ?? CellPoint.Empty;
         }
     }
 }

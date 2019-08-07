@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
@@ -14,13 +15,14 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     {
         LevelProcessingActionType Type { get; set; }
 
-        string CharacterId { get; set; }
+        /// <summary>
+        /// Character performing the action
+        /// </summary>
+        Character Actor { get; set; }
 
-        // Animation Processing Related
-        Spell PlayerSpell { get; set; }
+        // TODO:ALTERATION
+        Spell Spell { get; set; }
 
-        Spell EnemySpell { get; set; }
-
-        Enemy Enemy { get; set; }
+        AlterationBase Alteration { get; set; }
     }
 }

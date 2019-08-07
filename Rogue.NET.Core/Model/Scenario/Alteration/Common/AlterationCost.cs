@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
         public virtual double Agility { get; set; }
         public virtual double Speed { get; set; }
         public virtual double FoodUsagePerTurn { get; set; }
-        public virtual double AuraRadius { get; set; }
+        public virtual double LightRadius { get; set; }
         public virtual double Experience { get; set; }
         public virtual double Hunger { get; set; }
         public virtual double Hp { get; set; }

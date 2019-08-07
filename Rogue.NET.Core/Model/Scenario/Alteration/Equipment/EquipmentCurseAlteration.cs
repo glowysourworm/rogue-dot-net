@@ -5,16 +5,19 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentCurseAlteration : RogueBase
+    public class EquipmentCurseAlteration : AlterationBase
     {
-        public IEquipmentCurseAlterationEffect Effect { get; set; }
-
         // TODO:ALTERATION
         public AuraSourceParameters AuraParameters { get; set; }
 
         public EquipmentCurseAlteration()
         {
             this.AuraParameters = new AuraSourceParameters();
+        }
+
+        protected override bool ValidateEffectInterfaceType()
+        {
+            return this.Effect is IEquipmentCurseAlterationEffect;
         }
     }
 }

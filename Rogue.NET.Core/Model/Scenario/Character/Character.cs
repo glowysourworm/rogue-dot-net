@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Dynamic;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
@@ -37,11 +38,12 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double SpeedBase { get; set; }
         public double HpRegenBase { get { return ModelConstants.HpRegenBaseMultiplier * this.StrengthBase; } }
         public double MpRegenBase { get { return ModelConstants.MpRegenBaseMultiplier * this.IntelligenceBase; } }
-        public double AuraRadiusBase { get; set; }
+        public double LightRadiusBase { get; set; }
         public double Hp { get; set; }
         public double Mp { get; set; }
 
         public abstract CharacterAlteration Alteration { get; set; }
+        public CharacterAlteration_NEW Alteration_NEW { get; set; }
         public virtual CharacterClassAlteration CharacterClassAlteration { get; set; }
 
         public Character() : base() 
@@ -61,6 +63,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         private void Initialize()
         {
+            this.Alteration_NEW = new CharacterAlteration_NEW();
             this.Equipment = new Dictionary<string, Equipment>();
             this.Consumables = new Dictionary<string, Consumable>();
             this.CharacterClassAlteration = new CharacterClassAlteration();

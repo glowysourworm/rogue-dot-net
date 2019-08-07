@@ -371,6 +371,39 @@ namespace Rogue.NET.Core.Logic
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
         }
+        public IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, int cellRange)
+        {
+            // Calculate locations within a cell-range using a "pseudo-euclidean" measure to make
+            // an elliptical shape. (not roguian - which would make a rectangular shape)
+
+            // 0) Start by calculating the "square" around the location
+            // 1) Narrow the result by calculating the euclidean norm of the cell location differences
+
+            var result = new List<CellPoint>();
+
+            // Iterate from the top left corner to the bottom right - respecting grid boundaries
+            for (int i = Math.Max(location.Column - cellRange, 0); 
+                    (i < location.Column + cellRange) && 
+                    (i < level.Grid.Bounds.Right); 
+                    i++)
+            {
+                for (int j = Math.Max(location.Row - cellRange, 0); 
+                        (j < location.Row + cellRange) && 
+                        (j < level.Grid.Bounds.Bottom); 
+                        j++)
+                {
+                    // Check for an empty space
+                    if (level.Grid[i, j] == null)
+                        continue;
+
+                    // Check the range
+                    if (Calculator.EuclideanDistance(level.Grid[i, j].Location, location) < cellRange)
+                        result.Add(level.Grid[i, j].Location);
+                }
+            }
+
+            return result;
+        }
         #endregion
 
         #region (private) Methods

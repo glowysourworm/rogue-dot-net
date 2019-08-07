@@ -1,7 +1,7 @@
 ﻿
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Interface
 {
-    public interface IConsumableProjectileAlterationEffect
+    public interface IConsumableProjectileAlterationEffect : IAlterationEffect
     {
     }
 }
