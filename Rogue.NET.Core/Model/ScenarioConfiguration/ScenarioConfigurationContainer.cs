@@ -1,9 +1,4 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
