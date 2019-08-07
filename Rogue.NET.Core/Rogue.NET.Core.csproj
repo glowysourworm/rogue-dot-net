@@ -189,6 +189,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributePassiveAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributeTemporaryAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributeMeleeAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplate.cs" />

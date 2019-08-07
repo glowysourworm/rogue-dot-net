@@ -16,9 +16,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 
         public string CreateMonsterEnemy { get; set; }
 
-        // TODO:ALTERATION
         /// <summary>
-        /// Range from acting character (based on the placement type)
+        /// Range (in cell pseudo-euclidean distance) from acting character (based on the placement type)
         /// </summary>
         public int Range { get; set; }
 

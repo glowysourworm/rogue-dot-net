@@ -13,11 +13,17 @@ namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.
                              ISkillAlterationEffectTemplateViewModel
     {
         AlterationRandomPlacementType _teleportType;
+        int _range;
 
         public AlterationRandomPlacementType TeleportType
         {
             get { return _teleportType; }
             set { this.RaiseAndSetIfChanged(ref _teleportType, value); }
+        }
+        public int Range
+        {
+            get { return _range; }
+            set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
         public TeleportAlterationEffectTemplateViewModel()

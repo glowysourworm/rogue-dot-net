@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
@@ -10,6 +11,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad
     {
         private AnimationGroupTemplate _animationGroup;
         private IDoodadAlterationEffectTemplate _effect;
+        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplate AnimationGroup
         {
@@ -32,6 +34,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad
                 {
                     _effect = value;
                     OnPropertyChanged("Effect");
+                }
+            }
+        }
+        public AlterationTargetType TargetType
+        {
+            get { return _targetType; }
+            set
+            {
+                if (_targetType != value)
+                {
+                    _targetType = value;
+                    OnPropertyChanged("TargetType");
                 }
             }
         }

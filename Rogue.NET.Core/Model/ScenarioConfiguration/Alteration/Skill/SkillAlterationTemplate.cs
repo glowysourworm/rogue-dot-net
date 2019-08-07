@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
@@ -13,6 +14,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill
         private AlterationCostTemplate _cost;
         private ISkillAlterationEffectTemplate _effect;
         private AlterationBlockType _blockType;
+        private AuraSourceParametersTemplate _auraParameters;
+        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplate AnimationGroup
         {
@@ -62,11 +65,36 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill
                 }
             }
         }
+        public AuraSourceParametersTemplate AuraParameters
+        {
+            get { return _auraParameters; }
+            set
+            {
+                if (_auraParameters != value)
+                {
+                    _auraParameters = value;
+                    OnPropertyChanged("BlockType");
+                }
+            }
+        }
+        public AlterationTargetType TargetType
+        {
+            get { return _targetType; }
+            set
+            {
+                if (_targetType != value)
+                {
+                    _targetType = value;
+                    OnPropertyChanged("TargetType");
+                }
+            }
+        }
 
         public SkillAlterationTemplate()
         {
             this.AnimationGroup = new AnimationGroupTemplate();
             this.Cost = new AlterationCostTemplate();
+            this.AuraParameters = new AuraSourceParametersTemplate();
         }
     }
 }

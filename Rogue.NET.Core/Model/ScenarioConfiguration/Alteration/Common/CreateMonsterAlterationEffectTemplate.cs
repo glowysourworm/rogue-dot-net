@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     {
         AlterationRandomPlacementType _randomPlacementType;
         string _createMonsterEnemy;
+        int _range;
 
         public AlterationRandomPlacementType RandomPlacementType
         {
@@ -36,6 +37,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _createMonsterEnemy = value;
                     OnPropertyChanged("CreateMonsterEnemy");
+                }
+            }
+        }
+        public int Range
+        {
+            get { return _range; }
+            set
+            {
+                if (_range != value)
+                {
+                    _range = value;
+                    OnPropertyChanged("Range");
                 }
             }
         }

@@ -33,6 +33,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _hpRange;
         private Range<double> _mpRange;
         private Range<double> _criticalHit;
+        private bool _isStackable;
 
         public SymbolDeltaTemplate SymbolAlteration
         {
@@ -283,6 +284,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _criticalHit = value;
                     OnPropertyChanged("CriticalHit");
+                }
+            }
+        }
+        public bool IsStackable
+        {
+            get { return _isStackable; }
+            set
+            {
+                if (_isStackable != value)
+                {
+                    _isStackable = value;
+                    OnPropertyChanged("IsStackable");
                 }
             }
         }

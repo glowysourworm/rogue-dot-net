@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     {
         AlterationRandomPlacementType _randomPlacementType;
         string _createMonsterEnemy;
+        int _range;
 
         public AlterationRandomPlacementType RandomPlacementType
         {
@@ -24,6 +25,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _createMonsterEnemy; }
             set { this.RaiseAndSetIfChanged(ref _createMonsterEnemy, value); }
+        }
+        public int Range
+        {
+            get { return _range; }
+            set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
         public CreateMonsterAlterationEffectTemplateViewModel() { }

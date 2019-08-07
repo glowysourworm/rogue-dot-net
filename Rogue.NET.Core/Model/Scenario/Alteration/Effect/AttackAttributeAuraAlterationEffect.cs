@@ -17,13 +17,12 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 
         public List<AttackAttribute> AttackAttributes { get; set; }
 
-        // TODO:ALTERATION Add this to the template data
         public SymbolDeltaTemplate SymbolAlteration { get; set; }
 
         public AttackAttributeAuraAlterationEffect()
         {
             this.AttackAttributes = new List<AttackAttribute>();
             this.SymbolAlteration = new SymbolDeltaTemplate();
-        }
+        }      
     }
 }

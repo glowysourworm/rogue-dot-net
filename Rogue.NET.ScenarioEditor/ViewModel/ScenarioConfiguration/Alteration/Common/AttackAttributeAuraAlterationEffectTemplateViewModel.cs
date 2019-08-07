@@ -15,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     {
         AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
+        SymbolDeltaTemplateViewModel _symbolAlteration;
 
         public AlterationTargetType TargetType
         {
@@ -26,12 +27,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _combatType; }
             set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
+        public SymbolDeltaTemplateViewModel SymbolAlteration
+        {
+            get { return _symbolAlteration; }
+            set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
+        }
 
         public List<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
         public AttackAttributeAuraAlterationEffectTemplateViewModel()
         {
             this.AttackAttributes = new List<AttackAttributeTemplateViewModel>();
+            this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
         }
     }
 }

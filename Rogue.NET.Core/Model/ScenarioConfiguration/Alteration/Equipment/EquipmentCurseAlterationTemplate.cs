@@ -1,11 +1,8 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment
 {
@@ -13,6 +10,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment
     public class EquipmentCurseAlterationTemplate : Template
     {
         private IEquipmentCurseAlterationEffectTemplate _effect;
+        private AuraSourceParametersTemplate _auraParameters;
 
         public IEquipmentCurseAlterationEffectTemplate Effect
         {
@@ -26,9 +24,22 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment
                 }
             }
         }
+        public AuraSourceParametersTemplate AuraParameters
+        {
+            get { return _auraParameters; }
+            set
+            {
+                if (_auraParameters != value)
+                {
+                    _auraParameters = value;
+                    OnPropertyChanged("AuraParameters");
+                }
+            }
+        }
 
         public EquipmentCurseAlterationTemplate()
         {
+            this.AuraParameters = new AuraSourceParametersTemplate();
         }
     }
 }

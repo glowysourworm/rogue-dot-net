@@ -347,7 +347,7 @@ namespace Rogue.NET.Core.Logic
         }
         private IEnumerable<Character> CalculateCharactersInRange(CellPoint location, int cellRange)
         {
-            // TODO:ALTERATION - Consider calculating line-of-sight characters for each enemy on end of turn
+            // TODO:ALTERATION - LINE OF SIGHT! Consider calculating line-of-sight characters for each enemy on end of turn
             //                   and storing them on the character
 
             var result = new List<Character>();

@@ -13,6 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                     ISkillAlterationEffectTemplate
     {
         AlterationRandomPlacementType _teleportType;
+        int _range;
 
         public AlterationRandomPlacementType TeleportType
         {
@@ -23,6 +24,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _teleportType = value;
                     OnPropertyChanged("TeleportType");
+                }
+            }
+        }
+        public int Range
+        {
+            get { return _range; }
+            set
+            {
+                if (_range != value)
+                {
+                    _range = value;
+                    OnPropertyChanged("Range");
                 }
             }
         }

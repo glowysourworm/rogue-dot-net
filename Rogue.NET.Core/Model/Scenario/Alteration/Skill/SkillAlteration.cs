@@ -8,10 +8,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
     [Serializable]
     public class SkillAlteration : AlterationBase
     {
-        // TODO:ALTERATION
         public AuraSourceParameters AuraParameters { get; set; }
-
-        // TODO:ALTERATION
         public AlterationTargetType TargetType { get; set; }
 
         public SkillAlteration()

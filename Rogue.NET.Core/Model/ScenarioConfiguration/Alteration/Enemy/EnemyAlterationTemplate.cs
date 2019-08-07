@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy
         private AlterationCostTemplate _cost;
         private IEnemyAlterationEffectTemplate _effect;
         private AlterationBlockType _blockType;
+        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplate AnimationGroup
         {
@@ -63,6 +64,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy
                 {
                     _blockType = value;
                     OnPropertyChanged("BlockType");
+                }
+            }
+        }
+        public AlterationTargetType TargetType
+        {
+            get { return _targetType; }
+            set
+            {
+                if (_targetType != value)
+                {
+                    _targetType = value;
+                    OnPropertyChanged("TargetType");
                 }
             }
         }

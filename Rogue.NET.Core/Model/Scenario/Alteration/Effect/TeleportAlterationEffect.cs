@@ -13,9 +13,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
     {
         public AlterationRandomPlacementType TeleportType { get; set; }
 
-        // TODO:ALTERATION
         /// <summary>
-        /// Range that is applied to InRangeOfCharacter teleport type
+        /// Range (in cell-based pseudo-euclidean distance) that is applied to InRangeOfCharacter teleport type
         /// </summary>
         public int Range { get; set; }
 

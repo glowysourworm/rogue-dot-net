@@ -334,6 +334,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AttackAttributePassiveAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AttackAttributeTemporaryAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AuraAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplateViewModel.cs" />

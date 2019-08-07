@@ -16,17 +16,11 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
     {
         public AlterationTargetType TargetType { get; set; }
         public AlterationAttackAttributeCombatType CombatType { get; set; }
+        public AlteredCharacterState AlteredState { get; set; }
+        public bool IsStackable { get; set; }
+        public int EventTime { get; set; }
 
         public List<AttackAttribute> AttackAttributes { get; set; }
-
-        // TODO:ALTERATION fill this part of the template in
-        public AlteredCharacterState AlteredState { get; set; }
-
-        // TODO:ALTERATION fill this part of the template in
-        public bool IsStackable { get; set; }
-
-        // TODO:ALTERATION fill this part of the template in
-        public int EventTime { get; set; }
 
         public AttackAttributeTemporaryAlterationEffect()
         {

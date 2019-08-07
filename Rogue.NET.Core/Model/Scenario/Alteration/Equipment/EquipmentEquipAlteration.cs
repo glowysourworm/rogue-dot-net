@@ -7,7 +7,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
     [Serializable]
     public class EquipmentEquipAlteration : AlterationBase
     {
-        // TODO:ALTERATION
         public AuraSourceParameters AuraParameters { get; set; }
 
         public EquipmentEquipAlteration()

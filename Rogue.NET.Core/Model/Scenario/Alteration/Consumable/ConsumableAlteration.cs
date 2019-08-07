@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
     [Serializable]
     public class ConsumableAlteration : AlterationBase
     {        
-        // TODO:ALTERATION - Need this for use of Wands
         public AlterationTargetType TargetType { get; set; }
 
         public ConsumableAlteration()

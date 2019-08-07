@@ -36,6 +36,7 @@ namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.
         private RangeViewModel<double> _hpRange;
         private RangeViewModel<double> _mpRange;
         private RangeViewModel<double> _criticalHit;
+        private bool _isStackable;
 
         public SymbolDeltaTemplateViewModel SymbolAlteration
         {
@@ -141,6 +142,11 @@ namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.
         {
             get { return _criticalHit; }
             set { this.RaiseAndSetIfChanged(ref _criticalHit, value); }
+        }
+        public bool IsStackable
+        {
+            get { return _isStackable; }
+            set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
         }
 
 
