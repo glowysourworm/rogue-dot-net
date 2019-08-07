@@ -7,6 +7,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
     [Serializable]
     public class AnimationTemplate : Template
     {
+        private AnimationBaseType _baseType;
+        private AnimationTargetType _targetType;
         private int _repeatCount;
         private int _animationTime;
         private bool _autoReverse;
@@ -29,6 +31,30 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         private double _spiralRate;
         private double _roamRadius;
 
+        public AnimationBaseType BaseType
+        {
+            get { return _baseType; }
+            set
+            {
+                if (_baseType != value)
+                {
+                    _baseType = value;
+                    OnPropertyChanged("BaseType");
+                }
+            }
+        }
+        public AnimationTargetType TargetType
+        {
+            get { return _targetType; }
+            set
+            {
+                if (_targetType != value)
+                {
+                    _targetType = value;
+                    OnPropertyChanged("TargetType");
+                }
+            }
+        }
         public int RepeatCount
         {
             get { return _repeatCount; }

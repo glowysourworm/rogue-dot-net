@@ -19,8 +19,7 @@
         ScreenBlink = 14
     }
 
-    // TODO:ALTERATION - Create new AnimationType enum that assumes always affected characters
-    public enum AnimationType_NEW
+    public enum AnimationBaseType
     {
         Projectile = 0,
         ProjectileReverse = 1,
@@ -31,5 +30,12 @@
         Chain = 6,
         ChainReverse = 7,
         ScreenBlink = 8
+    }
+
+    public enum AnimationTargetType
+    {
+        SourceCharacter = 0,
+        AffectedCharacters = 1,
+        Screen = 2
     }
 }

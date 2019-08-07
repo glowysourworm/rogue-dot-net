@@ -89,7 +89,83 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.MagicSpells.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            /*
+            // Map AnimationType enum to refactor
+            foreach (var template in configuration.AnimationTemplates)
+                MapAnimationType(template);
 
+            foreach (var template in configuration.ConsumableTemplates)
+            {
+                foreach (var animation in template.AmmoSpellTemplate.Animations)
+                    MapAnimationType(animation);
+
+                foreach (var animation in template.ProjectileSpellTemplate.Animations)
+                    MapAnimationType(animation);
+
+                foreach (var animation in template.SpellTemplate.Animations)
+                    MapAnimationType(animation);
+            }
+
+            foreach (var template in configuration.DoodadTemplates)
+            {
+                foreach (var animation in template.AutomaticMagicSpellTemplate.Animations)
+                    MapAnimationType(animation);
+
+                foreach (var animation in template.InvokedMagicSpellTemplate.Animations)
+                    MapAnimationType(animation);
+            }
+
+            foreach (var template in configuration.EnemyTemplates)
+            {
+                foreach (var behavior in template.BehaviorDetails.Behaviors)
+                    foreach (var animation in behavior.EnemySpell.Animations)
+                        MapAnimationType(animation);
+
+                foreach (var consumable in template.StartingConsumables)
+                {
+                    foreach (var animation in consumable.TheTemplate.AmmoSpellTemplate.Animations)
+                        MapAnimationType(animation);
+
+                    foreach (var animation in consumable.TheTemplate.ProjectileSpellTemplate.Animations)
+                        MapAnimationType(animation);
+
+                    foreach (var animation in consumable.TheTemplate.SpellTemplate.Animations)
+                        MapAnimationType(animation);
+                }
+
+                foreach (var equipment in template.StartingEquipment)
+                {
+                    foreach (var animation in equipment.TheTemplate.CurseSpell.Animations)
+                        MapAnimationType(animation);
+
+                    foreach (var animation in equipment.TheTemplate.EquipSpell.Animations)
+                        MapAnimationType(animation);
+                }
+            }
+
+            foreach (var template in configuration.EquipmentTemplates)
+            {
+                foreach (var animation in template.CurseSpell.Animations)
+                    MapAnimationType(animation);
+
+                foreach (var animation in template.EquipSpell.Animations)
+                    MapAnimationType(animation);
+            }
+
+            foreach (var template in configuration.MagicSpells)
+                foreach (var animation in template.Animations)
+                    MapAnimationType(animation);
+
+            foreach (var template in configuration.SkillTemplates)
+                foreach (var skill in template.Skills)
+                    foreach (var animation in skill.Alteration.Animations)
+                        MapAnimationType(animation);
+
+            foreach (var skillSet in configuration.PlayerTemplate.Skills)
+                foreach (var skill in skillSet.Skills)
+                    foreach (var animation in skill.Alteration.Animations)
+                        MapAnimationType(animation);
+                        */
             // Map Alteration Data to new data structures
             // 0) Instantiate new data structures
             // 1) MagicSpells -> DELETE (Not Needed)
@@ -659,6 +735,69 @@ namespace Rogue.NET.ScenarioEditor.Utility
             };
         }
 
+        private void MapAnimationType(AnimationTemplate template)
+        {
+            switch (template.Type)
+            {
+                case AnimationType.ProjectileSelfToTarget:
+                case AnimationType.ProjectileSelfToTargetsInRange:
+                    template.BaseType = AnimationBaseType.Projectile;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.ProjectileTargetToSelf:
+                case AnimationType.ProjectileTargetsInRangeToSelf:
+                    template.BaseType = AnimationBaseType.ProjectileReverse;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.AuraSelf:
+                    template.BaseType = AnimationBaseType.Aura;
+                    template.TargetType = AnimationTargetType.SourceCharacter;
+                    break;
+                case AnimationType.AuraTarget:
+                    template.BaseType = AnimationBaseType.Aura;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.BubblesSelf:
+                    template.BaseType = AnimationBaseType.Bubbles;
+                    template.TargetType = AnimationTargetType.SourceCharacter;
+                    break;
+                case AnimationType.BubblesTarget:
+                    template.BaseType = AnimationBaseType.Bubbles;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.BubblesScreen:
+                    template.BaseType = AnimationBaseType.Bubbles;
+                    template.TargetType = AnimationTargetType.Screen;
+                    break;
+                case AnimationType.BarrageSelf:
+                    template.BaseType = AnimationBaseType.Barrage;
+                    template.TargetType = AnimationTargetType.SourceCharacter;
+                    break;
+                case AnimationType.BarrageTarget:
+                    template.BaseType = AnimationBaseType.Barrage;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.SpiralSelf:
+                    template.BaseType = AnimationBaseType.Spiral;
+                    template.TargetType = AnimationTargetType.SourceCharacter;
+                    break;
+                case AnimationType.SpiralTarget:
+                    template.BaseType = AnimationBaseType.Spiral;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.ChainSelfToTargetsInRange:
+                    template.BaseType = AnimationBaseType.Chain;
+                    template.TargetType = AnimationTargetType.AffectedCharacters;
+                    break;
+                case AnimationType.ScreenBlink:
+                    template.BaseType = AnimationBaseType.ScreenBlink;
+                    template.TargetType = AnimationTargetType.Screen;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
         public TDest MapObject<TSource, TDest>(TSource source, bool reverse)
         {
             // Map base ignoring collections

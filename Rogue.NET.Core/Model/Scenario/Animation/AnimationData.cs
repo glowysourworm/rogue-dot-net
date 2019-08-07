@@ -8,12 +8,14 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
     [Serializable]
     public class AnimationData : RogueBase
     {
+        public AnimationBaseType BaseType { get; set; }
+        public AnimationTargetType TargetType { get; set; }
+
         public int RepeatCount { get; set; }
         public int AnimationTime { get; set; }
         public bool AutoReverse { get; set; }
         public bool ConstantVelocity { get; set; }
         public double AccelerationRatio { get; set; }
-        public AnimationType Type { get; set; }
         public BrushTemplate FillTemplate { get; set; }
         public BrushTemplate StrokeTemplate { get; set; }
         public double StrokeThickness { get; set; }
@@ -29,9 +31,6 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
         public double RadiusFromFocus { get; set; }
         public double SpiralRate { get; set; }
         public double RoamRadius { get; set; }
-
-        // TODO:ALTERATION
-        public AnimationType_NEW Type_NEW { get; set; }
 
         public AnimationData()
         {
