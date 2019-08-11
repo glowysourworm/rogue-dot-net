@@ -254,10 +254,8 @@
     <Compile Include="Converter\SymbolDetailsMultiConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
-    <Compile Include="Events\AddAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
-    <Compile Include="Events\AddAttackAttributeEvent.cs" />
-    <Compile Include="Events\AddCharacterClassEvent.cs" />
+    <Compile Include="Events\AddGeneralAssetEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
@@ -265,10 +263,8 @@
     <Compile Include="Events\LoadConstructionEvent.cs" />
     <Compile Include="Events\LoadScenarioEvent.cs" />
     <Compile Include="Events\NewScenarioConfigEvent.cs" />
-    <Compile Include="Events\RemoveAlteredCharacterStateEvent.cs" />
     <Compile Include="Events\RemoveAssetEvent.cs" />
-    <Compile Include="Events\RemoveAttackAttributeEvent.cs" />
-    <Compile Include="Events\RemoveCharacterClassEvent.cs" />
+    <Compile Include="Events\RemoveGeneralAssetEvent.cs" />
     <Compile Include="Events\RenameAssetEvent.cs" />
     <Compile Include="Events\SaveBuiltInScenarioEvent.cs" />
     <Compile Include="Events\SaveScenarioEvent.cs" />
@@ -389,26 +385,23 @@
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
-    <Compile Include="Views\Assets\Animation.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationBasicType.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBasicType.xaml.cs">
       <DependentUpon>AnimationBasicType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationBlink.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBlink.xaml.cs">
       <DependentUpon>AnimationBlink.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationParameters.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml.cs">
       <DependentUpon>AnimationParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AnimationControl\AnimationPreview.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationPreview.xaml.cs">
       <DependentUpon>AnimationPreview.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\AttackAttribute.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\AttackAttribute.xaml.cs">
       <DependentUpon>AttackAttribute.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\Brush.xaml.cs">
-      <DependentUpon>Brush.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\Consumable.xaml.cs">
       <DependentUpon>Consumable.xaml</DependentUpon>
@@ -479,28 +472,28 @@
     <Compile Include="Views\Assets\SkillSet.xaml.cs">
       <DependentUpon>SkillSet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\Spell.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\Spell.xaml.cs">
       <DependentUpon>Spell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellAuraEffect.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellAuraEffect.xaml.cs">
       <DependentUpon>SpellAuraEffect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellEffectAttackAttributes.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellEffectAttackAttributes.xaml.cs">
       <DependentUpon>SpellEffectAttackAttributes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellCost.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellCost.xaml.cs">
       <DependentUpon>SpellCost.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellEffect.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellEffect.xaml.cs">
       <DependentUpon>SpellEffect.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellMetaData.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellMetaData.xaml.cs">
       <DependentUpon>SpellMetaData.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellParameters.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellParameters.xaml.cs">
       <DependentUpon>SpellParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SpellControl\SpellType.xaml.cs">
+    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellType.xaml.cs">
       <DependentUpon>SpellType.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
@@ -602,31 +595,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Animation.xaml">
+    <Page Include="Views\Assets\SharedControl\Animation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationBasicType.xaml">
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBasicType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationBlink.xaml">
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBlink.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationParameters.xaml">
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AnimationControl\AnimationPreview.xaml">
+    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\AttackAttribute.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\Brush.xaml">
+    <Page Include="Views\Assets\SharedControl\AttackAttribute.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -722,35 +711,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\Spell.xaml">
+    <Page Include="Views\Assets\SharedControl\Spell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellAuraEffect.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellAuraEffect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellEffectAttackAttributes.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellEffectAttackAttributes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellCost.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellCost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellEffect.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellEffect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellMetaData.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellMetaData.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellParameters.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SpellControl\SpellType.xaml">
+    <Page Include="Views\Assets\SharedControl\SpellControl\SpellType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

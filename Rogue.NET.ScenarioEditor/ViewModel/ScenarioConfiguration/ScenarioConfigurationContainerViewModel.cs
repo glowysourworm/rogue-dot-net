@@ -24,19 +24,28 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             get { return _playerTemplate; }
             set { this.RaiseAndSetIfChanged(ref _playerTemplate, value); }
         }
+
+        
+        public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
+        public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
+        public ObservableCollection<ConsumableTemplateViewModel> ConsumableTemplates { get; set; }
+        public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
+        public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
+
+        // TODO:ALTERATION Remove this asset collection; but save all the data in the individual 
+        //                 Alterations. (No longer a shared asset)
+        public ObservableCollection<AnimationTemplateViewModel> AnimationTemplates { get; set; }
+
+        // TODO:ALTERATION Remove this asset collection; but save all the data to individual assets
+        //                 (No longer a shared asset)
         public ScenarioConfigurationAlterationContainerViewModel AlterationContainer
         {
             get { return _alterationContainer; }
             set { this.RaiseAndSetIfChanged(ref _alterationContainer, value); }
         }
 
-        public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
+        // "General" Assets
         public ObservableCollection<BrushTemplateViewModel> BrushTemplates { get; set; }
-        public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
-        public ObservableCollection<AnimationTemplateViewModel> AnimationTemplates { get; set; }
-        public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
-        public ObservableCollection<ConsumableTemplateViewModel> ConsumableTemplates { get; set; }
-        public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; set; }
         public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; set; }

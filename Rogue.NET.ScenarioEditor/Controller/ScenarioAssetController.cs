@@ -67,12 +67,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
                     break;
-                case AssetType.Animation:
-                    _scenarioEditorController.CurrentConfig.AnimationTemplates.Add(new AnimationTemplateViewModel() { Name = uniqueName });
-                    break;
-                case AssetType.Brush:
-                    _scenarioEditorController.CurrentConfig.BrushTemplates.Add(new BrushTemplateViewModel() { Name = uniqueName });
-                    break;
                 default:
                     throw new Exception("Unidentified new asset type");
             }
@@ -119,12 +113,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(assetCopy as SkillSetTemplateViewModel);
                     break;
-                case AssetType.Animation:
-                    _scenarioEditorController.CurrentConfig.AnimationTemplates.Add(assetCopy as AnimationTemplateViewModel);
-                    break;
-                case AssetType.Brush:
-                    _scenarioEditorController.CurrentConfig.BrushTemplates.Add(assetCopy as BrushTemplateViewModel);
-                    break;
                 default:
                     throw new Exception("Unidentified new asset type");
             }
@@ -168,12 +156,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 //    break;
                 case AssetType.SkillSet:
                     _scenarioAssetReferenceService.UpdateSkillSets(_scenarioEditorController.CurrentConfig);
-                    break;
-                case AssetType.Animation:
-                    _scenarioAssetReferenceService.UpdateAnimations(_scenarioEditorController.CurrentConfig);
-                    break;
-                case AssetType.Brush:
-                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
                     break;
                 default:
                     throw new Exception("Unidentified new asset type");

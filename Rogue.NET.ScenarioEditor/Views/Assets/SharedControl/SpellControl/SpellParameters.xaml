@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.SpellControl.SpellParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             Background="Black">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <Grid Margin="10">
+            <TextBlock Text="Display Name" Foreground="White" />
+            <extension:UpdatingTextBox Width="150" Text="{Binding DisplayName, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+        <!-- Stackable -->
+        <Grid Margin="10">
+            <TextBlock Text="Stackable" Foreground="White" />
+            <CheckBox IsChecked="{Binding Stackable, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Block Type Mental -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Alteration Block Type:  Mental" HorizontalAlignment="Left" />
+            <RadioButton GroupName="BlockTypeGroup" 
+                         IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Mental}}"
+                         Foreground="White" 
+                         HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Block Type Physical -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Alteration Block Type:  Physical" HorizontalAlignment="Left" />
+            <RadioButton GroupName="BlockTypeGroup" 
+                         IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Physical}}"
+                         Foreground="White" 
+                         HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Block Type Non-Blockable -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Alteration Block Type:  Non-Blockable" HorizontalAlignment="Left" />
+            <RadioButton GroupName="BlockTypeGroup" 
+                         IsChecked="{Binding BlockType, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.NonBlockable}}"
+                         Foreground="White" 
+                         HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Effect Can See Invisible Characters -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Can See Invisible Characters" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding Effect.CanSeeInvisibleCharacters, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+        
+        <!-- Is Symbol Alteration -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Is Effect Symbol Alteration" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding Effect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Is Aura Symbol Alteration -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Is Aura Effect Symbol Alteration" HorizontalAlignment="Left" />
+            <CheckBox IsChecked="{Binding AuraEffect.IsSymbolAlteration, Mode=TwoWay}" HorizontalAlignment="Right" />
+        </Grid>        
+        
+        <!-- Effect Event Time -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Event Time" />
+            <controls:Range DataContext="{Binding Effect.EventTime}" />
+        </Grid>
+
+        <!-- Create Monster -->
+        <Grid Margin="10">
+            <TextBlock Text="Create Monster Enemy" Foreground="White" />
+            <ComboBox x:Name="CreateMonsterCB" 
+                                  SelectedValue="{Binding CreateMonsterEnemy}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Name"
+                                  Width="150" HorizontalAlignment="Right"/>
+        </Grid>
+
+        <!-- Effect Altered State -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Effect Altered State" HorizontalAlignment="Left" />
+            <ComboBox x:Name="AlteredStateCB" 
+                      SelectedItem="{Binding Effect.AlteredState}"
+                      SelectedValue="{Binding Effect.AlteredState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>
+
+        <!-- Aura Effect Altered State -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Aura Effect Altered State" HorizontalAlignment="Left" />
+            <ComboBox x:Name="AlteredStateAuraCB" 
+                      SelectedItem="{Binding AuraEffect.AlteredState}"
+                      SelectedValue="{Binding AuraEffect.AlteredState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>        
+        
+        <!-- Remedied Altered State -->
+        <Grid Margin="10">
+            <TextBlock Foreground="White" Text="Remedied Altered State" />
+            <ComboBox x:Name="RemediedStateCB" 
+                      SelectedItem="{Binding Effect.RemediedState}"
+                      SelectedValue="{Binding Effect.RemediedState.Name}"
+                      SelectedValuePath="Name"
+                      DisplayMemberPath="Name" 
+                      HorizontalAlignment="Right" Height="24"  Width="250" />
+        </Grid>
+
+        <!-- Effect Range -->
+        <Grid Margin="10">
+            <TextBlock Text="Effect Range" Foreground="White" />
+            <toolkit:DoubleUpDown Value="{Binding EffectRange, Mode=TwoWay}" Minimum="1" Maximum="20" Increment="1" AllowTextInput="True" AllowSpin="True" Width="150" HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- Animations -->
+        <Grid Margin="10">
+            <GroupBox Header="Animation" FontSize="18">
+                <StackPanel>
+                    <TextBlock Text="These Animations will be played in the order they're shown here"
+                               HorizontalAlignment="Left"
+                               FontSize="16"
+                               Margin="8"
+                               Foreground="White"/>
+                    <controls:ListBuilder x:Name="AnimationsLB" DestinationItemsSource="{Binding Animations}" Margin="8" Height="200" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </StackPanel>
+</UserControl>

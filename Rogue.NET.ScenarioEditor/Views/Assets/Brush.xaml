@@ -1,8 +1,0 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Brush"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
-    <Grid>
-        <controls:BrushEditorControl x:Name="BrushEditor" />
-    </Grid>
-</UserControl>

@@ -3,9 +3,11 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
+using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
@@ -40,7 +42,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config.AttackAttributes.Any(x => x.Name == this.AttributeTB.Text))
                 return;
 
-            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Publish(new AttackAttributeTemplateViewModel()
+            _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new AttackAttributeTemplateViewModel()
             {
                 Name = this.AttributeTB.Text,
                 SymbolDetails = this.AttributeSymbolButton.DataContext as SymbolDetailsTemplateViewModel
@@ -54,7 +56,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             var selectedItem = this.AttribLB.SelectedItem as AttackAttributeTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Publish(selectedItem);               
+                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);               
             }
         }
         private void AttributeSymbolButton_Click(object sender, RoutedEventArgs e)
@@ -82,15 +84,15 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config.AlteredCharacterStates.Any(x => x.Name == this.AlteredStateTB.Text))
                 return;
 
-            var name = this.AlteredStateTB.Text;
-            var symbol = this.AlteredStateSymbolCB.Value;
-            var baseType = this.AlteredStateEnumCB.EnumValue;
-
-            _eventAggregator.GetEvent<AddAlteredCharacterStateEvent>().Publish(new AddAlteredCharacterStateEventArgs()
+            _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new AlteredCharacterStateTemplateViewModel()
             {
-                Icon = symbol,
-                Name = name,
-                BaseType = (CharacterStateType)baseType
+                SymbolDetails = new SymbolDetailsTemplateViewModel()
+                {
+                    Icon = this.AlteredStateSymbolCB.Value,
+                    Type = SymbolTypes.Image
+                },
+                Name = this.AlteredStateTB.Text,
+                BaseType = (CharacterStateType)this.AlteredStateEnumCB.EnumValue
             });
 
             this.AlteredStateTB.Text = "";
@@ -101,7 +103,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             var selectedItem = this.AlteredStateLB.SelectedItem as AlteredCharacterStateTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<RemoveAlteredCharacterStateEvent>().Publish(selectedItem);
+                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
             }
         }
 
@@ -122,16 +124,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config.CharacterClasses.Any(x => x.Name == this.CharacterClassTB.Text))
                 return;
 
-            var characterClass = new CharacterClassTemplateViewModel()
+            _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new CharacterClassTemplateViewModel()
             {
                 Name = this.CharacterClassTB.Text,
-                BonusAttackAttributes = config.AttackAttributes.DeepClone()
-            };
-
-            characterClass.SymbolDetails.Type = SymbolTypes.DisplayImage;
-            characterClass.SymbolDetails.DisplayIcon = this.CharacterClassSymbolCB.Value;
-
-            _eventAggregator.GetEvent<AddCharacterClassEvent>().Publish(characterClass);
+                BonusAttackAttributes = config.AttackAttributes.DeepClone(),
+                SymbolDetails = new SymbolDetailsTemplateViewModel()
+                {
+                    Type = SymbolTypes.DisplayImage,
+                    DisplayIcon = this.CharacterClassSymbolCB.Value
+                }
+            });
 
             this.CharacterClassTB.Text = "";
         }
@@ -141,7 +143,35 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             var selectedItem = this.CharacterClassLB.SelectedItem as CharacterClassTemplateViewModel;
             if (selectedItem != null)
             {
-                _eventAggregator.GetEvent<RemoveCharacterClassEvent>().Publish(selectedItem);
+                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
+            }
+        }
+        #endregion
+
+        #region Brushes
+        private void AddBrushButton_Click(object sender, RoutedEventArgs e)
+        {
+            var config = this.DataContext as ScenarioConfigurationContainerViewModel;
+            if (config == null || string.IsNullOrEmpty(this.BrushTB.Text))
+                return;
+
+            if (config.BrushTemplates.Any(x => x.Name == this.BrushTB.Text))
+                return;
+
+            config.BrushTemplates.Add(new BrushTemplateViewModel()
+            {
+                Name = this.CharacterClassTB.Text
+            });
+
+            this.CharacterClassTB.Text = "";
+        }
+
+        private void RemoveBrushButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = this.CharacterClassLB.SelectedItem as BrushTemplateViewModel;
+            if (selectedItem != null)
+            {
+                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
             }
         }
         #endregion

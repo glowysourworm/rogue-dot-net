@@ -1,16 +1,13 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.General"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
-             xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
-             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Construction"
-             mc:Ignorable="d" Background="Black">
+             xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl" 
+             Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -263,7 +260,7 @@
                                 </ListBox>
                             </GroupBox>
                         </StackPanel>
-                    </TabItem>                    
+                    </TabItem>
                     <TabItem Header="Altered Character States">
                         <StackPanel x:Name="AlteredStateStack">
                             <TextBlock FontSize="16" TextWrapping="Wrap" Margin="10" Foreground="White" Text="Altered Character States are altered states that you can define here; and are available to attach to alterations. They are based on types supported by Rogue.NET such as &quot;Can't Move&quot; (Paralyzed) or &quot;Moves Randomly&quot; (Confused). Use these to define an array of special types to attach to your Alterations. NOTE*** These types support Remedies - which are applied to remove Alteration Effects with these altered types." />
@@ -308,7 +305,35 @@
                                 </ListBox>
                             </GroupBox>
                         </StackPanel>
-                    </TabItem>                    
+                    </TabItem>
+                    <TabItem Header="Brushes">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Brush Add / Remove Controls -->
+                            <Grid Margin="10,0,10,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <TextBlock FontSize="16" Grid.ColumnSpan="2" Margin="8" Foreground="White" 
+                                               Text="Brushes are shared by all animations and are created / edited here" />
+                                    <TextBlock Margin="8" VerticalAlignment="Top" Text="New Brush: " Foreground="White" />
+                                    <extension:UpdatingTextBox x:Name="BrushTB" VerticalAlignment="Top" Margin="8" Width="100" />
+                                    <ComboBox x:Name="BrushCB" VerticalAlignment="Top" Margin="8" Width="140" />
+                                    <Button x:Name="AddBrushButton" ToolTip="Add" Click="AddAlteredStateButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                    <Button x:Name="RemoveBrushButton" ToolTip="Remove" Click="RemoveAlteredStateButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Brush Editor -->
+                            <controls:BrushEditorControl x:Name="BrushEditor" />
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </Grid>

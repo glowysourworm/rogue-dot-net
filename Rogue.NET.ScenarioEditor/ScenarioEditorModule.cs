@@ -3,9 +3,6 @@ using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
@@ -13,19 +10,21 @@ using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views;
 using Rogue.NET.ScenarioEditor.Views.Assets;
-using Rogue.NET.ScenarioEditor.Views.Assets.AnimationControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.SpellControl;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.SpellControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
+using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -82,7 +81,6 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Animation));
             _regionManager.RegisterViewWithRegion("AnimationParametersRegion", typeof(AnimationParameters));
             _regionManager.RegisterViewWithRegion("AnimationPreviewRegion", typeof(AnimationPreviewControl));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Rogue.NET.ScenarioEditor.Views.Assets.Brush));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Consumable));
             _regionManager.RegisterViewWithRegion("ConsumableParametersRegion", typeof(ConsumableParameters));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Doodad));
@@ -182,107 +180,54 @@ namespace Rogue.NET.ScenarioEditor
                 LoadConstruction(e.ConstructionName);
             });
 
-            // Attack Attribute Events
-            _eventAggregator.GetEvent<AddAttackAttributeEvent>().Subscribe((e) =>
+            // General Assets - (Attack Attributes, Character Classes, Altered States, and Brushes)
+            //                  These have shared lists in the Scenario Configuration and have to be
+            //                  managed accordingly
+            _eventAggregator.GetEvent<AddGeneralAssetEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
-                // Add Combat Attribute to the scenario
-                _scenarioEditorController.CurrentConfig.AttackAttributes.Add(e);
-
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
-
-                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
-                _undoService.UnBlock();
-                _undoService.Clear();
-
-                // Reload designer
-                LoadConstruction("General");
-            });
-            _eventAggregator.GetEvent<RemoveAttackAttributeEvent>().Subscribe((e) =>
-            {
-                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
-                //         THE STACK
-                _undoService.Block();
-
-                // Remove Combat Attribute from the scenario
-               _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e);
-
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
-
-                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
-                _undoService.UnBlock();
-                _undoService.Clear();
-
-                // Reload designer
-                LoadConstruction("General");
-            });
-
-            // Character Class Events
-            _eventAggregator.GetEvent<AddCharacterClassEvent>().Subscribe((e) =>
-            {
-                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
-                //         THE STACK
-                _undoService.Block();
-
-                // Add Character Class to the scenario
-                _scenarioEditorController.CurrentConfig.CharacterClasses.Add(e);
-
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
-
-                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
-                _undoService.UnBlock();
-                _undoService.Clear();
-
-                // Reload designer
-                LoadConstruction("General");
-            });
-            _eventAggregator.GetEvent<RemoveCharacterClassEvent>().Subscribe((e) =>
-            {
-                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
-                //         THE STACK
-                _undoService.Block();
-
-                // Remove Character Class from the scenario
-                _scenarioEditorController.CurrentConfig.CharacterClasses.Remove(e);
-
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
-
-                // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
-                _undoService.UnBlock();
-                _undoService.Clear();
-
-                // Reload designer
-                LoadConstruction("General");
-            });
-
-            // Altered State Events
-            _eventAggregator.GetEvent<AddAlteredCharacterStateEvent>().Subscribe((e) =>
-            {
-                // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
-                //         THE STACK
-                _undoService.Block();
-
-                // Add Attack Attribute to the scenario
-                _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Add(new AlteredCharacterStateTemplateViewModel()
+                // Add asset to the scenario
+                if (e is AttackAttributeTemplateViewModel)
                 {
-                    Name = e.Name,
-                    SymbolDetails = new SymbolDetailsTemplateViewModel()
-                    {
-                        Type = SymbolTypes.Image,
-                        Icon = e.Icon
-                    },
-                    BaseType = e.BaseType
-                });
+                    // Add Attack Attribute Asset
+                    _scenarioEditorController.CurrentConfig.AttackAttributes.Add(e as AttackAttributeTemplateViewModel);
 
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is CharacterClassTemplateViewModel)
+                {
+                    // Add Character Class Asset
+                    _scenarioEditorController.CurrentConfig.CharacterClasses.Add(e as CharacterClassTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is AlteredCharacterStateTemplateViewModel)
+                {
+                    // Add Altered Character State
+                    _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Add(e as AlteredCharacterStateTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is BrushTemplateViewModel)
+                {
+                    // Add Brush
+                    _scenarioEditorController.CurrentConfig.BrushTemplates.Add(e as BrushTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
+                }
+
+                else
+                    throw new Exception("Unhandled General Asset Type");
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();
@@ -291,17 +236,51 @@ namespace Rogue.NET.ScenarioEditor
                 // Reload designer
                 LoadConstruction("General");
             });
-            _eventAggregator.GetEvent<RemoveAlteredCharacterStateEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Subscribe((e) =>
             {
                 // NOTE*** THIS CAUSES MANY CHANGES TO THE MODEL. REQUIRES AN UNDO BLOCK AND CLEARING OF 
                 //         THE STACK
                 _undoService.Block();
 
-                // Remove Attack Attribute from the scenario
-                _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Remove(e);
+                // Add asset to the scenario
+                if (e is AttackAttributeTemplateViewModel)
+                {
+                    // Add Attack Attribute Asset
+                    _scenarioEditorController.CurrentConfig.AttackAttributes.Remove(e as AttackAttributeTemplateViewModel);
 
-                // Update Scenario object references
-                _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is CharacterClassTemplateViewModel)
+                {
+                    // Add Character Class Asset
+                    _scenarioEditorController.CurrentConfig.CharacterClasses.Remove(e as CharacterClassTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is AlteredCharacterStateTemplateViewModel)
+                {
+                    // Add Altered Character State
+                    _scenarioEditorController.CurrentConfig.AlteredCharacterStates.Remove(e as AlteredCharacterStateTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
+                }
+
+                else if (e is BrushTemplateViewModel)
+                {
+                    // Add Brush
+                    _scenarioEditorController.CurrentConfig.BrushTemplates.Remove(e as BrushTemplateViewModel);
+
+                    // Update Scenario object references
+                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
+                }
+
+                else
+                    throw new Exception("Unhandled General Asset Type");
 
                 // Allow undo changes again - and clear the stack to prevent old references to Attack Attributes
                 _undoService.UnBlock();

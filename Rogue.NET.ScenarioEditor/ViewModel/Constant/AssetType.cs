@@ -12,8 +12,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
 {
     public static class AssetType
     {
-        public const string Animation = "Animation";
-        public const string Brush = "Brush";
         public const string Consumable = "Consumable";
         public const string Doodad = "Doodad";
         public const string Enemy = "Enemy";
@@ -21,8 +19,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string Layout = "Layout";
         public const string SkillSet = "SkillSet";
 
-        public const string AnimationDisplay = "Animation";
-        public const string BrushDisplay = "Brush";
         public const string ConsumableDisplay = "Consumable";
         public const string DoodadDisplay = "Scenario Object";
         public const string EnemyDisplay = "Enemy";
@@ -30,8 +26,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string LayoutDisplay = "Layout";
         public const string SkillSetDisplay = "Skill Set";
 
-        public const string AnimationViewName = "Animation";
-        public const string BrushViewName = "Brush";
         public const string ConsumableViewName = "Consumable";
         public const string DoodadViewName = "Doodad";
         public const string EnemyViewName = "Enemy";
@@ -41,9 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
 
         public static bool HasSymbol(string assetType)
         {
-            return !(assetType == Layout ||
-                   assetType == Animation ||
-                   assetType == Brush);
+            return !(assetType == Layout);
         }
 
         public static bool HasLevelPlacement(string assetType)
@@ -63,9 +55,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             else if (viewModel is ConsumableTemplateViewModel)
                 return GetSubType(viewModel as ConsumableTemplateViewModel);
 
-            else if (viewModel is AnimationTemplateViewModel)
-                return GetSubType(viewModel as AnimationTemplateViewModel);
-
             else
                 return "";
         }
@@ -74,10 +63,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
         }
         public static string GetSubType(ConsumableTemplateViewModel viewModel)
-        {
-            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
-        }
-        public static string GetSubType(AnimationTemplateViewModel viewModel)
         {
             return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
         }
@@ -98,8 +83,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         /// </summary>
         public static readonly Dictionary<string, string> AssetTypes = new Dictionary<string, string>()
         {
-            { Animation, AnimationDisplay },
-            { Brush, BrushDisplay },
             { Consumable, ConsumableDisplay },
             { Doodad, DoodadDisplay },
             { Enemy, EnemyDisplay },
@@ -113,8 +96,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         /// </summary>
         public static readonly Dictionary<string, string> AssetViews = new Dictionary<string, string>()
         {
-            { Animation, AnimationViewName },
-            { Brush, BrushViewName },
             { Consumable, ConsumableViewName },
             { Doodad, DoodadViewName },
             { Enemy, EnemyViewName },
@@ -128,8 +109,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         /// </summary>
         public static readonly Dictionary<string, Type> AssetCollectionTypes = new Dictionary<string, Type>()
         {
-            { Animation, typeof(ObservableCollection<AnimationTemplateViewModel>) },
-            { Brush, typeof(ObservableCollection<BrushTemplateViewModel>) },
             { Consumable, typeof(ObservableCollection<ConsumableTemplateViewModel>) },
             { Doodad, typeof(ObservableCollection<DoodadTemplateViewModel>) },
             { Enemy, typeof(ObservableCollection<EnemyTemplateViewModel>) },

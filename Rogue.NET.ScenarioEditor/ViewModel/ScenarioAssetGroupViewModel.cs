@@ -3,15 +3,16 @@ using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 using System.Linq;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using System.Collections.Specialized;
 using System.Collections;
+
 using AssetTypeConst = Rogue.NET.ScenarioEditor.ViewModel.Constant.AssetType;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {

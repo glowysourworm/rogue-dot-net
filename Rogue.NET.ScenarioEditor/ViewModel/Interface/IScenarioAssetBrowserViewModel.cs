@@ -9,10 +9,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
         IScenarioAssetGroupViewModel EquipmentGroup { get; set; }
         IScenarioAssetGroupViewModel ConsumableGroup { get; set; }
         IScenarioAssetGroupViewModel DoodadGroup { get; set; }
-        IScenarioAssetGroupViewModel SpellGroup { get; set; }
         IScenarioAssetGroupViewModel SkillSetGroup { get; set; }
-        IScenarioAssetGroupViewModel AnimationGroup { get; set; }
-        IScenarioAssetGroupViewModel BrushGroup { get; set; }
 
         ICommand CollapseAssetTreeCommand { get; set; }
     }

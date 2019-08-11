@@ -33,22 +33,7 @@
                             <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
                         </CollectionViewSource.SortDescriptions>
                     </CollectionViewSource>
-                    <CollectionViewSource x:Key="SpellAssetViewSource" Source="{Binding SpellGroup.Assets}">
-                        <CollectionViewSource.SortDescriptions>
-                            <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
                     <CollectionViewSource x:Key="SkillSetAssetViewSource" Source="{Binding SkillSetGroup.Assets}">
-                        <CollectionViewSource.SortDescriptions>
-                            <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
-                    <CollectionViewSource x:Key="AnimationAssetViewSource" Source="{Binding AnimationGroup.Assets}">
-                        <CollectionViewSource.SortDescriptions>
-                            <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
-                    <CollectionViewSource x:Key="BrushAssetViewSource" Source="{Binding BrushGroup.Assets}">
                         <CollectionViewSource.SortDescriptions>
                             <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
                         </CollectionViewSource.SortDescriptions>
@@ -80,10 +65,7 @@
             <TreeViewItem x:Name="EquipmentItem" ItemsSource="{Binding Source={StaticResource EquipmentAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding EquipmentGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Equipment"  Header="Equipment" />
             <TreeViewItem x:Name="ConsumablesItem" ItemsSource="{Binding Source={StaticResource ConsumableAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding ConsumableGroup}"  Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Consumable" Header="Consumables" />
             <TreeViewItem x:Name="DoodadsItem" ItemsSource="{Binding Source={StaticResource DoodadAssetViewSource}}"  ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding DoodadGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Doodad" Header="Scenario Objects" />
-            <TreeViewItem x:Name="SpellsItem"   ItemsSource="{Binding Source={StaticResource SpellAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding SpellGroup}"  Style="{DynamicResource AssetBrowserAddButtonStyle}"  Tag="Spell" Header="Alterations" />
             <TreeViewItem x:Name="SkillSetsItem"   ItemsSource="{Binding Source={StaticResource SkillSetAssetViewSource}}"  ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding SkillSetGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}"  Tag="SkillSet" Header="Skill Sets" />
-            <TreeViewItem x:Name="AnimationsItem"  ItemsSource="{Binding Source={StaticResource AnimationAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}"  DataContext="{Binding AnimationGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}"  Tag="Animation" Header="Animations" />
-            <TreeViewItem x:Name="BrushesItem"  ItemsSource="{Binding Source={StaticResource BrushAssetViewSource}}"  ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding BrushGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}"  Tag="Brush" Header="Brushes" />
         </TreeView>
     </Grid>
 </UserControl>
