@@ -37,13 +37,12 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public CharacterMovementType MovementType { get; set; }
         public CharacterAttackType AttackType { get; set; }
-        public Spell EnemySkill { get; set; }
 
         public EnemyAlterationTemplate EnemyAlteration { get; set; }
 
         public Behavior()
         {
-            this.EnemySkill = new Spell();
+            
         }
     }
 }

@@ -8,8 +8,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
     [Serializable]
     public class DoodadMagic : DoodadBase
     {
-        public Spell AutomaticSpell { get; set; }
-        public Spell InvokedSpell { get; set; }
         public bool IsAutomatic { get; set; }
         public bool IsInvoked { get; set; }
 
@@ -22,8 +20,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public DoodadMagic() : base()
         {
             this.Type = DoodadType.Magic;
-            this.AutomaticSpell = new Spell();
-            this.InvokedSpell = new Spell();
             this.CharacterClass = new CharacterClass();
         }
     }

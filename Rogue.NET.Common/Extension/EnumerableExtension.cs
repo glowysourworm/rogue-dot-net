@@ -1,12 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+
+using MoreLinq;
 
 namespace Rogue.NET.Common.Extension
 {
+    /// <summary>
+    /// Enumerable extension that uses some home-grown methods with other libraries (to hide the
+    /// external namespaces) to provide more linq extensions
+    /// </summary>
     public static class EnumerableExtension
     {
+        public static IEnumerable<TResult> FullJoin<T, TSecond, TKey, TResult>(
+            this IEnumerable<T> collection,
+            IEnumerable<TSecond> secondCollection,
+            Func<T, TKey> firstKeySelector,
+            Func<TSecond, TKey> secondKeySelector,
+            Func<T, TResult> firstSelector,
+            Func<TSecond, TResult> secondSelector,
+            Func<T, TSecond, TResult> bothSelector)
+        {
+            return MoreEnumerable.FullJoin(collection, secondCollection, 
+                                           firstKeySelector, 
+                                           secondKeySelector, 
+                                           firstSelector, 
+                                           secondSelector, 
+                                           bothSelector);
+        }
+
         public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
         {
             foreach (var element in collection)
@@ -90,16 +112,26 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Filters out some elements of a list
+        /// Filters out some elements of a list and return those elements
         /// </summary>
         /// <param name="filter">filter to match elements by</param>
-        public static void Filter<T>(this IList<T> list, Func<T, bool> filter)
+        public static IEnumerable<T> Filter<T>(this IList<T> list, Func<T, bool> filter)
         {
+            var result = new List<T>();
+
             for (int i = list.Count - 1; i >= 0; i--)
             {
                 if (filter(list[i]))
+                {
+                    // Store with results
+                    result.Add(list[i]);
+
+                    // Remove from the list
                     list.RemoveAt(i);
+                }
             }
+
+            return result;
         }
 
         /// <summary>
@@ -113,9 +145,10 @@ namespace Rogue.NET.Common.Extension
         /// <summary>
         /// Selects a random element from the sequence using the supplied random number draw U[0,1).
         /// </summary>
-        public static T PickRandom<T>(this IEnumerable<T> collection, double randomNumber)
+        public static T PickRandom<T>(this IEnumerable<T> collection)
         {
-            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * randomNumber));
+            return collection.RandomSubset(1)
+                             .FirstOrDefault();
         }
 
         /// <summary>

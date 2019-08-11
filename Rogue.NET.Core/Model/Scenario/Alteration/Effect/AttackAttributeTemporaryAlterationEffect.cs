@@ -14,7 +14,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IEnemyAlterationEffect,
                      ISkillAlterationEffect
     {
-        public AlterationTargetType TargetType { get; set; }
         public AlterationAttackAttributeCombatType CombatType { get; set; }
         public AlteredCharacterState AlteredState { get; set; }
         public bool IsStackable { get; set; }

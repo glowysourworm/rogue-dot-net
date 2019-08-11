@@ -207,7 +207,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
                     var destObject = genericMethodInfo.Invoke(this, new object[] { sourcePropertyValue, reverse });
 
                     // Set Dest property
-                    destProperties[sourceProperty.Key].SetValue(dest, destObject); 
+                    destProperties[sourceProperty.Key].SetValue(dest, destObject);
                 }
             }
 

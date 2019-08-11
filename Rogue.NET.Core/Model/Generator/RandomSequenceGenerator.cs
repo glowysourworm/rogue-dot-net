@@ -1,5 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core.Model.Generator
@@ -49,6 +51,12 @@ namespace Rogue.NET.Core.Model.Generator
             var high = Convert.ToDouble(range.High);
 
             return (T)Convert.ChangeType((low + ((high - low) * _random.NextDouble())), typeof(T));
+        }
+
+        public T GetRandomElement<T>(IEnumerable<T> collection)
+        {
+            // NOTE*** Random.NextDouble() is [1, 0) (exclusive upper bound)
+            return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * _random.NextDouble()));
         }
     }
 }

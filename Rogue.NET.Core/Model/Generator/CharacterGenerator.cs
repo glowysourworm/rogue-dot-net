@@ -1,8 +1,10 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
@@ -108,7 +110,7 @@ namespace Rogue.NET.Core.Model.Generator
                 var characterClass = characterClasses.First(x => x.RogueName == characterClassName);
 
                 // Start with chosen character class
-                player.CharacterClassAlteration.Initialize(characterClass, scenarioAttributes);
+                player.Alteration = new CharacterAlteration(characterClass, scenarioAttributes);
             }
 
             return player;
@@ -158,7 +160,9 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                    .ToDictionary(x => x.RogueName);
 
-            enemy.DeathAnimations = new List<AnimationTemplate>(enemyTemplate.DeathAnimations);
+            // TODO:ALTERATION
+            //enemy.DeathAnimation =  new List<AnimationTemplate>(enemyTemplate.DeathAnimations);
+            enemy.DeathAnimation = new AnimationGroup();
 
             //Starting Consumables
             foreach (var consumableTemplate in enemyTemplate.StartingConsumables)

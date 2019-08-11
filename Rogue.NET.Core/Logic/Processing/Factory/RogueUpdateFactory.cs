@@ -1,13 +1,10 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
@@ -16,26 +13,13 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
     [Export(typeof(IRogueUpdateFactory))]
     public class RogueUpdateFactory : IRogueUpdateFactory
     {
-        public RogueUpdateEventArgs Animation(IEnumerable<AnimationTemplate> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High)
+        public RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High)
         {
             return new RogueUpdateEventArgs()
             {
                 Update = new AnimationUpdate()
                 {
                     Animations = animations,
-                    SourceLocation = source,
-                    TargetLocations = targets
-                },
-                Priority = priority
-            };
-        }
-        public RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High)
-        {
-            return new RogueUpdateEventArgs()
-            {
-                Update = new AnimationUpdate_NEW()
-                {
-                    Animations_NEW = animations,
                     SourceLocation = source,
                     TargetLocations = targets
                 },

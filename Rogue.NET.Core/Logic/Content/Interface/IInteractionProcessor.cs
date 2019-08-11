@@ -36,17 +36,6 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType);
 
         /// <summary>
-        /// Calculates characters affected by alteration
-        /// </summary>
-        IEnumerable<Character> CalculateAffectedAlterationCharacters(
-                            AlterationType type,
-                            AlterationAttackAttributeType attackAttributeType,
-                            AlterationMagicEffectType otherEffectType,
-                            double effectRange,
-                            Character character,
-                            out bool affectedCharacterExpected);
-
-        /// <summary>
         /// Returns flag if the animations require a target
         /// </summary>
         bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations);

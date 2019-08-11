@@ -14,19 +14,19 @@ namespace Rogue.NET.Core.Model.Generator
     {
         private readonly IRandomSequenceGenerator _randomSequenceGenerator;
         private readonly IAttackAttributeGenerator _attackAttributeGenerator;
-        private readonly ISkillSetGenerator _skillSetGenerator;
-        private readonly ISpellGenerator _spellGenerator;
+        private readonly IAnimationGenerator _animationGenerator;
+        private readonly ISkillSetGenerator _skillSetGenerator;       
 
         [ImportingConstructor]
         public ItemGenerator(IRandomSequenceGenerator randomSequenceGenerator, 
                              IAttackAttributeGenerator attackAttributeGenerator,
-                             ISpellGenerator spellGenerator,
+                             IAnimationGenerator animationGenerator,
                              ISkillSetGenerator skillSetGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
+            _animationGenerator = animationGenerator;
             _skillSetGenerator = skillSetGenerator;
-            _spellGenerator = spellGenerator;
         }
 
         public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> characterClasses)
@@ -35,11 +35,14 @@ namespace Rogue.NET.Core.Model.Generator
                 throw new Exception("Trying to generate a Unique item twice");
 
             Equipment equipment = new Equipment();
-            if (equipmentTemplate.HasEquipSpell)
-                equipment.EquipSpell = _spellGenerator.GenerateSpell(equipmentTemplate.EquipSpell);
+            if (equipmentTemplate.HasEquipAlteration)
+                equipment.EquipAlteration = equipmentTemplate.EquipmentEquipAlteration;
 
-            if (equipmentTemplate.HasCurseSpell)
-                equipment.CurseSpell = _spellGenerator.GenerateSpell(equipmentTemplate.CurseSpell);
+            if (equipmentTemplate.HasCurseAlteration)
+                equipment.CurseAlteration = equipmentTemplate.EquipmentCurseAlteration;
+
+            if (equipmentTemplate.HasAttackAlteration)
+                equipment.AttackAlteration = equipmentTemplate.EquipmentAttackAlteration;
 
             equipment.CharacterColor = equipmentTemplate.SymbolDetails.CharacterColor;
             equipment.CharacterSymbol = equipmentTemplate.SymbolDetails.CharacterSymbol;
@@ -50,8 +53,9 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.SmileyMood = equipmentTemplate.SymbolDetails.SmileyMood;
             equipment.SymbolType = equipmentTemplate.SymbolDetails.Type;
 
-            equipment.HasEquipSpell = equipmentTemplate.HasEquipSpell;
-            equipment.HasCurseSpell = equipmentTemplate.HasCurseSpell;
+            equipment.HasEquipAlteration = equipmentTemplate.HasEquipAlteration;
+            equipment.HasCurseAlteration = equipmentTemplate.HasCurseAlteration;
+            equipment.HasAttackAlteration = equipmentTemplate.HasAttackAlteration;
             equipment.Type = equipmentTemplate.Type;
             equipment.CombatType = equipmentTemplate.CombatType;
             equipment.Class = _randomSequenceGenerator.GetRandomValue(equipmentTemplate.Class);
@@ -83,13 +87,13 @@ namespace Rogue.NET.Core.Model.Generator
 
             Consumable consumable = new Consumable();
             consumable.RogueName = consumableTemplate.Name;
-            consumable.Spell = _spellGenerator.GenerateSpell(consumableTemplate.SpellTemplate);
-            consumable.ProjectileSpell = _spellGenerator.GenerateSpell(consumableTemplate.ProjectileSpellTemplate);
+            consumable.Alteration = consumableTemplate.ConsumableAlteration;
+            consumable.ProjectileAlteration = consumableTemplate.ConsumableProjectileAlteration;
             consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill, characterClasses);
-            consumable.AmmoSpell = _spellGenerator.GenerateSpell(consumableTemplate.AmmoSpellTemplate);
+            consumable.AmmoAnimationGroup = _animationGenerator.GenerateAnimationGroup(consumableTemplate.AmmoAnimationGroup);
             consumable.HasLearnedSkillSet = consumableTemplate.HasLearnedSkill;
-            consumable.HasProjectileSpell = consumableTemplate.IsProjectile;
-            consumable.HasSpell = consumableTemplate.HasSpell;
+            consumable.HasAlteration = consumableTemplate.HasAlteration;
+            consumable.HasProjectileAlteration = consumableTemplate.HasProjectileAlteration;
 
             consumable.CharacterColor = consumableTemplate.SymbolDetails.CharacterColor;
             consumable.CharacterSymbol = consumableTemplate.SymbolDetails.CharacterSymbol;
@@ -110,7 +114,7 @@ namespace Rogue.NET.Core.Model.Generator
 
             consumable.HasCharacterClassRequirement = consumableTemplate.HasCharacterClassRequirement;
 
-            // Religious Affiliation Requirement
+            // Character Class Affiliation Requirement
             if (consumableTemplate.HasCharacterClassRequirement)
                 consumable.CharacterClass = characterClasses.First(x => x.RogueName == consumableTemplate.CharacterClass.Name);
 

@@ -6,5 +6,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
     public interface IAnimationGenerator
     {
         AnimationGroup GenerateAnimationGroup(AnimationGroupTemplate template);
+        AnimationData GenerateAnimation(AnimationTemplate template);
     }
 }

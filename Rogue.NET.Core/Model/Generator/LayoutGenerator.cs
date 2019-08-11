@@ -1211,8 +1211,8 @@ namespace Rogue.NET.Core.Model.Generator
             }
 
             // Assign a random cell from the candidates
-            var location1 = room1Candidates.PickRandom(_randomSequenceGenerator.Get());
-            var location2 = room2Candidates.PickRandom(_randomSequenceGenerator.Get());
+            var location1 = _randomSequenceGenerator.GetRandomElement(room1Candidates);
+            var location2 = _randomSequenceGenerator.GetRandomElement(room2Candidates);
 
             // Assign out variables
             room1Cell = grid[location1.Location.Column, location1.Location.Row];

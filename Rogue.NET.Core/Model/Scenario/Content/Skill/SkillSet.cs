@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Skill
 {
@@ -46,7 +48,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         {
             this.SelectedSkill = null;
         }
-        public Spell GetCurrentSkillAlteration()
+        public SkillAlterationTemplate GetCurrentSkillAlteration()
         {
             if (this.SelectedSkill != null)
                 return this.SelectedSkill.Alteration;

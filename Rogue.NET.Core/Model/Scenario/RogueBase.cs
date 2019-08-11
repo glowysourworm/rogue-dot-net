@@ -13,13 +13,9 @@ namespace Rogue.NET.Core.Model.Scenario
         {
             this.Id = Guid.NewGuid().ToString();
         }
-        public RogueBase(string id)
+        public RogueBase(string name)
         {
-            this.Id = id;
-        }
-        public RogueBase(string id, string name)
-        {
-            this.Id = id;
+            this.Id = Guid.NewGuid().ToString();
             this.RogueName = name;
         }
     }

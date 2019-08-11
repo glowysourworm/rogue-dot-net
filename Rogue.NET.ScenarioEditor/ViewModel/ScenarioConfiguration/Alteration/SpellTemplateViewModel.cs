@@ -12,10 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         private AlterationCostTemplateViewModel _cost;
         private AlterationEffectTemplateViewModel _effect;
         private AlterationEffectTemplateViewModel _auraEffect;
-        private AlterationType _type;
         private AlterationBlockType _blockType;
-        private AlterationMagicEffectType _otherEffectType;
-        private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
         private bool _stackable;
         private string _createMonsterEnemy;
@@ -36,25 +33,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _auraEffect; }
             set { this.RaiseAndSetIfChanged(ref _auraEffect, value); }
         }
-        public AlterationType Type
-        {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
-        }
         public AlterationBlockType BlockType
         {
             get { return _blockType; }
             set { this.RaiseAndSetIfChanged(ref _blockType, value); }
-        }
-        public AlterationMagicEffectType OtherEffectType
-        {
-            get { return _otherEffectType; }
-            set { this.RaiseAndSetIfChanged(ref _otherEffectType, value); }
-        }
-        public AlterationAttackAttributeType AttackAttributeType
-        {
-            get { return _attackAttributeType; }
-            set { this.RaiseAndSetIfChanged(ref _attackAttributeType, value); }
         }
         public double EffectRange
         {

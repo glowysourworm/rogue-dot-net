@@ -549,3 +549,37 @@ IMMEDIATE TODO'S:
 	- OTHER OTHER BIG TODO:  Terrain
 	- TODO: Path-finding efficiency
 	- TODO: Fix up the simulator for equipment attack / defense values based on attributes; and anything else that has changed.
+	- TODO: Generate Alterations right away (don't store the template on the item / enemy behavior). To randomize add a component
+			to do this with some variance (gaussian distributed or whatever) around the base (mean) instead.
+			
+			If this works out without too much trouble - repeat this EVERYWHERE. Just get rid of RANGE values and use a randomizer!
+			This will simplify the hell out of everything.
+			
+	- TODO: Remove the level range specification from all assets. Add a list of level specifications: each has a list of consumables,
+			equipment, enemies, doodads, a layout, etc.. and generation rates, variances, etc... This would virtually eliminate the
+			need for templates; but would introduce a new class of components to place / specify / randomize everything. This class
+			should be MUCH smaller than the currently supported scenario configuration. 
+			
+	- TODO: Remove list sharing for all asset properties. Example:  Consumable.Alteration should not reference a list of alterations. Also,
+			apply to attack attributes, character classes, altered state, etc... Create them in the asset UI - but show a list of what
+			currently is in the scenario - with option to copy one that's already there. Then, in the "General" section, just show an
+			aggregate of all of these "shared" asset properties to show what they are. Then, for meta-data, create these lists on-the-flying
+			as these asset properties are generated. Example:  Create first "Poison" Attack Attribute. Event Aggregator fires the event
+			and another component maintains the collection of meta-data for attack attributes. 
+			
+	- IDEA: To keep / maintain shared collections - use attributes for the class to identify the location of it's "master list". This will
+			help avoid maintainence issues for the many "Fix Reference" methods.... Uuugh.
+			
+	- TODO: Clean up "engines" and systematize. Componentize things a little better; and make it known how messages are being published.
+	
+	- TODO: Propagate the name of the Alteration template to the corresponding Alteration Effect template.
+	
+	- IDEA: "Interlude" for the scenario - Fade-in message on-screen after Level "X" to show a part of the story.
+	
+	- IDEA: Friendly unit type. (Easier that it sounds probably). 
+	
+			- Friendly derived Character type
+			- Add check for Player movement so that you can swap places with Friendly units to avoid obstructing your path
+			- Add targeting type for Alterations to select unit type (Example:  Heal all friendly units in range, or Heal Player type units)
+			
+			- Then, it should be very easy to support a Necromancer scenario :)

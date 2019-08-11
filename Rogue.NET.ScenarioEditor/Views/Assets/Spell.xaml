@@ -44,7 +44,7 @@
                 <spell:SpellCost />
             </TabItem>
             <TabItem Header="Spell Effect" Background="Black">
-                <TabItem.Visibility>
+                <!--TabItem.Visibility>
                     <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
@@ -56,32 +56,23 @@
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
                         <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
                     </MultiBinding>
-                </TabItem.Visibility>
+                </-->
                 <spell:SpellEffect />
             </TabItem>
-            <TabItem Header="Spell Attack Attributes" 
-                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}">
+            <TabItem Header="Spell Attack Attributes">
                 <spell:SpellEffectAttackAttributes />
             </TabItem>
-            <TabItem Header="Spell Aura Effect" Background="Black"
-                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+            <TabItem Header="Spell Aura Effect" Background="Black">
                 <spell:SpellAuraEffect />
             </TabItem>
             <TabItem Header="Effect Symbol Change">
-                <TabItem.Visibility>
-                    <MultiBinding Converter="{StaticResource AlterationHasEffectSymbolChangeVisibilityConverter}">
-                        <Binding Path="Type" />
-                        <Binding Path="AttackAttributeType" />
-                    </MultiBinding>
-                </TabItem.Visibility>
                 <StackPanel Background="Black">
                     <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
                                Text="This symbol change effects the primary target of the Alteration" />
                     <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding Effect.SymbolAlteration}" />
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Aura Effect Symbol Change"
-                     Visibility="{Binding Path=Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+            <TabItem Header="Aura Effect Symbol Change">
                 <StackPanel Background="Black">
                     <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
                            Text="This symbol change effects any Character within the Aura Effect Range" />

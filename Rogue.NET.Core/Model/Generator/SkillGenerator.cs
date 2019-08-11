@@ -11,19 +11,16 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(ISkillGenerator))]
     public class SkillGenerator : ISkillGenerator
     {
-        readonly ISpellGenerator _spellGenerator;
-
         [ImportingConstructor]
-        public SkillGenerator(ISpellGenerator spellGenerator)
+        public SkillGenerator()
         {
-            _spellGenerator = spellGenerator;
         }
 
         public Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<CharacterClass> characterClasses)
         {
             return new Skill()
             { 
-                Alteration = _spellGenerator.GenerateSpell(skillTemplate.Alteration),     
+                Alteration = skillTemplate.SkillAlteration,     
                 AttributeLevelRequirement = skillTemplate.AttributeLevelRequirement,
                 AttributeRequirement = skillTemplate.AttributeRequirement,
                 HasAttributeRequirement = skillTemplate.HasAttributeRequirement,

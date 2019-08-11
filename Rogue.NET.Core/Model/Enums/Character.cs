@@ -141,6 +141,7 @@ namespace Rogue.NET.Core.Model.Enums
         Attack,
         Defense,
         Dodge,
+        // TODO:ALTERATION (Change name to MentalBlock)
         MagicBlock,
         CriticalHit,
         FoodUsagePerTurn

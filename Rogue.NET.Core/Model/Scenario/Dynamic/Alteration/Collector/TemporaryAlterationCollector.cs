@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
@@ -7,142 +6,118 @@ using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
     [Serializable]
     public class TemporaryAlterationCollector 
                     : IAlterationCollector,
-                      IAlterationEffectCollector<TemporaryAlterationEffect>, 
-                      ITurnBasedAlterationCollector
+                      IAlterationEffectCollector,
+                      ITemporaryAlterationCollector
     {
-        protected IDictionary<string, TemporaryAlterationEffect> Alterations { get; set; }
+        protected IList<AlterationContainer> Alterations { get; set; }
 
         public TemporaryAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, TemporaryAlterationEffect>();
+            this.Alterations = new List<AlterationContainer>();
         }
 
-        public bool Apply(string alterationId, TemporaryAlterationEffect effect, AlterationCost cost = null)
+        public bool Apply(AlterationContainer alteration)
         {
-            if (effect.IsStackable &&
-                this.Alterations.Any(x => x.Value.RogueName == effect.RogueName))
+            if (alteration.Effect.IsStackable() &&
+                this.Alterations.Any(x => x.RogueName == alteration.RogueName))
                 return false;
 
-            this.Alterations.Add(alterationId, effect);
+            this.Alterations.Add(alteration);
 
             return true;
         }
 
-        public void ApplyRemedy(RemedyAlterationEffect effect)
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
-            this.Alterations.Filter(x => x.Value.AlteredState.RogueName == effect.RemediedState.RogueName);
+            return this.Alterations.Filter(x => x.RogueName == alterationName).Actualize();
         }
 
-        public void Filter(string alterationId)
+        public IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
         {
-            this.Alterations.Remove(alterationId);
+            var curedAlterations = new List<AlterationContainer>();
+
+            for (int i = this.Alterations.Count - 1; i >= 0; i--)
+            {
+                var effect = this.Alterations[i].Effect as TemporaryAlterationEffect;
+
+                // Compare the altered state name with the remedied state name
+                if (effect.AlteredState.RogueName == remedyEffect.RemediedState.RogueName)
+                {
+                    // Add alteration to result
+                    curedAlterations.Add(this.Alterations[i]);
+
+                    // Remove alteration from list
+                    this.Alterations.RemoveAt(i);
+                }
+            }
+
+            return curedAlterations;
         }
 
-        public bool CanSeeInvisible()
+        public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
+        {
+            // Temporary alterations only have a one-time cost
+            return new Dictionary<string, AlterationCost>();
+        }
+
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
         {
             return this.Alterations
-                       .Values
-                       .Any(x => x.CanSeeInvisibleCharacters);
+                       .ToDictionary(x => x.RogueName, x => x.Effect);
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()
         {
             return this.Alterations
-                       .Where(x => x.Value.AlteredState.BaseType != Enums.CharacterStateType.Normal)
-                       .Select(x => x.Value.AlteredState)
+                       .Select(x => x.Effect)
+                       .Cast<TemporaryAlterationEffect>()
+                       .Select(x => x.AlteredState)
                        .Actualize();
-        }
-        public void ApplyEndOfTurn()
-        {
-            for (int i=this.Alterations.Count - 1;i>=0;i--)
-            {
-                var item = this.Alterations.ElementAt(i);
-
-                item.Value.EventTime--;
-
-                if (item.Value.EventTime == 0)
-                    this.Alterations.Remove(item.Key);
-            }
-        }
-
-        public IEnumerable<AlterationCost> GetCosts()
-        {
-            return new List<AlterationCost>();
         }
 
         public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
         {
             return this.Alterations
-                       .Values
-                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
+                       .Select(x => x.Effect)
+                       .Cast<TemporaryAlterationEffect>()
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
         }
 
+        public bool CanSeeInvisible()
+        {
+            return this.Alterations
+                       .Select(x => x.Effect)
+                       .Cast<TemporaryAlterationEffect>()
+                       .Any(x => x.CanSeeInvisibleCharacters);
+        }
+
+        public IEnumerable<string> Decrement()
+        {
+            // Decrement Event Counter
+            this.Alterations
+                .ForEach(x => (x.Effect as TemporaryAlterationEffect).EventTime--);
+
+            // Return effects that have worn off
+            return this.Alterations
+                       .Filter(x => (x.Effect as TemporaryAlterationEffect).EventTime <= 0)
+                       .Select(x => x.RogueName);
+        }
         public double GetAttributeAggregate(CharacterAttribute attribute)
         {
             return this.Alterations
-                       .Values
-                       .Aggregate(0D, (aggregator, effect) =>
-                       {
-                           switch (attribute)
-                           {
-                               case CharacterAttribute.Hp:
-                                   aggregator += effect.Hp;
-                                   break;
-                               case CharacterAttribute.Mp:
-                                   aggregator += effect.Mp;
-                                   break;
-                               case CharacterAttribute.Strength:
-                                   aggregator += effect.Strength;
-                                   break;
-                               case CharacterAttribute.Agility:
-                                   aggregator += effect.Agility;
-                                   break;
-                               case CharacterAttribute.Intelligence:
-                                   aggregator += effect.Intelligence;
-                                   break;
-                               case CharacterAttribute.Speed:
-                                   aggregator += effect.Speed;
-                                   break;
-                               case CharacterAttribute.HpRegen:
-                                   aggregator += effect.HpPerStep;
-                                   break;
-                               case CharacterAttribute.MpRegen:
-                                   aggregator += effect.MpPerStep;
-                                   break;
-                               case CharacterAttribute.LightRadius:
-                                   aggregator += effect.LightRadius;
-                                   break;
-                               case CharacterAttribute.Attack:
-                                   aggregator += effect.Attack;
-                                   break;
-                               case CharacterAttribute.Defense:
-                                   aggregator += effect.Defense;
-                                   break;
-                               case CharacterAttribute.Dodge:
-                                   aggregator += effect.DodgeProbability;
-                                   break;
-                               case CharacterAttribute.MagicBlock:
-                                   aggregator += effect.MagicBlockProbability;
-                                   break;
-                               case CharacterAttribute.CriticalHit:
-                                   aggregator += effect.CriticalHit;
-                                   break;
-                               case CharacterAttribute.FoodUsagePerTurn:
-                                   aggregator += effect.FoodUsagePerTurn;
-                                   break;
-                               default:
-                                   break;
-                           }
-                           return aggregator;
-                       });
+                       .Select(x => x.Effect)
+                       .Cast<TemporaryAlterationEffect>()
+                       .Aggregate(0D, (aggregator, effect) => effect.GetAttribute(attribute));
         }
     }
 }

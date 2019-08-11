@@ -10,5 +10,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
         /// Returns an aggregate set of attack attributes for the specified combat type
         /// </summary>
         IEnumerable<AttackAttribute> GetAttackAttributes(AlterationAttackAttributeCombatType combatType);
+
+        /// <summary>
+        /// Returns names of alterations with the specified combat type
+        /// </summary>
+        IEnumerable<string> GetEffectNames(AlterationAttackAttributeCombatType combatType);
     }
 }

@@ -12,7 +12,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IEquipmentEquipAlterationEffect,
                      ISkillAlterationEffect
     {
-        public AlterationTargetType TargetType { get; set; }
         public AlterationAttackAttributeCombatType CombatType { get; set; }
 
         public List<AttackAttribute> AttackAttributes { get; set; }

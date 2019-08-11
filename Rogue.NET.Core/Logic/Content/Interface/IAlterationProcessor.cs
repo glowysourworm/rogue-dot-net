@@ -12,14 +12,12 @@ namespace Rogue.NET.Core.Logic.Content.Interface
     {
         ScenarioImage CalculateEffectiveSymbol(Character character);
 
-        bool CalculateSpellRequiresTarget(Spell spell);
         bool CalculateMeetsAlterationCost(Character character, AlterationCost cost);
         bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost);
         bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost);
 
         void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost);
-        void ApplyPermanentEffect(Character character, AlterationEffect alterationEffect);
         void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect);
-        void ApplyRemedy(Character character, AlterationEffect alterationEffect);
+        void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect);
     }
 }

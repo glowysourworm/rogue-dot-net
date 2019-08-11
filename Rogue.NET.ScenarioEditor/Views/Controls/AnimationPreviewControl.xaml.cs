@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.ComponentModel.Composition;
@@ -13,15 +15,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
     public partial class AnimationPreviewControl : UserControl
     {
         readonly IAnimationCreator _animationCreator;
+        readonly IAnimationGenerator _animationGenerator;
 
         ITimedGraphic _animation = null;
 
         bool _updating = false;
 
         [ImportingConstructor]
-        public AnimationPreviewControl(IAnimationCreator animationCreator)
+        public AnimationPreviewControl(IAnimationCreator animationCreator, IAnimationGenerator animationGenerator)
         {
             _animationCreator = animationCreator;
+            _animationGenerator = animationGenerator;
 
             InitializeComponent();
         }
@@ -31,9 +35,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
             this.AnimationSlider.Maximum = viewModel.AnimationTime / 1000.0;
 
-            var model = viewModel.Map<AnimationTemplateViewModel, AnimationTemplate>();
+            var template = viewModel.Map<AnimationTemplateViewModel, AnimationTemplate>();
+            var animation = _animationGenerator.GenerateAnimation(template);
 
-            _animation = CreateNewAnimation(model);
+            _animation = CreateNewAnimation(animation);
+
             StartAnimation();
         }
         private void StartAnimation()
@@ -65,7 +71,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
             _animation = null;
         }
-        private ITimedGraphic CreateNewAnimation(AnimationTemplate tmp)
+        private ITimedGraphic CreateNewAnimation(AnimationData animation)
         {
             Point p = new Point(Canvas.GetLeft(this.TheSmiley), Canvas.GetTop(this.TheSmiley));
             Point en1 = new Point(Canvas.GetLeft(this.TheEnemy), Canvas.GetTop(this.TheEnemy));
@@ -79,7 +85,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             en2.Y += 8;
             en3.X += 5;
             en3.Y += 8;
-            return _animationCreator.CreateAnimation(tmp, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
+            return _animationCreator.CreateAnimation(animation, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)

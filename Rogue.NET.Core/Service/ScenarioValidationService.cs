@@ -268,32 +268,33 @@ namespace Rogue.NET.Core.Service
                         }
                     };
                 })),
-                new ScenarioValidationRule("Remedy Alteration types must have remedied state set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var remedyAlterations = configuration.MagicSpells
-                                                         .Where(x => x.Type == AlterationType.Remedy &&
-                                                                     x.Effect.RemediedState == null);
+                // TODO:ALTERATION
+                //new ScenarioValidationRule("Remedy Alteration types must have remedied state set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                //{
+                //    var remedyAlterations = configuration.MagicSpells
+                //                                         .Where(x => x.Type == AlterationType.Remedy &&
+                //                                                     x.Effect.RemediedState == null);
 
-                    return remedyAlterations.Select(x =>
-                        new ScenarioValidationResult()
-                        {
-                            Passed = false,
-                            InnerMessage = x.Name + " has no remedied state set"
-                        });
-                })),
-                new ScenarioValidationRule("Create Monster Alterations must have the monster set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var createMonsterAlterations = configuration.MagicSpells
-                                                                .Where(x => x.Type == AlterationType.OtherMagicEffect &&
-                                                                            x.OtherEffectType == AlterationMagicEffectType.CreateMonster &&
-                                                                            string.IsNullOrEmpty(x.CreateMonsterEnemy));
+                //    return remedyAlterations.Select(x =>
+                //        new ScenarioValidationResult()
+                //        {
+                //            Passed = false,
+                //            InnerMessage = x.Name + " has no remedied state set"
+                //        });
+                //})),
+                //new ScenarioValidationRule("Create Monster Alterations must have the monster set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                //{
+                //    var createMonsterAlterations = configuration.MagicSpells
+                //                                                .Where(x => x.Type == AlterationType.OtherMagicEffect &&
+                //                                                            x.OtherEffectType == AlterationMagicEffectType.CreateMonster &&
+                //                                                            string.IsNullOrEmpty(x.CreateMonsterEnemy));
 
-                    return createMonsterAlterations.Select(x => new ScenarioValidationResult()
-                    {
-                        Passed = false,
-                        InnerMessage = x.Name + " has no monster set"
-                    });
-                })),
+                //    return createMonsterAlterations.Select(x => new ScenarioValidationResult()
+                //    {
+                //        Passed = false,
+                //        InnerMessage = x.Name + " has no monster set"
+                //    });
+                //})),
 
                 // Warnings
                 new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
@@ -329,261 +330,264 @@ namespace Rogue.NET.Core.Service
 
         private string ValidateConsumableAlterationTypes(ConsumableTemplate template)
         {
-            if (template.HasSpell && template.SpellTemplate != null)
-            {
-                switch (template.SpellTemplate.Type)
-                {
-                    case AlterationType.PassiveSource:
-                    case AlterationType.PassiveAura:
-                        return "Consumables don't support Passive Alteration Types";
-                    case AlterationType.Steal:
-                    case AlterationType.RunAway:
-                        return "Steal / RunAway aren't supported for consumables";                    
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.SpellTemplate.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.Passive:
-                                    return "Consumables don't support Passive Alteration Types";
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            // TODO:ALTERATION
+            //if (template.HasSpell && template.SpellTemplate != null)
+            //{
+            //    switch (template.SpellTemplate.Type)
+            //    {
+            //        case AlterationType.PassiveSource:
+            //        case AlterationType.PassiveAura:
+            //            return "Consumables don't support Passive Alteration Types";
+            //        case AlterationType.Steal:
+            //        case AlterationType.RunAway:
+            //            return "Steal / RunAway aren't supported for consumables";                    
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.SpellTemplate.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.Passive:
+            //                        return "Consumables don't support Passive Alteration Types";
+            //                    default:
+            //                        break;
+            //                }
+            //            }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
 
-            if (template.SubType == ConsumableSubType.Ammo && template.AmmoSpellTemplate != null)
-            {
-                switch (template.AmmoSpellTemplate.Type)
-                {
-                    case AlterationType.PassiveSource:
-                    case AlterationType.PassiveAura:
-                        return "Consumables don't support Passive Alteration Types";
-                    case AlterationType.PermanentSource:
-                    case AlterationType.TemporarySource:
-                    case AlterationType.TeleportSelf:
-                    case AlterationType.Remedy:
-                    case AlterationType.OtherMagicEffect:
-                        return "Ammo spells require Target type Alterations";
-                    case AlterationType.TemporaryAllInRange:
-                    case AlterationType.TemporaryAllInRangeExceptSource:
-                    case AlterationType.TeleportAllInRange:
-                    case AlterationType.TeleportAllInRangeExceptSource:
-                    case AlterationType.PermanentAllInRange:
-                    case AlterationType.PermanentAllInRangeExceptSource:
-                        return "Ammo spells don't support Effect Range Alterations";
-                    case AlterationType.Steal:
-                    case AlterationType.RunAway:
-                        return "Steal / RunAway aren't supported for consumables";
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.AmmoSpellTemplate.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.Passive:
-                                    return "Consumables don't support Passive Alteration Types";
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                                case AlterationAttackAttributeType.TemporaryMalignSource:
-                                    return "Ammo spells require Target type Alterations";
-                                case AlterationAttackAttributeType.MeleeAllInRange:
-                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
-                                    return "Ammo spells don't support Effect Range Alterations";
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            //if (template.SubType == ConsumableSubType.Ammo && template.AmmoSpellTemplate != null)
+            //{
+            //    switch (template.AmmoSpellTemplate.Type)
+            //    {
+            //        case AlterationType.PassiveSource:
+            //        case AlterationType.PassiveAura:
+            //            return "Consumables don't support Passive Alteration Types";
+            //        case AlterationType.PermanentSource:
+            //        case AlterationType.TemporarySource:
+            //        case AlterationType.TeleportSelf:
+            //        case AlterationType.Remedy:
+            //        case AlterationType.OtherMagicEffect:
+            //            return "Ammo spells require Target type Alterations";
+            //        case AlterationType.TemporaryAllInRange:
+            //        case AlterationType.TemporaryAllInRangeExceptSource:
+            //        case AlterationType.TeleportAllInRange:
+            //        case AlterationType.TeleportAllInRangeExceptSource:
+            //        case AlterationType.PermanentAllInRange:
+            //        case AlterationType.PermanentAllInRangeExceptSource:
+            //            return "Ammo spells don't support Effect Range Alterations";
+            //        case AlterationType.Steal:
+            //        case AlterationType.RunAway:
+            //            return "Steal / RunAway aren't supported for consumables";
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.AmmoSpellTemplate.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.Passive:
+            //                        return "Consumables don't support Passive Alteration Types";
+            //                    case AlterationAttackAttributeType.ImbueArmor:
+            //                    case AlterationAttackAttributeType.ImbueWeapon:
+            //                    case AlterationAttackAttributeType.TemporaryFriendlySource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignSource:
+            //                        return "Ammo spells require Target type Alterations";
+            //                    case AlterationAttackAttributeType.MeleeAllInRange:
+            //                    case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+            //                        return "Ammo spells don't support Effect Range Alterations";
+            //                    default:
+            //                        break;
+            //                }
+            //            }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
 
-            if (template.IsProjectile && template.ProjectileSpellTemplate != null)
-            {
-                switch (template.ProjectileSpellTemplate.Type)
-                {
-                    case AlterationType.PassiveSource:
-                    case AlterationType.PassiveAura:
-                        return "Consumables don't support Passive Alteration Types";
-                    case AlterationType.PermanentSource:
-                    case AlterationType.TemporarySource:
-                    case AlterationType.TeleportSelf:
-                    case AlterationType.Remedy:
-                    case AlterationType.OtherMagicEffect:
-                        return "Projectile spells require Target type Alterations";
-                    case AlterationType.TemporaryAllInRange:
-                    case AlterationType.TemporaryAllInRangeExceptSource:
-                    case AlterationType.TeleportAllInRange:
-                    case AlterationType.TeleportAllInRangeExceptSource:
-                    case AlterationType.PermanentAllInRange:
-                    case AlterationType.PermanentAllInRangeExceptSource:
-                        return "Projectile spells don't support Effect Range Alterations";
-                    case AlterationType.Steal:
-                    case AlterationType.RunAway:
-                        return "Steal / RunAway aren't supported for consumables";
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.ProjectileSpellTemplate.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.Passive:
-                                    return "Consumables don't support Passive Alteration Types";
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                                case AlterationAttackAttributeType.TemporaryMalignSource:
-                                    return "Projectile spells require Target type Alterations";
-                                case AlterationAttackAttributeType.MeleeAllInRange:
-                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
-                                    return "Projectile spells don't support Effect Range Alterations";
-                                default:
-                                    break;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+            //if (template.IsProjectile && template.ProjectileSpellTemplate != null)
+            //{
+            //    switch (template.ProjectileSpellTemplate.Type)
+            //    {
+            //        case AlterationType.PassiveSource:
+            //        case AlterationType.PassiveAura:
+            //            return "Consumables don't support Passive Alteration Types";
+            //        case AlterationType.PermanentSource:
+            //        case AlterationType.TemporarySource:
+            //        case AlterationType.TeleportSelf:
+            //        case AlterationType.Remedy:
+            //        case AlterationType.OtherMagicEffect:
+            //            return "Projectile spells require Target type Alterations";
+            //        case AlterationType.TemporaryAllInRange:
+            //        case AlterationType.TemporaryAllInRangeExceptSource:
+            //        case AlterationType.TeleportAllInRange:
+            //        case AlterationType.TeleportAllInRangeExceptSource:
+            //        case AlterationType.PermanentAllInRange:
+            //        case AlterationType.PermanentAllInRangeExceptSource:
+            //            return "Projectile spells don't support Effect Range Alterations";
+            //        case AlterationType.Steal:
+            //        case AlterationType.RunAway:
+            //            return "Steal / RunAway aren't supported for consumables";
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.ProjectileSpellTemplate.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.Passive:
+            //                        return "Consumables don't support Passive Alteration Types";
+            //                    case AlterationAttackAttributeType.ImbueArmor:
+            //                    case AlterationAttackAttributeType.ImbueWeapon:
+            //                    case AlterationAttackAttributeType.TemporaryFriendlySource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignSource:
+            //                        return "Projectile spells require Target type Alterations";
+            //                    case AlterationAttackAttributeType.MeleeAllInRange:
+            //                    case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+            //                        return "Projectile spells don't support Effect Range Alterations";
+            //                    default:
+            //                        break;
+            //                }
+            //            }
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
 
             return null;
         }
 
         private string ValidateEquipmentAlterationTypes(EquipmentTemplate template)
         {
-            if (template.HasCurseSpell && template.CurseSpell != null)
-            {
-                switch (template.CurseSpell.Type)
-                {
-                    case AlterationType.PassiveSource:
-                    case AlterationType.PassiveAura:
-                        return null;
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.CurseSpell.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.Passive:
-                                    return null;
-                                default:
-                                    return "Equipment ONLY support Passive Alteration Types";
-                            }
-                        }
-                    default:
-                        return "Equipment ONLY support Passive Alteration Types";
-                }
-            }
+            // TODO:ALTERATION
+            //if (template.HasCurseSpell && template.CurseSpell != null)
+            //{
+            //    switch (template.CurseSpell.Type)
+            //    {
+            //        case AlterationType.PassiveSource:
+            //        case AlterationType.PassiveAura:
+            //            return null;
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.CurseSpell.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.Passive:
+            //                        return null;
+            //                    default:
+            //                        return "Equipment ONLY support Passive Alteration Types";
+            //                }
+            //            }
+            //        default:
+            //            return "Equipment ONLY support Passive Alteration Types";
+            //    }
+            //}
 
-            if (template.HasEquipSpell && template.EquipSpell != null)
-            {
-                switch (template.EquipSpell.Type)
-                {
-                    case AlterationType.PassiveSource:
-                    case AlterationType.PassiveAura:
-                        return null;
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.EquipSpell.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.Passive:
-                                    return null;
-                                default:
-                                    return "Equipment ONLY support Passive Alteration Types";
-                            }
-                        }
-                    default:
-                        return "Equipment ONLY support Passive Alteration Types";
-                }
-            }
+            //if (template.HasEquipSpell && template.EquipSpell != null)
+            //{
+            //    switch (template.EquipSpell.Type)
+            //    {
+            //        case AlterationType.PassiveSource:
+            //        case AlterationType.PassiveAura:
+            //            return null;
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.EquipSpell.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.Passive:
+            //                        return null;
+            //                    default:
+            //                        return "Equipment ONLY support Passive Alteration Types";
+            //                }
+            //            }
+            //        default:
+            //            return "Equipment ONLY support Passive Alteration Types";
+            //    }
+            //}
 
             return null;
         }
 
         private string ValidateDoodadAlterationTypes(DoodadTemplate template)
         {
-            if (template.IsInvoked && template.InvokedMagicSpellTemplate != null)
-            {
-                switch (template.InvokedMagicSpellTemplate.Type)
-                {
-                    case AlterationType.TemporarySource:
-                    case AlterationType.PermanentSource:
-                    case AlterationType.TeleportSelf:
-                    case AlterationType.OtherMagicEffect:
-                    case AlterationType.Remedy:
-                    case AlterationType.PermanentAllInRange:
-                    case AlterationType.PermanentAllInRangeExceptSource:
-                    case AlterationType.TeleportAllInRange:
-                    case AlterationType.TeleportAllInRangeExceptSource:
-                    case AlterationType.TemporaryAllInRange:
-                    case AlterationType.TemporaryAllInRangeExceptSource:
-                        return null;
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.InvokedMagicSpellTemplate.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                                case AlterationAttackAttributeType.TemporaryMalignSource:
-                                case AlterationAttackAttributeType.MeleeAllInRange:
-                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
-                                    return null;
-                                case AlterationAttackAttributeType.Passive:
-                                default:
-                                    return "Target / Passive Alerations aren't supported for Scenario Objects";
-                            }
-                        }
-                    default:
-                        return template.InvokedMagicSpellTemplate.Type.ToString() + " Alterations aren't supported for Scenario Objects";
-                }
-            }
+            // TODO:ALTERATION
+            //if (template.IsInvoked && template.InvokedMagicSpellTemplate != null)
+            //{
+            //    switch (template.InvokedMagicSpellTemplate.Type)
+            //    {
+            //        case AlterationType.TemporarySource:
+            //        case AlterationType.PermanentSource:
+            //        case AlterationType.TeleportSelf:
+            //        case AlterationType.OtherMagicEffect:
+            //        case AlterationType.Remedy:
+            //        case AlterationType.PermanentAllInRange:
+            //        case AlterationType.PermanentAllInRangeExceptSource:
+            //        case AlterationType.TeleportAllInRange:
+            //        case AlterationType.TeleportAllInRangeExceptSource:
+            //        case AlterationType.TemporaryAllInRange:
+            //        case AlterationType.TemporaryAllInRangeExceptSource:
+            //            return null;
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.InvokedMagicSpellTemplate.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.ImbueArmor:
+            //                    case AlterationAttackAttributeType.ImbueWeapon:
+            //                    case AlterationAttackAttributeType.TemporaryFriendlySource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignSource:
+            //                    case AlterationAttackAttributeType.MeleeAllInRange:
+            //                    case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+            //                        return null;
+            //                    case AlterationAttackAttributeType.Passive:
+            //                    default:
+            //                        return "Target / Passive Alerations aren't supported for Scenario Objects";
+            //                }
+            //            }
+            //        default:
+            //            return template.InvokedMagicSpellTemplate.Type.ToString() + " Alterations aren't supported for Scenario Objects";
+            //    }
+            //}
 
-            if (template.IsAutomatic && template.AutomaticMagicSpellTemplate != null)
-            {
-                switch (template.AutomaticMagicSpellTemplate.Type)
-                {
-                    case AlterationType.TemporarySource:
-                    case AlterationType.PermanentSource:
-                    case AlterationType.TeleportSelf:
-                    case AlterationType.OtherMagicEffect:
-                    case AlterationType.Remedy:
-                    case AlterationType.PermanentAllInRange:
-                    case AlterationType.PermanentAllInRangeExceptSource:
-                    case AlterationType.TeleportAllInRange:
-                    case AlterationType.TeleportAllInRangeExceptSource:
-                    case AlterationType.TemporaryAllInRange:
-                    case AlterationType.TemporaryAllInRangeExceptSource:
-                        return null;
-                    case AlterationType.AttackAttribute:
-                        {
-                            switch (template.AutomaticMagicSpellTemplate.AttackAttributeType)
-                            {
-                                case AlterationAttackAttributeType.ImbueArmor:
-                                case AlterationAttackAttributeType.ImbueWeapon:
-                                case AlterationAttackAttributeType.TemporaryFriendlySource:
-                                case AlterationAttackAttributeType.TemporaryMalignSource:
-                                case AlterationAttackAttributeType.MeleeAllInRange:
-                                case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRange:
-                                case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
-                                    return null;
-                                case AlterationAttackAttributeType.Passive:
-                                default:
-                                    return "Target / Passive Alerations aren't supported for Scenario Objects";
-                            }
-                        }
-                    default:
-                        return template.AutomaticMagicSpellTemplate.Type.ToString() + " Alterations aren't supported for Scenario Objects";
-                }
-            }
+            //if (template.IsAutomatic && template.AutomaticMagicSpellTemplate != null)
+            //{
+            //    switch (template.AutomaticMagicSpellTemplate.Type)
+            //    {
+            //        case AlterationType.TemporarySource:
+            //        case AlterationType.PermanentSource:
+            //        case AlterationType.TeleportSelf:
+            //        case AlterationType.OtherMagicEffect:
+            //        case AlterationType.Remedy:
+            //        case AlterationType.PermanentAllInRange:
+            //        case AlterationType.PermanentAllInRangeExceptSource:
+            //        case AlterationType.TeleportAllInRange:
+            //        case AlterationType.TeleportAllInRangeExceptSource:
+            //        case AlterationType.TemporaryAllInRange:
+            //        case AlterationType.TemporaryAllInRangeExceptSource:
+            //            return null;
+            //        case AlterationType.AttackAttribute:
+            //            {
+            //                switch (template.AutomaticMagicSpellTemplate.AttackAttributeType)
+            //                {
+            //                    case AlterationAttackAttributeType.ImbueArmor:
+            //                    case AlterationAttackAttributeType.ImbueWeapon:
+            //                    case AlterationAttackAttributeType.TemporaryFriendlySource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignSource:
+            //                    case AlterationAttackAttributeType.MeleeAllInRange:
+            //                    case AlterationAttackAttributeType.MeleeAllInRangeExceptSource:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRange:
+            //                    case AlterationAttackAttributeType.TemporaryMalignAllInRangeExceptSource:
+            //                        return null;
+            //                    case AlterationAttackAttributeType.Passive:
+            //                    default:
+            //                        return "Target / Passive Alerations aren't supported for Scenario Objects";
+            //                }
+            //            }
+            //        default:
+            //            return template.AutomaticMagicSpellTemplate.Type.ToString() + " Alterations aren't supported for Scenario Objects";
+            //    }
+            //}
 
             return null;
         }
@@ -592,44 +596,45 @@ namespace Rogue.NET.Core.Service
         {
             var result = new List<string>();
 
-            foreach (var behavior in template.BehaviorDetails.Behaviors)
-            {
-                if ((behavior.AttackType == CharacterAttackType.Skill ||
-                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                     behavior.EnemySpell != null)
-                {
-                    switch (behavior.EnemySpell.Type)
-                    {
-                        case AlterationType.AttackAttribute:
-                            {
-                                switch (behavior.EnemySpell.AttackAttributeType)
-                                {
-                                    case AlterationAttackAttributeType.ImbueArmor:
-                                    case AlterationAttackAttributeType.ImbueWeapon:
-                                    case AlterationAttackAttributeType.Passive:
-                                        result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
-                                                " Attack Attribute Alteration type is not supported for enemies");
-                                        break;
-                                }
-                                break;
-                            }
-                        case AlterationType.OtherMagicEffect:
-                            {
-                                switch (behavior.EnemySpell.OtherEffectType)
-                                {
-                                    case AlterationMagicEffectType.CreateMonster:
-                                        break;
-                                }
-                                break;
-                            }
-                        case AlterationType.Remedy:
-                        case AlterationType.PassiveAura:
-                            result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
-                                        " Alteration type is not supported for enemies");
-                            break;
-                    }
-                }
-            }
+            // TODO:ALTERATION
+            //foreach (var behavior in template.BehaviorDetails.Behaviors)
+            //{
+            //    if ((behavior.AttackType == CharacterAttackType.Skill ||
+            //         behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+            //         behavior.EnemySpell != null)
+            //    {
+            //        switch (behavior.EnemySpell.Type)
+            //        {
+            //            case AlterationType.AttackAttribute:
+            //                {
+            //                    switch (behavior.EnemySpell.AttackAttributeType)
+            //                    {
+            //                        case AlterationAttackAttributeType.ImbueArmor:
+            //                        case AlterationAttackAttributeType.ImbueWeapon:
+            //                        case AlterationAttackAttributeType.Passive:
+            //                            result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
+            //                                    " Attack Attribute Alteration type is not supported for enemies");
+            //                            break;
+            //                    }
+            //                    break;
+            //                }
+            //            case AlterationType.OtherMagicEffect:
+            //                {
+            //                    switch (behavior.EnemySpell.OtherEffectType)
+            //                    {
+            //                        case AlterationMagicEffectType.CreateMonster:
+            //                            break;
+            //                    }
+            //                    break;
+            //                }
+            //            case AlterationType.Remedy:
+            //            case AlterationType.PassiveAura:
+            //                result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
+            //                            " Alteration type is not supported for enemies");
+            //                break;
+            //        }
+            //    }
+            //}
 
             return result;
         }

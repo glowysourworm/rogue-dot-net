@@ -43,6 +43,10 @@ namespace Rogue.NET.Core.Model.Enums
         DebugRevealAll
     }
 
+    /// <summary>
+    /// These types of actions are initiated by the UI. (They originate from
+    /// some kind of a UI or Dialog interaction)
+    /// </summary>
     public enum PlayerActionType
     {
         EnchantWeapon,

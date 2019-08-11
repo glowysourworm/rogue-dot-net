@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.Generator.Interface
 {
@@ -31,5 +32,10 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         /// Gets random value from a Range<T> object
         /// </summary>
         T GetRandomValue<T>(Range<T> range) where T : IComparable<T>;
+
+        /// <summary>
+        /// Gets a random element from the collection
+        /// </summary>
+        T GetRandomElement<T>(IEnumerable<T> collection);
     }
 }

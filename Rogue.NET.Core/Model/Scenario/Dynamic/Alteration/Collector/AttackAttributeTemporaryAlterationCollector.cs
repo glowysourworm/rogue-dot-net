@@ -4,9 +4,11 @@ using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -16,43 +18,67 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     [Serializable]
     public class AttackAttributeTemporaryAlterationCollector 
                     : IAlterationCollector,
-                      IAlterationEffectCollector<AttackAttributeTemporaryAlterationEffect>, 
+                      IAlterationEffectCollector,
                       IAttackAttributeAlterationCollector, 
-                      ITurnBasedAlterationCollector
+                      ITemporaryAlterationCollector
     {
-        protected IDictionary<string, AttackAttributeTemporaryAlterationEffect> TemporaryAlterations { get; set; }
+        protected IList<AlterationContainer> Alterations { get; set; }
 
         public AttackAttributeTemporaryAlterationCollector()
         {
-            this.TemporaryAlterations = new Dictionary<string, AttackAttributeTemporaryAlterationEffect>();
+            this.Alterations = new List<AlterationContainer>();
         }
 
-        public bool Apply(string alterationId, AttackAttributeTemporaryAlterationEffect effect, AlterationCost cost = null)
+        public bool Apply(AlterationContainer alteration)
         {
-            if (effect.IsStackable &&
-                this.TemporaryAlterations.Any(x => x.Value.RogueName == effect.RogueName))
+            if (alteration.Effect.IsStackable() &&
+                this.Alterations.Any(x => x.RogueName == alteration.RogueName))
                 return false;
 
-            this.TemporaryAlterations.Add(alterationId, effect);
+            this.Alterations.Add(alteration);
 
             return true;
         }
 
-        public void Filter(string alterationId)
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
-            this.TemporaryAlterations.Remove(alterationId);
+            return this.Alterations
+                       .Filter(x => x.RogueName == alterationName)
+                       .Actualize();
         }
 
-        public void ApplyRemedy(RemedyAlterationEffect effect)
+        public IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
         {
-            this.TemporaryAlterations.Filter(x => x.Value.AlteredState.RogueName == effect.RemediedState.RogueName);
+            var curedAlterations = new List<AlterationContainer>();
+
+            for (int i = this.Alterations.Count - 1; i >= 0; i--)
+            {
+                var effect = this.Alterations[i].Effect as AttackAttributeTemporaryAlterationEffect;
+
+                // Compare the altered state name with the remedied state name
+                if (effect.AlteredState.RogueName == remedyEffect.RemediedState.RogueName)
+                {
+                    // Add alteration to result
+                    curedAlterations.Add(this.Alterations[i]);
+
+                    // Remove alteration from list
+                    this.Alterations.RemoveAt(i);
+                }
+            }
+
+            return curedAlterations;
         }
 
-        #region IAlterationCollector
-        public IEnumerable<AlterationCost> GetCosts()
+        public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
             // Temporary alterations only have a one-time cost
-            return new List<AlterationCost>();
+            return new Dictionary<string, AlterationCost>();
+        }
+
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        {
+            return this.Alterations
+                       .ToDictionary(x => x.RogueName, x => x.Effect);
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()
@@ -70,13 +96,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         {
             return 0D;
         }
-        #endregion
 
-        #region IAttackAttributeAlterationCollector
         public IEnumerable<AttackAttribute> GetAttackAttributes(AlterationAttackAttributeCombatType combatType)
         {
-            return this.TemporaryAlterations
-                        .Values
+            return this.Alterations
+                        .Select(x => x.Effect)
+                        .Cast<AttackAttributeTemporaryAlterationEffect>()
                         .Where(x => x.CombatType == combatType)
                         .Aggregate(new List<AttackAttribute>(), (aggregator, effect) =>
                         {
@@ -98,21 +123,29 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                             return aggregator;
                         });
         }
-        #endregion
 
-        #region ITurnBasedAlterationCollector
-        public void ApplyEndOfTurn()
+        public IEnumerable<string> GetEffectNames(AlterationAttackAttributeCombatType combatType)
         {
-            for (int i = this.TemporaryAlterations.Count - 1; i >= 0; i--)
-            {
-                var item = this.TemporaryAlterations.ElementAt(i);
-
-                item.Value.EventTime--;
-
-                if (item.Value.EventTime == 0)
-                    this.TemporaryAlterations.Remove(item.Key);
-            }
+            // TODO:ALTERATION - Have to apply the AlterationContainer.RogueName to all the
+            //                   IAlterationEffect instances.
+            return this.Alterations
+                       .Select(x => x.Effect)
+                       .Cast<AttackAttributeTemporaryAlterationEffect>()
+                       .Where(x => x.CombatType == combatType)
+                       .Select(x => x.RogueName)
+                       .Actualize();
         }
-        #endregion
+
+        public IEnumerable<string> Decrement()
+        {
+            // Decrement Event Counter
+            this.Alterations
+                .ForEach(x => (x.Effect as AttackAttributeTemporaryAlterationEffect).EventTime--);
+
+            // Return effects that have worn off
+            return this.Alterations
+                       .Filter(x => (x.Effect as AttackAttributeTemporaryAlterationEffect).EventTime <= 0)
+                       .Select(x => x.RogueName);
+        }
     }
 }

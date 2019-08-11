@@ -7,58 +7,65 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
     [Serializable]
     public class PassiveAlterationCollector 
                     : IAlterationCollector,
-                      IAlterationEffectCollector<PassiveAlterationEffect>
+                      IAlterationEffectCollector
     {
-        protected IDictionary<string, PassiveAlterationEffect> Alterations { get; set; }
-        protected IDictionary<string, AlterationCost> Costs { get; set; }
+        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
 
         public PassiveAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, PassiveAlterationEffect>();
-            this.Costs = new Dictionary<string, AlterationCost>();
+            this.Alterations = new Dictionary<string, AlterationContainer>();
         }
-
-        public bool Apply(string alterationId, PassiveAlterationEffect alterationEffect, AlterationCost cost = null)
+        public bool Apply(AlterationContainer alteration)
         {
-            this.Alterations.Add(alterationId, alterationEffect);
+            if (!this.Alterations.ContainsKey(alteration.RogueName))
+                this.Alterations.Add(alteration.RogueName, alteration);
 
-            if (cost != null)
-                this.Costs.Add(alterationId, cost);
+            else
+                return false;
 
             return true;
         }
 
-        public void Filter(string alterationId)
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
-            if (this.Alterations.ContainsKey(alterationId))
-                this.Alterations.Remove(alterationId);
-
-            if (this.Costs.ContainsKey(alterationId))
-                this.Costs.Remove(alterationId);
+            return this.Alterations.Filter(x => x.Key == alterationName).Values.Actualize();
         }
 
         public bool CanSeeInvisible()
         {
             return this.Alterations
                        .Values
+                       .Select(x => x.Effect)
+                       .Cast<PassiveAlterationEffect>()
                        .Any(x => x.CanSeeInvisibleCharacters);
         }
 
-        public IEnumerable<AlterationCost> GetCosts()
+        public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
-            return this.Costs.Values;
+            return this.Alterations
+                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+        }
+
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        {
+            return this.Alterations
+                       .ToDictionary(x => x.Key, x => x.Value.Effect);
         }
 
         public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
         {
             return this.Alterations
                        .Values
+                       .Select(x => x.Effect)
+                       .Cast<PassiveAlterationEffect>()
                        .Where(x => x.SymbolAlteration.HasSymbolDelta())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
@@ -73,60 +80,9 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         {
             return this.Alterations
                        .Values
-                       .Aggregate(0D, (aggregator, effect) =>
-                       {
-                           switch (attribute)
-                           {
-                               case CharacterAttribute.Hp:
-                                   aggregator += effect.Hp;
-                                   break;
-                               case CharacterAttribute.Mp:
-                                   aggregator += effect.Mp;
-                                   break;
-                               case CharacterAttribute.Strength:
-                                   aggregator += effect.Strength;
-                                   break;
-                               case CharacterAttribute.Agility:
-                                   aggregator += effect.Agility;
-                                   break;
-                               case CharacterAttribute.Intelligence:
-                                   aggregator += effect.Intelligence;
-                                   break;
-                               case CharacterAttribute.Speed:
-                                   aggregator += effect.Speed;
-                                   break;
-                               case CharacterAttribute.HpRegen:
-                                   aggregator += effect.HpPerStep;
-                                   break;
-                               case CharacterAttribute.MpRegen:
-                                   aggregator += effect.MpPerStep;
-                                   break;
-                               case CharacterAttribute.LightRadius:
-                                   aggregator += effect.LightRadius;
-                                   break;
-                               case CharacterAttribute.Attack:
-                                   aggregator += effect.Attack;
-                                   break;
-                               case CharacterAttribute.Defense:
-                                   aggregator += effect.Defense;
-                                   break;
-                               case CharacterAttribute.Dodge:
-                                   aggregator += effect.DodgeProbability;
-                                   break;
-                               case CharacterAttribute.MagicBlock:
-                                   aggregator += effect.MagicBlockProbability;
-                                   break;
-                               case CharacterAttribute.CriticalHit:
-                                   aggregator += effect.CriticalHit;
-                                   break;
-                               case CharacterAttribute.FoodUsagePerTurn:
-                                   aggregator += effect.FoodUsagePerTurn;
-                                   break;
-                               default:
-                                   break;
-                           }
-                           return aggregator;
-                       });
+                       .Select(x => x.Effect)
+                       .Cast<PassiveAlterationEffect>()
+                       .Aggregate(0D, (aggregator, effect) => effect.GetAttribute(attribute));
         }
     }
 }

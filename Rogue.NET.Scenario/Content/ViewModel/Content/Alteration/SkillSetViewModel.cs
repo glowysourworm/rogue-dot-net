@@ -87,10 +87,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             {
                 return new SkillViewModel(x, eventAggregator)
                 {
-                    Alteration = new SpellViewModel(x.Alteration),
+                    // TODO:ALTERATION
+                    //Alteration = new AlterationViewModel(x.Alteration),
                     AttributeRequirement = x.AttributeRequirement,
                     AttributeLevelRequirement = x.AttributeLevelRequirement,
-                    Description = encyclopedia[x.Alteration.RogueName].LongDescription,
+                    // TODO:ALTERATION
+                    //Description = encyclopedia[x.Alteration.RogueName].LongDescription,
                     HasAttributeRequirement = x.HasAttributeRequirement,
                     HasCharacterClassRequirement = x.HasCharacterClassRequirement,
                     IsLearned = x.IsLearned,
@@ -99,8 +101,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsAttributeRequirementMet = !x.HasAttributeRequirement || 
                                                  player.GetAttribute(x.AttributeRequirement) > x.AttributeLevelRequirement,
                     IsCharacterClassRequirementMet = !x.HasCharacterClassRequirement ||
-                                                (player.CharacterClassAlteration.HasCharacterClass() &&
-                                                 player.CharacterClassAlteration.CharacterClass.RogueName == x.CharacterClass.RogueName),
+                                                (player.Alteration.HasCharacterClass() &&
+                                                 player.Alteration.GetCharacterClass().RogueName == x.CharacterClass.RogueName),
                     SkillPointRequirement = x.SkillPointRequirement,
                     CharacterClass =  new ScenarioImageViewModel(x.CharacterClass),
                     LevelRequirement = x.LevelRequirement,

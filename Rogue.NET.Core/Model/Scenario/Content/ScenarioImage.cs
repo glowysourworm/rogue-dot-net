@@ -24,21 +24,21 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public ScenarioImage() { }
         public ScenarioImage(string name, ImageResources icon)
-            : base(Guid.NewGuid().ToString(), name)
+            : base(name)
         {
             this.Icon = icon;
 
             this.SymbolType = SymbolTypes.Image;
         }
         public ScenarioImage(string name, DisplayImageResources displayIcon)
-            : base(Guid.NewGuid().ToString(), name)
+            : base(name)
         {
             this.DisplayIcon = displayIcon;
 
             this.SymbolType = SymbolTypes.DisplayImage;
         }
         public ScenarioImage(string name, string characterSymbol, string characterColor)
-            : base(Guid.NewGuid().ToString(), name)
+            : base(name)
         {
             this.CharacterColor = characterColor;
             this.CharacterSymbol = characterSymbol;
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolType = SymbolTypes.Character;
         }
         public ScenarioImage(string name, SmileyMoods mood, string smileyBodyColor, string smileyLineColor, string smileyAuraColor)
-            : base(Guid.NewGuid().ToString(), name)
+            : base(name)
         {
             this.SmileyMood = mood;
             this.SmileyAuraColor = smileyAuraColor;

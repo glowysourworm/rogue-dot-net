@@ -5,6 +5,11 @@ using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
+using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
+using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
+using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
+using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
@@ -21,8 +26,8 @@ namespace Rogue.NET.Core.Service
     {
         readonly IScenarioEngine _scenarioEngine;
         readonly IContentEngine _contentEngine;
+        readonly IAlterationEngine _alterationEngine;
         readonly ILayoutEngine _layoutEngine;
-        readonly ISpellEngine _spellEngine;
         readonly IDebugEngine _debugEngine;
 
         readonly IModelService _modelService;
@@ -52,21 +57,21 @@ namespace Rogue.NET.Core.Service
         public ScenarioService(
             IScenarioEngine scenarioEngine,
             IContentEngine contentEngine, 
+            IAlterationEngine alterationEngine,
             ILayoutEngine layoutEngine,
             IModelService modelService,
             IDebugEngine debugEngine,
-            ISpellEngine spellEngine,
             IRayTracer rayTracer)
         {
             _scenarioEngine = scenarioEngine;
             _contentEngine = contentEngine;
+            _alterationEngine = alterationEngine;
             _layoutEngine = layoutEngine;
             _modelService = modelService;
-            _spellEngine = spellEngine;
             _debugEngine = debugEngine;
             _rayTracer = rayTracer;
 
-            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _spellEngine, _debugEngine };
+            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _alterationEngine, _debugEngine };
 
             _lowQueue = new Queue<IRogueUpdate>();
             _highQueue = new Queue<IRogueUpdate>();
@@ -318,7 +323,7 @@ namespace Rogue.NET.Core.Service
                         _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.Actor.Id));
                     break;
                 case LevelProcessingActionType.CharacterAlteration:
-                    _spellEngine.ProcessMagicSpell(workItem.Actor, workItem.Spell);
+                    _alterationEngine.Process(workItem.Actor, workItem.Alteration);
                     break;
             }
             return true;

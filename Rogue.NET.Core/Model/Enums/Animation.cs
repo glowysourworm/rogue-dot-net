@@ -31,11 +31,4 @@
         ChainReverse = 7,
         ScreenBlink = 8
     }
-
-    public enum AnimationTargetType
-    {
-        SourceCharacter = 0,
-        AffectedCharacters = 1,
-        Screen = 2
-    }
 }

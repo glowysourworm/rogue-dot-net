@@ -14,10 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private AlterationCostTemplate _cost;
         private AlterationEffectTemplate _effect;
         private AlterationEffectTemplate _auraEffect;
-        private AlterationType _type;
         private AlterationBlockType _blockType;
-        private AlterationMagicEffectType _otherEffectType;
-        private AlterationAttackAttributeType _attackAttributeType;
         private double _effectRange;
         private bool _stackable;
         private string _createMonsterEnemy;
@@ -60,18 +57,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public AlterationType Type
-        {
-            get { return _type; }
-            set
-            {
-                if (_type != value)
-                {
-                    _type = value;
-                    OnPropertyChanged("Type");
-                }
-            }
-        }
         public AlterationBlockType BlockType
         {
             get { return _blockType; }
@@ -81,30 +66,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 {
                     _blockType = value;
                     OnPropertyChanged("BlockType");
-                }
-            }
-        }
-        public AlterationMagicEffectType OtherEffectType
-        {
-            get { return _otherEffectType; }
-            set
-            {
-                if (_otherEffectType != value)
-                {
-                    _otherEffectType = value;
-                    OnPropertyChanged("OtherEffectType");
-                }
-            }
-        }
-        public AlterationAttackAttributeType AttackAttributeType
-        {
-            get { return _attackAttributeType; }
-            set
-            {
-                if (_attackAttributeType != value)
-                {
-                    _attackAttributeType = value;
-                    OnPropertyChanged("AttackAttributeType");
                 }
             }
         }

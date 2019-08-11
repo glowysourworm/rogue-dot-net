@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Generator.Interface;
+﻿using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +28,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = cells.Where(x => !occupiedLocations.Contains(x.Location));
 
                 // Return random cell
-                return freeCells.PickRandom(randomSequenceGenerator.Get())?.Location ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(freeCells)?.Location ?? CellPoint.Empty;
             }
             // O(1)
             else
-                return cells.PickRandom(randomSequenceGenerator.Get())?.Location ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(cells)?.Location ?? CellPoint.Empty;
         }
 
         /// <summary>
@@ -57,11 +56,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = locations.Except(occupiedLocations);
 
                 // Return random cell
-                return freeCells.PickRandom(randomSequenceGenerator.Get()) ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(freeCells) ?? CellPoint.Empty;
             }
             // O(1)
             else
-                return locations.PickRandom(randomSequenceGenerator.Get()) ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(locations) ?? CellPoint.Empty;
         }
     }
 }

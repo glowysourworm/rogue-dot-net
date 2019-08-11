@@ -1,11 +1,13 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -15,41 +17,41 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     [Serializable]
     public class AttackAttributePassiveAlterationCollector 
                     : IAlterationCollector,
-                      IAlterationEffectCollector<AttackAttributePassiveAlterationEffect>, 
+                      IAlterationEffectCollector,
                       IAttackAttributeAlterationCollector
     {
-        protected IDictionary<string, AttackAttributePassiveAlterationEffect> PassiveAlterations { get; set; }
-        protected IDictionary<string, AlterationCost> Costs { get; set; }
+        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
 
         public AttackAttributePassiveAlterationCollector()
         {
-            this.PassiveAlterations = new Dictionary<string, AttackAttributePassiveAlterationEffect>();
-            this.Costs = new Dictionary<string, AlterationCost>();
+            this.Alterations = new Dictionary<string, AlterationContainer>();
         }
-
-        public bool Apply(string alterationId, AttackAttributePassiveAlterationEffect alterationEffect, AlterationCost cost = null)
+        public bool Apply(AlterationContainer alteration)
         {
-            this.PassiveAlterations.Add(alterationId, alterationEffect);
+            if (!this.Alterations.ContainsKey(alteration.RogueName))
+                this.Alterations.Add(alteration.RogueName, alteration);
 
-            if (cost != null)
-                this.Costs.Add(alterationId, cost);
+            else
+                return false;
 
             return true;
         }
 
-        public void Filter(string alterationId)
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
-            if (this.PassiveAlterations.ContainsKey(alterationId))
-                this.PassiveAlterations.Remove(alterationId);
-
-            if (this.Costs.ContainsKey(alterationId))
-                this.Costs.Remove(alterationId);
+            return this.Alterations.Filter(x => x.Key == alterationName).Values.Actualize();
         }
 
-        #region IAlterationCollector
-        public IEnumerable<AlterationCost> GetCosts()
+        public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
         {
-            return this.Costs.Values;
+            return this.Alterations
+                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+        }
+
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        {
+            return this.Alterations
+                       .ToDictionary(x => x.Key, x => x.Value.Effect);
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()
@@ -67,13 +69,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         {
             return 0D;
         }
-        #endregion
 
-        #region IAttackAttributeAlterationCollector
         public IEnumerable<AttackAttribute> GetAttackAttributes(AlterationAttackAttributeCombatType combatType)
         {
-            return this.PassiveAlterations
+            return this.Alterations
                     .Values
+                    .Select(x => x.Effect)
+                    .Cast<AttackAttributePassiveAlterationEffect>()
                     .Where(x => x.CombatType == combatType)
                     .Aggregate(new List<AttackAttribute>(), (aggregator, effect) =>
                     {
@@ -95,6 +97,17 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                         return aggregator;
                     });
         }
-        #endregion
+
+        public IEnumerable<string> GetEffectNames(AlterationAttackAttributeCombatType combatType)
+        {
+            // TODO:ALTERATION - Have to apply the AlterationContainer.RogueName to all the
+            //                   IAlterationEffect instances.
+            return this.Alterations
+                       .Values
+                       .Cast<AttackAttributePassiveAlterationEffect>()
+                       .Where(x => x.CombatType == combatType)
+                       .Select(x => x.RogueName)
+                       .Actualize();
+        }
     }
 }

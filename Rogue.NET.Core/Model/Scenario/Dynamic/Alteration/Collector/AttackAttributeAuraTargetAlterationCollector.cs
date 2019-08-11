@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -15,7 +16,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     /// </summary>
     [Serializable]
     public class AttackAttributeAuraTargetAlterationCollector 
-               : IAttackAttributeAlterationCollector
+               : IAlterationEffectCollector,
+                 IAttackAttributeAlterationCollector
     {
         protected IList<AttackAttributeAuraAlterationEffect> TargetEffects { get; set; }
 
@@ -35,12 +37,29 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                 this.TargetEffects.Add(effect);
         }
 
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        {
+            return this.TargetEffects
+                       .ToDictionary(x => x.RogueName, x => (IAlterationEffect)x);
+        }
+
         public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
         {
             return this.TargetEffects
                        .Where(x => x.SymbolAlteration.HasSymbolDelta())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
+        }
+
+        public IEnumerable<AlteredCharacterState> GetAlteredStates()
+        {
+            // Attack Attribute Auras don't support altered states
+            return new List<AlteredCharacterState>();
+        }
+
+        public double GetAttributeAggregate(CharacterAttribute attribute)
+        {
+            return 0D;
         }
 
         public IEnumerable<AttackAttribute> GetAttackAttributes(AlterationAttackAttributeCombatType combatType)
@@ -66,6 +85,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 
                             return aggregator;
                         });
+        }
+
+        public IEnumerable<string> GetEffectNames(AlterationAttackAttributeCombatType combatType)
+        {
+            // TODO:ALTERATION - Have to apply the AlterationContainer.RogueName to all the
+            //                   IAlterationEffect instances.
+            return this.TargetEffects
+                       .Where(x => x.CombatType == combatType)
+                       .Select(x => x.RogueName)
+                       .Actualize();
         }
     }
 }

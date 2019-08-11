@@ -1,5 +1,4 @@
 ﻿using Prism.Events;
-using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Service.Interface;
@@ -17,13 +16,13 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -360,7 +359,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// <summary>
         /// Alteration effect / cause container for player - one per passive or temporary effect
         /// </summary>
-        public ObservableCollection<AlterationViewModel> Alterations { get; set; }
+        public ObservableCollection<AlterationDescriptionViewModel> Alterations { get; set; }
 
         public CharacterClassViewModel CharacterClass { get; set; }
 
@@ -381,7 +380,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
-            this.Alterations = new ObservableCollection<AlterationViewModel>();
+            this.Alterations = new ObservableCollection<AlterationDescriptionViewModel>();
             this.CharacterClass = new CharacterClassViewModel();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
@@ -460,8 +459,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                                                            player.GetAttribute(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
                         skill.IsCharacterClassRequirementMet = !skillSource.HasCharacterClassRequirement ||
                                                                  (skillSource.HasCharacterClassRequirement &&
-                                                                 player.CharacterClassAlteration.HasCharacterClass() &&
-                                                                 player.CharacterClassAlteration.CharacterClass.RogueName == skillSource.CharacterClass.RogueName);
+                                                                  player.Alteration.MeetsClassRequirement(skillSource.CharacterClass));
                     });
                 });
 
@@ -496,17 +494,53 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             // Alterations
             this.Alterations.Clear();
-            this.Alterations.AddRange(player.Alteration.Get().Select(tuple => new AlterationViewModel(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4)));
 
-            // Religious Alterations
+            // Alteration Costs (by Alteration Name) - NOT 1-1 WITH EFFECTS
+            var alterationCosts = player.Alteration.GetAlterationCosts();
 
-            // -> Attribute Effect
-            if (player.CharacterClassAlteration.HasAttributeEffect)
-                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.CharacterClassAlteration.AttributeEffect));
+            // Alteration Effects (by Alteration Name) - NOT 1-1 WITH COSTS
+            var alterationEffects = player.Alteration.GetAlterationEffects();
 
-            // -> Attack Attribute Effect
-            if (player.CharacterClassAlteration.HasAttackAttributeEffect)
-                this.Alterations.Add(new AlterationViewModel(AlterationType.PassiveSource, AlterationAttackAttributeType.Passive, new AlterationCost(), player.CharacterClassAlteration.AttackAttributeEffect));
+            // Need 1-1 correspondence between Cost <-> Effect for an alteration
+            //
+            // Passive   -> Only 1 per Alteration Name per Character
+            // Aura      -> Only 1 per Alteration Name per Character
+            // Temporary -> Stackable; but no per-step AlterationCost. So, no problem.
+            //
+            // So, the join method below should work; but ONLY because of the way
+            // the CharacterAlteration component avoids stacking Passives / Auras.
+
+            // Relate Cost <-> Effect
+
+            var alterations = alterationCosts.FullJoin(alterationEffects, x => x.Key, y => y.Key, x =>
+            {
+                // Result for Alteration Cost Only
+                return new Tuple<string, 
+                                 string, 
+                                 AlteredCharacterState, 
+                                 AlterationCost, 
+                                 IAlterationEffect>(x.Key, "Cost", null, x.Value, null);
+            }, y =>
+            {
+                // Result for Alteration Effect Only
+                return new Tuple<string, 
+                                 string, 
+                                 AlteredCharacterState, 
+                                 AlterationCost, 
+                                 IAlterationEffect>(y.Key, y.Value.GetUITypeDescription(), y.Value.GetAlteredState(), null, y.Value);
+            }, (x, y) =>
+            {
+                // Result for Both
+                return new Tuple<string,
+                                 string,
+                                 AlteredCharacterState,
+                                 AlterationCost,
+                                 IAlterationEffect>(y.Key, y.Value.GetUITypeDescription(), y.Value.GetAlteredState(), x.Value, y.Value);
+            });
+
+
+            this.Alterations
+                .AddRange(alterations.Select(x => new AlterationDescriptionViewModel(x.Item1, x.Item2, x.Item5, x.Item3, x.Item4)));
 
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
@@ -602,37 +636,38 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MeleeAttackAttributes.AddRange(attackAttributes);
 
             // Character Class 
-            if (player.CharacterClassAlteration.HasCharacterClass() &&
+            if (player.Alteration.HasCharacterClass() &&
                 _modelService.CharacterClasses.Any()) // Check that model is loaded (could be that no model has loaded for the level)
                                                       // TODO:  Force view model updates to wait until after IModelService is loaded
             {
-                this.CharacterClass.DisplayName = player.CharacterClassAlteration.CharacterClass.RogueName;
-                this.CharacterClass.HasAttackAttributeBonus = player.CharacterClassAlteration.AttackAttributeEffect != null;
-                this.CharacterClass.HasAttributeBonus = player.CharacterClassAlteration.AttributeEffect != null;
+                var characterClass = player.Alteration.GetCharacterClass();
+
+                this.CharacterClass.DisplayName = characterClass.RogueName;
+                this.CharacterClass.HasAttackAttributeBonus = characterClass.HasBonusAttackAttributes;
+                this.CharacterClass.HasAttributeBonus = characterClass.HasAttributeBonus;
                 this.CharacterClass.HasCharacterClass = true;
 
-                this.CharacterClass.UpdateSymbol(player.CharacterClassAlteration.Symbol);
+                this.CharacterClass.UpdateSymbol(characterClass);
 
                 // Bonus Attack Attributes
-                if (player.CharacterClassAlteration.AttackAttributeEffect != null)
+                if (characterClass.HasBonusAttackAttributes)
                 {
                     this.CharacterClass.AttackAttributeBonus.Clear();
                     this.CharacterClass
                         .AttackAttributeBonus
-                        .AddRange(player.CharacterClassAlteration
-                                        .AttackAttributeEffect
-                                        .AttackAttributes
-                                        .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
-                                        .Select(x => new AttackAttributeViewModel(x)));
+                        .AddRange(characterClass.AttackAttributeAlteration
+                                                .AttackAttributes
+                                                .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
+                                                .Select(x => new AttackAttributeViewModel(x)));
                 }
 
-                if (player.CharacterClassAlteration.HasAttributeEffect)
+                // Bonus Attribute
+                if (characterClass.HasAttributeBonus)
                 {
                     // Must be ONE attribute alteration if effect is non-null
-                    var attribute = player.CharacterClassAlteration
-                                           .AttributeEffect
-                                           .GetUIAttributes()
-                                           .First();
+                    var attribute = characterClass.AttributeAlteration
+                                                  .GetUIAttributes()
+                                                  .First();
 
                     // Show SINGLE attribute bonus as a string
                     this.CharacterClass.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;

@@ -38,18 +38,17 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             randomSequenceGenerator.Reseed(seed);
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);
             var attackAttributeGenerator = new AttackAttributeGenerator(randomSequenceGenerator);
-            var spellGenerator = new SpellGenerator();
-            var skillGenerator = new SkillGenerator(spellGenerator);
+            var skillGenerator = new SkillGenerator();
             var skillSetGenerator = new SkillSetGenerator(skillGenerator);
-            var behaviorGenerator = new BehaviorGenerator(spellGenerator);
+            var behaviorGenerator = new BehaviorGenerator();
             var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
             var alteredStateGenerator = new AlteredStateGenerator();
             var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator, animationGenerator);
-            var characterClassGenerator = new CharacterClassGenerator(spellGenerator, attackAttributeGenerator, alterationGenerator, skillSetGenerator);
+            var characterClassGenerator = new CharacterClassGenerator(attackAttributeGenerator, alterationGenerator, skillSetGenerator);
             var itemGenerator = new ItemGenerator(
                 randomSequenceGenerator,
                 attackAttributeGenerator,
-                spellGenerator,
+                animationGenerator,
                 skillSetGenerator);
             var characterGenerator = new CharacterGenerator(
                 randomSequenceGenerator,
@@ -57,7 +56,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 skillSetGenerator,
                 behaviorGenerator,
                 itemGenerator);
-            var doodadGenerator = new DoodadGenerator(spellGenerator);
+            var doodadGenerator = new DoodadGenerator();
             var contentGenerator = new ContentGenerator(
                 randomSequenceGenerator,
                 characterGenerator,

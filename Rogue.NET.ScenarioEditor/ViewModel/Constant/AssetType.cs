@@ -90,7 +90,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         }
         public static string GetSubType(SpellTemplateViewModel viewModel)
         {
-            return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
+            //return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
+            return "TODO:ALTERATION";
         }
         public static string GetSubType(AnimationTemplateViewModel viewModel)
         {

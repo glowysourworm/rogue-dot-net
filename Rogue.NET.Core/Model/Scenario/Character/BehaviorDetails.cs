@@ -57,7 +57,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
                 if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
                    (behavior.AttackType == CharacterAttackType.Skill ||
                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                   !alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, behavior.EnemySkill.Cost))
+                   !alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, behavior.EnemyAlteration.Cost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior
@@ -85,8 +85,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             // Check for Randomizer
             if (this.UseRandomizer && (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0))
                 nextBehavior = validBehaviors.Any() ?
-                                   validBehaviors.PickRandom(randomNumber) :
-                                   Behavior.Default;
+                               validBehaviors.PickRandom() :
+                               Behavior.Default;
 
             // Else, pick first or default (null -> Behavior.Default)
             else

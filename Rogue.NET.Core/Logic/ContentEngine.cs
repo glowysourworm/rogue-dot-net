@@ -33,12 +33,13 @@ namespace Rogue.NET.Core.Logic
         readonly IModelService _modelService;
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
-        readonly ISpellEngine _spellEngine;
+        readonly IAlterationEngine _alterationEngine;
         readonly IEnemyProcessor _enemyProcessor;
         readonly IPlayerProcessor _playerProcessor;        
         readonly IInteractionProcessor _interactionProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly IAlterationGenerator _alterationGenerator;
         readonly ICharacterGenerator _characterGenerator;
         readonly IRogueUpdateFactory _rogueUpdateFactory;
 
@@ -50,24 +51,26 @@ namespace Rogue.NET.Core.Logic
             IModelService modelService, 
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
-            ISpellEngine spellEngine,
+            IAlterationEngine alterationEngine,
             IEnemyProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
             IScenarioMessageService scenarioMessageService,
             IRandomSequenceGenerator randomSequenceGenerator,
+            IAlterationGenerator alterationGenerator,
             ICharacterGenerator characterGenerator,
             IRogueUpdateFactory rogueUpdateFactory)
         {
             _modelService = modelService;
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
-            _spellEngine = spellEngine;
+            _alterationEngine = alterationEngine;
             _enemyProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _alterationGenerator = alterationGenerator;
             _characterGenerator = characterGenerator;
             _rogueUpdateFactory = rogueUpdateFactory;
         }
@@ -142,8 +145,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (equipment.HasCharacterClassRequirement &&
-               (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != equipment.CharacterClass.RogueName))
+               !player.Alteration.MeetsClassRequirement(equipment.CharacterClass))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -239,8 +241,8 @@ namespace Rogue.NET.Core.Logic
             level.RemoveContent(enemy);
 
             // Queue Animation for enemy death
-            if (enemy.DeathAnimations.Count > 0)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
+            if (enemy.DeathAnimation.Animations.Count > 0)
+                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
 
             // Calculate player gains
             _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
@@ -293,7 +295,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check for invisibility
             if (player.Is(CharacterStateType.Invisible) &&
-               !enemy.Alteration.CanSeeInvisibleCharacters() &&
+               !enemy.Alteration.CanSeeInvisible() &&
                !enemy.WasAttackedByPlayer)
             {
                 enemy.IsEngaged = false;
@@ -431,12 +433,12 @@ namespace Rogue.NET.Core.Logic
                     // Mark that the doodad has been used
                     doodad.HasBeenUsed = true;
 
-                    // Queue magic spell with animation
-                    if (character is Player)
-                        _spellEngine.QueuePlayerMagicSpell(doodad.AutomaticSpell);
+                    // Create Alteration
+                    var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration);
 
-                    else
-                        _spellEngine.QueueEnemyMagicSpell(character as Enemy, doodad.AutomaticSpell);
+                    // Validate Alteration Cost -> Queue with animation
+                    if (_alterationEngine.Validate(character, alteration.Cost))
+                        _alterationEngine.Queue(character, alteration);
                 }
                 else
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Press \"D\" to Use");
@@ -471,9 +473,9 @@ namespace Rogue.NET.Core.Logic
                 // Publish Message
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Un-Equipped " + (metaData.IsIdentified ? equipment.RogueName : "???"));
 
-                // If equip spell is present - make sure it's deactivated and removed
-                if (equipment.HasEquipSpell)
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+                // If equip alteration is present - make sure it's deactivated and removed
+                if (equipment.HasEquipAlteration)
+                    _modelService.Player.Alteration.Remove(equipment.EquipAlteration.Name);
 
                 return true;
             }
@@ -536,12 +538,12 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Equipped " + _modelService.GetDisplayName(equipment));
 
-            // Fire equip spell -> This will activate any passive effects after animating
-            if (equipment.HasEquipSpell)
-                _spellEngine.QueuePlayerMagicSpell(equipment.EquipSpell);
+            // Fire equip alteration -> This will activate any passive effects after animating
+            if (equipment.HasEquipAlteration)
+                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
 
-            if (equipment.HasCurseSpell && equipment.IsCursed)
-                _spellEngine.QueuePlayerMagicSpell(equipment.CurseSpell);
+            if (equipment.HasCurseAlteration && equipment.IsCursed)
+                _alterationEngine.Queue(_modelService.Player, _alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
 
             return true;
         }
@@ -563,16 +565,15 @@ namespace Rogue.NET.Core.Logic
 
                 enemy.Equipment.Remove(item.Id);
 
-                // This has a chance of happening if enemy steals something that is marked equiped. Though, it
-                // SHOULD NEVER HAPPEN
+                // This has a chance of happening if enemy steals something that is marked equiped
                 equipment.IsEquipped = false;
 
                 // These cases should never happen; but want to cover them here to be sure.
-                if (equipment.HasEquipSpell && equipment.IsEquipped)
-                    enemy.Alteration.DeactivatePassiveAlteration(equipment.EquipSpell.Id);
+                if (equipment.HasEquipAlteration && equipment.IsEquipped)
+                    enemy.Alteration.Remove(equipment.EquipAlteration.Name);
 
-                if (equipment.HasCurseSpell && equipment.IsEquipped)
-                    enemy.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
+                if (equipment.HasCurseAlteration && equipment.IsEquipped)
+                    enemy.Alteration.Remove(equipment.CurseAlteration.Name);
             }
 
             if (item is Consumable)
@@ -639,13 +640,13 @@ namespace Rogue.NET.Core.Logic
                                     // Calculate hit - if enemy hit then queue Ammunition spell
                                     var enemyHit = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Range);
 
-                                    // If enemy hit then process the spell associated with the ammo
-                                    if (enemyHit)
-                                        _spellEngine.QueueEnemyMagicSpell(enemy, ammo.AmmoSpell);
+                                    // Process the spell associated with the ammo
+                                    if (ammo.AmmoAnimationGroup.Animations.Any())
+                                        RogueUpdateEvent(this, _rogueUpdateFactory.Animation(ammo.AmmoAnimationGroup.Animations, 
+                                                                                             enemy.Location, 
+                                                                                             new CellPoint[] { _modelService.Player.Location }));
 
-                                    // Otherwise, process the animation only
-                                    else if (ammo.AmmoSpell.Animations.Any())
-                                        RogueUpdateEvent(this, _rogueUpdateFactory.Animation(ammo.AmmoSpell.Animations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
+                                    // TODO:ALTERATION - Create an ConsumableAmmoAlteration and process here
 
                                     actionTaken = true;
                                 }
@@ -681,16 +682,21 @@ namespace Rogue.NET.Core.Logic
                                                          .Any(x => x == _modelService.Player.Location) && isLineOfSight;
                             }
 
-                            // Queue Enemy Magic Spell -> Animation -> Post Animation Processing
+                            // Queue Enemy Alteration -> Animation -> Post Animation Processing
                             if (isLineOfSight && isInRange)
                             {
                                 _scenarioMessageService.PublishEnemyAlterationMessage(
                                     ScenarioMessagePriority.Normal,
                                     _modelService.Player.RogueName,
                                     _modelService.GetDisplayName(enemy),
-                                    enemy.BehaviorDetails.CurrentBehavior.EnemySkill.DisplayName);
+                                    enemy.BehaviorDetails.CurrentBehavior.EnemyAlteration.Name);
 
-                                _spellEngine.QueueEnemyMagicSpell(enemy, enemy.BehaviorDetails.CurrentBehavior.EnemySkill);
+                                // Create the alteration
+                                var alteration = _alterationGenerator.GenerateAlteration(enemy.BehaviorDetails.CurrentBehavior.EnemyAlteration);
+
+                                // Validate the cost and process
+                                if (_alterationEngine.Validate(enemy, alteration.Cost))
+                                    _alterationEngine.Queue(enemy, alteration);
 
                                 actionTaken = true;
                             }

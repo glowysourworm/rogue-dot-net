@@ -41,86 +41,62 @@ namespace Rogue.NET.Core.Logic.Content
 
             bool firstAlteration = true;
 
-            foreach (var symbolTemplate in character.Alteration
-                                                 .GetSymbolAlteringEffects()
-                                                 .Select(x => x.SymbolAlteration))
+            foreach (var symbolDelta in character.Alteration
+                                                 .GetSymbolChanges())
             {
                 //Full symbol
-                if (symbolTemplate.IsFullSymbolDelta)
+                if (symbolDelta.IsFullSymbolDelta)
                     return new ScenarioImage()
                     {
-                        CharacterColor = symbolTemplate.CharacterColor,
-                        CharacterSymbol = symbolTemplate.SmileyAuraColor,
-                        Icon = symbolTemplate.Icon,
-                        SmileyAuraColor = symbolTemplate.SmileyAuraColor,
-                        SmileyBodyColor = symbolTemplate.SmileyBodyColor,
-                        SmileyLineColor = symbolTemplate.SmileyLineColor,
-                        SmileyMood = symbolTemplate.SmileyMood,
-                        SymbolType = symbolTemplate.Type
+                        CharacterColor = symbolDelta.CharacterColor,
+                        CharacterSymbol = symbolDelta.SmileyAuraColor,
+                        Icon = symbolDelta.Icon,
+                        SmileyAuraColor = symbolDelta.SmileyAuraColor,
+                        SmileyBodyColor = symbolDelta.SmileyBodyColor,
+                        SmileyLineColor = symbolDelta.SmileyLineColor,
+                        SmileyMood = symbolDelta.SmileyMood,
+                        SymbolType = symbolDelta.Type
                     };
 
                 //Aura
-                if (symbolTemplate.IsAuraDelta)
+                if (symbolDelta.IsAuraDelta)
                     symbol.SmileyAuraColor = firstAlteration ?
-                                                symbolTemplate.SmileyAuraColor :
-                                                ColorUtility.Add(symbol.SmileyAuraColor, symbolTemplate.SmileyAuraColor);
+                                                symbolDelta.SmileyAuraColor :
+                                                ColorUtility.Add(symbol.SmileyAuraColor, symbolDelta.SmileyAuraColor);
 
                 //Body
-                if (symbolTemplate.IsBodyDelta)
+                if (symbolDelta.IsBodyDelta)
                     symbol.SmileyBodyColor = firstAlteration ?
-                                                symbolTemplate.SmileyBodyColor :
-                                                ColorUtility.Add(symbol.SmileyBodyColor, symbolTemplate.SmileyBodyColor);
+                                                symbolDelta.SmileyBodyColor :
+                                                ColorUtility.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
 
                 //Character symbol
-                if (symbolTemplate.IsCharacterDelta)
-                    symbol.CharacterSymbol = symbolTemplate.CharacterSymbol;
+                if (symbolDelta.IsCharacterDelta)
+                    symbol.CharacterSymbol = symbolDelta.CharacterSymbol;
 
                 //Character delta
-                if (symbolTemplate.IsColorDelta)
+                if (symbolDelta.IsColorDelta)
                     symbol.CharacterColor = firstAlteration ?
-                                                symbolTemplate.CharacterColor :
-                                                ColorUtility.Add(symbol.CharacterColor, symbolTemplate.CharacterColor);
+                                                symbolDelta.CharacterColor :
+                                                ColorUtility.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
 
                 //Image
-                if (symbolTemplate.IsImageDelta)
-                    symbol.Icon = symbolTemplate.Icon;
+                if (symbolDelta.IsImageDelta)
+                    symbol.Icon = symbolDelta.Icon;
 
                 //Line
-                if (symbolTemplate.IsLineDelta)
+                if (symbolDelta.IsLineDelta)
                     symbol.SmileyLineColor = firstAlteration ?
-                                                symbolTemplate.SmileyLineColor :
-                                                ColorUtility.Add(symbol.SmileyLineColor, symbolTemplate.SmileyLineColor);
+                                                symbolDelta.SmileyLineColor :
+                                                ColorUtility.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
 
                 //Mood
-                if (symbolTemplate.IsMoodDelta)
-                    symbol.SmileyMood = symbolTemplate.SmileyMood;
+                if (symbolDelta.IsMoodDelta)
+                    symbol.SmileyMood = symbolDelta.SmileyMood;
 
                 firstAlteration = false;
             }
             return symbol;
-        }
-
-        public bool CalculateSpellRequiresTarget(Spell spell)
-        {
-            if (spell.IsPassive())
-                return false;
-
-            if (spell.Type == AlterationType.PermanentAllTargets
-                || spell.Type == AlterationType.PermanentTarget
-                || spell.Type == AlterationType.Steal
-                || spell.Type == AlterationType.TeleportAllTargets
-                || spell.Type == AlterationType.TeleportTarget
-                || spell.Type == AlterationType.TemporaryAllTargets
-                || spell.Type == AlterationType.TemporaryTarget)
-                return true;
-
-            if (spell.Type == AlterationType.AttackAttribute &&
-               (spell.AttackAttributeType == AlterationAttackAttributeType.TemporaryFriendlyTarget ||
-                spell.AttackAttributeType == AlterationAttackAttributeType.TemporaryMalignTarget ||
-                spell.AttackAttributeType == AlterationAttackAttributeType.MeleeTarget))
-                return true;
-
-            return false;
         }
 
         public bool CalculateMeetsAlterationCost(Character character, AlterationCost cost)
@@ -278,13 +254,6 @@ namespace Rogue.NET.Core.Logic.Content
             else
                 ApplyOneTimeAlterationCost(character as Enemy, alterationCost);
         }
-        public void ApplyPermanentEffect(Character character, AlterationEffect alterationEffect)
-        {
-            if (character is Player)
-                ApplyPermanentEffect(character as Player, alterationEffect);
-            else
-                ApplyPermanentEffect(character as Enemy, alterationEffect);
-        }
         public void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect)
         {
             character.StrengthBase += alterationEffect.Strength;
@@ -367,157 +336,43 @@ namespace Rogue.NET.Core.Logic.Content
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
             }
         }
-        public void ApplyRemedy(Character character, AlterationEffect alterationEffect)
+        public void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect)
         {
-            if (character is Player)
-                ApplyRemedy(character as Player, alterationEffect);
-            else
-                ApplyRemedy(character as Enemy, alterationEffect);
+            // Alteration applies remedy to remove or modify internal collections
+            var remediedEffects = character.Alteration.ApplyRemedy(alterationEffect);
+
+            // Publish Messages
+            foreach (var effect in remediedEffects)
+            {
+                _scenarioMessageService.Publish(
+                    ScenarioMessagePriority.Good,
+                    "{0} has been cured!",
+                    alterationEffect.RogueName);
+            }
         }
 
         protected void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
-            if (alterationCost.Type == AlterationCostType.OneTime)
-            {
-                player.AgilityBase -= alterationCost.Agility;
-                player.LightRadiusBase -= alterationCost.LightRadius;
-                player.Experience -= alterationCost.Experience;
-                player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
-                player.Hp -= alterationCost.Hp;
-                player.Hunger += alterationCost.Hunger;
-                player.IntelligenceBase -= alterationCost.Intelligence;
-                player.Mp -= alterationCost.Mp;
-                player.SpeedBase -= alterationCost.Speed;
-                player.StrengthBase -= alterationCost.Strength;
-            }
-            else
-                throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
+            player.AgilityBase -= alterationCost.Agility;
+            player.LightRadiusBase -= alterationCost.LightRadius;
+            player.Experience -= alterationCost.Experience;
+            player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
+            player.Hp -= alterationCost.Hp;
+            player.Hunger += alterationCost.Hunger;
+            player.IntelligenceBase -= alterationCost.Intelligence;
+            player.Mp -= alterationCost.Mp;
+            player.SpeedBase -= alterationCost.Speed;
+            player.StrengthBase -= alterationCost.Strength;
         }
         protected void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost)
         {
-            if (alterationCost.Type == AlterationCostType.OneTime)
-            {
-                enemy.AgilityBase -= alterationCost.Agility;
-                enemy.LightRadiusBase -= alterationCost.LightRadius;
-                enemy.SpeedBase -= alterationCost.Speed;
-                enemy.Hp -= alterationCost.Hp;
-                enemy.IntelligenceBase -= alterationCost.Intelligence;
-                enemy.Mp -= alterationCost.Mp;
-                enemy.StrengthBase -= alterationCost.Strength;
-            }
-            else
-                throw new Exception("Per-Step Alteration Costs Must be applied in the CharacterAlteration");
-        }
-        protected void ApplyPermanentEffect(Player player, AlterationEffect alterationEffect)
-        {
-            player.StrengthBase += alterationEffect.Strength;
-            player.IntelligenceBase += alterationEffect.Intelligence;
-            player.AgilityBase += alterationEffect.Agility;
-            player.SpeedBase += alterationEffect.Speed;
-            player.LightRadiusBase += alterationEffect.AuraRadius;
-            player.FoodUsagePerTurnBase += alterationEffect.FoodUsagePerTurn;
-            player.Experience += alterationEffect.Experience;
-            player.Hunger += alterationEffect.Hunger;
-            player.Hp += alterationEffect.Hp;
-            player.Mp += alterationEffect.Mp;
-
-            // Publish Messages
-
-            // Strength
-            if (alterationEffect.Strength > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Strength has changed by " + alterationEffect.Strength.ToString("F2"));
-
-            else if (alterationEffect.Strength < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Strength has changed by " + alterationEffect.Strength.ToString("F2"));
-
-            // Intelligence
-            if (alterationEffect.Intelligence > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Intelligence has changed by " + alterationEffect.Intelligence.ToString("F2"));
-
-            else if (alterationEffect.Intelligence < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Intelligence has changed by " + alterationEffect.Intelligence.ToString("F2"));
-
-            // Agility
-            if (alterationEffect.Agility > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Agility has changed by " + alterationEffect.Agility.ToString("F2"));
-
-            else if (alterationEffect.Agility < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Agility has changed by " + alterationEffect.Agility.ToString("F2"));
-
-            // Speed
-            if (alterationEffect.Speed > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Speed has changed by " + alterationEffect.Speed.ToString("F2"));
-
-            else if (alterationEffect.Speed < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Speed has changed by " + alterationEffect.Speed.ToString("F2"));
-
-            // AuraRadius
-            if (alterationEffect.AuraRadius > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Light Radius has changed by " + alterationEffect.AuraRadius.ToString("F2"));
-
-            else if (alterationEffect.AuraRadius < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Light Radius has changed by " + alterationEffect.AuraRadius.ToString("F2"));
-
-            // FoodUsagePerTurn
-            if (alterationEffect.FoodUsagePerTurn > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Food Usage has changed by " + alterationEffect.FoodUsagePerTurn.ToString("F3"));
-
-            else if (alterationEffect.FoodUsagePerTurn < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Food Usage has changed by " + alterationEffect.FoodUsagePerTurn.ToString("F3"));
-
-            // Experience
-            if (alterationEffect.Experience > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Experience has changed by " + alterationEffect.Experience.ToString("N0"));
-
-            else if (alterationEffect.Experience < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Experience has changed by " + alterationEffect.Experience.ToString("N0"));
-
-            // Hunger
-            if (alterationEffect.Hunger > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
-
-            else if (alterationEffect.Hunger < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hunger has changed by " + alterationEffect.Hunger.ToString("N0"));
-
-            // Hp
-            if (alterationEffect.Hp > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
-
-            else if (alterationEffect.Hp < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Hp has changed by " + alterationEffect.Hp.ToString("F2"));
-
-            // Mp
-            if (alterationEffect.Mp > 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
-
-            else if (alterationEffect.Mp < 0)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Bad, player.RogueName + " Mp has changed by " + alterationEffect.Mp.ToString("N0"));
-        }
-        protected void ApplyPermanentEffect(Enemy enemy, AlterationEffect alterationEffect)
-        {
-            enemy.StrengthBase += alterationEffect.Strength;
-            enemy.IntelligenceBase += alterationEffect.Intelligence;
-            enemy.AgilityBase += alterationEffect.Agility;
-            enemy.SpeedBase += alterationEffect.Speed;
-            enemy.LightRadiusBase += alterationEffect.AuraRadius;
-            enemy.Hp += alterationEffect.Hp;
-            enemy.Mp += alterationEffect.Mp;
-        }
-        protected void ApplyRemedy(Player player, AlterationEffect alterationEffect)
-        {
-            // Alteration applies remedy to remove or modify internal collections
-            var remediedEffects = player.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);
-
-            foreach (var effect in remediedEffects)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Good, effect.DisplayName + " has been cured!");
-        }
-        protected void ApplyRemedy(Enemy enemy, AlterationEffect alterationEffect)
-        {
-            // Alteration applies remedy to remove or modify internal collections
-            var remediedEffects = enemy.Alteration.ApplyRemedy(alterationEffect.RemediedStateName);
-
-            foreach (var effect in remediedEffects)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " has cured " + effect.DisplayName);
+            enemy.AgilityBase -= alterationCost.Agility;
+            enemy.LightRadiusBase -= alterationCost.LightRadius;
+            enemy.SpeedBase -= alterationCost.Speed;
+            enemy.Hp -= alterationCost.Hp;
+            enemy.IntelligenceBase -= alterationCost.Intelligence;
+            enemy.Mp -= alterationCost.Mp;
+            enemy.StrengthBase -= alterationCost.Strength;
         }
     }
 }

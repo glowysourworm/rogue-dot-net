@@ -29,10 +29,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double Defense { get; set; }
         public double MagicBlockProbability { get; set; }
         public double DodgeProbability { get; set; }
-        public double Experience { get; set; }
-        public double Hunger { get; set; }
-        public double Hp { get; set; }
-        public double Mp { get; set; }
         public double CriticalHit { get; set; }
 
         public bool IsStackable { get; set; }

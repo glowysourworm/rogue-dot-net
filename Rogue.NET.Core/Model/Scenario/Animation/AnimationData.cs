@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
     public class AnimationData : RogueBase
     {
         public AnimationBaseType BaseType { get; set; }
-        public AnimationTargetType TargetType { get; set; }
 
         public int RepeatCount { get; set; }
         public int AnimationTime { get; set; }

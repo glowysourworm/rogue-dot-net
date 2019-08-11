@@ -5,15 +5,13 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
 {
     [Serializable]
-    public class ConsumableProjectileAlteration : AlterationBase
+    public class ConsumableProjectileAlteration : AlterationContainer
     {
         public ConsumableProjectileAlteration()
         {
         }
-        public ConsumableProjectileAlteration(string guid) : base(guid)
-        {
-        }
-        protected override bool ValidateEffectInterfaceType()
+
+        protected override bool ValidateEffectType()
         {
             return this.Effect is IConsumableProjectileAlterationEffect;
         }

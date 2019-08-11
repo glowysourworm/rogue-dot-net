@@ -7,7 +7,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
     public class AnimationTemplateViewModel : TemplateViewModel
     {
         private AnimationBaseType _baseType;
-        private AnimationTargetType _targetType;
         private int _repeatCount;
         private int _animationTime;
         private bool _autoReverse;
@@ -34,11 +33,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
         {
             get { return _baseType; }
             set { this.RaiseAndSetIfChanged(ref _baseType, value); }
-        }
-        public AnimationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
         }
         public int RepeatCount
         {

@@ -1,11 +1,10 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Content;
+﻿using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration;
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario.Dynamic;
-using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
@@ -42,9 +41,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Hp { get; set; }
         public double Mp { get; set; }
 
-        public abstract CharacterAlteration Alteration { get; set; }
-        public CharacterAlteration_NEW Alteration_NEW { get; set; }
-        public virtual CharacterClassAlteration CharacterClassAlteration { get; set; }
+        public CharacterAlteration Alteration { get; set; }
 
         public Character() : base() 
         {
@@ -55,18 +52,11 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         {
             Initialize();
         }
-        public Character(string name, SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
-            : base(name, mood, bodyColor, lineColor, auraColor)
-        {
-            Initialize();
-        }
-
         private void Initialize()
         {
-            this.Alteration_NEW = new CharacterAlteration_NEW();
+            this.Alteration = new CharacterAlteration();
             this.Equipment = new Dictionary<string, Equipment>();
             this.Consumables = new Dictionary<string, Consumable>();
-            this.CharacterClassAlteration = new CharacterClassAlteration();
         }
     }
 }

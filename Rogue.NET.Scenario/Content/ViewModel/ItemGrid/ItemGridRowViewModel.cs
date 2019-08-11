@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Text;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
 
 namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 {
@@ -309,15 +311,15 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.RogueName = consumable.RogueName;
 
             // Make sure identifyConsumable applies to consume an identify item (there's at least one thing to identify)
-            bool isIdentify = consumable.HasSpell && consumable.Spell.OtherEffectType == AlterationMagicEffectType.Identify;
+            bool isIdentify = consumable.HasAlteration && consumable.Alteration.Effect.IsIdentify();
 
             // Level and Character Class requirements are handled by other code. Allow user to TRY to consume for those
-            bool consumeEnable = (consumable.HasSpell && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || 
+            bool consumeEnable = (consumable.HasAlteration && consumable.SubType != ConsumableSubType.Ammo && !isIdentify) || 
                                  (consumable.HasLearnedSkillSet) ||
                                  (consumable.SubType == ConsumableSubType.Note) || // Always allow using notes
                                  (isIdentify && identifyConsumable);
 
-            bool throwEnable = consumable.HasProjectileSpell;
+            bool throwEnable = consumable.HasProjectileAlteration;
 
             this.Quality = "-";
             this.Class = "-";

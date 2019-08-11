@@ -148,12 +148,16 @@ namespace Rogue.NET.ScenarioEditor.Service
                         var high = playerHigh.Consumables
                                             .Values
                                             .Where(x => x.SubType == ConsumableSubType.Food)
-                                            .Sum(x => x.Spell.Effect.HungerRange.Low);
+                                            // TODO:ALTERATION
+                                            // .Sum(x => x.Spell.Effect.HungerRange.Low);
+                                            .Sum(x => 0);
 
                         var low = playerLow.Consumables
                                             .Values
                                             .Where(x => x.SubType == ConsumableSubType.Food)
-                                            .Sum(x => x.Spell.Effect.HungerRange.High);
+                                            // TODO:ALTERATION
+                                            // .Sum(x => x.Spell.Effect.HungerRange.High);
+                                            .Sum(x => 0);
 
                         return new ProjectedQuantityViewModel()
                         {
@@ -538,40 +542,41 @@ namespace Rogue.NET.ScenarioEditor.Service
                 }
             });
 
+            // TODO:ALTERATION
             // 5) Feed player until Hunger drops below 100
-            while (player.Consumables.Values.Any(x => x.SubType == ConsumableSubType.Food &&
-                                                      x.LevelRequired <= player.Level &&
-                                                      x.HasSpell &&
-                                                      x.Spell.Type == AlterationType.PermanentSource &&
-                                                      x.Spell.Effect != null &&                                                      
-                                                      x.Spell.Effect.HungerRange.Low < 0 &&
-                                                      x.Spell.Effect.HungerRange.High < 0) &&
-                                                      player.Hunger > 100 &&
-                                                      simulateEating)
-            {
-                // Order by increasing hunger to avoid consumables with hunger > 0
-                var foodItem = player.Consumables
-                                     .Values
-                                     .OrderBy(x => x.Spell.Effect.HungerRange.Low)
-                                     .First(x => x.SubType == ConsumableSubType.Food);
+            //    while (player.Consumables.Values.Any(x => x.SubType == ConsumableSubType.Food &&
+            //                                              x.LevelRequired <= player.Level &&
+            //                                              x.HasSpell &&
+            //                                              x.Spell.Type == AlterationType.PermanentSource &&
+            //                                              x.Spell.Effect != null &&                                                      
+            //                                              x.Spell.Effect.HungerRange.Low < 0 &&
+            //                                              x.Spell.Effect.HungerRange.High < 0) &&
+            //                                              player.Hunger > 100 &&
+            //                                              simulateEating)
+            //    {
+            //        // Order by increasing hunger to avoid consumables with hunger > 0
+            //        var foodItem = player.Consumables
+            //                             .Values
+            //                             .OrderBy(x => x.Spell.Effect.HungerRange.Low)
+            //                             .First(x => x.SubType == ConsumableSubType.Food);
 
-                // Simulate using the food item
-                player.Hunger -= simulateLow ? foodItem.Spell.Effect.HungerRange.High :
-                                               foodItem.Spell.Effect.HungerRange.Low;
+            //        // Simulate using the food item
+            //        player.Hunger -= simulateLow ? foodItem.Spell.Effect.HungerRange.High :
+            //                                       foodItem.Spell.Effect.HungerRange.Low;
 
-                // Remove or decrement use counter
-                switch (foodItem.Type)
-                {
-                    case ConsumableType.OneUse:
-                        player.Consumables.Remove(foodItem.Id);
-                        break;
-                    case ConsumableType.MultipleUses:
-                        foodItem.Uses--;
-                        break;
-                    case ConsumableType.UnlimitedUses:
-                        break;
-                }
-            }
+            //        // Remove or decrement use counter
+            //        switch (foodItem.Type)
+            //        {
+            //            case ConsumableType.OneUse:
+            //                player.Consumables.Remove(foodItem.Id);
+            //                break;
+            //            case ConsumableType.MultipleUses:
+            //                foodItem.Uses--;
+            //                break;
+            //            case ConsumableType.UnlimitedUses:
+            //                break;
+            //        }
+            //    }
 
             return player;
         }
@@ -597,11 +602,12 @@ namespace Rogue.NET.ScenarioEditor.Service
             consumable.SubType = template.SubType;
             consumable.LevelRequired = template.LevelRequired;
 
-            if (consumable.HasSpell)
-            {
-                consumable.Spell.Effect.HungerRange.Low = template.SpellTemplate.Effect.HungerRange.Low;
-                consumable.Spell.Effect.HungerRange.High = template.SpellTemplate.Effect.HungerRange.High;
-            }
+            // TODO:ALTERATION
+            //if (consumable.HasAlteration)
+            //{
+            //    consumable.Alteration.Effect.HungerRange.Low = template.SpellTemplate.Effect.HungerRange.Low;
+            //    consumable.Alteration.Effect.HungerRange.High = template.SpellTemplate.Effect.HungerRange.High;
+            //}
 
             return consumable;
         }

@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -14,19 +15,16 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(ICharacterClassGenerator))]
     public class CharacterClassGenerator : ICharacterClassGenerator
     {
-        readonly ISpellGenerator _spellGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
         readonly IAlterationGenerator _alterationGenerator;
         readonly ISkillSetGenerator _skillSetGenerator;
 
         [ImportingConstructor]
         public CharacterClassGenerator(
-                ISpellGenerator spellGenerator,
                 IAttackAttributeGenerator attackAttributeGenerator, 
                 IAlterationGenerator alterationGenerator,
                 ISkillSetGenerator skillSetGenerator)
         {
-            _spellGenerator = spellGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _alterationGenerator = alterationGenerator;
             _skillSetGenerator = skillSetGenerator;
@@ -37,23 +35,20 @@ namespace Rogue.NET.Core.Model.Generator
             return new CharacterClass()
             {
                 // Create an alteration for the attack attribute bonus
-                AttackAttributeAlteration = new AlterationEffect()
+                AttackAttributeAlteration = new AttackAttributePassiveAlterationEffect()
                 {
-                    DisplayName = template.Name + " - Attack Attributes",
+                    RogueName = template.Name + " - Attack Attributes",
 
-                    // Don't allow symbol alterations for character class (TBD)
-                    IsSymbolAlteration = false,
                     AttackAttributes = new List<AttackAttribute>(template.BonusAttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)))
                 },
-                AttributeAlteration = new AlterationEffect()
+                AttributeAlteration = new PassiveAlterationEffect()
                 {
-                    DisplayName = template.Name + " - Attribute",
+                    RogueName = template.Name + " - Attribute",
                     
-                    // Don't allow symbol alterations for character class (TBD)
-                    IsSymbolAlteration = false,
+                    // NOTE***  Currently Supported Parameters for Character Class Attribute Bonus
                     Agility = template.BonusAttribute == CharacterAttribute.Agility ? template.BonusAttributeValue : 0,
                     Attack = template.BonusAttribute == CharacterAttribute.Attack ? template.BonusAttributeValue : 0,
-                    AuraRadius = template.BonusAttribute == CharacterAttribute.LightRadius ? template.BonusAttributeValue : 0,
+                    LightRadius = template.BonusAttribute == CharacterAttribute.LightRadius ? template.BonusAttributeValue : 0,
                     CriticalHit = template.BonusAttribute == CharacterAttribute.CriticalHit ? template.BonusAttributeValue : 0,
                     Defense = template.BonusAttribute == CharacterAttribute.Defense ? template.BonusAttributeValue : 0,
                     DodgeProbability = template.BonusAttribute == CharacterAttribute.Dodge ? template.BonusAttributeValue : 0,

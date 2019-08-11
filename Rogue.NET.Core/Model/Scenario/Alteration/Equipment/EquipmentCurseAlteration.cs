@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentCurseAlteration : AlterationBase
+    public class EquipmentCurseAlteration : AlterationContainer
     {
         public AuraSourceParameters AuraParameters { get; set; }
 
@@ -13,12 +13,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
         {
             this.AuraParameters = new AuraSourceParameters();
         }
-        public EquipmentCurseAlteration(string guid) : base(guid)
-        {
-            this.AuraParameters = new AuraSourceParameters();
-        }
 
-        protected override bool ValidateEffectInterfaceType()
+        protected override bool ValidateEffectType()
         {
             return this.Effect is IEquipmentCurseAlterationEffect;
         }

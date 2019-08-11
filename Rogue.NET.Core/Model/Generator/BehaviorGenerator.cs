@@ -8,12 +8,9 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(IBehaviorGenerator))]
     public class BehaviorGenerator : IBehaviorGenerator
     {
-        private readonly ISpellGenerator _spellGenerator;
-
         [ImportingConstructor]
-        public BehaviorGenerator(ISpellGenerator spellGenerator)
+        public BehaviorGenerator()
         {
-            _spellGenerator = spellGenerator;
         }
 
         public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate)
@@ -23,7 +20,7 @@ namespace Rogue.NET.Core.Model.Generator
             behavior.BehaviorCondition = behaviorTemplate.BehaviorCondition;
             behavior.BehaviorExitCondition = behaviorTemplate.BehaviorExitCondition;
             behavior.BehaviorTurnCounter = behaviorTemplate.BehaviorTurnCounter;
-            behavior.EnemySkill = _spellGenerator.GenerateSpell(behaviorTemplate.EnemySpell);
+            behavior.EnemyAlteration = behaviorTemplate.EnemyAlteration;
             behavior.MovementType = behaviorTemplate.MovementType;
             return behavior;
         }

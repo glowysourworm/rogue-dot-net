@@ -1,113 +1,209 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
-using Rogue.NET.Core.Model.Scenario.Dynamic;
-using System;
-using System.Linq;
-using System.Collections.ObjectModel;
-using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
+using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 {
-    public class AlterationViewModel : NotifyViewModel
+    public class AlterationViewModel : RogueBaseViewModel
     {
+        #region Backing Fields
         string _displayName;
-        string _type;                    // Passive / Temporary / Temporary (Friendly) / Temporary (Malign)
+        string _createMonsterEnemyName;
+        bool _isStackable;
+        bool _canSeeInvisibleCharacters;
+        bool _isAlteredState;        
 
-        bool _isAlteredState;
-        ScenarioImageViewModel _alteredCharacterState;
+        ScenarioImageViewModel _alteredState;
+        ScenarioImageViewModel _remediedState;
+        ScenarioImageViewModel _auraAlteredState;
 
+        string _eventTime;
+        string _effectRange;
+        string _displayType;
+
+        AlterationCostType _alterationCostType;
+        string _type;
+        string _attackAttributeType;
+        string _blockType;
+        string _otherEffectType;
+        #endregion
+
+        #region (public) Properties
         public string DisplayName
         {
             get { return _displayName; }
             set { this.RaiseAndSetIfChanged(ref _displayName, value); }
         }
-        public string Type
+        public string CreateMonsterEnemyName
         {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
+            get { return _createMonsterEnemyName; }
+            set { this.RaiseAndSetIfChanged(ref _createMonsterEnemyName, value); }
+        }
+        public bool IsStackable
+        {
+            get { return _isStackable; }
+            set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
+        }
+
+        // Alteration Cost (Other) Attributes
+        public AlterationCostType AlterationCostType
+        {
+            get { return _alterationCostType; }
+            set { this.RaiseAndSetIfChanged(ref _alterationCostType, value); }
+        }
+
+        // Alteration Effect (Other) Attributes
+        public bool CanSeeInvisibleCharacters
+        {
+            get { return _canSeeInvisibleCharacters; }
+            set { this.RaiseAndSetIfChanged(ref _canSeeInvisibleCharacters, value); }
         }
         public bool IsAlteredState
         {
             get { return _isAlteredState; }
             set { this.RaiseAndSetIfChanged(ref _isAlteredState, value); }
         }
-        public ScenarioImageViewModel AlteredCharacterState
+        public string EventTime
         {
-            get { return _alteredCharacterState; }
-            set { this.RaiseAndSetIfChanged(ref _alteredCharacterState, value); }
+            get { return _eventTime; }
+            set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
+        }
+        public ScenarioImageViewModel AlteredState
+        {
+            get { return _alteredState; }
+            set { this.RaiseAndSetIfChanged(ref _alteredState, value); }
+        }
+        public ScenarioImageViewModel RemediedState
+        {
+            get { return _remediedState; }
+            set { this.RaiseAndSetIfChanged(ref _remediedState, value); }
         }
 
-        /// <summary>
-        /// These are calculated with pre-set display values
-        /// </summary>
+        // Alteration AuraEffect (Other) Attributes
+        public ScenarioImageViewModel AuraAlteredState
+        {
+            get { return _auraAlteredState; }
+            set { this.RaiseAndSetIfChanged(ref _auraAlteredState, value); }
+        }
+        public string EffectRange
+        {
+            get { return _effectRange; }
+            set { this.RaiseAndSetIfChanged(ref _effectRange, value); }
+        }
+
+        // Alteration Designation
+        public string DisplayType
+        {
+            get { return _displayType; }
+            set { this.RaiseAndSetIfChanged(ref _displayType, value); }
+        }
+
+        // TODO:ALTERATION
+        public string Type
+        {
+            get { return _type; }
+            set { this.RaiseAndSetIfChanged(ref _type, value); }
+        }
+        // TODO:ALTERATION
+        public string AttackAttributeType
+        {
+            get { return _attackAttributeType; }
+            set { this.RaiseAndSetIfChanged(ref _attackAttributeType, value); }
+        }
+        public string BlockType
+        {
+            get { return _blockType; }
+            set { this.RaiseAndSetIfChanged(ref _blockType, value); }
+        }
+        public string OtherEffectType
+        {
+            get { return _otherEffectType; }
+            set { this.RaiseAndSetIfChanged(ref _otherEffectType, value); }
+        }
+
         public ObservableCollection<AlterationAttributeViewModel> AlterationCostAttributes { get; set; }
-
-        /// <summary>
-        /// These are calculated with pre-set display values
-        /// </summary>
         public ObservableCollection<AlterationAttributeViewModel> AlterationEffectAttributes { get; set; }
-
-        /// <summary>
-        /// Attack Attributes for the alteration effect
-        /// </summary>
+        public ObservableCollection<AlterationAttributeViewModel> AlterationAuraEffectAttributes { get; set; }
         public ObservableCollection<AttackAttributeViewModel> AlterationEffectAttackAttributes { get; set; }
 
-        public AlterationViewModel()
-        {
-            this.AlterationCostAttributes = new ObservableCollection<AlterationAttributeViewModel>();
-            this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
-            this.AlterationEffectAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
+        #endregion
 
-            this.IsAlteredState = false;
+        public AlterationViewModel(AlterationContainer alteration) : base(alteration)
+        {
+            this.Type = alteration.Effect.GetUITypeDescription();
+            this.BlockType = alteration.SupportsBlocking() ? alteration.BlockType.ToString() : "N/A";
+            this.OtherEffectType = alteration.Effect.GetUIOtherEffectType();
+            this.AttackAttributeType = alteration.Effect.GetUIAttackAttributeType();
+
+            // TODO:ALTERATION
+            this.DisplayType = this.Type;
+
+            // TODO:ALTERATION
+            // For Auras
+            //this.EffectRange = alteration.EffectRange.ToString("N0");
+            //this.AuraAlteredState = alteration.AuraEffect.AlteredState == null ? null :
+            //                        new ScenarioImageViewModel(alteration.AuraEffect.Guid, 
+            //                                                   alteration.AuraEffect.Name,
+            //                                                   alteration.AuraEffect.AlteredState.SymbolDetails);
+
+            // TODO:ALTERATION
+            // Effect
+            //this.CanSeeInvisibleCharacters = alteration.Effect.CanSeeInvisibleCharacters;
+            //this.IsAlteredState = alteration.Effect.AlteredState != null && alteration.Effect.AlteredState.BaseType != CharacterStateType.Normal;
+            //this.EventTime = alteration.Effect.EventTime.Low == alteration.Effect.EventTime.High ? 
+            //                    alteration.Effect.EventTime.Low.ToString("N0") :
+            //                    alteration.Effect.EventTime.Low.ToString("N0") + " to " +
+            //                    alteration.Effect.EventTime.High.ToString("N0");
+            //this.AlteredState = this.IsAlteredState ? new ScenarioImageViewModel(
+            //                                            alteration.Effect.AlteredState.Guid,
+            //                                            alteration.Effect.AlteredState.Name,
+            //                                            alteration.Effect.AlteredState.SymbolDetails) : null;
+            //this.RemediedState = this.Type == AlterationType.Remedy ? new ScenarioImageViewModel(
+            //                                            alteration.Effect.RemediedState.Guid,
+            //                                            alteration.Effect.RemediedState.Name,
+            //                                            alteration.Effect.RemediedState.SymbolDetails) : null;
+
+
+            // Parameters
+            //this.AlterationCostType = alteration.Cost.Type;
+            //this.CreateMonsterEnemyName = alteration.CreateMonsterEnemyName;
+            //this.DisplayName = alteration.DisplayName;
+
+            //this.AlterationAuraEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>(
+            //    alteration.AuraEffect.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
+            //    {
+            //        AttributeName = x.Key,
+            //        AttributeValue = x.Value
+            //    }));
+
+            //this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>(
+            //    alteration.Effect.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
+            //    {
+            //        AttributeName = x.Key,
+            //        AttributeValue = x.Value
+            //    }));
+
+            //this.AlterationCostAttributes = new ObservableCollection<AlterationAttributeViewModel>(
+            //    alteration.Cost.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
+            //    {
+            //        AttributeName = x.Key,
+            //        AttributeValue = x.Value.ToString("F2")
+            //    }));
+
+            //this.AlterationEffectAttackAttributes = new ObservableCollection<AttackAttributeViewModel>(
+            //    alteration.Effect
+            //              .AttackAttributes
+            //              .Where(x => x.Attack.IsSet() || x.Resistance.IsSet() || x.Weakness.IsSet())
+            //              .Select(x => new AttackAttributeViewModel(x)));
         }
 
-        /// <summary>
-        /// NOT LIKED - But this constructor can use the Character Alteration.Get tuple to create
-        /// an Aleration ViewModel. This should be refactored to create some other data class
-        /// </summary>
-        public AlterationViewModel(
-                AlterationType type, 
-                AlterationAttackAttributeType attackAttributeType, 
-                AlterationCost alterationCost, 
-                AlterationEffect alterationEffect)
-        {
-            this.DisplayName = alterationEffect.DisplayName;
-            this.Type = type == AlterationType.PassiveAura ? "Aura" :
-                        type == AlterationType.PassiveSource ? "Passive" :
-                        type == AlterationType.TemporarySource ? "Temporary" :
-                        type == AlterationType.AttackAttribute ?
-                            attackAttributeType == AlterationAttackAttributeType.Passive ? "Passive" :
-                            attackAttributeType == AlterationAttackAttributeType.TemporaryFriendlySource ? "Temporary (Friendly)" :
-                            attackAttributeType == AlterationAttackAttributeType.TemporaryMalignSource ? "Temporary (Malign)" : "" : "";
-            this.AlteredCharacterState = alterationEffect.State == null ? null : new ScenarioImageViewModel(alterationEffect.State);
-            this.AlterationCostAttributes = alterationCost != null ?
-                new ObservableCollection<AlterationAttributeViewModel>(
-                    alterationCost.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
-                    {
-                        AttributeName = x.Key,
-                        AttributeValue = x.Value.ToString("F2")
-                    })) :
-                new ObservableCollection<AlterationAttributeViewModel>();
-
-            this.AlterationEffectAttributes =
-                new ObservableCollection<AlterationAttributeViewModel>(
-                    alterationEffect.GetUIAttributes().Select(x => new AlterationAttributeViewModel()
-                    {
-                        AttributeName = x.Key,
-                        AttributeValue = x.Value.ToString("F2")
-                    }));
-
-            this.AlterationEffectAttackAttributes =
-                new ObservableCollection<AttackAttributeViewModel>(
-                    alterationEffect.AttackAttributes
-                                    .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
-                                    .Select(x => new AttackAttributeViewModel(x)));
-
-            this.IsAlteredState = alterationEffect.State != null &&
-                                  alterationEffect.State.BaseType != CharacterStateType.Normal;
-        }
     }
 }

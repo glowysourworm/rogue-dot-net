@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
@@ -40,13 +41,22 @@ namespace Rogue.NET.Core.Logic.Content
             enemy.Alteration.DecrementEventTimes();
 
             // Calculate Auras Affecting Enemy
-            var distance = Calculator.RoguianDistance(player.Location, enemy.Location);
+            var distance = Calculator.EuclideanDistance(player.Location, enemy.Location);
 
             // Get Player Active Auras
-            var playerAuraEffects = player.Alteration.GetActiveAuras();
+            var playerAttackAttributeAuraEffects = player.Alteration.GetAttackAttributeAuras();
+            var playerAuraEffects = player.Alteration.GetAuras();
 
             // Set Effect to Enemies in range
-            enemy.Alteration.SetAuraEffects(playerAuraEffects.Where(x => x.EffectRange >= distance));
+            enemy.Alteration
+                 .ApplyTargetAuraEffects(playerAuraEffects.Where(x => x.Item2.AuraRange >= distance)
+                                                          .Select(x => x.Item1)
+                                                          .Actualize());
+
+            enemy.Alteration
+                 .ApplyTargetAuraEffects(playerAttackAttributeAuraEffects.Where(x => x.Item2.AuraRange >= distance)
+                                                                         .Select(x => x.Item1)
+                                                                         .Actualize());
 
             // Increment Behavior Turn Counter / Select next behavior
             enemy.BehaviorDetails.IncrementBehavior(enemy, _alterationProcessor, actionTaken, _randomSequenceGenerator.Get());

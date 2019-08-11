@@ -461,7 +461,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // Calculate invisibility
                 var enemy = (scenarioObject as Enemy);
 
-                isEnemyInvisible = (enemy.IsInvisible || enemy.Is(CharacterStateType.Invisible)) && !_modelService.Player.Alteration.CanSeeInvisibleCharacters();
+                isEnemyInvisible = (enemy.IsInvisible || enemy.Is(CharacterStateType.Invisible)) && !_modelService.Player.Alteration.CanSeeInvisible();
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
             }
 
@@ -546,7 +546,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
                     isEnemyInvisible = (enemy.IsInvisible || 
                                         enemy.Is(CharacterStateType.Invisible)) && 
-                                        !_modelService.Player.Alteration.CanSeeInvisibleCharacters();
+                                        !_modelService.Player.Alteration.CanSeeInvisible();
 
                     effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
                 }
@@ -639,35 +639,30 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var targets = animationData.TargetLocations.Select(x => _scenarioUIGeometryService.Cell2UI(x, true)).ToArray();
             var bounds = new Rect(0, 0, _levelWidth, _levelHeight);
 
-            // Put in a catch for overlapping targets with the source
-            //
-            // TODO: Fix any sources of this and remove
-            if (targets.Any(target => target.X == source.X && target.Y == source.Y))
-            {
-                MessageBox.Show("Animation Error:  Overlapping source and target");
-                return;
-            }
-
             //Create animations
             var animations = animationData.Animations.Select(x =>
             {
-                return new { AnimationGroup = _animationCreator.CreateAnimation(x, bounds, source, targets), AnimationTemplate = x };
+                return new
+                {
+                    TimedGraphic = _animationCreator.CreateAnimation(x, bounds, source, targets),
+                    AnimationData = x
+                };
             });
 
             foreach (var animation in animations)
             {
                 // Start
-                foreach (var graphic in animation.AnimationGroup.GetGraphics())
+                foreach (var graphic in animation.TimedGraphic.GetGraphics())
                 {
                     Canvas.SetZIndex(graphic, 100);
                     this.Contents.Add(graphic);
                 }
 
-                animation.AnimationGroup.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
-                animation.AnimationGroup.Start();
+                animation.TimedGraphic.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
+                animation.TimedGraphic.Start();
 
                 // Wait for completion
-                var waitTime = _animationCreator.CalculateRunTime(animation.AnimationTemplate, source, targets);
+                var waitTime = _animationCreator.CalculateRunTime(animation.AnimationData, source, targets);
 
                 await Task.Delay(waitTime);
             }

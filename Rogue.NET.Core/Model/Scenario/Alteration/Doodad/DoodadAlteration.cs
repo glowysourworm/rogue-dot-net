@@ -6,17 +6,15 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Doodad
 {
     [Serializable]
-    public class DoodadAlteration : AlterationBase
+    public class DoodadAlteration : AlterationContainer
     {
         public AlterationTargetType TargetType { get; set; }
 
         public DoodadAlteration()
         {
         }
-        public DoodadAlteration(string guid) : base(guid)
-        {
-        }
-        protected override bool ValidateEffectInterfaceType()
+
+        protected override bool ValidateEffectType()
         {
             return this.Effect is IDoodadAlterationEffect;
         }

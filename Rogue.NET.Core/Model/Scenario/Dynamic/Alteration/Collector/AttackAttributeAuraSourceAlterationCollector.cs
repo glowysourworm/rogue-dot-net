@@ -1,9 +1,15 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
+using System.Linq;
 using System.Collections.Generic;
-
+using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
+using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 {
@@ -12,53 +18,96 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     /// </summary>
     [Serializable]
     public class AttackAttributeAuraSourceAlterationCollector 
-                 : IAlterationAuraSourceCollector<AttackAttributeAuraAlterationEffect>
+                 : IAlterationCollector,
+                   IAlterationEffectCollector,
+                   IAlterationAuraSourceCollector<AttackAttributeAuraAlterationEffect>
     {
-        // Alteration Effects that are applied to any targets that wander in the effect range
-        protected IDictionary<string, AttackAttributeAuraAlterationEffect> TargetEffects { get; set; }
-        protected IDictionary<string, AlterationCost> Costs { get; set; }
-        protected IDictionary<string, AuraSourceParameters> SourceParameters { get; set; }
+        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
 
         public AttackAttributeAuraSourceAlterationCollector()
         {
-            this.Costs = new Dictionary<string, AlterationCost>();
-            this.TargetEffects = new Dictionary<string, AttackAttributeAuraAlterationEffect>();
-            this.SourceParameters = new Dictionary<string, AuraSourceParameters>();
+            this.Alterations = new Dictionary<string, AlterationContainer>();
         }
-        public void Apply(string alterationId, AttackAttributeAuraAlterationEffect targetEffect, AuraSourceParameters sourceParameters, AlterationCost cost = null)
-        {
-            this.TargetEffects.Add(alterationId, targetEffect);
-            this.SourceParameters.Add(alterationId, sourceParameters);
 
-            if (cost != null)
-                this.Costs.Add(alterationId, cost);
-        }
-        public void Filter(string alterationId)
+        public bool Apply(AlterationContainer alteration)
         {
-            this.TargetEffects.Remove(alterationId);
-            this.SourceParameters.Remove(alterationId);
+            if (!this.Alterations.ContainsKey(alteration.RogueName))
+                this.Alterations.Add(alteration.RogueName, alteration);
 
-            if (this.Costs.ContainsKey(alterationId))
-                this.Costs.Remove(alterationId);
+            else
+                return false;
+
+            return true;
         }
-        public IEnumerable<AlterationCost> GetCosts()
+
+        public IEnumerable<AlterationContainer> Filter(string alterationName)
         {
-            return this.Costs.Values;
+            return this.Alterations.Filter(x => x.Key == alterationName).Values;
         }
+
+        public IEnumerable<KeyValuePair<string, AlterationCost>> GetCosts()
+        {
+            return this.Alterations
+                       .ToDictionary(x => x.Key, x => x.Value.Cost);
+        }
+
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        {
+            // Aura source not affected by the IAlterationEffect
+            return new Dictionary<string, IAlterationEffect>();
+        }
+
         public IEnumerable<AuraSourceParameters> GetAuraSourceParameters()
         {
-            return this.SourceParameters.Values;
+            return GetAuraEffects().Select(x => x.Item2).Actualize();
         }
 
-        public IEnumerable<Tuple<AttackAttributeAuraAlterationEffect, AuraSourceParameters>> GetEffects()
+        public IEnumerable<Tuple<AttackAttributeAuraAlterationEffect, AuraSourceParameters>> GetAuraEffects()
         {
             var result = new List<Tuple<AttackAttributeAuraAlterationEffect, AuraSourceParameters>>();
 
-            foreach (var effect in this.TargetEffects)
-                result.Add(new Tuple<AttackAttributeAuraAlterationEffect, 
-                                     AuraSourceParameters>(effect.Value, this.SourceParameters[effect.Key]));
+            foreach (var alteration in this.Alterations.Values)
+            {
+                // Equipment Equip Alteration
+                if (alteration is EquipmentEquipAlteration)
+                    result.Add(new Tuple<AttackAttributeAuraAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect as AttackAttributeAuraAlterationEffect,
+                                                              (alteration as EquipmentEquipAlteration).AuraParameters));
+
+                // Equipment Curse Alteration
+                else if (alteration is EquipmentCurseAlteration)
+                    result.Add(new Tuple<AttackAttributeAuraAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect as AttackAttributeAuraAlterationEffect,
+                                                              (alteration as EquipmentCurseAlteration).AuraParameters));
+
+                // Skill Alteration
+                else if (alteration is SkillAlteration)
+                    result.Add(new Tuple<AttackAttributeAuraAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect as AttackAttributeAuraAlterationEffect,
+                                                              (alteration as SkillAlteration).AuraParameters));
+
+                else
+                    throw new Exception("Invalid Aura Alteration Type");
+            }
 
             return result;
+        }
+
+        public IEnumerable<AlteredCharacterState> GetAlteredStates()
+        {
+            // Aura Sources don't have altered states
+            return new List<AlteredCharacterState>();
+        }
+
+        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        {
+            // Aura Sources don't have symbol changes
+            return new List<SymbolDeltaTemplate>();
+        }
+
+        public double GetAttributeAggregate(CharacterAttribute attribute)
+        {
+            return 0D;
         }
     }
 }

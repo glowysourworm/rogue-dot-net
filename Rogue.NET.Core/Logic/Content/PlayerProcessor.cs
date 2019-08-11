@@ -1,24 +1,24 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Static;
+using Rogue.NET.Core.Service.Interface;
 
 using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Core.Model.ScenarioMessage;
 using System.Windows.Media;
-using Rogue.NET.Core.Logic.Static;
-using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+
+
+
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -106,12 +106,11 @@ namespace Rogue.NET.Core.Logic.Content
             // Set Killed By if malign attribute hit is great enough
             if (player.Hp <= 0)
             {
-                var malignAlteration = player.Alteration
-                                            .GetTemporaryAttackAttributeAlterations(false)
-                                            .FirstOrDefault();
+                var malignAlterationName = player.Alteration
+                                                 .GetKilledBy();
 
-                if (malignAlteration != null)
-                    _modelService.SetKilledBy(malignAlteration.DisplayName);
+                if (!string.IsNullOrEmpty(malignAlterationName))
+                    _modelService.SetKilledBy(malignAlterationName);
             }
 
             // Broadcast hungry, starving, critical messages
@@ -156,7 +155,7 @@ namespace Rogue.NET.Core.Logic.Content
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + skillSet.RogueName);
 
                     // Pass-Through method is Safe to call
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(skillSet.GetCurrentSkillAlteration().Id);
+                    _modelService.Player.Alteration.Remove(skillSet.GetCurrentSkillAlteration().Name);
                 }
 
                 // Check for skills that have requirements met / or lost
@@ -177,24 +176,24 @@ namespace Rogue.NET.Core.Logic.Content
             }
 
             // Normal temporary effects
-            var effectsFinished = player.Alteration.DecrementEventTimes();
+            var effectsFinishedNames = player.Alteration.DecrementEventTimes();
 
             // Display PostEffect Messages
-            foreach (var effect in effectsFinished)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, effect.DisplayName + " has worn off");
+            foreach (var effectName in effectsFinishedNames)
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, effectName + " has worn off");
 
             //Apply per step alteration costs
             foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
-                player.AgilityBase -= alterationCost.Agility;
-                player.LightRadiusBase -= alterationCost.LightRadius;
-                player.Experience -= alterationCost.Experience;
-                player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
-                player.Hp -= alterationCost.Hp;
-                player.Hunger += alterationCost.Hunger;
-                player.IntelligenceBase -= alterationCost.Intelligence;
-                player.Mp -= alterationCost.Mp;
-                player.StrengthBase -= alterationCost.Strength;
+                player.AgilityBase -= alterationCost.Value.Agility;
+                player.LightRadiusBase -= alterationCost.Value.LightRadius;
+                player.Experience -= alterationCost.Value.Experience;
+                player.FoodUsagePerTurnBase += alterationCost.Value.FoodUsagePerTurn;
+                player.Hp -= alterationCost.Value.Hp;
+                player.Hunger += alterationCost.Value.Hunger;
+                player.IntelligenceBase -= alterationCost.Value.Intelligence;
+                player.Mp -= alterationCost.Value.Mp;
+                player.StrengthBase -= alterationCost.Value.Strength;
             }
 
             //Maintain Passive Effects
@@ -211,7 +210,7 @@ namespace Rogue.NET.Core.Logic.Content
                     var currentSkill = skillSet.GetCurrentSkillAlteration();
 
                     // Deactive the passive alteration - referenced by Spell Id
-                    player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
+                    player.Alteration.Remove(currentSkill.Name);
                 }
             }
 
@@ -230,7 +229,7 @@ namespace Rogue.NET.Core.Logic.Content
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating " + x.RogueName);
 
                     // Pass-Through method is Safe to call
-                    player.Alteration.DeactivatePassiveAlteration(x.GetCurrentSkillAlteration().Id);
+                    player.Alteration.Remove(x.GetCurrentSkillAlteration().Name);
                 }
 
                 x.IsActive = false;

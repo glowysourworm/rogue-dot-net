@@ -5,10 +5,6 @@
         Level,
         PlayerAdvancement
     }
-    public enum LevelTemporaryEventType
-    {
-        RoamingLightSource
-    }
     public enum PlayerStartLocation
     {
         /// <summary>
@@ -27,7 +23,7 @@
         StairsDown,
 
         /// <summary>
-        /// To permit spells to use random level placement (and change of level)
+        /// Starts player at random available location
         /// </summary>
         Random,
     }

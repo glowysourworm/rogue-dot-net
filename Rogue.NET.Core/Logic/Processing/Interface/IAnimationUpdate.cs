@@ -1,7 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+﻿using Rogue.NET.Core.Model.Scenario.Animation;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
@@ -11,7 +10,7 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     /// </summary>
     public interface IAnimationUpdate : IRogueUpdate
     {
-        IEnumerable<AnimationTemplate> Animations { get; set; }
+        IEnumerable<AnimationData> Animations { get; set; }
         CellPoint SourceLocation { get; set; }
         IEnumerable<CellPoint> TargetLocations { get; set; }
     }

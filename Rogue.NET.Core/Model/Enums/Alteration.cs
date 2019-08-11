@@ -2,6 +2,32 @@
 
 namespace Rogue.NET.Core.Model.Enums
 {
+    public enum AlterationCostType : int
+    {
+        None = 0,
+        OneTime = 1,
+        PerStep = 2
+    }
+    /// <summary>
+    /// Defines a way to block (completely negate Effects) Alterations using different stats
+    /// </summary>
+    public enum AlterationBlockType
+    {
+        /// <summary>
+        /// Alteration can't be blocked
+        /// </summary>
+        NonBlockable = 0,
+
+        /// <summary>
+        /// Blocks Alteration using Base Intelligence ONLY
+        /// </summary>
+        Mental = 1,
+
+        /// <summary>
+        /// Blocks Alteration using Base Agility ONLY
+        /// </summary>
+        Physical = 2
+    }
     public enum AlterationTargetType : int
     {
         Source = 1,
@@ -38,16 +64,19 @@ namespace Rogue.NET.Core.Model.Enums
         WeaponImbue = 5,
         WeaponQuality = 6
     }
-    public enum AlterationAttackAttributeApplicationType : int
-    {
-        Passive = 1,
-        Temporary = 2,
-        Melee = 3,
-        Aura = 4
-    }
     public enum AlterationAttackAttributeCombatType : int
     {
-        Friendly = 1,
-        Malign = 2
+        /// <summary>
+        /// For this type the attack attributes are aggregated to be applied during combat
+        /// </summary>
+        FriendlyAggregate = 1,
+
+        /// <summary>
+        /// For this type the attack attributes are used to fight the character (source, target,
+        /// targets in range, in aura range, etc...) at the end of each turn. All attack attributes
+        /// with this combat type are aggregated to be pitted against the character's other 
+        /// attributes and any alteration that has FriendlyAggregate specified.
+        /// </summary>
+        MalignPerStep = 2
     }
 }

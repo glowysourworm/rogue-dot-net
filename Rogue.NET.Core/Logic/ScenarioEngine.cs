@@ -19,15 +19,14 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Logic.Static;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Logic.Content.Enum;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -37,12 +36,13 @@ namespace Rogue.NET.Core.Logic
     {
         readonly ILayoutEngine _layoutEngine;
         readonly IContentEngine _contentEngine;
-        readonly ISpellEngine _spellEngine;
+        readonly IAlterationEngine _alterationEngine;
         readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IInteractionProcessor _interactionProcessor;
-        readonly IPlayerProcessor _playerProcessor;
+        readonly IPlayerProcessor _playerProcessor;        
         readonly IAlterationProcessor _alterationProcessor;
+        readonly IAlterationGenerator _alterationGenerator;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IRogueUpdateFactory _rogueUpdateFactory;
 
@@ -53,23 +53,25 @@ namespace Rogue.NET.Core.Logic
         public ScenarioEngine(
             ILayoutEngine layoutEngine,
             IContentEngine contentEngine,
-            ISpellEngine spellEngine,
+            IAlterationEngine alterationEngine,
             IModelService modelService,
             IScenarioMessageService scenarioMessageService,
             IInteractionProcessor interactionProcessor,
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,
+            IAlterationGenerator alterationGenerator,
             IRandomSequenceGenerator randomSequenceGenerator,
             IRogueUpdateFactory rogueUpdateFactory)
         {
             _layoutEngine = layoutEngine;
             _contentEngine = contentEngine;
-            _spellEngine = spellEngine;
+            _alterationEngine = alterationEngine;
             _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
             _interactionProcessor = interactionProcessor;
             _playerProcessor = playerProcessor;
             _alterationProcessor = alterationProcessor;
+            _alterationGenerator = alterationGenerator;
             _randomSequenceGenerator = randomSequenceGenerator;
             _rogueUpdateFactory = rogueUpdateFactory;
         }
@@ -243,8 +245,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (thrownItem.HasCharacterClassRequirement &&
-               (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != thrownItem.CharacterClass.RogueName))
+                player.Alteration.MeetsClassRequirement(thrownItem.CharacterClass))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -255,18 +256,27 @@ namespace Rogue.NET.Core.Logic
             }
 
             // TBD: Create general consumable for projectiles that has melee parameters
-            if (thrownItem.HasProjectileSpell)
+            if (thrownItem.HasProjectileAlteration)
             {
-                // Queue the spell and remove the item
-                _spellEngine.QueuePlayerMagicSpell(thrownItem.ProjectileSpell);
+                // Create Alteration 
+                var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
 
-                // Remove item from inventory
-                player.Consumables.Remove(itemId);
+                // If Alteration Cost is Met (PUBLISHES MESSAGES)
+                if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+                {
+                    // Queue the alteration and remove the item
+                    _alterationEngine.Queue(_modelService.Player, alteration);
 
-                // Queue Level Update - Player Consumables Remove
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
+                    // Remove item from inventory
+                    player.Consumables.Remove(itemId);
 
-                return LevelContinuationAction.ProcessTurnNoRegeneration;
+                    // Queue Level Update - Player Consumables Remove
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
+
+                    return LevelContinuationAction.ProcessTurnNoRegeneration;
+                }
+                else
+                    return LevelContinuationAction.ProcessTurnNoRegeneration;
             }
 
             return LevelContinuationAction.DoNothing;
@@ -275,8 +285,12 @@ namespace Rogue.NET.Core.Logic
         {
             var player = _modelService.Player;
             var consumable = player.Consumables[itemId];
-            var meetsAlterationCost = _alterationProcessor.CalculatePlayerMeetsAlterationCost(player, consumable.Spell.Cost);
+            var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration) : null;
             var displayName = _modelService.GetDisplayName(consumable);
+
+            // TODO:ALTERATION - Have to validate that each consumable has an alteration. Also, REMOVE 
+            //                   ALTERATION USE / SETTING FOR AMMO TYPE (JUST MAKE A SEPARATE ONE IF
+            //                   WE PLAN TO SUPPORT IT FOR FIRING RANGE WEAPON ONLY)
 
             // Check that item has level requirement met (ALSO DONE ON FRONT END)
             if (consumable.LevelRequired > player.Level)
@@ -287,8 +301,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (consumable.HasCharacterClassRequirement &&
-               (!player.CharacterClassAlteration.HasCharacterClass() ||
-                 player.CharacterClassAlteration.CharacterClass.RogueName != consumable.CharacterClass.RogueName))
+                player.Alteration.MeetsClassRequirement(consumable.CharacterClass))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
@@ -298,15 +311,21 @@ namespace Rogue.NET.Core.Logic
                 return LevelContinuationAction.DoNothing;
             }
 
-            // Check for targeting - including Ammo type
-            if (consumable.HasSpell || consumable.SubType == ConsumableSubType.Ammo)
+            // Check for targeting
+            if (consumable.HasAlteration)
             {
                 var targetedEnemy = _modelService.GetTargetedEnemies()
                                                  .FirstOrDefault();
 
-                if (_alterationProcessor.CalculateSpellRequiresTarget(consumable.Spell) && targetedEnemy == null)
+                if (alteration.RequiresTarget() && targetedEnemy == null)
                 {
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
+                    return LevelContinuationAction.DoNothing;
+                }
+
+                else if (alteration.RequiresCharacterInRange() && !_modelService.GetVisibleEnemies().Any())
+                {
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must have enemies in range");
                     return LevelContinuationAction.DoNothing;
                 }
             }
@@ -328,7 +347,7 @@ namespace Rogue.NET.Core.Logic
             switch (consumable.Type)
             {
                 case ConsumableType.OneUse:
-                    if (meetsAlterationCost)
+                    if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
                     {
                         // Remove the item
                         player.Consumables.Remove(itemId);
@@ -341,7 +360,7 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case ConsumableType.MultipleUses:
                     {
-                        if (meetsAlterationCost)
+                        if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
                             consumable.Uses--;
                         else
                             return LevelContinuationAction.ProcessTurn;
@@ -393,10 +412,10 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + displayName);
 
-            // Queue processing of spell
-            return _spellEngine.QueuePlayerMagicSpell((consumable.SubType == ConsumableSubType.Ammo) ?
-                                                       consumable.AmmoSpell :
-                                                       consumable.Spell);
+            // Queue processing of alteration
+            _alterationEngine.Queue(_modelService.Player, alteration);
+
+            return LevelContinuationAction.ProcessTurnNoRegeneration;
         }
         public void Identify(string itemId)
         {
@@ -483,11 +502,11 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(equipment) + " Uncursed");
 
-            if (equipment.HasCurseSpell)
+            if (equipment.HasCurseAlteration)
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + equipment.RogueName + " is now safe to use (with caution...)");
 
             if (equipment.IsEquipped)
-                _modelService.Player.Alteration.DeactivatePassiveAlteration(equipment.CurseSpell.Id);
+                _modelService.Player.Alteration.Remove(equipment.CurseAlteration.Name);
 
             // Queue an update
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemId));
@@ -522,8 +541,7 @@ namespace Rogue.NET.Core.Logic
 
                 // Check Character Class Requirement
                 if (ammo.HasCharacterClassRequirement &&
-                   (!_modelService.Player.CharacterClassAlteration.HasCharacterClass() ||
-                     _modelService.Player.CharacterClassAlteration.CharacterClass.RogueName != ammo.CharacterClass.RogueName))
+                    _modelService.Player.Alteration.MeetsClassRequirement(ammo.CharacterClass))
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
@@ -539,21 +557,15 @@ namespace Rogue.NET.Core.Logic
                 // Queue update
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, ammo.Id));
 
-                // Calculate hit - if enemy hit then queue Ammunition spell
+                // Calculate hit - if enemy hit then queue ammunition alteration
                 var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
 
-                // If enemy hit then process the spell associated with the ammo
-                if (enemyHit)
-                {
-                    return _spellEngine.QueuePlayerMagicSpell(ammo.AmmoSpell);
-                }
-
-                // Otherwise, process the animation only
-                else if (ammo.AmmoSpell.Animations.Any())
+                // Process the animation
+                if (ammo.AmmoAnimationGroup.Animations.Any())
                 {
                     RogueUpdateEvent(this, 
                         _rogueUpdateFactory.Animation(
-                            ammo.AmmoSpell.Animations, 
+                            ammo.AmmoAnimationGroup.Animations, 
                             _modelService.Player.Location, 
                             new CellPoint[] { targetedEnemy.Location }));
                 }
@@ -567,7 +579,7 @@ namespace Rogue.NET.Core.Logic
                                               .ToList();
 
             // Filter out invisible enemies
-            if (!_modelService.Player.Alteration.CanSeeInvisibleCharacters())
+            if (!_modelService.Player.Alteration.CanSeeInvisible())
             {
                 enemiesInRange = enemiesInRange.Where(x => !x.IsInvisible && !x.Is(CharacterStateType.Invisible))
                                                .ToList();
@@ -733,7 +745,7 @@ namespace Rogue.NET.Core.Logic
                     // Set IsLearned true
                     skill.IsLearned = true;
 
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.DisplayName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " Has Learned " + skill.Alteration.Name);
 
                     // Select skill if none selected
                     if (skillSet.SelectedSkill == null)
@@ -763,28 +775,29 @@ namespace Rogue.NET.Core.Logic
             }
 
             var enemyTargeted = _modelService.GetTargetedEnemies().FirstOrDefault();
+            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
 
             // Requires Target
-            if (_alterationProcessor.CalculateSpellRequiresTarget(currentSkill) && enemyTargeted == null)
+            if (skillAlteration.RequiresTarget() && enemyTargeted == null)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, activeSkillSet.RogueName + " requires a targeted enemy");
                 return LevelContinuationAction.DoNothing;
             }
 
             // Meets Alteration Cost?
-            if (!_alterationProcessor.CalculatePlayerMeetsAlterationCost(_modelService.Player, currentSkill.Cost))
+            if (!_alterationEngine.Validate(_modelService.Player, skillAlteration.Cost))
                 return LevelContinuationAction.DoNothing;
 
-            // For passives - work with IsTurnedOn flag
-            if (currentSkill.IsPassive())
+            // For passives / auras - work with IsTurnedOn flag
+            if (skillAlteration.IsPassiveOrAura())
             {
                 // Turn off passive if it's turned on
                 if (activeSkillSet.IsTurnedOn)
                 {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + currentSkill.DisplayName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skillAlteration.RogueName);
 
                     // Pass - through method is safe
-                    _modelService.Player.Alteration.DeactivatePassiveAlteration(currentSkill.Id);
+                    _modelService.Player.Alteration.Remove(currentSkill.Name);
 
                     activeSkillSet.IsTurnedOn = false;
                 }
@@ -793,20 +806,20 @@ namespace Rogue.NET.Core.Logic
                 {
                     activeSkillSet.IsTurnedOn = true;
 
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.DisplayName);
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
 
                     // Queue processing -> Animation -> Process parameters (backend)
-                    return _spellEngine.QueuePlayerMagicSpell(currentSkill);
+                    _alterationEngine.Queue(_modelService.Player, skillAlteration);
                 }
             }
             // All other skill types
             else
             {
                 // Publish message
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + currentSkill.DisplayName);
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
 
                 // Queue processing -> Animation -> Process parameters (backend)
-                return _spellEngine.QueuePlayerMagicSpell(currentSkill);
+                _alterationEngine.Queue(_modelService.Player, skillAlteration);
             }
 
             return LevelContinuationAction.ProcessTurn;
@@ -843,11 +856,22 @@ namespace Rogue.NET.Core.Logic
 
                         else
                         {
+                            // Generate Alteration
+                            var alteration = _alterationGenerator.GenerateAlteration(doodadMagic.InvokedAlteration);
+
+                            // Publish Message
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Using " + doodad.RogueName);
 
+                            // Mark the Doodad as HasBeenUsed
                             doodadMagic.HasBeenUsed = true;
 
-                            return _spellEngine.QueuePlayerMagicSpell(doodadMagic.InvokedSpell);
+                            // Validate -> Queue Alteration
+                            if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+                                _alterationEngine.Queue(_modelService.Player, alteration);
+
+                            // Failed Validation (Player Doesn't Meet Cost)
+                            else
+                                return LevelContinuationAction.DoNothing;
                         }
                     }
                     break;

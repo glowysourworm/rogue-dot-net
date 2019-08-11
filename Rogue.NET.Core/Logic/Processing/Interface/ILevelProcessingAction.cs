@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
@@ -13,6 +12,9 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     /// </summary>
     public interface ILevelProcessingAction
     {
+        /// <summary>
+        /// Type of level action
+        /// </summary>
         LevelProcessingActionType Type { get; set; }
 
         /// <summary>
@@ -20,9 +22,9 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
         /// </summary>
         Character Actor { get; set; }
 
-        // TODO:ALTERATION
-        Spell Spell { get; set; }
-
-        AlterationBase Alteration { get; set; }
+        /// <summary>
+        /// Alteration for processing
+        /// </summary>
+        AlterationContainer Alteration { get; set; }
     }
 }

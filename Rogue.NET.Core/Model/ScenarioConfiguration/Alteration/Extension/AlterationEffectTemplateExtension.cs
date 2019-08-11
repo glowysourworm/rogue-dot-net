@@ -1,10 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
 {
     public static class AlterationEffectTemplateExtension
     {
+        #region (public) Query Methods
+        public static bool IsIdentify(this IAlterationEffectTemplate effect)
+        {
+            return effect is OtherAlterationEffectTemplate &&
+                  (effect as OtherAlterationEffectTemplate).Type == AlterationOtherEffectType.Identify;
+        }
+        #endregion
+
+        #region (public) UI-Related Methods (Consider moving these)
         public static IEnumerable<KeyValuePair<string, string>> GetUIAttributes(this AlterationEffectTemplate template)
         {
             var values = new List<KeyValuePair<string, Range<double>>>()
@@ -37,5 +49,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
                             " to " + 
                             x.Value.High.ToString("F2")));
         }
+        #endregion
     }
 }

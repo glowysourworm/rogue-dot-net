@@ -7,7 +7,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
 {
     [Serializable]
-    public class ConsumableAlteration : AlterationBase
+    public class ConsumableAlteration : AlterationContainer
     {        
         public AlterationTargetType TargetType { get; set; }
 
@@ -16,12 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
             this.AnimationGroup = new AnimationGroup();
         }
 
-        public ConsumableAlteration(string guid) : base(guid)
-        {
-
-        }
-
-        protected override bool ValidateEffectInterfaceType()
+        protected override bool ValidateEffectType()
         {
             return this.Effect is IConsumableAlterationEffect;
         }

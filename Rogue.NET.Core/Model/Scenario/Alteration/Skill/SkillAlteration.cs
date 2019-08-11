@@ -6,7 +6,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
 {
     [Serializable]
-    public class SkillAlteration : AlterationBase
+    public class SkillAlteration : AlterationContainer
     {
         public AuraSourceParameters AuraParameters { get; set; }
         public AlterationTargetType TargetType { get; set; }
@@ -16,12 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
             this.AuraParameters = new AuraSourceParameters();
         }
 
-        public SkillAlteration(string guid) : base(guid)
-        {
-            this.AuraParameters = new AuraSourceParameters();
-        }
-
-        protected override bool ValidateEffectInterfaceType()
+        protected override bool ValidateEffectType()
         {
             return this.Effect is ISkillAlterationEffect;
         }

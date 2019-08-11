@@ -1,18 +1,15 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Processing.Factory.Interface
 {
     public interface IRogueUpdateFactory
     {
-        RogueUpdateEventArgs Animation(IEnumerable<AnimationTemplate> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High);
         RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High);
         RogueUpdateEventArgs Update(LevelUpdateType type, string contentId, RogueUpdatePriority priority = RogueUpdatePriority.Low);
         RogueUpdateEventArgs Update(LevelUpdateType type, string[] contentIds, RogueUpdatePriority priority = RogueUpdatePriority.Low);

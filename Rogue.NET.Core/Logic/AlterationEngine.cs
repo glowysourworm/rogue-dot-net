@@ -25,6 +25,7 @@ using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -45,6 +46,7 @@ namespace Rogue.NET.Core.Logic
         public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
+        [ImportingConstructor]
         public AlterationEngine(IModelService modelService,
                                 ILayoutEngine layoutEngine,
                                 ICharacterGenerator characterGenerator,
@@ -66,30 +68,52 @@ namespace Rogue.NET.Core.Logic
             _rogueUpdateFactory = rogueUpdateFactory;
         }
 
-        public bool Validate(Character actor, AlterationBase alteration)
+        public bool Validate(Character actor, AlterationCost cost)
         {
-            return _alterationProcessor.CalculateMeetsAlterationCost(actor, alteration.Cost);
+            return _alterationProcessor.CalculateMeetsAlterationCost(actor, cost);
         }
 
-        public void Queue(Character actor, AlterationBase alteration)
+        public void Queue(Character actor, AlterationContainer alteration)
         {
-            // Affected characters
+            // Calculate Affected Characters
             var affectedCharacters = CalculateAffectedCharacters(alteration, actor);
 
-            // NOTE*** For animations that require a target - allow the source / target
-            //         to be the same and just adjust the animation generator to not
-            //         apply the location animation. Also, refactored the animation type
-            //         to always assume affected characters. This will greatly simplify 
-            //         the parameter space and logic around Alteration -> Animation.
-
             // Run animations before applying alterations
-            if (alteration.SupportsAnimations && 
+            if (alteration.SupportsAnimations() && 
                 alteration.AnimationGroup.Animations.Count > 0)
             {
-                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(
-                                            alteration.AnimationGroup.Animations,
-                                            _modelService.Player.Location,
-                                            affectedCharacters.Select(x => x.Location).Actualize()));
+                // NOTE*** For animations refactored the animation type
+                //         to always assume affected characters. This will greatly simplify 
+                //         the parameter space and logic around Alteration -> Animation.
+
+                // TODO: REMOVE THIS.  This is an aid in validating animations. This needs
+                //                     to be moved to the editor.
+                var animationIssueDetected = false;
+
+                alteration.AnimationGroup.Animations.ForEach(x =>
+                {
+                    if (x.BaseType == AnimationBaseType.Chain ||
+                        x.BaseType == AnimationBaseType.ChainReverse ||
+                        x.BaseType == AnimationBaseType.Projectile ||
+                        x.BaseType == AnimationBaseType.ProjectileReverse)
+                    {
+                        if (affectedCharacters.Any(z => z == actor))
+                        {
+                            animationIssueDetected = true;
+
+                            _scenarioMessageService.Publish(ScenarioMessagePriority.Bad,
+                                                            "***Alteration has improper animation usage - " + alteration.RogueName); 
+                        }
+                    }
+                });
+
+                if (!animationIssueDetected)
+                {
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Animation(
+                                                alteration.AnimationGroup.Animations,
+                                                actor.Location,
+                                                affectedCharacters.Select(x => x.Location).Actualize()));
+                }
             }
 
             // Apply Effect on Queue
@@ -101,13 +125,13 @@ namespace Rogue.NET.Core.Logic
             });
         }
 
-        public void Process(Character actor, AlterationBase alteration)
+        public void Process(Character actor, AlterationContainer alteration)
         {
             // Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
-            if (alteration.CostType == AlterationCostType.OneTime)
+            if (alteration.GetCostType() == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(actor, alteration.Cost);
 
-            // Get all affected characters -> ONLY CHARACTERS WHOSE STATS ARE AFFECTED
+            // Calculate Affected Characters
             var affectedCharacters = CalculateAffectedCharacters(alteration, actor);
 
             // Affected Character Alterations:
@@ -121,8 +145,8 @@ namespace Rogue.NET.Core.Logic
             {
                 // Character attempts block
                 bool blocked = affectedCharacter != actor &&
-                               alteration.SupportsBlocking &&
-                              _interactionProcessor.CalculateAlterationBlock(_modelService.Player, affectedCharacter, alteration.BlockType);
+                               alteration.SupportsBlocking() &&
+                              _interactionProcessor.CalculateAlterationBlock(actor, affectedCharacter, alteration.BlockType);
 
                 // Blocked -> Message and continue
                 if (blocked)
@@ -159,12 +183,12 @@ namespace Rogue.NET.Core.Logic
         }
 
         #region (private) Alteration Apply Methods
-        private void ApplyAlteration(AlterationBase alteration, Character affectedCharacter, Character actor)
+        private void ApplyAlteration(AlterationContainer alteration, Character affectedCharacter, Character actor)
         {
             // Aura => Actor is affected.. But always use the affected character - which should be the same.
             //         Aura effects for the target characters are applied in the CharacterAlteration on turn.
             if (alteration.Effect is AttackAttributeAuraAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is AttackAttributeMeleeAlterationEffect)
                 _interactionProcessor.CalculateAttackAttributeHit(alteration.RogueName,
@@ -172,13 +196,13 @@ namespace Rogue.NET.Core.Logic
                                                                   (alteration.Effect as AttackAttributeMeleeAlterationEffect).AttackAttributes);
 
             else if (alteration.Effect is AttackAttributePassiveAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is AttackAttributeTemporaryAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is AuraAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is ChangeLevelAlterationEffect)
                 ProcessChangeLevel(alteration.Effect as ChangeLevelAlterationEffect);
@@ -207,13 +231,13 @@ namespace Rogue.NET.Core.Logic
             }
 
             else if (alteration.Effect is PassiveAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is PermanentAlterationEffect)
                 _alterationProcessor.ApplyPermanentEffect(affectedCharacter, alteration.Effect as PermanentAlterationEffect);
 
             else if (alteration.Effect is RemedyAlterationEffect)
-                affectedCharacter.Alteration_NEW.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is RevealAlterationEffect)
                 ProcessReveal(alteration.Effect as RevealAlterationEffect);
@@ -228,37 +252,35 @@ namespace Rogue.NET.Core.Logic
                 ProcessTeleport(alteration.Effect as TeleportAlterationEffect, actor);
 
             else if (alteration.Effect is TemporaryAlterationEffect)
-                actor.Alteration_NEW.Apply(alteration);
+                actor.Alteration.Apply(alteration);
         }
         #endregion
 
         #region (private) Alteration Calculation Methods
-        private IEnumerable<Character> CalculateAffectedCharacters(AlterationBase alteration, Character actor)
+        private IEnumerable<Character> CalculateAffectedCharacters(AlterationContainer alteration, Character actor)
         {
-            var type = alteration.GetType();
-
-            if (type == typeof(ConsumableAlteration))
+            if (alteration is ConsumableAlteration)
                 return CalculateAffectedCharacters(alteration as ConsumableAlteration, actor);
 
-            else if (type == typeof(ConsumableProjectileAlteration))
+            else if (alteration is ConsumableProjectileAlteration)
                 return CalculateAffectedCharacters(AlterationTargetType.Target, actor);
 
-            else if (type == typeof(DoodadAlteration))
+            else if (alteration is DoodadAlteration)
                 return CalculateAffectedCharacters(alteration as DoodadAlteration, actor);
 
-            else if (type == typeof(EnemyAlteration))
+            else if (alteration is EnemyAlteration)
                 return CalculateAffectedCharacters(alteration as EnemyAlteration, actor);
 
-            else if (type == typeof(EquipmentAttackAlteration))
+            else if (alteration is EquipmentAttackAlteration)
                 return CalculateAffectedCharacters(alteration as EquipmentAttackAlteration, actor);
 
-            else if (type == typeof(EquipmentCurseAlteration))
+            else if (alteration is EquipmentCurseAlteration)
                 return CalculateAffectedCharacters(alteration as EquipmentCurseAlteration, actor);
 
-            else if (type == typeof(EquipmentEquipAlteration))
+            else if (alteration is EquipmentEquipAlteration)
                 return CalculateAffectedCharacters(alteration as EquipmentEquipAlteration, actor);
 
-            else if (type == typeof(SkillAlteration))
+            else if (alteration is SkillAlteration)
                 return CalculateAffectedCharacters(alteration as SkillAlteration, actor);
 
             else
@@ -295,25 +317,6 @@ namespace Rogue.NET.Core.Logic
         private IEnumerable<Character> CalculateAffectedCharacters(SkillAlteration alteration, Character actor)
         {
             return CalculateAffectedCharacters(alteration.TargetType, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(AttackAttributeMeleeAlterationEffect effect, Character actor)
-        {
-            return CalculateAffectedCharacters(effect.TargetType, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(AttackAttributeTemporaryAlterationEffect effect, Character actor)
-        {
-            return CalculateAffectedCharacters(effect.TargetType, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(OtherAlterationEffect effect, Character actor)
-        {
-            switch (effect.Type)
-            {
-                case AlterationOtherEffectType.Identify:
-                case AlterationOtherEffectType.Uncurse:
-                    return new List<Character>() { actor };
-                default:
-                    throw new Exception("Unknown Other Alteration Effect");
-            }
         }
         private IEnumerable<Character> CalculateAffectedCharacters(PassiveAlterationEffect effect, Character actor)
         {
@@ -393,10 +396,10 @@ namespace Rogue.NET.Core.Logic
 
                     // Be sure to de-activate alterations
                     if (equipment.HasEquipAlteration)
-                        actee.Alteration_NEW.Remove(equipment.EquipAlteration.Guid);
+                        actee.Alteration.Remove(equipment.EquipAlteration.Guid);
 
                     if (equipment.HasCurseAlteration)
-                        actee.Alteration_NEW.Remove(equipment.CurseAlteration.Guid);
+                        actee.Alteration.Remove(equipment.CurseAlteration.Guid);
 
                     // Update UI
                     if (actor is Player)
@@ -563,12 +566,12 @@ namespace Rogue.NET.Core.Logic
                 case AlterationRandomPlacementType.InRangeOfCharacter:
                     openLocation = _layoutEngine.GetLocationsInRange(level, sourceLocation, sourceRange)
                                                 .Where(x => level.IsCellOccupied(sourceLocation, player.Location))
-                                                .PickRandom(_randomSequenceGenerator.Get());
+                                                .PickRandom();
                     break;
                 case AlterationRandomPlacementType.InPlayerVisibleRange:
                     openLocation = _modelService.GetVisibleLocations()
                                                 .Where(x => level.IsCellOccupied(sourceLocation, player.Location))
-                                                .PickRandom(_randomSequenceGenerator.Get());
+                                                .PickRandom();
                     break;
                 default:
                     throw new Exception("Unhandled AlterationRandomPlacementType");

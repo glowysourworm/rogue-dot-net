@@ -24,7 +24,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         CharacterAttribute _attributeRequirement;
         string _description;
         ScenarioImageViewModel _characterClass;
-        SpellViewModel _alteration;        
+        AlterationViewModel _alteration;        
 
         bool _isSelected;
 
@@ -66,7 +66,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _characterClass; }
             set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
-        public SpellViewModel Alteration
+        public AlterationViewModel Alteration
         {
             get { return _alteration; }
             set { this.RaiseAndSetIfChanged(ref _alteration, value); }

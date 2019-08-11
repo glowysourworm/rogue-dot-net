@@ -273,7 +273,7 @@ namespace Rogue.NET.Core.Model.Generator
         private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<CellPoint> freeCells, Dictionary<Room, List<CellPoint>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
-            var partyRoom = rooms.PickRandom(_randomSequenceGenerator.Get());
+            var partyRoom = _randomSequenceGenerator.GetRandomElement(rooms);
 
             // Party room equipment - generate for each 
             foreach (var template in configurationContainer.EquipmentTemplates)

@@ -12,12 +12,9 @@ namespace Rogue.NET.Core.Model.Generator
     [Export(typeof(IDoodadGenerator))]
     public class DoodadGenerator : IDoodadGenerator
     {
-        private readonly ISpellGenerator _spellGenerator;
-
         [ImportingConstructor]
-        public DoodadGenerator(ISpellGenerator spellGenerator)
+        public DoodadGenerator()
         {
-            _spellGenerator = spellGenerator;
         }
 
         public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> characterClasses)
@@ -28,10 +25,10 @@ namespace Rogue.NET.Core.Model.Generator
             var doodad = new DoodadMagic();
 
             if (doodadTemplate.IsAutomatic)
-                doodad.AutomaticSpell = _spellGenerator.GenerateSpell(doodadTemplate.AutomaticMagicSpellTemplate);
+                doodad.AutomaticAlteration = doodadTemplate.AutomaticAlteration;
 
             if (doodadTemplate.IsInvoked)
-                doodad.InvokedSpell = _spellGenerator.GenerateSpell(doodadTemplate.InvokedMagicSpellTemplate);
+                doodad.InvokedAlteration = doodadTemplate.InvokedAlteration;
 
             doodad.IsAutomatic = doodadTemplate.IsAutomatic;
             doodad.IsHidden = !doodadTemplate.IsVisible;

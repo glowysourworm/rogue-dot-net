@@ -2,7 +2,6 @@
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 
 namespace Rogue.NET.Core.Logic.Processing
 {
@@ -12,9 +11,6 @@ namespace Rogue.NET.Core.Logic.Processing
 
         public Character Actor { get; set; }
 
-        // TODO:ALTERATION
-        public Spell Spell { get; set; }
-
-        public AlterationBase Alteration { get; set; }
+        public AlterationContainer Alteration { get; set; }
     }
 }

@@ -1,9 +1,5 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
+﻿using Rogue.NET.Core.Model.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 {
@@ -14,11 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = player.FoodUsagePerTurnBase + (player.GetHaul() / ModelConstants.HaulFoodUsageDivisor);
 
             // Alteration
-            result += player.Alteration.GetAlterations().Sum(x => x.FoodUsagePerTurn);
-
-            // Religious Alteration
-            if (player.CharacterClassAlteration.HasAttributeEffect)
-                result += player.CharacterClassAlteration.AttributeEffect.FoodUsagePerTurn;
+            result += player.Alteration.GetAttribute(CharacterAttribute.FoodUsagePerTurn);
 
             return Math.Max(0, result);
         }

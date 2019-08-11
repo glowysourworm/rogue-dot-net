@@ -44,26 +44,18 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         }
         public static double GetMpRegen(this Character character)
         {
-            return character.MpRegenBase + character.Alteration.GetAlterations().Sum(x => x.MpPerStep)
-                                         + (character.CharacterClassAlteration.HasAttributeEffect ?
-                                           character.CharacterClassAlteration.AttributeEffect.MpPerStep : 0);
+            return character.MpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.MpRegen);
         }
         public static double GetHpRegen(this Character character)
         {
-            return character.HpRegenBase + character.Alteration.GetAlterations().Sum(x => x.HpPerStep)
-                                         + (character.CharacterClassAlteration.HasAttributeEffect ?
-                                           character.CharacterClassAlteration.AttributeEffect.HpPerStep : 0);
+            return character.HpRegenBase + character.Alteration.GetAttribute(CharacterAttribute.HpRegen);
         }
         public static double GetStrength(this Character character)
         {
             var result = character.StrengthBase;
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.Strength);
-
-            // Religious Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.Strength;
+            result += character.Alteration.GetAttribute(CharacterAttribute.Strength);
 
             return Math.Max(0.1, result);
         }
@@ -72,11 +64,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = character.AgilityBase;
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.Agility);
-
-            // Religious Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.Agility;
+            result += character.Alteration.GetAttribute(CharacterAttribute.Agility);
 
             return Math.Max(0.1, result);
         }
@@ -85,11 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = character.IntelligenceBase;
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.Intelligence);
-
-            // Religious Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.Intelligence;
+            result += character.Alteration.GetAttribute(CharacterAttribute.Intelligence);
 
             return Math.Max(0.1, result);
         }
@@ -98,11 +82,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = character.LightRadiusBase;
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.AuraRadius);
-
-            // Character Class Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.AuraRadius;
+            result += character.Alteration.GetAttribute(CharacterAttribute.LightRadius);
 
             return Math.Max(0.1, result);
         }
@@ -111,11 +91,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = character.GetMentalBlockBase();
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.MagicBlockProbability);
-
-            // Character Class Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.MagicBlockProbability;
+            result += character.Alteration.GetAttribute(CharacterAttribute.MagicBlock);
 
             return result.Clip();
         }
@@ -124,19 +100,13 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = character.GetDodgeBase();
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.DodgeProbability);
-
-            // Religious Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.DodgeProbability;
+            result += character.Alteration.GetAttribute(CharacterAttribute.Dodge);
 
             return result.Clip();
         }
         public static double GetSpeed(this Character character)
         {
-            var speed = character.SpeedBase + character.Alteration.GetAlterations().Sum(x => x.Speed)
-                                            + (character.CharacterClassAlteration.HasAttributeEffect ? 
-                                               character.CharacterClassAlteration.AttributeEffect.Speed : 0);
+            var speed = character.SpeedBase + character.Alteration.GetAttribute(CharacterAttribute.Speed);
 
             // 0.1 < speed < 1
             return speed.Clip(0.1, 1);
@@ -157,14 +127,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
                 // Calculate strength * equipment base attack value
                 attack += MeleeCalculator.GetAttackValue(equipment.GetAttackValue(), characterAttributeValue);
-            }           
+            }
 
             // Add on alteration contributions
-            var result = attack + character.Alteration.GetAlterations().Sum(x => x.Attack);
-
-            // Add on character class contribution
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.Attack;
+            var result = attack + character.Alteration.GetAttribute(CharacterAttribute.Attack);
 
             return Math.Max(0, result);
         }
@@ -186,11 +152,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             }
 
             // Add on alteration contributions
-            var result = defense + character.Alteration.GetAlterations().Sum(x => x.Defense);
-
-            // Add on character class contribution
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.Defense;
+            var result = defense + character.Alteration.GetAttribute(CharacterAttribute.Defense);
 
             return Math.Max(0, result);
         }
@@ -199,11 +161,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var result = ModelConstants.CriticalHitBase;
 
             // Alteration
-            result += character.Alteration.GetAlterations().Sum(x => x.CriticalHit);
-
-            // Religious Alteration
-            if (character.CharacterClassAlteration.HasAttributeEffect)
-                result += character.CharacterClassAlteration.AttributeEffect.CriticalHit;
+            result += character.Alteration.GetAttribute(CharacterAttribute.CriticalHit);
 
             return result.Clip();
         }
@@ -232,26 +190,15 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 });
             }
 
-            // Friendly attack attribute contributions
-            foreach (var friendlyAttackAttributes in character.Alteration.GetTemporaryAttackAttributeAlterations(true).Select(x => x.AttackAttributes))
+            // Alteration attack attribute contributions
+            foreach (var friendlyAttackAttribute in character.Alteration
+                                                             .GetAttackAttributes(AlterationAttackAttributeCombatType.FriendlyAggregate))
             {
-                foreach (var attribute in result)
-                {
-                    attribute.Resistance += friendlyAttackAttributes.First(y => y.RogueName == attribute.RogueName).Resistance;
-                }
-            }
-
-            // Passive attack attribute contributions
-            foreach (var passiveAttackAttributes in character.Alteration.GetPassiveAttackAttributeAlterations().Select(x => x.AttackAttributes))
-            {
-                foreach (var attribute in result)
-                {
-                    var passiveAttribute = passiveAttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += passiveAttribute.Attack;
-                    attribute.Resistance += passiveAttribute.Resistance;
-                    attribute.Weakness += passiveAttribute.Weakness;
-                }
+                var attribute = result.First(x => x.RogueName == friendlyAttackAttribute.RogueName);
+                
+                attribute.Resistance += friendlyAttackAttribute.Resistance;
+                attribute.Resistance += friendlyAttackAttribute.Resistance;
+                attribute.Resistance += friendlyAttackAttribute.Resistance;
             }
 
             //Equipment contributions
@@ -267,20 +214,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
                 }
             }
 
-            // Character Class contributions
-            if (character.CharacterClassAlteration.HasAttackAttributeEffect)
-            {
-                foreach (var attribute in result)
-                {
-                    var characterClassAttribute = character.CharacterClassAlteration.AttackAttributeEffect.AttackAttributes.First(y => y.RogueName == attribute.RogueName);
-
-                    attribute.Attack += characterClassAttribute.Attack;
-                    attribute.Resistance += characterClassAttribute.Resistance;
-                    attribute.Weakness += characterClassAttribute.Weakness;
-                }
-            }
-
-            // Filter by attributes that apply to strength based combat ONLY.
             return result;
         }
 
@@ -297,20 +230,16 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             var attackAttributes = character.GetMeleeAttributes(scenarioAttributes);
 
             // Malign attack attribute contributions
-            foreach (var malignEffect in character.Alteration.GetTemporaryAttackAttributeAlterations(false))
+            foreach (var malignAttribute in character.Alteration
+                                                    .GetAttackAttributes(AlterationAttackAttributeCombatType.MalignPerStep))
             {
-                foreach (var malignAttribute in malignEffect.AttackAttributes)
-                {
-                    var defensiveAttribute = attackAttributes.First(x => x.RogueName == malignAttribute.RogueName);
+                var defensiveAttribute = attackAttributes.First(x => x.RogueName == malignAttribute.RogueName);
 
-                    // TODO: Have an issue with AlterationContainer.BlockType not saved to AlterationEffect. 
-                    //       ***Needs to be refactored to split up all of the alteration types to properly support
-                    //          all features. (Example: Break apart Physical / Mental Alterations entirely)
-                    result += Calculator.CalculateAttackAttributeMelee(
+                // Calculate the attack attribute hit
+                result += Calculator.CalculateAttackAttributeMelee(
                                 malignAttribute.Attack, 
                                 defensiveAttribute.Resistance, 
                                 defensiveAttribute.Weakness + malignAttribute.Weakness);
-                }
             }
 
             return result;
@@ -318,7 +247,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
         public static bool Is(this Character character, CharacterStateType characterStateType)
         {
-            return character.Alteration.GetAlterations().Any(x => x.State.BaseType == characterStateType);
+            return character.Alteration.GetStates().Any(x => x.BaseType == characterStateType);
         }
     }
 }

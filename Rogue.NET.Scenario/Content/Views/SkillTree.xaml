@@ -501,7 +501,7 @@
 
                         <!-- Primary Properties 2 -->
                         <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
-                            <Border.Visibility>
+                            <!--Border.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
@@ -510,7 +510,7 @@
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                                     <Binding Path="Alteration.IsAlteredState" />
                                 </MultiBinding>
-                            </Border.Visibility>
+                            </-->
                             <StackPanel>
 
                                 <Grid Margin="4">
@@ -519,13 +519,13 @@
 
                                 <!-- Alteration Event Time -->
                                 <Grid Margin="4">
-                                    <Grid.Visibility>
+                                    <!--Grid.Visibility>
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryTarget}" />
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporaryAllTargets}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>
+                                    </-->
                                     <TextBlock Text="Event Time" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
                                     <TextBlock FontSize="18" Foreground="White" HorizontalAlignment="Right">
                                         <Run Text="{Binding Alteration.EventTime}" Foreground="White" />
@@ -558,11 +558,11 @@
 
                                 <!-- Alteration Remedied State -->
                                 <Grid Margin="4">
-                                    <Grid.Visibility>
+                                    <!--Grid.Visibility>
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.Remedy}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>
+                                    </-->
                                     <TextBlock FontSize="18" HorizontalAlignment="Left">
                                         <Run Text="Remedied State" Foreground="Tan" />
                                     </TextBlock>
@@ -588,11 +588,11 @@
 
                                 <!-- Alteration Aura Altered State -->
                                 <Grid Margin="4">
-                                    <Grid.Visibility>
+                                    <!--Grid.Visibility>
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>
+                                    </-->
                                     <TextBlock FontSize="18" HorizontalAlignment="Left">
                                         <Run Text="Aura Altered State" Foreground="Tan" />
                                     </TextBlock>
@@ -618,11 +618,11 @@
 
                                 <!-- Alteration Effect Range -->
                                 <Grid Margin="4">
-                                    <Grid.Visibility>
+                                    <!--Grid.Visibility>
                                         <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                             <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveAura}" />
                                         </MultiBinding>
-                                    </Grid.Visibility>
+                                    </-->
                                     <TextBlock FontSize="18" HorizontalAlignment="Left" Text="Effect Range" Foreground="Tan" />
                                     <TextBlock Foreground="White" FontSize="18" HorizontalAlignment="Right" Text="{Binding Alteration.EffectRange, StringFormat=F1}" />
                                 </Grid>
@@ -650,7 +650,7 @@
 
                         <!-- Alteration Effect -->
                         <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
-                            <Border.Visibility>
+                            <!--Border.Visibility>
                                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PassiveSource}" />
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.TemporarySource}" />
@@ -660,7 +660,7 @@
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentTarget}" />
                                     <Binding Path="Alteration.Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationType.PermanentAllTargets}" />
                                 </MultiBinding>
-                            </Border.Visibility>
+                            </-->
                             <StackPanel>
                                 <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Effect" HorizontalAlignment="Right" FontStyle="Italic" />
                                 <ItemsControl ItemsSource="{Binding Alteration.AlterationEffectAttributes}">
@@ -677,8 +677,7 @@
                         </Border>
 
                         <!-- Alteration Aura Effect -->
-                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4"
-                                Visibility="{Binding Alteration.Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.PassiveAura}}">
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
                             <StackPanel>
                                 <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Aura Effect" HorizontalAlignment="Right" FontStyle="Italic" />
                                 <ItemsControl ItemsSource="{Binding Alteration.AlterationAuraEffectAttributes}">
@@ -695,8 +694,7 @@
                         </Border>
 
                         <!-- Alteration Effect Attack Attributes -->
-                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4"
-                                Visibility="{Binding Alteration.Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationType.AttackAttribute}}">
+                        <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
                             <StackPanel>
                                 <TextBlock Margin="4" Foreground="Tan" FontSize="18" Text="Effect Attack Attributes" HorizontalAlignment="Right" FontStyle="Italic" />
                                 <ItemsControl ItemsSource="{Binding Alteration.AlterationEffectAttackAttributes}">

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content
@@ -9,13 +10,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool HasAttributeBonus { get; set; }
         public bool HasBonusAttackAttributes { get; set; }
 
-        public AlterationEffect AttributeAlteration { get; set; }
-        public AlterationEffect AttackAttributeAlteration { get; set; }
+        public PassiveAlterationEffect AttributeAlteration { get; set; }
+        public AttackAttributePassiveAlterationEffect AttackAttributeAlteration { get; set; }
 
         public CharacterClass()
         {
-            this.AttackAttributeAlteration = new AlterationEffect();
-            this.AttributeAlteration = new AlterationEffect();
+            this.AttackAttributeAlteration = new AttackAttributePassiveAlterationEffect();
+            this.AttributeAlteration = new PassiveAlterationEffect();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
@@ -8,7 +7,6 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
-using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
@@ -44,90 +42,7 @@ namespace Rogue.NET.Core.Model.Generator
             _animationGenerator = animationGenerator;
         }
 
-        public AlterationContainer GenerateAlteration(Spell spell)
-        {
-            AlterationCost alterationCost = GenerateAlterationCost(spell.Cost);
-            AlterationEffect alterationEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.Effect);
-            AlterationEffect auraEffect = GenerateAlterationEffect(spell.RogueName, spell.DisplayName, spell.EffectRange, spell.AuraEffect);
-
-            AlterationContainer alterationContainer = new AlterationContainer();
-            alterationContainer.Cost = alterationCost;
-            alterationContainer.Effect = alterationEffect;
-            alterationContainer.AuraEffect = auraEffect;
-            alterationContainer.RogueName = spell.RogueName;
-            alterationContainer.EffectRange = spell.EffectRange;
-            alterationContainer.OtherEffectType = spell.OtherEffectType;
-            alterationContainer.AttackAttributeType = spell.AttackAttributeType;
-            alterationContainer.Type = spell.Type;
-            alterationContainer.BlockType = spell.BlockType;
-            alterationContainer.GeneratingSpellId = spell.Id;
-            alterationContainer.GeneratingSpellName = spell.RogueName;
-            alterationContainer.IsStackable = spell.IsStackable;
-            alterationContainer.CreateMonsterEnemy = spell.CreateMonsterEnemyName;
-
-            return alterationContainer;
-        }
-        public AlterationEffect GenerateAlterationEffect(
-                string spellName, 
-                string spellDisplayName, 
-                double effectRange, 
-                AlterationEffectTemplate alterationEffectTemplate)
-        {
-            AlterationEffect alterationEffect = new AlterationEffect();
-
-            // Scaled Parameters
-            alterationEffect.Agility = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AgilityRange);
-            alterationEffect.Attack = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AttackRange);
-            alterationEffect.AuraRadius = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.AuraRadiusRange);
-            alterationEffect.Defense = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DefenseRange);
-            alterationEffect.DodgeProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.DodgeProbabilityRange);
-            alterationEffect.Experience = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.ExperienceRange);
-            alterationEffect.FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.FoodUsagePerTurnRange);
-            alterationEffect.Hp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpRange);
-            alterationEffect.HpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HpPerStepRange);
-            alterationEffect.Hunger = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.HungerRange);
-            alterationEffect.Intelligence = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.IntelligenceRange);
-            alterationEffect.MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MagicBlockProbabilityRange);
-            alterationEffect.Mp = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpRange);
-            alterationEffect.MpPerStep = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.MpPerStepRange);
-            alterationEffect.Speed = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.SpeedRange);
-            alterationEffect.Strength = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.StrengthRange);
-            alterationEffect.CriticalHit = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.CriticalHit);
-
-            // Scaled - Attack Attributes
-            alterationEffect.AttackAttributes = alterationEffectTemplate.AttackAttributes
-                                                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                      .Select(x =>
-                                                      {
-                                                          x.Attack = x.Attack;
-                                                          x.Resistance = x.Resistance;
-                                                          x.Weakness = x.Weakness;
-
-                                                          return x;
-                                                      })
-                                                      .ToList();
-
-            // Non-Scaled Parameters
-            alterationEffect.EventTime = _randomSequenceGenerator.GetRandomValue(alterationEffectTemplate.EventTime);
-
-            // Non-Scaled - Copied to aura effect so that it can detach from the spell
-            alterationEffect.EffectRange = effectRange;
-
-            alterationEffect.IsSymbolAlteration = alterationEffectTemplate.IsSymbolAlteration;
-            alterationEffect.RogueName = alterationEffectTemplate.Name;
-            alterationEffect.State = _alteredStateGenerator.GenerateAlteredState(alterationEffectTemplate.AlteredState);
-            alterationEffect.SymbolAlteration = alterationEffectTemplate.SymbolAlteration;
-            alterationEffect.RogueName = spellName;
-            alterationEffect.DisplayName = spellDisplayName;
-            alterationEffect.CanSeeInvisibleCharacters = alterationEffectTemplate.CanSeeInvisibleCharacters;
-
-            //Store remedied state name
-            alterationEffect.RemediedStateName = alterationEffectTemplate.RemediedState.Name;
-
-            return alterationEffect;
-        }
-
-        protected AlterationCost GenerateAlterationCost(AlterationCostTemplate template)
+        public AlterationCost GenerateAlterationCost(AlterationCostTemplate template)
         {
             return new AlterationCost()
             {
@@ -145,10 +60,9 @@ namespace Rogue.NET.Core.Model.Generator
             };
         }
 
-        #region (public) Alteration Container Generators
         public ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template)
         {
-            return new ConsumableAlteration(template.Guid)
+            return new ConsumableAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
@@ -160,7 +74,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template)
         {
-            return new ConsumableProjectileAlteration(template.Guid)
+            return new ConsumableProjectileAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Effect = GenerateAlterationEffect(template.Effect),
@@ -170,7 +84,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template)
         {
-            return new DoodadAlteration(template.Guid)
+            return new DoodadAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Effect = GenerateAlterationEffect(template.Effect),
@@ -181,7 +95,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public EnemyAlteration GenerateAlteration(EnemyAlterationTemplate template)
         {
-            return new EnemyAlteration(template.Guid)
+            return new EnemyAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
@@ -193,7 +107,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public EquipmentAttackAlteration GenerateAlteration(EquipmentAttackAlterationTemplate template)
         {
-            return new EquipmentAttackAlteration(template.Guid)
+            return new EquipmentAttackAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
@@ -204,7 +118,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public EquipmentCurseAlteration GenerateAlteration(EquipmentCurseAlterationTemplate template)
         {
-            return new EquipmentCurseAlteration(template.Guid)
+            return new EquipmentCurseAlteration()
             {
                 AuraParameters = new AuraSourceParameters()
                 {
@@ -218,7 +132,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public EquipmentEquipAlteration GenerateAlteration(EquipmentEquipAlterationTemplate template)
         {
-            return new EquipmentEquipAlteration(template.Guid)
+            return new EquipmentEquipAlteration()
             {
                 AuraParameters = new AuraSourceParameters()
                 {
@@ -232,7 +146,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         public SkillAlteration GenerateAlteration(SkillAlterationTemplate template)
         {
-            return new SkillAlteration(template.Guid)
+            return new SkillAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 AuraParameters = new AuraSourceParameters()
@@ -246,7 +160,6 @@ namespace Rogue.NET.Core.Model.Generator
                 TargetType = template.TargetType
             };
         }
-        #endregion
 
         #region Interface Type Inspectors
         protected IConsumableAlterationEffect GenerateAlterationEffect(IConsumableAlterationEffectTemplate template)
@@ -498,9 +411,7 @@ namespace Rogue.NET.Core.Model.Generator
             return new AttackAttributeMeleeAlterationEffect()
             {
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
-                CombatType = template.CombatType,
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -510,8 +421,7 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
                 CombatType = template.CombatType,
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -524,8 +434,7 @@ namespace Rogue.NET.Core.Model.Generator
                 CombatType = template.CombatType,
                 EventTime = template.EventTime,
                 IsStackable = template.IsStackable,
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -599,15 +508,19 @@ namespace Rogue.NET.Core.Model.Generator
                 CriticalHit = _randomSequenceGenerator.GetRandomValue(template.CriticalHit),
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 DodgeProbability = _randomSequenceGenerator.GetRandomValue(template.DodgeProbabilityRange),
-                Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
+                // TODO:ALTERATION Remove parameter
+                //Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
+                // TODO:ALTERATION Remove parameter
+                //Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
-                Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
+                // TODO:ALTERATION Remove parameter
+                //Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
                 MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
-                Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
+                // TODO:ALTERATION Remove parameter
+                //Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
@@ -689,16 +602,20 @@ namespace Rogue.NET.Core.Model.Generator
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 DodgeProbability = _randomSequenceGenerator.GetRandomValue(template.DodgeProbabilityRange),
                 EventTime = _randomSequenceGenerator.GetRandomValue(template.EventTime),
-                Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
+                // TODO:ALTERATION Remove parameter
+                //Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
+                // TODO:ALTERATION Remove parameter
+                //Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
-                Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
+                // TODO:ALTERATION Remove parameter
+                //Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 IsStackable = template.IsStackable,
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
                 MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
-                Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
+                // TODO:ALTERATION Remove parameter
+                //Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),                

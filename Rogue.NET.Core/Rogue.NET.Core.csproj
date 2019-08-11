@@ -80,6 +80,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -226,10 +229,11 @@
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationGroupTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\CharacterClassTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\ScenarioConfigurationAlterationContainer.cs" />
-    <Compile Include="Model\Scenario\Alteration\Common\AlterationBase.cs" />
+    <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Animation\AnimationGroup.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributeAuraAlterationEffect.cs" />
@@ -293,7 +297,6 @@
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="IO\ScenarioFile.cs" />
     <Compile Include="Logic\Interface\IRogueEngine.cs" />
-    <Compile Include="Logic\Processing\AnimationUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\IAnimationUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelProcessingAction.cs" />
     <Compile Include="Logic\Processing\Interface\IScenarioUpdate.cs" />
@@ -341,7 +344,6 @@
     <Compile Include="Model\Enums\Inventory.cs" />
     <Compile Include="Model\Enums\MetaData.cs" />
     <Compile Include="Model\Enums\Resource.cs" />
-    <Compile Include="Model\Enums\Skill.cs" />
     <Compile Include="Model\Generator\AlterationGenerator.cs" />
     <Compile Include="Model\Generator\CharacterGenerator.cs" />
     <Compile Include="Model\Generator\DoodadGenerator.cs" />
@@ -350,17 +352,14 @@
     <Compile Include="Model\Generator\Interface\IDoodadGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IRandomSequenceGenerator.cs" />
     <Compile Include="Model\Generator\Interface\ISkillSetGenerator.cs" />
-    <Compile Include="Model\Generator\Interface\ISpellGenerator.cs" />
     <Compile Include="Model\Generator\RandomSequenceGenerator.cs" />
     <Compile Include="Logic\Algorithm\SimplePathFinder.cs" />
     <Compile Include="Logic\ContentEngine.cs" />
     <Compile Include="Logic\Interface\IContentEngine.cs" />
     <Compile Include="Logic\Interface\ILayoutEngine.cs" />
     <Compile Include="Logic\Algorithm\Interface\IRayTracer.cs" />
-    <Compile Include="Logic\Interface\ISpellEngine.cs" />
     <Compile Include="Logic\LayoutEngine.cs" />
     <Compile Include="Logic\Algorithm\SimpleRayTracer.cs" />
-    <Compile Include="Logic\SpellEngine.cs" />
     <Compile Include="Model\Generator\BehaviorGenerator.cs" />
     <Compile Include="Model\Generator\ContentGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IBehaviorGenerator.cs" />
@@ -372,7 +371,6 @@
     <Compile Include="Model\Generator\LayoutGenerator.cs" />
     <Compile Include="Model\Generator\ScenarioGenerator.cs" />
     <Compile Include="Model\Generator\SkillSetGenerator.cs" />
-    <Compile Include="Model\Generator\SpellGenerator.cs" />
     <Compile Include="Model\Range.cs" />
     <Compile Include="Model\ScenarioConfiguration\Abstract\DungeonObjectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolDetailsTemplate.cs" />
@@ -412,12 +410,9 @@
     <Compile Include="Model\ScenarioMessage\ScenarioMessage.cs" />
     <Compile Include="Model\ScenarioMessage\ScenarioMessagePriority.cs" />
     <Compile Include="Model\ScenarioMessage\ScenarioMessageType.cs" />
-    <Compile Include="Model\Scenario\Alteration\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationCost.cs" />
-    <Compile Include="Model\Scenario\Alteration\AlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AttackAttribute.cs" />
-    <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationCostExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior.cs" />
@@ -432,10 +427,9 @@
     <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
     <Compile Include="Model\Scenario\Content\CharacterClass.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SkillExtension.cs" />
-    <Compile Include="Model\Scenario\Content\Skill\Extension\SpellExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Skill.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterAlterationTypeValidator.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterAlteration_NEW.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterAlteration.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\AttackAttributeAuraTargetAlterationCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\AttackAttributeTemporaryAlterationCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\AttackAttributePassiveAlterationCollector.cs" />
@@ -446,10 +440,9 @@
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\Interface\IAlterationCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\Interface\IAlterationEffectCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\Interface\IAttackAttributeAlterationCollector.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\Interface\ITurnBasedAlterationCollector.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\Interface\ITemporaryAlterationCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\PassiveAlterationCollector.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\Collector\TemporaryAlterationCollector.cs" />
-    <Compile Include="Model\Scenario\Dynamic\CharacterAlteration.cs" />
     <Compile Include="Model\Scenario\Character\Enemy.cs" />
     <Compile Include="Model\Scenario\Character\Player.cs" />
     <Compile Include="Model\Scenario\Content\Doodad\DoodadBase.cs" />
@@ -466,9 +459,7 @@
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
-    <Compile Include="Model\Scenario\Content\Skill\Spell.cs" />
-    <Compile Include="Model\Scenario\Dynamic\PlayerAlteration.cs" />
-    <Compile Include="Model\Scenario\Dynamic\CharacterClassAlteration.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterClassAlteration.cs" />
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
     <Compile Include="Model\Scenario\ScenarioMetaData.cs" />

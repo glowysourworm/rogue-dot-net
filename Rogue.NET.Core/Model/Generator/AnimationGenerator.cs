@@ -15,31 +15,35 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new AnimationGroup()
             {
-                Animations = template.Animations.Select(x => new AnimationData()
-                {
-                    AccelerationRatio = x.AccelerationRatio,
-                    AnimationTime = x.AnimationTime,
-                    AutoReverse = x.AutoReverse,
-                    BaseType = x.BaseType,
-                    ChildCount = x.ChildCount,
-                    ConstantVelocity = x.ConstantVelocity,
-                    Erradicity = x.Erradicity,
-                    FillTemplate = x.FillTemplate,
-                    Height1 = x.Height1,
-                    Height2 = x.Height2,
-                    Opacity1 = x.Opacity1,
-                    Opacity2 = x.Opacity2,
-                    RadiusFromFocus = x.RadiusFromFocus,
-                    RepeatCount = x.RepeatCount,
-                    RoamRadius = x.RoamRadius,
-                    SpiralRate = x.SpiralRate,
-                    StrokeTemplate = x.StrokeTemplate,
-                    StrokeThickness = x.StrokeThickness,
-                    TargetType = x.TargetType, 
-                    Velocity = x.Velocity,
-                    Width1 = x.Width1,
-                    Width2 = x.Width2
-                }).ToList()
+                Animations = template.Animations.Select(x => GenerateAnimation(x)).ToList()
+            };
+        }
+
+        public AnimationData GenerateAnimation(AnimationTemplate template)
+        {
+            return new AnimationData()
+            {
+                AccelerationRatio = template.AccelerationRatio,
+                AnimationTime = template.AnimationTime,
+                AutoReverse = template.AutoReverse,
+                BaseType = template.BaseType,
+                ChildCount = template.ChildCount,
+                ConstantVelocity = template.ConstantVelocity,
+                Erradicity = template.Erradicity,
+                FillTemplate = template.FillTemplate,
+                Height1 = template.Height1,
+                Height2 = template.Height2,
+                Opacity1 = template.Opacity1,
+                Opacity2 = template.Opacity2,
+                RadiusFromFocus = template.RadiusFromFocus,
+                RepeatCount = template.RepeatCount,
+                RoamRadius = template.RoamRadius,
+                SpiralRate = template.SpiralRate,
+                StrokeTemplate = template.StrokeTemplate,
+                StrokeThickness = template.StrokeThickness,
+                Velocity = template.Velocity,
+                Width1 = template.Width1,
+                Width2 = template.Width2
             };
         }
     }

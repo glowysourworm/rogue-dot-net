@@ -10,15 +10,15 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
     /// </summary>
     public interface IAlterationAuraSourceCollector<TEffect>
     {
-        void Apply(string alterationId, TEffect targetEffect, AuraSourceParameters sourceParameters, AlterationCost cost = null);
+        /// <summary>
+        /// Returns Aura Source Parameters that are affecting the character
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<AuraSourceParameters> GetAuraSourceParameters();
 
         /// <summary>
-        /// Pass-through method that will remove alteration from collector if it exists there
+        /// Returns a collection of effects that are applied to characters in range
         /// </summary>
-        void Filter(string alterationId);
-
-        IEnumerable<AlterationCost> GetCosts();
-        IEnumerable<AuraSourceParameters> GetAuraSourceParameters();
-        IEnumerable<Tuple<TEffect, AuraSourceParameters>> GetEffects();
+        IEnumerable<Tuple<TEffect, AuraSourceParameters>> GetAuraEffects();
     }
 }
