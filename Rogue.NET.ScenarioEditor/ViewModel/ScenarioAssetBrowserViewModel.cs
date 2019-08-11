@@ -20,7 +20,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public IScenarioAssetGroupViewModel SkillSetGroup { get; set; }
         public IScenarioAssetGroupViewModel AnimationGroup { get; set; }
         public IScenarioAssetGroupViewModel BrushGroup { get; set; }
-        public IScenarioAssetGroupViewModel PenGroup { get; set; }
 
         public ICommand CollapseAssetTreeCommand { get; set; }
 
@@ -43,7 +42,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.SkillSetGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.SkillSet };
             this.AnimationGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Animation };
             this.BrushGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Brush };
-            this.PenGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = "Pen" }; // TODO
         }
     }
 }

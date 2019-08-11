@@ -15,7 +15,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
 
         public List<SkillSetTemplate> SkillTemplates { get; set; }
         public List<BrushTemplate> BrushTemplates { get; set; }
-        public List<PenTemplate> PenTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
         public List<AnimationTemplate> AnimationTemplates { get; set; }
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
@@ -39,7 +38,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.SkillTemplates = new List<SkillSetTemplate>();
             this.PlayerTemplate = new PlayerTemplate();
             this.DoodadTemplates = new List<DoodadTemplate>();
-            this.PenTemplates = new List<PenTemplate>();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
             this.CharacterClasses = new List<CharacterClassTemplate>();

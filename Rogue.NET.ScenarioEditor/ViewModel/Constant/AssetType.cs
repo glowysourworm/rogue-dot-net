@@ -19,7 +19,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string Enemy = "Enemy";
         public const string Equipment = "Equipment";
         public const string Layout = "Layout";
-        public const string Pen = "Pen";
         public const string SkillSet = "SkillSet";
 
         public const string AnimationDisplay = "Animation";
@@ -29,7 +28,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string EnemyDisplay = "Enemy";
         public const string EquipmentDisplay = "Equipment";
         public const string LayoutDisplay = "Layout";
-        public const string PenDisplay = "Pen";
         public const string SkillSetDisplay = "Skill Set";
 
         public const string AnimationViewName = "Animation";
@@ -39,15 +37,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string EnemyViewName = "Enemy";
         public const string EquipmentViewName = "Equipment";
         public const string LayoutViewName = "Layout";
-        public const string PenViewName = "TODO";
         public const string SkillSetViewName = "SkillSet";
 
         public static bool HasSymbol(string assetType)
         {
             return !(assetType == Layout ||
                    assetType == Animation ||
-                   assetType == Brush ||
-                   assetType == Pen);
+                   assetType == Brush);
         }
 
         public static bool HasLevelPlacement(string assetType)
@@ -109,7 +105,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Enemy, EnemyDisplay },
             { Equipment, EquipmentDisplay },
             { Layout, LayoutDisplay },
-            { Pen, PenDisplay },
             { SkillSet, SkillSetDisplay }
         };
 
@@ -125,7 +120,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Enemy, EnemyViewName },
             { Equipment, EquipmentViewName },
             { Layout, LayoutViewName },
-            { Pen, PenViewName },
             { SkillSet, SkillSetViewName }
         };
 
@@ -141,7 +135,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Enemy, typeof(ObservableCollection<EnemyTemplateViewModel>) },
             { Equipment, typeof(ObservableCollection<EquipmentTemplateViewModel>) },
             { Layout, typeof(ObservableCollection<LayoutTemplateViewModel>) },
-            { Pen, typeof(ObservableCollection<PenTemplateViewModel>) },
             { SkillSet, typeof(ObservableCollection<SkillSetTemplateViewModel>) }
         };
     }

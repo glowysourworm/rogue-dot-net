@@ -1,10 +1,4 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Enemy;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
@@ -38,7 +32,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
 
         public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
         public ObservableCollection<BrushTemplateViewModel> BrushTemplates { get; set; }
-        public ObservableCollection<PenTemplateViewModel> PenTemplates { get; set; }
         public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
         public ObservableCollection<AnimationTemplateViewModel> AnimationTemplates { get; set; }
         public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
@@ -59,7 +52,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();
             this.PlayerTemplate = new PlayerTemplateViewModel();
             this.DoodadTemplates = new ObservableCollection<DoodadTemplateViewModel>();
-            this.PenTemplates = new ObservableCollection<PenTemplateViewModel>();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
             this.CharacterClasses = new ObservableCollection<CharacterClassTemplateViewModel>();
