@@ -376,7 +376,6 @@
     <Compile Include="Model\ScenarioConfiguration\Abstract\SymbolDetailsTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Abstract\Template.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCostTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationCostTemplateExtension.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationEffectTemplateExtension.cs" />

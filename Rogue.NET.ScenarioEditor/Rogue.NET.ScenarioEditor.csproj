@@ -326,7 +326,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\SymbolDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Abstract\TemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationCostTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AttackAttributeAuraAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AttackAttributeMeleeAlterationEffectTemplateViewModel.cs" />
