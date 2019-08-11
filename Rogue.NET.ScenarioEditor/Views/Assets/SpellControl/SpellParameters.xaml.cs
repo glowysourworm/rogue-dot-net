@@ -30,16 +30,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SpellControl
 
         private void AnimationsLB_RemoveEvent(object sender, object animation)
         {
-            var viewModel = this.DataContext as SpellTemplateViewModel;
-            var template = animation as AnimationTemplateViewModel;
-            viewModel.Animations.Remove(template);
+            // TODO:ALTERATION
+            //var viewModel = this.DataContext as SpellTemplateViewModel;
+            //var template = animation as AnimationTemplateViewModel;
+            //viewModel.Animations.Remove(template);
         }
 
         private void AnimationsLB_AddEvent(object sender, object animation)
         {
-            var viewModel = this.DataContext as SpellTemplateViewModel;
-            var template = animation as AnimationTemplateViewModel;
-            viewModel.Animations.Add(template);
+            // TODO:ALTERATION
+            //var viewModel = this.DataContext as SpellTemplateViewModel;
+            //var template = animation as AnimationTemplateViewModel;
+            //viewModel.Animations.Add(template);
         }
     }
 }

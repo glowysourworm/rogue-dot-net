@@ -33,11 +33,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            var alteration = e as SpellTemplateViewModel;
-
             viewModel.Skills.Add(new SkillTemplateViewModel()
             {
-                Name = alteration.DisplayName,
+                //Name = alteration.DisplayName,
                 // TODO:ALTERATION
                 //Alteration = alteration                
             });

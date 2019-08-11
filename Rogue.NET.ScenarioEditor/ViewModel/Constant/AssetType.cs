@@ -67,9 +67,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             else if (viewModel is ConsumableTemplateViewModel)
                 return GetSubType(viewModel as ConsumableTemplateViewModel);
 
-            else if (viewModel is SpellTemplateViewModel)
-                return GetSubType(viewModel as SpellTemplateViewModel);
-
             else if (viewModel is AnimationTemplateViewModel)
                 return GetSubType(viewModel as AnimationTemplateViewModel);
 

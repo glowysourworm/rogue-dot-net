@@ -382,7 +382,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationEffectTemplateExtension.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\SpellTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\BrushTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\GradientStopTemplate.cs" />
