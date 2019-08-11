@@ -268,18 +268,12 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.SkillTemplates)
             {
                 foreach (var skillTemplate in template.Skills)
-                {
-                    skillTemplate.Alteration = Match(configuration.MagicSpells, skillTemplate.Alteration);
                     skillTemplate.SkillAlteration = Match(configuration.AlterationContainer.SkillAlterations, skillTemplate.SkillAlteration);
-                }
             }
 
             // Doodads
             foreach (var template in configuration.DoodadTemplates)
             {
-                template.AutomaticMagicSpellTemplate = Match(configuration.MagicSpells, template.AutomaticMagicSpellTemplate);
-                template.InvokedMagicSpellTemplate = Match(configuration.MagicSpells, template.InvokedMagicSpellTemplate);
-
                 template.AutomaticAlteration = Match(configuration.AlterationContainer.DoodadAlterations, template.AutomaticAlteration);
                 template.InvokedAlteration = Match(configuration.AlterationContainer.DoodadAlterations, template.InvokedAlteration);
             }
@@ -287,11 +281,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
             {
-                template.AmmoSpellTemplate = Match(configuration.MagicSpells, template.AmmoSpellTemplate);
                 template.LearnedSkill = Match(configuration.SkillTemplates, template.LearnedSkill);
-                template.ProjectileSpellTemplate = Match(configuration.MagicSpells, template.ProjectileSpellTemplate);
-                template.SpellTemplate = Match(configuration.MagicSpells, template.SpellTemplate);
-
                 template.ConsumableAlteration = Match(configuration.AlterationContainer.ConsumableAlterations, template.ConsumableAlteration);
                 template.ConsumableProjectileAlteration = Match(configuration.AlterationContainer.ConsumableProjectileAlterations, template.ConsumableProjectileAlteration);
             }
@@ -300,9 +290,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = Match(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.CurseSpell = Match(configuration.MagicSpells, template.CurseSpell);
-                template.EquipSpell = Match(configuration.MagicSpells, template.EquipSpell);
-
                 template.EquipmentAttackAlteration = Match(configuration.AlterationContainer.EquipmentAttackAlterations, template.EquipmentAttackAlteration);
                 template.EquipmentCurseAlteration = Match(configuration.AlterationContainer.EquipmentCurseAlterations, template.EquipmentCurseAlteration);
                 template.EquipmentEquipAlteration = Match(configuration.AlterationContainer.EquipmentEquipAlterations, template.EquipmentEquipAlteration);
@@ -319,10 +306,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 // Behavior Skills
                 for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
-                {
-                    template.BehaviorDetails.Behaviors[i].EnemySpell = Match(configuration.MagicSpells, template.BehaviorDetails.Behaviors[i].EnemySpell);
                     template.BehaviorDetails.Behaviors[i].EnemyAlteration = Match(configuration.AlterationContainer.EnemyAlterations, template.BehaviorDetails.Behaviors[i].EnemyAlteration);
-                }
             }
 
             // Player
@@ -365,18 +349,12 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.SkillTemplates)
             {
                 foreach (var skillTemplate in template.Skills)
-                {
-                    skillTemplate.Alteration = MatchVM(configuration.MagicSpells, skillTemplate.Alteration);
                     skillTemplate.SkillAlteration = MatchVM(configuration.AlterationContainer.SkillAlterations, skillTemplate.SkillAlteration);
-                }
             }
 
             // Doodads
             foreach (var template in configuration.DoodadTemplates)
             {
-                template.AutomaticMagicSpellTemplate = MatchVM(configuration.MagicSpells, template.AutomaticMagicSpellTemplate);
-                template.InvokedMagicSpellTemplate = MatchVM(configuration.MagicSpells, template.InvokedMagicSpellTemplate);
-
                 template.AutomaticAlteration = MatchVM(configuration.AlterationContainer.DoodadAlterations, template.AutomaticAlteration);
                 template.InvokedAlteration = MatchVM(configuration.AlterationContainer.DoodadAlterations, template.InvokedAlteration);
             }
@@ -384,11 +362,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
             {
-                template.AmmoSpellTemplate = MatchVM(configuration.MagicSpells, template.AmmoSpellTemplate);
                 template.LearnedSkill = MatchVM(configuration.SkillTemplates, template.LearnedSkill);
-                template.ProjectileSpellTemplate = MatchVM(configuration.MagicSpells, template.ProjectileSpellTemplate);
-                template.SpellTemplate = MatchVM(configuration.MagicSpells, template.SpellTemplate);
-
                 template.ConsumableProjectileAlteration = MatchVM(configuration.AlterationContainer.ConsumableProjectileAlterations, template.ConsumableProjectileAlteration);
                 template.ConsumableAlteration = MatchVM(configuration.AlterationContainer.ConsumableAlterations, template.ConsumableAlteration);
             }
@@ -397,9 +371,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = MatchVM(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.CurseSpell = MatchVM(configuration.MagicSpells, template.CurseSpell);
-                template.EquipSpell = MatchVM(configuration.MagicSpells, template.EquipSpell);
-
                 template.EquipmentAttackAlteration = MatchVM(configuration.AlterationContainer.EquipmentAttackAlterations, template.EquipmentAttackAlteration);
                 template.EquipmentCurseAlteration = MatchVM(configuration.AlterationContainer.EquipmentCurseAlterations, template.EquipmentCurseAlteration);
                 template.EquipmentEquipAlteration = MatchVM(configuration.AlterationContainer.EquipmentEquipAlterations, template.EquipmentEquipAlteration);
@@ -416,10 +387,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 // Behavior Skills
                 for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
-                {
-                    template.BehaviorDetails.Behaviors[i].EnemySpell = MatchVM(configuration.MagicSpells, template.BehaviorDetails.Behaviors[i].EnemySpell);
                     template.BehaviorDetails.Behaviors[i].EnemyAlteration = MatchVM(configuration.AlterationContainer.EnemyAlterations, template.BehaviorDetails.Behaviors[i].EnemyAlteration);
-                }
             }
 
             // Player

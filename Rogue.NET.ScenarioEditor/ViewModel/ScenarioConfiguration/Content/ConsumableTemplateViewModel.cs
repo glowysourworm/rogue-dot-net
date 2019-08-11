@@ -15,15 +15,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<int> _useCount;
         private bool _hasLearnedSkill;
         private bool _hasCharacterClassRequirement;
-        private bool _hasSpell;
-        private bool _isProjectile;
         private bool _hasAlteration;
         private bool _hasProjectileAlteration;
         private bool _identifyOnUse;
-        private SpellTemplateViewModel _spellTemplate;
         private SkillSetTemplateViewModel _learnedSkill;
-        private SpellTemplateViewModel _projectileSpellTemplate;
-        private SpellTemplateViewModel _ammoSpellTemplate;
         private ConsumableAlterationTemplateViewModel _consumableAlteration;
         private ConsumableProjectileAlterationTemplateViewModel _consumableProjectileAlteration;
         private AnimationGroupTemplateViewModel _ammoAnimationGroup;
@@ -61,16 +56,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasLearnedSkill; }
             set { this.RaiseAndSetIfChanged(ref _hasLearnedSkill, value); }
         }
-        public bool HasSpell
-        {
-            get { return _hasSpell; }
-            set { this.RaiseAndSetIfChanged(ref _hasSpell, value); }
-        }
-        public bool IsProjectile
-        {
-            get { return _isProjectile; }
-            set { this.RaiseAndSetIfChanged(ref _isProjectile, value); }
-        }
         public bool HasAlteration
         {
             get { return _hasAlteration; }
@@ -86,25 +71,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _identifyOnUse; }
             set { this.RaiseAndSetIfChanged(ref _identifyOnUse, value); }
         }
-        public SpellTemplateViewModel SpellTemplate
-        {
-            get { return _spellTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _spellTemplate, value); }
-        }
         public SkillSetTemplateViewModel LearnedSkill
         {
             get { return _learnedSkill; }
             set { this.RaiseAndSetIfChanged(ref _learnedSkill, value); }
-        }
-        public SpellTemplateViewModel ProjectileSpellTemplate
-        {
-            get { return _projectileSpellTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _projectileSpellTemplate, value); }
-        }
-        public SpellTemplateViewModel AmmoSpellTemplate
-        {
-            get { return _ammoSpellTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _ammoSpellTemplate, value); }
         }
         public ConsumableAlterationTemplateViewModel ConsumableAlteration
         {
@@ -141,9 +111,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             this.Type = ConsumableType.OneUse;
             this.SubType = ConsumableSubType.Food;
-            this.ProjectileSpellTemplate = new SpellTemplateViewModel();
-            this.SpellTemplate = new SpellTemplateViewModel();
-            this.AmmoSpellTemplate = new SpellTemplateViewModel();
             this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
             this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel();
@@ -151,27 +118,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
-            this.IsProjectile = false;
-            this.IdentifyOnUse = false;
-            this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplateViewModel();
-            this.NoteMessage = "";
-        }
-        public ConsumableTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
-        {
-            this.Type = ConsumableType.OneUse;
-            this.SubType = ConsumableSubType.Food;
-            this.ProjectileSpellTemplate = new SpellTemplateViewModel();
-            this.SpellTemplate = new SpellTemplateViewModel();
-            this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
-            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
-            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel();
-            this.AmmoSpellTemplate = new SpellTemplateViewModel();
-            this.LearnedSkill = new SkillSetTemplateViewModel();
-            this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);
-            this.IsObjectiveItem = false;
-            this.IsUnique = false;
-            this.IsProjectile = false;
             this.IdentifyOnUse = false;
             this.HasCharacterClassRequirement = false;
             this.CharacterClass = new CharacterClassTemplateViewModel();

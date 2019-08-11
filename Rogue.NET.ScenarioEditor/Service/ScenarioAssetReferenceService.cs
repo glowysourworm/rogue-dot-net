@@ -1,13 +1,12 @@
 ﻿using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Enums;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -24,56 +23,57 @@ namespace Rogue.NET.ScenarioEditor.Service
         #region (public) Methods
         public void UpdateAlterations(ScenarioConfigurationContainerViewModel configuration)
         {
-            var collection = configuration.MagicSpells;
+            // TODO:ALTERATION
+            //var collection = configuration.MagicSpells;
 
-            // Skill Sets
-            foreach (var skillSet in configuration.SkillTemplates)
-            {
-                // Skill
-                foreach (var skill in skillSet.Skills)
-                    skill.Alteration = MatchByName(configuration.MagicSpells, skill.Alteration);
-            }
+            //// Skill Sets
+            //foreach (var skillSet in configuration.SkillTemplates)
+            //{
+            //    // Skill
+            //    foreach (var skill in skillSet.Skills)
+            //        skill.Alteration = MatchByName(configuration.MagicSpells, skill.Alteration);
+            //}
 
-            // Doodads
-            foreach (var doodad in configuration.DoodadTemplates)
-            {
-                doodad.AutomaticMagicSpellTemplate = MatchByName(collection, doodad.AutomaticMagicSpellTemplate);
-                doodad.InvokedMagicSpellTemplate = MatchByName(collection, doodad.InvokedMagicSpellTemplate);
+            //// Doodads
+            //foreach (var doodad in configuration.DoodadTemplates)
+            //{
+            //    doodad.AutomaticMagicSpellTemplate = MatchByName(collection, doodad.AutomaticMagicSpellTemplate);
+            //    doodad.InvokedMagicSpellTemplate = MatchByName(collection, doodad.InvokedMagicSpellTemplate);
 
-                if (doodad.AutomaticMagicSpellTemplate == null)
-                    doodad.IsAutomatic = false;
+            //    if (doodad.AutomaticMagicSpellTemplate == null)
+            //        doodad.IsAutomatic = false;
 
-                if (doodad.InvokedMagicSpellTemplate == null)
-                    doodad.IsInvoked = false;
-            }
+            //    if (doodad.InvokedMagicSpellTemplate == null)
+            //        doodad.IsInvoked = false;
+            //}
 
-            // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates)
-            {
-                equipment.AmmoTemplate.AmmoSpellTemplate = MatchByName(collection, equipment.AmmoTemplate.AmmoSpellTemplate);
-                equipment.CurseSpell = MatchByName(collection, equipment.CurseSpell);
-                equipment.EquipSpell = MatchByName(collection, equipment.EquipSpell);
+            //// Equipment
+            //foreach (var equipment in configuration.EquipmentTemplates)
+            //{
+            //    equipment.AmmoTemplate.AmmoSpellTemplate = MatchByName(collection, equipment.AmmoTemplate.AmmoSpellTemplate);
+            //    equipment.CurseSpell = MatchByName(collection, equipment.CurseSpell);
+            //    equipment.EquipSpell = MatchByName(collection, equipment.EquipSpell);
 
-                if (equipment.CurseSpell == null)
-                    equipment.HasCurseSpell = false;
+            //    if (equipment.CurseSpell == null)
+            //        equipment.HasCurseSpell = false;
 
-                if (equipment.EquipSpell == null)
-                    equipment.HasEquipSpell = false;
-            }
+            //    if (equipment.EquipSpell == null)
+            //        equipment.HasEquipSpell = false;
+            //}
 
-            // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates)
-            {
-                consumable.AmmoSpellTemplate = MatchByName(collection, consumable.AmmoSpellTemplate);
-                consumable.ProjectileSpellTemplate = MatchByName(collection, consumable.ProjectileSpellTemplate);
-                consumable.SpellTemplate = MatchByName(collection, consumable.SpellTemplate);
+            //// Consumables
+            //foreach (var consumable in configuration.ConsumableTemplates)
+            //{
+            //    consumable.AmmoSpellTemplate = MatchByName(collection, consumable.AmmoSpellTemplate);
+            //    consumable.ProjectileSpellTemplate = MatchByName(collection, consumable.ProjectileSpellTemplate);
+            //    consumable.SpellTemplate = MatchByName(collection, consumable.SpellTemplate);
 
-                if (consumable.ProjectileSpellTemplate == null)
-                    consumable.IsProjectile = false;
+            //    if (consumable.ProjectileSpellTemplate == null)
+            //        consumable.IsProjectile = false;
 
-                if (consumable.SpellTemplate == null)
-                    consumable.HasSpell = false;
-            }
+            //    if (consumable.SpellTemplate == null)
+            //        consumable.HasSpell = false;
+            //}
         }
 
         public void UpdateAnimations(ScenarioConfigurationContainerViewModel configuration)

@@ -16,8 +16,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _quality;
         private EquipmentType _type;
         private CharacterBaseAttribute _combatType;
-        private SpellTemplate _equipSpell;
-        private SpellTemplate _curseSpell;
         private EquipmentAttackAlterationTemplate _equipmentAttackAlteration;
         private EquipmentEquipAlterationTemplate _equipmentEquipAlteration;
         private EquipmentCurseAlterationTemplate _equipmentCurseAlteration;
@@ -27,8 +25,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasAttackAlteration;
         private bool _hasEquipAlteration;
         private bool _hasCurseAlteration;
-        private bool _hasEquipSpell;
-        private bool _hasCurseSpell;
         private bool _hasCharacterClassRequirement;
         private CharacterClassTemplate _characterClass;
 
@@ -101,30 +97,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _combatType = value;
                     OnPropertyChanged("CombatType");
-                }
-            }
-        }
-        public SpellTemplate EquipSpell
-        {
-            get { return _equipSpell; }
-            set
-            {
-                if (_equipSpell != value)
-                {
-                    _equipSpell = value;
-                    OnPropertyChanged("EquipSpell");
-                }
-            }
-        }
-        public SpellTemplate CurseSpell
-        {
-            get { return _curseSpell; }
-            set
-            {
-                if (_curseSpell != value)
-                {
-                    _curseSpell = value;
-                    OnPropertyChanged("CurseSpell");
                 }
             }
         }
@@ -212,30 +184,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasEquipSpell
-        {
-            get { return _hasEquipSpell; }
-            set
-            {
-                if (_hasEquipSpell != value)
-                {
-                    _hasEquipSpell = value;
-                    OnPropertyChanged("HasEquipSpell");
-                }
-            }
-        }
-        public bool HasCurseSpell
-        {
-            get { return _hasCurseSpell; }
-            set
-            {
-                if (_hasCurseSpell != value)
-                {
-                    _hasCurseSpell = value;
-                    OnPropertyChanged("HasCurseSpell");
-                }
-            }
-        }
         public bool HasCharacterClassRequirement
         {
             get { return _hasCharacterClassRequirement; }
@@ -267,23 +215,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Type = EquipmentType.Ring;
             this.CombatType = CharacterBaseAttribute.Strength;
             this.Quality = new Range<double>(0, 0, 100, 100);
-            this.EquipSpell = new SpellTemplate();
-            this.CurseSpell = new SpellTemplate();
-            this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
-            this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
-            this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();
-            this.AmmoTemplate = new ConsumableTemplate();
-            this.AttackAttributes = new List<AttackAttributeTemplate>();
-        }
-        public EquipmentTemplate(DungeonObjectTemplate tmp)
-            : base(tmp)
-        {
-            this.Class = new Range<int>(0, 10);
-            this.Type = EquipmentType.Ring;
-            this.CombatType = CharacterBaseAttribute.Strength;
-            this.Quality = new Range<double>(0, 0, 100, 100);
-            this.EquipSpell = new SpellTemplate();
-            this.CurseSpell = new SpellTemplate();
             this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplate();
             this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplate();
             this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplate();

@@ -167,44 +167,45 @@ namespace Rogue.NET.Core.Service
                         };
                     });
                 })),
-                new ScenarioValidationRule("Alterations (and / or) Learned Skills have to be set for all configured assets", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    var consumablesNotSet = configuration.ConsumableTemplates
-                                                         .Where(x => (x.HasSpell && x.SpellTemplate == null) ||
-                                                                     (x.IsProjectile && x.ProjectileSpellTemplate == null) ||
-                                                                     (x.HasLearnedSkill && x.LearnedSkill == null) ||
-                                                                     (x.SubType == ConsumableSubType.Ammo && x.AmmoSpellTemplate == null));
+                // TODO:ALTERATION
+                //new ScenarioValidationRule("Alterations (and / or) Learned Skills have to be set for all configured assets", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                //{
+                //    var consumablesNotSet = configuration.ConsumableTemplates
+                //                                         .Where(x => (x.HasSpell && x.SpellTemplate == null) ||
+                //                                                     (x.IsProjectile && x.ProjectileSpellTemplate == null) ||
+                //                                                     (x.HasLearnedSkill && x.LearnedSkill == null) ||
+                //                                                     (x.SubType == ConsumableSubType.Ammo && x.AmmoSpellTemplate == null));
 
-                    var equipmentNotSet = configuration.EquipmentTemplates
-                                                       .Where(x => (x.HasCurseSpell && x.CurseSpell == null) ||
-                                                                   (x.HasEquipSpell && x.EquipSpell == null));
+                //    var equipmentNotSet = configuration.EquipmentTemplates
+                //                                       .Where(x => (x.HasCurseSpell && x.CurseSpell == null) ||
+                //                                                   (x.HasEquipSpell && x.EquipSpell == null));
 
-                    var doodadsNotSet = configuration.DoodadTemplates
-                                                     .Where(x => (x.IsAutomatic && x.AutomaticMagicSpellTemplate == null) ||
-                                                                 (x.IsInvoked && x.InvokedMagicSpellTemplate == null));
+                //    var doodadsNotSet = configuration.DoodadTemplates
+                //                                     .Where(x => (x.IsAutomatic && x.AutomaticMagicSpellTemplate == null) ||
+                //                                                 (x.IsInvoked && x.InvokedMagicSpellTemplate == null));
 
-                    var enemiesNotSet = configuration.EnemyTemplates
-                                                     .Where(x =>
-                                                            x.BehaviorDetails.Behaviors.Any(behavior =>
-                                                                (behavior.AttackType == CharacterAttackType.Skill ||
-                                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                                                                 behavior.EnemySpell == null))
-                                                     .Actualize();
+                //    var enemiesNotSet = configuration.EnemyTemplates
+                //                                     .Where(x =>
+                //                                            x.BehaviorDetails.Behaviors.Any(behavior =>
+                //                                                (behavior.AttackType == CharacterAttackType.Skill ||
+                //                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                //                                                 behavior.EnemySpell == null))
+                //                                     .Actualize();
 
-                    return consumablesNotSet
-                                .Cast<DungeonObjectTemplate>()
-                                .Union(equipmentNotSet)
-                                .Union(doodadsNotSet)
-                                .Union(enemiesNotSet)
-                                .Select(x =>
-                                {
-                                    return new ScenarioValidationResult()
-                                    {
-                                        Passed = false,
-                                        InnerMessage = x.Name + " has an un-set alteration (or) learned skill property"
-                                    };
-                                });
-                })),
+                //    return consumablesNotSet
+                //                .Cast<DungeonObjectTemplate>()
+                //                .Union(equipmentNotSet)
+                //                .Union(doodadsNotSet)
+                //                .Union(enemiesNotSet)
+                //                .Select(x =>
+                //                {
+                //                    return new ScenarioValidationResult()
+                //                    {
+                //                        Passed = false,
+                //                        InnerMessage = x.Name + " has an un-set alteration (or) learned skill property"
+                //                    };
+                //                });
+                //})),
                 new ScenarioValidationRule("Alteration type not supported for asset", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     var consumablesIssues = configuration.ConsumableTemplates

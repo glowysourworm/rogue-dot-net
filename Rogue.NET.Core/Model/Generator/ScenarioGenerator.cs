@@ -88,9 +88,10 @@ namespace Rogue.NET.Core.Model.Generator
             foreach (var template in configuration.SkillTemplates)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
+            // TODO:ALTERATION
             //Load Encyclopedia Rogue-Tanica (Alterations - NOT SHOWN IN UI)
-            foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.Alteration)))
-                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.Alteration)))
+            //    scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
             //Load Encyclopedia Rogue-Tanica (Character Classes)
             foreach (var template in configuration.CharacterClasses)

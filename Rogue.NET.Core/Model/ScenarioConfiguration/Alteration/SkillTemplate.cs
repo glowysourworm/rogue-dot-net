@@ -15,7 +15,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         bool _hasCharacterClassRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
-        SpellTemplate _alteration;
         SkillAlterationTemplate _skillAlteration;
         CharacterClassTemplate _characterClass;
 
@@ -91,18 +90,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public SpellTemplate Alteration
-        {
-            get { return _alteration; }
-            set
-            {
-                if (_alteration != value)
-                {
-                    _alteration = value;
-                    OnPropertyChanged("Alteration");
-                }
-            }
-        }
         public SkillAlterationTemplate SkillAlteration
         {
             get { return _skillAlteration; }
@@ -130,7 +117,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
 
         public SkillTemplate()
         {
-            this.Alteration = new SpellTemplate();
             this.SkillAlteration = new SkillAlterationTemplate(); 
             this.AttributeRequirement = CharacterAttribute.Agility;
             this.HasCharacterClassRequirement = false;

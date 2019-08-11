@@ -15,8 +15,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _quality;
         private EquipmentType _type;
         private CharacterBaseAttribute _combatType;
-        private SpellTemplateViewModel _equipSpell;
-        private SpellTemplateViewModel _curseSpell;
         private EquipmentAttackAlterationTemplateViewModel _equipmentAttackAlteration;
         private EquipmentEquipAlterationTemplateViewModel _equipmentEquipAlteration;
         private EquipmentCurseAlterationTemplateViewModel _equipmentCurseAlteration;
@@ -26,8 +24,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasAttackAlteration;
         private bool _hasEquipAlteration;
         private bool _hasCurseAlteration;
-        private bool _hasEquipSpell;
-        private bool _hasCurseSpell;
         private bool _hasCharacterClassRequirement;
         private CharacterClassTemplateViewModel _characterClass;
 
@@ -60,16 +56,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _combatType; }
             set { this.RaiseAndSetIfChanged(ref _combatType, value); }
-        }
-        public SpellTemplateViewModel EquipSpell
-        {
-            get { return _equipSpell; }
-            set { this.RaiseAndSetIfChanged(ref _equipSpell, value); }
-        }
-        public SpellTemplateViewModel CurseSpell
-        {
-            get { return _curseSpell; }
-            set { this.RaiseAndSetIfChanged(ref _curseSpell, value); }
         }
         public EquipmentAttackAlterationTemplateViewModel EquipmentAttackAlteration
         {
@@ -106,16 +92,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCurseAlteration; }
             set { this.RaiseAndSetIfChanged(ref _hasCurseAlteration, value); }
         }
-        public bool HasEquipSpell
-        {
-            get { return _hasEquipSpell; }
-            set { this.RaiseAndSetIfChanged(ref _hasEquipSpell, value); }
-        }
-        public bool HasCurseSpell
-        {
-            get { return _hasCurseSpell; }
-            set { this.RaiseAndSetIfChanged(ref _hasCurseSpell, value); }
-        }
         public bool HasCharacterClassRequirement
         {
             get { return _hasCharacterClassRequirement; }
@@ -127,27 +103,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
 
-
         public EquipmentTemplateViewModel()
         {
             this.Class = new RangeViewModel<int>(0, 10);
             this.Type = EquipmentType.Ring;
             this.Quality = new RangeViewModel<double>(0, 0, 100, 100);
-            this.EquipSpell = new SpellTemplateViewModel();
-            this.CurseSpell = new SpellTemplateViewModel();
-            this.AmmoTemplate = new ConsumableTemplateViewModel();
-            this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplateViewModel();
-        }
-        public EquipmentTemplateViewModel(DungeonObjectTemplateViewModel tmp)
-            : base(tmp)
-        {
-            this.Class = new RangeViewModel<int>(0, 10);
-            this.Type = EquipmentType.Ring;
-            this.Quality = new RangeViewModel<double>(0, 0, 100, 100);
-            this.EquipSpell = new SpellTemplateViewModel();
-            this.CurseSpell = new SpellTemplateViewModel();
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.HasCharacterClassRequirement = false;

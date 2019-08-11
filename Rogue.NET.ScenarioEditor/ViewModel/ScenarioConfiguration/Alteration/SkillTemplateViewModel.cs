@@ -13,7 +13,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         bool _hasCharacterClassRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
-        SpellTemplateViewModel _alteration;
         SkillAlterationTemplateViewModel _skillAlteration;
         CharacterClassTemplateViewModel _characterClass;
 
@@ -47,11 +46,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
             get { return _attributeRequirement; }
             set { this.RaiseAndSetIfChanged(ref _attributeRequirement, value); }
         }
-        public SpellTemplateViewModel Alteration
-        {
-            get { return _alteration; }
-            set { this.RaiseAndSetIfChanged(ref _alteration, value); }
-        }
         public SkillAlterationTemplateViewModel SkillAlteration
         {
             get { return _skillAlteration; }
@@ -65,7 +59,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 
         public SkillTemplateViewModel()
         {
-            this.Alteration = new SpellTemplateViewModel();
             this.SkillAlteration = new SkillAlterationTemplateViewModel();
             this.AttributeRequirement = CharacterAttribute.Agility;
             this.HasCharacterClassRequirement = false;

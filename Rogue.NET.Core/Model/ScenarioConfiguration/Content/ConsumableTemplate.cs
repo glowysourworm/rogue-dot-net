@@ -16,15 +16,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private int _levelRequired;
         private Range<int> _useCount;
         private bool _hasLearnedSkill;
-        private bool _hasSpell;
-        private bool _isProjectile;
         private bool _hasAlteration;
         private bool _hasProjectileAlteration;
         private bool _identifyOnUse;
-        private SpellTemplate _spellTemplate;
         private SkillSetTemplate _learnedSkill;
-        private SpellTemplate _projectileSpellTemplate;
-        private SpellTemplate _ammoSpellTemplate;
         private ConsumableAlterationTemplate _consumableAlteration;
         private ConsumableProjectileAlterationTemplate _consumableProjectileAlteration;
         private AnimationGroupTemplate _ammoAnimationGroup;
@@ -105,30 +100,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public bool HasSpell
-        {
-            get { return _hasSpell; }
-            set
-            {
-                if (_hasSpell != value)
-                {
-                    _hasSpell = value;
-                    OnPropertyChanged("HasSpell");
-                }
-            }
-        }
-        public bool IsProjectile
-        {
-            get { return _isProjectile; }
-            set
-            {
-                if (_isProjectile != value)
-                {
-                    _isProjectile = value;
-                    OnPropertyChanged("IsProjectile");
-                }
-            }
-        }
         public bool HasAlteration
         {
             get { return _hasAlteration; }
@@ -165,18 +136,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public SpellTemplate SpellTemplate
-        {
-            get { return _spellTemplate; }
-            set
-            {
-                if (_spellTemplate != value)
-                {
-                    _spellTemplate = value;
-                    OnPropertyChanged("SpellTemplate");
-                }
-            }
-        }
         public SkillSetTemplate LearnedSkill
         {
             get { return _learnedSkill; }
@@ -186,30 +145,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _learnedSkill = value;
                     OnPropertyChanged("LearnedSkill");
-                }
-            }
-        }
-        public SpellTemplate ProjectileSpellTemplate
-        {
-            get { return _projectileSpellTemplate; }
-            set
-            {
-                if (_projectileSpellTemplate != value)
-                {
-                    _projectileSpellTemplate = value;
-                    OnPropertyChanged("ProjectileSpellTemplate");
-                }
-            }
-        }
-        public SpellTemplate AmmoSpellTemplate
-        {
-            get { return _ammoSpellTemplate; }
-            set
-            {
-                if (_ammoSpellTemplate != value)
-                {
-                    _ammoSpellTemplate = value;
-                    OnPropertyChanged("AmmoSpellTemplate");
                 }
             }
         }
@@ -291,9 +226,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.Type = ConsumableType.OneUse;
             this.SubType = ConsumableSubType.Food;
-            this.ProjectileSpellTemplate = new SpellTemplate();
-            this.SpellTemplate = new SpellTemplate();
-            this.AmmoSpellTemplate = new SpellTemplate();
             this.ConsumableAlteration = new ConsumableAlterationTemplate();
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
             this.AmmoAnimationGroup = new AnimationGroupTemplate();
@@ -301,25 +233,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.UseCount = new Range<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
-            this.IsProjectile = false;
-            this.IdentifyOnUse = false;
-            this.NoteMessage = "";
-        }
-        public ConsumableTemplate(DungeonObjectTemplate tmp) : base(tmp)
-        {
-            this.Type = ConsumableType.OneUse;
-            this.SubType = ConsumableSubType.Food;
-            this.ProjectileSpellTemplate = new SpellTemplate();
-            this.SpellTemplate = new SpellTemplate();
-            this.AmmoSpellTemplate = new SpellTemplate();
-            this.ConsumableAlteration = new ConsumableAlterationTemplate();
-            this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
-            this.AmmoAnimationGroup = new AnimationGroupTemplate();
-            this.LearnedSkill = new SkillSetTemplate();
-            this.UseCount = new Range<int>(0, 0, 0, 20);
-            this.IsObjectiveItem = false;
-            this.IsUnique = false;
-            this.IsProjectile = false;
             this.IdentifyOnUse = false;
             this.NoteMessage = "";
         }

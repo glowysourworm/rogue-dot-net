@@ -6,8 +6,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class DoodadTemplateViewModel : DungeonObjectTemplateViewModel
     {
-        private SpellTemplateViewModel _automaticMagicSpellTemplate;
-        private SpellTemplateViewModel _invokedMagicSpellTemplate;
         private DoodadAlterationTemplateViewModel _automaticAlteration;
         private DoodadAlterationTemplateViewModel _invokedAlteration;
         private bool _isAutomatic;
@@ -17,16 +15,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasCharacterClassRequirement;
         private CharacterClassTemplateViewModel _characterClass;
 
-        public SpellTemplateViewModel AutomaticMagicSpellTemplate
-        {
-            get { return _automaticMagicSpellTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _automaticMagicSpellTemplate, value); }
-        }
-        public SpellTemplateViewModel InvokedMagicSpellTemplate
-        {
-            get { return _invokedMagicSpellTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _invokedMagicSpellTemplate, value); }
-        }
         public DoodadAlterationTemplateViewModel AutomaticAlteration
         {
             get { return _automaticAlteration; }
@@ -70,17 +58,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public DoodadTemplateViewModel()
         {
-            this.AutomaticMagicSpellTemplate = new SpellTemplateViewModel();
-            this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
-            this.IsUnique = false;
-            this.IsOneUse = false;
-            this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplateViewModel();
-        }
-        public DoodadTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
-        {
-            this.AutomaticMagicSpellTemplate = new SpellTemplateViewModel();
-            this.InvokedMagicSpellTemplate = new SpellTemplateViewModel();
             this.IsUnique = false;
             this.IsOneUse = false;
             this.HasCharacterClassRequirement = false;

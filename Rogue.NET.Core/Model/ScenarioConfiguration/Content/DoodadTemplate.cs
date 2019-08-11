@@ -8,8 +8,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class DoodadTemplate : DungeonObjectTemplate
     {
-        private SpellTemplate _automaticMagicSpellTemplate;
-        private SpellTemplate _invokedMagicSpellTemplate;
         private DoodadAlterationTemplate _automaticAlteration;
         private DoodadAlterationTemplate _invokedAlteration;
         private bool _isAutomatic;
@@ -19,30 +17,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasCharacterClassRequirement;
         private CharacterClassTemplate _characterClass;
 
-        public SpellTemplate AutomaticMagicSpellTemplate
-        {
-            get { return _automaticMagicSpellTemplate; }
-            set
-            {
-                if (_automaticMagicSpellTemplate != value)
-                {
-                    _automaticMagicSpellTemplate = value;
-                    OnPropertyChanged("AutomaticMagicSpellTemplate");
-                }
-            }
-        }
-        public SpellTemplate InvokedMagicSpellTemplate
-        {
-            get { return _invokedMagicSpellTemplate; }
-            set
-            {
-                if (_invokedMagicSpellTemplate != value)
-                {
-                    _invokedMagicSpellTemplate = value;
-                    OnPropertyChanged("InvokedMagicSpellTemplate");
-                }
-            }
-        }
         public DoodadAlterationTemplate AutomaticAlteration
         {
             get { return _automaticAlteration; }
@@ -142,17 +116,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public DoodadTemplate()
         {
-            this.AutomaticMagicSpellTemplate = new SpellTemplate();
-            this.InvokedMagicSpellTemplate = new SpellTemplate();
-            this.AutomaticAlteration = new DoodadAlterationTemplate();
-            this.InvokedAlteration = new DoodadAlterationTemplate();
-            this.IsUnique = false;
-            this.IsOneUse = false;
-        }
-        public DoodadTemplate(DungeonObjectTemplate tmp) : base(tmp)
-        {
-            this.AutomaticMagicSpellTemplate = new SpellTemplate();
-            this.InvokedMagicSpellTemplate = new SpellTemplate();
             this.AutomaticAlteration = new DoodadAlterationTemplate();
             this.InvokedAlteration = new DoodadAlterationTemplate();
             this.IsUnique = false;

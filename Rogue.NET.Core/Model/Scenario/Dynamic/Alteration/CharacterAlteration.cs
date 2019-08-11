@@ -135,6 +135,18 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                 this.TemporaryCollector
             };
 
+            _effectCollectors = new IAlterationEffectCollector[]
+            {
+                this.AttackAttributeAuraSourceCollector,
+                this.AttackAttributeAuraTargetCollector,
+                this.AttackAttributePassiveCollector,
+                this.AttackAttributeTemporaryCollector,
+                this.AuraTargetCollector,
+                this.AuraSourceCollector,
+                this.PassiveCollector,
+                this.TemporaryCollector
+            };
+
             _attackAttributeCollectors = new IAttackAttributeAlterationCollector[]
             {
                 this.AttackAttributeAuraTargetCollector,

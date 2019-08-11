@@ -37,7 +37,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             viewModel.Skills.Add(new SkillTemplateViewModel()
             {
                 Name = alteration.DisplayName,
-                Alteration = alteration                
+                // TODO:ALTERATION
+                //Alteration = alteration                
             });
         }
         private void SkillSetBuilder_RemoveEvent(object sender, object e)
