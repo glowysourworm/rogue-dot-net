@@ -19,7 +19,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
             {
-                this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
+                // TODO:ALTERATION
+                //this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
             });
 
             this.SkillSetBuilder.AddEvent += SkillSetBuilder_AddEvent;

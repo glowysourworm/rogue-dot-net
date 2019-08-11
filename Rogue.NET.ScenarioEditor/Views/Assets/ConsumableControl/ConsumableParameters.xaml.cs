@@ -17,9 +17,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
-                this.SpellCB.ItemsSource = configuration.MagicSpells;
-                this.ProjectileSpellCB.ItemsSource = configuration.MagicSpells;
-                this.AmmoSpellCB.ItemsSource = configuration.MagicSpells;
+                // TODO:ALTERATION
+                //this.SpellCB.ItemsSource = configuration.MagicSpells;
+                //this.ProjectileSpellCB.ItemsSource = configuration.MagicSpells;
+                //this.AmmoSpellCB.ItemsSource = configuration.MagicSpells;
                 this.LearnedSkillCB.ItemsSource = configuration.SkillTemplates;
                 this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
             });

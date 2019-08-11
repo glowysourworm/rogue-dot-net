@@ -60,9 +60,10 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Doodad:
                     _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName });
                     break;
-                case AssetType.Spell:
-                    _scenarioEditorController.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
-                    break;
+                //case AssetType.Spell:
+                //    // TODO:ALTERATION
+                //    //_scenarioEditorController.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
+                //    break;
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
                     break;
@@ -111,9 +112,10 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Doodad:
                     _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(assetCopy as DoodadTemplateViewModel);
                     break;
-                case AssetType.Spell:
-                    _scenarioEditorController.CurrentConfig.MagicSpells.Add(assetCopy as SpellTemplateViewModel);
-                    break;
+                //case AssetType.Spell:
+                //    // TODO:ALTERATION
+                //    //_scenarioEditorController.CurrentConfig.MagicSpells.Add(assetCopy as SpellTemplateViewModel);
+                //    break;
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(assetCopy as SkillSetTemplateViewModel);
                     break;
@@ -160,9 +162,10 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Consumable:
                     _scenarioAssetReferenceService.UpdateItems(_scenarioEditorController.CurrentConfig);
                     break;
-                case AssetType.Spell:
-                    _scenarioAssetReferenceService.UpdateAlterations(_scenarioEditorController.CurrentConfig);
-                    break;
+                    // TODO:ALTERATION
+                //case AssetType.Spell:
+                //    _scenarioAssetReferenceService.UpdateAlterations(_scenarioEditorController.CurrentConfig);
+                //    break;
                 case AssetType.SkillSet:
                     _scenarioAssetReferenceService.UpdateSkillSets(_scenarioEditorController.CurrentConfig);
                     break;

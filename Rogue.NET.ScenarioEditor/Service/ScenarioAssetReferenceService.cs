@@ -78,8 +78,9 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateAnimations(ScenarioConfigurationContainerViewModel configuration)
         {
-            foreach (var alteration in configuration.MagicSpells)
-                UpdateCollection(configuration.AnimationTemplates, alteration.Animations);
+            // TODO:ALTERATION
+            //foreach (var alteration in configuration.MagicSpells)
+            //    UpdateCollection(configuration.AnimationTemplates, alteration.Animations);
 
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateCollection(configuration.AnimationTemplates, enemy.DeathAnimations);
@@ -87,9 +88,10 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
+            // TODO:ALTERATION
             // Alterations
-            foreach (var spell in configuration.MagicSpells)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
+            //foreach (var spell in configuration.MagicSpells)
+            //    UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
 
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
@@ -148,23 +150,24 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Alterations
-            foreach (var spell in configuration.MagicSpells)
-            {
-                // Fix for initializing existing scenarios
-                spell.Effect.AlteredState = spell.Effect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
-                spell.AuraEffect.AlteredState = spell.AuraEffect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
+            // TODO:ALTERATION
+            //// Alterations
+            //foreach (var spell in configuration.MagicSpells)
+            //{
+            //    // Fix for initializing existing scenarios
+            //    spell.Effect.AlteredState = spell.Effect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
+            //    spell.AuraEffect.AlteredState = spell.AuraEffect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
 
-                // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
-                //         should not interfere with operation because references aren't kept strongly (there's allowance for
-                //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
-                //         character operation).
-                spell.Effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.Effect.AlteredState) ??
-                                            new AlteredCharacterStateTemplateViewModel();
+            //    // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
+            //    //         should not interfere with operation because references aren't kept strongly (there's allowance for
+            //    //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
+            //    //         character operation).
+            //    spell.Effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.Effect.AlteredState) ??
+            //                                new AlteredCharacterStateTemplateViewModel();
 
-                spell.AuraEffect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.AuraEffect.AlteredState) ??
-                                            new AlteredCharacterStateTemplateViewModel();
-            }
+            //    spell.AuraEffect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.AuraEffect.AlteredState) ??
+            //                                new AlteredCharacterStateTemplateViewModel();
+            //}
         }
 
         public void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration)

@@ -86,7 +86,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.MagicSpells.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
@@ -252,17 +251,18 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 template.StrokeTemplate = Match(configuration.BrushTemplates, template.StrokeTemplate);
             }
 
+            // TODO:ALTERATION
             // Alterations
-            foreach (var template in configuration.MagicSpells)
-            {
-                MatchCollection(configuration.AnimationTemplates, template.Animations);
+            //foreach (var template in configuration.MagicSpells)
+            //{
+            //    MatchCollection(configuration.AnimationTemplates, template.Animations);
 
-                template.Effect.AlteredState = Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-                template.AuraEffect.AlteredState = Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+            //    template.Effect.AlteredState = Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+            //    template.AuraEffect.AlteredState = Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
 
-                template.Effect.RemediedState = Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-                template.AuraEffect.RemediedState = Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-            }
+            //    template.Effect.RemediedState = Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+            //    template.AuraEffect.RemediedState = Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
+            //}
 
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)
@@ -333,17 +333,18 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 template.StrokeTemplate = MatchVM(configuration.BrushTemplates, template.StrokeTemplate);
             }
 
-            // Alterations
-            foreach (var template in configuration.MagicSpells)
-            {
-                MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
+            // TODO:ALTERATION
+            //// Alterations
+            //foreach (var template in configuration.MagicSpells)
+            //{
+            //    MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
 
-                template.Effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-                template.AuraEffect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
+            //    template.Effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
+            //    template.AuraEffect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
 
-                template.Effect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-                template.AuraEffect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-            }
+            //    template.Effect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
+            //    template.AuraEffect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
+            //}
 
             // Skill Sets
             foreach (var template in configuration.SkillTemplates)

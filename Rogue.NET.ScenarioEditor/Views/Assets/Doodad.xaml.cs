@@ -21,8 +21,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
             {
-                this.AutomaticSpellCB.ItemsSource = configuration.MagicSpells;
-                this.InvokedSpellCB.ItemsSource = configuration.MagicSpells;
+                // TODO:ALTERATION
+                //this.AutomaticSpellCB.ItemsSource = configuration.MagicSpells;
+                //this.InvokedSpellCB.ItemsSource = configuration.MagicSpells;
                 this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
             });
         }

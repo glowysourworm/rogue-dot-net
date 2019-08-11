@@ -38,7 +38,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.EquipmentGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Equipment };
             this.ConsumableGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Consumable };
             this.DoodadGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Doodad };
-            this.SpellGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Spell };
+            // TODO:ALTERATION
+            //this.SpellGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Spell };
             this.SkillSetGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.SkillSet };
             this.AnimationGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Animation };
             this.BrushGroup = new ScenarioAssetGroupViewModel(eventAggregator) { AssetType = AssetType.Brush };

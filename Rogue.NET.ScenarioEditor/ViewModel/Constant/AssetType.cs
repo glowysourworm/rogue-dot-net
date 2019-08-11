@@ -21,7 +21,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string Layout = "Layout";
         public const string Pen = "Pen";
         public const string SkillSet = "SkillSet";
-        public const string Spell = "Spell";
 
         public const string AnimationDisplay = "Animation";
         public const string BrushDisplay = "Brush";
@@ -32,7 +31,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string LayoutDisplay = "Layout";
         public const string PenDisplay = "Pen";
         public const string SkillSetDisplay = "Skill Set";
-        public const string SpellDisplay = "Alteration";
 
         public const string AnimationViewName = "Animation";
         public const string BrushViewName = "Brush";
@@ -43,12 +41,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string LayoutViewName = "Layout";
         public const string PenViewName = "TODO";
         public const string SkillSetViewName = "SkillSet";
-        public const string SpellViewName = "Spell";
 
         public static bool HasSymbol(string assetType)
         {
             return !(assetType == Layout ||
-                   assetType == Spell ||
                    assetType == Animation ||
                    assetType == Brush ||
                    assetType == Pen);
@@ -88,11 +84,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         {
             return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
         }
-        public static string GetSubType(SpellTemplateViewModel viewModel)
-        {
-            //return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
-            return "TODO:ALTERATION";
-        }
         public static string GetSubType(AnimationTemplateViewModel viewModel)
         {
             return TextUtility.CamelCaseToTitleCase(viewModel.Type.ToString());
@@ -122,8 +113,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Equipment, EquipmentDisplay },
             { Layout, LayoutDisplay },
             { Pen, PenDisplay },
-            { SkillSet, SkillSetDisplay },
-            { Spell, SpellDisplay }
+            { SkillSet, SkillSetDisplay }
         };
 
         /// <summary>
@@ -139,8 +129,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Equipment, EquipmentViewName },
             { Layout, LayoutViewName },
             { Pen, PenViewName },
-            { SkillSet, SkillSetViewName },
-            { Spell, SpellViewName }
+            { SkillSet, SkillSetViewName }
         };
 
         /// <summary>
@@ -156,8 +145,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Equipment, typeof(ObservableCollection<EquipmentTemplateViewModel>) },
             { Layout, typeof(ObservableCollection<LayoutTemplateViewModel>) },
             { Pen, typeof(ObservableCollection<PenTemplateViewModel>) },
-            { SkillSet, typeof(ObservableCollection<SkillSetTemplateViewModel>) },
-            { Spell, typeof(ObservableCollection<SpellTemplateViewModel>) }
+            { SkillSet, typeof(ObservableCollection<SkillSetTemplateViewModel>) }
         };
     }
 }

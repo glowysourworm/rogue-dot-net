@@ -301,7 +301,7 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (consumable.HasCharacterClassRequirement &&
-                player.Alteration.MeetsClassRequirement(consumable.CharacterClass))
+                !player.Alteration.MeetsClassRequirement(consumable.CharacterClass))
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
