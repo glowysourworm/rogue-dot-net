@@ -368,7 +368,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\AnimationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\BrushTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Animation\GradientStopTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Animation\PenTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\AttackAttributeTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorDetailsTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\BehaviorTemplateViewModel.cs" />
