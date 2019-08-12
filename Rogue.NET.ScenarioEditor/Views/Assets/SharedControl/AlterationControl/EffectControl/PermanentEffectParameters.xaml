@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.PermanentEffectParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+    <TabControl>
+        <TabItem Header="Parameters">
+            <StackPanel>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Strength" />
+                    <controls:Range DataContext="{Binding StrengthRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Agility" />
+                    <controls:Range DataContext="{Binding AgilityRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Intelligence" />
+                    <controls:Range DataContext="{Binding IntelligenceRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Speed" />
+                    <controls:Range DataContext="{Binding SpeedRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Light Radius" />
+                    <controls:Range DataContext="{Binding LightRadiusRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Experience" />
+                    <controls:Range DataContext="{Binding Experience}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Hunger" />
+                    <controls:Range DataContext="{Binding HungerRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Hp" />
+                    <controls:Range DataContext="{Binding HpRange}" />
+                </Grid>
+                <Grid Margin="10,5,10,5">
+                    <TextBlock Foreground="White" Text="Mp" />
+                    <controls:Range DataContext="{Binding MpRange}" />
+                </Grid>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>

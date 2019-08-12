@@ -108,6 +108,7 @@ namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.
             get { return _defenseRange; }
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
         }
+        // TODO:ALTERATION (Change name)
         public RangeViewModel<double> MagicBlockProbabilityRange
         {
             get { return _magicBlockProbabilityRange; }

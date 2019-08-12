@@ -19,11 +19,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
 
+
+        // TODO:ALTERATION (Remove This)
         public AlterationTargetType TargetType
         {
             get { return _targetType; }
             set { this.RaiseAndSetIfChanged(ref _targetType, value); }
         }
+
+        // TODO:ALTERATION (Remove This)
         public AlterationAttackAttributeCombatType CombatType
         {
             get { return _combatType; }

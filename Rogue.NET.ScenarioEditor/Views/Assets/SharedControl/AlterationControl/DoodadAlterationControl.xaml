@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.DoodadAlterationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://www.codeplex.com/prism"             
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
+             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <TabControl>
+        <TabItem Header="General">
+            <commonControl:AlterationTargetTypeControl />
+        </TabItem>
+        <TabItem Header="Effect">
+            <ContentControl prism:RegionManager.RegionName="ConsumableAlterationEffectRegion" DataContext="{Binding Effect}" />
+        </TabItem>
+        <TabItem Header="Animation">
+            <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
+        </TabItem>
+    </TabControl>
+</UserControl>

@@ -458,7 +458,9 @@
 										   
 										   "The scroll casts a spell of Healing" (Level 2)
 				
-				Progressing from one level to the next could just take a number of turns.
+				Progressing from one level to the next could just take a number of turns. Also, USING the item or piece of equipment 
+				should expedite the speed at which it progresses to become fully identified. (And, of course, you could find consumables
+				or doodads that do this as an alteration)
 				
 - Keys:  Consider getting rid of modifiers for doors / fighting.
 				   
@@ -583,3 +585,103 @@ IMMEDIATE TODO'S:
 			- Add targeting type for Alterations to select unit type (Example:  Heal all friendly units in range, or Heal Player type units)
 			
 			- Then, it should be very easy to support a Necromancer scenario :)
+			
+	- IDEA: Undo Service. This is a difficult problem I think in most any editor program. I tried building a stack-based Undo function using
+			the INotifyPropertyChanged and INotifyCollectionChanged mechanism in WPF. I think it mostly worked; but there are some nagging
+			issues with event coverage because I feel like we're missing some of the events that should be forwarded and kept by the Undo Service.
+			
+			So, my design idea goes like this:  
+			
+				   Get a handle on binary serialization - to where we can represent the data as a binary "Blob" and changes to the data 
+				   as SMALL "Deltas" - with some change description. 
+				   
+				   Example:  ModelChange { Data[], int Offset, int Length, string ChangeType, string ChangeDescription }
+				   
+				   So, the entire "Blob" of changes should represent the data model - just a serialized version of it that we can use
+				   to provide an Undo Service. 
+				   
+				   Synchronizing the Undo "Blob" and the actual model is the only major worry.. but if there's a way to do this with the
+				   actual model - that would be even more idea. I'm just not sure how that might work.
+				   
+			Thinking about it some more...
+			
+				   The major problem with this design (like the current design.. or any other design) is synchronization of two versions
+				   of the same data model. I don't like it..
+				   
+				   So, a better way to do this: Create a custom serialization service
+				   
+						- Serializes all public properties using Reflection
+						
+						- Creates a custom serializer for each property type
+						
+						- Validates that all public properties have a serializer (or throws an exception)
+						
+						- Underlying binary format chosen by the serializer - with the main "Blob" being a simple byte[]. 
+						
+						- The Primary object graph is serialized with a CUSTOM METHOD. This is important to 
+						  deal with reference checking. 
+						  
+						  An example of a serialization service that works ONLY FOR TREES (non-cyclical object graphs) is
+						  PROTOBUF!  Which I don't think they tell you... but you have to build your own custom routine 
+						  using their pseudo-language. 
+						  
+						  This is essentially what I'd build here - except with direct control over the byte[] in a way to
+						  be able to insert, add, or remove changes.
+						  
+						  Example:  ScenarioConfigurationContainer has a ISerializationService implementation with a methods
+									called ISerializationService.Serialize.  Then, there'd be support for changes to the model
+									that needs to be worked out.. Maybe using some kind of attribute mechanism.. but I think it
+									would have to be specific to the model structure. 
+									
+									Maybe, [SerializationUpdateAttribute( Some.. Properties.. to.. Specify.. Update )] for each
+									type (or public property)
+									
+						  However, I believe that the INotifyPropertyChanged / INotifyCollectionChanged events would still be 
+						  used - just with a different listener - which would be the ISerializationService. This service would
+						  probably then notify the Undo service with some change description which would (of course) be compatible
+						  with the serialization service.
+						  
+				   SHOULD THIS BE SUCCESSFUL:  I'd use this for the primary model serializer.. and any other serialization we do.. 
+											   even just as an experiment to work with primitive data serialization more closely
+											   and to understand better the crux of the problem.
+											   
+											   Dealing with cyclical object graphs is a trickier problem which I'd think is out of
+											   scope.. but if I felt confident in trying - it might be worth the effort to learn
+											   a little more from reading or research because this problem is fundamental and I don't
+											   see it done properly anywhere .. EVER.. usually.. but the tree-object-graph is simple
+											   and this one is done well.
+											   
+    - TODO: Validate that the AlterationContainer.RogueName (GETS COPIED TO) IAlterationEffect.RogueName. Add validation rule.
+	
+	- TODO: Must have "Normal" Altered State (Somehow...) Not sure how to do this one.. But it needs to be done because the boolean 
+			flags to control "HasAlteredState" have been removed in favor of a default "Normal" state.
+			
+	- TODO: Build Enum-to-Radio-Button-with-attribute-description control to handle choosing an enum for the editor
+			
+	- IDEA: If there's want to do this for the Sorcerer - have different targeting "types" for moving the targeting cursor around manually.
+			
+				- In Visible Range: Could teleport yourself OR ANOTHER CHARACTER from one place to another in your visible range.
+				
+				- In Explored / Revealed Range: Could teleport yourself OR ANOTHER CHARACTER from any explored / revealed location to another.
+				
+				- In Range of Player "Special Reveal":  This would temporarily reveal a certain distance from your player to accomplish
+														the same task of teleporting yourself or an enemy. 
+														
+				- Have to avoid obstacles:  Cursor should blink "Red" if you can't move there. 
+				
+				- ANOTHER IDEA:  "Force Enemy Back" pushes enemy in line of sight backwards into Wall / Another Enemy. Would be nice
+								 to animate this - maybe kind of like "Clay-mation" (cell, cell, cell, BAM!) Or something else.. Would
+								 damage all characters involved.
+								 
+				(The next two could support the "Doom Sorcerer")
+				
+				- INSTANT DEATH:  "Abolish Enemy to the Void" some kind of alteration based on character attributes.. maybe intelligence,
+								  uniqueness, or some other thing that instantly kills the character.
+								  
+				- "CONDEMNED":  Event that goes like this:  Character 1 casts alteration on Character 2 that starts a timer (if it's not blocked). 
+								The timer should be shown somewhere so that the user knows that either they're going to die or their enemy
+								is going to die.
+								
+								The way to defeat it is to 1) Have a remedy for the temporary event alteration or 2) to defeat the other character :)
+						  
+					   

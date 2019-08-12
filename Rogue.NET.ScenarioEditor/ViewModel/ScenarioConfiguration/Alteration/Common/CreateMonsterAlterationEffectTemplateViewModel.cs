@@ -8,9 +8,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     public class CreateMonsterAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                    IDoodadAlterationEffectTemplateViewModel,
-                    IEnemyAlterationEffectTemplateViewModel,
-                    ISkillAlterationEffectTemplateViewModel
+                             IDoodadAlterationEffectTemplateViewModel,
+                             IEnemyAlterationEffectTemplateViewModel,
+                             ISkillAlterationEffectTemplateViewModel
     {
         AlterationRandomPlacementType _randomPlacementType;
         string _createMonsterEnemy;

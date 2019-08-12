@@ -7,8 +7,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     public class RemedyAlterationEffectTemplateViewModel : 
         TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                  IDoodadAlterationEffectTemplateViewModel,
-                  ISkillAlterationEffectTemplateViewModel
+                           IDoodadAlterationEffectTemplateViewModel,
+                           ISkillAlterationEffectTemplateViewModel
     {
         private AlteredCharacterStateTemplateViewModel _remediedState;
 

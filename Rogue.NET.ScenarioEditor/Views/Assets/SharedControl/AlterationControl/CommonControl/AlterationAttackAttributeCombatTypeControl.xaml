@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl.AlterationAttackAttributeCombatTypeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.FriendlyAggregate}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Friendly (Aggregate):  Attack Attributes are aggregated along with the affected characters' other attributes and applied to their combat turns" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.MalignPerStep}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Malign (Per-Step):  Attack Attributes are applied as an attack each turn against the affected characters" />
+            </RadioButton.Content>
+        </RadioButton>
+    </StackPanel>
+</UserControl>

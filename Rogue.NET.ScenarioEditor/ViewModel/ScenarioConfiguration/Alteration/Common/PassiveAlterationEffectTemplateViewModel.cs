@@ -100,21 +100,25 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _dodgeProbabilityRange; }
             set { this.RaiseAndSetIfChanged(ref _dodgeProbabilityRange, value); }
         }
+        // TODO:ALTERATION (Remove This)
         public RangeViewModel<double> ExperienceRange
         {
             get { return _experienceRange; }
             set { this.RaiseAndSetIfChanged(ref _experienceRange, value); }
         }
+        // TODO:ALTERATION (Remove This)
         public RangeViewModel<double> HungerRange
         {
             get { return _hungerRange; }
             set { this.RaiseAndSetIfChanged(ref _hungerRange, value); }
         }
+        // TODO:ALTERATION (Remove This)
         public RangeViewModel<double> HpRange
         {
             get { return _hpRange; }
             set { this.RaiseAndSetIfChanged(ref _hpRange, value); }
         }
+        // TODO:ALTERATION (Remove This)
         public RangeViewModel<double> MpRange
         {
             get { return _mpRange; }

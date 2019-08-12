@@ -20,7 +20,6 @@ using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl;
 using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.SpellControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
@@ -92,8 +91,6 @@ namespace Rogue.NET.ScenarioEditor
             _regionManager.RegisterViewWithRegion("EquipmentParametersRegion", typeof(EquipmentParameters));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
             _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Spell));
-            _regionManager.RegisterViewWithRegion("SpellParametersRegion", typeof(SpellParameters));
 
 
             // Design Region - Construction Views

@@ -385,6 +385,102 @@
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeCombatTypeControl.xaml.cs">
+      <DependentUpon>AlterationAttackAttributeCombatTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml.cs">
+      <DependentUpon>AlterationAttackAttributeListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAuraSourceParameters.xaml.cs">
+      <DependentUpon>AlterationAuraSourceParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationBlockTypeControl.xaml.cs">
+      <DependentUpon>AlterationBlockTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml.cs">
+      <DependentUpon>AlterationEffectChooser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEquipmentModifyTypeControl.xaml.cs">
+      <DependentUpon>AlterationEquipmentModifyTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationOtherEffectTypeControl.xaml.cs">
+      <DependentUpon>AlterationOtherEffectTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationRandomPlacementTypeControl.xaml.cs">
+      <DependentUpon>AlterationRandomPlacementTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationTargetTypeControl.xaml.cs">
+      <DependentUpon>AlterationTargetTypeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\ConsumableAlterationControl.xaml.cs">
+      <DependentUpon>ConsumableAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\ConsumableProjectileAlterationControl.xaml.cs">
+      <DependentUpon>ConsumableProjectileAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\DoodadAlterationControl.xaml.cs">
+      <DependentUpon>DoodadAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeAuraEffectParameters.xaml.cs">
+      <DependentUpon>AttackAttributeAuraEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeMeleeEffectParameters.xaml.cs">
+      <DependentUpon>AttackAttributeMeleeEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributePassiveEffectParameters.xaml.cs">
+      <DependentUpon>AttackAttributePassiveEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeTemporaryEffectParameters.xaml.cs">
+      <DependentUpon>AttackAttributeTemporaryEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AuraEffectParameters.xaml.cs">
+      <DependentUpon>AuraEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\ChangeLevelEffectParameters.xaml.cs">
+      <DependentUpon>ChangeLevelEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml.cs">
+      <DependentUpon>CreateMonsterEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentModifyEffectParameters.xaml.cs">
+      <DependentUpon>EquipmentModifyEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\OtherEffectParameters.xaml.cs">
+      <DependentUpon>OtherEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\PassiveEffectParameters.xaml.cs">
+      <DependentUpon>PassiveEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\PermanentEffectParameters.xaml.cs">
+      <DependentUpon>PermanentEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\RemedyEffectParameters.xaml.cs">
+      <DependentUpon>RemedyEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\RevealEffectParameters.xaml.cs">
+      <DependentUpon>RevealEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportEffectParameters.xaml.cs">
+      <DependentUpon>TeleportEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TemporaryEffectParameters.xaml.cs">
+      <DependentUpon>TemporaryEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EnemyAlterationControl.xaml.cs">
+      <DependentUpon>EnemyAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EquipmentAttackAlterationControl.xaml.cs">
+      <DependentUpon>EquipmentAttackAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EquipmentCurseAlterationControl.xaml.cs">
+      <DependentUpon>EquipmentCurseAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EquipmentEquipAlterationControl.xaml.cs">
+      <DependentUpon>EquipmentEquipAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\SkillAlterationControl.xaml.cs">
+      <DependentUpon>SkillAlterationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
     </Compile>
@@ -472,29 +568,8 @@
     <Compile Include="Views\Assets\SkillSet.xaml.cs">
       <DependentUpon>SkillSet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\Spell.xaml.cs">
-      <DependentUpon>Spell.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellAuraEffect.xaml.cs">
-      <DependentUpon>SpellAuraEffect.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellEffectAttackAttributes.xaml.cs">
-      <DependentUpon>SpellEffectAttackAttributes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellCost.xaml.cs">
-      <DependentUpon>SpellCost.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellEffect.xaml.cs">
-      <DependentUpon>SpellEffect.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellMetaData.xaml.cs">
-      <DependentUpon>SpellMetaData.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellParameters.xaml.cs">
-      <DependentUpon>SpellParameters.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\SpellControl\SpellType.xaml.cs">
-      <DependentUpon>SpellType.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationCost.xaml.cs">
+      <DependentUpon>AlterationCost.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
       <DependentUpon>ScenarioObjectPlacement.xaml</DependentUpon>
@@ -592,6 +667,134 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\ScenarioAssetBrowser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeCombatTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAuraSourceParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationBlockTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEquipmentModifyTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationOtherEffectTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationRandomPlacementTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationTargetTypeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\ConsumableAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\ConsumableProjectileAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\DoodadAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeAuraEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeMeleeEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributePassiveEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AttackAttributeTemporaryEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\AuraEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\ChangeLevelEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentModifyEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\OtherEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\PassiveEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\PermanentEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\RemedyEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\RevealEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TemporaryEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EnemyAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EquipmentAttackAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EquipmentCurseAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EquipmentEquipAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\SkillAlterationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -711,35 +914,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\Spell.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellAuraEffect.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellEffectAttackAttributes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellCost.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellEffect.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellMetaData.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellParameters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\SpellControl\SpellType.xaml">
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationCost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

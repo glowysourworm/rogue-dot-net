@@ -16,6 +16,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
 
+        // TODO:ALTERATION (Remove This.. Should be specified by container)
+        // TODO:ALTERATION (Add Symbol Change - Should always ONLY affect source)
         public AlterationTargetType TargetType
         {
             get { return _targetType; }

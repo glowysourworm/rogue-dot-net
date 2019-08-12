@@ -17,6 +17,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         AlterationAttackAttributeCombatType _combatType;
         SymbolDeltaTemplateViewModel _symbolAlteration;
 
+        // TODO:ALTERATION (Remove this)
         public AlterationTargetType TargetType
         {
             get { return _targetType; }

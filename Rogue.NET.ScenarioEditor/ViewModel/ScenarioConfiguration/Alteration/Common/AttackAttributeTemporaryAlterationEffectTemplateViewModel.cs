@@ -21,6 +21,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         bool _isStackable;
         int _eventTime;
 
+        // TODO:ALTERATION (Remove This)
         public AlterationTargetType TargetType
         {
             get { return _targetType; }
@@ -32,7 +33,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
         public AlteredCharacterStateTemplateViewModel AlteredState
-
         {
             get { return _alteredState; }
             set { this.RaiseAndSetIfChanged(ref _alteredState, value); }
@@ -42,6 +42,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _isStackable; }
             set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
         }
+
+        // TODO:ALTERATION Change this to be a Range<int>
         public int EventTime
         {
             get { return _eventTime; }

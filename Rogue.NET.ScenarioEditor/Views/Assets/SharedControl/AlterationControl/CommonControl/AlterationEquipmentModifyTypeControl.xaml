@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl.AlterationEquipmentModifyTypeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel>
+        <TextBlock Margin="10" TextWrapping="Wrap" Foreground="White"
+                   Text="The usage for this effect is based on the type of asset that is its container. For player uses (conumables, doodads, skills) the effect is applied by choosing equipment from a popup. For enemies - the effect is applied immediately TO THE PLAYER (ONLY)." />
+
+        <TextBlock Margin="10" TextWrapping="Wrap" Foreground="White"
+                   Text="NOTE*** The standard melee calculation is: CharacterAttribute [strength, intelligence, or agility] * (Class + 1) * (Quality) * (Weapon or Armor Type Multiplier [one-handed (1.0), two-handed (2.0), or range (0.5)]). Defense is the same with a fractional multiplier (to ensure that defense values are always less than attack values)." />
+
+        <TextBlock Margin="10" TextWrapping="Wrap" Foreground="White"
+                   Text="Typical use for Class modification is something like 'Enchant'. Quality modification would be more like 'Sharpen' .. or 'Use Anvil' .. or something to improve the quality of the equipment. Imbue is used for special attribute bonuses (Attack Attributes).. or for enemies to weaken your resistance for some attribute." />
+
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorClass}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Armor Class:  Modifies Armor Class Attribute (Must make positive or negative for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Armor Imbue:  Modifies Armor Attack Attributes (Must make Resistance, or Weakness for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorQuality}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Armor Quality:  Modifies Armor Quality Attribute (Must make positive or negative for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponClass}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Weapon Class:  Modifies Weapon Class Attribute (Must make positive or negative for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Weapon Imbue:  Modifies Weapon Attack Attributes (Must make Attack for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+        <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
+                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponQuality}}">
+            <RadioButton.Content>
+                <TextBlock  TextWrapping="Wrap"
+                            Text="Weapon Quality:  Modifies Weapon Quality Attribute (Must make positive or negative for any use)" />
+            </RadioButton.Content>
+        </RadioButton>
+    </StackPanel>
+</UserControl>
