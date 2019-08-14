@@ -13,14 +13,14 @@
     </UserControl.Resources>
     <StackPanel>
         <RadioButton Margin="10" GroupName="Type" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationOtherEffectType.Identify}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationOtherEffectType.Identify}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="Identify:  Allows Player to identify an unknown item" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="Type" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationOtherEffectType.Uncurse}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationOtherEffectType.Uncurse}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="Uncurse:  Allows Player to uncurse a piece of equipment" />

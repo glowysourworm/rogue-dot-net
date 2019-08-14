@@ -29,6 +29,7 @@ using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -69,8 +70,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         [ImportingConstructor]
         public LevelCanvasViewModel(
             IScenarioUIGeometryService scenarioUIGeometryService,
-            IScenarioResourceService resourceService, 
-            IEventAggregator eventAggregator, 
+            IScenarioResourceService resourceService,
+            IRogueEventAggregator eventAggregator, 
             IAnimationCreator animationCreator,
             IModelService modelService,
             IAlterationProcessor alterationProcessor)

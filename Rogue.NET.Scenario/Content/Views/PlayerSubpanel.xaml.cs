@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using System;
@@ -15,12 +16,12 @@ namespace Rogue.NET.Scenario.Views
     [Export]
     public partial class PlayerSubpanel : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly List<FrameworkElement> _ctrlList;
         readonly List<RadioButton> _radioList;
 
         [ImportingConstructor]
-        public PlayerSubpanel(PlayerViewModel playerViewModel, IEventAggregator eventAggregator)
+        public PlayerSubpanel(PlayerViewModel playerViewModel, IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

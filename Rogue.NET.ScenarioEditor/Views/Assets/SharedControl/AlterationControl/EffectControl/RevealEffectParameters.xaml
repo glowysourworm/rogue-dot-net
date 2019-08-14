@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
-             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             Background="Black">
     <controls:EnumFlagsControl Header="Reveal Type (Check all that apply)" 
                                EnumType="{x:Type coreModelEnums:AlterationRevealType}"
                                EnumValue="{Binding Type}" />

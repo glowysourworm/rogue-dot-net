@@ -1,17 +1,14 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Model.ScenarioMessage.Message;
+﻿using Rogue.NET.Core.Model.ScenarioMessage.Message;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Message;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Linq;
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
-using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -23,7 +20,7 @@ namespace Rogue.NET.Scenario.Content.Views
         public ObservableCollection<ScenarioMessageViewModel> ScenarioMessages { get; set; }
 
         [ImportingConstructor]
-        public ScenarioMessageView(IEventAggregator eventAggregator)
+        public ScenarioMessageView(IRogueEventAggregator eventAggregator)
         {
             this.ScenarioMessages = new ObservableCollection<ScenarioMessageViewModel>();
 

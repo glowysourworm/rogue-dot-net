@@ -11,6 +11,7 @@ using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -26,7 +27,7 @@ namespace Rogue.NET.Scenario.Views
         }
 
         readonly IRegionManager _regionManager;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public static readonly DependencyProperty CurrentViewTitleProperty =
             DependencyProperty.Register("CurrentViewTitle", typeof(string), typeof(GameView));
@@ -41,7 +42,7 @@ namespace Rogue.NET.Scenario.Views
         int _currentLevel;
 
         [ImportingConstructor]
-        public GameView(IRegionManager regionManager, IEventAggregator eventAggregator, IModelService modelService)
+        public GameView(IRegionManager regionManager, IRogueEventAggregator eventAggregator, IModelService modelService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;

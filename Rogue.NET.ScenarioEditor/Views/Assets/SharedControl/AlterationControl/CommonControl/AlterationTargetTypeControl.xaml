@@ -13,28 +13,28 @@
     </UserControl.Resources>
     <StackPanel>
         <RadioButton Margin="10" GroupName="TargetType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.Source}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.Source}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="Source:  Applies Effect to the Source Only" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="TargetType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.Target}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.Target}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="Target:  Applies Effect to the Target Only (Requires Targeting)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="TargetType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.AllInRange}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.AllInRange}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="All In Range:  Applies Effect to All Character In Range (Includes Source)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="TargetType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.AllInRangeExceptSource}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationTargetType.AllInRangeExceptSource}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                                 Text="All In Range Except Source:  Applies Effect to All Characters In Range (Except Source)" />

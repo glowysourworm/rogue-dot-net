@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.ViewModel;
@@ -12,10 +13,10 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
     [Export]
     public partial class ChooseScenario : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public ChooseScenario(IEventAggregator eventAggregator)
+        public ChooseScenario(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

@@ -74,7 +74,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         public ObservableCollection<SkillViewModel> Skills { get; set; }
 
-        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IEventAggregator eventAggregator) : base(skillSet)
+        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IRogueEventAggregator eventAggregator) : base(skillSet)
         {
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;

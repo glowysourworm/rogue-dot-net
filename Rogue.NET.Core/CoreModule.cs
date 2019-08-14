@@ -2,6 +2,7 @@
 using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Rogue.NET.Common.Events.Splash;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
@@ -14,12 +15,12 @@ namespace Rogue.NET.Core
     [ModuleExport("CoreModule", typeof(CoreModule))]
     public class CoreModule : IModule
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioResourceService _scenarioResourceService;
 
         [ImportingConstructor]
         public CoreModule(
-            IEventAggregator eventAggregator, 
+            IRogueEventAggregator eventAggregator, 
             IScenarioResourceService scenarioResourceService)
         {
             _eventAggregator = eventAggregator;

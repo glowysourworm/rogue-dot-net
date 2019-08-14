@@ -5,10 +5,10 @@ using System.Windows.Controls;
 namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
 {
     [Export]
-    public partial class EquipmentSpellSelection : UserControl
+    public partial class EquipmentAlterationSelection : UserControl
     {
         [ImportingConstructor]
-        public EquipmentSpellSelection()
+        public EquipmentAlterationSelection()
         {
             InitializeComponent();
         }

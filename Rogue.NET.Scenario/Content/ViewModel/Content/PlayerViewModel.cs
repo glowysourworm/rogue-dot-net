@@ -23,6 +23,7 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -33,7 +34,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         readonly IModelService _modelService;
         readonly IPlayerProcessor _playerProcessor;
         readonly IAlterationProcessor _alterationProcessor;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioResourceService _scenarioResourceService;
 
         #region (private) Backing Fields
@@ -365,7 +366,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
         [ImportingConstructor]
         public PlayerViewModel(
-            IEventAggregator eventAggregator, 
+            IRogueEventAggregator eventAggregator, 
             IModelService modelService,
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,

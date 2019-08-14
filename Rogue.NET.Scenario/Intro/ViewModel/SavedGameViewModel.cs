@@ -1,6 +1,6 @@
 ﻿using Prism.Commands;
-using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -9,7 +9,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
 {
     public class SavedGameViewModel : NotifyViewModel
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public string Name { get; set; }
         public Color SmileyColor { get; set; }
@@ -46,7 +46,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
             }
         }
 
-        public SavedGameViewModel(IEventAggregator eventAggregator)
+        public SavedGameViewModel(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
         }

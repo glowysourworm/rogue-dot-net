@@ -1,11 +1,16 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 
-namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.Common
+namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [UIType(DisplayName = "Teleport",
+            Description = "Transports a source / target (affected) character to a random location",
+            ViewType = typeof(TeleportEffectParameters))]
     public class TeleportAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

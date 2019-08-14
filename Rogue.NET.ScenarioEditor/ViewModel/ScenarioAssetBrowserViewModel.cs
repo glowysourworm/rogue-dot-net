@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
@@ -22,7 +23,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
 
         [ImportingConstructor]
         public ScenarioAssetBrowserViewModel(
-            IEventAggregator eventAggregator)
+            IRogueEventAggregator eventAggregator)
         {
             this.CollapseAssetTreeCommand = new DelegateCommand(() =>
             {

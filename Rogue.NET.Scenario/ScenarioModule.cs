@@ -24,6 +24,7 @@ using System.Windows;
 using System.Linq;
 using Rogue.NET.Scenario.Outro;
 using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario
 {
@@ -31,7 +32,7 @@ namespace Rogue.NET.Scenario
     public class ScenarioModule : IModule
     {
         readonly IRegionManager _regionManager;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioController _scenarioController;
         readonly IGameController _gameController;
         readonly IScenarioResourceService _scenarioResourceService;
@@ -40,7 +41,7 @@ namespace Rogue.NET.Scenario
         [ImportingConstructor]
         public ScenarioModule(
             IRegionManager regionManager,
-            IEventAggregator eventAggregator,
+            IRogueEventAggregator eventAggregator,
             IScenarioController scenarioController,
             IGameController gameController,
             IScenarioResourceService scenarioResourceService,

@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
@@ -67,7 +68,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public ObservableCollection<ObjectiveViewModel> Objectives { get; set; }
 
         [ImportingConstructor]
-        public GameViewModel(IEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
+        public GameViewModel(IRogueEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
             this.Objectives = new ObservableCollection<ObjectiveViewModel>();
 

@@ -25,6 +25,7 @@ using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -35,7 +36,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         readonly ScenarioConfigurationContainerViewModel _scenarioConfiguration;
         readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
         readonly IScenarioValidationService _scenarioValidationService;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         const string CHART_HUNGER_AVERAGE = "Hunger (Avg)";
         const string CHART_HUNGER_HIGH = "Hunger (High)";
@@ -93,7 +94,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ScenarioDesignOverviewViewModel(
             ScenarioConfigurationContainerViewModel scenarioConfiguration,
             IScenarioValidationService scenarioValidationService,
-            IEventAggregator eventAggregator)
+            IRogueEventAggregator eventAggregator)
         {
             _scenarioDifficultyCalculationService = ServiceLocator.Current.GetInstance<IScenarioDifficultyCalculationService>();
             _scenarioConfiguration = scenarioConfiguration;

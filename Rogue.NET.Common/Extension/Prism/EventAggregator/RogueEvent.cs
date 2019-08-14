@@ -1,10 +1,9 @@
-﻿using Prism.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
-    public class RogueEvent<T> : EventBase
+    public class RogueEvent<T> : RogueEventBase
     {
         readonly IDictionary<string, Action<T>> _actions;
 
@@ -27,25 +26,8 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
             foreach (var action in _actions.Values)
                 action(payload);
         }
-
-        public override bool Contains(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        public override void Unsubscribe(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        protected override void InternalPublish(params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-        protected override SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
-        {
-            throw new NotImplementedException();
-        }
     }
-    public class RogueEvent : EventBase
+    public class RogueEvent : RogueEventBase
     {
         readonly IDictionary<string, Action> _actions;
 
@@ -70,23 +52,6 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
         {
             foreach (var action in _actions.Values)
                 action.Invoke();
-        }
-
-        public override bool Contains(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        public override void Unsubscribe(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        protected override void InternalPublish(params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-        protected override SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
-        {
-            throw new NotImplementedException();
         }
     }
 }

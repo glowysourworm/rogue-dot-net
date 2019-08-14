@@ -59,24 +59,6 @@
                           Width="200"                              
                           HorizontalAlignment="Right" />
             </Grid>
-            <Grid Visibility="{Binding HasEquipSpell, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                  Margin="10">
-                <ComboBox x:Name="EquipSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding EquipSpell}"
-                          SelectedValue="{Binding EquipSpell.Name}"
-                          SelectedValuePath="Name"
-                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="1" />
-                <TextBlock Grid.Row="1" Foreground="White" Text="Equip Spell" VerticalAlignment="Center" />
-            </Grid>
-            <Grid Visibility="{Binding HasCurseSpell, Converter={StaticResource BoolVisibilityCollapseConverter}}"
-                  Margin="10">
-                <ComboBox x:Name="CurseSpellCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding CurseSpell}" 
-                          SelectedValue="{Binding CurseSpell.Name}" 
-                          SelectedValuePath="Name"
-                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="3" />
-                <TextBlock Grid.Row="3" Foreground="White" Text="Curse Spell" VerticalAlignment="Center" />
-            </Grid>
             <Grid Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:EquipmentType.RangeWeapon}}"
                   Margin="10">
                 <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 

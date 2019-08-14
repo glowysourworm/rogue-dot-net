@@ -1,9 +1,10 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl.AnimationPreview"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:animation="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl"
              Background="Black">
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="AnimationPreviewRegion" />
+        <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type animation:AnimationPreview}" />
     </Grid>
 </UserControl>

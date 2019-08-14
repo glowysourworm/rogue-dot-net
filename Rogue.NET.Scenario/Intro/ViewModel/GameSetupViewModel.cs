@@ -18,6 +18,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -28,7 +29,7 @@ namespace Rogue.NET.Intro.ViewModel
         readonly IScenarioFileService _scenarioFileService;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
         readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         #region Fields
         string _rogueName = "";
@@ -82,7 +83,7 @@ namespace Rogue.NET.Intro.ViewModel
                 IScenarioFileService scenarioFileService, 
                 IAttackAttributeGenerator attackAttributeGenerator,
                 IScenarioMetaDataGenerator scenarioMetaDataGenerator,
-                IEventAggregator eventAggregator)
+                IRogueEventAggregator eventAggregator)
         {
             _scenarioFileService = scenarioFileService;
             _scenarioResourceService = scenarioResourceService;

@@ -10,7 +10,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl>
+    <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="General">
             <StackPanel>
                 <!-- Event Time -->

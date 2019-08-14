@@ -1,13 +1,11 @@
 ﻿using Rogue.NET.ScenarioEditor.Views.Controls;
-using Rogue.NET.Common.Extension;
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel.Composition;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Utility;
-using Prism.Events;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
@@ -15,7 +13,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     public partial class Doodad : UserControl
     {
         [ImportingConstructor]
-        public Doodad(IEventAggregator eventAggregator)
+        public Doodad(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

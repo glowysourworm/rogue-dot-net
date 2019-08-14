@@ -1,16 +1,9 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.Events;
-using Rogue.NET.ScenarioEditor.ViewModel;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.Views.Controls;
-using System;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
 {
@@ -18,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
     public partial class EquipmentParameters : UserControl
     {
         [ImportingConstructor]
-        public EquipmentParameters(IEventAggregator eventAggregator)
+        public EquipmentParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

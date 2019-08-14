@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -7,17 +6,17 @@ using System.Linq;
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
-    [Export(typeof(IEventAggregator))]
-    public class RogueEventAggregator : IEventAggregator
+    [Export(typeof(IRogueEventAggregator))]
+    public class RogueEventAggregator : IRogueEventAggregator
     {
-        readonly IDictionary<Type, EventBase> _eventDict;
+        readonly IDictionary<Type, RogueEventBase> _eventDict;
 
         public RogueEventAggregator()
         {
-            _eventDict = new Dictionary<Type, EventBase>();
+            _eventDict = new Dictionary<Type, RogueEventBase>();
         }
 
-        public TEventType GetEvent<TEventType>() where TEventType : EventBase, new()
+        public TEventType GetEvent<TEventType>() where TEventType : RogueEventBase
         {
             var type = typeof(TEventType);
 

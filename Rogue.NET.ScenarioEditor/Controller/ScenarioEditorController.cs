@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -21,7 +22,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
     [Export(typeof(IScenarioEditorController))]
     public class ScenarioEditorController : IScenarioEditorController
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
         readonly IScenarioResourceService _scenarioResourceService;
@@ -34,7 +35,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
         [ImportingConstructor]
         public ScenarioEditorController(
-            IEventAggregator eventAggregator,
+            IRogueEventAggregator eventAggregator,
             IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,

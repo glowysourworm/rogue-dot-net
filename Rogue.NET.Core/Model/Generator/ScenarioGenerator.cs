@@ -8,13 +8,14 @@ using System.Linq;
 
 using Prism.Events;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Core.Model.Generator
 {
     [Export(typeof(IScenarioGenerator))]
     public class ScenarioGenerator : IScenarioGenerator
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly ILayoutGenerator _layoutGenerator;
         readonly IContentGenerator _contentGenerator;
         readonly ICharacterGenerator _characterGenerator;
@@ -25,7 +26,7 @@ namespace Rogue.NET.Core.Model.Generator
 
         [ImportingConstructor]
         public ScenarioGenerator(
-            IEventAggregator eventAggregator,
+            IRogueEventAggregator eventAggregator,
             ILayoutGenerator layoutGenerator,
             IContentGenerator contentGenerator,
             ICharacterGenerator characterGenerator,

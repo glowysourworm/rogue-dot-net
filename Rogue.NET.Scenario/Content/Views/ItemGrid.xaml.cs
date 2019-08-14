@@ -12,6 +12,7 @@ using Prism.Events;
 using System.Windows.Threading;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -19,7 +20,7 @@ namespace Rogue.NET.Scenario.Content.Views
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class ItemGrid : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public static readonly DependencyProperty IntendedActionProperty = 
             DependencyProperty.Register("IntendedAction", typeof(ItemGridActions), typeof(ItemGrid));
@@ -58,7 +59,7 @@ namespace Rogue.NET.Scenario.Content.Views
         }
 
         [ImportingConstructor]
-        public ItemGrid(IEventAggregator eventAggregator)
+        public ItemGrid(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

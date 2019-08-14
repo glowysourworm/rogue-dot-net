@@ -1,9 +1,8 @@
-﻿using Prism.Events;
-using Rogue.NET.ScenarioEditor.Events;
-using Rogue.NET.ScenarioEditor.Utility;
+﻿using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,41 +11,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     [Export]
     public partial class SkillSet : UserControl
     {
-        [ImportingConstructor]
-        public SkillSet(IEventAggregator eventAggregator)
+        public SkillSet()
         {
             InitializeComponent();
-
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
-            {
-                // TODO:ALTERATION
-                //this.SkillSetBuilder.SourceItemsSource = configuration.MagicSpells;
-            });
-
-            this.SkillSetBuilder.AddEvent += SkillSetBuilder_AddEvent;
-            this.SkillSetBuilder.RemoveEvent += SkillSetBuilder_RemoveEvent;
-        }
-
-        private void SkillSetBuilder_AddEvent(object sender, object e)
-        {
-            var viewModel = this.DataContext as SkillSetTemplateViewModel;
-            if (viewModel == null)
-                return;
-
-            viewModel.Skills.Add(new SkillTemplateViewModel()
-            {
-                //Name = alteration.DisplayName,
-                // TODO:ALTERATION
-                //Alteration = alteration                
-            });
-        }
-        private void SkillSetBuilder_RemoveEvent(object sender, object e)
-        {
-            var viewModel = this.DataContext as SkillSetTemplateViewModel;
-            if (viewModel == null)
-                return;
-
-            viewModel.Skills.Remove(e as SkillTemplateViewModel);
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)
@@ -57,6 +24,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             view.Width = 600;
 
             DialogWindowFactory.Show(view, "Rogue Symbol Editor");
+        }
+
+        private void AddSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as SkillSetTemplateViewModel;
+            if (viewModel == null)
+                return;
+
+            viewModel.Skills.Add(new SkillTemplateViewModel()
+            {
+                Name = NameGenerator.Get(viewModel.Skills.Select(x => x.Name), viewModel.Name)
+            });
+        }
+
+        private void RemoveSkillButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as SkillSetTemplateViewModel;
+            if (viewModel == null)
+                return;
+
+            // TODO:ALTERATION
+            //viewModel.Skills.Remove();
         }
     }
 }

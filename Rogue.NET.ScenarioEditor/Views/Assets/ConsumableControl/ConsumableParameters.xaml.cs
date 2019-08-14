@@ -1,7 +1,5 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
-using System;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -11,7 +9,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
     public partial class ConsumableParameters : UserControl
     {
         [ImportingConstructor]
-        public ConsumableParameters(IEventAggregator eventAggregator)
+        public ConsumableParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

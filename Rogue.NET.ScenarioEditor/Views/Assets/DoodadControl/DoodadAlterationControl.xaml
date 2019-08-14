@@ -1,9 +1,10 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.DoodadAlterationControl"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl.DoodadAlterationControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism"             
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
+             xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"             >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,7 +19,13 @@
             <commonControl:AlterationTargetTypeControl />
         </TabItem>
         <TabItem Header="Effect">
-            <ContentControl prism:RegionManager.RegionName="ConsumableAlterationEffectRegion" DataContext="{Binding Effect}" />
+            <StackPanel>
+                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
+                                                       AlterationInterfaceType="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}" 
+                                                       Margin="10" />
+
+                <region:RogueRegion DataContext="{Binding Effect}" />
+            </StackPanel>
         </TabItem>
         <TabItem Header="Animation">
             <sharedControl:Animation DataContext="{Binding AnimationGroup}" />

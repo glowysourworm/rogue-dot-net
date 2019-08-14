@@ -1,5 +1,5 @@
 ﻿using Prism.Commands;
-using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
@@ -122,7 +122,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         public ICommand UnlockCommand { get; set; }
         public ICommand SelectCommand { get; set; }
 
-        public SkillViewModel(Skill skill, IEventAggregator eventAggregator) : base(skill)
+        public SkillViewModel(Skill skill, IRogueEventAggregator eventAggregator) : base(skill)
         {
             this.UnlockCommand = new DelegateCommand(async () =>
             {

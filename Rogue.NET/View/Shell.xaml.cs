@@ -1,6 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
-using Prism.Events;
 using Rogue.NET.Common.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
@@ -23,7 +23,7 @@ namespace Rogue.NET.View
     [Export]
     public partial class Shell : Window
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IKeyResolver _keyResolver;
 
         Window _splashWindow;
@@ -31,7 +31,7 @@ namespace Rogue.NET.View
         bool _blockUserInput = false;
 
         [ImportingConstructor]
-        public Shell(IEventAggregator eventAggregator, IKeyResolver keyResolver)
+        public Shell(IRogueEventAggregator eventAggregator, IKeyResolver keyResolver)
         {
             _eventAggregator = eventAggregator;
             _keyResolver = keyResolver;

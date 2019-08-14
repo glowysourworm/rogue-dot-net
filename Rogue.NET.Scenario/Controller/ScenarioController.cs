@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
@@ -22,7 +22,7 @@ namespace Rogue.NET.Scenario.Controller
     [Export(typeof(IScenarioController))]
     public class ScenarioController : IScenarioController
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioService _scenarioService;
 
         string _subscriptionToken;
@@ -32,7 +32,7 @@ namespace Rogue.NET.Scenario.Controller
 
         [ImportingConstructor]
         public ScenarioController(
-            IEventAggregator eventAggregator, 
+            IRogueEventAggregator eventAggregator, 
             IScenarioService scenarioService)
         {
             _eventAggregator = eventAggregator;

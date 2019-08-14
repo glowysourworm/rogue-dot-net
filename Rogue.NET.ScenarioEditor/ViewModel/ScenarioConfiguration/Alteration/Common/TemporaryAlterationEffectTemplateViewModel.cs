@@ -1,13 +1,15 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 
-namespace Rogue.ScenarioEditor.ViewModel.Model.ScenarioConfiguration.Alteration.Common
+namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [UIType(DisplayName = "Temporary",
+            Description = "Causes a temporary change to a character's stats",
+            ViewType = typeof(TemporaryEffectParameters))]
     public class TemporaryAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
                              IConsumableProjectileAlterationEffectTemplateViewModel,

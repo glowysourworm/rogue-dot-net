@@ -10,16 +10,17 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Views
 {
     [Export]
     public partial class LevelView : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public LevelView(GameViewModel viewModel, IEventAggregator eventAggregator)
+        public LevelView(GameViewModel viewModel, IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

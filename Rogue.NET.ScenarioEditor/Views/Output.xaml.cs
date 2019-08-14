@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -19,7 +19,7 @@ namespace Rogue.NET.ScenarioEditor.Views
             InitializeComponent();
         }
         [ImportingConstructor]
-        public Output(IEventAggregator eventAggregator)
+        public Output(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl
 {
-    /// <summary>
-    /// Interaction logic for AttackAttributePassiveEffectParameters.xaml
-    /// </summary>
+    [Export]
     public partial class AttackAttributePassiveEffectParameters : UserControl
     {
         public AttackAttributePassiveEffectParameters()

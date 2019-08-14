@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Model.Scenario.Alteration;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.ScenarioMessage.Message;
@@ -16,10 +15,10 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(IScenarioMessageService))]
     public class ScenarioMessageService : IScenarioMessageService
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public ScenarioMessageService(IEventAggregator eventAggregator)
+        public ScenarioMessageService(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
         }

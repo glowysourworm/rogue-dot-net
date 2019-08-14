@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Events;
 using System;
 using System.ComponentModel.Composition;
@@ -12,12 +13,12 @@ namespace Rogue.NET.Scenario.Outro
     [Export]
     public partial class OutroDisplay : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         bool _fadeOutStarted = false;
 
         [ImportingConstructor]
-        public OutroDisplay(IEventAggregator eventAggregator)
+        public OutroDisplay(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

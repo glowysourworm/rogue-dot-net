@@ -684,4 +684,4 @@ IMMEDIATE TODO'S:
 								
 								The way to defeat it is to 1) Have a remedy for the temporary event alteration or 2) to defeat the other character :)
 						  
-					   
+	- IDEA: Use custom Attribute to register views with region

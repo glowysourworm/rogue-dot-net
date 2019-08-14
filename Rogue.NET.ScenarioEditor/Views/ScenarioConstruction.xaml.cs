@@ -1,5 +1,4 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel;
-using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 

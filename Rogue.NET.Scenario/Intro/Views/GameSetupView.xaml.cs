@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
@@ -13,13 +14,13 @@ namespace Rogue.NET.Intro.Views
     [Export]
     public partial class GameSetupView : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         bool _new = true;
 
         [ImportingConstructor]
         public GameSetupView(
-            IEventAggregator eventAggregator,
+            IRogueEventAggregator eventAggregator,
             GameSetupViewModel viewModel)
         {
             InitializeComponent();

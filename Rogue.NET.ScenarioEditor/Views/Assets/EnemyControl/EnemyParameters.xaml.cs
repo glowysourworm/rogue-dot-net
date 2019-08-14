@@ -1,8 +1,8 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using System;
+
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -12,7 +12,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
     public partial class EnemyParameters : UserControl
     {
         [ImportingConstructor]
-        public EnemyParameters(IEventAggregator eventAggregator)
+        public EnemyParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

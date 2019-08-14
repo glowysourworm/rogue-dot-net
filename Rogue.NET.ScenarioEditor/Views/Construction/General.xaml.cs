@@ -1,9 +1,8 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
-using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
@@ -20,10 +19,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     [Export]
     public partial class General : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         [ImportingConstructor]
-        public General(IEventAggregator eventAggregator)
+        public General(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

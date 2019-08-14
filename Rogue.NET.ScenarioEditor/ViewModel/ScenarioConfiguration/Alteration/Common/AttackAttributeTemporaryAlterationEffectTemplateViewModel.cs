@@ -1,13 +1,18 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 using System.Collections.Generic;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [UIType(DisplayName = "Attack Attribute (Temporary)",
+            Description = "Creates a timed (Friendly or Malign) contribution to the affected character(s) Attack Attributes",
+            ViewType = typeof(AttackAttributeTemporaryEffectParameters))]
     public class AttackAttributeTemporaryAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
                              IConsumableProjectileAlterationEffectTemplateViewModel,

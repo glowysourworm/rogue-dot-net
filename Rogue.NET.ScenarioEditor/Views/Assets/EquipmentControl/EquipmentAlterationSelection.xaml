@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl.EquipmentAlterationSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Black" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="48" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Left">
+            <TextBlock Margin="10" 
+                       Width="500"
+                       FontSize="16"
+                       TextWrapping="Wrap" 
+                       Text="You can add an Attack Alteration, Equip Atleration, or Curse Alteration to the Equipment item." 
+                       Foreground="White" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" FontSize="16" Foreground="White" Text="Has Attack Alteration" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="2" FontSize="16" Foreground="White" Text="Has Equip Alteration" Margin="10" VerticalAlignment="Center" />
+        <TextBlock Grid.Row="3" FontSize="16" Foreground="White" Text="Has Curse Alteration (Is Cursed)" Margin="10" VerticalAlignment="Center" />
+        <CheckBox IsChecked="{Binding HasAttackAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
+        <CheckBox IsChecked="{Binding HasEquipAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+        <CheckBox IsChecked="{Binding HasCurseAlteration, Mode=TwoWay}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" />
+
+    </Grid>
+</UserControl>

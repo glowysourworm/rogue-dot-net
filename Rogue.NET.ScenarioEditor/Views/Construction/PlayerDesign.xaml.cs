@@ -1,12 +1,9 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Construction
@@ -15,7 +12,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     public partial class PlayerDesign : UserControl
     {
         [ImportingConstructor]
-        public PlayerDesign(IEventAggregator eventAggregator)
+        public PlayerDesign(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

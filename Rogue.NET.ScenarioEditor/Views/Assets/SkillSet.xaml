@@ -1,70 +1,24 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SkillSet"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
-             xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-             mc:Ignorable="d" Background="Black" FontSize="14"
-             d:DesignWidth="550">
+             xmlns:skillSetControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl"
+             Background="Black" FontSize="14">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
-                <ResourceDictionary>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
-                        <Setter Property="Background" Value="{DynamicResource LightBrush}"/>
-                    </Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="White" />
-                    </Style>
-                </ResourceDictionary>                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid>
+    <TabControl TabStripPlacement="Left" Background="Black">
+        <TabItem Header="Symbol">
+            <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
+        </TabItem>
+        <TabItem Header="Rogue-Encyclopedia Entry">
             <StackPanel>
-                <Grid Margin="10">
-                    <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
-                    <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
-                        <Border.Background>
-                            <RadialGradientBrush>
-                                <GradientStop Offset="0">
-                                    <GradientStop.Color>
-                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                            <Binding Path="SymbolDetails.Type" />
-                                        </MultiBinding>
-                                    </GradientStop.Color>
-                                </GradientStop>
-                                <GradientStop Color="Transparent" Offset="1" />
-                            </RadialGradientBrush>
-                        </Border.Background>
-                        <Image VerticalAlignment="Center" 
-                               HorizontalAlignment="Center" 
-                               Stretch="None">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                    <Binding Path="SymbolDetails.CharacterSymbol" />
-                                    <Binding Path="SymbolDetails.CharacterColor" />
-                                    <Binding Path="SymbolDetails.Icon" />
-                                    <Binding Path="SymbolDetails.DisplayIcon" />
-                                    <Binding Path="SymbolDetails.SmileyMood" />
-                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                    <Binding Path="SymbolDetails.SmileyLineColor" />
-                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                    <Binding Path="SymbolDetails.Type" />
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
-                    </Border>
-                </Grid>
                 <Grid Margin="10">
                     <TextBlock Text="Short Description" Foreground="White" VerticalAlignment="Center" />
                     <TextBox Text="{Binding ShortDescription}" 
@@ -86,16 +40,49 @@
                          TextWrapping="Wrap"
                          Height="100"
                          Width="300" />
-                </Grid>
-                <Grid Margin="10,5,10,5">
-                    <GroupBox Header="Select Skills">
-                        <StackPanel>
-                            <TextBlock TextWrapping="Wrap" Margin="5" Foreground="White" Text="The skills in the set will be shown in the order they appear in the list. They will be available to learn once the minimum level is reached by the Player." />
-                            <controls:ListBuilder x:Name="SkillSetBuilder" DestinationItemsSource="{Binding Skills}" Height="250" Margin="5" />
-                        </StackPanel>
-                    </GroupBox>
-                </Grid>
+                </Grid>                
             </StackPanel>
-        </Grid>
-    </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Skills">
+            <StackPanel>
+
+                <!-- Add-Skill Button -->
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Foreground="White" Margin="10" FontSize="16" TextWrapping="Wrap" Width="600" HorizontalAlignment="Left"
+                                   Text="Skill sets have a number of skills that are learned when the requirements are met. You can add and remove them from the skill set here." />
+                    </Grid>
+                    <Grid>
+                        <TextBlock Foreground="White" Text="Add Skill" VerticalAlignment="Center" Margin="10" />
+                        <Button x:Name="AddSkillButton" Content="Add Skill" Click="AddSkillButton_Click" HorizontalAlignment="Right" Padding="4" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+                
+                <!-- Skills Tab Control -->
+                <TabControl Background="Black" ItemsSource="{Binding Skills}">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 4, 0" />
+                                
+                                <Button x:Name="RemoveSkillButton" Click="RemoveSkillButton_Click" Grid.Column="1"
+                                        Style="{StaticResource ShinyTextButtonStyle}" Height="20" Width="20" Cursor="Hand"
+                                        FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" Background="Black" />
+                            </Grid>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <skillSetControl:SkillControl />
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
 </UserControl>

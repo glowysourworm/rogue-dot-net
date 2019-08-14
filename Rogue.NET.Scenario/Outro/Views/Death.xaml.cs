@@ -1,5 +1,6 @@
 ﻿using Prism.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -10,7 +11,7 @@ namespace Rogue.NET.Scenario.Outro.Views
     [Export]
     public partial class DeathDisplay : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public string DiedOfText
         {
@@ -22,7 +23,7 @@ namespace Rogue.NET.Scenario.Outro.Views
         }
 
         [ImportingConstructor]
-        public DeathDisplay(IEventAggregator eventAggregator, PlayerViewModel playerViewModel)
+        public DeathDisplay(IRogueEventAggregator eventAggregator, PlayerViewModel playerViewModel)
         {
             this.DataContext = playerViewModel;
 

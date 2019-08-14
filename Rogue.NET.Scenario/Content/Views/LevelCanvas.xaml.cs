@@ -11,6 +11,7 @@ using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -37,8 +38,8 @@ namespace Rogue.NET.Scenario.Content.Views
 
         [ImportingConstructor]
         public LevelCanvas(
-            LevelCanvasViewModel viewModel, 
-            IEventAggregator eventAggregator)
+            LevelCanvasViewModel viewModel,
+            IRogueEventAggregator eventAggregator)
         {
             this.DataContext = viewModel;
 

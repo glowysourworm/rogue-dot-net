@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
@@ -12,7 +13,7 @@ namespace Rogue.NET.View
     public partial class PlayerAdvancementView : UserControl
     {
         [ImportingConstructor]
-        public PlayerAdvancementView(IEventAggregator eventAggregator)
+        public PlayerAdvancementView(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

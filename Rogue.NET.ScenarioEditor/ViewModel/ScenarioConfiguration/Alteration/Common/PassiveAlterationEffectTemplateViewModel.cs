@@ -1,10 +1,15 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [UIType(DisplayName = "Passive",
+            Description = "Creates a change to a character's stats that is activated / deactivated",
+            ViewType = typeof(PassiveEffectParameters))]
     public class PassiveAlterationEffectTemplateViewModel 
         : TemplateViewModel, IEquipmentCurseAlterationEffectTemplateViewModel,
                     IEquipmentEquipAlterationEffectTemplateViewModel,

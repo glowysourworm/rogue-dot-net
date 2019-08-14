@@ -12,14 +12,14 @@
     </UserControl.Resources>
     <StackPanel>
         <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.FriendlyAggregate}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.FriendlyAggregate}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Friendly (Aggregate):  Attack Attributes are aggregated along with the affected characters' other attributes and applied to their combat turns" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.MalignPerStep}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationAttackAttributeCombatType.MalignPerStep}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Malign (Per-Step):  Attack Attributes are applied as an attack each turn against the affected characters" />

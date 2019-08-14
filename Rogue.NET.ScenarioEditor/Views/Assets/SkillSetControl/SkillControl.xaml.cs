@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl
 {
     /// <summary>
-    /// Interaction logic for DoodadAlterationControl.xaml
+    /// Interaction logic for SkillControl.xaml
     /// </summary>
-    public partial class DoodadAlterationControl : UserControl
+    public partial class SkillControl : UserControl
     {
-        public DoodadAlterationControl()
+        public SkillControl()
         {
             InitializeComponent();
         }

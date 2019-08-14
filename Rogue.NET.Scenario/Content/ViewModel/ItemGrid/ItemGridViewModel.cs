@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -31,7 +32,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 
         [ImportingConstructor]
         public ItemGridViewModel(
-            IEventAggregator eventAggregator, 
+            IRogueEventAggregator eventAggregator, 
             IModelService modelService)
         {
             this.Consumables = new ObservableCollection<ItemGridRowViewModel>();

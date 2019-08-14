@@ -1,6 +1,4 @@
-﻿using Prism.Events;
-
-using Rogue.NET.Core.Service.Interface;
+﻿using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model;
@@ -13,6 +11,7 @@ using System.Linq;
 using System.ComponentModel.Composition;
 
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -26,7 +25,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         const string OBJECTIVE_NAME = "Objective";
 
         [ImportingConstructor]
-        public RogueEncyclopediaViewModel(IEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
+        public RogueEncyclopediaViewModel(IRogueEventAggregator eventAggregator, IModelService modelService, IScenarioResourceService scenarioResourceService)
         {
             this.Categories = new PagedObservableCollection<RogueEncyclopediaCategoryViewModel>(PAGE_SIZE);
 

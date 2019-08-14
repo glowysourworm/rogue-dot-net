@@ -1,6 +1,5 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Events.Splash;
+﻿using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.IO;
@@ -11,17 +10,13 @@ using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Model.Events;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Service.Interface;
 using System;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Controller
 {
@@ -33,7 +28,7 @@ namespace Rogue.NET.Scenario.Controller
         readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioStatisticsService _statisticsService;
         readonly IScenarioObjectiveService _scenarioObjectiveService;
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
         readonly IScenarioController _scenarioController;
         readonly IModelService _modelService;
@@ -48,7 +43,7 @@ namespace Rogue.NET.Scenario.Controller
             IScenarioFileService scenarioFileService,
             IScenarioStatisticsService scenarioStatisticsService,
             IScenarioObjectiveService scenarioObjectiveService,
-            IEventAggregator eventAggregator,
+            IRogueEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
             IScenarioController scenarioController,
             IModelService modelService)

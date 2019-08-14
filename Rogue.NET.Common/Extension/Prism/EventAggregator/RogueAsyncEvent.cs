@@ -1,11 +1,10 @@
-﻿using Prism.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
-    public class RogueAsyncEvent<T> : EventBase
+    public class RogueAsyncEvent<T> : RogueEventBase
     {
         readonly IDictionary<string, Func<T, Task>> _functions;
 
@@ -27,23 +26,6 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
         {
             foreach (var function in _functions.Values)
                 await function(payload);
-        }
-
-        public override bool Contains(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        public override void Unsubscribe(SubscriptionToken token)
-        {
-            throw new NotImplementedException();
-        }
-        protected override void InternalPublish(params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-        protected override SubscriptionToken InternalSubscribe(IEventSubscription eventSubscription)
-        {
-            throw new NotImplementedException();
         }
     }
 }

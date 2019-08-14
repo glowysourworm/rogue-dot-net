@@ -13,13 +13,14 @@ using System.Collections.Specialized;
 using System.Collections;
 
 using AssetTypeConst = Rogue.NET.ScenarioEditor.ViewModel.Constant.AssetType;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     [Export(typeof(IScenarioAssetGroupViewModel))]
     public class ScenarioAssetGroupViewModel : IScenarioAssetGroupViewModel
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public ObservableCollection<IScenarioAssetViewModel> Assets { get; set; }
         public string AssetType { get; set; }
@@ -28,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         bool _hasSymbol = false;
 
         [ImportingConstructor]
-        public ScenarioAssetGroupViewModel(IEventAggregator eventAggregator)
+        public ScenarioAssetGroupViewModel(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
 

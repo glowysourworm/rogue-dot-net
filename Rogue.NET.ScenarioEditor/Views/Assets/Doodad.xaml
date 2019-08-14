@@ -1,11 +1,10 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.Doodad"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              FontSize="14"
-             mc:Ignorable="d" Background="Black" d:DesignWidth="550">
+             Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,44 +24,12 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid>
+    <TabControl Background="Black">
+        <TabItem Header="Symbol">
+            <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
+        </TabItem>
+        <TabItem Header="Rogue-Encyclopedia Entry">
             <StackPanel>
-                <Grid Margin="10">
-                    <Button Content="Edit Symbol" VerticalAlignment="Top" Padding="5" Width="100" HorizontalAlignment="Right" Click="CreateSymbol_Click" />
-                    <Border HorizontalAlignment="Left" Height="48" Width="48" BorderBrush="White" BorderThickness="1" CornerRadius="3" >
-                        <Border.Background>
-                            <RadialGradientBrush>
-                                <GradientStop Offset="0">
-                                    <GradientStop.Color>
-                                        <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                            <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                            <Binding Path="SymbolDetails.Type" />
-                                        </MultiBinding>
-                                    </GradientStop.Color>
-                                </GradientStop>
-                                <GradientStop Color="Transparent" Offset="1" />
-                            </RadialGradientBrush>
-                        </Border.Background>
-                        <Image VerticalAlignment="Center" 
-                               HorizontalAlignment="Center" 
-                               Stretch="None">
-                            <Image.Source>
-                                <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
-                                    <Binding Path="SymbolDetails.CharacterSymbol" />
-                                    <Binding Path="SymbolDetails.CharacterColor" />
-                                    <Binding Path="SymbolDetails.Icon" />
-                                    <Binding Path="SymbolDetails.DisplayIcon" />
-                                    <Binding Path="SymbolDetails.SmileyMood" />
-                                    <Binding Path="SymbolDetails.SmileyBodyColor" />
-                                    <Binding Path="SymbolDetails.SmileyLineColor" />
-                                    <Binding Path="SymbolDetails.SmileyAuraColor" />
-                                    <Binding Path="SymbolDetails.Type" />
-                                </MultiBinding>
-                            </Image.Source>
-                        </Image>
-                    </Border>
-                </Grid>
                 <Grid Margin="10">
                     <TextBlock Text="Short Description" />
                     <TextBox Text="{Binding ShortDescription}" 
@@ -90,17 +57,21 @@
                     <CheckBox IsChecked="{Binding IsUnique}" 
                           HorizontalAlignment="Right"  />
                 </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Parameters">
+            <StackPanel>
                 <Grid Margin="10">
-                    <CheckBox Grid.Column="1" IsChecked="{Binding IsAutomatic}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding IsAutomatic}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     <TextBlock Foreground="White" Text="Automatic (Triggers when stepped on)" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 </Grid>
                 <Grid Margin="10">
-                    <CheckBox Grid.Column="1" Grid.Row="2" IsChecked="{Binding IsInvoked}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="2" Foreground="White" Text="Invoked (player must trigger manually)" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding IsInvoked}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <TextBlock Foreground="White" Text="Invoked (player must trigger manually)" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 </Grid>
                 <Grid Margin="10">
-                    <CheckBox Grid.Column="1" Grid.Row="1" IsChecked="{Binding IsVisible}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1" Foreground="White" Text="Visible (before being stepped on)" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <CheckBox IsChecked="{Binding IsVisible}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    <TextBlock Foreground="White" Text="Visible (before being stepped on)" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 </Grid>
                 <Grid Margin="10">
                     <CheckBox IsChecked="{Binding IsOneUse}" HorizontalAlignment="Right" VerticalAlignment="Center" />
@@ -138,6 +109,12 @@
                     <TextBlock Grid.Row="5" Foreground="White" Text="Manual (Invoked) Spell" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 </Grid>
             </StackPanel>
-        </Grid>
-    </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Automatic Alteration">
+            <region:RogueRegion DataContext="{Binding AutomaticAlteration.Effect}" />
+        </TabItem>
+        <TabItem Header="Invoked Alteration">
+            <region:RogueRegion DataContext="{Binding InvokedAlteration.Effect}" />
+        </TabItem>
+    </TabControl>
 </UserControl>

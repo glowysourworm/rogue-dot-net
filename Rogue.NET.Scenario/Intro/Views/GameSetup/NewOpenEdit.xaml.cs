@@ -1,6 +1,6 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Events;
+﻿using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Events;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -12,14 +12,14 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
     [Export]
     public partial class NewOpenEdit : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         public NewOpenEdit()
         {
             InitializeComponent();
         }
         [ImportingConstructor]
-        public NewOpenEdit(IEventAggregator eventAggregator)
+        public NewOpenEdit(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

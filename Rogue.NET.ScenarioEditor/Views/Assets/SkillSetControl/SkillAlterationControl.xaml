@@ -1,11 +1,10 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.ConsumableAlterationControl"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl.SkillAlterationControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism"
-             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+             xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,20 +14,31 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <TabControl>
+
+    <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Target Type">
             <commonControl:AlterationTargetTypeControl />
+        </TabItem>
+        <TabItem Header="Block Type">
+            <commonControl:AlterationBlockTypeControl />
         </TabItem>
         <TabItem Header="Cost">
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <ContentControl prism:RegionManager.RegionName="ConsumableAlterationEffectRegion" DataContext="{Binding Effect}" />
+            <StackPanel>
+                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
+                                                       AlterationInterfaceType="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}" 
+                                                       Margin="10" />
+
+                <region:RogueRegion DataContext="{Binding Effect}" />
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Aura">
+            <commonControl:AlterationAuraSourceParameters DataContext="{Binding AuraParameters}" />
         </TabItem>
         <TabItem Header="Animation">
             <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
         </TabItem>
     </TabControl>
-
 </UserControl>

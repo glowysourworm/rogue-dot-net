@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
+﻿using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Model;
 using Rogue.NET.Scenario.Service.Interface;
@@ -15,7 +14,7 @@ namespace Rogue.NET.Scenario.Service
         CommandPreferencesViewModel _preferences = null;
 
         [ImportingConstructor]
-        public KeyResolver(IEventAggregator eventAggregator)
+        public KeyResolver()
         {
             _preferences = CommandPreferencesViewModel.GetDefaults();
         }

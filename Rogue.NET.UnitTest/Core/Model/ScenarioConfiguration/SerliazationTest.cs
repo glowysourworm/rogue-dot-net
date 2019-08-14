@@ -5,11 +5,11 @@ using Rogue.NET.Core.Service;
 using Rogue.NET.Core.Model.Enums;
 
 using Moq;
-using Prism.Events;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Linq;
 using System.Threading.Tasks;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 {
@@ -19,12 +19,12 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         IScenarioResourceService _scenarioResourceService;
 
         Mock<IScenarioFileService> _scenarioFileServiceMock;
-        Mock<IEventAggregator> _eventAggregatorMock;
+        Mock<IRogueEventAggregator> _eventAggregatorMock;
 
         [TestInitialize]
         public void Initialize()
         {
-            _eventAggregatorMock = new Mock<IEventAggregator>();
+            _eventAggregatorMock = new Mock<IRogueEventAggregator>();
             _scenarioFileServiceMock = new Mock<IScenarioFileService>();
             _scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
         }

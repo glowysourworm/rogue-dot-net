@@ -1,9 +1,10 @@
-﻿using Prism.Events;
-using Prism.Mef.Modularity;
+﻿using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Prism.Regions;
 using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
@@ -14,111 +15,69 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views;
-using Rogue.NET.ScenarioEditor.Views.Assets;
-using Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl;
-using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
-using Rogue.NET.ScenarioEditor.Views.DesignRegion;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows.Controls;
+using System.Windows;
 
 namespace Rogue.NET.ScenarioEditor
 {
     [ModuleExport("ScenarioEditorModule", typeof(ScenarioEditorModule))]
     public class ScenarioEditorModule : IModule
     {
-        readonly IEventAggregator _eventAggregator;
-        readonly IRegionManager _regionManager;
+        readonly IRogueEventAggregator _eventAggregator;
+        readonly IRegionManager _regionManagerOLD;
+        readonly IRogueRegionManager _regionManager;
         readonly IScenarioAssetController _scenarioAssetController;
         readonly IScenarioEditorController _scenarioEditorController;
-        readonly IScenarioResourceService _resourceService;
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
 
         [ImportingConstructor]
         public ScenarioEditorModule(
-            IRegionManager regionManager,
-            IEventAggregator eventAggregator,
+            IRegionManager regionManagerOLD,
+            IRogueRegionManager regionManager,
+            IRogueEventAggregator eventAggregator,
             IScenarioAssetController scenarioAssetController,
             IScenarioEditorController scenarioEditorController,
-            IScenarioResourceService scenarioResourceService,
             IScenarioConfigurationUndoService scenarioConfigurationUndoService,
             IScenarioAssetReferenceService scenarioAssetReferenceService)
         {
+            _regionManagerOLD = regionManagerOLD;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioAssetController = scenarioAssetController;
             _scenarioEditorController = scenarioEditorController;
-            _resourceService = scenarioResourceService;
             _undoService = scenarioConfigurationUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
         }
 
         public void Initialize()
         {
-            RegisterRegionViews();
+            // Register views with OLD IRegionManager
+            _regionManagerOLD.RegisterViewWithRegion("MainRegion", typeof(Editor));
+
             RegisterEvents();
         }
 
-        private void RegisterRegionViews()
-        {
-            // Regions
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(Editor));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(EditorInstructions));
-            _regionManager.RegisterViewWithRegion("AssetBrowserRegion", typeof(ScenarioAssetBrowser));
-            _regionManager.RegisterViewWithRegion("ScenarioConstructionRegion", typeof(ScenarioConstruction));
-            _regionManager.RegisterViewWithRegion("OutputRegion", typeof(Output));
-
-            // Design Region - Asset Views
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(AssetContainerControl));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Animation));
-            _regionManager.RegisterViewWithRegion("AnimationParametersRegion", typeof(AnimationParameters));
-            _regionManager.RegisterViewWithRegion("AnimationPreviewRegion", typeof(AnimationPreviewControl));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Consumable));
-            _regionManager.RegisterViewWithRegion("ConsumableParametersRegion", typeof(ConsumableParameters));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Doodad));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Enemy));
-            _regionManager.RegisterViewWithRegion("EnemyItemsRegion", typeof(EnemyItems));
-            _regionManager.RegisterViewWithRegion("EnemyBehaviorRegion", typeof(EnemyBehavior));
-            _regionManager.RegisterViewWithRegion("EnemyParametersRegion", typeof(EnemyParameters));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Equipment));
-            _regionManager.RegisterViewWithRegion("EquipmentParametersRegion", typeof(EquipmentParameters));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(Layout));
-            _regionManager.RegisterViewWithRegion("AssetContainerRegion", typeof(SkillSet));
-
-
-            // Design Region - Construction Views
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(General));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ScenarioObjectPlacement));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(EnemyPlacement));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ItemPlacement));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(LayoutDesign));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ObjectiveDesign));
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(PlayerDesign));
-
-            // Design Region - Difficulty View
-            _regionManager.RegisterViewWithRegion("DesignRegion", typeof(ScenarioDesignOverview));
-        }
         private void RegisterEvents()
         {
             // Scenario Editor Events
             _eventAggregator.GetEvent<EditScenarioEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "Editor");
-                _regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
+                _regionManagerOLD.RequestNavigate("MainRegion", "Editor");
+
+                // TODO:REGIONMANAGER
+                //_regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
 
                 // Create an instance of the config so that there aren't any null refs.
                 _scenarioEditorController.New();
             });
-            _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe(() =>
+            _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe((region) =>
             {
-                _regionManager.RequestNavigate("DesignRegion", "ScenarioDesignOverview");
+                _regionManager.Load(region, typeof(ScenarioDesignOverview));
             });
 
             // Asset Events
@@ -137,8 +96,9 @@ namespace Rogue.NET.ScenarioEditor
             {
                 _scenarioAssetController.RemoveAsset(e.Type, e.Name);
 
+                // TODO:REGIONMANAGER
                 // Load the Editor Instructions to prevent editing removed asset
-                _regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
+                //_regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
 
                 // Publish a special event to update source lists for specific views
                 PublishScenarioUpdate();
@@ -172,9 +132,9 @@ namespace Rogue.NET.ScenarioEditor
             });
 
             // Construction Events
-            _eventAggregator.GetEvent<LoadConstructionEvent>().Subscribe((e) =>
+            _eventAggregator.GetEvent<LoadConstructionEvent>().Subscribe((type) =>
             {
-                LoadConstruction(e.ConstructionName);
+                LoadConstruction(type);
             });
 
             // General Assets - (Attack Attributes, Character Classes, Altered States, and Brushes)
@@ -231,7 +191,7 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Clear();
 
                 // Reload designer
-                LoadConstruction("General");
+                LoadConstruction(typeof(General));
             });
             _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Subscribe((e) =>
             {
@@ -284,7 +244,31 @@ namespace Rogue.NET.ScenarioEditor
                 _undoService.Clear();
 
                 // Reload designer
-                LoadConstruction("General");
+                LoadConstruction(typeof(General));
+            });
+
+            // Alteration Effect Events
+            _eventAggregator.GetEvent<AlterationEffectLoadRequestEvent>().Subscribe((container, e) =>
+            {
+                if (Xceed.Wpf
+                         .Toolkit
+                         .MessageBox
+                         .Show("This will erase the current effect data. Are you sure?",
+                               "Confirm Create Effect", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    // Navigate to Region
+                    _regionManager.Load(container, e.AlterationEffectViewType);
+
+                    // Construct the new alteration effect
+                    var alterationEffect = e.AlterationEffectType.Construct();
+
+                    // Send response message
+                    _eventAggregator.GetEvent<AlterationEffectLoadResponseEvent>()
+                                    .Publish(new AlterationEffectLoadResponseEventArgs()
+                                    {
+                                        AlterationEffect = alterationEffect
+                                    });
+                }
             });
         }
 
@@ -300,35 +284,37 @@ namespace Rogue.NET.ScenarioEditor
             // Get the view name for this asset type
             var viewName = AssetType.AssetViews[assetViewModel.Type];
 
+            // TODO:REGIONMANAGER
             // Request navigate to load the control (These are by type string)
-            _regionManager.RequestNavigate("DesignRegion", "AssetContainerControl");
-            _regionManager.RequestNavigate("AssetContainerRegion", viewName);
+            // _regionManager.RequestNavigate("DesignRegion", "AssetContainerControl");
+            // _regionManager.RequestNavigate("AssetContainerRegion", viewName);
 
             // Set parameters for Asset Container by hand
-            var assetContainer = _regionManager.Regions["DesignRegion"]
-                                               .Views.First(x => x.GetType() == typeof(AssetContainerControl)) as AssetContainerControl;
+            //var assetContainer = _regionManager.Regions["DesignRegion"]
+            //                                   .Views.First(x => x.GetType() == typeof(AssetContainerControl)) as AssetContainerControl;
 
-            assetContainer.AssetNameTextBlock.Text = assetViewModel.Name;
-            assetContainer.AssetTypeTextRun.Text = assetViewModel.Type;
+            //assetContainer.AssetNameTextBlock.Text = assetViewModel.Name;
+            //assetContainer.AssetTypeTextRun.Text = assetViewModel.Type;
 
             // Resolve active control by name: NAMING CONVENTION REQUIRED
-            var view = _regionManager.Regions["AssetContainerRegion"]
-                                     .Views.First(v => v.GetType().Name == assetViewModel.Type) as UserControl;
+            //var view = _regionManager.Regions["AssetContainerRegion"]
+            //                         .Views.First(v => v.GetType().Name == assetViewModel.Type) as UserControl;
 
-            view.DataContext = viewModel;
+            //view.DataContext = viewModel;
 
             // Unblock the undo service
             _undoService.UnBlock();
         }
-        private void LoadConstruction(string constructionName)
+        private void LoadConstruction(Type constructionType)
         {
-            _regionManager.RequestNavigate("DesignRegion", constructionName);
+            // TODO:REGIONMANAGER
+            // _regionManager.RequestNavigate("DesignRegion", constructionType);
 
-            var view = _regionManager.Regions["DesignRegion"]
-                                     .Views
-                                     .First(x => x.GetType().Name == constructionName) as UserControl;
+            //var view = _regionManager.Regions["DesignRegion"]
+            //                         .Views
+            //                         .First(x => x.GetType().Name == constructionName) as UserControl;
 
-            view.DataContext = _scenarioEditorController.CurrentConfig;
+            //view.DataContext = _scenarioEditorController.CurrentConfig;
         }
         private void PublishScenarioUpdate()
         {

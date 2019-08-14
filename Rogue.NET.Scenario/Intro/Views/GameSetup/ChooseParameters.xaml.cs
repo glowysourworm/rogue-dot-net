@@ -1,5 +1,5 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
+﻿using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
@@ -13,12 +13,12 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
     [Export]
     public partial class ChooseParameters : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         Type _currentParametersDisplayType;
 
         [ImportingConstructor]
-        public ChooseParameters(IEventAggregator eventAggregator)
+        public ChooseParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

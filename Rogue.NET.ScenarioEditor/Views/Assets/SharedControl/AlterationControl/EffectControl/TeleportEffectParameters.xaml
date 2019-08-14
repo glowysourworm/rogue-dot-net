@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
-    <TabControl>
+    <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Type">
             <!-- Random Placement Type -->
             <Grid Margin="10">

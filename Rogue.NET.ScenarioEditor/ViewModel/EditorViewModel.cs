@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Events.ScenarioEditor;
+﻿using Rogue.NET.Common.Events.ScenarioEditor;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
@@ -14,13 +13,14 @@ using System;
 using Microsoft.Win32;
 using System.IO;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
     [Export(typeof(IEditorViewModel))]
     public class EditorViewModel : NotifyViewModel, IEditorViewModel
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioConfigurationUndoService _rogueUndoService;
 
         string _scenarioName;
@@ -43,7 +43,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public DelegateCommand RedoCommand { get; private set; }
 
         [ImportingConstructor]
-        public EditorViewModel(IEventAggregator eventAggregator, IScenarioConfigurationUndoService rogueUndoService)
+        public EditorViewModel(IRogueEventAggregator eventAggregator, IScenarioConfigurationUndoService rogueUndoService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
@@ -83,7 +83,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             });
             this.ShowDifficultyCommand = new DelegateCommand(() =>
             {
-                _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Publish();
+                // TODO:REGIONMANAGER
+                // _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Publish();
             });
             this.NewCommand = new DelegateCommand(() =>
             {

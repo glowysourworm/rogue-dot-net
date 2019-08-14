@@ -1,13 +1,10 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Editor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-             xmlns:prism="http://www.codeplex.com/prism"
-             FontSize="12"
-             mc:Ignorable="d" Background="Black"
-             d:DesignHeight="800" d:DesignWidth="1600">
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:views="clr-namespace:Rogue.NET.ScenarioEditor.Views"
+             FontSize="12" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -185,19 +182,19 @@
         </Button>
 
         <Border Grid.Row="2" Margin="8"  BorderBrush="White" BorderThickness="1">
-            <ContentControl prism:RegionManager.RegionName="ScenarioConstructionRegion" />
+            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type views:ScenarioConstruction}" />
         </Border>
 
         <Border Grid.Row="3" Grid.RowSpan="2" Margin="8"  BorderBrush="White" BorderThickness="1">
-            <ContentControl prism:RegionManager.RegionName="AssetBrowserRegion" />
+            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type views:ScenarioAssetBrowser}" />
         </Border>
 
         <Border BorderBrush="White" BorderThickness="1"  Margin="8" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
-            <ContentControl prism:RegionManager.RegionName="DesignRegion" />
+            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type views:EditorInstructions}" />
         </Border>
 
         <Expander Margin="8" FontSize="16" Header="Output" Grid.Column="1" BorderBrush="White" MaxHeight="200" BorderThickness="1" Grid.Row="4">
-            <ContentControl prism:RegionManager.RegionName="OutputRegion" />
+            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type views:Output}" />
         </Expander>
         
     </Grid>

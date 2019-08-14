@@ -12,21 +12,21 @@
     </UserControl.Resources>
     <StackPanel>
         <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.NonBlockable}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.NonBlockable}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Non-Blockable:  Alteration can not be blocked" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Physical}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Physical}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Physical:  Alteration block calculated based on character Agility (Dodge)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="BlockType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Mental}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationBlockType.Mental}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Mental:  Alteration block calculated based on Intelligence (Mental Block)" />

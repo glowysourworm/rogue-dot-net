@@ -1,4 +1,5 @@
 ﻿using Prism.Events;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario;
@@ -23,13 +24,13 @@ namespace Rogue.NET.Scenario.Views
     [Export]
     public partial class CompassCtrl : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         List<Rectangle> _canvasPoints = new List<Rectangle>();
         List<Line> _canvasLines = new List<Line>();
 
         [ImportingConstructor]
-        public CompassCtrl(IEventAggregator eventAggregator, IScenarioUIGeometryService scenarioUIGeometryService, IModelService modelService, PlayerViewModel playerViewModel)
+        public CompassCtrl(IRogueEventAggregator eventAggregator, IScenarioUIGeometryService scenarioUIGeometryService, IModelService modelService, PlayerViewModel playerViewModel)
         {
             _eventAggregator = eventAggregator;
 

@@ -9,20 +9,21 @@ using Rogue.NET.Scenario.Events;
 using Prism.Events;
 using Rogue.NET.Core.Model.Enums;
 using System.ComponentModel.Composition;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Intro.Views
 {
     [Export]
     public partial class IntroView : UserControl
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         Timer _timer = null;
         Storyboard _currentStoryboard = null;
         int _ctr = 0;
 
         [ImportingConstructor]
-        public IntroView(IEventAggregator eventAggregator)
+        public IntroView(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

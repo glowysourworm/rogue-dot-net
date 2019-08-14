@@ -1,10 +1,15 @@
-﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [UIType(DisplayName = "Remedy",
+            Description = "Removes all Temporary effects with the specified Altered Character State",
+            ViewType = typeof(RemedyEffectParameters))]
     public class RemedyAlterationEffectTemplateViewModel : 
         TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                            IDoodadAlterationEffectTemplateViewModel,

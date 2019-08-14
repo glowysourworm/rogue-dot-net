@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using System.ComponentModel.Composition;
@@ -10,10 +10,10 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
     [Export]
     public partial class ChooseSavedGame : UserControl
     {
-        readonly IEventAggregator _eventAggragator;
+        readonly IRogueEventAggregator _eventAggragator;
 
         [ImportingConstructor]
-        public ChooseSavedGame(IEventAggregator eventAggregator)
+        public ChooseSavedGame(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

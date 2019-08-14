@@ -1,9 +1,9 @@
-﻿using Prism.Events;
-using Rogue.NET.ScenarioEditor.Events;
+﻿using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Linq;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.Views
 {
@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.Views
     public partial class ScenarioAssetBrowser : UserControl
     {
         [ImportingConstructor]
-        public ScenarioAssetBrowser(IScenarioAssetBrowserViewModel viewModel, IEventAggregator eventAggregator)
+        public ScenarioAssetBrowser(IScenarioAssetBrowserViewModel viewModel, IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

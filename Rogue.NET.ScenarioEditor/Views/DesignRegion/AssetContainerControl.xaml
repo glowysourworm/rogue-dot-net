@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.DesignRegion.AssetContainerControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism">
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -17,7 +17,7 @@
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-            <ContentControl prism:RegionManager.RegionName="AssetContainerRegion" />
+            <region:RogueRegion />
         </ScrollViewer>
     </Grid>
 </UserControl>

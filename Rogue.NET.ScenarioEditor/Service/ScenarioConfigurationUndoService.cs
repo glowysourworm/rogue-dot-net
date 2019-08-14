@@ -1,4 +1,4 @@
-﻿using Prism.Events;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility.Undo;
@@ -12,12 +12,12 @@ namespace Rogue.NET.ScenarioEditor.Service
     [Export(typeof(IScenarioConfigurationUndoService))]
     public class ScenarioConfigurationUndoService : IScenarioConfigurationUndoService
     {
-        readonly IEventAggregator _eventAggregator;
+        readonly IRogueEventAggregator _eventAggregator;
 
         UndoAccumulator<ScenarioConfigurationContainerViewModel> _undoAccumulator;
 
         [ImportingConstructor]
-        public ScenarioConfigurationUndoService(IEventAggregator eventAggregator)
+        public ScenarioConfigurationUndoService(IRogueEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
         }

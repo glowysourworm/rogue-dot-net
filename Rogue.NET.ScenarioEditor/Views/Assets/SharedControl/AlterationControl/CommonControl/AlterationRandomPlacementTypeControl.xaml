@@ -12,21 +12,21 @@
     </UserControl.Resources>
     <StackPanel>
         <RadioButton Margin="10" GroupName="RandomPlacementType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InLevel}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InLevel}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="In Level:  Randomly places character in level on an open tile" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="RandomPlacementType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InRangeOfCharacter}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InRangeOfCharacter}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="In Range of Character:  Randomly places character in certain range of source character (Requires Range Setting)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="RandomPlacementType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InPlayerVisibleRange}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InPlayerVisibleRange}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="In Character Visible Range:  Randomly places character in visible range of source character (Does NOT Require Range Setting)" />

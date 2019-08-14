@@ -21,42 +21,42 @@
                    Text="Typical use for Class modification is something like 'Enchant'. Quality modification would be more like 'Sharpen' .. or 'Use Anvil' .. or something to improve the quality of the equipment. Imbue is used for special attribute bonuses (Attack Attributes).. or for enemies to weaken your resistance for some attribute." />
 
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorClass}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorClass}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Armor Class:  Modifies Armor Class Attribute (Must make positive or negative for any use)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Armor Imbue:  Modifies Armor Attack Attributes (Must make Resistance, or Weakness for any use)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorQuality}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorQuality}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Armor Quality:  Modifies Armor Quality Attribute (Must make positive or negative for any use)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponClass}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponClass}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Weapon Class:  Modifies Weapon Class Attribute (Must make positive or negative for any use)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Weapon Imbue:  Modifies Weapon Attack Attributes (Must make Attack for any use)" />
             </RadioButton.Content>
         </RadioButton>
         <RadioButton Margin="10" GroupName="ModifyEquipmentType" Foreground="White" Background="Black"
-                                 IsChecked="{Binding Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponQuality}}">
+                                 IsChecked="{Binding Path=DataContext, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponQuality}}">
             <RadioButton.Content>
                 <TextBlock  TextWrapping="Wrap"
                             Text="Weapon Quality:  Modifies Weapon Quality Attribute (Must make positive or negative for any use)" />
