@@ -587,6 +587,7 @@
     <Compile Include="Views\Assets\SkillSetControl\SkillControl.xaml.cs">
       <DependentUpon>SkillControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Constants\RegionNames.cs" />
     <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
       <DependentUpon>ScenarioObjectPlacement.xaml</DependentUpon>
     </Compile>

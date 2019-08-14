@@ -1,9 +1,9 @@
 ﻿using Rogue.NET.Core.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using Rogue.NET.ScenarioEditor.Views.Assets;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,20 +18,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string Equipment = "Equipment";
         public const string Layout = "Layout";
         public const string SkillSet = "SkillSet";
-
-        public const string ConsumableDisplay = "Consumable";
-        public const string DoodadDisplay = "Scenario Object";
-        public const string EnemyDisplay = "Enemy";
-        public const string EquipmentDisplay = "Equipment";
-        public const string LayoutDisplay = "Layout";
-        public const string SkillSetDisplay = "Skill Set";
-
-        public const string ConsumableViewName = "Consumable";
-        public const string DoodadViewName = "Doodad";
-        public const string EnemyViewName = "Enemy";
-        public const string EquipmentViewName = "Equipment";
-        public const string LayoutViewName = "Layout";
-        public const string SkillSetViewName = "SkillSet";
 
         public static bool HasSymbol(string assetType)
         {
@@ -79,29 +65,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         }
 
         /// <summary>
-        /// Collection of asset display names by asset type
+        /// Collection of asset view types by asset name
         /// </summary>
-        public static readonly Dictionary<string, string> AssetTypes = new Dictionary<string, string>()
+        public static readonly Dictionary<string, Type> AssetViewTypes = new Dictionary<string, Type>()
         {
-            { Consumable, ConsumableDisplay },
-            { Doodad, DoodadDisplay },
-            { Enemy, EnemyDisplay },
-            { Equipment, EquipmentDisplay },
-            { Layout, LayoutDisplay },
-            { SkillSet, SkillSetDisplay }
-        };
-
-        /// <summary>
-        /// Collection of asset view names by asset type
-        /// </summary>
-        public static readonly Dictionary<string, string> AssetViews = new Dictionary<string, string>()
-        {
-            { Consumable, ConsumableViewName },
-            { Doodad, DoodadViewName },
-            { Enemy, EnemyViewName },
-            { Equipment, EquipmentViewName },
-            { Layout, LayoutViewName },
-            { SkillSet, SkillSetViewName }
+            { Consumable, typeof(Consumable) },
+            { Doodad, typeof(Doodad) },
+            { Enemy, typeof(Enemy) },
+            { Equipment, typeof(Equipment) },
+            { Layout, typeof(Layout) },
+            { SkillSet, typeof(SkillSet) }
         };
 
         /// <summary>

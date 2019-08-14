@@ -5,7 +5,8 @@
              xmlns:skillSet="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
-             xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common">
+             xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:views="clr-namespace:Rogue.NET.ScenarioEditor.Views">
     <StackPanel>
 
         <!-- Minimum Level -->

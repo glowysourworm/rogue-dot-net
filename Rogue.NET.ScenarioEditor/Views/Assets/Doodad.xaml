@@ -24,7 +24,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl Background="Black">
+    <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Symbol">
             <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
         </TabItem>

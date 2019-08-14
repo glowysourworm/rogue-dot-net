@@ -44,8 +44,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             if (viewModel == null)
                 return;
 
-            // TODO:ALTERATION
-            //viewModel.Skills.Remove();
+            // Remove the Skill from the SkillSet
+            viewModel.Skills.Remove((sender as Button).DataContext as SkillTemplateViewModel);
         }
     }
 }

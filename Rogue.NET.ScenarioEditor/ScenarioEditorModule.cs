@@ -15,8 +15,10 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views;
+using Rogue.NET.ScenarioEditor.Views.Constants;
 using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
+using Rogue.NET.ScenarioEditor.Views.DesignRegion;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -69,15 +71,13 @@ namespace Rogue.NET.ScenarioEditor
             {
                 _regionManagerOLD.RequestNavigate("MainRegion", "Editor");
 
-                // TODO:REGIONMANAGER
-                //_regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
-
                 // Create an instance of the config so that there aren't any null refs.
                 _scenarioEditorController.New();
             });
             _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe((region) =>
             {
-                _regionManager.Load(region, typeof(ScenarioDesignOverview));
+                // TODO:REGIONMANAGER Not sure whether to have a data context object passed with the event
+                // _regionManager.Load(region, typeof(ScenarioDesignOverview));
             });
 
             // Asset Events
@@ -96,9 +96,8 @@ namespace Rogue.NET.ScenarioEditor
             {
                 _scenarioAssetController.RemoveAsset(e.Type, e.Name);
 
-                // TODO:REGIONMANAGER
                 // Load the Editor Instructions to prevent editing removed asset
-                //_regionManager.RequestNavigate("DesignRegion", "EditorInstructions");
+                _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions), null);
 
                 // Publish a special event to update source lists for specific views
                 PublishScenarioUpdate();
@@ -256,11 +255,11 @@ namespace Rogue.NET.ScenarioEditor
                          .Show("This will erase the current effect data. Are you sure?",
                                "Confirm Create Effect", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    // Navigate to Region
-                    _regionManager.Load(container, e.AlterationEffectViewType);
-
                     // Construct the new alteration effect
                     var alterationEffect = e.AlterationEffectType.Construct();
+
+                    // Load the Region
+                    _regionManager.Load(container, e.AlterationEffectViewType, alterationEffect);
 
                     // Send response message
                     _eventAggregator.GetEvent<AlterationEffectLoadResponseEvent>()
@@ -282,39 +281,21 @@ namespace Rogue.NET.ScenarioEditor
             var viewModel = _scenarioAssetController.GetAsset(assetViewModel.Name, assetViewModel.Type);
 
             // Get the view name for this asset type
-            var viewName = AssetType.AssetViews[assetViewModel.Type];
+            var viewType = AssetType.AssetViewTypes[assetViewModel.Type];
 
-            // TODO:REGIONMANAGER
             // Request navigate to load the control (These are by type string)
-            // _regionManager.RequestNavigate("DesignRegion", "AssetContainerControl");
-            // _regionManager.RequestNavigate("AssetContainerRegion", viewName);
-
-            // Set parameters for Asset Container by hand
-            //var assetContainer = _regionManager.Regions["DesignRegion"]
-            //                                   .Views.First(x => x.GetType() == typeof(AssetContainerControl)) as AssetContainerControl;
-
-            //assetContainer.AssetNameTextBlock.Text = assetViewModel.Name;
-            //assetContainer.AssetTypeTextRun.Text = assetViewModel.Type;
-
-            // Resolve active control by name: NAMING CONVENTION REQUIRED
-            //var view = _regionManager.Regions["AssetContainerRegion"]
-            //                         .Views.First(v => v.GetType().Name == assetViewModel.Type) as UserControl;
-
-            //view.DataContext = viewModel;
+            _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl), assetViewModel);
+            _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType, viewModel);
 
             // Unblock the undo service
             _undoService.UnBlock();
         }
         private void LoadConstruction(Type constructionType)
         {
-            // TODO:REGIONMANAGER
-            // _regionManager.RequestNavigate("DesignRegion", constructionType);
-
-            //var view = _regionManager.Regions["DesignRegion"]
-            //                         .Views
-            //                         .First(x => x.GetType().Name == constructionName) as UserControl;
-
-            //view.DataContext = _scenarioEditorController.CurrentConfig;
+            // Load Design Region with Construction Control
+            _regionManager.LoadSingleInstance(RegionNames.DesignRegion, 
+                                              constructionType, 
+                                              _scenarioEditorController.CurrentConfig);
         }
         private void PublishScenarioUpdate()
         {

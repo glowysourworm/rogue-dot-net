@@ -2,9 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:animation="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              Background="Black">
     <Grid>
-        <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type animation:AnimationPreview}" />
+        <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type controls:AnimationPreviewControl}" />
     </Grid>
 </UserControl>

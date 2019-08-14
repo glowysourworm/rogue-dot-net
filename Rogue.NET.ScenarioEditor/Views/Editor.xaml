@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:constants="clr-namespace:Rogue.NET.ScenarioEditor.Views.Constants"
              xmlns:views="clr-namespace:Rogue.NET.ScenarioEditor.Views"
              FontSize="12" Background="Black">
     <UserControl.Resources>
@@ -190,7 +191,8 @@
         </Border>
 
         <Border BorderBrush="White" BorderThickness="1"  Margin="8" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
-            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type views:EditorInstructions}" />
+            <region:RogueRegion region:RogueRegionManager.RegionName="{x:Static constants:RegionNames.DesignRegion}" 
+                                region:RogueRegionManager.DefaultView="{x:Type views:EditorInstructions}" />
         </Border>
 
         <Expander Margin="8" FontSize="16" Header="Output" Grid.Column="1" BorderBrush="White" MaxHeight="200" BorderThickness="1" Grid.Row="4">

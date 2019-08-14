@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
 {
@@ -35,11 +32,27 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
     public interface IRogueRegionManager
     {
         /// <summary>
+        /// Returns a collection of RogueRegion instances that have been loaded into the 
+        /// IRogueRegionManager
+        /// </summary>
+        IEnumerable<RogueRegion> GetRegions();
+
+        /// <summary>
         /// Loads the RogueRegion with the specified view type OR the last view
-        /// instance with the same type. Loading is accomplished using the ServiceLocator
+        /// instance with the same type. Loading is accomplished using the ServiceLocator; and
+        /// data context is set using casting to the WPF base control.
         /// </summary>
         /// <param name="region">RogueRegion instance that contains the view</param>
         /// <param name="viewType">The type of view to load</param>
-        void Load(RogueRegion region, Type viewType);
+        void Load(RogueRegion region, Type viewType, object dataContext);
+
+        /// <summary>
+        /// Finds the SINGLE RogueRegion instance with the specified name - with the
+        /// specified type. Loading is accomplished using the ServiceLocator; and
+        /// data context is set using casting to the WPF base control.
+        /// </summary>
+        /// <param name="regionName"></param>
+        /// <param name="viewType"></param>
+        void LoadSingleInstance(string regionName, Type viewType, object dataContext);
     }
 }

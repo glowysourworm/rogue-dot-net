@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.DesignRegion.AssetContainerControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:constants="clr-namespace:Rogue.NET.ScenarioEditor.Views.Constants"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
     <Grid>
         <Grid.RowDefinitions>
@@ -10,14 +11,14 @@
         <Border BorderBrush="#888" BorderThickness="0,0,0,1">
             <Grid>
                 <TextBlock Foreground="White" FontSize="18" Margin="10">
-                    <Run x:Name="AssetTypeTextRun" />
+                    <Run x:Name="AssetTypeTextRun" Text="{Binding Type}" />
                     <Run Text=" Editor" />
                 </TextBlock>
-                <TextBlock x:Name="AssetNameTextBlock" Foreground="White" FontSize="18" Margin="10" HorizontalAlignment="Right" />
+                <TextBlock x:Name="AssetNameTextBlock" Text="{Binding Name}" Foreground="White" FontSize="18" Margin="10" HorizontalAlignment="Right" />
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
-            <region:RogueRegion />
+            <region:RogueRegion region:RogueRegionManager.RegionName="{x:Static constants:RegionNames.AssetContainerRegion}" />
         </ScrollViewer>
     </Grid>
 </UserControl>
