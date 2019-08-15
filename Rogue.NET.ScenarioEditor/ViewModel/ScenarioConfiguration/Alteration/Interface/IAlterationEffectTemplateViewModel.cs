@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface
 {
-    public interface IConsumableProjectileAlterationEffectTemplateViewModel : IAlterationEffectTemplateViewModel
+    /// <summary>
+    /// Marker interface for alteration effect template view models
+    /// </summary>
+    public interface IAlterationEffectTemplateViewModel
     {
     }
 }

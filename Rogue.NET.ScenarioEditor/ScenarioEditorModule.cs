@@ -12,6 +12,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views;
@@ -97,7 +98,7 @@ namespace Rogue.NET.ScenarioEditor
                 _scenarioAssetController.RemoveAsset(e.Type, e.Name);
 
                 // Load the Editor Instructions to prevent editing removed asset
-                _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions), null);
+                _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(EditorInstructions));
 
                 // Publish a special event to update source lists for specific views
                 PublishScenarioUpdate();
@@ -247,7 +248,7 @@ namespace Rogue.NET.ScenarioEditor
             });
 
             // Alteration Effect Events
-            _eventAggregator.GetEvent<AlterationEffectLoadRequestEvent>().Subscribe((container, e) =>
+            _eventAggregator.GetEvent<LoadNewAlterationEffectRequestEvent>().Subscribe((container, e) =>
             {
                 if (Xceed.Wpf
                          .Toolkit
@@ -256,18 +257,37 @@ namespace Rogue.NET.ScenarioEditor
                                "Confirm Create Effect", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
                     // Construct the new alteration effect
-                    var alterationEffect = e.AlterationEffectType.Construct();
+                    var alterationEffect = (IAlterationEffectTemplateViewModel)e.AlterationEffectType.Construct();
 
                     // Load the Region
-                    _regionManager.Load(container, e.AlterationEffectViewType, alterationEffect);
+                    var view = _regionManager.Load(container, e.AlterationEffectViewType);
 
-                    // Send response message
-                    _eventAggregator.GetEvent<AlterationEffectLoadResponseEvent>()
-                                    .Publish(new AlterationEffectLoadResponseEventArgs()
+                    // Send Response Event
+                    //
+                    // NOTE*** This method updates the view model with the new alteration effect
+                    _eventAggregator.GetEvent<LoadAlterationEffectResponseEvent>()
+                                    .Publish(container, new LoadAlterationEffectResponseEventArgs()
                                     {
                                         AlterationEffect = alterationEffect
                                     });
+
+                    // TODO:   Undo Service doesn't support recursive hooking of complex
+                    //         property changes. These are only hooked up once when the
+                    //         tree is traversed the first time.
+                    //
+                    //         This should be fixed so that the new alteration effect will
+                    //         be hooked up when it's INotifyPropertyChanged event is raised.
+                    //
+                    //         This re-register call is a workaround.
+                    _undoService.Register(_scenarioEditorController.CurrentConfig);
                 }
+            });
+            _eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>().Subscribe((container, e) =>
+            {
+                // Load the Region
+                //
+                // ***NOTE  No response event required because no new effect was constructed
+                var view = _regionManager.Load(container, e.AlterationEffectViewType);
             });
         }
 
@@ -284,8 +304,11 @@ namespace Rogue.NET.ScenarioEditor
             var viewType = AssetType.AssetViewTypes[assetViewModel.Type];
 
             // Request navigate to load the control (These are by type string)
-            _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl), assetViewModel);
-            _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType, viewModel);
+            var assetContainerView = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(AssetContainerControl));
+            var assetView = _regionManager.LoadSingleInstance(RegionNames.AssetContainerRegion, viewType);
+
+            assetContainerView.DataContext = assetViewModel;
+            assetView.DataContext = viewModel;
 
             // Unblock the undo service
             _undoService.UnBlock();
@@ -293,9 +316,11 @@ namespace Rogue.NET.ScenarioEditor
         private void LoadConstruction(Type constructionType)
         {
             // Load Design Region with Construction Control
-            _regionManager.LoadSingleInstance(RegionNames.DesignRegion, 
-                                              constructionType, 
-                                              _scenarioEditorController.CurrentConfig);
+            var view = _regionManager.LoadSingleInstance(RegionNames.DesignRegion, 
+                                                         constructionType);
+
+            // Set Data Context
+            view.DataContext = _scenarioEditorController.CurrentConfig;
         }
         private void PublishScenarioUpdate()
         {

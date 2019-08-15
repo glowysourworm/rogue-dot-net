@@ -21,7 +21,7 @@
                 <animation:AnimationBlink />
             </TabItem>
             <TabItem Header="Parameters">
-                <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type animation:AnimationParameters}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type animation:AnimationParameters}" />
             </TabItem>
             <TabItem Header="Preview">
                 <animation:AnimationPreview />

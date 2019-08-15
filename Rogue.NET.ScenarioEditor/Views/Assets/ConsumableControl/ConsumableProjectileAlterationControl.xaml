@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,13 +25,11 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Effect">
-            <StackPanel>
-                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
-                                                       AlterationInterfaceType="{x:Type alterationInterface:IConsumableProjectileAlterationEffectTemplateViewModel}" 
-                                                       Margin="10" />
-
-                <region:RogueRegion DataContext="{Binding Effect}" Margin="10" />
-            </StackPanel>
+            <region:RogueRegion DataContext="{Binding Effect, Mode=TwoWay}">
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableProjectileAlterationEffectTemplateViewModel}" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>            
         </TabItem>
         <TabItem Header="Animation">
             <sharedControl:Animation DataContext="{Binding AnimationGroup}" />

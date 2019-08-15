@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:extension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"
@@ -24,13 +25,13 @@
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <StackPanel>
-                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
-                                                       AlterationInterfaceType="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}" 
-                                                       Margin="10" />
-
-                <region:RogueRegion DataContext="{Binding Effect}" Margin="10" />
-            </StackPanel>
+            <region:RogueRegion x:Name="ConsumableAlterationRegion" 
+                                DataContext="{Binding Effect}"
+                                commonControl:AlterationEffectChooser.AlterationEffectChosen="OnAlterationEffectChosen">
+                <region:RogueRegionManager.DefaultView>
+                    <extension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
         <TabItem Header="Animation">
             <sharedControl:Animation DataContext="{Binding AnimationGroup}" />

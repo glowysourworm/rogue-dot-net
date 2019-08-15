@@ -14,18 +14,42 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
     public class RogueRegionManager : IRogueRegionManager
     {
         #region Attached Properties
-        public static readonly DependencyProperty DefaultViewProperty =
-            DependencyProperty.RegisterAttached("DefaultView", typeof(Type), typeof(RogueRegion));
-
         public static readonly DependencyProperty RegionNameProperty =
             DependencyProperty.RegisterAttached("RegionName", typeof(string), typeof(RogueRegion));
 
-        public static Type GetDefaultView(UIElement element)
+        public static readonly DependencyProperty DefaultViewTypeProperty =
+            DependencyProperty.RegisterAttached("DefaultViewType", typeof(Type), typeof(RogueRegion));
+
+        public static readonly DependencyProperty DefaultViewProperty =
+            DependencyProperty.RegisterAttached("DefaultView", typeof(FrameworkElement), typeof(RogueRegion));
+
+        public static string GetRegionName(UIElement element)
         {
-            return (Type)element.GetValue(DefaultViewProperty);
+            return (string)element.GetValue(RegionNameProperty);
         }
 
-        public static void SetDefaultView(UIElement element, Type type)
+        public static void SetRegionName(UIElement element, string regionName)
+        {
+            var region = element as RogueRegion;
+
+            // Validate RogueRegion container type
+            if (region == null)
+                throw new ArgumentException("Region content control must inherit (or be an instance of) RogueRegion");
+
+            // New Entry
+            if (!RogueRegionManager.RegionViews.ContainsKey(region))
+                RogueRegionManager.RegionViews.Add(region, new List<RogueRegionView>());
+
+            // Set Dependency Property Value
+            element.SetValue(RegionNameProperty, regionName);
+        }
+
+        public static Type GetDefaultViewType(UIElement element)
+        {
+            return (Type)element.GetValue(DefaultViewTypeProperty);
+        }
+
+        public static void SetDefaultViewType(UIElement element, Type type)
         {
             var region = element as RogueRegion;
 
@@ -66,15 +90,15 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 });
 
             // Set Dependency Property Value
-            element.SetValue(DefaultViewProperty, type);
+            element.SetValue(DefaultViewTypeProperty, type);
         }
 
-        public static string GetRegionName(UIElement element)
+        public static FrameworkElement GetDefaultView(UIElement element)
         {
-            return (string)element.GetValue(RegionNameProperty);
+            return (FrameworkElement)element.GetValue(DefaultViewProperty);
         }
 
-        public static void SetRegionName(UIElement element, string regionName)
+        public static void SetDefaultView(UIElement element, FrameworkElement view)
         {
             var region = element as RogueRegion;
 
@@ -82,12 +106,37 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
             if (region == null)
                 throw new ArgumentException("Region content control must inherit (or be an instance of) RogueRegion");
 
+            // Validate Single Default View
+            if (RogueRegionManager.RegionViews.Any(x => x.Key == region &&
+                                                        x.Value.Any(z => z.IsDefaultView)))
+                throw new ArgumentException("Region DefaultView already set");
+
+            // Hook Loaded Event
+            //
+            // TODO:REGIONMANAGER  Should probably move this loading to a explicit method like
+            //                     IRogueRegionManager.LoadDefaultView(...) so that other UI 
+            //                     functions for the control aren't bothered.
+            region.Loaded += (sender, e) => { LoadImpl(region, view); };
+
+            // Existing Entry
+            if (RogueRegionManager.RegionViews.ContainsKey(region))
+            {
+                // Existing Entry -> New View
+                if (!RogueRegionManager.RegionViews[region].Any(x => x.View == view))
+                    RogueRegionManager.RegionViews[region].Add(new RogueRegionView(view.GetType(), view, true));
+
+                else
+                    throw new Exception("View already added to the RogueRegion.");
+            }
             // New Entry
-            if (!RogueRegionManager.RegionViews.ContainsKey(region))
-                 RogueRegionManager.RegionViews.Add(region, new List<RogueRegionView>());
+            else
+                RogueRegionManager.RegionViews.Add(region, new List<RogueRegionView>()
+                {
+                    new RogueRegionView(view.GetType(), view, true)
+                });
 
             // Set Dependency Property Value
-            element.SetValue(RegionNameProperty, regionName);
+            element.SetValue(DefaultViewProperty, view);
         }
         #endregion
 
@@ -128,7 +177,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                               .Actualize();
         }
 
-        public void Load(RogueRegion region, Type viewType, object dataContext)
+        public FrameworkElement Load(RogueRegion region, Type viewType)
         {
             // Validate View Type as FrameworkElement
             if (!typeof(FrameworkElement).IsAssignableFrom(viewType))
@@ -142,7 +191,11 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
 
                 // Load Existing View
                 if (regionView != null)
-                    LoadImpl(region, regionView.View, dataContext);
+                {
+                    LoadImpl(region, regionView.View);
+
+                    return regionView.View;
+                }
 
                 // Create / Load New View
                 else
@@ -154,20 +207,33 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                     RegionViews[region].Add(new RogueRegionView(viewType, view));
 
                     // Load view
-                    LoadImpl(region, view, dataContext);
+                    LoadImpl(region, view);
+
+                    return view;
                 }
             }
 
             // New Region
             else
+            {
+                // Create View
+                var view = (FrameworkElement)ServiceLocator.Current.GetInstance(viewType);
+
+                // Add to RegionViews
                 RegionViews
                     .Add(region, new List<RogueRegionView>()
                     {
-                        new RogueRegionView(viewType, (FrameworkElement)ServiceLocator.Current.GetInstance(viewType))
+                        new RogueRegionView(viewType, view)
                     });
+
+                // Load View into Region
+                LoadImpl(region, view);
+
+                return view;
+            }
         }
 
-        public void LoadSingleInstance(string regionName, Type viewType, object dataContext)
+        public FrameworkElement LoadSingleInstance(string regionName, Type viewType)
         {
             // Validate View Type as FrameworkElement
             if (!typeof(FrameworkElement).IsAssignableFrom(viewType))
@@ -180,7 +246,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 throw new ArgumentException("Specified RogueRegion was either never created; or has more than one instance");
 
             // Load the RegionView - (Allows for new view type)
-            Load(regionView.Key, viewType, dataContext);
+            return Load(regionView.Key, viewType);
         }
 
         /// <summary>
@@ -188,16 +254,10 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
         /// </summary>
         /// <param name="region">RogueRegion instance</param>
         /// <param name="view">UI View Content to load</param>
-        protected static void LoadImpl(RogueRegion region, FrameworkElement view, object dataContext = null)
+        protected static void LoadImpl(RogueRegion region, FrameworkElement view)
         {
             // TODO: Add Transition Provider
             region.Content = view;
-
-            // Set Data Context
-            //
-            // TODO: Deal with existing data context for the view rather than checking null
-            if (dataContext != null)
-                view.DataContext = dataContext;
         }
     }
 }

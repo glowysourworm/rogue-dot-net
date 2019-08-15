@@ -5,46 +5,35 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
-
+using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl;
+using System.Windows;
+using System;
+using Rogue.NET.ScenarioEditor.Views.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 {
     [Export]
     public partial class ConsumableAlterationControl : UserControl
     {
-        [ImportingConstructor]
-        public ConsumableAlterationControl(IRogueEventAggregator eventAggregator)
+        public ConsumableAlterationControl()
         {
             InitializeComponent();
+        }
 
-            this.EffectChooser.AlterationEffectChosen += (sender, e) =>
-            {
-                var viewModel = this.DataContext as ConsumableAlterationTemplateViewModel;
-                if (viewModel == null)
-                    return;
+        private void OnAlterationEffectChosen(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as ConsumableAlterationTemplateViewModel;
+            if (viewModel == null)
+                return;
 
-                // TODO:REGIONMANAGER
-                // Load new view
-                //eventAggregator.GetEvent<AlterationEffectLoadRequestEvent>()
-                //               .Publish(new AlterationEffectLoadRequestEventArgs()
-                //               {
-                //                   AlterationEffectViewType = e.AlterationEffectViewType,
-                //                   AlterationEffectType = e.AlterationEffectType
-                //               });
-            };
+            // Cast to routed event args
+            var effect = (e as AlterationEffectChosenRoutedEventArgs).Effect;
 
-            // Subscribe to response event for loading the alteration effect
-            eventAggregator.GetEvent<AlterationEffectLoadResponseEvent>()
-                           .Subscribe(e =>
-                           {
-                               var viewModel = this.DataContext as ConsumableAlterationTemplateViewModel;
-                               if (viewModel == null)
-                                   return;
+            if (effect is IConsumableAlterationEffectTemplateViewModel)
+                viewModel.Effect = (effect as IConsumableAlterationEffectTemplateViewModel);
 
-                               // Set new effect (to trigger binding)
-                               viewModel.Effect = e.AlterationEffect as IConsumableAlterationEffectTemplateViewModel;
-                           });
-
+            // TODO:  NOT SURE WHY BINDING ISN'T UPDATING! SHOULD NOT HAVE TO FORCE UPDATE
+            this.ConsumableAlterationRegion.SetCurrentValue(DataContextProperty, viewModel.Effect);
         }
     }
 }

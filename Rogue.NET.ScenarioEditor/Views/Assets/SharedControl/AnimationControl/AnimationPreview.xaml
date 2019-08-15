@@ -5,6 +5,6 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              Background="Black">
     <Grid>
-        <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type controls:AnimationPreviewControl}" />
+        <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type controls:AnimationPreviewControl}" />
     </Grid>
 </UserControl>

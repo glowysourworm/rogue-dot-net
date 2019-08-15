@@ -256,10 +256,11 @@
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddGeneralAssetEvent.cs" />
-    <Compile Include="Events\AlterationEffectLoadResponseEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
-    <Compile Include="Events\AlterationEffectLoadRequestEvent.cs" />
+    <Compile Include="Events\LoadAlterationEffectRequestEvent.cs" />
+    <Compile Include="Events\LoadAlterationEffectResponseEvent.cs" />
+    <Compile Include="Events\LoadNewAlterationEffectRequestEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />
     <Compile Include="Events\LoadBuiltInScenarioEvent.cs" />
     <Compile Include="Events\LoadConstructionEvent.cs" />
@@ -352,6 +353,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Equipment\EquipmentAttackAlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Equipment\EquipmentCurseAlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Equipment\EquipmentEquipAlterationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Interface\IAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Interface\IConsumableAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Interface\IConsumableProjectileAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Interface\IDoodadAlterationEffectTemplateViewModel.cs" />
@@ -406,6 +408,9 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml.cs">
       <DependentUpon>AlterationEffectChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooserInstructions.xaml.cs">
+      <DependentUpon>AlterationEffectChooserInstructions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEquipmentModifyTypeControl.xaml.cs">
       <DependentUpon>AlterationEquipmentModifyTypeControl.xaml</DependentUpon>
     </Compile>
@@ -418,7 +423,6 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationTargetTypeControl.xaml.cs">
       <DependentUpon>AlterationTargetTypeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\EventArgs\AlterationEffectChosenEventArgs.cs" />
     <Compile Include="Views\Assets\ConsumableControl\ConsumableAlterationControl.xaml.cs">
       <DependentUpon>ConsumableAlterationControl.xaml</DependentUpon>
     </Compile>
@@ -656,6 +660,8 @@
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Extension\AlterationEffectChooserMarkupExtension.cs" />
+    <Compile Include="Views\Extension\AlterationEffectChosenRoutedEventArgs.cs" />
     <Compile Include="Views\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
@@ -708,6 +714,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooserInstructions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1101,9 +1111,7 @@
     <Resource Include="Resources\Images\unicode-math.png" />
     <Resource Include="Resources\Images\unicode-symbols.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Events\RogueRegionEvent\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,6 +4,7 @@
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"             >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,13 +20,11 @@
             <commonControl:AlterationTargetTypeControl />
         </TabItem>
         <TabItem Header="Effect">
-            <StackPanel>
-                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
-                                                       AlterationInterfaceType="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}" 
-                                                       Margin="10" />
-
-                <region:RogueRegion DataContext="{Binding Effect}" />
-            </StackPanel>
+            <region:RogueRegion>
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
         <TabItem Header="Animation">
             <sharedControl:Animation DataContext="{Binding AnimationGroup}" />

@@ -65,7 +65,7 @@
 
         <!-- Skill Alteration -->
         <Grid Margin="10">
-            <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type skillSet:SkillAlterationControl}" />
+            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type skillSet:SkillAlterationControl}" />
         </Grid>
         
     </StackPanel>

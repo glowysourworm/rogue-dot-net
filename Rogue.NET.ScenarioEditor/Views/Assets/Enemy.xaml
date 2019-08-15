@@ -12,7 +12,7 @@
                 <enemy:EnemyMetadata />
             </TabItem>
             <TabItem Header="Parameters">
-                <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type enemy:EnemyParameters}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyParameters}" />
             </TabItem>
             <TabItem Header="Behavior Parameters">
                 <enemy:EnemyBehavior />
@@ -24,7 +24,7 @@
                 <enemy:EnemyAttackAttributes />
             </TabItem>
             <TabItem Header="Items">
-                <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type enemy:EnemyItems}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyItems}" />
             </TabItem>
         </TabControl>
     </Grid>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface
 {
-    public interface IConsumableAlterationEffectTemplateViewModel
+    public interface IConsumableAlterationEffectTemplateViewModel : IAlterationEffectTemplateViewModel
     {
     }
 }

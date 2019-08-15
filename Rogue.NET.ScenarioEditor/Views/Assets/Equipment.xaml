@@ -15,16 +15,16 @@
                 <equipment:EquipmentAlterationSelection />
             </TabItem>
             <TabItem Header="Parameters">
-                <region:RogueRegion region:RogueRegionManager.DefaultView="{x:Type equipment:EquipmentParameters}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentParameters}" />
             </TabItem>
             <TabItem Header="Attack Alteration">
-                <region:RogueRegion />
+                <equipment:EquipmentAttackAlterationControl />
             </TabItem>
             <TabItem Header="Equip Alteration">
-                <region:RogueRegion />
+                <equipment:EquipmentEquipAlterationControl />
             </TabItem>
             <TabItem Header="Curse Alteration">
-                <region:RogueRegion />
+                <equipment:EquipmentCurseAlterationControl />
             </TabItem>
             <TabItem Header="Attack Attributes">
                 <equipment:EquipmentAttackAttributes />

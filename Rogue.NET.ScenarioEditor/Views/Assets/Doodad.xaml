@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:doodad="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl"
              FontSize="14"
              Background="Black">
     <UserControl.Resources>
@@ -111,10 +112,10 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Automatic Alteration">
-            <region:RogueRegion DataContext="{Binding AutomaticAlteration.Effect}" />
+            <doodad:DoodadAlterationControl DataContext="{Binding AutomaticAlteration.Effect}" />
         </TabItem>
         <TabItem Header="Invoked Alteration">
-            <region:RogueRegion DataContext="{Binding InvokedAlteration.Effect}" />
+            <doodad:DoodadAlterationControl DataContext="{Binding InvokedAlteration.Effect}" />
         </TabItem>
     </TabControl>
 </UserControl>

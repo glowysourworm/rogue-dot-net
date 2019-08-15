@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
+             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,13 +16,11 @@
     </UserControl.Resources>
     <TabControl>
         <TabItem Header="Effect">
-            <StackPanel>
-                <commonControl:AlterationEffectChooser x:Name="EffectChooser" 
-                                                       AlterationInterfaceType="{x:Type alterationInterface:IEquipmentCurseAlterationEffectTemplateViewModel}" 
-                                                       Margin="10" />
-
-                <region:RogueRegion DataContext="{Binding Effect}" />
-            </StackPanel>            
+            <region:RogueRegion>
+                <region:RogueRegionManager.DefaultView>
+                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IEquipmentCurseAlterationEffectTemplateViewModel}" />
+                </region:RogueRegionManager.DefaultView>
+            </region:RogueRegion>
         </TabItem>
         <TabItem Header="Aura Parameters">
             <commonControl:AlterationAuraSourceParameters DataContext="{Binding AuraParameters}" />

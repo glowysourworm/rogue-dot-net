@@ -1,6 +1,6 @@
 ﻿namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface
 {
-    public interface ISkillAlterationEffectTemplateViewModel
+    public interface ISkillAlterationEffectTemplateViewModel : IAlterationEffectTemplateViewModel
     {
     }
 }

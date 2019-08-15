@@ -203,6 +203,8 @@ namespace Rogue.NET.PrismExtension
                 view.DataContext = this.Container.GetExport<ItemGridViewModel>().Value.EnchantWeaponEquipment;
                 return view;
             });
+
+            // 
         }
     }
 }
