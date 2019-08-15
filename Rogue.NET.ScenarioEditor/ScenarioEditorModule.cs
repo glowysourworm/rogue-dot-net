@@ -262,13 +262,12 @@ namespace Rogue.NET.ScenarioEditor
                     // Load the Region
                     var view = _regionManager.Load(container, e.AlterationEffectViewType);
 
-                    // Send Response Event
+                    // Send Update Event
                     //
-                    // NOTE*** This method updates the view model with the new alteration effect
-                    _eventAggregator.GetEvent<LoadAlterationEffectResponseEvent>()
-                                    .Publish(container, new LoadAlterationEffectResponseEventArgs()
+                    _eventAggregator.GetEvent<AlterationEffectChangedEvent>()
+                                    .Publish(new AlterationEffectChangedEventArgs()
                                     {
-                                        AlterationEffect = alterationEffect
+                                        Effect = alterationEffect
                                     });
 
                     // TODO:   Undo Service doesn't support recursive hooking of complex

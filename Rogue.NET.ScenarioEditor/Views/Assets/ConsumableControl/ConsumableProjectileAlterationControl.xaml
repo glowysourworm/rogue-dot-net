@@ -5,6 +5,7 @@
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
+             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -25,7 +26,8 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion DataContext="{Binding Effect, Mode=TwoWay}">
+            <region:RogueRegion x:Name="ConsumableProjectileAlterationEffectRegion" 
+                                DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableProjectileAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

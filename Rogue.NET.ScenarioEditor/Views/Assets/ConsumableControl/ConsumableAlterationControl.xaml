@@ -19,15 +19,13 @@
     
     <TabControl Background="Black">
         <TabItem Header="Target Type">
-            <commonControl:AlterationTargetTypeControl />
+            <commonControl:AlterationTargetTypeControl DataContext="{Binding TargetType}" />
         </TabItem>
         <TabItem Header="Cost">
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion x:Name="ConsumableAlterationRegion" 
-                                DataContext="{Binding Effect}"
-                                commonControl:AlterationEffectChooser.AlterationEffectChosen="OnAlterationEffectChosen">
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <extension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

@@ -112,10 +112,14 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Automatic Alteration">
-            <doodad:DoodadAlterationControl DataContext="{Binding AutomaticAlteration.Effect}" />
+            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
+                                DataContext="{Binding AutomaticAlteration.Effect}">
+            </region:RogueRegion>
         </TabItem>
         <TabItem Header="Invoked Alteration">
-            <doodad:DoodadAlterationControl DataContext="{Binding InvokedAlteration.Effect}" />
+            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
+                                DataContext="{Binding InvokedAlteration.Effect}">
+            </region:RogueRegion>            
         </TabItem>
     </TabControl>
 </UserControl>

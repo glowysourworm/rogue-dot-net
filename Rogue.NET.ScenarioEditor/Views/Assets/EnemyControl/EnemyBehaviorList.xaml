@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:enemy="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:toolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
@@ -73,7 +74,9 @@
                             <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
                         </Grid>
                         <Grid Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
-                            <enemy:EnemyAlterationControl />
+                            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyAlterationControl}"
+                                                DataContext="{Binding EnemyAlteration.Effect}">
+                            </region:RogueRegion>
                         </Grid>
                     </StackPanel>
                 </DataTemplate>

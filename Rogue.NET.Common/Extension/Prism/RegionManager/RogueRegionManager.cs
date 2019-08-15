@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Rogue.NET.Common.Extension.Prism.RegionManager
 {
@@ -69,9 +70,6 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
             // Create View Instance
             var view = (FrameworkElement)ServiceLocator.Current.GetInstance(type);
 
-            // Hook Loaded Event
-            region.Loaded += (sender, e) => { LoadImpl(region, view); };
-
             // Existing Entry
             if (RogueRegionManager.RegionViews.ContainsKey(region))
             {
@@ -88,6 +86,9 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 {
                     new RogueRegionView(type, view, true)
                 });
+
+            // Load View - use LoadDefaultView method to re-load default view
+            LoadImpl(region, view);
 
             // Set Dependency Property Value
             element.SetValue(DefaultViewTypeProperty, type);
@@ -111,13 +112,6 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                                                         x.Value.Any(z => z.IsDefaultView)))
                 throw new ArgumentException("Region DefaultView already set");
 
-            // Hook Loaded Event
-            //
-            // TODO:REGIONMANAGER  Should probably move this loading to a explicit method like
-            //                     IRogueRegionManager.LoadDefaultView(...) so that other UI 
-            //                     functions for the control aren't bothered.
-            region.Loaded += (sender, e) => { LoadImpl(region, view); };
-
             // Existing Entry
             if (RogueRegionManager.RegionViews.ContainsKey(region))
             {
@@ -134,6 +128,9 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 {
                     new RogueRegionView(view.GetType(), view, true)
                 });
+
+            // Load View - use LoadDefaultView method to re-load default view
+            LoadImpl(region, view);
 
             // Set Dependency Property Value
             element.SetValue(DefaultViewProperty, view);

@@ -18,10 +18,11 @@
                 <consumable:ConsumableMetadata />
             </TabItem>
             <TabItem Header="Consume Effect">
-                <consumable:ConsumableAlterationControl DataContext="{Binding ConsumableAlteration}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableAlterationControl}"
+                                    DataContext="{Binding ConsumableAlteration}"/>
             </TabItem>
-            <TabItem Header="Projectile Effect">
-                <consumable:ConsumableProjectileAlterationControl DataContext="{Binding ConsumableProjectileAlteration}" />
+            <TabItem Header="Projectile Effect" DataContext="{Binding ConsumableProjectileAlteration}">
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableProjectileAlterationControl}" />
             </TabItem>
             <TabItem Header="Parameters">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableParameters}" />

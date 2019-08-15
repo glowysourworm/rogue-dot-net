@@ -87,15 +87,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
             InitializeComponent();
             Initialize();
 
-            // Listen for new alteration effect response to alert listeners
-            eventAggregator.GetEvent<LoadAlterationEffectResponseEvent>()
-                           .Subscribe((container, e) =>
-                           {
-                               // Alert listeners of the new alteration effect to initiate
-                               // Binding update (from the container control)
-                               this.RaiseEvent(new AlterationEffectChosenRoutedEventArgs(e.AlterationEffect, AlterationEffectChosenEvent, this));
-                           });
-
             // Load Effect Region with proper view for the effect type
             this.DataContextChanged += (sender, e) =>
             {
