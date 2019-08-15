@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:extension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"
@@ -19,7 +21,8 @@
     
     <TabControl Background="Black">
         <TabItem Header="Target Type">
-            <commonControl:AlterationTargetTypeControl DataContext="{Binding TargetType}" />
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
+                                             EnumValue="{Binding TargetType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Cost">
             <commonControl:AlterationCost DataContext="{Binding Cost}" />

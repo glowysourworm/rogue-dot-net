@@ -65,7 +65,8 @@
 
         <!-- Skill Alteration -->
         <Grid Margin="10">
-            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type skillSet:SkillAlterationControl}" />
+            <region:RogueRegion DataContext="{Binding SkillAlteration}" 
+                                region:RogueRegionManager.DefaultViewType="{x:Type skillSet:SkillAlterationControl}" />
         </Grid>
         
     </StackPanel>

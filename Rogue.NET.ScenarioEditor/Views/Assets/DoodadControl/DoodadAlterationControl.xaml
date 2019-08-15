@@ -20,9 +20,7 @@
             <commonControl:AlterationTargetTypeControl />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion x:Name="DoodadAlterationRegion" 
-                                DataContext="{Binding Effect}"
-                                commonControl:AlterationEffectChooser.AlterationEffectChosen="OnAlterationEffectChosen">
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

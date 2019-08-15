@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.ComponentModel.Composition;
 using System.Windows;

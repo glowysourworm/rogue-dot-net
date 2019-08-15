@@ -1,61 +1,20 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.ScenarioEditor.Views.Extension;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl
 {
-    [Export]
+    /// <summary>
+    /// AlterationEffectChooser must be instantiated by user code. 
+    /// </summary>
     public partial class AlterationEffectChooser : UserControl
     {
-        #region Routed Events
-        public static readonly RoutedEvent AlterationEffectChosenEvent =
-            EventManager.RegisterRoutedEvent("AlterationEffectChosen", 
-                                             RoutingStrategy.Bubble, 
-                                             typeof(RoutedEventHandler), 
-                                             typeof(AlterationEffectChooser));
-
-        public static void AddAlterationEffectChosenHandler(DependencyObject dependencyObject, RoutedEventHandler handler)
-        {
-            var element = dependencyObject as UIElement;
-            if (element != null)
-                element.AddHandler(AlterationEffectChosenEvent, handler);
-        }
-
-        public static void RemoveAlterationEffectChosenHandler(DependencyObject dependencyObject, RoutedEventHandler handler)
-        {
-            var element = dependencyObject as UIElement;
-            if (element != null)
-                element.RemoveHandler(AlterationEffectChosenEvent, handler);
-        }
-
-        #endregion
-
-        #region Dependency Properties
-        public static readonly DependencyProperty AlterationInterfaceTypeProperty =
-            DependencyProperty.Register("AlterationInterfaceType", 
-                                        typeof(Type), 
-                                        typeof(AlterationEffectChooser), 
-                                        new PropertyMetadata(
-                                            new PropertyChangedCallback(OnAlterationInterfaceTypeChanged)));
-
-        /// <summary>
-        /// The interface type to the corresponding alteration container
-        /// </summary>
-        public Type AlterationInterfaceType
-        {
-            get { return (Type)GetValue(AlterationInterfaceTypeProperty); }
-            set { SetValue(AlterationInterfaceTypeProperty, value); }
-        }
-        #endregion
-
         #region Nested Class
         public class AlterationEffectUIDescription
         {
@@ -66,8 +25,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
         }
 
         #endregion
-
-        protected IList<AlterationEffectUIDescription> TypeDescriptions;
 
         private readonly IList<Type> _supportedInterfaceTypes = new List<Type>()
         {
@@ -81,11 +38,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
             typeof(ISkillAlterationEffectTemplateViewModel)
         };
 
-        [ImportingConstructor]
-        public AlterationEffectChooser(IRogueEventAggregator eventAggregator)
+        public AlterationEffectChooser(
+                IRogueEventAggregator eventAggregator, 
+                Type alterationEffectInterfaceType)
         {
             InitializeComponent();
-            Initialize();
+
+            // Validate that interface type is supported
+            if (!ValidateSupportedType(alterationEffectInterfaceType))
+                throw new Exception("Unsupported Alteration Interface Type");
+
+            // Create type descriptions using reflection to get Attribute data
+            var typeDescriptions = CreateTypeDescriptions(alterationEffectInterfaceType);
+
+            // Set item source for effect combobox
+            this.EffectTypeCB.ItemsSource = typeDescriptions;
 
             // Load Effect Region with proper view for the effect type
             this.DataContextChanged += (sender, e) =>
@@ -97,7 +64,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                 var implementationType = e.NewValue.GetType();
 
                 // Find Associated View Type
-                var uiDescription = this.TypeDescriptions.FirstOrDefault(x => x.ImplementationType == implementationType);
+                var uiDescription = typeDescriptions.FirstOrDefault(x => x.ImplementationType == implementationType);
 
                 // NOTE*** Have to filter out unknown types because data context is set from the container 
                 //         once before the AlterationEffectChooser binding takes effect. So, won't be to
@@ -108,7 +75,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                 // Check to see if the implementation type is currently loaded
                 if (this.EffectRegion.Content != null &&
                     this.EffectRegion.Content.GetType() == uiDescription.ViewType)
-                    return;
+                {
+                    // Make sure to set the selected item for the combo box
+                    this.EffectTypeCB.SelectedItem = uiDescription;
+                }
 
                 // Publish Load Event
                 eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
@@ -129,7 +99,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
                                    .Publish(this.EffectRegion,
                                             new LoadAlterationEffectEventArgs()
-                                            {
+                                            {                                                
                                                 AlterationEffectViewType = effectDescription.ViewType
                                             });
 
@@ -139,7 +109,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     eventAggregator.GetEvent<LoadNewAlterationEffectRequestEvent>()
                                    .Publish(this.EffectRegion,
                                             new LoadNewAlterationEffectEventArgs()
-                                            {
+                                            {                                         
                                                 AlterationEffectType = effectDescription.ImplementationType,
                                                 AlterationEffectViewType = effectDescription.ViewType
                                             });
@@ -147,10 +117,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
             };
         }
 
-        private void Initialize()
+        private IEnumerable<AlterationEffectUIDescription> CreateTypeDescriptions(Type alterationEffectInterfaceType)
         {
-            // Create list of alteration effect data for lookup for the combo box
-            this.TypeDescriptions = typeof(AlterationEffectChooser)
+            // Create list of alteration effect data for lookup for the combo box filtered by
+            // the alteration effect interface type
+            return typeof(AlterationEffectChooser)
                 .Assembly
                 .GetTypes()
                 .Select(type =>
@@ -161,7 +132,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     else
                         return new KeyValuePair<Type, UITypeAttribute>();
                 })
-                .Where(x => x.Value != null)                
+                .Where(x => x.Value != null)        
+                .Where(x => x.Key.GetInterface(alterationEffectInterfaceType.Name) != null)
                 .Select(x => new AlterationEffectUIDescription()
                 {
                     DisplayName = x.Value.DisplayName,
@@ -175,33 +147,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
         protected bool ValidateSupportedType(Type alterationContainerType)
         {
             return _supportedInterfaceTypes.Contains(alterationContainerType);
-        }
-
-        private static void OnAlterationInterfaceTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var effectChooser = d as AlterationEffectChooser;
-            if (effectChooser != null &&
-                e.NewValue != null)
-            {
-                // If new interface type is supported
-                if (effectChooser.ValidateSupportedType(e.NewValue as Type))
-                {
-                    // Clear effect combo box
-                    effectChooser.EffectTypeCB.Items.Clear();
-
-                    // Load effect combo box with type descriptions (filtered by new interface type)
-                    effectChooser
-                        .EffectTypeCB
-                        .ItemsSource = effectChooser
-                                        .TypeDescriptions
-                                        .Where(x =>
-                                        {
-                                            return x.ImplementationType.GetInterface(e.NewValue.ToString()) != null;
-                                        });
-                }
-                else
-                    throw new Exception("Unsupported Alteration Interface Type");
-            }
         }
     }
 }

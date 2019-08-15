@@ -15,6 +15,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
         {
             InitializeComponent();
 
+            // NOTE*** THIS EVENT WILL UPDATE THE PROPER INSTANCE BECAUSE THERE IS ONLY ONE
+            //         INSTANCE OF THIS CONTROL
             eventAggregator.GetEvent<AlterationEffectChangedEvent>()
                            .Subscribe(e =>
                            {
@@ -22,16 +24,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
                                if (viewModel == null)
                                    return;
 
-                               // Check that alteration matches this alteration
-                               if (viewModel != e.Alteration)
-                                   return;
-
                                // Type cast the effect interface
                                if (e is IEnemyAlterationEffectTemplateViewModel)
                                    viewModel.Effect = (e as IEnemyAlterationEffectTemplateViewModel);
-
-                               // TODO:  NOT SURE WHY BINDING ISN'T UPDATING! SHOULD NOT HAVE TO FORCE UPDATE
-                               // this.DoodadAlterationRegion.SetCurrentValue(DataContextProperty, viewModel.Effect);
                            });
         }
     }

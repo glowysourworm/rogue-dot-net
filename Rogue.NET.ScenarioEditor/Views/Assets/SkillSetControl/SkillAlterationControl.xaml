@@ -27,7 +27,7 @@
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion>
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

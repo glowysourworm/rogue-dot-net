@@ -26,8 +26,7 @@
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion x:Name="EnemyAlterationEffectRegion" 
-                                DataContext="{Binding Effect}">
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IEnemyAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

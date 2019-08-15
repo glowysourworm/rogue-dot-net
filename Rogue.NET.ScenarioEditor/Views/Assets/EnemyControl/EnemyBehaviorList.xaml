@@ -75,7 +75,7 @@
                         </Grid>
                         <Grid Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
                             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyAlterationControl}"
-                                                DataContext="{Binding EnemyAlteration.Effect}">
+                                                DataContext="{Binding EnemyAlteration}">
                             </region:RogueRegion>
                         </Grid>
                     </StackPanel>

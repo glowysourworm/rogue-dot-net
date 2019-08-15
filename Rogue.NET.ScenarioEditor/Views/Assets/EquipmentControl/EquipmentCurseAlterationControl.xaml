@@ -16,7 +16,7 @@
     </UserControl.Resources>
     <TabControl>
         <TabItem Header="Effect">
-            <region:RogueRegion>
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IEquipmentCurseAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>

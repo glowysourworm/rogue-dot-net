@@ -18,13 +18,16 @@
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentParameters}" />
             </TabItem>
             <TabItem Header="Attack Alteration">
-                <equipment:EquipmentAttackAlterationControl />
+                <region:RogueRegion DataContext="{Binding EquipmentAttackAlteration}"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentAttackAlterationControl}" />
             </TabItem>
             <TabItem Header="Equip Alteration">
-                <equipment:EquipmentEquipAlterationControl />
+                <region:RogueRegion DataContext="{Binding EquipmentEquipAlteration}"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentEquipAlterationControl}" />                
             </TabItem>
             <TabItem Header="Curse Alteration">
-                <equipment:EquipmentCurseAlterationControl />
+                <region:RogueRegion DataContext="{Binding EquipmentCurseAlteration}"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type equipment:EquipmentCurseAlterationControl}" />                
             </TabItem>
             <TabItem Header="Attack Attributes">
                 <equipment:EquipmentAttackAttributes />

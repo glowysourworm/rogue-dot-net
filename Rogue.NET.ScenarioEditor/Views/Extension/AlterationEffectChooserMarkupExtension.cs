@@ -17,6 +17,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Extension
     /// </summary>
     public class AlterationEffectChooserMarkupExtension : MarkupExtension
     {
+        /// <summary>
+        /// Alteration effect interface type
+        /// </summary>
         public Type AlterationEffectInterface { get; set; }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -24,13 +27,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Extension
             if (!typeof(IAlterationEffectTemplateViewModel).IsAssignableFrom(this.AlterationEffectInterface))
                 throw new Exception("AlterationEffectInterface must inherit from IAlterationEffectTemplateViewModel");
 
-
             var eventAggregator = ServiceLocator.Current.GetInstance<IRogueEventAggregator>();
 
-            return new AlterationEffectChooser(eventAggregator)
-            {
-                AlterationInterfaceType = this.AlterationEffectInterface
-            };
+            return new AlterationEffectChooser(eventAggregator, this.AlterationEffectInterface);
         }
     }
 }

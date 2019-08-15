@@ -26,8 +26,7 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion x:Name="ConsumableProjectileAlterationEffectRegion" 
-                                DataContext="{Binding Effect}">
+            <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
                     <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableProjectileAlterationEffectTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>
