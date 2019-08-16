@@ -26,7 +26,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl TabStripPlacement="Left" Background="Black">
-        <TabItem Header="Symbol">
+        <TabItem Header="Symbol" x:Name="DefaultTab">
             <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
         </TabItem>
         <TabItem Header="Rogue-Encyclopedia Entry">

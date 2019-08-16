@@ -687,4 +687,20 @@ IMMEDIATE TODO'S:
 	- TODO: Use either Routed Attached Event or ServiceLocator -> EventAggregator to supply changes for Undo instead of INotifyPropertyChanged. Also,
 			have to Hook new complex types in UndoAccumulator when they're changed. 
 			
+			THIS MIGHT BE A VERY SIMPLE UNDO SERVICE
+			
 	- IDEA: Could support "Detect Magic"
+	
+	- TODO: Attack Attribute Refactoring
+			
+			1) REMOVE SHARED COLLECTION FROM SCENARIO CONFIGURATION
+			
+			2) Create Attack Attribute collections sparsely - using a service to provide a scenario-wide collection to COPY from
+			   to create an instance for the asset or alteration effect
+			   
+			3) Shrink the UI for editing them to one-line; and add an option to show / hide the attack, resistance, and weakness appropriately
+			
+			4) FOR THE SCENARIO SIDE:  Either A) Leave the design AS IS and pre-copy FULL LISTS of attributes to each asset / alteration effect
+										   or B) Work with sparse collections and re-design how they're used to accomodate differing sets
+										   
+										   

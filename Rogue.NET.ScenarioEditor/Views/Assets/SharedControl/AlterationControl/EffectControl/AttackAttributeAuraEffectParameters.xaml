@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
     <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Type">
-            <commonControl:AlterationAttackAttributeCombatTypeControl />
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationAttackAttributeCombatType}"
+                                             EnumValue="{Binding CombatType, Mode=TwoWay}" />            
         </TabItem>
         <TabItem Header="Symbol Change">
             <StackPanel Background="Black">

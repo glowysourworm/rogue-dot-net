@@ -2,11 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:equipment="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl">
     <Grid>
         <TabControl TabStripPlacement="Left">
-            <TabItem Header="Symbol">
-                <equipment:EquipmentSymbol />
+            <TabItem Header="Symbol" x:Name="DefaultTab">
+                <controls:SymbolEditor DataContext="{Binding SymbolDetails}"/>
             </TabItem>
             <TabItem Header="Rogue-Encyclopedia Entry">
                 <equipment:EquipmentMetadata />

@@ -7,6 +7,9 @@ using Rogue.NET.Common.Extension;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
+using System;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {
@@ -21,85 +24,41 @@ namespace Rogue.NET.ScenarioEditor.Service
          */
 
         #region (public) Methods
-        public void UpdateAlterations(ScenarioConfigurationContainerViewModel configuration)
-        {
-            // TODO:ALTERATION
-            //var collection = configuration.MagicSpells;
-
-            //// Skill Sets
-            //foreach (var skillSet in configuration.SkillTemplates)
-            //{
-            //    // Skill
-            //    foreach (var skill in skillSet.Skills)
-            //        skill.Alteration = MatchByName(configuration.MagicSpells, skill.Alteration);
-            //}
-
-            //// Doodads
-            //foreach (var doodad in configuration.DoodadTemplates)
-            //{
-            //    doodad.AutomaticMagicSpellTemplate = MatchByName(collection, doodad.AutomaticMagicSpellTemplate);
-            //    doodad.InvokedMagicSpellTemplate = MatchByName(collection, doodad.InvokedMagicSpellTemplate);
-
-            //    if (doodad.AutomaticMagicSpellTemplate == null)
-            //        doodad.IsAutomatic = false;
-
-            //    if (doodad.InvokedMagicSpellTemplate == null)
-            //        doodad.IsInvoked = false;
-            //}
-
-            //// Equipment
-            //foreach (var equipment in configuration.EquipmentTemplates)
-            //{
-            //    equipment.AmmoTemplate.AmmoSpellTemplate = MatchByName(collection, equipment.AmmoTemplate.AmmoSpellTemplate);
-            //    equipment.CurseSpell = MatchByName(collection, equipment.CurseSpell);
-            //    equipment.EquipSpell = MatchByName(collection, equipment.EquipSpell);
-
-            //    if (equipment.CurseSpell == null)
-            //        equipment.HasCurseSpell = false;
-
-            //    if (equipment.EquipSpell == null)
-            //        equipment.HasEquipSpell = false;
-            //}
-
-            //// Consumables
-            //foreach (var consumable in configuration.ConsumableTemplates)
-            //{
-            //    consumable.AmmoSpellTemplate = MatchByName(collection, consumable.AmmoSpellTemplate);
-            //    consumable.ProjectileSpellTemplate = MatchByName(collection, consumable.ProjectileSpellTemplate);
-            //    consumable.SpellTemplate = MatchByName(collection, consumable.SpellTemplate);
-
-            //    if (consumable.ProjectileSpellTemplate == null)
-            //        consumable.IsProjectile = false;
-
-            //    if (consumable.SpellTemplate == null)
-            //        consumable.HasSpell = false;
-            //}
-        }
-
-        public void UpdateAnimations(ScenarioConfigurationContainerViewModel configuration)
-        {
-            // TODO:ALTERATION
-            //foreach (var alteration in configuration.MagicSpells)
-            //    UpdateCollection(configuration.AnimationTemplates, alteration.Animations);
-
-            foreach (var enemy in configuration.EnemyTemplates)
-                UpdateCollection(configuration.AnimationTemplates, enemy.DeathAnimations);
-        }
-
         public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
-            // TODO:ALTERATION
-            // Alterations
-            //foreach (var spell in configuration.MagicSpells)
-            //    UpdateAttackAttributeCollection(configuration.AttackAttributes, spell.Effect.AttackAttributes);
+            // Consumables
+            foreach (var consumable in configuration.ConsumableTemplates)
+            {
+                if (consumable.HasAlteration)
+                    UpdateAttackAttributeAlterationEffect(consumable.ConsumableAlteration.Effect, configuration.AttackAttributes);
+
+                if (consumable.HasProjectileAlteration)
+                    UpdateAttackAttributeAlterationEffect(consumable.ConsumableProjectileAlteration.Effect, configuration.AttackAttributes);
+            }
 
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
+            {
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
+
+                if (equipment.HasAttackAlteration)
+                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentAttackAlteration.Effect, configuration.AttackAttributes);
+
+                if (equipment.HasCurseAlteration)
+                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentCurseAlteration.Effect, configuration.AttackAttributes);
+
+                if (equipment.HasEquipAlteration)
+                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentEquipAlteration.Effect, configuration.AttackAttributes);
+            }
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
+            {
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
+
+                foreach (var behavior in enemy.BehaviorDetails.Behaviors)
+                    UpdateAttackAttributeAlterationEffect(behavior.EnemyAlteration.Effect, configuration.AttackAttributes);
+            }
 
             // Character Classes
             foreach (var characterClass in configuration.CharacterClasses)
@@ -150,24 +109,29 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
         {
-            // TODO:ALTERATION
-            //// Alterations
-            //foreach (var spell in configuration.MagicSpells)
-            //{
-            //    // Fix for initializing existing scenarios
-            //    spell.Effect.AlteredState = spell.Effect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
-            //    spell.AuraEffect.AlteredState = spell.AuraEffect.AlteredState ?? new AlteredCharacterStateTemplateViewModel();
+            // Alteration Effects - Update Altered Character States
+            foreach (var alterationEffect in GetAllAlterationEffects(configuration))
+            {
+                // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
+                //         should not interfere with operation because references aren't kept strongly (there's allowance for
+                //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
+                //         character operation).
+                if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
+                {
+                    var effect = alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel;
 
-            //    // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
-            //    //         should not interfere with operation because references aren't kept strongly (there's allowance for
-            //    //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
-            //    //         character operation).
-            //    spell.Effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.Effect.AlteredState) ??
-            //                                new AlteredCharacterStateTemplateViewModel();
+                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState) ??
+                                          new AlteredCharacterStateTemplateViewModel();
+                }
 
-            //    spell.AuraEffect.AlteredState = MatchByName(configuration.AlteredCharacterStates, spell.AuraEffect.AlteredState) ??
-            //                                new AlteredCharacterStateTemplateViewModel();
-            //}
+                else if (alterationEffect is TemporaryAlterationEffectTemplateViewModel)
+                {
+                    var effect = alterationEffect as TemporaryAlterationEffectTemplateViewModel;
+
+                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState) ??
+                                          new AlteredCharacterStateTemplateViewModel();
+                }
+            }
         }
 
         public void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration)
@@ -176,6 +140,25 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 animation.FillTemplate = MatchByName(configuration.BrushTemplates, animation.FillTemplate);
                 animation.StrokeTemplate = MatchByName(configuration.BrushTemplates, animation.StrokeTemplate);
+            }
+        }
+
+        public void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration)
+        {
+            // Alteration Effects - Update Create Monster 
+            foreach (var alterationEffect in GetAllAlterationEffects(configuration))
+            {
+                if (alterationEffect is CreateMonsterAlterationEffectTemplateViewModel)
+                {
+                    var effect = alterationEffect as CreateMonsterAlterationEffectTemplateViewModel;
+
+                    // Enemy no longer exists in the scenario
+                    if (!configuration.EnemyTemplates.Any(x => x.Name == effect.CreateMonsterEnemy))
+                    {
+                        // TODO:ALTERATION Then, have to validate this in the validator
+                        effect.CreateMonsterEnemy = null;
+                    }
+                }
             }
         }
 
@@ -277,6 +260,71 @@ namespace Rogue.NET.ScenarioEditor.Service
                 if (!source.Any(a => a.Name == dest[i].Name))
                     dest.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        /// Uses type casting to update the alteraiton effect's attack attributes should it be of the proper class
+        /// </summary>
+        private void UpdateAttackAttributeAlterationEffect(IAlterationEffectTemplateViewModel alterationEffect, IList<AttackAttributeTemplateViewModel> sourceAttackAttributes)
+        {
+            if (alterationEffect is AttackAttributeAuraAlterationEffectTemplateViewModel)
+                UpdateAttackAttributeCollection(sourceAttackAttributes, (alterationEffect as AttackAttributeAuraAlterationEffectTemplateViewModel).AttackAttributes);
+
+            else if (alterationEffect is AttackAttributeMeleeAlterationEffectTemplateViewModel)
+                UpdateAttackAttributeCollection(sourceAttackAttributes, (alterationEffect as AttackAttributeMeleeAlterationEffectTemplateViewModel).AttackAttributes);
+
+            else if (alterationEffect is AttackAttributePassiveAlterationEffectTemplateViewModel)
+                UpdateAttackAttributeCollection(sourceAttackAttributes, (alterationEffect as AttackAttributePassiveAlterationEffectTemplateViewModel).AttackAttributes);
+
+            else if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
+                UpdateAttackAttributeCollection(sourceAttackAttributes, (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes);
+        }
+
+        /// <summary>
+        /// Returns combined list of all alteration effects
+        /// </summary>
+        private IEnumerable<IAlterationEffectTemplateViewModel> GetAllAlterationEffects(ScenarioConfigurationContainerViewModel configuration)
+        {
+            var consumableFunc = new Func<ConsumableTemplateViewModel, IEnumerable<IAlterationEffectTemplateViewModel>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+                {
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableAlteration.Effect),
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableProjectileAlteration.Effect),
+                    configuration.ConsumableTemplates.SelectMany(x => x.LearnedSkill.Skills.Select(z => z.SkillAlteration.Effect))
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var equipmentFunc = new Func<EquipmentTemplateViewModel, IEnumerable<IAlterationEffectTemplateViewModel>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+                {
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentAttackAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentCurseAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentEquipAlteration.Effect)
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var alterations = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+            {
+                configuration.ConsumableTemplates.SelectMany(x => consumableFunc(x)),
+                configuration.EquipmentTemplates.SelectMany(x => equipmentFunc(x)),
+                configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
+                configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
+                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
+                configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
+                configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
+            };
+
+            return alterations.SelectMany(x => x).Actualize();
         }
 
         #endregion

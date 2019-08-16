@@ -2,6 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core" 
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
     <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="General">
@@ -19,7 +21,8 @@
             </StackPanel>
         </TabItem>
         <TabItem Header="Type">
-            <commonControl:AlterationEquipmentModifyTypeControl DataContext="{Binding Type}" />
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationModifyEquipmentType}"
+                                             EnumValue="{Binding Type, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Attack Attributes">
             <commonControl:AlterationAttackAttributeListControl DataContext="{Binding AttackAttributes}" />

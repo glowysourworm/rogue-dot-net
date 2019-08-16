@@ -60,10 +60,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Doodad:
                     _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(new DoodadTemplateViewModel() { Name = uniqueName });
                     break;
-                //case AssetType.Spell:
-                //    // TODO:ALTERATION
-                //    //_scenarioEditorController.CurrentConfig.MagicSpells.Add(new SpellTemplateViewModel() { Name = uniqueName });
-                //    break;
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(new SkillSetTemplateViewModel() { Name = uniqueName });
                     break;
@@ -106,10 +102,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Doodad:
                     _scenarioEditorController.CurrentConfig.DoodadTemplates.Add(assetCopy as DoodadTemplateViewModel);
                     break;
-                //case AssetType.Spell:
-                //    // TODO:ALTERATION
-                //    //_scenarioEditorController.CurrentConfig.MagicSpells.Add(assetCopy as SpellTemplateViewModel);
-                //    break;
                 case AssetType.SkillSet:
                     _scenarioEditorController.CurrentConfig.SkillTemplates.Add(assetCopy as SkillSetTemplateViewModel);
                     break;
@@ -120,7 +112,8 @@ namespace Rogue.NET.ScenarioEditor.Controller
             // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
             _undoService.Block();
 
-            // Fix Asset References - Uses the ScenarioConfigurationMapper to match by GUID
+            // Fix Asset References - Uses the ScenarioConfigurationMapper to match by Name
+            //                        NOTE*** Abandoned GUID approach for various reasons.
             _scenarioConfigurationMapper.FixReferences(_scenarioEditorController.CurrentConfig);
 
             // Restore Undo Service
@@ -143,17 +136,15 @@ namespace Rogue.NET.ScenarioEditor.Controller
             {
                 // No references to update
                 case AssetType.Layout:
-                case AssetType.Enemy:
                 case AssetType.Doodad:
+                    break;
+                case AssetType.Enemy:
+                    _scenarioAssetReferenceService.UpdateEnemies(_scenarioEditorController.CurrentConfig);
                     break;
                 case AssetType.Equipment:
                 case AssetType.Consumable:
                     _scenarioAssetReferenceService.UpdateItems(_scenarioEditorController.CurrentConfig);
                     break;
-                    // TODO:ALTERATION
-                //case AssetType.Spell:
-                //    _scenarioAssetReferenceService.UpdateAlterations(_scenarioEditorController.CurrentConfig);
-                //    break;
                 case AssetType.SkillSet:
                     _scenarioAssetReferenceService.UpdateSkillSets(_scenarioEditorController.CurrentConfig);
                     break;

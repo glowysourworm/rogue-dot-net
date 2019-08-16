@@ -34,6 +34,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
 
+        // TODO:ALTERATION (Change this to observable collection)
         public List<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
         public AttackAttributePassiveAlterationEffectTemplateViewModel()

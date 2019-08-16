@@ -394,35 +394,17 @@
     <Compile Include="Views\Assets\EnemyControl\EnemyBehaviorList.xaml.cs">
       <DependentUpon>EnemyBehaviorList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeCombatTypeControl.xaml.cs">
-      <DependentUpon>AlterationAttackAttributeCombatTypeControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml.cs">
       <DependentUpon>AlterationAttackAttributeListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAuraSourceParameters.xaml.cs">
       <DependentUpon>AlterationAuraSourceParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationBlockTypeControl.xaml.cs">
-      <DependentUpon>AlterationBlockTypeControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml.cs">
       <DependentUpon>AlterationEffectChooser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooserInstructions.xaml.cs">
       <DependentUpon>AlterationEffectChooserInstructions.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEquipmentModifyTypeControl.xaml.cs">
-      <DependentUpon>AlterationEquipmentModifyTypeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationOtherEffectTypeControl.xaml.cs">
-      <DependentUpon>AlterationOtherEffectTypeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationRandomPlacementTypeControl.xaml.cs">
-      <DependentUpon>AlterationRandomPlacementTypeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationTargetTypeControl.xaml.cs">
-      <DependentUpon>AlterationTargetTypeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\ConsumableControl\ConsumableAlterationControl.xaml.cs">
       <DependentUpon>ConsumableAlterationControl.xaml</DependentUpon>
@@ -529,15 +511,6 @@
     <Compile Include="Views\Assets\ConsumableControl\ConsumableAlterationSelection.xaml.cs">
       <DependentUpon>ConsumableAlterationSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\ConsumableControl\ConsumableSubType.xaml.cs">
-      <DependentUpon>ConsumableSubType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\ConsumableControl\ConsumableSymbol.xaml.cs">
-      <DependentUpon>ConsumableSymbol.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\ConsumableControl\ConsumableType.xaml.cs">
-      <DependentUpon>ConsumableType.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\Doodad.xaml.cs">
       <DependentUpon>Doodad.xaml</DependentUpon>
     </Compile>
@@ -559,9 +532,6 @@
     <Compile Include="Views\Assets\EnemyControl\EnemyParameters.xaml.cs">
       <DependentUpon>EnemyParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\EnemyControl\EnemySymbol.xaml.cs">
-      <DependentUpon>EnemySymbol.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\Equipment.xaml.cs">
       <DependentUpon>Equipment.xaml</DependentUpon>
     </Compile>
@@ -576,9 +546,6 @@
     </Compile>
     <Compile Include="Views\Assets\EquipmentControl\EquipmentAlterationSelection.xaml.cs">
       <DependentUpon>EquipmentAlterationSelection.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\EquipmentControl\EquipmentSymbol.xaml.cs">
-      <DependentUpon>EquipmentSymbol.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\Layout.xaml.cs">
       <DependentUpon>Layout.xaml</DependentUpon>
@@ -701,10 +668,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeCombatTypeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationAttackAttributeListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -713,31 +676,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationBlockTypeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEffectChooserInstructions.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationEquipmentModifyTypeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationOtherEffectTypeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationRandomPlacementTypeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\CommonControl\AlterationTargetTypeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -881,18 +824,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\ConsumableControl\ConsumableSubType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\ConsumableControl\ConsumableSymbol.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\ConsumableControl\ConsumableType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\Doodad.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -921,10 +852,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\EnemyControl\EnemySymbol.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\Equipment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -942,10 +869,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\EquipmentControl\EquipmentAlterationSelection.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\EquipmentControl\EquipmentSymbol.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

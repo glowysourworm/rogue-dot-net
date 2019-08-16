@@ -2,23 +2,23 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
     <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Type">
             <!-- Random Placement Type -->
-            <Grid Margin="10">
-                <GroupBox Header="Random Placement Type">
-                    <StackPanel>
-                        <TextBlock Text="Choose where to place created character (monster) relative to the source character" Foreground="White" FontSize="18" Margin="10" />
-                        <commonControl:AlterationRandomPlacementTypeControl DataContext="{Binding TeleportType}" />
-                    </StackPanel>
-                </GroupBox>
-            </Grid>
+            <GroupBox Header="Random Placement Type">
+                <StackPanel>
+                    <TextBlock Text="Choose where to place created character (monster) relative to the source character" Foreground="White" FontSize="18" Margin="10" />
+                    <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationRandomPlacementType}"
+                                                         EnumValue="{Binding TeleportType, Mode=TwoWay}" />
+                </StackPanel>
+            </GroupBox>
         </TabItem>
         <TabItem Header="Parameters">
             <!-- Range -->
             <Grid Margin="10">
-                <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" Margin="10" />
+                <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
                 <toolkit:IntegerUpDown Value="{Binding Range}" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
             </Grid>
         </TabItem>

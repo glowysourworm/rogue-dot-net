@@ -24,6 +24,12 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
                 //this.InvokedSpellCB.ItemsSource = configuration.MagicSpells;
                 this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
             });
+
+            // Set symbol tab to be the default to show for the consumable
+            this.Loaded += (sender, e) =>
+            {
+                this.DefaultTab.IsSelected = true;
+            };
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

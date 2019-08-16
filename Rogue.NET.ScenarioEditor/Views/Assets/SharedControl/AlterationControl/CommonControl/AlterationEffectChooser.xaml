@@ -15,31 +15,33 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Alteration Effect Type" FontSize="18" Foreground="White" HorizontalAlignment="Left" />
+        <TextBlock Text="Alteration Effect Type" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="18" Foreground="White" />
 
         <ComboBox x:Name="EffectTypeCB"
-                      Margin="10, 0"
+                      Margin="2"
                       Grid.Column="1"
                       Width="250"
-                      DisplayMemberPath="DisplayName"
                       HorizontalAlignment="Right">
-            <ComboBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="ToolTip" Value="{Binding Description}" />
-                </Style>
-            </ComboBox.ItemContainerStyle>
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Foreground="White"
+                               Text="{Binding DisplayName}" 
+                               ToolTip="{Binding Description}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
         </ComboBox>
 
         <Button x:Name="OkButton"
-                    Margin="10, 0"
+                    Margin="5, 2, 2, 2"
                     Grid.Column="2"
                     Content="Apply" />
 
-        <!-- Effect Region:  Using "Effect" Common Property Name for all alteration types -->
-        <!--                 This could be changed to add a public property to the common -->
-        <!--                 interface for the IAlterationEffectTemplateViewModel.        -->
-        <region:RogueRegion x:Name="EffectRegion"
+        <!-- Effect Region -->
+        <Border BorderBrush="White" BorderThickness="0, 0.75, 0, 0">
+            <region:RogueRegion x:Name="EffectRegion"
+                            Margin="10"
                             Grid.Row="1"
                             region:RogueRegionManager.DefaultViewType="{x:Type commonControl:AlterationEffectChooserInstructions}" />
+        </Border>
     </Grid>
 </UserControl>

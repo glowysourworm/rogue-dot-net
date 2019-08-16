@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
-             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"             >
     <UserControl.Resources>
@@ -17,7 +18,8 @@
     </UserControl.Resources>
     <TabControl>
         <TabItem Header="General">
-            <commonControl:AlterationTargetTypeControl />
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
+                                             EnumValue="{Binding TargetType}" />
         </TabItem>
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">

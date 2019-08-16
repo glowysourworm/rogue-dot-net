@@ -12,6 +12,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
@@ -258,6 +259,27 @@ namespace Rogue.NET.ScenarioEditor
                 {
                     // Construct the new alteration effect
                     var alterationEffect = (IAlterationEffectTemplateViewModel)e.AlterationEffectType.Construct();
+
+                    // Add Attack Attributes (SHOULD MOVE THIS)
+                    //
+                    // NOTE*** This needs to be done because of shared attack attribute assets. Design
+                    //         needs to be changed to avoid shared collections
+                    //
+                    // TODO: CLEAN THIS UP
+                    if (alterationEffect is AttackAttributeAuraAlterationEffectTemplateViewModel)
+                        (alterationEffect as AttackAttributeAuraAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+
+                    else if (alterationEffect is AttackAttributeMeleeAlterationEffectTemplateViewModel)
+                        (alterationEffect as AttackAttributeMeleeAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+
+                    else if (alterationEffect is AttackAttributePassiveAlterationEffectTemplateViewModel)
+                        (alterationEffect as AttackAttributePassiveAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+
+                    else if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
+                        (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+
+                    else if (alterationEffect is EquipmentModifyAlterationEffectTemplateViewModel)
+                        (alterationEffect as EquipmentModifyAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
 
                     // Load the Region
                     var view = _regionManager.Load(container, e.AlterationEffectViewType);

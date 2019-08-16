@@ -4,8 +4,8 @@
              Background="Black">
 
     <!-- Altered State -->
-    <Grid Margin="10">
-        <TextBlock Text="Remedied (Altered) State" Foreground="White" />
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <TextBlock Text="Remedied (Altered) State" Foreground="White" HorizontalAlignment="Left" />
         <ComboBox x:Name="RemediedStateCB" 
                    SelectedItem="{Binding RemediedState}"
                    SelectedValue="{Binding RemediedState.Name}"

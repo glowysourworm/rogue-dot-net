@@ -2,11 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:enemy="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
     <Grid>
         <TabControl Background="Black" TabStripPlacement="Left">
-            <TabItem Header="Symbol">
-                <enemy:EnemySymbol />
+            <TabItem Header="Symbol" x:Name="DefaultTab">
+                <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
             </TabItem>
             <TabItem Header="Rogue-Encyclopedia Entry">
                 <enemy:EnemyMetadata />

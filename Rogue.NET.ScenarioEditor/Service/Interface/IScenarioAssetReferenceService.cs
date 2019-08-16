@@ -21,14 +21,6 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
             - Action:  Remove skill set from player / item / doodad (learned skill)
             - Action:  Validate that items / doodads have a use (learned skill) (TBD)
 
-        - Use Case:  Alteration Removed from scenario 
-            - Action:  Remove alteration reference from items / doodads / skill sets
-            - Action:  Validate that items / doodads / skill sets have a use (TBD)
-            - Action:  Validate related player skill sets / items (TBD)
-
-        - Use Case:  Animation Removed from scenario
-            - Action:  (Similar to above) Validate all affected objects up the tree
-
         - Use Case:  Brush removed from scenario
             - Action:  (Same)
      */
@@ -54,6 +46,11 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
+        /// Updates Create Monster Alteration Effects
+        /// </summary>
+        void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration);
+
+        /// <summary>
         /// Updates Item references on Enemies, and Player
         /// </summary>
         void UpdateItems(ScenarioConfigurationContainerViewModel configuration);
@@ -62,16 +59,6 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// Updates SkillSet references on Player, and Alterations
         /// </summary>
         void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration);
-
-        /// <summary>
-        /// Updates Alteration references on Equipment, Consumable, Doodad, and SkillSet
-        /// </summary>
-        void UpdateAlterations(ScenarioConfigurationContainerViewModel configuration);
-
-        /// <summary>
-        /// Updates Animation references on Alterations
-        /// </summary>
-        void UpdateAnimations(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
         /// Updates Brush references on Animations
