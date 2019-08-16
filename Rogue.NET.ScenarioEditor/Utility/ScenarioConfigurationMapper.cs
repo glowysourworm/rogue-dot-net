@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
@@ -15,6 +16,9 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +84,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             var configuration = FixReferences(result);
 
             // Sort collections 
-            configuration.AnimationTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.BrushTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -88,15 +91,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-            configuration.AlterationContainer.ConsumableAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.ConsumableProjectileAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.DoodadAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.EnemyAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.EquipmentAttackAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.EquipmentCurseAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.EquipmentEquipAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.AlterationContainer.SkillAlterations.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             return configuration;
         }
@@ -251,56 +245,47 @@ namespace Rogue.NET.ScenarioEditor.Utility
         /// </summary>
         public ScenarioConfigurationContainer FixReferences(ScenarioConfigurationContainer configuration)
         {
-            // Animations
-            foreach (var template in configuration.AnimationTemplates)
-            {
-                template.FillTemplate = Match(configuration.BrushTemplates, template.FillTemplate);
-                template.StrokeTemplate = Match(configuration.BrushTemplates, template.StrokeTemplate);
-            }
+            // Have to fix collections that are SHARED:  { Altered Character States, Character Classes }
+            //
+            // Attack Attributes are copied to new collections so don't have to be maintained.
+            //
+            // Also, have to fix Assets that are SHARED: 
+            //
+            // Consumable:  { Learned Skill }                                        and { Character Class }
+            // Equipment:   { Ammo Template }                                        and { Character Class }
+            // Doodad:                                                                   { Character Class }
+            // Skill Set:                                                                { Character Class }
+            // Enemy:       { Starting Consumables, Starting Equipment }             
+            // Player:      { Skill Sets, Starting Consumables, Starting Equipment } 
+            //
 
-            // TODO:ALTERATION
-            // Alterations
-            //foreach (var template in configuration.MagicSpells)
-            //{
-            //    MatchCollection(configuration.AnimationTemplates, template.Animations);
+            // FIRST:  Do the Assets to set proper references
+            //
+            // SECOND: Do Alteration Effects (Just need to fix Altered Character State)
 
-            //    template.Effect.AlteredState = Match(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-            //    template.AuraEffect.AlteredState = Match(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
-
-            //    template.Effect.RemediedState = Match(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-            //    template.AuraEffect.RemediedState = Match(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-            //}
-
-            // Skill Sets
-            foreach (var template in configuration.SkillTemplates)
-            {
-                foreach (var skillTemplate in template.Skills)
-                    skillTemplate.SkillAlteration = Match(configuration.AlterationContainer.SkillAlterations, skillTemplate.SkillAlteration);
-            }
-
-            // Doodads
-            foreach (var template in configuration.DoodadTemplates)
-            {
-                template.AutomaticAlteration = Match(configuration.AlterationContainer.DoodadAlterations, template.AutomaticAlteration);
-                template.InvokedAlteration = Match(configuration.AlterationContainer.DoodadAlterations, template.InvokedAlteration);
-            }
+            #region Assets - { Consumable Skill, Equipment Ammo, Enemy Items, Player Items, Player Skills } AND { Character Classes }
 
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
             {
                 template.LearnedSkill = Match(configuration.SkillTemplates, template.LearnedSkill);
-                template.ConsumableAlteration = Match(configuration.AlterationContainer.ConsumableAlterations, template.ConsumableAlteration);
-                template.ConsumableProjectileAlteration = Match(configuration.AlterationContainer.ConsumableProjectileAlterations, template.ConsumableProjectileAlteration);
+                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = Match(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.EquipmentAttackAlteration = Match(configuration.AlterationContainer.EquipmentAttackAlterations, template.EquipmentAttackAlteration);
-                template.EquipmentCurseAlteration = Match(configuration.AlterationContainer.EquipmentCurseAlterations, template.EquipmentCurseAlteration);
-                template.EquipmentEquipAlteration = Match(configuration.AlterationContainer.EquipmentEquipAlterations, template.EquipmentEquipAlteration);
+                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
             }
+
+            // Doodad
+            foreach (var template in configuration.DoodadTemplates)
+                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
+
+            // Skill Sets
+            foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
+                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
@@ -310,10 +295,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 for (int i = 0; i < template.StartingEquipment.Count; i++)
                     template.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
-
-                // Behavior Skills
-                for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
-                    template.BehaviorDetails.Behaviors[i].EnemyAlteration = Match(configuration.AlterationContainer.EnemyAlterations, template.BehaviorDetails.Behaviors[i].EnemyAlteration);
             }
 
             // Player
@@ -325,6 +306,68 @@ namespace Rogue.NET.ScenarioEditor.Utility
             for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
                 configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
 
+            #endregion
+
+            #region Alteration Effects - Fix up references { Altered States, Brushes }
+            var consumableFunc = new Func<ConsumableTemplate, IEnumerable<IAlterationEffectTemplate>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplate>>()
+                {
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableAlteration.Effect),
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableProjectileAlteration.Effect),
+                    configuration.ConsumableTemplates.SelectMany(x => x.LearnedSkill.Skills.Select(z => z.SkillAlteration.Effect))
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var equipmentFunc = new Func<EquipmentTemplate, IEnumerable<IAlterationEffectTemplate>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplate>>()
+                {
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentAttackAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentCurseAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentEquipAlteration.Effect)
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var alterationEffects = new List<IEnumerable<IAlterationEffectTemplate>>()
+            {
+                configuration.ConsumableTemplates.SelectMany(x => consumableFunc(x)),
+                configuration.EquipmentTemplates.SelectMany(x => equipmentFunc(x)),
+                configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
+                configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
+                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
+                //configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                //configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
+                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
+            }.SelectMany(x => x)
+             .Actualize();
+
+            // Altered States
+            foreach (var alterationEffect in alterationEffects)
+            {
+                if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplate)
+                {
+                    var effect = (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplate);
+
+                    effect.AlteredState = Match(configuration.AlteredCharacterStates, effect.AlteredState);
+                }
+                else if (alterationEffect is TemporaryAlterationEffectTemplate)
+                {
+                    var effect = (alterationEffect as TemporaryAlterationEffectTemplate);
+
+                    effect.AlteredState = Match(configuration.AlteredCharacterStates, effect.AlteredState);
+                }
+            }
+
+            #endregion
+
             return configuration;
         }
 
@@ -333,56 +376,47 @@ namespace Rogue.NET.ScenarioEditor.Utility
         /// </summary>
         public ScenarioConfigurationContainerViewModel FixReferences(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Animations
-            foreach (var template in configuration.AnimationTemplates)
-            {
-                template.FillTemplate = MatchVM(configuration.BrushTemplates, template.FillTemplate);
-                template.StrokeTemplate = MatchVM(configuration.BrushTemplates, template.StrokeTemplate);
-            }
+            // Have to fix collections that are SHARED:  { Altered Character States, Character Classes }
+            //
+            // Attack Attributes are copied to new collections so don't have to be maintained.
+            //
+            // Also, have to fix Assets that are SHARED: 
+            //
+            // Consumable:  { Learned Skill }                                        and { Character Class }
+            // Equipment:   { Ammo Template }                                        and { Character Class }
+            // Doodad:                                                                   { Character Class }
+            // Skill Set:                                                                { Character Class }
+            // Enemy:       { Starting Consumables, Starting Equipment }             
+            // Player:      { Skill Sets, Starting Consumables, Starting Equipment } 
+            //
 
-            // TODO:ALTERATION
-            //// Alterations
-            //foreach (var template in configuration.MagicSpells)
-            //{
-            //    MatchCollectionVM(configuration.AnimationTemplates, template.Animations);
+            // FIRST:  Do the Assets to set proper references
+            //
+            // SECOND: Do Alteration Effects (Just need to fix Altered Character State)
 
-            //    template.Effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.Effect.AlteredState);
-            //    template.AuraEffect.AlteredState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.AlteredState);
-
-            //    template.Effect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.Effect.RemediedState);
-            //    template.AuraEffect.RemediedState = MatchVM(configuration.AlteredCharacterStates, template.AuraEffect.RemediedState);
-            //}
-
-            // Skill Sets
-            foreach (var template in configuration.SkillTemplates)
-            {
-                foreach (var skillTemplate in template.Skills)
-                    skillTemplate.SkillAlteration = MatchVM(configuration.AlterationContainer.SkillAlterations, skillTemplate.SkillAlteration);
-            }
-
-            // Doodads
-            foreach (var template in configuration.DoodadTemplates)
-            {
-                template.AutomaticAlteration = MatchVM(configuration.AlterationContainer.DoodadAlterations, template.AutomaticAlteration);
-                template.InvokedAlteration = MatchVM(configuration.AlterationContainer.DoodadAlterations, template.InvokedAlteration);
-            }
+            #region Assets - { Consumable Skill, Equipment Ammo, Enemy Items, Player Items, Player Skills } AND { Character Classes }
 
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
             {
                 template.LearnedSkill = MatchVM(configuration.SkillTemplates, template.LearnedSkill);
-                template.ConsumableProjectileAlteration = MatchVM(configuration.AlterationContainer.ConsumableProjectileAlterations, template.ConsumableProjectileAlteration);
-                template.ConsumableAlteration = MatchVM(configuration.AlterationContainer.ConsumableAlterations, template.ConsumableAlteration);
+                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = MatchVM(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.EquipmentAttackAlteration = MatchVM(configuration.AlterationContainer.EquipmentAttackAlterations, template.EquipmentAttackAlteration);
-                template.EquipmentCurseAlteration = MatchVM(configuration.AlterationContainer.EquipmentCurseAlterations, template.EquipmentCurseAlteration);
-                template.EquipmentEquipAlteration = MatchVM(configuration.AlterationContainer.EquipmentEquipAlterations, template.EquipmentEquipAlteration);
+                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
             }
+
+            // Doodad
+            foreach (var template in configuration.DoodadTemplates)
+                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
+
+            // Skill Sets
+            foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
+                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
@@ -392,10 +426,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
                 for (int i = 0; i < template.StartingEquipment.Count; i++)
                     template.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, template.StartingEquipment[i].TheTemplate);
-
-                // Behavior Skills
-                for (int i = 0; i < template.BehaviorDetails.Behaviors.Count; i++)
-                    template.BehaviorDetails.Behaviors[i].EnemyAlteration = MatchVM(configuration.AlterationContainer.EnemyAlterations, template.BehaviorDetails.Behaviors[i].EnemyAlteration);
             }
 
             // Player
@@ -406,6 +436,68 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
             for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
                 configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
+
+            #endregion
+
+            #region Alteration Effects - Fix up references { Altered States, Brushes }
+            var consumableFunc = new Func<ConsumableTemplateViewModel, IEnumerable<IAlterationEffectTemplateViewModel>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+                {
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableAlteration.Effect),
+                    configuration.ConsumableTemplates.Select(x => x.ConsumableProjectileAlteration.Effect),
+                    configuration.ConsumableTemplates.SelectMany(x => x.LearnedSkill.Skills.Select(z => z.SkillAlteration.Effect))
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var equipmentFunc = new Func<EquipmentTemplateViewModel, IEnumerable<IAlterationEffectTemplateViewModel>>(consumable =>
+            {
+                var list = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+                {
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentAttackAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentCurseAlteration.Effect),
+                    configuration.EquipmentTemplates.Select(x => x.EquipmentEquipAlteration.Effect)
+                };
+
+                return list.SelectMany(x => x);
+            });
+
+            var alterationEffects = new List<IEnumerable<IAlterationEffectTemplateViewModel>>()
+            {
+                configuration.ConsumableTemplates.SelectMany(x => consumableFunc(x)),
+                configuration.EquipmentTemplates.SelectMany(x => equipmentFunc(x)),
+                configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
+                configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
+                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
+                //configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                //configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
+                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
+            }.SelectMany(x => x)
+             .Actualize();
+
+            // Altered States
+            foreach (var alterationEffect in alterationEffects)
+            {
+                if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
+                {
+                    var effect = (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel);
+
+                    effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, effect.AlteredState);
+                }
+                else if (alterationEffect is TemporaryAlterationEffectTemplateViewModel)
+                {
+                    var effect = (alterationEffect as TemporaryAlterationEffectTemplateViewModel);
+
+                    effect.AlteredState = MatchVM(configuration.AlteredCharacterStates, effect.AlteredState);
+                }
+            }
+
+            #endregion
 
             return configuration;
         }

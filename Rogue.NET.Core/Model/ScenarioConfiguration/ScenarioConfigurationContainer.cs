@@ -16,7 +16,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<SkillSetTemplate> SkillTemplates { get; set; }
         public List<BrushTemplate> BrushTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
-        public List<AnimationTemplate> AnimationTemplates { get; set; }
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
         public List<DoodadTemplate> DoodadTemplates { get; set; }
@@ -24,16 +23,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
         public List<CharacterClassTemplate> CharacterClasses { get; set; }
 
-        // Container for all collections of alterations
-        public ScenarioConfigurationAlterationContainer AlterationContainer { get; set; }
-
         public ScenarioConfigurationContainer()
         {
             this.DungeonTemplate = new DungeonTemplate();
             this.EnemyTemplates = new List<EnemyTemplate>();
             this.BrushTemplates = new List<BrushTemplate>();
             this.EquipmentTemplates = new List<EquipmentTemplate>();
-            this.AnimationTemplates = new List<AnimationTemplate>();
             this.ConsumableTemplates = new List<ConsumableTemplate>();
             this.SkillTemplates = new List<SkillSetTemplate>();
             this.PlayerTemplate = new PlayerTemplate();
@@ -41,8 +36,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
             this.CharacterClasses = new List<CharacterClassTemplate>();
-
-            this.AlterationContainer = new ScenarioConfigurationAlterationContainer();
         }
     }
 }

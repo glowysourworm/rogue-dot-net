@@ -32,18 +32,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
         public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
 
-        // TODO:ALTERATION Remove this asset collection; but save all the data in the individual 
-        //                 Alterations. (No longer a shared asset)
-        public ObservableCollection<AnimationTemplateViewModel> AnimationTemplates { get; set; }
-
-        // TODO:ALTERATION Remove this asset collection; but save all the data to individual assets
-        //                 (No longer a shared asset)
-        public ScenarioConfigurationAlterationContainerViewModel AlterationContainer
-        {
-            get { return _alterationContainer; }
-            set { this.RaiseAndSetIfChanged(ref _alterationContainer, value); }
-        }
-
         // "General" Assets
         public ObservableCollection<BrushTemplateViewModel> BrushTemplates { get; set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
@@ -56,7 +44,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.EnemyTemplates = new ObservableCollection<EnemyTemplateViewModel>();
             this.BrushTemplates = new ObservableCollection<BrushTemplateViewModel>();
             this.EquipmentTemplates = new ObservableCollection<EquipmentTemplateViewModel>();
-            this.AnimationTemplates = new ObservableCollection<AnimationTemplateViewModel>();
             this.ConsumableTemplates = new ObservableCollection<ConsumableTemplateViewModel>();
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();
             this.PlayerTemplate = new PlayerTemplateViewModel();

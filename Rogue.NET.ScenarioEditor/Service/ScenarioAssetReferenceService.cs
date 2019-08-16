@@ -136,11 +136,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration)
         {
-            foreach (var animation in configuration.AnimationTemplates)
-            {
-                animation.FillTemplate = MatchByName(configuration.BrushTemplates, animation.FillTemplate);
-                animation.StrokeTemplate = MatchByName(configuration.BrushTemplates, animation.StrokeTemplate);
-            }
+
         }
 
         public void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration)

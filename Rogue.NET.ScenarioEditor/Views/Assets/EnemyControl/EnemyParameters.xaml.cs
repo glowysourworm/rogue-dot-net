@@ -18,7 +18,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 
             eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
             {
-                this.DeathAnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
+                // TODO:ALTERATION Add AnimationGroupTemplate for the death animations
+                //this.DeathAnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
             });
         }
 
