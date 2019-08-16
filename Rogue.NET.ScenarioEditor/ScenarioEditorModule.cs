@@ -22,6 +22,7 @@ using Rogue.NET.ScenarioEditor.Views.Construction;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using Rogue.NET.ScenarioEditor.Views.DesignRegion;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -267,19 +268,19 @@ namespace Rogue.NET.ScenarioEditor
                     //
                     // TODO: CLEAN THIS UP
                     if (alterationEffect is AttackAttributeAuraAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeAuraAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+                        (alterationEffect as AttackAttributeAuraAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
                     else if (alterationEffect is AttackAttributeMeleeAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeMeleeAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+                        (alterationEffect as AttackAttributeMeleeAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
                     else if (alterationEffect is AttackAttributePassiveAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributePassiveAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+                        (alterationEffect as AttackAttributePassiveAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
                     else if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
-                        (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+                        (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
                     else if (alterationEffect is EquipmentModifyAlterationEffectTemplateViewModel)
-                        (alterationEffect as EquipmentModifyAlterationEffectTemplateViewModel).AttackAttributes = _scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()).ToList();
+                        (alterationEffect as EquipmentModifyAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
                     // Load the Region
                     var view = _regionManager.Load(container, e.AlterationEffectViewType);

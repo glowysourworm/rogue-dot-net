@@ -6,6 +6,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
@@ -39,12 +40,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
         }
 
-        // TODO:ALTERATION (Change this to observable collection)
-        public List<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
+        public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
         public AttackAttributeAuraAlterationEffectTemplateViewModel()
         {
-            this.AttackAttributes = new List<AttackAttributeTemplateViewModel>();
+            this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
         }
     }
