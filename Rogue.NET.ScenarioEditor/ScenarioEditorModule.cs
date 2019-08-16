@@ -39,6 +39,7 @@ namespace Rogue.NET.ScenarioEditor
         readonly IScenarioEditorController _scenarioEditorController;
         readonly IScenarioConfigurationUndoService _undoService;
         readonly IScenarioAssetReferenceService _scenarioAssetReferenceService;
+        readonly IScenarioCollectionProvider _scenarioCollectionProvider;
 
         [ImportingConstructor]
         public ScenarioEditorModule(
@@ -48,7 +49,8 @@ namespace Rogue.NET.ScenarioEditor
             IScenarioAssetController scenarioAssetController,
             IScenarioEditorController scenarioEditorController,
             IScenarioConfigurationUndoService scenarioConfigurationUndoService,
-            IScenarioAssetReferenceService scenarioAssetReferenceService)
+            IScenarioAssetReferenceService scenarioAssetReferenceService,
+            IScenarioCollectionProvider scenarioCollectionProvider)
         {
             _regionManagerOLD = regionManagerOLD;
             _regionManager = regionManager;
@@ -57,6 +59,7 @@ namespace Rogue.NET.ScenarioEditor
             _scenarioEditorController = scenarioEditorController;
             _undoService = scenarioConfigurationUndoService;
             _scenarioAssetReferenceService = scenarioAssetReferenceService;
+            _scenarioCollectionProvider = scenarioCollectionProvider;
         }
 
         public void Initialize()
@@ -346,7 +349,8 @@ namespace Rogue.NET.ScenarioEditor
         }
         private void PublishScenarioUpdate()
         {
-            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(_scenarioEditorController.CurrentConfig);
+            // Publish update to provide service for views that have derived lists
+            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(_scenarioCollectionProvider);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -9,19 +10,24 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
     public partial class ConsumableParameters : UserControl
     {
         [ImportingConstructor]
-        public ConsumableParameters(IRogueEventAggregator eventAggregator)
+        public ConsumableParameters(
+                IRogueEventAggregator eventAggregator, 
+                IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                // TODO:ALTERATION
-                //this.SpellCB.ItemsSource = configuration.MagicSpells;
-                //this.ProjectileSpellCB.ItemsSource = configuration.MagicSpells;
-                //this.AmmoSpellCB.ItemsSource = configuration.MagicSpells;
-                this.LearnedSkillCB.ItemsSource = configuration.SkillTemplates;
-                this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
-            });
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider);
+                           });
+        }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.LearnedSkillCB.ItemsSource = provider.SkillSets;
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
     }
 }

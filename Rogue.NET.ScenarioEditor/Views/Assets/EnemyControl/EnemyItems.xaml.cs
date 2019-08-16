@@ -3,6 +3,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
 {
@@ -10,21 +11,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
     public partial class EnemyItems : UserControl
     {
         [ImportingConstructor]
-        public EnemyItems(IRogueEventAggregator eventAggregator)
+        public EnemyItems(IRogueEventAggregator eventAggregator, IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                this.ConsumablesLB.SourceItemsSource = configuration.ConsumableTemplates;
-                this.EquipmentLB.SourceItemsSource = configuration.EquipmentTemplates;
-            });
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider);
+                           });
 
             this.ConsumablesLB.AddEvent += OnAddConsumable;
             this.EquipmentLB.AddEvent += OnAddEquipment;
 
             this.ConsumablesLB.RemoveEvent += OnRemoveConsumable;
             this.EquipmentLB.RemoveEvent += OnRemoveEquipment;
+        }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.ConsumablesLB.SourceItemsSource = provider.Consumables;
+            this.EquipmentLB.SourceItemsSource = provider.Equipment;
         }
 
         private void OnAddConsumable(object sender, object consumable)

@@ -282,9 +282,11 @@
     <Compile Include="Service\CharacterCalculationService.cs" />
     <Compile Include="Service\Interface\ICharacterCalculationService.cs" />
     <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
+    <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />
     <Compile Include="Service\Interface\IScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\Interface\IScenarioDifficultyCalculationService.cs" />
     <Compile Include="Service\ScenarioAssetReferenceService.cs" />
+    <Compile Include="Service\ScenarioCollectionProvider.cs" />
     <Compile Include="Service\ScenarioConfigurationUndoService.cs" />
     <Compile Include="Service\ScenarioDifficultyCalculationService.cs" />
     <Compile Include="Utility\ConfigurationCollectionResolver.cs" />

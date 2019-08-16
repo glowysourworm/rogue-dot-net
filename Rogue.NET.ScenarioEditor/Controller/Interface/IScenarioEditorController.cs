@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Controller.Interface
 {

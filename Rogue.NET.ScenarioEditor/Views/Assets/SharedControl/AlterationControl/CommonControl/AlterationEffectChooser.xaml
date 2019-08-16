@@ -7,7 +7,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -18,10 +18,10 @@
         <TextBlock Text="Alteration Effect Type" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="18" Foreground="White" />
 
         <ComboBox x:Name="EffectTypeCB"
-                      Margin="2"
-                      Grid.Column="1"
-                      Width="250"
-                      HorizontalAlignment="Right">
+                  Margin="2"
+                  Grid.Column="1"
+                  Width="250"
+                  HorizontalAlignment="Right">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Foreground="White"
@@ -34,14 +34,14 @@
         <Button x:Name="OkButton"
                     Margin="5, 2, 2, 2"
                     Grid.Column="2"
+                    Width="70"
                     Content="Apply" />
 
         <!-- Effect Region -->
-        <Border BorderBrush="White" BorderThickness="0, 0.75, 0, 0">
+        <Border BorderBrush="White" BorderThickness="0, 0.75, 0, 0" Grid.Row="1" Grid.ColumnSpan="3">
             <region:RogueRegion x:Name="EffectRegion"
-                            Margin="10"
-                            Grid.Row="1"
-                            region:RogueRegionManager.DefaultViewType="{x:Type commonControl:AlterationEffectChooserInstructions}" />
+                                Margin="0, 10, 0, 0"
+                                region:RogueRegionManager.DefaultViewType="{x:Type commonControl:AlterationEffectChooserInstructions}" />
         </Border>
     </Grid>
 </UserControl>

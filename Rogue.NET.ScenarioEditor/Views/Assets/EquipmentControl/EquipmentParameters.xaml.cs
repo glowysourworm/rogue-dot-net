@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -11,23 +12,24 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
     public partial class EquipmentParameters : UserControl
     {
         [ImportingConstructor]
-        public EquipmentParameters(IRogueEventAggregator eventAggregator)
+        public EquipmentParameters(
+                IRogueEventAggregator eventAggregator,
+                IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                // TODO:ALTERATION
-                //this.CurseSpellCB.ItemsSource = configuration.MagicSpells;
-                //this.EquipSpellCB.ItemsSource = configuration.MagicSpells;
-                this.AmmoTemplateCB.ItemsSource = configuration.ConsumableTemplates.Where(a => a.SubType == ConsumableSubType.Ammo);
-                this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
-            });
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider);
+                           });
+        }
 
-            eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe((configuration) =>
-            {
-                this.AmmoTemplateCB.ItemsSource = configuration.ConsumableTemplates.Where(a => a.SubType == ConsumableSubType.Ammo);
-            });
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.AmmoTemplateCB.ItemsSource = provider.Consumables.Where(a => a.SubType == ConsumableSubType.Ammo);
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
     }
 }

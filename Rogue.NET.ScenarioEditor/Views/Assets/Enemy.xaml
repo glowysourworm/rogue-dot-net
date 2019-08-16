@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:enemy="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
-             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common">
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
     <Grid>
         <TabControl Background="Black" TabStripPlacement="Left">
             <TabItem Header="Symbol" x:Name="DefaultTab">
@@ -26,6 +27,9 @@
             </TabItem>
             <TabItem Header="Items">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyItems}" />
+            </TabItem>
+            <TabItem Header="Death Animation">
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}" />
             </TabItem>
         </TabControl>
     </Grid>

@@ -22,6 +22,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
         public AlterationAttackAttributeListControl()
         {
             InitializeComponent();
+
+            this.DataContextChanged += (sender, e) =>
+            {
+                var foo = 43;
+            };
         }
     }
 }

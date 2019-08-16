@@ -65,16 +65,6 @@
             <TextBlock Foreground="White" Text="Generate On Step" VerticalAlignment="Center" />
             <CheckBox IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Center" />
         </Grid>
-        <Grid>
-            <TextBlock Foreground="White" Text="Death Animations" VerticalAlignment="Center" />
-            <controls:ListBuilder x:Name="DeathAnimationsLB" 
-                                  Height="150"
-                                  HorizontalAlignment="Right"
-                                  Width="600"
-                                  AddEvent="DeathAnimationsLB_AddEvent"
-                                  RemoveEvent="DeathAnimationsLB_RemoveEvent"
-                                  DestinationItemsSource="{Binding DeathAnimations}" />
-        </Grid>
     </StackPanel>
 </UserControl>
 

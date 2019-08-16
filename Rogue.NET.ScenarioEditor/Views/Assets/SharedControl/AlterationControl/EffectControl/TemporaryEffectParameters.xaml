@@ -16,7 +16,7 @@
                 <!-- Event Time -->
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Event Time" />
-                    <controls:Range DataContext="{Binding EventTime}" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding EventTime}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 
                 <!-- Altered State -->
@@ -47,75 +47,75 @@
             <StackPanel>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Strength" />
-                    <controls:Range DataContext="{Binding StrengthRange}" />
+                    <controls:Range DataContext="{Binding StrengthRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Agility" />
-                    <controls:Range DataContext="{Binding AgilityRange}" />
+                    <controls:Range DataContext="{Binding AgilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Intelligence" />
-                    <controls:Range DataContext="{Binding IntelligenceRange}" />
+                    <controls:Range DataContext="{Binding IntelligenceRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Speed" />
-                    <controls:Range DataContext="{Binding SpeedRange}" />
+                    <controls:Range DataContext="{Binding SpeedRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Light Radius" />
-                    <controls:Range DataContext="{Binding LightRadiusRange}" />
+                    <controls:Range DataContext="{Binding LightRadiusRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Food Usage Per Turn" />
-                    <controls:Range DataContext="{Binding FoodUsagePerTurnRange}" />
+                    <controls:Range DataContext="{Binding FoodUsagePerTurnRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Hp Per Step" />
-                    <controls:Range DataContext="{Binding HpPerStepRange}" />
+                    <controls:Range DataContext="{Binding HpPerStepRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Mp Per Step" />
-                    <controls:Range DataContext="{Binding MpPerStepRange}" />
+                    <controls:Range DataContext="{Binding MpPerStepRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Attack" />
-                    <controls:Range DataContext="{Binding AttackRange}" />
+                    <controls:Range DataContext="{Binding AttackRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Defense" />
-                    <controls:Range DataContext="{Binding DefenseRange}" />
+                    <controls:Range DataContext="{Binding DefenseRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Mental Block Probability" />
-                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" />
+                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Dodge Probability" />
-                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" />
+                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Experience" />
-                    <controls:Range DataContext="{Binding ExperienceRange}" />
+                    <controls:Range DataContext="{Binding ExperienceRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
 
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Hunger" />
-                    <controls:Range DataContext="{Binding HungerRange}" />
+                    <controls:Range DataContext="{Binding HungerRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
 
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Mp" />
-                    <controls:Range DataContext="{Binding MpRange}" />
+                    <controls:Range DataContext="{Binding MpRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
 
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Hp" />
-                    <controls:Range DataContext="{Binding HpRange}" />
+                    <controls:Range DataContext="{Binding HpRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
 
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Critical Hit" />
-                    <controls:Range DataContext="{Binding CriticalHit}" />
+                    <controls:Range DataContext="{Binding CriticalHit}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
             </StackPanel>
         </TabItem>

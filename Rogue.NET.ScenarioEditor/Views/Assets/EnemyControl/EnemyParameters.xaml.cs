@@ -15,12 +15,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
         public EnemyParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
-
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                // TODO:ALTERATION Add AnimationGroupTemplate for the death animations
-                //this.DeathAnimationsLB.SourceItemsSource = configuration.AnimationTemplates;
-            });
         }
 
         private void DeathAnimationsLB_AddEvent(object sender, object e)

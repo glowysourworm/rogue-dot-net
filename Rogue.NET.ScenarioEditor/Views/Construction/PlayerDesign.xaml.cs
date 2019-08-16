@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
@@ -12,16 +13,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     public partial class PlayerDesign : UserControl
     {
         [ImportingConstructor]
-        public PlayerDesign(IRogueEventAggregator eventAggregator)
+        public PlayerDesign(
+                IRogueEventAggregator eventAggregator,
+                IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
-            {
-                this.ConsumablesLB.SourceItemsSource = configuration.ConsumableTemplates;
-                this.EquipmentLB.SourceItemsSource = configuration.EquipmentTemplates;
-                this.SkillsLB.SourceItemsSource = configuration.SkillTemplates;
-            });
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider);
+                           });
 
             this.ConsumablesLB.AddEvent += OnAddConsumable;
             this.EquipmentLB.AddEvent += OnAddEquipment;
@@ -31,6 +34,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             this.EquipmentLB.RemoveEvent += OnRemoveEquipment;
             this.SkillsLB.RemoveEvent += OnRemoveSkill;
         }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.ConsumablesLB.SourceItemsSource = provider.Consumables;
+            this.EquipmentLB.SourceItemsSource = provider.Equipment;
+            this.SkillsLB.SourceItemsSource = provider.SkillSets;
+        }
+
         private void OnAddConsumable(object sender, object consumable)
         {
             var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;

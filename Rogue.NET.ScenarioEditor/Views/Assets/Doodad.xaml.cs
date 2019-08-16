@@ -6,6 +6,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
@@ -13,23 +14,27 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
     public partial class Doodad : UserControl
     {
         [ImportingConstructor]
-        public Doodad(IRogueEventAggregator eventAggregator)
+        public Doodad(IRogueEventAggregator eventAggregator, IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
-            {
-                // TODO:ALTERATION
-                //this.AutomaticSpellCB.ItemsSource = configuration.MagicSpells;
-                //this.InvokedSpellCB.ItemsSource = configuration.MagicSpells;
-                this.CharacterClassCB.ItemsSource = configuration.CharacterClasses;
-            });
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider); 
+                           });
 
             // Set symbol tab to be the default to show for the consumable
             this.Loaded += (sender, e) =>
             {
                 this.DefaultTab.IsSelected = true;
             };
+        }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

@@ -20,16 +20,16 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Add-Behavior Button -->
         <StackPanel>
-            <Grid>
+            <!--Grid>
                 <TextBlock Foreground="White" Margin="10" FontSize="16" TextWrapping="Wrap" Width="600" HorizontalAlignment="Left"
                            Text="Enemy behavior is treated like a state machine. You can set up the list of behaviors (states) here. Each state is treated in turn - with 'entry' and 'exit' conditions to use the behavior. The 'Behavior Counter' is internal to the enemy behavior object and resets after a new state is selected. If no state is valid for use there is a default state that will take effect to control the behavior." />
-            </Grid>
+            </-->
             <Grid>
                 <TextBlock Foreground="White" Text="Add Behavior" VerticalAlignment="Center" Margin="10" />
                 <Button x:Name="AddBehaviorButton" Content="Add Behavior" Click="AddBehaviorButton_Click" HorizontalAlignment="Right" Padding="4" VerticalAlignment="Center" />
@@ -54,31 +54,37 @@
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Grid>
-                            <controls:EnumFlagsControl Header="Entry Condition(s) (These are Logical AND)" EnumValue="{Binding BehaviorCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorCondition}" />
-                        </Grid>
-                        <Grid>
-                            <controls:EnumFlagsControl Header="Exit Condition(s) (These are Logical OR)" EnumValue="{Binding BehaviorExitCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorExitCondition}" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Foreground="White" Text="Behavior Turn Counter" VerticalAlignment="Center" Margin="10" />
-                            <toolkit:IntegerUpDown Minimum="1" Maximum="1000" Value="{Binding BehaviorTurnCounter, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Height="24" Width="200" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding MovementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
-                        </Grid>
-                        <Grid>
-                            <TextBlock Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
-                            <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
-                        </Grid>
-                        <Grid Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
-                            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyAlterationControl}"
-                                                DataContext="{Binding EnemyAlteration}">
-                            </region:RogueRegion>
-                        </Grid>
-                    </StackPanel>
+                    <TabControl Background="Black">
+                        <TabItem Header="Behavior Parameters">
+                            <StackPanel>
+                                <Grid>
+                                    <controls:EnumFlagsControl Header="Entry Condition(s) (These are Logical AND)" EnumValue="{Binding BehaviorCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorCondition}" />
+                                </Grid>
+                                <Grid>
+                                    <controls:EnumFlagsControl Header="Exit Condition(s) (These are Logical OR)" EnumValue="{Binding BehaviorExitCondition, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:BehaviorExitCondition}" />
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Foreground="White" Text="Behavior Turn Counter" VerticalAlignment="Center" Margin="10" />
+                                    <toolkit:IntegerUpDown Minimum="1" Maximum="1000" Value="{Binding BehaviorTurnCounter, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Height="24" Width="200" />
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Foreground="White" Text="Movement Type" VerticalAlignment="Center" Margin="10" />
+                                    <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" EnumValue="{Binding MovementType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterMovementType}" />
+                                </Grid>
+                                <Grid>
+                                    <TextBlock Foreground="White" Text="Attack Type" VerticalAlignment="Center" Margin="10" />
+                                    <views:EnumComboBox HorizontalAlignment="Right" Width="200" Height="24" Grid.Column="1" Grid.Row="1" EnumValue="{Binding AttackType, Mode=TwoWay}" EnumType="{x:Type coreModelEnums:CharacterAttackType}" />
+                                </Grid>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Behavior Skill"
+                                 Visibility="{Binding AttackType, Converter={StaticResource EnemyAttackTypeSkillVisibilityConverter}}">
+                            <Grid>
+                                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyAlterationControl}"
+                                                    DataContext="{Binding EnemyAlteration}" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

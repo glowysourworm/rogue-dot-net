@@ -703,4 +703,18 @@ IMMEDIATE TODO'S:
 			4) FOR THE SCENARIO SIDE:  Either A) Leave the design AS IS and pre-copy FULL LISTS of attributes to each asset / alteration effect
 										   or B) Work with sparse collections and re-design how they're used to accomodate differing sets
 										   
-										   
+	- TODO: Finish Alteration Effect UI
+			
+			- Fix up controls and fit them to the design area
+			
+			- MOVING BRUSHES TO NON-SHARED ASSET:  Put Brush Editor on the Animation Editor (Nothing else for now...)
+			
+			- REMOVE STROKE TEMPLATE
+			
+			- Verify that stale data doesn't stay in display when switching assets
+			
+			- Create one of each new Alteration effect type for the Sorcerer scenario
+			
+			- Validate Alteration Effects for some of the low-hanging fruits; and don't go overboard
+			
+			- FIX UP THE ASSET REFERENCE SERVICE

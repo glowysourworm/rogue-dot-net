@@ -16,12 +16,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AnimationControl
         {
             InitializeComponent();
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe(configuration =>
-            {
-                this.OutlineCB.ItemsSource = configuration.BrushTemplates;
-                this.ColorCB.ItemsSource = configuration.BrushTemplates;
-            });
-
             this.DataContextChanged += AnimationParameters_DataContextChanged;
         }
 

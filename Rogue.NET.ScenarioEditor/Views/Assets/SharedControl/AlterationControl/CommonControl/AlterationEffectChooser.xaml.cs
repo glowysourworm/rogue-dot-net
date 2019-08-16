@@ -72,20 +72,19 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                 if (uiDescription == null)
                     return;
 
-                // Check to see if the implementation type is currently loaded
-                if (this.EffectRegion.Content != null &&
-                    this.EffectRegion.Content.GetType() == uiDescription.ViewType)
-                {
-                    // Make sure to set the selected item for the combo box
-                    this.EffectTypeCB.SelectedItem = uiDescription;
-                }
+                // Make sure to set the selected item for the combo box
+                this.EffectTypeCB.SelectedItem = uiDescription;
 
-                // Publish Load Event
-                eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
-                               .Publish(this.EffectRegion, new LoadAlterationEffectEventArgs()
-                               {
-                                   AlterationEffectViewType = uiDescription.ViewType
-                               });
+                // If Content Type differs from view type publish a load event
+                if (this.EffectRegion.Content == null ||
+                    this.EffectRegion.Content.GetType() != uiDescription.ViewType)
+                {
+                    eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
+                                    .Publish(this.EffectRegion, new LoadAlterationEffectEventArgs()
+                                    {
+                                        AlterationEffectViewType = uiDescription.ViewType
+                                    });
+                }
             };
 
             // Load new effect type view when user clicks "Apply"

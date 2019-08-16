@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -9,15 +10,23 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
     public partial class TemporaryEffectParameters : UserControl
     {
         [ImportingConstructor]
-        public TemporaryEffectParameters(IRogueEventAggregator eventAggregator)
+        public TemporaryEffectParameters(
+                IRogueEventAggregator eventAggregator,
+                IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioLoadedEvent>()
-                           .Subscribe(configuration =>
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
                            {
-                               this.AlteredStateCB.ItemsSource = configuration.AlteredCharacterStates;
+                               Initialize(provider);
                            });
+        }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.AlteredStateCB.ItemsSource = provider.AlteredCharacterStates;
         }
     }
 }

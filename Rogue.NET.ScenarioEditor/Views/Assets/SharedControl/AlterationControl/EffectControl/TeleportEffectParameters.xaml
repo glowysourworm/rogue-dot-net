@@ -17,7 +17,7 @@
         </TabItem>
         <TabItem Header="Parameters">
             <!-- Range -->
-            <Grid Margin="10">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
                 <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
                 <toolkit:IntegerUpDown Value="{Binding Range}" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
             </Grid>
