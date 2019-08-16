@@ -718,3 +718,8 @@ IMMEDIATE TODO'S:
 			- Validate Alteration Effects for some of the low-hanging fruits; and don't go overboard
 			
 			- FIX UP THE ASSET REFERENCE SERVICE
+			
+			- Add Default Implementation Type for IAlterationEffectTemplateViewModel.. Probably instantiate the null values in the 
+			  Scenario Configuration Mapper when fixing references... OR where the source null values are instantiated (commented code)
+			  in the mapper using reflection.. Not necessary though because any developer can figure out what's happening and there'safety
+			  no crash in the UI for an unset alteration effect. It's just bothersome to work with.

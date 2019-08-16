@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         AlterationAttackAttributeCombatType _combatType;
         AlteredCharacterStateTemplate _alteredState;
         bool _isStackable;
-        int _eventTime;
+        Range<int> _eventTime;
 
         public AlterationAttackAttributeCombatType CombatType
         {
@@ -58,18 +58,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        //public int EventTime
-        //{
-        //    get { return _eventTime; }
-        //    set
-        //    {
-        //        if (_eventTime != value)
-        //        {
-        //            _eventTime = value;
-        //            OnPropertyChanged("EventTime");
-        //        }
-        //    }
-        //}
+        public Range<int> EventTime
+        {
+            get { return _eventTime; }
+            set
+            {
+                if (_eventTime != value)
+                {
+                    _eventTime = value;
+                    OnPropertyChanged("EventTime");
+                }
+            }
+        }
 
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
@@ -77,6 +77,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         {
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredState = new AlteredCharacterStateTemplate();
+            this.EventTime = new Range<int>();
         }
     }
 }

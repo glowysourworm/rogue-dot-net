@@ -5,7 +5,6 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interf
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
@@ -24,7 +23,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         AlterationAttackAttributeCombatType _combatType;
         AlteredCharacterStateTemplateViewModel _alteredState;
         bool _isStackable;
-        int _eventTime;
+        RangeViewModel<int> _eventTime;
 
         public AlterationAttackAttributeCombatType CombatType
         {
@@ -42,12 +41,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
         }
 
-        // TODO:ALTERATION Change this to be a Range<int>
-        //public int EventTime
-        //{
-        //    get { return _eventTime; }
-        //    set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
-        //}
+        public RangeViewModel<int> EventTime
+        {
+            get { return _eventTime; }
+            set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
+        }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
@@ -55,6 +53,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();
+            this.EventTime = new RangeViewModel<int>(1, 20, 30, 1000);
         }
     }
 }
+ 

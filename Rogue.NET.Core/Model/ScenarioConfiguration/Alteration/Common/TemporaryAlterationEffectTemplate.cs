@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _mpPerStepRange;
         private Range<double> _attackRange;
         private Range<double> _defenseRange;
-        private Range<double> _magicBlockProbabilityRange;
+        private Range<double> _mentalBlockProbabilityRange;
         private Range<double> _dodgeProbabilityRange;
         private Range<double> _experienceRange;
         private Range<double> _hungerRange;
@@ -203,18 +203,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        //public Range<double> MagicBlockProbabilityRange
-        //{
-        //    get { return _magicBlockProbabilityRange; }
-        //    set
-        //    {
-        //        if (_magicBlockProbabilityRange != value)
-        //        {
-        //            _magicBlockProbabilityRange = value;
-        //            OnPropertyChanged("MagicBlockProbabilityRange");
-        //        }
-        //    }
-        //}
+        public Range<double> MentalBlockProbabilityRange
+        {
+            get { return _mentalBlockProbabilityRange; }
+            set
+            {
+                if (_mentalBlockProbabilityRange != value)
+                {
+                    _mentalBlockProbabilityRange = value;
+                    OnPropertyChanged("MentalBlockProbabilityRange");
+                }
+            }
+        }
         public Range<double> DodgeProbabilityRange
         {
             get { return _dodgeProbabilityRange; }
@@ -318,8 +318,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.HpRange = new Range<double>(-1000, 0, 0, 1000);
             this.HungerRange = new Range<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new Range<double>(-100, 0, 0, 100);
-            // TODO:ALTERATION
-            //this.MagicBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
+            this.MentalBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new Range<double>(-100, 0, 0, 100);
             this.MpRange = new Range<double>(-100, 0, 0, 100);
             this.StrengthRange = new Range<double>(-100, 0, 0, 100);

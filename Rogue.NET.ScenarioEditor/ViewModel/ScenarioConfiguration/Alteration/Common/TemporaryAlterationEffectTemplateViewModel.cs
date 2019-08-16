@@ -31,7 +31,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _mpPerStepRange;
         private RangeViewModel<double> _attackRange;
         private RangeViewModel<double> _defenseRange;
-        private RangeViewModel<double> _magicBlockProbabilityRange;
+        private RangeViewModel<double> _mentalBlockProbabilityRange;
         private RangeViewModel<double> _dodgeProbabilityRange;
         private RangeViewModel<double> _experienceRange;
         private RangeViewModel<double> _hungerRange;
@@ -110,12 +110,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _defenseRange; }
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
         }
-        // TODO:ALTERATION (Change name)
-        //public RangeViewModel<double> MagicBlockProbabilityRange
-        //{
-        //    get { return _magicBlockProbabilityRange; }
-        //    set { this.RaiseAndSetIfChanged(ref _magicBlockProbabilityRange, value); }
-        //}
+        public RangeViewModel<double> MentalBlockProbabilityRange
+        {
+            get { return _mentalBlockProbabilityRange; }
+            set { this.RaiseAndSetIfChanged(ref _mentalBlockProbabilityRange, value); }
+        }
         public RangeViewModel<double> DodgeProbabilityRange
         {
             get { return _dodgeProbabilityRange; }
@@ -169,8 +168,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.HpRange = new RangeViewModel<double>(-1000, 0, 0, 1000);
             this.HungerRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            // TODO:ALTERATION
-            //this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
+            this.MentalBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);
