@@ -118,33 +118,40 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 // Source Property Object
                 var sourcePropertyValue = sourceProperty.Value.GetValue(source);
 
+                // Skip null values
+                if (sourcePropertyValue == null)
+                    continue;
+                
+                // NOTE*** UNCOMMENT THE NEXT BLOCK INSTEAD TO INSTANTIATE REFERENCE TYPES
+                //         THAT ARE NULL AT THE SOURCE
+
                 // Instantiate null properties if they have a default constructor. This
                 // will help to fix dangling properties that have been added to the configuration
-                if (sourcePropertyValue == null &&
-                   !IsValueType(sourceProperty.Value.PropertyType) &&
-                   !IsInterface(sourceProperty.Value.PropertyType))
-                {
-                    // Construct a new property for the source object
-                    var sourceNewPropertyValue = Construct(sourceProperty.Value.PropertyType);
+                //if (sourcePropertyValue == null &&
+                //   !IsValueType(sourceProperty.Value.PropertyType) &&
+                //   !IsInterface(sourceProperty.Value.PropertyType))
+                //{
+                //    // Construct a new property for the source object
+                //    var sourceNewPropertyValue = Construct(sourceProperty.Value.PropertyType);
 
-                    // Set new property value
-                    sourceProperty.Value.SetValue(source, sourceNewPropertyValue);
+                //    // Set new property value
+                //    sourceProperty.Value.SetValue(source, sourceNewPropertyValue);
 
-                    // Reset Source Property Object
-                    sourcePropertyValue = sourceNewPropertyValue;
-                }
+                //    // Reset Source Property Object
+                //    sourcePropertyValue = sourceNewPropertyValue;
+                //}
 
                 // Otherwise, handle exception for reference types
-                else if (sourcePropertyValue == null &&
-                        !IsValueType(sourceProperty.Value.PropertyType) &&
-                        !IsInterface(sourceProperty.Value.PropertyType))
-                    throw new Exception("Unhandled reference type - probably needs a default constructor");
+                //else if (sourcePropertyValue == null &&
+                //        !IsValueType(sourceProperty.Value.PropertyType) &&
+                //        !IsInterface(sourceProperty.Value.PropertyType))
+                //    throw new Exception("Unhandled reference type - probably needs a default constructor");
 
                 // Skip null value types or interface types
-                else if (sourcePropertyValue == null &&
-                        (IsValueType(sourceProperty.Value.PropertyType) ||
-                         IsInterface(sourceProperty.Value.PropertyType)))
-                    continue;
+                //else if (sourcePropertyValue == null &&
+                //        (IsValueType(sourceProperty.Value.PropertyType) ||
+                //         IsInterface(sourceProperty.Value.PropertyType)))
+                //    continue;
 
                 // Have to check collections first
                 if (typeof(IList).IsAssignableFrom(sourceProperty.Value.PropertyType))
