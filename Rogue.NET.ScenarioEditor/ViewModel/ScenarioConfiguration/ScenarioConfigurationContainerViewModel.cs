@@ -12,7 +12,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
     {        
         DungeonTemplateViewModel _dungeonTemplate;
         PlayerTemplateViewModel _playerTemplate;
-        ScenarioConfigurationAlterationContainerViewModel _alterationContainer;
 
         public DungeonTemplateViewModel DungeonTemplate
         {

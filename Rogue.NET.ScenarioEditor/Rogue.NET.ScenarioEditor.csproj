@@ -385,7 +385,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationAlterationContainerViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>

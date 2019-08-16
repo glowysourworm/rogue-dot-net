@@ -228,7 +228,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationGroupTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\CharacterClassTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\ScenarioConfigurationAlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
