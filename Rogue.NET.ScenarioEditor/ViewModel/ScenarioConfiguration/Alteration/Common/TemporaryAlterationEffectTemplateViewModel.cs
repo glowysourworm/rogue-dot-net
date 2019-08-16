@@ -111,11 +111,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _defenseRange, value); }
         }
         // TODO:ALTERATION (Change name)
-        public RangeViewModel<double> MagicBlockProbabilityRange
-        {
-            get { return _magicBlockProbabilityRange; }
-            set { this.RaiseAndSetIfChanged(ref _magicBlockProbabilityRange, value); }
-        }
+        //public RangeViewModel<double> MagicBlockProbabilityRange
+        //{
+        //    get { return _magicBlockProbabilityRange; }
+        //    set { this.RaiseAndSetIfChanged(ref _magicBlockProbabilityRange, value); }
+        //}
         public RangeViewModel<double> DodgeProbabilityRange
         {
             get { return _dodgeProbabilityRange; }
@@ -169,7 +169,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.HpRange = new RangeViewModel<double>(-1000, 0, 0, 1000);
             this.HungerRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
+            // TODO:ALTERATION
+            //this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);

@@ -203,18 +203,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> MagicBlockProbabilityRange
-        {
-            get { return _magicBlockProbabilityRange; }
-            set
-            {
-                if (_magicBlockProbabilityRange != value)
-                {
-                    _magicBlockProbabilityRange = value;
-                    OnPropertyChanged("MagicBlockProbabilityRange");
-                }
-            }
-        }
+        //public Range<double> MagicBlockProbabilityRange
+        //{
+        //    get { return _magicBlockProbabilityRange; }
+        //    set
+        //    {
+        //        if (_magicBlockProbabilityRange != value)
+        //        {
+        //            _magicBlockProbabilityRange = value;
+        //            OnPropertyChanged("MagicBlockProbabilityRange");
+        //        }
+        //    }
+        //}
         public Range<double> DodgeProbabilityRange
         {
             get { return _dodgeProbabilityRange; }
@@ -318,7 +318,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.HpRange = new Range<double>(-1000, 0, 0, 1000);
             this.HungerRange = new Range<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new Range<double>(-100, 0, 0, 100);
-            this.MagicBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
+            // TODO:ALTERATION
+            //this.MagicBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new Range<double>(-100, 0, 0, 100);
             this.MpRange = new Range<double>(-100, 0, 0, 100);
             this.StrengthRange = new Range<double>(-100, 0, 0, 100);

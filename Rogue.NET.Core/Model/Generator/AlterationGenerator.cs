@@ -432,7 +432,8 @@ namespace Rogue.NET.Core.Model.Generator
                 AlteredState = _alteredStateGenerator.GenerateAlteredState(template.AlteredState),
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
                 CombatType = template.CombatType,
-                EventTime = template.EventTime,
+                // TODO:ALTERATION
+                //EventTime = template.EventTime,
                 IsStackable = template.IsStackable,
                 RogueName = template.Name
             };
@@ -613,7 +614,8 @@ namespace Rogue.NET.Core.Model.Generator
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 IsStackable = template.IsStackable,
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
-                MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
+                // TODO:ALTERATION Rename parameter
+                //MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
                 // TODO:ALTERATION Remove parameter
                 //Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),

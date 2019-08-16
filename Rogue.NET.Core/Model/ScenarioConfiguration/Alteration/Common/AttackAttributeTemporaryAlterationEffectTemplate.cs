@@ -16,24 +16,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                     IEnemyAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
-        AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
         AlteredCharacterStateTemplate _alteredState;
         bool _isStackable;
         int _eventTime;
 
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set
-            {
-                if (_targetType != value)
-                {
-                    _targetType = value;
-                    OnPropertyChanged("TargetType");
-                }
-            }
-        }
         public AlterationAttackAttributeCombatType CombatType
         {
             get { return _combatType; }
@@ -71,18 +58,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public int EventTime
-        {
-            get { return _eventTime; }
-            set
-            {
-                if (_eventTime != value)
-                {
-                    _eventTime = value;
-                    OnPropertyChanged("EventTime");
-                }
-            }
-        }
+        //public int EventTime
+        //{
+        //    get { return _eventTime; }
+        //    set
+        //    {
+        //        if (_eventTime != value)
+        //        {
+        //            _eventTime = value;
+        //            OnPropertyChanged("EventTime");
+        //        }
+        //    }
+        //}
 
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 

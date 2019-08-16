@@ -21,18 +21,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IEnemyAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
-        AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
         AlteredCharacterStateTemplateViewModel _alteredState;
         bool _isStackable;
         int _eventTime;
 
-        // TODO:ALTERATION (Remove This)
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
-        }
         public AlterationAttackAttributeCombatType CombatType
         {
             get { return _combatType; }
@@ -50,11 +43,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         }
 
         // TODO:ALTERATION Change this to be a Range<int>
-        public int EventTime
-        {
-            get { return _eventTime; }
-            set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
-        }
+        //public int EventTime
+        //{
+        //    get { return _eventTime; }
+        //    set { this.RaiseAndSetIfChanged(ref _eventTime, value); }
+        //}
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 

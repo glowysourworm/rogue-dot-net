@@ -16,34 +16,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                     IEquipmentAttackAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
-        AlterationTargetType _targetType;
-        AlterationAttackAttributeCombatType _combatType;
-
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set
-            {
-                if (_targetType != value)
-                {
-                    _targetType = value;
-                    OnPropertyChanged("TargetType");
-                }
-            }
-        }
-        public AlterationAttackAttributeCombatType CombatType
-        {
-            get { return _combatType; }
-            set
-            {
-                if (_combatType != value)
-                {
-                    _combatType = value;
-                    OnPropertyChanged("CombatType");
-                }
-            }
-        }
-
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
 
         public AttackAttributeMeleeAlterationEffectTemplate()

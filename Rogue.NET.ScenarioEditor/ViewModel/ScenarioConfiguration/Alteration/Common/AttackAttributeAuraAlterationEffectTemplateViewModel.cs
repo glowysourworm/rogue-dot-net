@@ -19,16 +19,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IEquipmentEquipAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
-        AlterationTargetType _targetType;
         AlterationAttackAttributeCombatType _combatType;
         SymbolDeltaTemplateViewModel _symbolAlteration;
 
-        // TODO:ALTERATION (Remove this)
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
-        }
         public AlterationAttackAttributeCombatType CombatType
         {
             get { return _combatType; }

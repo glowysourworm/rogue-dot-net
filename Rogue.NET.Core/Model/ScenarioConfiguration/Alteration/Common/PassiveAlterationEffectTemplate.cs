@@ -28,10 +28,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _defenseRange;
         private Range<double> _magicBlockProbabilityRange;
         private Range<double> _dodgeProbabilityRange;
-        private Range<double> _experienceRange;
-        private Range<double> _hungerRange;
-        private Range<double> _hpRange;
-        private Range<double> _mpRange;
         private Range<double> _criticalHit;
 
         public SymbolDeltaTemplate SymbolAlteration
@@ -202,54 +198,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public Range<double> ExperienceRange
-        {
-            get { return _experienceRange; }
-            set
-            {
-                if (_experienceRange != value)
-                {
-                    _experienceRange = value;
-                    OnPropertyChanged("ExperienceRange");
-                }
-            }
-        }
-        public Range<double> HungerRange
-        {
-            get { return _hungerRange; }
-            set
-            {
-                if (_hungerRange != value)
-                {
-                    _hungerRange = value;
-                    OnPropertyChanged("HungerRange");
-                }
-            }
-        }
-        public Range<double> HpRange
-        {
-            get { return _hpRange; }
-            set
-            {
-                if (_hpRange != value)
-                {
-                    _hpRange = value;
-                    OnPropertyChanged("HpRange");
-                }
-            }
-        }
-        public Range<double> MpRange
-        {
-            get { return _mpRange; }
-            set
-            {
-                if (_mpRange != value)
-                {
-                    _mpRange = value;
-                    OnPropertyChanged("MpRange");
-                }
-            }
-        }
         public Range<double> CriticalHit
         {
             get { return _criticalHit; }
@@ -273,15 +221,11 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.LightRadiusRange = new Range<double>(-25, 0, 0, 25);
             this.DefenseRange = new Range<double>(-100, 0, 0, 100);
             this.DodgeProbabilityRange = new Range<double>(-1, 0, 0, 1);
-            this.ExperienceRange = new Range<double>(-100000, 0, 0, 100000);
             this.FoodUsagePerTurnRange = new Range<double>(-10, 0, 0, 10);
             this.HpPerStepRange = new Range<double>(-100, 0, 0, 100);
-            this.HpRange = new Range<double>(-1000, 0, 0, 1000);
-            this.HungerRange = new Range<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new Range<double>(-100, 0, 0, 100);
             this.MagicBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new Range<double>(-100, 0, 0, 100);
-            this.MpRange = new Range<double>(-100, 0, 0, 100);
             this.StrengthRange = new Range<double>(-100, 0, 0, 100);
 
             this.CriticalHit = new Range<double>(-1, 0, 0, 1);

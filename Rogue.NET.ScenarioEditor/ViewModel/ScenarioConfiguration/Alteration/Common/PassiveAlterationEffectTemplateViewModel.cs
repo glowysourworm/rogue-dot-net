@@ -105,30 +105,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _dodgeProbabilityRange; }
             set { this.RaiseAndSetIfChanged(ref _dodgeProbabilityRange, value); }
         }
-        // TODO:ALTERATION (Remove This)
-        public RangeViewModel<double> ExperienceRange
-        {
-            get { return _experienceRange; }
-            set { this.RaiseAndSetIfChanged(ref _experienceRange, value); }
-        }
-        // TODO:ALTERATION (Remove This)
-        public RangeViewModel<double> HungerRange
-        {
-            get { return _hungerRange; }
-            set { this.RaiseAndSetIfChanged(ref _hungerRange, value); }
-        }
-        // TODO:ALTERATION (Remove This)
-        public RangeViewModel<double> HpRange
-        {
-            get { return _hpRange; }
-            set { this.RaiseAndSetIfChanged(ref _hpRange, value); }
-        }
-        // TODO:ALTERATION (Remove This)
-        public RangeViewModel<double> MpRange
-        {
-            get { return _mpRange; }
-            set { this.RaiseAndSetIfChanged(ref _mpRange, value); }
-        }
         public RangeViewModel<double> CriticalHit
         {
             get { return _criticalHit; }
@@ -145,15 +121,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.LightRadiusRange = new RangeViewModel<double>(-25, 0, 0, 25);
             this.DefenseRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.DodgeProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.ExperienceRange = new RangeViewModel<double>(-100000, 0, 0, 100000);
             this.FoodUsagePerTurnRange = new RangeViewModel<double>(-10, 0, 0, 10);
             this.HpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.HpRange = new RangeViewModel<double>(-1000, 0, 0, 1000);
-            this.HungerRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
             this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
             this.StrengthRange = new RangeViewModel<double>(-100, 0, 0, 100);
 
             this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
