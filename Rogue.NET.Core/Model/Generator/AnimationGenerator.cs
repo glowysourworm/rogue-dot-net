@@ -40,7 +40,6 @@ namespace Rogue.NET.Core.Model.Generator
                 RepeatCount = template.RepeatCount,
                 RoamRadius = template.RoamRadius,
                 SpiralRate = template.SpiralRate,
-                StrokeTemplate = template.StrokeTemplate,
                 StrokeThickness = template.StrokeThickness,
                 Velocity = template.Velocity,
                 Width1 = template.Width1,

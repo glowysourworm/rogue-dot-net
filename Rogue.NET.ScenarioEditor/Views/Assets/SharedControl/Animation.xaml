@@ -43,12 +43,14 @@
                                 Grid.Row="1"
                                 Background="Black"
                                 DataContext="{Binding SelectedItem, ElementName=AnimationListBox}">
-                        <TabItem Header="Animation Type">
-                            <animation:AnimationBasicType x:Name="AnimationTypeControl" />
+                        <TabItem Header="Type">
+                            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationBaseType}"
+                                                             EnumValue="{Binding BaseType, Mode=TwoWay}" />
                         </TabItem>
-                        <TabItem Header="Blink Parameters" Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AnimationType.ScreenBlink}}">
-                            <animation:AnimationBlink />
-                        </TabItem>
+                        <TabItem Header="Point-Target Type">
+                            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationPointTargetType}"
+                                                             EnumValue="{Binding PointTargetType, Mode=TwoWay}" />
+                        </TabItem>                        
                         <TabItem Header="Brush">
                             <controls:BrushEditorControl DataContext="{Binding FillTemplate}" />
                         </TabItem>

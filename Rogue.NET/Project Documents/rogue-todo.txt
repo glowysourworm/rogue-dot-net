@@ -748,3 +748,5 @@ IMMEDIATE TODO'S:
 					- Database Backup:  Going from the "source language" to a database schema seamlessly would be very nice.
 										
 				THESE WOULD BE GREAT THINGS TO HAVE.
+				
+	- TODO: Make Rogue.NET playable with only the mouse

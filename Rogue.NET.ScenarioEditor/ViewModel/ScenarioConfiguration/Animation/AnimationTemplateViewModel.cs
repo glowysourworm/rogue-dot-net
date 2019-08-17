@@ -12,9 +12,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
         private bool _autoReverse;
         private bool _constantVelocity;
         private double _accelerationRatio;
-        private AnimationType _type;
         private BrushTemplateViewModel _fillTemplate;
-        private BrushTemplateViewModel _strokeTemplate;
         private double _strokeThickness;
         private double _opacity1;
         private double _opacity2;
@@ -59,20 +57,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
             get { return _accelerationRatio; }
             set { this.RaiseAndSetIfChanged(ref _accelerationRatio, value); }
         }
-        public AnimationType Type
-        {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
-        }
         public BrushTemplateViewModel FillTemplate
         {
             get { return _fillTemplate; }
             set { this.RaiseAndSetIfChanged(ref _fillTemplate, value); }
-        }
-        public BrushTemplateViewModel StrokeTemplate
-        {
-            get { return _strokeTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _strokeTemplate, value); }
         }
         public double StrokeThickness
         {
@@ -143,7 +131,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
         //Constructors
         public AnimationTemplateViewModel()
         {
-            this.StrokeTemplate = new BrushTemplateViewModel();
             this.FillTemplate = new BrushTemplateViewModel();
             this.AccelerationRatio = 1;
             this.AnimationTime = 1000;
@@ -160,7 +147,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
             this.RoamRadius = 20;
             this.SpiralRate = 10;
             this.StrokeThickness = 1;
-            this.Type = AnimationType.ProjectileSelfToTarget;
             this.Velocity = 50;
             this.Width1 = 4;
             this.Width2 = 4;

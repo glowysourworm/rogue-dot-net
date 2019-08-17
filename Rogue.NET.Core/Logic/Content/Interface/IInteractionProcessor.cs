@@ -34,10 +34,5 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         /// Calculates a block to an alteration
         /// </summary>
         bool CalculateAlterationBlock(Character attacker, Character defender, AlterationBlockType blockType);
-
-        /// <summary>
-        /// Returns flag if the animations require a target
-        /// </summary>
-        bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations);
     }
 }

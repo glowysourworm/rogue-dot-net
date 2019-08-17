@@ -115,7 +115,7 @@ namespace Rogue.NET.Core.Media
 
         private ITimedGraphic CreateScreenAnimation(AnimationData animation, Rect bounds)
         {
-            var stroke = animation.StrokeTemplate.GenerateBrush();
+            var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
             var rectangle = new RectangleGeometry(bounds);
 
@@ -156,7 +156,7 @@ namespace Rogue.NET.Core.Media
 
         private ITimedGraphic CreateSinglePointAnimation(AnimationData animation, Point location)
         {
-            var stroke = animation.StrokeTemplate.GenerateBrush();
+            var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
 
             switch (animation.BaseType)
@@ -210,7 +210,7 @@ namespace Rogue.NET.Core.Media
 
         private ITimedGraphic CreateProjectileAnimation(AnimationData animation, Point sourceLocation, Point[] targetLocations)
         {
-            var stroke = animation.StrokeTemplate.GenerateBrush();
+            var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
             var isReverse = animation.BaseType == AnimationBaseType.ChainReverse ||
                             animation.BaseType == AnimationBaseType.ProjectileReverse;
@@ -250,7 +250,7 @@ namespace Rogue.NET.Core.Media
                                 isReverse ? new Point[] { target, sourceLocation } : new Point[] { sourceLocation, target }
                                 , new Size(animation.Width1, animation.Height1)
                                 , new Size(animation.Width2, animation.Height2)
-                                , animation.StrokeTemplate.GenerateBrush()
+                                , Brushes.Transparent
                                 , animation.FillTemplate.GenerateBrush()
                                 , animation.Opacity1, animation.Opacity2, animation.StrokeThickness
                                 , animation.AccelerationRatio, animation.Erradicity, animation.AnimationTime

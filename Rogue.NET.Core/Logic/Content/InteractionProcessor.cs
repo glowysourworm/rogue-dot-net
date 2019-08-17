@@ -158,36 +158,6 @@ namespace Rogue.NET.Core.Logic.Content
             }
         }
 
-        public bool GetAnimationRequiresTarget(IEnumerable<AnimationTemplate> animations)
-        {
-            foreach (var animation in animations)
-            {
-                switch (animation.Type)
-                {
-                    case AnimationType.ProjectileSelfToTarget:
-                    case AnimationType.ProjectileTargetToSelf:
-                    case AnimationType.ProjectileSelfToTargetsInRange:
-                    case AnimationType.ProjectileTargetsInRangeToSelf:
-                    case AnimationType.AuraTarget:
-                    case AnimationType.BubblesTarget:
-                    case AnimationType.BarrageTarget:
-                    case AnimationType.SpiralTarget:
-                    case AnimationType.ChainSelfToTargetsInRange:
-                        return true;
-                    case AnimationType.AuraSelf:
-                    case AnimationType.BubblesSelf:
-                    case AnimationType.BubblesScreen:
-                    case AnimationType.BarrageSelf:
-                    case AnimationType.SpiralSelf:
-                    case AnimationType.ScreenBlink:
-                        break;
-                    default:
-                        throw new Exception("Animation Type not recognized for target calculation");
-                }
-            }
-            return false;
-        }
-
         private IDictionary<ScenarioImage, double> CreateAttackAttributeResults(
                 IEnumerable<AttackAttribute> offensiveAttributes,
                 IEnumerable<AttackAttribute> defensiveAttributes)

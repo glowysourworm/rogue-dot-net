@@ -494,12 +494,6 @@
     <Compile Include="Views\Assets\SharedControl\Animation.xaml.cs">
       <DependentUpon>Animation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBasicType.xaml.cs">
-      <DependentUpon>AnimationBasicType.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationBlink.xaml.cs">
-      <DependentUpon>AnimationBlink.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml.cs">
       <DependentUpon>AnimationParameters.xaml</DependentUpon>
     </Compile>
@@ -792,14 +786,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\Animation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBasicType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationBlink.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

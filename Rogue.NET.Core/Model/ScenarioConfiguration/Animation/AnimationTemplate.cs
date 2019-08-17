@@ -13,7 +13,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         private bool _autoReverse;
         private bool _constantVelocity;
         private double _accelerationRatio;
-        private AnimationType _type;
         private BrushTemplate _fillTemplate;
         private BrushTemplate _strokeTemplate;
         private double _strokeThickness;
@@ -102,18 +101,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 }
             }
         }
-        public AnimationType Type
-        {
-            get { return _type; }
-            set
-            {
-                if (_type != value)
-                {
-                    _type = value;
-                    OnPropertyChanged("Type");
-                }
-            }
-        }
         public BrushTemplate FillTemplate
         {
             get { return _fillTemplate; }
@@ -123,18 +110,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 {
                     _fillTemplate = value;
                     OnPropertyChanged("FillTemplate");
-                }
-            }
-        }
-        public BrushTemplate StrokeTemplate
-        {
-            get { return _strokeTemplate; }
-            set
-            {
-                if (_strokeTemplate != value)
-                {
-                    _strokeTemplate = value;
-                    OnPropertyChanged("StrokeTemplate");
                 }
             }
         }
@@ -298,7 +273,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
         //Constructors
         public AnimationTemplate()
         {
-            this.StrokeTemplate = new BrushTemplate();
             this.FillTemplate = new BrushTemplate();
             this.AccelerationRatio = 1;
             this.AnimationTime = 1000;
@@ -315,7 +289,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
             this.RoamRadius = 20;
             this.SpiralRate = 10;
             this.StrokeThickness = 1;
-            this.Type = AnimationType.ProjectileSelfToTarget;
             this.Velocity = 50;
             this.Width1 = 4;
             this.Width2 = 4;

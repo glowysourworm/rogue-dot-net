@@ -16,7 +16,6 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
         public bool ConstantVelocity { get; set; }
         public double AccelerationRatio { get; set; }
         public BrushTemplate FillTemplate { get; set; }
-        public BrushTemplate StrokeTemplate { get; set; }
         public double StrokeThickness { get; set; }
         public double Opacity1 { get; set; }
         public double Opacity2 { get; set; }
@@ -34,11 +33,6 @@ namespace Rogue.NET.Core.Model.Scenario.Animation
         public AnimationData()
         {
             this.FillTemplate = new BrushTemplate()
-            {
-                Type = BrushType.Solid,
-                SolidColor = Colors.White.ToString()
-            };
-            this.StrokeTemplate = new BrushTemplate()
             {
                 Type = BrushType.Solid,
                 SolidColor = Colors.White.ToString()
