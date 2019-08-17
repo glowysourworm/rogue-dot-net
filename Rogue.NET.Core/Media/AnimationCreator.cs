@@ -6,93 +6,29 @@ using System.Collections.Generic;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Media.Interface;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Generator.Interface;
 
 namespace Rogue.NET.Core.Media
 {
     [Export(typeof(IAnimationCreator))]
     public class AnimationCreator : IAnimationCreator
     {
+        IRandomSequenceGenerator _randomSequenceGenerator;
+
         const int DEFAULT_VELOCITY = 150; // milli-seconds (if set to negative or zero value)
 
-        public AnimationCreator() { }
-
-        /// <summary>
-        /// TODO: REFACTOR THIS TO USE ACTUAL ANIMATION RUN TIME
-        /// </summary>
-        public int CalculateRunTime(AnimationData animation, Point sourcePoint, Point[] targetPoints)
+        [ImportingConstructor]
+        public AnimationCreator(IRandomSequenceGenerator randomSequenceGenerator)
         {
-            // First, check for non-constant velocity animations
-            if (!animation.ConstantVelocity)
-            {
-                return animation.AnimationTime *
-                       animation.RepeatCount *
-                      (animation.AutoReverse ? 2 : 1);
-            }
-
-            // Check target points
-            if (targetPoints.Length == 0)
-                return 0;
-
-            // Else, calculate total distance and then return total time
-            switch (animation.BaseType)
-            {
-                case AnimationBaseType.Projectile:
-                case AnimationBaseType.ProjectileReverse:
-                    {
-                        // Calculate the max distance between source and target
-                        var maxDistance = targetPoints.Max(point =>
-                        {
-                            return Math.Sqrt(Math.Pow(point.X - sourcePoint.X, 2) + Math.Pow(point.Y - sourcePoint.Y, 2));
-                        });
-
-                        // Pixels per second
-                        var velocity = animation.Velocity;
-
-                        // x = vt - making sure to set defaults if bad parameters
-                        if (velocity <= 0)
-                            velocity = DEFAULT_VELOCITY;
-
-                        // Return total number of milliseconds
-                        return (int)(maxDistance / velocity) * 1000;
-                    }
-                case AnimationBaseType.Chain:
-                case AnimationBaseType.ChainReverse:
-                    {
-                        // Calculate total distance to determine constant velocity period
-                        var distance = 0D;
-                        var point1 = sourcePoint;
-
-                        for (int i = 0; i < targetPoints.Length - 1; i++)
-                        {
-                            var point2 = targetPoints[i];
-
-                            distance += Math.Sqrt(Math.Pow((point2.X - point1.X), 2) + Math.Pow((point2.Y - point1.Y), 2));
-
-                            point1 = point2;
-                        }
-
-                        // Pixels per second
-                        var velocity = animation.Velocity;
-
-                        // x = vt - making sure to set defaults if bad parameters
-                        if (velocity <= 0)
-                            velocity = DEFAULT_VELOCITY;
-
-                        // Return total number of milliseconds
-                        return (int)(distance / velocity) * 1000;
-                    }
-                default:
-                    return 0;
-            }
+            _randomSequenceGenerator = randomSequenceGenerator;
         }
 
-        public ITimedGraphic CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations)
+        public IEnumerable<AnimationQueue> CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations)
         {
             switch (animation.BaseType)
             {
@@ -100,20 +36,37 @@ namespace Rogue.NET.Core.Media
                 case AnimationBaseType.ProjectileReverse:
                 case AnimationBaseType.Chain:
                 case AnimationBaseType.ChainReverse:
-                    return CreateProjectileAnimation(animation, sourceLocation, targetLocations);
+                    return new AnimationQueue[]
+                    {
+                        CreateProjectileAnimation(animation, sourceLocation, targetLocations)
+                    };
                 case AnimationBaseType.Aura:                
                 case AnimationBaseType.Barrage:
                 case AnimationBaseType.Spiral:
                 case AnimationBaseType.Bubbles:
-                    return CreateSinglePointAnimation(animation, sourceLocation);
+                    {
+                        switch (animation.PointTargetType)
+                        {
+                            case AnimationPointTargetType.Source:
+                                return new AnimationQueue[] { CreateSinglePointAnimation(animation, sourceLocation) };
+                            case AnimationPointTargetType.AffectedCharacters:
+                                return targetLocations.Select(location =>
+                                {
+                                    return CreateSinglePointAnimation(animation, location);
+                                });
+                            default:
+                                throw new Exception("Unhandled Point Target Type");
+                        }
+                    }
+                    
                 case AnimationBaseType.ScreenBlink:
-                    return CreateScreenAnimation(animation, bounds);
+                    return new AnimationQueue[] { CreateScreenAnimation(animation, bounds) };
                 default:
                     throw new Exception("Unhandled AnimationBaseType");
             }
         }
 
-        private ITimedGraphic CreateScreenAnimation(AnimationData animation, Rect bounds)
+        private AnimationQueue CreateScreenAnimation(AnimationData animation, Rect bounds)
         {
             var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
@@ -154,7 +107,7 @@ namespace Rogue.NET.Core.Media
             }
         }
 
-        private ITimedGraphic CreateSinglePointAnimation(AnimationData animation, Point location)
+        private AnimationQueue CreateSinglePointAnimation(AnimationData animation, Point location)
         {
             var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
@@ -208,7 +161,7 @@ namespace Rogue.NET.Core.Media
             }
         }
 
-        private ITimedGraphic CreateProjectileAnimation(AnimationData animation, Point sourceLocation, Point[] targetLocations)
+        private AnimationQueue CreateProjectileAnimation(AnimationData animation, Point sourceLocation, Point[] targetLocations)
         {
             var stroke = Brushes.Transparent;
             var fill = animation.FillTemplate.GenerateBrush();
@@ -263,10 +216,10 @@ namespace Rogue.NET.Core.Media
                     throw new Exception("Unhanded Projectile Animation Type");
             }
         }
-
-        public IEnumerable<ITimedGraphic> CreateTargetingAnimation(Point[] points)
+        
+        public IEnumerable<AnimationQueue> CreateTargetingAnimation(Point[] points)
         {
-            var result = new List<ITimedGraphic>();
+            var result = new List<AnimationQueue>();
 
             foreach (var point in points)
             {
@@ -305,12 +258,11 @@ namespace Rogue.NET.Core.Media
             Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double accRatio, int erradicity, 
             int time, int repeatcount, bool autoreverse)
         {
-            Random r = new Random(12342);
             List<Animation> list = new List<Animation>();
             for (int i = 0; i < count; i++)
             {
-                double angle = r.NextDouble() * Math.PI * 2;
-                double radius = r.NextDouble() * radiusFromFocus;
+                double angle = _randomSequenceGenerator.Get() * Math.PI * 2;
+                double radius = _randomSequenceGenerator.Get() * radiusFromFocus;
                 Point p = new Point(focus.X + (radius * Math.Cos(angle)), focus.Y + (radius * Math.Sin(angle)));
                 Animation a = GenerateProjectilePath(new Point[] { p, focus }, s1, s2, stroke, fill,opacity1, opacity2, strokeThickness, accRatio, erradicity, time, 1,  repeatcount, autoreverse, false);
                 list.Add(a);
@@ -351,14 +303,13 @@ namespace Rogue.NET.Core.Media
 
         private AnimationQueue CreateBubbles(int count, Rect rect, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double roamRadius, int erradicity, int time, int repeatCount)
         {
-            Random r = new Random(13322);
             List<Animation> list = new List<Animation>();
             for (int i = 0; i < count; i++)
             {
                 List<Point> pts = new List<Point>();
                 for (int j = 0; j < erradicity; j++)
                 {
-                    Point pt = new Point(rect.X + (r.NextDouble() * roamRadius), rect.Y + (r.NextDouble() * roamRadius));
+                    Point pt = new Point(rect.X + (_randomSequenceGenerator.Get() * roamRadius), rect.Y + (_randomSequenceGenerator.Get() * roamRadius));
                     pts.Add(pt);
                 }
                 Animation a = GenerateProjectilePath(pts.ToArray(), s1, s2,stroke, fill, opacity1, opacity2, strokeThickness, 0, erradicity, time, 1,repeatCount, false, false);
@@ -371,22 +322,21 @@ namespace Rogue.NET.Core.Media
 
         private AnimationQueue CreateBubbles(int count, Point focus, double radiusFromFocus, Brush stroke, Brush fill, double strokeThickness, double opacity1, double opacity2, Size s1, Size s2, double roamRadius, int erradicity, int time, int repeatCount)
         {
-            Random r = new Random(13322);
             List<Animation> list = new List<Animation>();
             for (int i = 0; i < count; i++)
             {
                 List<Point> pts = new List<Point>();
 
                 //Get random point in radius from focus
-                double angle = r.NextDouble() * Math.PI * 2;
-                double radius = r.NextDouble() * radiusFromFocus;
+                double angle = _randomSequenceGenerator.Get() * Math.PI * 2;
+                double radius = _randomSequenceGenerator.Get() * radiusFromFocus;
                 Point pt = new Point(radius * Math.Cos(angle) + focus.X, radius * Math.Sin(angle) + focus.Y);
 
                 for (int j = 0; j < Math.Max(2, erradicity); j++)
                 {
                     //Get random point in roam radius from that random point
-                    double roam_a = r.NextDouble() * Math.PI * 2;
-                    double roam_r = r.NextDouble() * roamRadius;
+                    double roam_a = _randomSequenceGenerator.Get() * Math.PI * 2;
+                    double roam_r = _randomSequenceGenerator.Get() * roamRadius;
                     Point p = new Point(roam_r * Math.Cos(roam_a) + pt.X, roam_r * Math.Sin(roam_a) + pt.Y);
                     pts.Add(p);
                 }

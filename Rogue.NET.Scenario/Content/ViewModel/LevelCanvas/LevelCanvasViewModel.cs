@@ -641,31 +641,31 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             var bounds = new Rect(0, 0, _levelWidth, _levelHeight);
 
             //Create animations
-            var animations = animationData.Animations.Select(x =>
+            var animationList = animationData.Animations.Select(x =>
             {
                 return new
                 {
-                    TimedGraphic = _animationCreator.CreateAnimation(x, bounds, source, targets),
+                    Animations = _animationCreator.CreateAnimation(x, bounds, source, targets),
                     AnimationData = x
                 };
             });
 
-            foreach (var animation in animations)
+            foreach (var animation in animationList)
             {
                 // Start
-                foreach (var graphic in animation.TimedGraphic.GetGraphics())
+                foreach (var animationQueue in animation.Animations)
                 {
-                    Canvas.SetZIndex(graphic, 100);
-                    this.Contents.Add(graphic);
+                    foreach (var graphic in animationQueue.GetGraphics())
+                    {
+                        Canvas.SetZIndex(graphic, 100);
+                        this.Contents.Add(graphic);
+                    }
+
+                    animationQueue.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
+                    animationQueue.Start();
+
+                    await Task.Delay(animationQueue.AnimationTime);
                 }
-
-                animation.TimedGraphic.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
-                animation.TimedGraphic.Start();
-
-                // Wait for completion
-                var waitTime = _animationCreator.CalculateRunTime(animation.AnimationData, source, targets);
-
-                await Task.Delay(waitTime);
             }
         }
         private void OnAnimationTimerElapsed(ITimedGraphic sender)

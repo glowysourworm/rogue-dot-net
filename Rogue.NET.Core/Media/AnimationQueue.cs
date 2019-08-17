@@ -20,6 +20,7 @@ namespace Rogue.NET.Core.Media
                 this.AnimationTime = animations[0].AnimationTime;
 
             _animations = animations;
+
             foreach (Animation a in animations)
                 a.TimeElapsed += new TimerElapsedHandler(OnAnimationTimeElapsed);
         }

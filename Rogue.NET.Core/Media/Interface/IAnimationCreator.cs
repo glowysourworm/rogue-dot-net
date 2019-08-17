@@ -6,13 +6,8 @@ namespace Rogue.NET.Core.Media.Interface
 {
     public interface IAnimationCreator
     {
-        ITimedGraphic CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations);
+        IEnumerable<AnimationQueue> CreateAnimation(AnimationData animation, Rect bounds, Point sourceLocation, Point[] targetLocations);
 
-        IEnumerable<ITimedGraphic> CreateTargetingAnimation(Point[] points);
-
-        /// <summary>
-        /// Returns the total run-time in milli-seconds
-        /// </summary>
-        int CalculateRunTime(AnimationData animationTemplate, Point sourcePoint, Point[] targetPoints);
+        IEnumerable<AnimationQueue> CreateTargetingAnimation(Point[] points);
     }
 }

@@ -36,6 +36,7 @@ namespace Rogue.NET.Core.Model.Generator
                 Height2 = template.Height2,
                 Opacity1 = template.Opacity1,
                 Opacity2 = template.Opacity2,
+                PointTargetType = template.PointTargetType,
                 RadiusFromFocus = template.RadiusFromFocus,
                 RepeatCount = template.RepeatCount,
                 RoamRadius = template.RoamRadius,
