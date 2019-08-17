@@ -14,7 +14,7 @@
             <TabItem Header="Animations">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="180" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
@@ -23,16 +23,22 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <TextBlock HorizontalAlignment="Left" FontSize="16" Foreground="White"
-                                   Text="Animations will be played in the order they are added" Margin="4" />
-                        <Button x:Name="AddAnimationButton" ToolTip="Add Animation" Click="AddAnimationButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" HorizontalAlignment="Right" Margin="10, 4, 4, 4" />
-                        <Button x:Name="RemoveAnimationButton" ToolTip="Remove Animation" Click="RemoveAnimationButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" HorizontalAlignment="Right" Margin="0, 4, 4, 4" />
+                                   Text="Animation List" Margin="8" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="AddAnimationButton" ToolTip="Add Animation" Click="AddAnimationButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="10, 4, 4, 4" />
+                            <Button x:Name="RemoveAnimationButton" ToolTip="Remove Animation" Click="RemoveAnimationButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="0, 4, 4, 4" />
+                        </StackPanel>
                     </StackPanel>
                     
                     <!-- Animation List -->
                     <ListBox x:Name="AnimationListBox" 
                              Grid.Row="1" 
+                             Margin="8, 0, 8, 0"
+                             Height="200"
+                             FontSize="18"
+                             VerticalAlignment="Top"
                              DisplayMemberPath="Name"
                              ItemsSource="{Binding Animations}" />
 
@@ -40,7 +46,7 @@
                     <!-- Animation Parameters -->
                     <TabControl TabStripPlacement="Top" 
                                 Grid.Column="1"
-                                Grid.Row="1"
+                                Grid.RowSpan="2"
                                 Background="Black"
                                 DataContext="{Binding SelectedItem, ElementName=AnimationListBox}">
                         <TabItem Header="Type">
@@ -48,6 +54,14 @@
                                                              EnumValue="{Binding BaseType, Mode=TwoWay}" />
                         </TabItem>
                         <TabItem Header="Point-Target Type">
+                            <TabItem.Visibility>
+                                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Aura}" />
+                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Barrage}" />
+                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Bubbles}" />
+                                    <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Spiral}" />
+                                </MultiBinding>
+                            </TabItem.Visibility>
                             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AnimationPointTargetType}"
                                                              EnumValue="{Binding PointTargetType, Mode=TwoWay}" />
                         </TabItem>                        

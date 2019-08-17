@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Identifies a player item")]
         Identify = 1,
 
-        [Display(Name = "Identify",
+        [Display(Name = "Uncurse",
                  Description = "Removes curse from player item")]
         Uncurse = 2
     }

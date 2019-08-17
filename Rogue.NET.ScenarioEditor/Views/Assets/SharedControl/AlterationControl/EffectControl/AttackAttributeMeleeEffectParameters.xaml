@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
     <TabControl TabStripPlacement="Left" Background="Black">
-        <TabItem Header="Attack Attributes">
-            <commonControl:AlterationAttackAttributeListControl />
-        </TabItem>
+        <commonControl:AlterationAttackAttributeListControl />
     </TabControl>
 </UserControl>

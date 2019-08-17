@@ -11,19 +11,21 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl
     [Export]
     public partial class Animation : UserControl
     {
-        public static readonly DependencyProperty TargetTypeCopyProperty =
-            DependencyProperty.Register("TargetTypeCopy", typeof(AlterationTargetType), typeof(Animation));
-
-        public AlterationTargetType TargetTypeCopy
-        {
-            get { return (AlterationTargetType)GetValue(TargetTypeCopyProperty); }
-            set { SetValue(TargetTypeCopyProperty, value); }
-        }
-
         [ImportingConstructor]
         public Animation()
         {
             InitializeComponent();
+
+            this.DataContextChanged += (sender, e) =>
+            {
+                var viewModel = e.NewValue as AnimationGroupTemplateViewModel;
+
+                if (viewModel != null)
+                {
+                    // Select first item of the animation list
+                    this.AnimationListBox.SelectedItem = viewModel.Animations.FirstOrDefault();
+                }
+            };
         }
 
         private void AddAnimationButton_Click(object sender, System.Windows.RoutedEventArgs e)
