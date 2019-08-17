@@ -37,7 +37,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Eq
 
         public EquipmentAttackAlterationTemplateViewModel()
         {
-            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.AnimationGroup = new AnimationGroupTemplateViewModel()
+            {
+                TargetType = AlterationTargetType.Target
+            };
             this.Cost = new AlterationCostTemplateViewModel();
         }
     }

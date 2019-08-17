@@ -20,7 +20,7 @@
     <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="Target Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
-                                             EnumValue="{Binding TargetType, Mode=TwoWay}" />
+                                             EnumValue="{Binding AnimationGroup.TargetType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Block Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationBlockType}"
@@ -37,7 +37,7 @@
             </region:RogueRegion>
         </TabItem>
         <TabItem Header="Animation">
-            <sharedControl:Animation DataContext="{Binding AnimationGroup}" TargetTypeCopy="{Binding TargetType}" />
+            <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
         </TabItem>
     </TabControl>
 </UserControl>

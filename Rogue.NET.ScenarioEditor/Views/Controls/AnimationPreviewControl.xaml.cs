@@ -48,6 +48,17 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
             if (viewModel != null)
             {
+                // Validate TargetType to prevent exception
+                if (!Validate(viewModel))
+                {
+                    Xceed.Wpf
+                         .Toolkit
+                         .MessageBox
+                         .Show("Invalid Target Type / Animation Type (Check for Source / Projectile (or) Chain)");
+
+                    return;
+                }
+
                 // Map over animation list
                 var animations = viewModel.Animations.Select(x =>
                 {
@@ -66,52 +77,74 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
                 // Dequeue First Animation
                 if (_animationQueue.Any())
-                    StartAnimation(_animationQueue.Dequeue());
+                {
+                    _animation = _animationQueue.Dequeue();
+
+                    StartAnimation();
+                }
             }
         }
 
-        private void StartAnimation(ITimedGraphic animation)
+        private bool Validate(AnimationGroupTemplateViewModel viewModel)
         {
-            _animation = animation;
+            return !(viewModel.Animations.Any(x => x.BaseType == AnimationBaseType.Chain ||
+                                                  x.BaseType == AnimationBaseType.ChainReverse ||
+                                                  x.BaseType == AnimationBaseType.Projectile ||
+                                                  x.BaseType == AnimationBaseType.ProjectileReverse) &&
+                     viewModel.TargetType == AlterationTargetType.Source);
+        }
+
+        private void StartAnimation()
+        {
+            if (_animation == null)
+                return;
 
             // Put graphics on canvas
-            foreach (var graphic in animation.GetGraphics())
+            foreach (var graphic in _animation.GetGraphics())
             {
                 Canvas.SetZIndex(graphic, 100);
                 this.TheCanvas.Children.Add(graphic);
             }
 
             // Set Slider Maximum
-            this.AnimationSlider.Maximum = animation.AnimationTime / 1000.0;
+            this.AnimationSlider.Maximum = _animation.AnimationTime / 1000.0;
 
             // Hook Finished Event
-            animation.TimeElapsed += StopAnimation;
+            _animation.TimeElapsed += StopAnimation;
 
             // Hook Time Changed
-            animation.AnimationTimeChanged += UpdateAnimationTime;
+            _animation.AnimationTimeChanged += UpdateAnimationTime;
 
-            animation.Start();
+            _animation.Start();
         }
 
-        private void StopAnimation(ITimedGraphic animation)
+        private void StopAnimation(ITimedGraphic sender)
         {
+            if (_animation == null)
+                return;
+
             // Remove Graphics From Canvas
-            foreach (var graphic in animation.GetGraphics())
+            foreach (var graphic in _animation.GetGraphics())
                 this.TheCanvas.Children.Remove(graphic);
 
             // Unhook Finished Event
-            animation.TimeElapsed -= StopAnimation;
+            _animation.TimeElapsed -= StopAnimation;
 
             // Unhook Time Changed Event
-            animation.AnimationTimeChanged -= UpdateAnimationTime;
+            _animation.AnimationTimeChanged -= UpdateAnimationTime;
 
             // Clean Up Resources
-            animation.Stop();
-            animation.CleanUp();
+            _animation.Stop();
+            _animation.CleanUp();
+            _animation = null;
 
             // Queue Next Animation
             if (_animationQueue.Any())
-                StartAnimation(_animationQueue.Dequeue());
+            {
+                _animation = _animationQueue.Dequeue();
+
+                StartAnimation();
+            }
         }
 
         private void UpdateAnimationTime(object sender, AnimationTimeChangedEventArgs e)

@@ -19,7 +19,7 @@
     <TabControl>
         <TabItem Header="General">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
-                                             EnumValue="{Binding TargetType}" />
+                                             EnumValue="{Binding AnimationGroup.TargetType}" />
         </TabItem>
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
@@ -29,7 +29,7 @@
             </region:RogueRegion>
         </TabItem>
         <TabItem Header="Animation">
-            <sharedControl:Animation DataContext="{Binding AnimationGroup}" TargetTypeCopy="{Binding TargetType}" />
+            <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
         </TabItem>
     </TabControl>
 </UserControl>
