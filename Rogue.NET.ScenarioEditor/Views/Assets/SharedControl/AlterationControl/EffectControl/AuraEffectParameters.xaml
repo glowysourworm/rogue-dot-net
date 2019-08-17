@@ -21,44 +21,44 @@
         <TabItem Header="Parameters">
             <StackPanel>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Strength" />
-                    <controls:Range DataContext="{Binding StrengthRange}" />
+                    <TextBlock Foreground="White" Text="Strength" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding StrengthRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Agility" />
-                    <controls:Range DataContext="{Binding AgilityRange}" />
+                    <TextBlock Foreground="White" Text="Agility" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding AgilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Intelligence" />
-                    <controls:Range DataContext="{Binding IntelligenceRange}" />
+                    <TextBlock Foreground="White" Text="Intelligence" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding IntelligenceRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Speed" />
-                    <controls:Range DataContext="{Binding SpeedRange}" />
+                    <TextBlock Foreground="White" Text="Speed" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding SpeedRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Hp Per Step" />
-                    <controls:Range DataContext="{Binding HpPerStepRange}" />
+                    <TextBlock Foreground="White" Text="Hp Per Step" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding HpPerStepRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Mp Per Step" />
-                    <controls:Range DataContext="{Binding MpPerStepRange}" />
+                    <TextBlock Foreground="White" Text="Mp Per Step" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding MpPerStepRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Attack" />
-                    <controls:Range DataContext="{Binding AttackRange}" />
+                    <TextBlock Foreground="White" Text="Attack" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding AttackRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Defense" />
-                    <controls:Range DataContext="{Binding DefenseRange}" />
+                    <TextBlock Foreground="White" Text="Defense" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding DefenseRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Magic Block Probability" />
-                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" />
+                    <TextBlock Foreground="White" Text="Magic Block Probability" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Dodge Probability" />
-                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" />
+                    <TextBlock Foreground="White" Text="Dodge Probability" FontSize="16" HorizontalAlignment="Left" />
+                    <controls:Range DataContext="{Binding DodgeProbabilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
             </StackPanel>
         </TabItem>

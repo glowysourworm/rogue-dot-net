@@ -18,17 +18,20 @@
             <TabItem Header="Symbol" x:Name="DefaultTab">
                 <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
             </TabItem>
-            <TabItem Header="Consumable Type">
+            <TabItem Header="Rogue-Encyclopedia">
+                <sharedControl:MetaDataControl HasCursedSetting="False" />
+            </TabItem>            
+            <TabItem Header="Type">
+                <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:ConsumableSubType}"
+                                                 EnumValue="{Binding SubType, Mode=TwoWay}" />
+            </TabItem>
+            <TabItem Header="Use Type">
                 <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:ConsumableType}"
                                                  EnumValue="{Binding Type, Mode=TwoWay}" />
             </TabItem>
-            <TabItem Header="Consumable Sub-type">
-                <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:ConsumableSubType}"
-                                                 EnumValue="{Binding SubType, Mode=TwoWay}" />                    
-            </TabItem>
-            <TabItem Header="Rogue-Encyclopedia Entry">
-                <consumable:ConsumableMetadata />
-            </TabItem>
+            <TabItem Header="Effect Selection">
+                <consumable:ConsumableAlterationSelection />
+            </TabItem>                
             <TabItem Header="Consume Effect"
                      Visibility="{Binding HasAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableAlterationControl}"

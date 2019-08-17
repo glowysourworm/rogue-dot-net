@@ -10,8 +10,8 @@
             <TabItem Header="Symbol" x:Name="DefaultTab">
                 <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
             </TabItem>
-            <TabItem Header="Rogue-Encyclopedia Entry">
-                <enemy:EnemyMetadata />
+            <TabItem Header="Rogue-Encyclopedia">
+                <sharedControl:MetaDataControl HasCursedSetting="False" />
             </TabItem>
             <TabItem Header="Parameters">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyParameters}" />

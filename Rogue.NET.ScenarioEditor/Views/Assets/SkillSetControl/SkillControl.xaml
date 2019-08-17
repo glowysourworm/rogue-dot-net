@@ -7,67 +7,71 @@
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:common="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:views="clr-namespace:Rogue.NET.ScenarioEditor.Views">
-    <StackPanel>
-
-        <!-- Minimum Level -->
-        <Grid Margin="10">
-            <TextBlock Text="Minimum Level" Foreground="White" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
-            <toolkit:IntegerUpDown Value="{Binding LevelRequirement}" 
+    <TabControl TabStripPlacement="Top" Background="Black">
+        <TabItem Header="Requirements">
+            <StackPanel>
+                <!-- Minimum Level -->
+                <Grid Margin="10">
+                    <TextBlock Text="Minimum Level" Foreground="White" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <toolkit:IntegerUpDown Value="{Binding LevelRequirement}" 
                                     Minimum="0" Maximum="500" Width="80"
                                     HorizontalAlignment="Right" VerticalAlignment="Center" />
-        </Grid>
+                </Grid>
 
 
-        <!-- Point Cost -->
-        <Grid Margin="10">
-            <TextBlock Text="Point Cost" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <toolkit:IntegerUpDown Value="{Binding PointRequirement}" 
+                <!-- Point Cost -->
+                <Grid Margin="10">
+                    <TextBlock Text="Point Cost" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <toolkit:IntegerUpDown Value="{Binding PointRequirement}" 
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
                                    Minimum="0" Maximum="50" Margin="2" Width="50" />
-        </Grid>
-        
-        <!-- Attribute Requirement -->
-        <Grid Margin="10">
+                </Grid>
 
-            <TextBlock Text="Has Attribute Requirement" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <CheckBox IsChecked="{Binding HasAttributeRequirement}" 
+                <!-- Attribute Requirement -->
+                <Grid Margin="10">
+
+                    <TextBlock Text="Has Attribute Requirement" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <CheckBox IsChecked="{Binding HasAttributeRequirement}" 
                           VerticalAlignment="Center" />
-                
-                <common:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterAttribute}" 
+
+                        <common:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterAttribute}" 
                                      EnumValue="{Binding AttributeRequirement, Mode=TwoWay}"                                      
                                      VerticalAlignment="Center" Width="100" />
-                
-                <toolkit:DoubleUpDown Value="{Binding AttributeLevelRequirement}" 
+
+                        <toolkit:DoubleUpDown Value="{Binding AttributeLevelRequirement}" 
                                       VerticalAlignment="Center" Minimum="0" Maximum="50" Width="50" />
-            </StackPanel>
-        </Grid>
+                    </StackPanel>
+                </Grid>
 
 
-        <!-- Character Class Requirement -->
-        <Grid Margin="10">
-            
-            <TextBlock Text="Character Class Requirement" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" />
-                <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
+                <!-- Character Class Requirement -->
+                <Grid Margin="10">
+
+                    <TextBlock Text="Character Class Requirement" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" />
+                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
                            SelectedValue="{Binding CharacterClass.Name}" 
                            SelectedItem="{Binding CharacterClass}"
                            SelectedValuePath="Name"
                            DisplayMemberPath="Name"
                            VerticalAlignment="Center"
                            Width="200" />
+                    </StackPanel>
+
+                </Grid>
             </StackPanel>
-            
-        </Grid>
+        </TabItem>
 
         <!-- Skill Alteration -->
-        <Grid Margin="10">
+        <TabItem Header="Skill Effect">
             <region:RogueRegion DataContext="{Binding SkillAlteration}" 
                                 region:RogueRegionManager.DefaultViewType="{x:Type skillSet:SkillAlterationControl}" />
-        </Grid>
+        </TabItem>
+
         
-    </StackPanel>
+    </TabControl>
 </UserControl>

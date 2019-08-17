@@ -490,6 +490,9 @@
     <Compile Include="Views\Assets\EquipmentControl\EquipmentEquipAlterationControl.xaml.cs">
       <DependentUpon>EquipmentEquipAlterationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Assets\SharedControl\MetaDataControl.xaml.cs">
+      <DependentUpon>MetaDataControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SkillSetControl\SkillAlterationControl.xaml.cs">
       <DependentUpon>SkillAlterationControl.xaml</DependentUpon>
     </Compile>
@@ -504,9 +507,6 @@
     </Compile>
     <Compile Include="Views\Assets\Consumable.xaml.cs">
       <DependentUpon>Consumable.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\ConsumableControl\ConsumableMetadata.xaml.cs">
-      <DependentUpon>ConsumableMetadata.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\ConsumableControl\ConsumableParameters.xaml.cs">
       <DependentUpon>ConsumableParameters.xaml</DependentUpon>
@@ -529,9 +529,6 @@
     <Compile Include="Views\Assets\EnemyControl\EnemyItems.xaml.cs">
       <DependentUpon>EnemyItems.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\EnemyControl\EnemyMetadata.xaml.cs">
-      <DependentUpon>EnemyMetadata.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\EnemyControl\EnemyParameters.xaml.cs">
       <DependentUpon>EnemyParameters.xaml</DependentUpon>
     </Compile>
@@ -540,9 +537,6 @@
     </Compile>
     <Compile Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml.cs">
       <DependentUpon>EquipmentAttackAttributes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml.cs">
-      <DependentUpon>EquipmentMetadata.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\EquipmentControl\EquipmentParameters.xaml.cs">
       <DependentUpon>EquipmentParameters.xaml</DependentUpon>
@@ -783,6 +777,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Assets\SharedControl\MetaDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Assets\SkillSetControl\SkillAlterationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -800,10 +798,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\Consumable.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\ConsumableControl\ConsumableMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -835,10 +829,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\EnemyControl\EnemyMetadata.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Assets\EnemyControl\EnemyParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -848,10 +838,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\EquipmentControl\EquipmentAttackAttributes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\EquipmentControl\EquipmentMetadata.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

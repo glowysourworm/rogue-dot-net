@@ -39,7 +39,8 @@
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>
-        <TabItem Header="Aura">
+        <TabItem Header="Aura"
+                 Visibility="{Binding Effect, Converter={StaticResource AlterationEffectAuraVisibilityConverter}}">
             <commonControl:AlterationAuraSourceParameters DataContext="{Binding AuraParameters}" />
         </TabItem>
         <TabItem Header="Animation">

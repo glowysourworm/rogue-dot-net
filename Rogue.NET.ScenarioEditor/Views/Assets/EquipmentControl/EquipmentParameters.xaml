@@ -19,55 +19,73 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel>
-            <Grid Margin="10">
-                <TextBlock Foreground="White" Text="Type" VerticalAlignment="Center" />
-                <views:EnumComboBox HorizontalAlignment="Right" MinWidth="400" Height="24" EnumType="{x:Type coreModelEnums:EquipmentType}" EnumValue="{Binding Type, Mode=TwoWay}" />
-            </Grid>
-            <Grid Margin="10">
-                <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" Height="24" Grid.Column="1" Grid.Row="5" />
-                <TextBlock Grid.Row="5" Foreground="White" Text="Class" VerticalAlignment="Center" />
-            </Grid>
-            <Grid Margin="10">
-                <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" Height="24" Grid.Column="1" Grid.Row="8" />
-                <TextBlock Grid.Row="7" Foreground="White" Text="Quality" VerticalAlignment="Center" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" VerticalAlignment="Center" />
-                <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Combat Type" VerticalAlignment="Center" />
-                <views:EnumComboBox HorizontalAlignment="Right" MinWidth="200" Height="24" EnumType="{x:Type coreModelEnums:CharacterBaseAttribute}" EnumValue="{Binding CombatType, Mode=TwoWay}" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Required Level" VerticalAlignment="Center" />
-                <toolkit:IntegerUpDown HorizontalAlignment="Right" Value="{Binding LevelRequired, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
-            </Grid>
-            <Grid Margin="10">
-                <TextBlock Foreground="White" Text="Has Character Class Requirement" VerticalAlignment="Center" />
-                <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
-            </Grid>
-            <Grid Margin="10"
+            <GroupBox Header="Combat Parameters" Margin="10">
+                <GroupBox.Visibility>
+                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Armor}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Belt}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Boots}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Gauntlets}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Helmet}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.OneHandedMeleeWeapon}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.RangeWeapon}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Shield}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.Shoulder}" />
+                        <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:EquipmentType.TwoHandedMeleeWeapon}" />
+                    </MultiBinding>
+                </GroupBox.Visibility>
+                <StackPanel>
+                    <Grid Margin="5">
+                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" Height="24" Grid.Column="1" Grid.Row="5" />
+                        <TextBlock Grid.Row="5" Foreground="White" Text="Class" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" Height="24" Grid.Column="1" Grid.Row="8" />
+                        <TextBlock Grid.Row="7" Foreground="White" Text="Quality" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Weight" VerticalAlignment="Center" />
+                        <toolkit:DoubleUpDown HorizontalAlignment="Right" FormatString="F2" Value="{Binding Weight, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Increment="0.1" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Combat Type" VerticalAlignment="Center" />
+                        <views:EnumComboBox HorizontalAlignment="Right" MinWidth="200" Height="24" EnumType="{x:Type coreModelEnums:CharacterBaseAttribute}" EnumValue="{Binding CombatType, Mode=TwoWay}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Requirements" Margin="10">
+                <StackPanel>
+                    <Grid Margin="5">
+                        <TextBlock HorizontalAlignment="Left" Foreground="White" Text="Required Level" VerticalAlignment="Center" />
+                        <toolkit:IntegerUpDown HorizontalAlignment="Right" Value="{Binding LevelRequired, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" Minimum="0" Maximum="100" Height="24" Width="400"  Grid.Column="1" Grid.Row="7" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <TextBlock Foreground="White" Text="Has Character Class Requirement" VerticalAlignment="Center" />
+                        <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Margin="5"
                       Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                <TextBlock Foreground="White" Text="Character Class Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                <ComboBox x:Name="CharacterClassCB" 
-                          DisplayMemberPath="Name"
-                          SelectedItem="{Binding CharacterClass}"
-                          SelectedValue="{Binding CharacterClass.Name}"
-                          SelectedValuePath="Name"
-                          VerticalAlignment="Center" 
-                          Width="200"                              
-                          HorizontalAlignment="Right" />
-            </Grid>
-            <Grid Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:EquipmentType.RangeWeapon}}"
-                  Margin="10">
-                <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 
+                        <TextBlock Foreground="White" Text="Character Class Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <ComboBox x:Name="CharacterClassCB" 
+                                  DisplayMemberPath="Name"
+                                  SelectedItem="{Binding CharacterClass}"
+                                  SelectedValue="{Binding CharacterClass.Name}"
+                                  SelectedValuePath="Name"
+                                  VerticalAlignment="Center" 
+                                  Width="200"                              
+                                  HorizontalAlignment="Right" />
+                    </Grid>
+                    <Grid Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:EquipmentType.RangeWeapon}}"
+                          Margin="5">
+                        <TextBlock Grid.Row="4" Foreground="White" Text="Ammunition (Required for Range Weapon)" VerticalAlignment="Center" />                        
+                        <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 
                           SelectedItem="{Binding AmmoTemplate}" 
                           SelectedValue="{Binding AmmoTemplate.Name}" 
                           SelectedValuePath="Name"
                           HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="4" />
-                <TextBlock Grid.Row="4" Foreground="White" Text="Ammunition" VerticalAlignment="Center" />
-            </Grid>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
     </Grid>
 </UserControl>
