@@ -26,8 +26,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e is IDoodadAlterationEffectTemplateViewModel)
-                                   viewModel.Effect = (e as IDoodadAlterationEffectTemplateViewModel);
+                               if (e.Effect is IDoodadAlterationEffectTemplateViewModel)
+                                   viewModel.Effect = (e.Effect as IDoodadAlterationEffectTemplateViewModel);
                            });
         }
     }

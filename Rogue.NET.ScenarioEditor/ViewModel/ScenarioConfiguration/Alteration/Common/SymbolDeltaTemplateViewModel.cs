@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private string _characterSymbol;
         private string _characterColor;
         private ImageResources _icon;
+        private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
         private bool _isMoodDelta;
@@ -63,6 +64,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _icon; }
             set { this.RaiseAndSetIfChanged(ref _icon, value); }
         }
+        public DisplayImageResources DisplayIcon
+        {
+            get { return _displayIcon; }
+            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
+        }
         public bool IsFullSymbolDelta
         {
             get { return _isFullSymbolDelta; }
@@ -108,6 +114,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             this.Type = SymbolTypes.Image;
             this.Icon = ImageResources.AmuletOrange;
+            this.DisplayIcon = DisplayImageResources.ChristianBlack;
 
             this.SmileyMood = SmileyMoods.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
@@ -116,16 +123,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
             this.CharacterColor = Colors.White.ToString();
             this.CharacterSymbol = "T";
-        }
-        public SymbolDeltaTemplateViewModel(SymbolDeltaTemplateViewModel tmp)
-        {
-            this.Type = tmp.Type;
-            this.Icon = tmp.Icon;
-            this.SmileyAuraColor = tmp.SmileyAuraColor;
-            this.SmileyBodyColor = tmp.SmileyBodyColor;
-            this.SmileyLineColor = tmp.SmileyLineColor;
-            this.SmileyMood = tmp.SmileyMood;
-            this.Type = tmp.Type;
         }
     }
 }

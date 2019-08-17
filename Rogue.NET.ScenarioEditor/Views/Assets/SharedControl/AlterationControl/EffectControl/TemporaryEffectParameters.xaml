@@ -87,7 +87,7 @@
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Mental Block Probability" />
-                    <controls:Range DataContext="{Binding MagicBlockProbabilityRange}" Width="300" HorizontalAlignment="Right" />
+                    <controls:Range DataContext="{Binding MentalBlockProbabilityRange}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
                 <Grid Margin="10,5,10,5">
                     <TextBlock Foreground="White" Text="Dodge Probability" />

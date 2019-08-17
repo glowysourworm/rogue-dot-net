@@ -4,9 +4,17 @@
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:consumable="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        <TabControl TabStripPlacement="Left">
+        <TabControl Background="Black" TabStripPlacement="Left">
             <TabItem Header="Symbol" x:Name="DefaultTab">
                 <controls:SymbolEditor DataContext="{Binding SymbolDetails}" />
             </TabItem>
@@ -21,16 +29,22 @@
             <TabItem Header="Rogue-Encyclopedia Entry">
                 <consumable:ConsumableMetadata />
             </TabItem>
-            <TabItem Header="Consume Effect">
+            <TabItem Header="Consume Effect"
+                     Visibility="{Binding HasAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableAlterationControl}"
                                     DataContext="{Binding ConsumableAlteration}"/>
             </TabItem>
-            <TabItem Header="Projectile Effect">
+            <TabItem Header="Projectile Effect"
+                     Visibility="{Binding HasProjectileAlteration, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableProjectileAlterationControl}"
                                     DataContext="{Binding ConsumableProjectileAlteration}" />
             </TabItem>
             <TabItem Header="Parameters">
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type consumable:ConsumableParameters}" />
+            </TabItem>
+            <TabItem Header="Ammo Animation"
+                     Visibility="{Binding SubType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Ammo}}">
+                <sharedControl:Animation DataContext="{Binding AmmoAnimationGroup}" />
             </TabItem>
         </TabControl>
     </Grid>

@@ -70,14 +70,6 @@
                          Width="400" />
             </Grid>
 
-            <Grid Margin="10" Visibility="{Binding IsProjectile, Converter={StaticResource BoolVisibilityCollapseConverter}, Mode=TwoWay}">
-                <TextBlock Grid.Row="5" Foreground="White" Text="Projectile Spell" VerticalAlignment="Center" />
-                <ComboBox x:Name="ProjectileSpellCB" 
-                          SelectedItem="{Binding ProjectileSpellTemplate}" 
-                          SelectedValue="{Binding ProjectileSpellTemplate.Name}"
-                          SelectedValuePath="Name"                          
-                          DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
-            </Grid>
             <Grid Margin="10" Visibility="{Binding HasLearnedSkill, Converter={StaticResource BoolVisibilityCollapseConverter}, Mode=TwoWay}">
                 <TextBlock Grid.Row="7" Foreground="White" Text="Learned Skill" VerticalAlignment="Center" />
                 <ComboBox x:Name="LearnedSkillCB" 
@@ -86,14 +78,7 @@
                           SelectedValuePath="Name"                          
                           DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
             </Grid>
-            <Grid Margin="10" Visibility="{Binding SubType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Ammo}}">
-                <TextBlock Grid.Row="8" Foreground="White" Text="Ammo Spell" VerticalAlignment="Center" />
-                <ComboBox x:Name="AmmoSpellCB" 
-                          SelectedItem="{Binding AmmoSpellTemplate}" 
-                          SelectedValue="{Binding AmmoSpellTemplate.Name}"
-                          SelectedValuePath="Name"                          
-                          DisplayMemberPath="Name" HorizontalAlignment="Right" Height="24"  Width="400"  />
-            </Grid>
+            
         </StackPanel>
     </Grid>
 </UserControl>

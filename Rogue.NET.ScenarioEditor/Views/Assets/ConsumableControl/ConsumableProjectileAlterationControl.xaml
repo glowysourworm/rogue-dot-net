@@ -16,15 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl>
-        <TabItem Header="General">
-            <StackPanel>
-                <Grid Margin="10">
-                    <TextBlock Text="Name" Foreground="White" />
-                    <extension:UpdatingTextBox Width="150" Text="{Binding Name, Mode=TwoWay}" HorizontalAlignment="Right" />
-                </Grid>
-            </StackPanel>
-        </TabItem>
+    <TabControl Background="Black">
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>

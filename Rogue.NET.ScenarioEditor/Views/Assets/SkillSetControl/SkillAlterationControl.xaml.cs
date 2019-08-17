@@ -25,8 +25,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e is ISkillAlterationEffectTemplateViewModel)
-                                   viewModel.Effect = (e as ISkillAlterationEffectTemplateViewModel);
+                               if (e.Effect is ISkillAlterationEffectTemplateViewModel)
+                                   viewModel.Effect = (e.Effect as ISkillAlterationEffectTemplateViewModel);
                            });
         }
     }

@@ -26,8 +26,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e is IConsumableProjectileAlterationEffectTemplateViewModel)
-                                   viewModel.Effect = (e as IConsumableProjectileAlterationEffectTemplateViewModel);
+                               if (e.Effect is IConsumableProjectileAlterationEffectTemplateViewModel)
+                                   viewModel.Effect = (e.Effect as IConsumableProjectileAlterationEffectTemplateViewModel);
                            });
         }
     }

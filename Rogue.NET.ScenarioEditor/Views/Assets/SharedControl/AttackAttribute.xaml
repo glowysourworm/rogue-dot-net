@@ -1,11 +1,8 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AttackAttribute"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
-             mc:Ignorable="d" Background="Black"
-             d:DesignWidth="550">
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls" 
+             Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,17 +13,11 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="32" />
-            <RowDefinition Height="32" />
-            <RowDefinition Height="32" />
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Image Margin="10">
+        <StackPanel Orientation="Horizontal" Width="110">
+            <Image VerticalAlignment="Center" Margin="10">
                 <Image.Source>
                     <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
                         <Binding Path="SymbolDetails.CharacterSymbol" />
@@ -43,11 +34,15 @@
             </Image>
             <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" FontSize="18" />
         </StackPanel>
-        <TextBlock Text="Attack" Grid.Row="1" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
-        <TextBlock Text="Resistance" Grid.Row="2" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
-        <TextBlock Text="Weakness" Grid.Row="3" VerticalAlignment="Center" Margin="10" Foreground="White" FontSize="16" />
-        <controls:Range DataContext="{Binding Attack}" Grid.Column="1" Grid.Row="1" />
-        <controls:Range DataContext="{Binding Resistance}" Grid.Column="1" Grid.Row="2" />
-        <controls:Range DataContext="{Binding Weakness}" Grid.Column="1" Grid.Row="3" />
+        <StackPanel Grid.Column="1" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+            <TextBlock Text="A" VerticalAlignment="Center" Foreground="Goldenrod" FontSize="16" />
+            <controls:Range DataContext="{Binding Attack}" Width="200" Margin="10, 0" />
+
+            <TextBlock Text="R" VerticalAlignment="Center" Foreground="LightSteelBlue" FontSize="16" />
+            <controls:Range DataContext="{Binding Resistance}" Width="200" Margin="10, 0" />
+
+            <TextBlock Text="W" VerticalAlignment="Center" Foreground="Red" FontSize="16" />
+            <controls:Range DataContext="{Binding Weakness}" Width="200" Margin="10, 0" />
+        </StackPanel>
     </Grid>
 </UserControl>
