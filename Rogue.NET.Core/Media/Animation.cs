@@ -8,17 +8,22 @@ namespace Rogue.NET.Core.Media
     {
         public event EventHandler<AnimationTimeChangedEventArgs> AnimationTimeChanged;
 
-        static Animation _empty = new Animation(new ITimedGraphic[]{});
+        static Animation _empty = new Animation(new ITimedGraphic[]{}, 0);
         public static Animation Empty { get { return _empty; } }
         public event TimerElapsedHandler TimeElapsed;
 
         ITimedGraphic[] _a = null;
         int _ct = 0;
+
+        public int AnimationTime { get; private set; }
         public bool IsElapsed { get; set; }
         public bool IsPaused { get; set; }
-        public Animation(ITimedGraphic[] primitives)
+        public Animation(ITimedGraphic[] primitives, int animationTime)
         {
+            this.AnimationTime = animationTime;
+
             _a = primitives;
+
             foreach (ITimedGraphic p in primitives)
             {
                 if (!(p is Graphic))

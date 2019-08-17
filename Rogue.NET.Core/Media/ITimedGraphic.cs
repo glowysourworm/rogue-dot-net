@@ -10,6 +10,7 @@ namespace Rogue.NET.Core.Media
     {
         event TimerElapsedHandler TimeElapsed;
         event EventHandler<AnimationTimeChangedEventArgs> AnimationTimeChanged;
+        int AnimationTime { get; }
         bool IsElapsed { get; set; }
         bool IsPaused { get; set; }
         void Start();
@@ -19,7 +20,7 @@ namespace Rogue.NET.Core.Media
         void Seek(int milliseconds);
         void CleanUp();
         void SetStartupDelay(int delay);
-        Graphic[] GetGraphics();
+        Graphic[] GetGraphics();        
     }
     public class AnimationTimeChangedEventArgs : EventArgs
     {

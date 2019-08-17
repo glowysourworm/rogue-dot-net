@@ -503,9 +503,6 @@
     <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml.cs">
       <DependentUpon>AnimationParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AnimationControl\AnimationPreview.xaml.cs">
-      <DependentUpon>AnimationPreview.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Assets\SharedControl\AttackAttribute.xaml.cs">
       <DependentUpon>AttackAttribute.xaml</DependentUpon>
     </Compile>
@@ -807,10 +804,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationParameters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Assets\SharedControl\AnimationControl\AnimationPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

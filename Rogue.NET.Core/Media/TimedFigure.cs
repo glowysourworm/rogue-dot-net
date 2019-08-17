@@ -12,6 +12,8 @@ namespace Rogue.NET.Core.Media
         Geometry _g;
         Timer _t;
         Timer _startupTimer = null;
+
+        public int AnimationTime { get; set; }
         public bool IsElapsed { get; set; }
         public bool IsPaused { get; set; }
         protected override System.Windows.Media.Geometry DefiningGeometry
@@ -22,6 +24,8 @@ namespace Rogue.NET.Core.Media
         {
             _g = g;
             _t = new Timer(time);
+
+            this.AnimationTime = time;
             this.Fill = fill;
             this.Stroke = stroke;
             this.StrokeThickness = StrokeThickness;

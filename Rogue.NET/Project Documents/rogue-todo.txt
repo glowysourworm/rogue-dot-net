@@ -723,3 +723,28 @@ IMMEDIATE TODO'S:
 			  Scenario Configuration Mapper when fixing references... OR where the source null values are instantiated (commented code)
 			  in the mapper using reflection.. Not necessary though because any developer can figure out what's happening and there'safety
 			  no crash in the UI for an unset alteration effect. It's just bothersome to work with.
+			  
+    - THOUGHT:  Using Protobuf to deal with serialization might be a good idea. Basically, it would be better to have a single 
+				source for the model than two. I believe Protobuf can generate code based on its "source (custom) language". Also,
+				I think it deals with serialization - and I'd like that to be handled in a single place.. If it was language
+				agnostic serialization that would be IDEAL. 
+				
+				Protobuf treats object graphs like trees by default; but I think you can customize the "source code" for the 
+				object graph to have shared instances. 
+				
+				If this isn't possible - it would be a fun exercise to try and build something like this from scratch; and to be able to
+				handle some of the primary design issues for the Scenario Configuration:
+				
+					- Mapping:  Going from one namespace to the other seamlessly
+					
+					- Serialization: Being able to serialize the MODEL independent of the "target language" (either Model or ViewModel)
+					
+					- Versioning: Handling changes to the model without fear of loosing data
+					
+					- Code Generation:  Generating "target languages" - probably based on a text-based template:  one for the model namespace
+										and one for the view-model namespace that took care of inheritance from DependencyObject, Interface 
+										implementations, etc, etc...
+										
+					- Database Backup:  Going from the "source language" to a database schema seamlessly would be very nice.
+										
+				THESE WOULD BE GREAT THINGS TO HAVE.

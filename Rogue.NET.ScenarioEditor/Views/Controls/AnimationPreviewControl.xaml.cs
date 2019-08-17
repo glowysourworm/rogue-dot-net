@@ -1,21 +1,32 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+
+using AnimationControl = Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.Animation;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class AnimationPreviewControl : UserControl
     {
         readonly IAnimationCreator _animationCreator;
         readonly IAnimationGenerator _animationGenerator;
+        readonly Queue<ITimedGraphic> _animationQueue;
 
         ITimedGraphic _animation = null;
 
@@ -26,73 +37,131 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             _animationCreator = animationCreator;
             _animationGenerator = animationGenerator;
+            _animationQueue = new Queue<ITimedGraphic>();
 
             InitializeComponent();
         }
+
         private void PlayAnimation()
         {
-            var viewModel = this.DataContext as AnimationTemplateViewModel;
+            var viewModel = this.DataContext as AnimationGroupTemplateViewModel;
 
-            this.AnimationSlider.Maximum = viewModel.AnimationTime / 1000.0;
-
-            var template = viewModel.Map<AnimationTemplateViewModel, AnimationTemplate>();
-            var animation = _animationGenerator.GenerateAnimation(template);
-
-            _animation = CreateNewAnimation(animation);
-
-            StartAnimation();
-        }
-        private void StartAnimation()
-        {
-            Graphic[] graphics = _animation.GetGraphics();
-            foreach (Graphic g in graphics)
+            if (viewModel != null)
             {
-                Canvas.SetZIndex(g, 100);
-                this.TheCanvas.Children.Add(g);
+                // Map over animation list
+                var animations = viewModel.Animations.Select(x =>
+                {
+                    // Map ViewModel -> Template
+                    var template = x.Map<AnimationTemplateViewModel, AnimationTemplate>();
+
+                    // Generate Animation Data
+                    return _animationGenerator.GenerateAnimation(template);
+                });
+
+                _animationQueue.Clear();
+
+                // Queue Animations
+                foreach (var animation in animations)
+                    _animationQueue.Enqueue(CreateNewAnimation(animation, viewModel.TargetType));
+
+                // Dequeue First Animation
+                if (_animationQueue.Any())
+                    StartAnimation(_animationQueue.Dequeue());
             }
-            _animation.TimeElapsed += new TimerElapsedHandler(OnEndAnimation);
-            _animation.AnimationTimeChanged += (obj, e) =>
-            {
-                _updating = true;
-                this.AnimationSlider.Value = e.CurrentTimeMilliseconds / 1000.0;
-                _updating = false;
-            };
-            _animation.Start();
         }
-        private void OnEndAnimation(ITimedGraphic sender)
-        {
-            Graphic[] graphics = sender.GetGraphics();
-            foreach (Graphic g in graphics)
-                this.TheCanvas.Children.Remove(g);
-            sender.TimeElapsed -= new TimerElapsedHandler(OnEndAnimation);
-            sender.Stop();
-            sender.CleanUp();
-            sender = null;
 
-            _animation = null;
-        }
-        private ITimedGraphic CreateNewAnimation(AnimationData animation)
+        private void StartAnimation(ITimedGraphic animation)
         {
-            Point p = new Point(Canvas.GetLeft(this.TheSmiley), Canvas.GetTop(this.TheSmiley));
-            Point en1 = new Point(Canvas.GetLeft(this.TheEnemy), Canvas.GetTop(this.TheEnemy));
-            Point en2 = new Point(Canvas.GetLeft(this.TheSecondEnemy), Canvas.GetTop(this.TheSecondEnemy));
-            Point en3 = new Point(Canvas.GetLeft(this.TheThirdEnemy), Canvas.GetTop(this.TheThirdEnemy));
-            p.X += 5;
-            p.Y += 8;
-            en1.X += 5;
-            en1.Y += 8;
-            en2.X += 5;
-            en2.Y += 8;
-            en3.X += 5;
-            en3.Y += 8;
-            return _animationCreator.CreateAnimation(animation, new Rect(this.TheCanvas.RenderSize), p, new Point[] { en1, en2, en3 });
+            _animation = animation;
+
+            // Put graphics on canvas
+            foreach (var graphic in animation.GetGraphics())
+            {
+                Canvas.SetZIndex(graphic, 100);
+                this.TheCanvas.Children.Add(graphic);
+            }
+
+            // Set Slider Maximum
+            this.AnimationSlider.Maximum = animation.AnimationTime / 1000.0;
+
+            // Hook Finished Event
+            animation.TimeElapsed += StopAnimation;
+
+            // Hook Time Changed
+            animation.AnimationTimeChanged += UpdateAnimationTime;
+
+            animation.Start();
+        }
+
+        private void StopAnimation(ITimedGraphic animation)
+        {
+            // Remove Graphics From Canvas
+            foreach (var graphic in animation.GetGraphics())
+                this.TheCanvas.Children.Remove(graphic);
+
+            // Unhook Finished Event
+            animation.TimeElapsed -= StopAnimation;
+
+            // Unhook Time Changed Event
+            animation.AnimationTimeChanged -= UpdateAnimationTime;
+
+            // Clean Up Resources
+            animation.Stop();
+            animation.CleanUp();
+
+            // Queue Next Animation
+            if (_animationQueue.Any())
+                StartAnimation(_animationQueue.Dequeue());
+        }
+
+        private void UpdateAnimationTime(object sender, AnimationTimeChangedEventArgs e)
+        {
+            _updating = true;
+            this.AnimationSlider.Value = e.CurrentTimeMilliseconds / 1000.0;
+            _updating = false;
+        }
+
+        private ITimedGraphic CreateNewAnimation(AnimationData animation, AlterationTargetType targetType)
+        {
+            var playerLocation = new Point(Canvas.GetLeft(this.TheSmiley), Canvas.GetTop(this.TheSmiley));
+            var enemy1Location = new Point(Canvas.GetLeft(this.TheEnemy), Canvas.GetTop(this.TheEnemy));
+            var enemy2Location = new Point(Canvas.GetLeft(this.TheSecondEnemy), Canvas.GetTop(this.TheSecondEnemy));
+            var enemy3Location = new Point(Canvas.GetLeft(this.TheThirdEnemy), Canvas.GetTop(this.TheThirdEnemy));
+
+            var bounds = new Rect(this.TheCanvas.RenderSize);
+
+            playerLocation.X += ModelConstants.CellWidth / 2.0D;
+            playerLocation.Y += ModelConstants.CellHeight / 2.0D;
+            enemy1Location.X += ModelConstants.CellWidth / 2.0D;
+            enemy1Location.Y += ModelConstants.CellHeight / 2.0D;
+            enemy2Location.X += ModelConstants.CellWidth / 2.0D;
+            enemy2Location.Y += ModelConstants.CellHeight / 2.0D;
+            enemy3Location.X += ModelConstants.CellWidth / 2.0D;
+            enemy3Location.Y += ModelConstants.CellHeight / 2.0D;
+
+            switch (targetType)
+            {
+                case AlterationTargetType.Source:
+                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { playerLocation });
+                case AlterationTargetType.Target:
+                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location });
+                case AlterationTargetType.AllInRange:
+                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location, enemy2Location, enemy3Location, playerLocation });
+                case AlterationTargetType.AllInRangeExceptSource:
+                    return _animationCreator.CreateAnimation(animation, bounds, playerLocation, new Point[] { enemy1Location, enemy2Location, enemy3Location });
+                default:
+                    throw new Exception("Unhandled AlterationTargetType");
+            }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             if (_animation != null)
             {
-                OnEndAnimation(_animation);
+                // Empty animation queue to prevent next animation from starting
+                _animationQueue.Clear();
+
+                StopAnimation(_animation);
             }
         }
 
@@ -100,7 +169,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             if (_animation != null)
             {
-                OnEndAnimation(_animation);
+                StopAnimation(_animation);
                 PlayAnimation();
             }
 

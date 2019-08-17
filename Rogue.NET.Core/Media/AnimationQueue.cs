@@ -9,11 +9,16 @@ namespace Rogue.NET.Core.Media
         public event TimerElapsedHandler TimeElapsed;
         Animation[] _animations = null;
         int _ct = 0;
+
+        public int AnimationTime { get; set; }
         public bool IsElapsed { get; set; }
         public bool IsPaused { get; set; }
         public int ElapsedTime { get; set; }
         public AnimationQueue(Animation[] animations)
         {
+            if (animations.Length > 0)
+                this.AnimationTime = animations[0].AnimationTime;
+
             _animations = animations;
             foreach (Animation a in animations)
                 a.TimeElapsed += new TimerElapsedHandler(OnAnimationTimeElapsed);

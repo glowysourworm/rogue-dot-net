@@ -33,7 +33,7 @@
             </region:RogueRegion>            
         </TabItem>
         <TabItem Header="Animation">
-            <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
+            <sharedControl:Animation DataContext="{Binding AnimationGroup}" TargetTypeCopy="Target" />
         </TabItem>
     </TabControl>
 </UserControl>

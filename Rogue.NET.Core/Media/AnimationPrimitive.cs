@@ -13,12 +13,16 @@ namespace Rogue.NET.Core.Media
 
         int _ct = 0;
         Timer _t = null;
+
+        public int AnimationTime { get; set; }
         public bool IsElapsed { get; set; }
         public bool IsPaused { get; set; }
         public List<AnimationClock> Clocks { get; set; }
-        public void SetAnimations(AnimationClock[] clocks)
+        public void SetAnimations(AnimationClock[] clocks, int animationTime)
         {
             this.Clocks = new List<AnimationClock>(clocks);
+
+            this.AnimationTime = animationTime;
 
             foreach (AnimationClock s in clocks)
                 s.Completed += new EventHandler(OnClockCompleted);

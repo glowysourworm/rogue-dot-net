@@ -414,7 +414,7 @@ namespace Rogue.NET.Core.Media
                 c.Controller.Pause();
                 fig.SetGeometry(g);
                 fig.ApplyAnimationClock(Shape.OpacityProperty, c);
-                Animation a = new Animation(new ITimedGraphic[] { fig });
+                Animation a = new Animation(new ITimedGraphic[] { fig }, time);
                 a.SetStartupDelay((int)((time / (double)(pts.Length - 1)) * i));
                 list.Add(a);
             }
@@ -435,8 +435,8 @@ namespace Rogue.NET.Core.Media
             prim.StrokeThickness = strokethickness;
             prim.SetGeometry(g);
             prim.ApplyAnimationClock(Shape.OpacityProperty, clock);
-            prim.SetAnimations(new AnimationClock[] { clock });
-            return new Animation(new ITimedGraphic[] { prim });
+            prim.SetAnimations(new AnimationClock[] { clock }, time);
+            return new Animation(new ITimedGraphic[] { prim }, time);
         }
 
         private Animation GenerateProjectilePath(Point[] points, Size size1, Size size2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int velocity, int repeatCount, bool autoreverse, bool constVelocity)
@@ -551,13 +551,13 @@ namespace Rogue.NET.Core.Media
             animation.RenderTransform = transform;
             animation.ApplyAnimationClock(Shape.OpacityProperty, opacityClock);
 
-            animation.SetAnimations(new AnimationClock[] { xClock, yClock, angleClock, widthClock, heightClock, opacityClock });
+            animation.SetAnimations(new AnimationClock[] { xClock, yClock, angleClock, widthClock, heightClock, opacityClock }, time);
 
             animation.Fill = fill;
             animation.Stroke = stroke;
             animation.StrokeThickness = strokeThickness;
 
-            return new Animation(new AnimationPrimitive[] { animation });
+            return new Animation(new AnimationPrimitive[] { animation }, time);
         }
 
         private Animation GenerateAuraAnimation(Point pt, Size s1, Size s2, Brush stroke, Brush fill, double opacity1, double opacity2, double strokeThickness, double accelerationRatio, int erradicity, int time, int repeatCount, bool autoreverse)
@@ -606,12 +606,12 @@ namespace Rogue.NET.Core.Media
             prim.RenderTransform = tg;
             //prim.RenderTransformOrigin = new Point(.5, .5);
             prim.ApplyAnimationClock(Shape.OpacityProperty, co);
-            prim.SetAnimations(new AnimationClock[] { csx, csy, co });
+            prim.SetAnimations(new AnimationClock[] { csx, csy, co }, time);
             prim.Fill = fill;
             prim.Stroke = stroke;
             prim.StrokeThickness = strokeThickness;
 
-            return new Animation(new AnimationPrimitive[] { prim });
+            return new Animation(new AnimationPrimitive[] { prim }, time);
         }
         #endregion
     }

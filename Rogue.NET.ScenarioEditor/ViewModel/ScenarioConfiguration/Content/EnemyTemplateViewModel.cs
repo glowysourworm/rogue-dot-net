@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _isInvisible;
         private RangeViewModel<double> _experienceGiven;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
+        private AnimationGroupTemplateViewModel _deathAnimationGroup;
 
         public bool GenerateOnStep
         {
@@ -35,6 +36,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _behaviorDetails; }
             set { this.RaiseAndSetIfChanged(ref _behaviorDetails, value); }
         }
+        public AnimationGroupTemplateViewModel DeathAnimationGroup
+        {
+            get { return _deathAnimationGroup; }
+            set { this.RaiseAndSetIfChanged(ref _deathAnimationGroup, value); }
+        }
 
         public EnemyTemplateViewModel()
         {
@@ -43,14 +49,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
-        }
-        public EnemyTemplateViewModel(DungeonObjectTemplateViewModel template) : base(template)
-        {
-            this.GenerateOnStep = true;
-            this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
-            this.BehaviorDetails = new BehaviorDetailsTemplateViewModel();
-            this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.DeathAnimations = new ObservableCollection<AnimationTemplateViewModel>();
+            this.DeathAnimationGroup = new AnimationGroupTemplateViewModel();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvisible;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
+        private AnimationGroupTemplate _deathAnimationGroup;
 
         public bool GenerateOnStep
         {
@@ -64,6 +65,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public AnimationGroupTemplate DeathAnimationGroup
+        {
+            get { return _deathAnimationGroup; }
+            set
+            {
+                if (_deathAnimationGroup != value)
+                {
+                    _deathAnimationGroup = value;
+                    OnPropertyChanged("DeathAnimationGroup");
+                }
+            }
+        }
 
         public EnemyTemplate()
         {
@@ -71,13 +84,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
-        }
-        public EnemyTemplate(DungeonObjectTemplate template) : base(template)
-        {
-            this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
-            this.BehaviorDetails = new BehaviorDetailsTemplate();
-            this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.DeathAnimations = new List<AnimationTemplate>();
+            this.DeathAnimationGroup = new AnimationGroupTemplate();
         }
     }
 }
