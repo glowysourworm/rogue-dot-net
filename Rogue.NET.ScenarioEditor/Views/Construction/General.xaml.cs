@@ -146,33 +146,5 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             }
         }
         #endregion
-
-        #region Brushes
-        private void AddBrushButton_Click(object sender, RoutedEventArgs e)
-        {
-            var config = this.DataContext as ScenarioConfigurationContainerViewModel;
-            if (config == null || string.IsNullOrEmpty(this.BrushTB.Text))
-                return;
-
-            if (config.BrushTemplates.Any(x => x.Name == this.BrushTB.Text))
-                return;
-
-            config.BrushTemplates.Add(new BrushTemplateViewModel()
-            {
-                Name = this.CharacterClassTB.Text
-            });
-
-            this.CharacterClassTB.Text = "";
-        }
-
-        private void RemoveBrushButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedItem = this.CharacterClassLB.SelectedItem as BrushTemplateViewModel;
-            if (selectedItem != null)
-            {
-                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
-            }
-        }
-        #endregion
     }
 }

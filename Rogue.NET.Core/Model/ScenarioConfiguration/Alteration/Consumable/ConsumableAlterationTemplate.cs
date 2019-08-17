@@ -12,7 +12,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable
         private AnimationGroupTemplate _animationGroup;
         private AlterationCostTemplate _cost;
         private IConsumableAlterationEffectTemplate _effect;
-        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplate AnimationGroup
         {
@@ -47,18 +46,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable
                 {
                     _effect = value;
                     OnPropertyChanged("Effect");
-                }
-            }
-        }
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set
-            {
-                if (_targetType != value)
-                {
-                    _targetType = value;
-                    OnPropertyChanged("TargetType");
                 }
             }
         }

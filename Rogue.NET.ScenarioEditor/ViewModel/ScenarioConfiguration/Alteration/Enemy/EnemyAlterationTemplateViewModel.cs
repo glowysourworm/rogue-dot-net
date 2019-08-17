@@ -13,7 +13,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.En
         private AlterationCostTemplateViewModel _cost;
         private IEnemyAlterationEffectTemplateViewModel _effect;
         private AlterationBlockType _blockType;
-        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplateViewModel AnimationGroup
         {
@@ -34,11 +33,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.En
         {
             get { return _blockType; }
             set { this.RaiseAndSetIfChanged(ref _blockType, value); }
-        }
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
         }
 
         public EnemyAlterationTemplateViewModel()

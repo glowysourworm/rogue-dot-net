@@ -67,8 +67,7 @@ namespace Rogue.NET.Core.Model.Generator
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect),
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -88,8 +87,7 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Effect = GenerateAlterationEffect(template.Effect),
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -100,8 +98,7 @@ namespace Rogue.NET.Core.Model.Generator
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect),
-                RogueName = template.Name,
-                TargetType = template.TargetType                
+                RogueName = template.Name
             };
         }
 
@@ -156,8 +153,7 @@ namespace Rogue.NET.Core.Model.Generator
                 },
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect),
-                RogueName = template.Name,
-                TargetType = template.TargetType
+                RogueName = template.Name
             };
         }
 
@@ -432,8 +428,7 @@ namespace Rogue.NET.Core.Model.Generator
                 AlteredState = _alteredStateGenerator.GenerateAlteredState(template.AlteredState),
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
                 CombatType = template.CombatType,
-                // TODO:ALTERATION
-                //EventTime = template.EventTime,
+                EventTime = _randomSequenceGenerator.GetRandomValue(template.EventTime),
                 IsStackable = template.IsStackable,
                 RogueName = template.Name
             };
@@ -509,19 +504,11 @@ namespace Rogue.NET.Core.Model.Generator
                 CriticalHit = _randomSequenceGenerator.GetRandomValue(template.CriticalHit),
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 DodgeProbability = _randomSequenceGenerator.GetRandomValue(template.DodgeProbabilityRange),
-                // TODO:ALTERATION Remove parameter
-                //Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                // TODO:ALTERATION Remove parameter
-                //Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
-                // TODO:ALTERATION Remove parameter
-                //Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
                 MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
-                // TODO:ALTERATION Remove parameter
-                //Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
@@ -603,21 +590,12 @@ namespace Rogue.NET.Core.Model.Generator
                 Defense = _randomSequenceGenerator.GetRandomValue(template.DefenseRange),
                 DodgeProbability = _randomSequenceGenerator.GetRandomValue(template.DodgeProbabilityRange),
                 EventTime = _randomSequenceGenerator.GetRandomValue(template.EventTime),
-                // TODO:ALTERATION Remove parameter
-                //Experience = _randomSequenceGenerator.GetRandomValue(template.ExperienceRange),
                 FoodUsagePerTurn = _randomSequenceGenerator.GetRandomValue(template.FoodUsagePerTurnRange),
-                // TODO:ALTERATION Remove parameter
-                //Hp = _randomSequenceGenerator.GetRandomValue(template.HpRange),
                 HpPerStep = _randomSequenceGenerator.GetRandomValue(template.HpPerStepRange),
-                // TODO:ALTERATION Remove parameter
-                //Hunger = _randomSequenceGenerator.GetRandomValue(template.HungerRange),
                 Intelligence = _randomSequenceGenerator.GetRandomValue(template.IntelligenceRange),
                 IsStackable = template.IsStackable,
                 LightRadius = _randomSequenceGenerator.GetRandomValue(template.LightRadiusRange),
-                // TODO:ALTERATION Rename parameter
-                //MagicBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MagicBlockProbabilityRange),
-                // TODO:ALTERATION Remove parameter
-                //Mp = _randomSequenceGenerator.GetRandomValue(template.MpRange),
+                MentalBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MentalBlockProbabilityRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),                

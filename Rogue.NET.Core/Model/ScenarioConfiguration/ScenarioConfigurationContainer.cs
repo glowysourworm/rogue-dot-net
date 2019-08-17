@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using System;
@@ -14,7 +13,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public PlayerTemplate PlayerTemplate { get; set; }
 
         public List<SkillSetTemplate> SkillTemplates { get; set; }
-        public List<BrushTemplate> BrushTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
@@ -27,7 +25,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         {
             this.DungeonTemplate = new DungeonTemplate();
             this.EnemyTemplates = new List<EnemyTemplate>();
-            this.BrushTemplates = new List<BrushTemplate>();
             this.EquipmentTemplates = new List<EquipmentTemplate>();
             this.ConsumableTemplates = new List<ConsumableTemplate>();
             this.SkillTemplates = new List<SkillSetTemplate>();

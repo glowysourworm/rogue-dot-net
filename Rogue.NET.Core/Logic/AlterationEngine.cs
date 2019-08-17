@@ -288,7 +288,7 @@ namespace Rogue.NET.Core.Logic
         }
         private IEnumerable<Character> CalculateAffectedCharacters(ConsumableAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(ConsumableProjectileAlteration alteration, Character actor)
         {
@@ -296,11 +296,11 @@ namespace Rogue.NET.Core.Logic
         }
         private IEnumerable<Character> CalculateAffectedCharacters(DoodadAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(EnemyAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(EquipmentAttackAlteration alteration, Character actor)
         {
@@ -316,7 +316,7 @@ namespace Rogue.NET.Core.Logic
         }
         private IEnumerable<Character> CalculateAffectedCharacters(SkillAlteration alteration, Character actor)
         {
-            return CalculateAffectedCharacters(alteration.TargetType, actor);
+            return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(PassiveAlterationEffect effect, Character actor)
         {

@@ -9,8 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
     [Serializable]
     public class ConsumableAlteration : AlterationContainer
     {        
-        public AlterationTargetType TargetType { get; set; }
-
         public ConsumableAlteration()
         {
             this.AnimationGroup = new AnimationGroup();

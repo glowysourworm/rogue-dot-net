@@ -15,7 +15,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Sk
         private ISkillAlterationEffectTemplateViewModel _effect;
         private AlterationBlockType _blockType;
         private AuraSourceParametersTemplateViewModel _auraParameters;
-        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplateViewModel AnimationGroup
         {
@@ -41,11 +40,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Sk
         {
             get { return _auraParameters; }
             set { this.RaiseAndSetIfChanged(ref _auraParameters, value); }
-        }
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
         }
 
         public SkillAlterationTemplateViewModel()

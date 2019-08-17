@@ -84,7 +84,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             var configuration = FixReferences(result);
 
             // Sort collections 
-            configuration.BrushTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));

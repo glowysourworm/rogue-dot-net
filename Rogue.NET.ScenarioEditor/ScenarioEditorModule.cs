@@ -179,15 +179,6 @@ namespace Rogue.NET.ScenarioEditor
                     _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
                 }
 
-                else if (e is BrushTemplateViewModel)
-                {
-                    // Add Brush
-                    _scenarioEditorController.CurrentConfig.BrushTemplates.Add(e as BrushTemplateViewModel);
-
-                    // Update Scenario object references
-                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
-                }
-
                 else
                     throw new Exception("Unhandled General Asset Type");
 
@@ -230,15 +221,6 @@ namespace Rogue.NET.ScenarioEditor
 
                     // Update Scenario object references
                     _scenarioAssetReferenceService.UpdateAlteredCharacterStates(_scenarioEditorController.CurrentConfig);
-                }
-
-                else if (e is BrushTemplateViewModel)
-                {
-                    // Add Brush
-                    _scenarioEditorController.CurrentConfig.BrushTemplates.Remove(e as BrushTemplateViewModel);
-
-                    // Update Scenario object references
-                    _scenarioAssetReferenceService.UpdateBrushes(_scenarioEditorController.CurrentConfig);
                 }
 
                 else

@@ -15,7 +15,8 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new AnimationGroup()
             {
-                Animations = template.Animations.Select(x => GenerateAnimation(x)).ToList()
+                Animations = template.Animations.Select(x => GenerateAnimation(x)).ToList(),
+                TargetType = template.TargetType
             };
         }
 

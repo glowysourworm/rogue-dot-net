@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Model.Generator
         private readonly ISkillSetGenerator _skillSetGenerator;
         private readonly IBehaviorGenerator _behaviorGenerator;
         private readonly IItemGenerator _itemGenerator;
+        private readonly IAnimationGenerator _animationGenerator;
 
         [ImportingConstructor]
         public CharacterGenerator(
@@ -29,13 +30,15 @@ namespace Rogue.NET.Core.Model.Generator
             IAttackAttributeGenerator attackAttributeGenerator,
             ISkillSetGenerator skillSetGenerator,
             IBehaviorGenerator behaviorGenerator,
-            IItemGenerator itemGenerator)
+            IItemGenerator itemGenerator,
+            IAnimationGenerator animationGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _skillSetGenerator = skillSetGenerator;
             _behaviorGenerator = behaviorGenerator;
             _itemGenerator = itemGenerator;
+            _animationGenerator = animationGenerator;
         }
 
         public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
@@ -160,9 +163,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                    .ToDictionary(x => x.RogueName);
 
-            // TODO:ALTERATION
-            //enemy.DeathAnimation =  new List<AnimationTemplate>(enemyTemplate.DeathAnimations);
-            enemy.DeathAnimation = new AnimationGroup();
+            enemy.DeathAnimation = _animationGenerator.GenerateAnimationGroup(enemyTemplate.DeathAnimationGroup);
 
             //Starting Consumables
             foreach (var consumableTemplate in enemyTemplate.StartingConsumables)

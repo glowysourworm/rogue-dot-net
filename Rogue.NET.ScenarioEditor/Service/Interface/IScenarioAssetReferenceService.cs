@@ -59,10 +59,5 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// Updates SkillSet references on Player, and Alterations
         /// </summary>
         void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration);
-
-        /// <summary>
-        /// Updates Brush references on Animations
-        /// </summary>
-        void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration);
     }
 }

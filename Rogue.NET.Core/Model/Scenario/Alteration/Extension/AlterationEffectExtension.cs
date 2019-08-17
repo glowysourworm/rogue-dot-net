@@ -209,7 +209,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                             return (effect as PassiveAlterationEffect).MagicBlockProbability;
 
                         else if (effect is TemporaryAlterationEffect)
-                            return (effect as TemporaryAlterationEffect).MagicBlockProbability;
+                            return (effect as TemporaryAlterationEffect).MentalBlockProbability;
 
                         return 0D;
                     }
@@ -333,7 +333,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                     { "Defense", effect.Defense },
                     { "Critical Hit", effect.CriticalHit },
                     { "Dodge", effect.DodgeProbability },
-                    { "Mental Block", effect.MagicBlockProbability }
+                    { "Mental Block", effect.MentalBlockProbability }
                 };
             }
 

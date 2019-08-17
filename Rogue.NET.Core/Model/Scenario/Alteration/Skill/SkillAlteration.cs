@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
     public class SkillAlteration : AlterationContainer
     {
         public AuraSourceParameters AuraParameters { get; set; }
-        public AlterationTargetType TargetType { get; set; }
 
         public SkillAlteration()
         {

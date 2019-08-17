@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.Collections.ObjectModel;
@@ -32,7 +31,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ObservableCollection<SkillSetTemplateViewModel> SkillTemplates { get; set; }
 
         // "General" Assets
-        public ObservableCollection<BrushTemplateViewModel> BrushTemplates { get; set; }
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; set; }
         public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; set; }
@@ -41,7 +39,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         {
             this.DungeonTemplate = new DungeonTemplateViewModel();
             this.EnemyTemplates = new ObservableCollection<EnemyTemplateViewModel>();
-            this.BrushTemplates = new ObservableCollection<BrushTemplateViewModel>();
             this.EquipmentTemplates = new ObservableCollection<EquipmentTemplateViewModel>();
             this.ConsumableTemplates = new ObservableCollection<ConsumableTemplateViewModel>();
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();

@@ -15,7 +15,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill
         private ISkillAlterationEffectTemplate _effect;
         private AlterationBlockType _blockType;
         private AuraSourceParametersTemplate _auraParameters;
-        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplate AnimationGroup
         {
@@ -74,18 +73,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill
                 {
                     _auraParameters = value;
                     OnPropertyChanged("BlockType");
-                }
-            }
-        }
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set
-            {
-                if (_targetType != value)
-                {
-                    _targetType = value;
-                    OnPropertyChanged("TargetType");
                 }
             }
         }

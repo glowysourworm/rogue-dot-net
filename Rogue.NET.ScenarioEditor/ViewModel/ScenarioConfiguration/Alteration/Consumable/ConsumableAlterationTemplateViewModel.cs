@@ -12,7 +12,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private AnimationGroupTemplateViewModel _animationGroup;
         private AlterationCostTemplateViewModel _cost;
         private IConsumableAlterationEffectTemplateViewModel _effect;
-        private AlterationTargetType _targetType;
 
         public AnimationGroupTemplateViewModel AnimationGroup
         {
@@ -28,11 +27,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _effect; }
             set { this.RaiseAndSetIfChanged(ref _effect, value); }
-        }
-        public AlterationTargetType TargetType
-        {
-            get { return _targetType; }
-            set { this.RaiseAndSetIfChanged(ref _targetType, value); }
         }
 
         public ConsumableAlterationTemplateViewModel()

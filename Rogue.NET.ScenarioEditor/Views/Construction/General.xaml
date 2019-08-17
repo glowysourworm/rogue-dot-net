@@ -306,34 +306,6 @@
                             </GroupBox>
                         </StackPanel>
                     </TabItem>
-                    <TabItem Header="Brushes">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="3*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-
-                            <!-- Brush Add / Remove Controls -->
-                            <Grid Margin="10,0,10,0">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <TextBlock FontSize="16" Grid.ColumnSpan="2" Margin="8" Foreground="White" 
-                                               Text="Brushes are shared by all animations and are created / edited here" />
-                                    <TextBlock Margin="8" VerticalAlignment="Top" Text="New Brush: " Foreground="White" />
-                                    <extension:UpdatingTextBox x:Name="BrushTB" VerticalAlignment="Top" Margin="8" Width="100" />
-                                    <ComboBox x:Name="BrushCB" VerticalAlignment="Top" Margin="8" Width="140" />
-                                    <Button x:Name="AddBrushButton" ToolTip="Add" Click="AddAlteredStateButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
-                                    <Button x:Name="RemoveBrushButton" ToolTip="Remove" Click="RemoveAlteredStateButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
-                                </StackPanel>
-                            </Grid>
-
-                            <!-- Brush Editor -->
-                            <controls:BrushEditorControl x:Name="BrushEditor" />
-                        </Grid>
-                    </TabItem>
                 </TabControl>
             </Grid>
         </Grid>

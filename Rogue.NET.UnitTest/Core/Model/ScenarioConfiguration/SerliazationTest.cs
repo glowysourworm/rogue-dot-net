@@ -55,7 +55,8 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 attackAttributeGenerator,
                 skillSetGenerator,
                 behaviorGenerator,
-                itemGenerator);
+                itemGenerator,
+                animationGenerator);
             var doodadGenerator = new DoodadGenerator();
             var contentGenerator = new ContentGenerator(
                 randomSequenceGenerator,

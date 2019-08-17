@@ -8,8 +8,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Doodad
     [Serializable]
     public class DoodadAlteration : AlterationContainer
     {
-        public AlterationTargetType TargetType { get; set; }
-
         public DoodadAlteration()
         {
         }

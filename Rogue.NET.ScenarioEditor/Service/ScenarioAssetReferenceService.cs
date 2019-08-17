@@ -134,11 +134,6 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
         }
 
-        public void UpdateBrushes(ScenarioConfigurationContainerViewModel configuration)
-        {
-
-        }
-
         public void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration)
         {
             // Alteration Effects - Update Create Monster 

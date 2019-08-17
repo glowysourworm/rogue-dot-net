@@ -237,16 +237,16 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             // TODO:ALTERATION - Validate AlterationTargetType for each IAlterationEffect sub-type for
             //                   each alteration container type. This should be done in the editor!
             if (alteration is ConsumableAlteration)
-                return (alteration as ConsumableAlteration).TargetType == AlterationTargetType.Target;
+                return (alteration as ConsumableAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
 
             else if (alteration is ConsumableProjectileAlteration)
                 return true;
 
             else if (alteration is DoodadAlteration)
-                return (alteration as DoodadAlteration).TargetType == AlterationTargetType.Target;
+                return (alteration as DoodadAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
 
             else if (alteration is EnemyAlteration)
-                return (alteration as EnemyAlteration).TargetType == AlterationTargetType.Target;
+                return (alteration as EnemyAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
 
             else if (alteration is EquipmentAttackAlteration)
                 return false;
@@ -258,7 +258,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 return false;
 
             else if (alteration is SkillAlteration)
-                return (alteration as SkillAlteration).TargetType == AlterationTargetType.Target;
+                return (alteration as SkillAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
 
             else
                 throw new Exception("Unknwon Alteration Type");
@@ -272,16 +272,16 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             // TODO:ALTERATION - Validate AlterationTargetType for each IAlterationEffect sub-type for
             //                   each alteration container type. This should be done in the editor!
             if (alteration is ConsumableAlteration)
-                return (alteration as ConsumableAlteration).TargetType != AlterationTargetType.Source;
+                return (alteration as ConsumableAlteration).AnimationGroup.TargetType != AlterationTargetType.Source;
 
             else if (alteration is ConsumableProjectileAlteration)
                 return true;
 
             else if (alteration is DoodadAlteration)
-                return (alteration as DoodadAlteration).TargetType != AlterationTargetType.Source;
+                return (alteration as DoodadAlteration).AnimationGroup.TargetType != AlterationTargetType.Source;
 
             else if (alteration is EnemyAlteration)
-                return (alteration as EnemyAlteration).TargetType != AlterationTargetType.Source;
+                return (alteration as EnemyAlteration).AnimationGroup.TargetType != AlterationTargetType.Source;
 
             else if (alteration is EquipmentAttackAlteration)
                 return false;
@@ -293,7 +293,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 return false;
 
             else if (alteration is SkillAlteration)
-                return (alteration as SkillAlteration).TargetType != AlterationTargetType.Source;
+                return (alteration as SkillAlteration).AnimationGroup.TargetType != AlterationTargetType.Source;
 
             else
                 throw new Exception("Unknwon Alteration Type");

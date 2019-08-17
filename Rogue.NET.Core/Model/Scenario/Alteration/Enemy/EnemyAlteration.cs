@@ -8,8 +8,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Enemy
     [Serializable]
     public class EnemyAlteration : AlterationContainer
     {
-        public AlterationTargetType TargetType { get; set; }
-
         public EnemyAlteration()
         {
         }
