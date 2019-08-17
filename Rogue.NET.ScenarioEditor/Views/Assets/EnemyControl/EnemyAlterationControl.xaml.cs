@@ -25,7 +25,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e.Effect is IEnemyAlterationEffectTemplateViewModel)
+                               if (e.Effect is IEnemyAlterationEffectTemplateViewModel &&
+                                   e.AlterationType == typeof(EnemyAlterationTemplateViewModel))
                                    viewModel.Effect = (e.Effect as IEnemyAlterationEffectTemplateViewModel);
                            });
         }

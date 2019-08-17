@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class AttackAttributePassiveEffectParameters : UserControl
     {

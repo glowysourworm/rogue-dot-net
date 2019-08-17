@@ -25,7 +25,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e.Effect is IEquipmentEquipAlterationEffectTemplateViewModel)
+                               if (e.Effect is IEquipmentEquipAlterationEffectTemplateViewModel &&
+                                   e.AlterationType == typeof(EquipmentEquipAlterationTemplateViewModel))
                                    viewModel.Effect = (e.Effect as IEquipmentEquipAlterationEffectTemplateViewModel);
                            });
         }

@@ -46,6 +46,12 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
         FrameworkElement Load(RogueRegion region, Type viewType);
 
         /// <summary>
+        /// Loads the default view (instance or type) that has been registered with the 
+        /// RogueRegion. See attached properties to learn about default views.
+        /// </summary>
+        FrameworkElement LoadDefaultView(RogueRegion region);
+
+        /// <summary>
         /// Finds the SINGLE RogueRegion instance with the specified name - with the
         /// specified type. Loading is accomplished using the ServiceLocator
         /// </summary>

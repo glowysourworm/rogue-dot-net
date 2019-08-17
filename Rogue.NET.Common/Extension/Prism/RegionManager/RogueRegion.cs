@@ -7,5 +7,9 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
     /// </summary>
     public class RogueRegion : ContentControl
     {
+        public override string ToString()
+        {
+            return this.GetHashCode().ToString();
+        }
     }
 }

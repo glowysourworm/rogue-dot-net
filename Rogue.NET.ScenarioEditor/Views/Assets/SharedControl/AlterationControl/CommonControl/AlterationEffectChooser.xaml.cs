@@ -40,6 +40,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 
         public AlterationEffectChooser(
                 IRogueEventAggregator eventAggregator, 
+                Type alterationType,
                 Type alterationEffectInterfaceType)
         {
             InitializeComponent();
@@ -57,8 +58,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
             // Load Effect Region with proper view for the effect type
             this.DataContextChanged += (sender, e) =>
             {
+                // If there is no effect chosen - then load the default for the region
                 if (e.NewValue == null)
+                {
+                    eventAggregator.GetEvent<LoadDefaultRegionViewEvent>()
+                                   .Publish(this.EffectRegion);
+
                     return;
+                }
 
                 // Effect Implementation Type
                 var implementationType = e.NewValue.GetType();
@@ -82,6 +89,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
                                     .Publish(this.EffectRegion, new LoadAlterationEffectEventArgs()
                                     {
+                                        AlterationType = alterationType,
                                         AlterationEffectViewType = uiDescription.ViewType
                                     });
                 }
@@ -98,7 +106,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     eventAggregator.GetEvent<LoadAlterationEffectRequestEvent>()
                                    .Publish(this.EffectRegion,
                                             new LoadAlterationEffectEventArgs()
-                                            {                                                
+                                            {                                             
+                                                AlterationType = alterationType,
                                                 AlterationEffectViewType = effectDescription.ViewType
                                             });
 
@@ -108,7 +117,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                     eventAggregator.GetEvent<LoadNewAlterationEffectRequestEvent>()
                                    .Publish(this.EffectRegion,
                                             new LoadNewAlterationEffectEventArgs()
-                                            {                                         
+                                            {                      
+                                                AlterationType = alterationType,
                                                 AlterationEffectType = effectDescription.ImplementationType,
                                                 AlterationEffectViewType = effectDescription.ViewType
                                             });

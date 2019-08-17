@@ -15,6 +15,11 @@ namespace Rogue.NET.ScenarioEditor.Events
         /// The new IAlterationEffectTemplateViewModel instance
         /// </summary>
         public IAlterationEffectTemplateViewModel Effect { get; set; }
+
+        /// <summary>
+        /// Type that is the container for the effect
+        /// </summary>
+        public Type AlterationType { get; set; }
     }
 
     /// <summary>

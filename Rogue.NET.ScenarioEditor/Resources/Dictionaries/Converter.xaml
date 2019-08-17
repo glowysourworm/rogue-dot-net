@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
+    <scenarioEditorConverter:AlterationEffectAuraVisibilityConverter x:Key="AlterationEffectAuraVisibilityConverter" />
     <scenarioEditorConverter:BehaviorHeaderConverter x:Key="BehaviorHeaderConverter" />
     <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
     <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />

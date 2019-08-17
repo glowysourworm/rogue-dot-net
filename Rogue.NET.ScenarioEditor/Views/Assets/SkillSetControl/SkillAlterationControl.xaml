@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
@@ -33,7 +34,8 @@
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
-                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}" />
+                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}"
+                                                                            AlterationType="{x:Type viewModel:SkillAlterationTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>

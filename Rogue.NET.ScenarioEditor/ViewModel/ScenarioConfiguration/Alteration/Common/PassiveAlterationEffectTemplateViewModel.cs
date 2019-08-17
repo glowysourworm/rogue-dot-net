@@ -29,10 +29,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _defenseRange;
         private RangeViewModel<double> _magicBlockProbabilityRange;
         private RangeViewModel<double> _dodgeProbabilityRange;
-        private RangeViewModel<double> _experienceRange;
-        private RangeViewModel<double> _hungerRange;
-        private RangeViewModel<double> _hpRange;
-        private RangeViewModel<double> _mpRange;
         private RangeViewModel<double> _criticalHit;
 
         public SymbolDeltaTemplateViewModel SymbolAlteration

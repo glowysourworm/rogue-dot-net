@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class AlterationAttackAttributeListControl : UserControl
     {

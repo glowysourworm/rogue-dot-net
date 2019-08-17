@@ -2,7 +2,6 @@
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.ScenarioEditor.Views.Extension;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -26,7 +25,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl
                                    return;
 
                                // Type cast the effect interface
-                               if (e.Effect is IDoodadAlterationEffectTemplateViewModel)
+                               if (e.Effect is IDoodadAlterationEffectTemplateViewModel &&
+                                   e.AlterationType == typeof(DoodadAlterationTemplateViewModel))
                                    viewModel.Effect = (e.Effect as IDoodadAlterationEffectTemplateViewModel);
                            });
         }

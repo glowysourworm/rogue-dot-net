@@ -147,6 +147,11 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
             public Type ViewType { get; set; }
             public bool IsDefaultView { get; set; }
 
+            public override string ToString()
+            {
+                return this.ViewType.Name + "  (" + this.View?.GetHashCode().ToString() +")";
+            }
+
             public RogueRegionView(Type viewType, FrameworkElement view, bool isDefaultView = false)
             {                
                 this.ViewType = viewType;
@@ -204,9 +209,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                     RegionViews[region].Add(new RogueRegionView(viewType, view));
 
                     // Load view
-                    LoadImpl(region, view);
-
-                    return view;
+                    return LoadImpl(region, view);
                 }
             }
 
@@ -224,10 +227,27 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                     });
 
                 // Load View into Region
-                LoadImpl(region, view);
-
-                return view;
+                return LoadImpl(region, view);
             }
+        }
+
+        public FrameworkElement LoadDefaultView(RogueRegion region)
+        {
+            if (!RogueRegionManager.RegionViews.ContainsKey(region))
+                throw new Exception("RogueRegion not registered with IRogueRegionManager");
+
+            var regionView = RogueRegionManager.RegionViews[region]
+                                               .SingleOrDefault(x => x.IsDefaultView);
+
+            if (regionView == null)
+                throw new Exception("A single default view is allowed for a RogueRegion instance. See attached properties");
+
+            // If default view is instantiated - then just load that one
+            if (regionView.View != null)
+                return LoadImpl(region, regionView.View);
+
+            else
+                return Load(region, regionView.ViewType);
         }
 
         public FrameworkElement LoadSingleInstance(string regionName, Type viewType)
@@ -251,10 +271,12 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
         /// </summary>
         /// <param name="region">RogueRegion instance</param>
         /// <param name="view">UI View Content to load</param>
-        protected static void LoadImpl(RogueRegion region, FrameworkElement view)
+        protected static FrameworkElement LoadImpl(RogueRegion region, FrameworkElement view)
         {
             // TODO: Add Transition Provider
             region.Content = view;
+
+            return view;
         }
     }
 }

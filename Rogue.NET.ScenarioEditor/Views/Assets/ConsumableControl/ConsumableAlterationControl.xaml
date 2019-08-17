@@ -4,6 +4,7 @@
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:extension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
@@ -30,7 +31,8 @@
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
-                    <extension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}" />
+                    <extension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}"
+                                                                      AlterationType="{x:Type viewModel:ConsumableAlterationTemplateViewModel}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>

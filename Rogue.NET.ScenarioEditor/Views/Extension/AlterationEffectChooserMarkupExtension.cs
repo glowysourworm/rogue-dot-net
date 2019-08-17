@@ -22,6 +22,11 @@ namespace Rogue.NET.ScenarioEditor.Views.Extension
         /// </summary>
         public Type AlterationEffectInterface { get; set; }
 
+        /// <summary>
+        /// Alteration type (parent to the alteration effect)
+        /// </summary>
+        public Type AlterationType { get; set; }
+
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             if (!typeof(IAlterationEffectTemplateViewModel).IsAssignableFrom(this.AlterationEffectInterface))
@@ -29,7 +34,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Extension
 
             var eventAggregator = ServiceLocator.Current.GetInstance<IRogueEventAggregator>();
 
-            return new AlterationEffectChooser(eventAggregator, this.AlterationEffectInterface);
+            return new AlterationEffectChooser(eventAggregator, this.AlterationType, this.AlterationEffectInterface);
         }
     }
 }

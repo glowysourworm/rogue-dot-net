@@ -256,6 +256,7 @@
   <ItemGroup>
     <Compile Include="Controller\Interface\IScenarioAssetController.cs" />
     <Compile Include="Controller\ScenarioAssetController.cs" />
+    <Compile Include="Converter\AlterationEffectAuraVisibilityConverter.cs" />
     <Compile Include="Converter\BehaviorHeaderConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
@@ -269,6 +270,7 @@
     <Compile Include="Events\AlterationEffectChangedEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
+    <Compile Include="Events\LoadDefaultRegionViewEvent.cs" />
     <Compile Include="Events\LoadAlterationEffectRequestEvent.cs" />
     <Compile Include="Events\LoadNewAlterationEffectRequestEvent.cs" />
     <Compile Include="Events\LoadAssetEvent.cs" />

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
@@ -24,7 +25,8 @@
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>
-                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}" />
+                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}"
+                                                                            AlterationType="{x:Type viewModel:DoodadAlterationTemplateViewModel}"  />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>
