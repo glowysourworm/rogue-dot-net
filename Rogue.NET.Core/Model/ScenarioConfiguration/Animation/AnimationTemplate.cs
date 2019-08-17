@@ -8,13 +8,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
     public class AnimationTemplate : Template
     {
         private AnimationBaseType _baseType;
+        private AnimationPointTargetType _pointTargetType;
         private int _repeatCount;
         private int _animationTime;
         private bool _autoReverse;
         private bool _constantVelocity;
         private double _accelerationRatio;
         private BrushTemplate _fillTemplate;
-        private BrushTemplate _strokeTemplate;
         private double _strokeThickness;
         private double _opacity1;
         private double _opacity2;
@@ -38,6 +38,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Animation
                 {
                     _baseType = value;
                     OnPropertyChanged("BaseType");
+                }
+            }
+        }
+        public AnimationPointTargetType PointTargetType
+        {
+            get { return _pointTargetType; }
+            set
+            {
+                if (_pointTargetType != value)
+                {
+                    _pointTargetType = value;
+                    OnPropertyChanged("PointTargetType");
                 }
             }
         }
