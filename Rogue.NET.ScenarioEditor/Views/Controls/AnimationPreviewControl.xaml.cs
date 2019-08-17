@@ -148,6 +148,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
                 StartAnimation();
             }
+
+            else
+                _animation = null;
         }
 
         private void UpdateAnimationTime(object sender, AnimationTimeChangedEventArgs e)

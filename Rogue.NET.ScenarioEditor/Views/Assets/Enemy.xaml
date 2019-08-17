@@ -29,7 +29,8 @@
                 <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type enemy:EnemyItems}" />
             </TabItem>
             <TabItem Header="Death Animation">
-                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}"
+                                    DataContext="{Binding DeathAnimationGroup}" />
             </TabItem>
         </TabControl>
     </Grid>

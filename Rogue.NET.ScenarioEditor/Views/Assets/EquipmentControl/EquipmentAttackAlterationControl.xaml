@@ -17,7 +17,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl>
+    <TabControl Background="Black">
         <TabItem Header="Block Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationBlockType}"
                                              EnumValue="{Binding BlockType, Mode=TwoWay}" />

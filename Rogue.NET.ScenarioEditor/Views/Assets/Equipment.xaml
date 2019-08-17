@@ -5,14 +5,14 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:equipment="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl">
     <Grid>
-        <TabControl TabStripPlacement="Left">
+        <TabControl TabStripPlacement="Left" Background="Black">
             <TabItem Header="Symbol" x:Name="DefaultTab">
                 <controls:SymbolEditor DataContext="{Binding SymbolDetails}"/>
             </TabItem>
             <TabItem Header="Rogue-Encyclopedia Entry">
                 <equipment:EquipmentMetadata />
             </TabItem>
-            <TabItem Header="Equipment Alteration Selection">
+            <TabItem Header="Alteration Selection">
                 <equipment:EquipmentAlterationSelection />
             </TabItem>
             <TabItem Header="Parameters">

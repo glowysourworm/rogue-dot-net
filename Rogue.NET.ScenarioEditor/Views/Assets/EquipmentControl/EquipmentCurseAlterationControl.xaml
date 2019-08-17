@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl>
+    <TabControl Background="Black">
         <TabItem Header="Effect">
             <region:RogueRegion DataContext="{Binding Effect}">
                 <region:RogueRegionManager.DefaultView>

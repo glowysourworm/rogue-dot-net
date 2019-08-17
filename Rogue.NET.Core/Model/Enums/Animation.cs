@@ -51,10 +51,10 @@ namespace Rogue.NET.Core.Model.Enums
     {
         [Display(Name = "Source",
                  Description = "Applies the point animation to the source character")]
-        Source = 1,
+        Source = 0,
 
         [Display(Name = "Affected Character(s)",
                  Description = "Applies the point animation to ALL (one-to-many) affected characters")]
-        AffectedCharacters = 2
+        AffectedCharacters = 1
     }
 }

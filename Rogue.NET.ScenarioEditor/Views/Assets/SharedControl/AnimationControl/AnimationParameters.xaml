@@ -78,17 +78,17 @@
             <Grid Height="36" Grid.Row="4">
                 <TextBlock FontSize="14" Foreground="White" Text="Height Start" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <wpftoolkit:DoubleUpDown Value="{Binding Height1}" AllowSpin="True" AllowTextInput="True" Minimum="0" Maximum="1" Increment="0.1" FormatString="F2" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
+                    <wpftoolkit:DoubleUpDown Value="{Binding Height1}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="5000" Increment="1" FormatString="F0" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
                     <TextBlock FontSize="14" Margin="5, 0" Foreground="White" Text="To" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Height2}" AllowSpin="True" AllowTextInput="True" Minimum="0" Maximum="1" Increment="0.1" FormatString="F2" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
+                    <wpftoolkit:DoubleUpDown Value="{Binding Height2}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="5000" Increment="1" FormatString="F0" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
                 </StackPanel>
             </Grid>
             <Grid Height="36" Grid.Row="5">
                 <TextBlock FontSize="14" Foreground="White" Text="Width Start" VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <wpftoolkit:DoubleUpDown Value="{Binding Width1}" AllowSpin="True" AllowTextInput="True" Minimum="0" Maximum="1" Increment="0.1" FormatString="F2" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
+                    <wpftoolkit:DoubleUpDown Value="{Binding Width1}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="5000" Increment="1" FormatString="F0" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
                     <TextBlock FontSize="14" Margin="5, 0" Foreground="White" Text="To" VerticalAlignment="Center" />
-                    <wpftoolkit:DoubleUpDown Value="{Binding Width2}" AllowSpin="True" AllowTextInput="True" Minimum="0" Maximum="1" Increment="0.1" FormatString="F2" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
+                    <wpftoolkit:DoubleUpDown Value="{Binding Width2}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="5000" Increment="1" FormatString="F0" Foreground="White" VerticalAlignment="Center" Height="28" Width="100" />
                 </StackPanel>
             </Grid>
             <Grid x:Name="ChildCountGrid" Height="36" Grid.Row="0">

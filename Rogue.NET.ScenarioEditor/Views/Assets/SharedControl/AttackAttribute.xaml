@@ -36,13 +36,13 @@
         </StackPanel>
         <StackPanel Grid.Column="1" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
             <TextBlock Text="A" VerticalAlignment="Center" Foreground="Goldenrod" FontSize="16" />
-            <controls:Range DataContext="{Binding Attack}" Width="200" Margin="10, 0" />
+            <controls:Range DataContext="{Binding Attack}" ContentStringFormat="F1" Width="200" Margin="10, 0" />
 
             <TextBlock Text="R" VerticalAlignment="Center" Foreground="LightSteelBlue" FontSize="16" />
-            <controls:Range DataContext="{Binding Resistance}" Width="200" Margin="10, 0" />
+            <controls:Range DataContext="{Binding Resistance}" ContentStringFormat="F1" Width="200" Margin="10, 0" />
 
             <TextBlock Text="W" VerticalAlignment="Center" Foreground="Red" FontSize="16" />
-            <controls:Range DataContext="{Binding Weakness}" Width="200" Margin="10, 0" />
+            <controls:Range DataContext="{Binding Weakness}" ContentStringFormat="F1" Width="200" Margin="10, 0" />
         </StackPanel>
     </Grid>
 </UserControl>
