@@ -11,8 +11,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace Rogue.NET.Scenario.Views
+namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class PlayerSubpanel : UserControl
     {

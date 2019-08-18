@@ -12,6 +12,7 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class DungeonEncyclopedia : UserControl
     {

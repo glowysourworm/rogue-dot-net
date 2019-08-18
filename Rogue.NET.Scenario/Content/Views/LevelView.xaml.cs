@@ -1,6 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Event.Splash;
+﻿using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
@@ -9,11 +7,11 @@ using Rogue.NET.Scenario.Events.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows;
-using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class LevelView : UserControl
     {

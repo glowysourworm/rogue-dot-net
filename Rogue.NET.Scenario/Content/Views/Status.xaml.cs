@@ -3,8 +3,9 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Rogue.NET.Scenario.Views
+namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class StatusCtrl : UserControl
     {

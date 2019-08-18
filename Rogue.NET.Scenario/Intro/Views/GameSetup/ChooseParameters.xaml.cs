@@ -10,6 +10,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class ChooseParameters : UserControl
     {
@@ -26,6 +27,17 @@ namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 
             this.Loaded += (sender, e) =>
             {
+                var viewModel = this.DataContext as GameSetupViewModel;
+
+                // Reset View Model Parameters before loading first parameters view
+                if (viewModel != null)
+                {
+                    viewModel.RogueName = "";
+                    viewModel.Seed = 1;
+                    viewModel.SurvivorMode = false;
+                    viewModel.SelectedCharacterClass = null;
+                }
+
                 // Load the first parameters display
                 eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Publish(typeof(ChooseName));
 

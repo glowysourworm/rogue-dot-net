@@ -179,6 +179,31 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                               .Actualize();
         }
 
+        public void PreRegisterView(string regionName, Type viewType)
+        {
+            // Validate View Type as FrameworkElement
+            if (!typeof(FrameworkElement).IsAssignableFrom(viewType))
+                throw new ArgumentException("View type must inherit from FrameworkElement");
+
+            var regionView = RegionViews.SingleOrDefault(x => RogueRegionManager.GetRegionName(x.Key) == regionName);
+
+            // Unknown Region OR Multiple Instance Region
+            if (regionView.Key == null)
+                throw new ArgumentException("Specified RogueRegion was either never created; or has more than one instance");
+
+            if (regionView.Value.Any(x => x.ViewType == viewType))
+                throw new ArgumentException("Specified view type already registered with the region");
+
+            // Create instance of view
+            var view = (FrameworkElement)ServiceLocator.Current.GetInstance(viewType);
+
+            // Set default if there are no other default views
+            var isDefault = !regionView.Value.Any(x => x.IsDefaultView);
+
+            // Add entry to region views
+            regionView.Value.Add(new RogueRegionView(viewType, view, isDefault));
+        }
+
         public FrameworkElement Load(RogueRegion region, Type viewType)
         {
             // Validate View Type as FrameworkElement

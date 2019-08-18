@@ -9,8 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Rogue.NET.Intro.Views
+namespace Rogue.NET.Scenario.Intro.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class GameSetupView : UserControl
     {
@@ -59,6 +60,8 @@ namespace Rogue.NET.Intro.Views
             base.OnPreviewKeyDown(e);
             if (e.Key == Key.Escape)
             {
+                var viewModel = this.DataContext as GameSetupViewModel;
+
                 _eventAggregator.GetEvent<GameSetupDisplayFinished>().Publish(new GameSetupDisplayFinishedEventArgs()
                 {
                     NextDisplayType = typeof(NewOpenEdit)

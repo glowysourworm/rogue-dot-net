@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Views.LevelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism"
-             xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:scenarioContentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,10 +20,11 @@
         </Grid.ColumnDefinitions>
 
         <!-- Level Canvas -->
-        <ContentControl prism:RegionManager.RegionName="LevelCanvasRegion"
-                        Grid.ColumnSpan="3"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch" />
+        <region:RogueRegion region:RogueRegionManager.RegionName="LevelCanvasRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:LevelCanvas}"
+                            Grid.ColumnSpan="3"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch" />                            
 
         <!-- (LHS) Player Status / Player Sub-panel -->
         <Grid x:Name="LeftHandSideControls" Grid.Column="0" Background="#CF000000">
@@ -32,12 +33,14 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ContentControl prism:RegionManager.RegionName="StatusCtrlRegion"
-                            Margin="10"/>
+            <region:RogueRegion region:RogueRegionManager.RegionName="StatusCtrlRegion"
+                                region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:StatusCtrl}"
+                                Margin="10" />
 
-            <ContentControl prism:RegionManager.RegionName="PlayerSubpanelRegion"  
-                            Grid.Row="1"
-                            Margin="10" />
+            <region:RogueRegion region:RogueRegionManager.RegionName="PlayerSubpanelRegion"
+                                region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:PlayerSubpanel}"
+                                Grid.Row="1"
+                                Margin="10" />
         </Grid>
 
         <!-- (RHS) Control Panel / Dialog Messages -->
@@ -113,12 +116,13 @@
                 </Border>
 
                 <!-- Dialog Messages -->
-                <ContentControl prism:RegionManager.RegionName="ScenarioMessageRegion"
-                        Margin="4"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch" 
-                        VerticalContentAlignment="Stretch"/>
+                <region:RogueRegion region:RogueRegionManager.RegionName="ScenarioMessageRegion"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type scenarioContentView:ScenarioMessageView}"
+                                    Margin="4"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch" 
+                                    VerticalContentAlignment="Stretch" />
             </StackPanel>
         </Border>
         
@@ -132,7 +136,7 @@
                 BorderThickness="0.75"
                 VerticalAlignment="Top" 
                 HorizontalAlignment="Left">
-            <ContentControl prism:RegionManager.RegionName="PlayerStatusSmallPanelRegion" />
+            <region:RogueRegion region:RogueRegionManager.RegionName="PlayerStatusSmallPanelRegion" />
         </Border>
 
         <!-- Survivor Mode -->

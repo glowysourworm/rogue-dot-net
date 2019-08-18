@@ -4,6 +4,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class PlayerStatusSmallPanel : UserControl
     {

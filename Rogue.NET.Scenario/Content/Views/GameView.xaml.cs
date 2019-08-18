@@ -3,8 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Model.Events;
-using Prism.Events;
-using Prism.Regions;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing;
@@ -12,9 +10,13 @@ using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Scenario.Content.Views;
+using Rogue.NET.Scenario.Constant;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class GameView : UserControl
     {
@@ -26,7 +28,6 @@ namespace Rogue.NET.Scenario.Views
             EncyclopediaView
         }
 
-        readonly IRegionManager _regionManager;
         readonly IRogueEventAggregator _eventAggregator;
 
         public static readonly DependencyProperty CurrentViewTitleProperty =
@@ -42,9 +43,8 @@ namespace Rogue.NET.Scenario.Views
         int _currentLevel;
 
         [ImportingConstructor]
-        public GameView(IRegionManager regionManager, IRogueEventAggregator eventAggregator, IModelService modelService)
+        public GameView(IRogueRegionManager regionManager, IRogueEventAggregator eventAggregator, IModelService modelService)
         {
-            _regionManager = regionManager;
             _eventAggregator = eventAggregator;
 
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace Rogue.NET.Scenario.Views
             // Subscribe here to handle title text
             eventAggregator.GetEvent<RequestNavigateToSkillTreeEvent>().Subscribe(() =>
             {
-                regionManager.RequestNavigate("GameRegion", "SkillTree");
+                regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(SkillTree));
 
                 _currentView = GameViewType.SkillTreeView;
 

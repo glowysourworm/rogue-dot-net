@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Views.GameView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:commonUtility="clr-namespace:Rogue.NET.Common.Utility;assembly=Rogue.NET.Common"
-    xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-    Height="Auto" 
-    Width="Auto" 
-    xmlns:prism="http://www.codeplex.com/prism"
-    Background="Black">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:commonUtility="clr-namespace:Rogue.NET.Common.Utility;assembly=Rogue.NET.Common"
+             xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
+             Height="Auto" 
+             Width="Auto" 
+             Background="Black">
 	<UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -75,9 +75,12 @@
                         <Button x:Name="ExitButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/StairsUp.png" Background="Black" BorderBrush="White" HorizontalAlignment="Center" Click="ExitButton_Click" Margin="2" Width="32" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="32" ToolTip="Exit"/>
                     </StackPanel>
                 </Grid>
-            </Border> 
+            </Border>
 
-            <Border x:Name="GameRegion" prism:RegionManager.RegionName="GameRegion" Margin="0, 10, 0, 0" Grid.Row="1" Background="Transparent" ScrollViewer.CanContentScroll="True" />
+            <Border Margin="0, 10, 0, 0" Grid.Row="1" Background="Transparent" ScrollViewer.CanContentScroll="True">
+                <region:RogueRegion x:Name="GameRegion"
+                                    region:RogueRegionManager.RegionName="GameRegion" />
+            </Border>
 		</Grid>
 	</Border>
 </UserControl>

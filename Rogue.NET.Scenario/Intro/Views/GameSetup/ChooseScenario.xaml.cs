@@ -10,6 +10,7 @@ using System.Windows.Input;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class ChooseScenario : UserControl
     {

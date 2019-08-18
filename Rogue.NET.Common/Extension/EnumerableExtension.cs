@@ -152,7 +152,7 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Copies elements either by reference or by value into a new collection
+        /// Copies element references into a new collection
         /// </summary>
         public static IEnumerable<T> Copy<T>(this IEnumerable<T> collection)
         {

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Outro.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class DeathDisplay : UserControl
     {

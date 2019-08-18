@@ -1,8 +1,6 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
+﻿using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Core;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Intro.ViewModel;
 using System.Collections.ObjectModel;
@@ -10,18 +8,14 @@ using System.ComponentModel.Composition;
 using System.Windows.Media;
 using System.Linq;
 using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Core.Model.Scenario.Content;
-using System.Collections.Generic;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Intro.ViewModel
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public class GameSetupViewModel : NotifyViewModel
     {

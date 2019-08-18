@@ -1,15 +1,11 @@
-﻿<UserControl
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
-    xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
-    xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-    xmlns:prism="http://www.codeplex.com/prism"
-	x:Class="Rogue.NET.Scenario.Views.EquipmentSelectionCtrl"
-	x:Name="UserControl" d:DesignHeight="598.5" d:DesignWidth="1036.33">
+﻿<UserControl x:Class="Rogue.NET.Scenario.Views.EquipmentSelectionCtrl"
+ 	         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+	         xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
+             xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
+             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -82,7 +78,7 @@
                     </Border>
 
                     <StackPanel x:Name="FeetStack" Margin="0,8,0,0" Orientation="Vertical">
-						<TextBlock Margin="0,4,0,0" FontSize="16" Foreground="White" Text="Feet" TextWrapping="Wrap" d:LayoutOverrides="Width" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						<TextBlock Margin="0,4,0,0" FontSize="16" Foreground="White" Text="Feet" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						<Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
                             <Image x:Name="FeetImage"  Source="{Binding EquippedBoots, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
 						</Border>
@@ -135,9 +131,14 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <ContentControl prism:RegionManager.RegionName="EquipmentSelectionRegion"  x:Name="EquipmentListCtrl"  Margin="8" />
+                <region:RogueRegion x:Name="EquipmentListCtrl"  Margin="8"
+                                    region:RogueRegionManager.RegionName="EquipmentSelectionRegion">
+                    <extension:ItemGridConstructor Mode="Equipment" IntendedAction="Equip" IsDialogMode="False" />
+                </region:RogueRegion>
 
-                <ContentControl Grid.Row="1" prism:RegionManager.RegionName="EquipmentSubpanelRegion" x:Name="EquipmentSubpanel" Margin="8" />
+                <region:RogueRegion x:Name="EquipmentSubpanel" Grid.Row="1" Margin="8"
+                                    region:RogueRegionManager.RegionName="EquipmentSubpanelRegion"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type local:EquipmentSubpanel}"/>
             </Grid>
 		</Border>
 	</Grid>

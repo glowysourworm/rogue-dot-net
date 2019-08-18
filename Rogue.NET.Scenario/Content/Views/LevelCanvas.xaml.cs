@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel.Composition;
 
-using Prism.Events;
-
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -15,6 +13,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class LevelCanvas : UserControl
     {

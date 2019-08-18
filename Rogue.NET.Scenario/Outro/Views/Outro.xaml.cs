@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 
 namespace Rogue.NET.Scenario.Outro
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class OutroDisplay : UserControl
     {

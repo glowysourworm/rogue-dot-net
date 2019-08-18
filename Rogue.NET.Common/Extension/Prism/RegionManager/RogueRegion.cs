@@ -9,7 +9,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
     {
         public override string ToString()
         {
-            return this.GetHashCode().ToString();
+            return this.Name ?? "" + " " + this.GetHashCode().ToString();
         }
     }
 }

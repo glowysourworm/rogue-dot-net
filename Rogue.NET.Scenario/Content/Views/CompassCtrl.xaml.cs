@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class CompassCtrl : UserControl
     {

@@ -23,8 +23,10 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
         public void Publish(T payload)
         {
-            foreach (var action in _actions.Values)
-                action(payload);
+            var actions = _actions.Values.Copy();
+
+            foreach (var action in actions)
+                action.Invoke(payload);
         }
     }
     public class RogueEvent : RogueEventBase
@@ -50,7 +52,9 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
         }
         public void Publish()
         {
-            foreach (var action in _actions.Values)
+            var actions = _actions.Values.Copy();
+
+            foreach (var action in actions)
                 action.Invoke();
         }
     }

@@ -1,8 +1,9 @@
-﻿<UserControl x:Class="Rogue.NET.Scenario.Views.PlayerSubpanel"
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.PlayerSubpanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://www.codeplex.com/prism"
-             xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:contentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension"
              Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,11 +21,33 @@
         </Grid.RowDefinitions>
         <Rectangle Fill="DarkBlue" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
         <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelEquipmentRegion" x:Name="EquipmentCtrl" Grid.Row="1" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelConsumablesRegion" x:Name="ConsumablesCtrl" Visibility="Collapsed" Grid.Row="1" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelSkillsRegion" Grid.Row="1" x:Name="SkillCtrl" Visibility="Collapsed" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelStatsRegion" Grid.Row="1" Visibility="Collapsed" x:Name="StatsCtrl" />
-        <ContentControl prism:RegionManager.RegionName="PlayerSubpanelAlterationsRegion" Grid.Row="1" Visibility="Collapsed" x:Name="AlterationsCtrl" />
+
+        <region:RogueRegion x:Name="EquipmentCtrl" Grid.Row="1" 
+                            region:RogueRegionManager.RegionName="PlayerSubpanelEquipmentRegion">
+            <region:RogueRegionManager.DefaultView>
+                <extension:ItemGridConstructor Mode="Equipment" IntendedAction="Equip" IsDialogMode="False" />
+            </region:RogueRegionManager.DefaultView>
+        </region:RogueRegion>
+
+        <region:RogueRegion x:Name="ConsumablesCtrl" Grid.Row="1" Visibility="Collapsed"
+                            region:RogueRegionManager.RegionName="PlayerSubpanelConsumablesRegion">
+            <region:RogueRegionManager.DefaultView>
+                <extension:ItemGridConstructor Mode="Consumable" IntendedAction="Consume" IsDialogMode="False" />
+            </region:RogueRegionManager.DefaultView>
+        </region:RogueRegion>
+
+        <region:RogueRegion x:Name="SkillCtrl" Visibility="Collapsed" Grid.Row="1"
+                            region:RogueRegionManager.RegionName="PlayerSubpanelSkillsRegion" 
+                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:SkillGrid}" />
+
+        <region:RogueRegion x:Name="StatsCtrl" Grid.Row="1" Visibility="Collapsed" 
+                            region:RogueRegionManager.RegionName="PlayerSubpanelStatsRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:StatsControl}" />
+
+        <region:RogueRegion x:Name="AlterationsCtrl" Grid.Row="1" Visibility="Collapsed" 
+                            region:RogueRegionManager.RegionName="PlayerSubpanelAlterationsRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type contentView:AlterationCtrl}"/>
+        
         <Grid Margin="4,0,4,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
             <TextBlock x:Name="TitleTB" Grid.Row="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0,0,0" Foreground="#FFFFDE87" Text="Title" />

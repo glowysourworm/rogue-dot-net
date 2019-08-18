@@ -9,6 +9,7 @@ using System.Windows.Media.Effects;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class NewOpenEdit : UserControl
     {

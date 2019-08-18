@@ -1,16 +1,11 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Prism.Events;
-using Prism.Mef.Modularity;
+﻿using Prism.Mef.Modularity;
 using Prism.Modularity;
-using Prism.Regions;
 
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Events.ScenarioEditor;
-using Rogue.NET.Common.Events.Splash;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Intro.Views;
 using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Controller.Interface;
@@ -23,15 +18,17 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Linq;
 using Rogue.NET.Scenario.Outro;
-using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Scenario.Constant;
+using Rogue.NET.Scenario.Intro.Views;
 
 namespace Rogue.NET.Scenario
 {
     [ModuleExport("ScenarioModule", typeof(ScenarioModule), InitializationMode = InitializationMode.WhenAvailable)]
     public class ScenarioModule : IModule
     {
-        readonly IRegionManager _regionManager;
+        readonly IRogueRegionManager _regionManager;
         readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioController _scenarioController;
         readonly IGameController _gameController;
@@ -40,7 +37,7 @@ namespace Rogue.NET.Scenario
 
         [ImportingConstructor]
         public ScenarioModule(
-            IRegionManager regionManager,
+            IRogueRegionManager regionManager,
             IRogueEventAggregator eventAggregator,
             IScenarioController scenarioController,
             IGameController gameController,
@@ -57,84 +54,79 @@ namespace Rogue.NET.Scenario
 
         public void Initialize()
         {
-            RegisterRegionViews();
-
             _gameController.Initialize();
 
             _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "GameView");
-                _regionManager.RequestNavigate("GameRegion", "LevelView");
+                _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameView));
+                _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(LevelView));
             });
 
             _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
             {
                 if (update.ScenarioUpdateType == ScenarioUpdateType.PlayerDeath)
                 {
-                    (_regionManager.Regions["MainRegion"]
-                                   .Views
-                                   .FirstOrDefault(x => x.GetType() == typeof(DeathDisplay)) as DeathDisplay)
-                                   .DiedOfText = update.PlayerDeathMessage;
+                    var view = _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(DeathDisplay));
 
-                    _regionManager.RequestNavigate("MainRegion", "DeathDisplay");
+                    (view as DeathDisplay).DiedOfText = update.PlayerDeathMessage;
                 }
                 else if (update.ScenarioUpdateType == ScenarioUpdateType.ScenarioCompleted)
                 {
-                    // TODO!  Opacity needs to be reset!!!
-                    (_regionManager.Regions["MainRegion"]
-                                   .Views
-                                   .FirstOrDefault(x => x.GetType() == typeof(OutroDisplay)) as OutroDisplay)
-                                   .Opacity = 1;
+                    // TODO:REGIONMANAGER  Opacity needs to be reset!!!
+                    //(_regionManager.Regions["MainRegion"]
+                    //               .Views
+                    //               .FirstOrDefault(x => x.GetType() == typeof(OutroDisplay)) as OutroDisplay)
+                    //               .Opacity = 1;
 
-                    _regionManager.RequestNavigate("MainRegion", "OutroDisplay");
+                    var view = _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(OutroDisplay));
                 }
 
             });
 
             _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
-                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+                _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
             });
 
             _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
-                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+                _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
             });
 
             _eventAggregator.GetEvent<IntroFinishedEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "GameSetupView");
-                _regionManager.RequestNavigate("GameSetupRegion", "NewOpenEdit");
+                _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
             });
 
             _eventAggregator.GetEvent<GameSetupDisplayFinished>().Subscribe((e) =>
             {
-                _regionManager.RequestNavigate("GameSetupRegion", e.NextDisplayType.Name);
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, e.NextDisplayType);
             });
 
             _eventAggregator.GetEvent<RequestNaviateParametersDisplayEvent>().Subscribe((type) =>
             {
-                _regionManager.RequestNavigate("ChooseParametersRegion", type.Name);
+                _regionManager.LoadSingleInstance(RegionName.ChooseParametersRegion, type);
             });
 
             _eventAggregator.GetEvent<OutroFinishedEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("MainRegion", "IntroView");
+                _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(IntroView));
             });
 
             _eventAggregator.GetEvent<RequestNavigateToLevelViewEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("GameRegion", "LevelView");
+                _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(LevelView));
             });
             _eventAggregator.GetEvent<RequestNavigateToEquipmentSelectionEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("GameRegion", "EquipmentSelectionCtrl");
+                _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(EquipmentSelectionCtrl));
             });
             _eventAggregator.GetEvent<RequestNavigateToEncyclopediaEvent>().Subscribe(() =>
             {
-                _regionManager.RequestNavigate("GameRegion", "DungeonEncyclopedia");
+                _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(DungeonEncyclopedia));
             });
 
             // Delete Scenario
@@ -150,38 +142,31 @@ namespace Rogue.NET.Scenario
                     _eventAggregator.GetEvent<ScenarioDeletedEvent>().Publish();
                 }
             });
+
+            RegisterViews();
         }
 
-        private void RegisterRegionViews()
+        private void RegisterViews()
         {
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(IntroView));
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameSetupView));
-            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(NewOpenEdit));
-            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseParameters));
-            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseSavedGame));
-            _regionManager.RegisterViewWithRegion("GameSetupRegion", typeof(ChooseScenario));
-            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseName));
-            _regionManager.RegisterViewWithRegion("ChooseParametersRegion", typeof(ChooseCharacterClass));
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(DeathDisplay));
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(GameView));
-            _regionManager.RegisterViewWithRegion("MainRegion", typeof(OutroDisplay));
-            _regionManager.RegisterViewWithRegion("GameRegion", typeof(LevelView));
-            _regionManager.RegisterViewWithRegion("GameRegion", typeof(EquipmentSelectionCtrl));
-            _regionManager.RegisterViewWithRegion("GameRegion", typeof(SkillTree));
-            _regionManager.RegisterViewWithRegion("GameRegion", typeof(DungeonEncyclopedia));
-            _regionManager.RegisterViewWithRegion("LevelCanvasRegion", typeof(LevelCanvas));
-            _regionManager.RegisterViewWithRegion("LevelCompassRegion", typeof(CompassCtrl));
-            _regionManager.RegisterViewWithRegion("PlayerSubpanelRegion", typeof(PlayerSubpanel));
-            _regionManager.RegisterViewWithRegion("PlayerSubpanelSkillsRegion", typeof(SkillGrid));
-            _regionManager.RegisterViewWithRegion("PlayerSubpanelStatsRegion", typeof(StatsControl));
-            _regionManager.RegisterViewWithRegion("PlayerSubpanelAlterationsRegion", typeof(AlterationCtrl));
-            _regionManager.RegisterViewWithRegion("EquipmentSubpanelRegion", typeof(EquipmentSubpanel));
-            _regionManager.RegisterViewWithRegion("EquipmentSubpanelAttackAttributesRegion", typeof(AttackAttributesCtrl));
-            _regionManager.RegisterViewWithRegion("EquipmentSubpanelAlterationRegion", typeof(AlterationCtrl));
-            _regionManager.RegisterViewWithRegion("EquipmentSubpanelStatsRegion", typeof(StatsControl));
-            _regionManager.RegisterViewWithRegion("StatusCtrlRegion", typeof(StatusCtrl));
-            _regionManager.RegisterViewWithRegion("ScenarioMessageRegion", typeof(ScenarioMessageView));
-            _regionManager.RegisterViewWithRegion("PlayerStatusSmallPanelRegion", typeof(PlayerStatusSmallPanel));
+            // RogueRegionManager does not require that views are pre-registered. There are several
+            // ways to load a view into a region; but those will instantiate the view when they're called.
+            //
+            // This can cause issues because many event aggregator subscriptions are handled in the 
+            // constructors. 
+            //
+            // The Prism region manager handles this using pre-registration; but the design is limited to
+            // singleton regions. Sharing view instances led to problems in the scenario editor - so I
+            // created a region manager that uses region instances to register views.
+            //
+            // Leaving these (below) views un-registered caused problems when loading scenario view models
+            // because most of the event-aggregator events had already been called to initialize the view.
+
+            // I'm thinking that loading the primary game view may be enough to get all the child-views 
+            // instantiated.. but will have to see how it works.
+            _regionManager.PreRegisterView(RegionName.MainRegion, typeof(GameView));
+            _regionManager.PreRegisterView(RegionName.GameRegion, typeof(LevelView));
+            _regionManager.PreRegisterView(RegionName.GameRegion, typeof(EquipmentSelectionCtrl));
+            _regionManager.PreRegisterView(RegionName.GameRegion, typeof(DungeonEncyclopedia));
         }
     }
 }

@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class ChooseName : UserControl
     {

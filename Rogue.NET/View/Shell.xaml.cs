@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Common.Events;
+using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
@@ -8,6 +9,7 @@ using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.ViewModel;
@@ -29,6 +31,7 @@ namespace Rogue.NET.View
         Window _splashWindow;
 
         bool _blockUserInput = false;
+        bool _gameMode = false;
 
         [ImportingConstructor]
         public Shell(IRogueEventAggregator eventAggregator, IKeyResolver keyResolver)
@@ -64,6 +67,18 @@ namespace Rogue.NET.View
             _eventAggregator.GetEvent<ExitEvent>().Subscribe(() =>
             {
                 Application.Current.Shutdown();
+            });
+
+            // User enters the game (level loaded)
+            _eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
+            {
+                _gameMode = true;
+            });
+
+            // User exits the game
+            _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
+            {
+                _gameMode = false;
             });
 
             _eventAggregator.GetEvent<SplashEvent>().Subscribe((e) =>
@@ -103,7 +118,7 @@ namespace Rogue.NET.View
                 return;
 
             // Have to block user input here becasue OnPreviewKeyDown is not awaited by the calling
-            // thread.
+            // thread. (???) (NOT TRULY ASYNC / AWAIT !!!)
             _blockUserInput = true;
 
             if (e.Key == Key.Escape)
@@ -114,43 +129,47 @@ namespace Rogue.NET.View
                 return;
             }
 
-            var levelCommand = _keyResolver.ResolveKeys(
-                e.Key,
-                Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift),
-                Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl),
-                Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
-
-            if (levelCommand != null)
+            // During Game Mode - accept user inputs as level commands
+            if (_gameMode)
             {
-                if (levelCommand is LevelCommandEventArgs ||
-                    levelCommand is PlayerCommandEventArgs)
-                    await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+                var levelCommand = _keyResolver.ResolveKeys(
+                    e.Key,
+                    Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift),
+                    Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl),
+                    Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
 
-                else if (levelCommand is ViewCommandEventArgs)
+                if (levelCommand != null)
                 {
-                    switch ((levelCommand as ViewCommandEventArgs).ViewAction)
+                    if (levelCommand is LevelCommandEventArgs ||
+                        levelCommand is PlayerCommandEventArgs)
+                        await _eventAggregator.GetEvent<UserCommandEvent>().Publish(levelCommand);
+
+                    else if (levelCommand is ViewCommandEventArgs)
                     {
-                        case ViewActionType.ShowPlayerSubpanelEquipment:
-                            _eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Publish();
-                            break;
-                        case ViewActionType.ShowPlayerSubpanelConsumables:
-                            _eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Publish();
-                            break;
-                        case ViewActionType.ShowPlayerSubpanelSkills:
-                            _eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Publish();
-                            break;
-                        case ViewActionType.ShowPlayerSubpanelStats:
-                            _eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Publish();
-                            break;
-                        case ViewActionType.ShowPlayerSubpanelAlterations:
-                            _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
-                            break;
-                        default:
-                            break;
+                        switch ((levelCommand as ViewCommandEventArgs).ViewAction)
+                        {
+                            case ViewActionType.ShowPlayerSubpanelEquipment:
+                                _eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Publish();
+                                break;
+                            case ViewActionType.ShowPlayerSubpanelConsumables:
+                                _eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Publish();
+                                break;
+                            case ViewActionType.ShowPlayerSubpanelSkills:
+                                _eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Publish();
+                                break;
+                            case ViewActionType.ShowPlayerSubpanelStats:
+                                _eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Publish();
+                                break;
+                            case ViewActionType.ShowPlayerSubpanelAlterations:
+                                _eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Publish();
+                                break;
+                            default:
+                                break;
+                        }
                     }
+                    else
+                        throw new Exception("Unknown User Command Type");
                 }
-                else
-                    throw new Exception("Unknown User Command Type");
             }
 
             _blockUserInput = false;

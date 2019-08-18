@@ -39,6 +39,18 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
         IEnumerable<RogueRegion> GetRegions();
 
         /// <summary>
+        /// Creates a view instance of the specified type in memory and assigns it to
+        /// the single instance region (see IRogueRegionManager.LoadSingleInstance). This
+        /// will call the public default or importing constructor. Views will otherwise be
+        /// instantiated when they're loaded programmatically OR by the attached properties.
+        /// 
+        /// THIS DOES NOT LOAD THE VIEW INTO AS CONTENT FOR THE REGION.
+        /// </summary>
+        /// <param name="regionName">Single instance region with a unique RogueRegionManager.RegionName handle</param>
+        /// <param name="viewType">Type of view to pre-register</param>
+        void PreRegisterView(string regionName, Type viewType);
+
+        /// <summary>
         /// Loads the RogueRegion with the specified view type OR the last view
         /// instance with the same type. Loading is accomplished using the ServiceLocator
         /// </summary>
@@ -53,7 +65,8 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
 
         /// <summary>
         /// Finds the SINGLE RogueRegion instance with the specified name - with the
-        /// specified type. Loading is accomplished using the ServiceLocator
+        /// specified type. Loading is accomplished using the ServiceLocator. The region
+        /// name MUST be specified using the IRogueRegionManager.RegionName attach property.
         /// </summary>
         /// <returns>Instance of view</returns>
         FrameworkElement LoadSingleInstance(string regionName, Type viewType);

@@ -3,8 +3,9 @@ using System.ComponentModel.Composition;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
-namespace Rogue.NET.Scenario.Views
+namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class SkillGrid : UserControl
     {

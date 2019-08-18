@@ -12,6 +12,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class ScenarioMessageView : UserControl
     {

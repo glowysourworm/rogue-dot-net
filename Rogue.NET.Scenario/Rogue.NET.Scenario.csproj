@@ -175,6 +175,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constant\RegionName.cs" />
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AlterationAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AlterationDescriptionViewModel.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Content\Views\EquipmentSubpanel.xaml.cs">
       <DependentUpon>EquipmentSubpanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\Extension\ItemGridConstructor.cs" />
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>

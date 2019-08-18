@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-             xmlns:prism="http://www.codeplex.com/prism"
-             xmlns:prismExtension="clr-namespace:Rogue.NET.Common.Extension.Prism;assembly=Rogue.NET.Common">
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:gameSetupParametersView="clr-namespace:Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml">
             <ResourceDictionary.MergedDictionaries>
@@ -13,21 +13,17 @@
     </UserControl.Resources>
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="80">
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <prismExtension:TransitionPresenter 
-                                     HorizontalAlignment="Stretch"
-                                     VerticalAlignment="Stretch"
-                                     prism:RegionManager.RegionName="ChooseParametersRegion" >
-            <prismExtension:TransitionPresenter.Transition>
-                <prismExtension:BlurTransition FromRadius="0" ToRadius="50" />
-            </prismExtension:TransitionPresenter.Transition>
-        </prismExtension:TransitionPresenter>
+        <region:RogueRegion HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            region:RogueRegionManager.RegionName="ChooseParametersRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type gameSetupParametersView:ChooseName}" />
 
         <!-- Button Panel -->
-        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right">
+        <Grid Grid.Row="1" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="BackButton" Click="BackButton_Click" Height="54" Width="190" Cursor="Hand">
                     <Button.Template>

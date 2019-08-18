@@ -1,10 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.RegionManager;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
@@ -33,8 +29,10 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
         public void Publish(RogueRegion region)
         {
-            foreach (var action in _actions.Values)
-                action(region);
+            var actions = _actions.Values.Copy();
+
+            foreach (var action in actions)
+                action.Invoke(region);
         }
     }
 
@@ -63,7 +61,9 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
         public void Publish(RogueRegion region, T payload)
         {
-            foreach (var action in _actions.Values)
+            var actions = _actions.Values.Copy();
+
+            foreach (var action in actions)
                 action(region, payload);
         }
     }

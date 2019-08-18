@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
-    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class AlterationCtrl : UserControl
     {

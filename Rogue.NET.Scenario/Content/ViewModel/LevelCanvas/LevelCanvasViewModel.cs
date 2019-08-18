@@ -33,6 +33,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export(typeof(LevelCanvasViewModel))]
     public class LevelCanvasViewModel : NotifyViewModel
     {
@@ -100,7 +101,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 DrawLayout();
                 DrawContent();
                 UpdateLayoutVisibility();
-
             });
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe((update) =>

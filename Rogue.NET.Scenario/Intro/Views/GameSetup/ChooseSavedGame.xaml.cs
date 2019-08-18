@@ -7,6 +7,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.Views.GameSetup
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class ChooseSavedGame : UserControl
     {

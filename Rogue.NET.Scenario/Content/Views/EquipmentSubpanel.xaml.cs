@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -11,6 +10,7 @@ using System.Windows.Media.Animation;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
+    [PartCreationPolicy(CreationPolicy.Shared)]
     [Export]
     public partial class EquipmentSubpanel : UserControl
     {

@@ -24,7 +24,9 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
         public async Task Publish(T payload)
         {
-            foreach (var function in _functions.Values)
+            var functions = _functions.Values.Copy();
+
+            foreach (var function in functions)
                 await function(payload);
         }
     }
