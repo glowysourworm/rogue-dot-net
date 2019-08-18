@@ -3,7 +3,7 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.ScenarioEditor.Events
 {
-    public class LoadDifficultyChartEvent : RogueRegionEvent
+    public class LoadDifficultyChartEvent : RogueEvent
     {
     }
 }

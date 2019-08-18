@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.Interface;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -20,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.Views
             var viewModel = this.DataContext as IScenarioConstructionViewModel;
             if (viewModel != null && e.AddedItems.Count > 0)
             {
-                var construction = ((ListBoxItem)e.AddedItems[0]).Tag.ToString();
+                var construction = ((ListBoxItem)e.AddedItems[0]).Tag as Type;
                 var command = viewModel.LoadConstructionCommand;
 
                 if (command.CanExecute(construction))

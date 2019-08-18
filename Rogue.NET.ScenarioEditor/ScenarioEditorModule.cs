@@ -80,10 +80,9 @@ namespace Rogue.NET.ScenarioEditor
                 // Create an instance of the config so that there aren't any null refs.
                 _scenarioEditorController.New();
             });
-            _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe((region) =>
+            _eventAggregator.GetEvent<LoadDifficultyChartEvent>().Subscribe(() =>
             {
-                // TODO:REGIONMANAGER Not sure whether to have a data context object passed with the event
-                // _regionManager.Load(region, typeof(ScenarioDesignOverview));
+                _regionManager.LoadSingleInstance(RegionNames.DesignRegion, typeof(ScenarioDesignOverview));
             });
 
             // Asset Events
