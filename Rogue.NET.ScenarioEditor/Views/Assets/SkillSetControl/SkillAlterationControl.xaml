@@ -5,7 +5,6 @@
              xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Skill"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
-             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
@@ -32,10 +31,11 @@
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion DataContext="{Binding Effect}">
+            <region:RogueRegion>
                 <region:RogueRegionManager.DefaultView>
-                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}"
-                                                                            AlterationType="{x:Type viewModel:SkillAlterationTemplateViewModel}" />
+                    <commonControl:AlterationEffectChooser AlterationEffectInterfaceType="{x:Type alterationInterface:ISkillAlterationEffectTemplateViewModel}"
+                                                           Alteration="{ Binding }"
+                                                           AlterationEffect="{Binding Effect}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>

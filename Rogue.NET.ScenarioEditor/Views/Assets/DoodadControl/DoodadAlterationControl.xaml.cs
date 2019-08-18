@@ -7,6 +7,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class DoodadAlterationControl : UserControl
     {
@@ -15,8 +16,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl
         {
             InitializeComponent();
 
-            // NOTE*** THIS EVENT WILL UPDATE THE PROPER INSTANCE BECAUSE THERE IS ONLY ONE
-            //         INSTANCE OF THIS CONTROL
+            // Listen for alteration effect changed
             eventAggregator.GetEvent<AlterationEffectChangedEvent>()
                            .Subscribe(e =>
                            {
@@ -26,7 +26,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.DoodadControl
 
                                // Type cast the effect interface
                                if (e.Effect is IDoodadAlterationEffectTemplateViewModel &&
-                                   e.AlterationType == typeof(DoodadAlterationTemplateViewModel))
+                                   e.Alteration == viewModel)
                                    viewModel.Effect = (e.Effect as IDoodadAlterationEffectTemplateViewModel);
                            });
         }

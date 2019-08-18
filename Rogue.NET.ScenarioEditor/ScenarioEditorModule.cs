@@ -275,7 +275,7 @@ namespace Rogue.NET.ScenarioEditor
                     _eventAggregator.GetEvent<AlterationEffectChangedEvent>()
                                     .Publish(new AlterationEffectChangedEventArgs()
                                     {
-                                        AlterationType = e.AlterationType,
+                                        Alteration = e.Alteration,
                                         Effect = alterationEffect                                        
                                     });
 

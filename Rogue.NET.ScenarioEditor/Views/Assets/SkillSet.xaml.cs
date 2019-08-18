@@ -22,26 +22,22 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
             };
         }
 
-        private void CreateSymbol_Click(object sender, RoutedEventArgs e)
-        {
-            var view = new SymbolEditor();
-            view.DataContext = (this.DataContext as SkillSetTemplateViewModel).SymbolDetails;
-            view.WindowMode = true;
-            view.Width = 600;
-
-            DialogWindowFactory.Show(view, "Rogue Symbol Editor");
-        }
-
         private void AddSkillButton_Click(object sender, RoutedEventArgs e)
         {
             var viewModel = this.DataContext as SkillSetTemplateViewModel;
             if (viewModel == null)
                 return;
 
-            viewModel.Skills.Add(new SkillTemplateViewModel()
-            {
-                Name = NameGenerator.Get(viewModel.Skills.Select(x => x.Name), viewModel.Name)
-            });
+            // Create a new skill with a user name input
+            var view = new RenameControl();
+            var defaultName = NameGenerator.Get(viewModel.Skills.Select(x => x.Name), viewModel.Name);
+            var skill = new SkillTemplateViewModel();
+
+            // Set the name using the RenameControl
+            view.DataContext = skill;
+
+            if (DialogWindowFactory.Show(view, "Create Skill"))
+                viewModel.Skills.Add(skill);
         }
 
         private void RemoveSkillButton_Click(object sender, RoutedEventArgs e)

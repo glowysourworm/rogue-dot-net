@@ -66,30 +66,16 @@
                                   Width="200"                              
                                   HorizontalAlignment="Right" />
                 </Grid>
-                <Grid Margin="10" Visibility="{Binding IsAutomatic, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <ComboBox x:Name="AutomaticSpellCB" 
-                      DisplayMemberPath="Name" 
-                      SelectedItem="{Binding AutomaticMagicSpellTemplate, Mode=TwoWay}" 
-                      SelectedValue="{Binding AutomaticMagicSpellTemplate.Name}"
-                      SelectedValuePath="Name" Width="200" HorizontalAlignment="Right"/>
-                    <TextBlock Grid.Row="4" Foreground="White" Text="Automatic Spell" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10" Visibility="{Binding IsInvoked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-                    <ComboBox x:Name="InvokedSpellCB" 
-                          DisplayMemberPath="Name" 
-                          SelectedItem="{Binding InvokedMagicSpellTemplate, Mode=TwoWay}" 
-                          SelectedValue="{Binding InvokedMagicSpellTemplate.Name}"
-                          SelectedValuePath="Name" Width="200" HorizontalAlignment="Right"/>
-                    <TextBlock Grid.Row="5" Foreground="White" Text="Manual (Invoked) Spell" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                </Grid>
             </StackPanel>
         </TabItem>
-        <TabItem Header="Automatic Alteration">
+        <TabItem Header="Automatic Alteration"
+                 Visibility="{Binding IsAutomatic, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
                                 DataContext="{Binding AutomaticAlteration}">
             </region:RogueRegion>
         </TabItem>
-        <TabItem Header="Invoked Alteration">
+        <TabItem Header="Invoked Alteration"
+                 Visibility="{Binding IsInvoked, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type doodad:DoodadAlterationControl}"
                                 DataContext="{Binding InvokedAlteration}">
             </region:RogueRegion>            

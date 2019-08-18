@@ -6,6 +6,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class SymbolEditor : UserControl
     {

@@ -2,6 +2,7 @@
 using Rogue.NET.Common.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,8 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
     public partial class RadioButtonEnumControl : UserControl
     {
         public static readonly DependencyProperty EnumTypeProperty =

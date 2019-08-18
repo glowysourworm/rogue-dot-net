@@ -18,9 +18,9 @@ namespace Rogue.NET.ScenarioEditor.Events
     public class LoadNewAlterationEffectEventArgs : System.EventArgs
     {
         /// <summary>
-        /// Interface type for the alteration container (parent of the effect)
+        /// Alteration instance that contains the alteration effect
         /// </summary>
-        public Type AlterationType { get; set; }
+        public object Alteration { get; set; }
 
         /// <summary>
         /// The view type associated with the region

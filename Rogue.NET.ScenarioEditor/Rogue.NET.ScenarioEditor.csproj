@@ -628,8 +628,6 @@
     <Compile Include="Views\EditorInstructions.xaml.cs">
       <DependentUpon>EditorInstructions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Extension\AlterationEffectChooserMarkupExtension.cs" />
-    <Compile Include="Views\Extension\AlterationEffectChosenRoutedEventArgs.cs" />
     <Compile Include="Views\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>

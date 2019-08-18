@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment"
-             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface">
     <UserControl.Resources>
@@ -17,10 +16,11 @@
     </UserControl.Resources>
     <TabControl Background="Black">
         <TabItem Header="Effect">
-            <region:RogueRegion DataContext="{Binding Effect}">
+            <region:RogueRegion>
                 <region:RogueRegionManager.DefaultView>
-                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IEquipmentEquipAlterationEffectTemplateViewModel}"
-                                                                            AlterationType="{x:Type viewModel:EquipmentEquipAlterationTemplateViewModel}" />
+                    <commonControl:AlterationEffectChooser AlterationEffectInterfaceType="{x:Type alterationInterface:IEquipmentEquipAlterationEffectTemplateViewModel}"
+                                                           Alteration="{ Binding }"
+                                                           AlterationEffect="{Binding Effect}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>            
         </TabItem>

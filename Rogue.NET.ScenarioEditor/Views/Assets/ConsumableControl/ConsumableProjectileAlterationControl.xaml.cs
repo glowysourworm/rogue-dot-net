@@ -2,7 +2,6 @@
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.ScenarioEditor.Views.Extension;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -27,7 +26,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 
                                // Type cast the effect interface
                                if (e.Effect is IConsumableProjectileAlterationEffectTemplateViewModel &&
-                                   e.AlterationType == typeof(ConsumableProjectileAlterationTemplateViewModel))
+                                   e.Alteration == viewModel)
                                    viewModel.Effect = (e.Effect as IConsumableProjectileAlterationEffectTemplateViewModel);
                            });
         }

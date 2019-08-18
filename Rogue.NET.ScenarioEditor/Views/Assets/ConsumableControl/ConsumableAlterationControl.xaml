@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:extension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Consumable"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
@@ -29,10 +28,11 @@
             <commonControl:AlterationCost DataContext="{Binding Cost}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion DataContext="{Binding Effect}">
+            <region:RogueRegion>
                 <region:RogueRegionManager.DefaultView>
-                    <extension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}"
-                                                                      AlterationType="{x:Type viewModel:ConsumableAlterationTemplateViewModel}" />
+                    <commonControl:AlterationEffectChooser AlterationEffectInterfaceType="{x:Type alterationInterface:IConsumableAlterationEffectTemplateViewModel}"
+                                                           Alteration="{ Binding }"
+                                                           AlterationEffect="{Binding Effect}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>

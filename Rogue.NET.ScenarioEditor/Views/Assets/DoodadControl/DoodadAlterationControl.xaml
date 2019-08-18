@@ -4,9 +4,9 @@
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:viewModel="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Doodad"
+             xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:sharedControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl"
-             xmlns:markupExtension="clr-namespace:Rogue.NET.ScenarioEditor.Views.Extension"
              xmlns:alterationInterface="clr-namespace:Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface"             >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,16 +17,17 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl>
+    <TabControl Background="Black">
         <TabItem Header="General">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
                                              EnumValue="{Binding AnimationGroup.TargetType}" />
         </TabItem>
         <TabItem Header="Effect">
-            <region:RogueRegion DataContext="{Binding Effect}">
+            <region:RogueRegion>
                 <region:RogueRegionManager.DefaultView>
-                    <markupExtension:AlterationEffectChooserMarkupExtension AlterationEffectInterface="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}"
-                                                                            AlterationType="{x:Type viewModel:DoodadAlterationTemplateViewModel}"  />
+                    <commonControl:AlterationEffectChooser AlterationEffectInterfaceType="{x:Type alterationInterface:IDoodadAlterationEffectTemplateViewModel}"
+                                                           Alteration="{ Binding }"
+                                                           AlterationEffect="{Binding Effect}" />
                 </region:RogueRegionManager.DefaultView>
             </region:RogueRegion>
         </TabItem>

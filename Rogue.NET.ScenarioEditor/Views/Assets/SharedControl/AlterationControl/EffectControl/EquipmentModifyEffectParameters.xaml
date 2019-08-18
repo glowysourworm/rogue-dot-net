@@ -5,27 +5,60 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core" 
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <TabControl TabStripPlacement="Left" Background="Black">
-        <TabItem Header="General">
-            <StackPanel>
-                <!-- Class Change-->
-                <Grid Margin="10">
-                    <TextBlock Text="Class Change" Foreground="White" />
-                    <toolkit:IntegerUpDown DataContext="{Binding ClassChange}" HorizontalAlignment="Right" />
-                </Grid>
-                <!-- Quality Change-->
-                <Grid Margin="10">
-                    <TextBlock Text="Quality Change" Foreground="White" />
-                    <toolkit:IntegerUpDown DataContext="{Binding QualityChange}" HorizontalAlignment="Right" />
-                </Grid>
-            </StackPanel>
-        </TabItem>
         <TabItem Header="Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationModifyEquipmentType}"
                                              EnumValue="{Binding Type, Mode=TwoWay}" />
+        </TabItem>        
+        <TabItem Header="Parameters">
+            <TabItem.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorClass}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorQuality}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponClass}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponQuality}" />                    
+                </MultiBinding>
+            </TabItem.Visibility>
+            <StackPanel>
+                <!-- Class Change-->
+                <Grid Margin="10">
+                    <Grid.Visibility>
+                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorClass}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponClass}" />
+                        </MultiBinding>
+                    </Grid.Visibility>
+                    <TextBlock Text="Class Change" Foreground="White" />
+                    <toolkit:IntegerUpDown Value="{Binding ClassChange}" Minimum="-10" Maximum="10" HorizontalAlignment="Right" />
+                </Grid>
+                <!-- Quality Change-->
+                <Grid Margin="10">
+                    <Grid.Visibility>
+                        <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorQuality}" />
+                            <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponQuality}" />
+                        </MultiBinding>
+                    </Grid.Visibility>                    
+                    <TextBlock Text="Quality Change" Foreground="White" />
+                    <toolkit:DoubleUpDown Value="{Binding QualityChange}" Minimum="-20" Increment="0.1" FormatString="F1" Maximum="20" HorizontalAlignment="Right" />
+                </Grid>
+            </StackPanel>
         </TabItem>
         <TabItem Header="Attack Attributes">
-            <commonControl:AlterationAttackAttributeListControl DataContext="{Binding AttackAttributes}" />
+            <TabItem.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.ArmorImbue}" />
+                    <Binding Path="Type" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AlterationModifyEquipmentType.WeaponImbue}" />
+                </MultiBinding>
+            </TabItem.Visibility>
+            <commonControl:AlterationAttackAttributeListControl />
         </TabItem>
     </TabControl>
 </UserControl>
