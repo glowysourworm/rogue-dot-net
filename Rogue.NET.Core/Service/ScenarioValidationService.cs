@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Model.Validation;
 using Rogue.NET.Core.Model.Validation.Interface;
@@ -167,45 +168,44 @@ namespace Rogue.NET.Core.Service
                         };
                     });
                 })),
-                // TODO:ALTERATION
-                //new ScenarioValidationRule("Alterations (and / or) Learned Skills have to be set for all configured assets", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                //{
-                //    var consumablesNotSet = configuration.ConsumableTemplates
-                //                                         .Where(x => (x.HasSpell && x.SpellTemplate == null) ||
-                //                                                     (x.IsProjectile && x.ProjectileSpellTemplate == null) ||
-                //                                                     (x.HasLearnedSkill && x.LearnedSkill == null) ||
-                //                                                     (x.SubType == ConsumableSubType.Ammo && x.AmmoSpellTemplate == null));
+                new ScenarioValidationRule("Alteration Effects (and / or) Learned Skills have to be set for all configured assets", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var consumablesNotSet = configuration.ConsumableTemplates
+                                                         .Where(x => (x.HasAlteration && x.ConsumableAlteration == null) ||
+                                                                     (x.HasProjectileAlteration && x.ConsumableProjectileAlteration == null) ||
+                                                                     (x.HasLearnedSkill && x.LearnedSkill == null));
 
-                //    var equipmentNotSet = configuration.EquipmentTemplates
-                //                                       .Where(x => (x.HasCurseSpell && x.CurseSpell == null) ||
-                //                                                   (x.HasEquipSpell && x.EquipSpell == null));
+                    var equipmentNotSet = configuration.EquipmentTemplates
+                                                       .Where(x => (x.HasAttackAlteration && x.EquipmentAttackAlteration == null) ||
+                                                                   (x.HasCurseAlteration && x.EquipmentCurseAlteration == null) ||
+                                                                   (x.HasEquipAlteration && x.EquipmentEquipAlteration == null));
 
-                //    var doodadsNotSet = configuration.DoodadTemplates
-                //                                     .Where(x => (x.IsAutomatic && x.AutomaticMagicSpellTemplate == null) ||
-                //                                                 (x.IsInvoked && x.InvokedMagicSpellTemplate == null));
+                    var doodadsNotSet = configuration.DoodadTemplates
+                                                     .Where(x => (x.IsAutomatic && x.AutomaticAlteration == null) ||
+                                                                 (x.IsInvoked && x.InvokedAlteration == null));
 
-                //    var enemiesNotSet = configuration.EnemyTemplates
-                //                                     .Where(x =>
-                //                                            x.BehaviorDetails.Behaviors.Any(behavior =>
-                //                                                (behavior.AttackType == CharacterAttackType.Skill ||
-                //                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                //                                                 behavior.EnemySpell == null))
-                //                                     .Actualize();
+                    var enemiesNotSet = configuration.EnemyTemplates
+                                                     .Where(x =>
+                                                            x.BehaviorDetails.Behaviors.Any(behavior =>
+                                                                (behavior.AttackType == CharacterAttackType.Skill ||
+                                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                                                                 behavior.EnemyAlteration == null))
+                                                     .Actualize();
 
-                //    return consumablesNotSet
-                //                .Cast<DungeonObjectTemplate>()
-                //                .Union(equipmentNotSet)
-                //                .Union(doodadsNotSet)
-                //                .Union(enemiesNotSet)
-                //                .Select(x =>
-                //                {
-                //                    return new ScenarioValidationResult()
-                //                    {
-                //                        Passed = false,
-                //                        InnerMessage = x.Name + " has an un-set alteration (or) learned skill property"
-                //                    };
-                //                });
-                //})),
+                    return consumablesNotSet
+                                .Cast<DungeonObjectTemplate>()
+                                .Union(equipmentNotSet)
+                                .Union(doodadsNotSet)
+                                .Union(enemiesNotSet)
+                                .Select(x =>
+                                {
+                                    return new ScenarioValidationResult()
+                                    {
+                                        Passed = false,
+                                        InnerMessage = x.Name + " has an un-set alteration effect (or) learned skill property"
+                                    };
+                                });
+                })),
                 new ScenarioValidationRule("Alteration type not supported for asset", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     var consumablesIssues = configuration.ConsumableTemplates
@@ -597,45 +597,24 @@ namespace Rogue.NET.Core.Service
         {
             var result = new List<string>();
 
-            // TODO:ALTERATION
-            //foreach (var behavior in template.BehaviorDetails.Behaviors)
-            //{
-            //    if ((behavior.AttackType == CharacterAttackType.Skill ||
-            //         behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-            //         behavior.EnemySpell != null)
-            //    {
-            //        switch (behavior.EnemySpell.Type)
-            //        {
-            //            case AlterationType.AttackAttribute:
-            //                {
-            //                    switch (behavior.EnemySpell.AttackAttributeType)
-            //                    {
-            //                        case AlterationAttackAttributeType.ImbueArmor:
-            //                        case AlterationAttackAttributeType.ImbueWeapon:
-            //                        case AlterationAttackAttributeType.Passive:
-            //                            result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
-            //                                    " Attack Attribute Alteration type is not supported for enemies");
-            //                            break;
-            //                    }
-            //                    break;
-            //                }
-            //            case AlterationType.OtherMagicEffect:
-            //                {
-            //                    switch (behavior.EnemySpell.OtherEffectType)
-            //                    {
-            //                        case AlterationMagicEffectType.CreateMonster:
-            //                            break;
-            //                    }
-            //                    break;
-            //                }
-            //            case AlterationType.Remedy:
-            //            case AlterationType.PassiveAura:
-            //                result.Add(behavior.EnemySpell.AttackAttributeType.ToString() +
-            //                            " Alteration type is not supported for enemies");
-            //                break;
-            //        }
-            //    }
-            //}
+            foreach (var behavior in template.BehaviorDetails.Behaviors)
+            {
+                if ((behavior.AttackType == CharacterAttackType.Skill ||
+                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
+                     behavior.EnemyAlteration != null)
+                {
+                    if (behavior.EnemyAlteration.Effect is CreateMonsterAlterationEffectTemplate)
+                    {
+                        var effect = behavior.EnemyAlteration.Effect as CreateMonsterAlterationEffectTemplate;
+
+                        if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
+                            result.Add("Create Monster Enemy not set for enemy behavior:  " + template.Name);
+                    }
+
+                    if (behavior.EnemyAlteration.Effect is OtherAlterationEffectTemplate)
+                        result.Add("Enemy OtherAlterationEffect is deprecated and has to be removed");
+                }
+            }
 
             return result;
         }

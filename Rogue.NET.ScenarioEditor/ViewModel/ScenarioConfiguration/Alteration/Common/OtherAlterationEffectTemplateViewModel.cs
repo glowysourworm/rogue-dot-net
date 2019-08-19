@@ -13,9 +13,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             ViewType = typeof(OtherEffectParameters))]
     public class OtherAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                    IDoodadAlterationEffectTemplateViewModel,
-                    IEnemyAlterationEffectTemplateViewModel,
-                    ISkillAlterationEffectTemplateViewModel
+                             IDoodadAlterationEffectTemplateViewModel,
+                             ISkillAlterationEffectTemplateViewModel
     {
         AlterationOtherEffectType _type;
 

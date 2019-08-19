@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     public class OtherAlterationEffectTemplate
         : Template, IConsumableAlterationEffectTemplate,
                     IDoodadAlterationEffectTemplate,
-                    IEnemyAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
         AlterationOtherEffectType _type;
