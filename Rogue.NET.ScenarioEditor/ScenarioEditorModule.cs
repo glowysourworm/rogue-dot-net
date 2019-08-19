@@ -33,7 +33,6 @@ namespace Rogue.NET.ScenarioEditor
     public class ScenarioEditorModule : IModule
     {
         readonly IRogueEventAggregator _eventAggregator;
-        readonly IRegionManager _regionManagerOLD;
         readonly IRogueRegionManager _regionManager;
         readonly IScenarioAssetController _scenarioAssetController;
         readonly IScenarioEditorController _scenarioEditorController;
@@ -43,7 +42,6 @@ namespace Rogue.NET.ScenarioEditor
 
         [ImportingConstructor]
         public ScenarioEditorModule(
-            IRegionManager regionManagerOLD,
             IRogueRegionManager regionManager,
             IRogueEventAggregator eventAggregator,
             IScenarioAssetController scenarioAssetController,
@@ -52,7 +50,6 @@ namespace Rogue.NET.ScenarioEditor
             IScenarioAssetReferenceService scenarioAssetReferenceService,
             IScenarioCollectionProvider scenarioCollectionProvider)
         {
-            _regionManagerOLD = regionManagerOLD;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
             _scenarioAssetController = scenarioAssetController;
@@ -64,8 +61,7 @@ namespace Rogue.NET.ScenarioEditor
 
         public void Initialize()
         {
-            // Register views with OLD IRegionManager
-            _regionManagerOLD.RegisterViewWithRegion("MainRegion", typeof(Editor));
+            _regionManager.PreRegisterView(RegionNames.MainRegion, typeof(Editor));
 
             RegisterEvents();
         }
@@ -75,7 +71,7 @@ namespace Rogue.NET.ScenarioEditor
             // Scenario Editor Events
             _eventAggregator.GetEvent<EditScenarioEvent>().Subscribe(() =>
             {
-                _regionManagerOLD.RequestNavigate("MainRegion", "Editor");
+                _regionManager.LoadSingleInstance(RegionNames.MainRegion, typeof(Editor));
 
                 // Create an instance of the config so that there aren't any null refs.
                 _scenarioEditorController.New();

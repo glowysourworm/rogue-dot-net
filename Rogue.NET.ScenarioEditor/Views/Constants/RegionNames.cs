@@ -11,6 +11,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Constants
     /// </summary>
     public static class RegionNames
     {
+        // Main (Duplicate) - this region is defined in the Shell
+        public const string MainRegion = "MainRegion";
+
         // Editor
         public const string DesignRegion = "DesignRegion";
 
