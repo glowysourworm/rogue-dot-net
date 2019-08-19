@@ -30,43 +30,43 @@ namespace Rogue.NET.Core.Model.Enums
     {
         [Display(Name = "Source",
                  Description = "Effect applied to source character only")]
-        Source = 1,
+        Source = 0,
 
         [Display(Name = "Target",
                  Description = "Effect applied to target character only")]
-        Target = 2,
+        Target = 1,
 
         [Display(Name = "All In Range",
                  Description = "Effect applied to all characters in numeric range of source (including source character)")]
-        AllInRange = 3,
+        AllInRange = 2,
 
         [Display(Name = "All In Range (Except Source)",
                  Description = "Effect applied to all characters in numeric range of source")]
-        AllInRangeExceptSource = 4
+        AllInRangeExceptSource = 3
     }
     public enum AlterationRandomPlacementType : int
     {
         [Display(Name = "In Level",
                  Description = "Character placed on random open tile in level")]
-        InLevel = 1,
+        InLevel = 0,
 
         [Display(Name = "In Range Of Character",
                  Description = "Character placed on random open tile in numeric range of source character")]
-        InRangeOfCharacter = 2,
+        InRangeOfCharacter = 1,
 
         [Display(Name = "In Player Visible Range",
                  Description = "Character placed on random open tile in visible range of player")]
-        InPlayerVisibleRange = 3
+        InPlayerVisibleRange = 2
     }
     public enum AlterationOtherEffectType : int
     {
         [Display(Name = "Identify",
                  Description = "Identifies a player item")]
-        Identify = 1,
+        Identify = 0,
 
         [Display(Name = "Uncurse",
                  Description = "Removes curse from player item")]
-        Uncurse = 2
+        Uncurse = 1
     }
     [Flags]
     public enum AlterationRevealType : int
@@ -95,27 +95,27 @@ namespace Rogue.NET.Core.Model.Enums
     {
         [Display(Name = "Armor Class",
                  Description = "Modifies Armor Class Attribute")]
-        ArmorClass = 1,
+        ArmorClass = 0,
 
         [Display(Name = "Armor Imbue",
                  Description = "Modifies Armor Attack Attributes")]
-        ArmorImbue = 2,
+        ArmorImbue = 1,
 
         [Display(Name = "Armor Quality",
                  Description = "Modifies Armor Quality Attribute")]
-        ArmorQuality = 3,
+        ArmorQuality = 2,
 
         [Display(Name = "Weapon Class",
                  Description = "Modifies Weapon Class Attribute")]
-        WeaponClass = 4,
+        WeaponClass = 3,
 
         [Display(Name = "Weapon Imbue",
                  Description = "Modifies Weapon Imbue Attribute")]
-        WeaponImbue = 5,
+        WeaponImbue = 4,
 
         [Display(Name = "Weapon Quality",
                  Description = "Modifies Weapon Quality Attribute")]
-        WeaponQuality = 6
+        WeaponQuality = 5
     }
     public enum AlterationAttackAttributeCombatType : int
     {
@@ -124,7 +124,7 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         [Display(Name = "Friendly (Aggregate)",
                  Description = "Attack Attributes are aggregated along with the affected characters' other attributes and applied to their combat turns")]
-        FriendlyAggregate = 1,
+        FriendlyAggregate = 0,
 
         /// <summary>
         /// For this type the attack attributes are used to fight the character (source, target,
@@ -134,6 +134,6 @@ namespace Rogue.NET.Core.Model.Enums
         /// </summary>
         [Display(Name = "Malign (Per Step)",
                  Description = "Attack Attributes are applied as an attack each turn against the affected characters")]
-        MalignPerStep = 2
+        MalignPerStep = 1
     }
 }

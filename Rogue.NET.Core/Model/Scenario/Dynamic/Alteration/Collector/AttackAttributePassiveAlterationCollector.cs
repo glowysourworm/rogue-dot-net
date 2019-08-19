@@ -84,7 +84,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                             var existingAttackAttribute = aggregator.FirstOrDefault(x => x.RogueName == attackAttribute.RogueName);
 
                             if (existingAttackAttribute == null)
-                                aggregator.Add(existingAttackAttribute);
+                                aggregator.Add(attackAttribute);
 
                             else
                             {

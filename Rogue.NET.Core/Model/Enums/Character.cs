@@ -37,7 +37,7 @@ namespace Rogue.NET.Core.Model.Enums
         /// <summary>
         /// Considered Abnormal; but does not require any support from the game engine.
         /// </summary>
-        Abnormal
+        Abnormal = 32
     }
     /// <summary>
     /// Specifies character movement
@@ -47,42 +47,42 @@ namespace Rogue.NET.Core.Model.Enums
         /// <summary>
         /// Random Walk - Hits if in range
         /// </summary>
-        Random,
+        Random = 0,
 
         /// <summary>
         /// Doesn't think to use doors
         /// </summary>
-        HeatSeeker,
+        HeatSeeker = 1,
 
         /// <summary>
         /// Figures out a way to the player
         /// </summary>
-        PathFinder,
+        PathFinder = 2,
 
         /// <summary>
         /// Stays just inside its attack range and
         /// Fires range missiles.. or simply being a coward
         /// </summary>
-        StandOffIsh,
+        StandOffIsh = 3
     }
     public enum CharacterAttackType
     {
-        Melee,
+        Melee = 0,
 
         /// <summary>
         /// This should cover Range attacks for enemies
         /// </summary>
-        Skill,
+        Skill = 1,
 
         /// <summary>
         /// Skill that can only be used at very close (radius=1) range
         /// </summary>
-        SkillCloseRange,
+        SkillCloseRange = 2,
 
         /// <summary>
         /// no attack
         /// </summary>
-        None
+        None = 3
     }
     [Flags]
     public enum BehaviorCondition : int

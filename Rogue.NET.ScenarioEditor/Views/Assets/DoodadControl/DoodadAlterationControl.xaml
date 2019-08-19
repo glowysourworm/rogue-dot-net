@@ -20,7 +20,7 @@
     <TabControl Background="Black">
         <TabItem Header="General">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
-                                             EnumValue="{Binding AnimationGroup.TargetType}" />
+                                             EnumValue="{Binding AnimationGroup.TargetType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Effect">
             <region:RogueRegion>

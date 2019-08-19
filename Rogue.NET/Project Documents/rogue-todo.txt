@@ -761,3 +761,7 @@ IMMEDIATE TODO'S:
 	- TODO: Provide asset navigation from Construction -> Assets. Also, make the Construction re-load on click.
 	
 	- TODO: Immunity Alteration Effect - Makes you immune to a specific altered state.
+	
+	- TODO: PROVIDE A WAY TO SET ALTERATION NAME IN EDITOR - FORCE UNIQUE NAMES IN VALIDATOR - COPY NAMES TO EFFECT
+	
+			(This has to be done to make Rogue.NET stable with the Atleration refactoring)
