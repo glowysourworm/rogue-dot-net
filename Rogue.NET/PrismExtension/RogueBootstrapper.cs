@@ -80,7 +80,6 @@ namespace Rogue.NET.PrismExtension
             var mappings = base.ConfigureRegionAdapterMappings();
 
             mappings.RegisterMapping(typeof(Border), this.Container.GetExportedValue<BorderRegionAdapter>());
-            mappings.RegisterMapping(typeof(TransitionPresenter), this.Container.GetExportedValue<TransitionPresenterRegionAdapater>());
 
             return mappings;
         }

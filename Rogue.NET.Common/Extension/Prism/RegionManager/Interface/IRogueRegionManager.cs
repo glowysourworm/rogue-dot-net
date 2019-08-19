@@ -55,13 +55,13 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
         /// instance with the same type. Loading is accomplished using the ServiceLocator
         /// </summary>
         /// <returns>Instance of view</returns>
-        FrameworkElement Load(RogueRegion region, Type viewType);
+        FrameworkElement Load(RogueRegion region, Type viewType, bool ignoreTransition = false);
 
         /// <summary>
         /// Loads the default view (instance or type) that has been registered with the 
         /// RogueRegion. See attached properties to learn about default views.
         /// </summary>
-        FrameworkElement LoadDefaultView(RogueRegion region);
+        FrameworkElement LoadDefaultView(RogueRegion region, bool ignoreTransition = false);
 
         /// <summary>
         /// Finds the SINGLE RogueRegion instance with the specified name - with the
@@ -69,6 +69,6 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
         /// name MUST be specified using the IRogueRegionManager.RegionName attach property.
         /// </summary>
         /// <returns>Instance of view</returns>
-        FrameworkElement LoadSingleInstance(string regionName, Type viewType);
+        FrameworkElement LoadSingleInstance(string regionName, Type viewType, bool ignoreTransition = false);
     }
 }

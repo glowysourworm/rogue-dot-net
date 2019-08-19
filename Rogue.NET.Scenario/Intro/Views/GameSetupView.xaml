@@ -28,9 +28,13 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             region:RogueRegionManager.RegionName="GameSetupRegion"
-                            region:RogueRegionManager.DefaultViewType="{x:Type gameSetupView:NewOpenEdit}" />
+                            region:RogueRegionManager.DefaultViewType="{x:Type gameSetupView:NewOpenEdit}">
+            <region:RogueRegion.Transition>
+                <region:BlurTransition FromRadius="0" ToRadius="50" Time="0:0:0:.3" />
+            </region:RogueRegion.Transition>            
+        </region:RogueRegion>
 
-        <Grid Grid.Row="2" Margin="10">
+            <Grid Grid.Row="2" Margin="10">
             <Grid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Background" Value="Transparent" />

@@ -20,7 +20,11 @@
         <region:RogueRegion HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             region:RogueRegionManager.RegionName="ChooseParametersRegion"
-                            region:RogueRegionManager.DefaultViewType="{x:Type gameSetupParametersView:ChooseName}" />
+                            region:RogueRegionManager.DefaultViewType="{x:Type gameSetupParametersView:ChooseName}">
+            <region:RogueRegion.Transition>
+                <region:BlurTransition FromRadius="0" ToRadius="50" Time="0:0:0:0.3" />
+            </region:RogueRegion.Transition>
+        </region:RogueRegion>
 
         <!-- Button Panel -->
         <Grid Grid.Row="1" HorizontalAlignment="Right">

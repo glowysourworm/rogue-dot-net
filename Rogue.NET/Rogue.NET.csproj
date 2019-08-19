@@ -238,7 +238,6 @@
     <Compile Include="View\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PrismExtension\TransitionalRegionAdapter.cs" />
     <Compile Include="View\LoadingView.xaml.cs">
       <DependentUpon>LoadingView.xaml</DependentUpon>
     </Compile>

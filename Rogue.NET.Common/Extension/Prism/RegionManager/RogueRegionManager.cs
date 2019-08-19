@@ -88,7 +88,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 });
 
             // Load View - use LoadDefaultView method to re-load default view
-            LoadImpl(region, view);
+            LoadImpl(region, view, true);
 
             // Set Dependency Property Value
             element.SetValue(DefaultViewTypeProperty, type);
@@ -130,7 +130,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 });
 
             // Load View - use LoadDefaultView method to re-load default view
-            LoadImpl(region, view);
+            LoadImpl(region, view, true);
 
             // Set Dependency Property Value
             element.SetValue(DefaultViewProperty, view);
@@ -204,7 +204,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
             regionView.Value.Add(new RogueRegionView(viewType, view, isDefault));
         }
 
-        public FrameworkElement Load(RogueRegion region, Type viewType)
+        public FrameworkElement Load(RogueRegion region, Type viewType, bool ignoreTransition = false)
         {
             // Validate View Type as FrameworkElement
             if (!typeof(FrameworkElement).IsAssignableFrom(viewType))
@@ -219,7 +219,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 // Load Existing View
                 if (regionView != null)
                 {
-                    LoadImpl(region, regionView.View);
+                    LoadImpl(region, regionView.View, ignoreTransition);
 
                     return regionView.View;
                 }
@@ -234,7 +234,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                     RegionViews[region].Add(new RogueRegionView(viewType, view));
 
                     // Load view
-                    return LoadImpl(region, view);
+                    return LoadImpl(region, view, ignoreTransition);
                 }
             }
 
@@ -252,11 +252,11 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                     });
 
                 // Load View into Region
-                return LoadImpl(region, view);
+                return LoadImpl(region, view, ignoreTransition);
             }
         }
 
-        public FrameworkElement LoadDefaultView(RogueRegion region)
+        public FrameworkElement LoadDefaultView(RogueRegion region, bool ignoreTransition = false)
         {
             if (!RogueRegionManager.RegionViews.ContainsKey(region))
                 throw new Exception("RogueRegion not registered with IRogueRegionManager");
@@ -269,13 +269,13 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
 
             // If default view is instantiated - then just load that one
             if (regionView.View != null)
-                return LoadImpl(region, regionView.View);
+                return LoadImpl(region, regionView.View, ignoreTransition);
 
             else
-                return Load(region, regionView.ViewType);
+                return Load(region, regionView.ViewType, ignoreTransition);
         }
 
-        public FrameworkElement LoadSingleInstance(string regionName, Type viewType)
+        public FrameworkElement LoadSingleInstance(string regionName, Type viewType, bool ignoreTransition = false)
         {
             // Validate View Type as FrameworkElement
             if (!typeof(FrameworkElement).IsAssignableFrom(viewType))
@@ -288,7 +288,7 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
                 throw new ArgumentException("Specified RogueRegion was either never created; or has more than one instance");
 
             // Load the RegionView - (Allows for new view type)
-            return Load(regionView.Key, viewType);
+            return Load(regionView.Key, viewType, ignoreTransition);
         }
 
         /// <summary>
@@ -296,10 +296,13 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
         /// </summary>
         /// <param name="region">RogueRegion instance</param>
         /// <param name="view">UI View Content to load</param>
-        protected static FrameworkElement LoadImpl(RogueRegion region, FrameworkElement view)
+        protected static FrameworkElement LoadImpl(RogueRegion region, FrameworkElement view, bool ignoreTransition)
         {
-            // TODO: Add Transition Provider
-            region.Content = view;
+            if (!ignoreTransition)
+                region.TransitionTo(view);
+
+            else
+                region.Content = view;
 
             return view;
         }

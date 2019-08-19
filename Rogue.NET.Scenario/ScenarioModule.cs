@@ -30,25 +30,19 @@ namespace Rogue.NET.Scenario
     {
         readonly IRogueRegionManager _regionManager;
         readonly IRogueEventAggregator _eventAggregator;
-        readonly IScenarioController _scenarioController;
         readonly IGameController _gameController;
-        readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
 
         [ImportingConstructor]
         public ScenarioModule(
             IRogueRegionManager regionManager,
             IRogueEventAggregator eventAggregator,
-            IScenarioController scenarioController,
             IGameController gameController,
-            IScenarioResourceService scenarioResourceService,
             IScenarioFileService scenarioFileService)
         {
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _scenarioController = scenarioController;
             _gameController = gameController;
-            _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
         }
 
@@ -78,6 +72,8 @@ namespace Rogue.NET.Scenario
                     //               .FirstOrDefault(x => x.GetType() == typeof(OutroDisplay)) as OutroDisplay)
                     //               .Opacity = 1;
 
+                    //  ?
+
                     var view = _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(OutroDisplay));
                 }
 
@@ -86,19 +82,19 @@ namespace Rogue.NET.Scenario
             _eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
             {
                 _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
-                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit), true);
             });
 
             _eventAggregator.GetEvent<ExitScenarioEditorEvent>().Subscribe(() =>
             {
                 _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
-                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit), true);
             });
 
             _eventAggregator.GetEvent<IntroFinishedEvent>().Subscribe(() =>
             {
                 _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(GameSetupView));
-                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit));
+                _regionManager.LoadSingleInstance(RegionName.GameSetupRegion, typeof(NewOpenEdit), true);
             });
 
             _eventAggregator.GetEvent<GameSetupDisplayFinished>().Subscribe((e) =>

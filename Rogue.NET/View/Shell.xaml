@@ -64,7 +64,8 @@
         <region:RogueRegion x:Name="MainRegion" 
                             Grid.Row="1" 
                             region:RogueRegionManager.RegionName="MainRegion"
-                            region:RogueRegionManager.DefaultViewType="{x:Type scenarioIntro:IntroView}"/>
+                            region:RogueRegionManager.DefaultViewType="{x:Type scenarioIntro:IntroView}">
+        </region:RogueRegion>
     </Grid>
 </Window>
 
