@@ -26,39 +26,13 @@ namespace Rogue.NET.ScenarioEditor.Service
         #region (public) Methods
         public void UpdateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates)
-            {
-                if (consumable.HasAlteration)
-                    UpdateAttackAttributeAlterationEffect(consumable.ConsumableAlteration.Effect, configuration.AttackAttributes);
-
-                if (consumable.HasProjectileAlteration)
-                    UpdateAttackAttributeAlterationEffect(consumable.ConsumableProjectileAlteration.Effect, configuration.AttackAttributes);
-            }
-
-            // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates)
-            {
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
-
-                if (equipment.HasAttackAlteration)
-                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentAttackAlteration.Effect, configuration.AttackAttributes);
-
-                if (equipment.HasCurseAlteration)
-                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentCurseAlteration.Effect, configuration.AttackAttributes);
-
-                if (equipment.HasEquipAlteration)
-                    UpdateAttackAttributeAlterationEffect(equipment.EquipmentEquipAlteration.Effect, configuration.AttackAttributes);
-            }
+            // Alteration Effects - (Update en-mas)
+            foreach (var effect in GetAllAlterationEffects(configuration))
+                UpdateAttackAttributeAlterationEffect(effect, configuration.AttackAttributes);
 
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
-            {
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
-
-                foreach (var behavior in enemy.BehaviorDetails.Behaviors)
-                    UpdateAttackAttributeAlterationEffect(behavior.EnemyAlteration.Effect, configuration.AttackAttributes);
-            }
 
             // Character Classes
             foreach (var characterClass in configuration.CharacterClasses)
@@ -112,24 +86,24 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Alteration Effects - Update Altered Character States
             foreach (var alterationEffect in GetAllAlterationEffects(configuration))
             {
-                // NOTE*** Create a new default altered state (Normal) for non-matching (dangling) altered states. These
-                //         should not interfere with operation because references aren't kept strongly (there's allowance for
-                //         dangling references - so long as the underlying state is "Normal" so it doesn't interfere with 
-                //         character operation).
                 if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
                 {
                     var effect = alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel;
 
-                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState) ??
-                                          new AlteredCharacterStateTemplateViewModel();
+                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState);
+
+                    if (effect.AlteredState == null)
+                        effect.HasAlteredState = false;
                 }
 
                 else if (alterationEffect is TemporaryAlterationEffectTemplateViewModel)
                 {
                     var effect = alterationEffect as TemporaryAlterationEffectTemplateViewModel;
 
-                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState) ??
-                                          new AlteredCharacterStateTemplateViewModel();
+                    effect.AlteredState = MatchByName(configuration.AlteredCharacterStates, effect.AlteredState);
+
+                    if (effect.AlteredState == null)
+                        effect.HasAlteredState = false;
                 }
             }
         }

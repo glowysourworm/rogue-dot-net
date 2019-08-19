@@ -118,6 +118,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.AutomaticAlteration = new DoodadAlterationTemplate();
             this.InvokedAlteration = new DoodadAlterationTemplate();
+            this.CharacterClass = new CharacterClassTemplate();
             this.IsUnique = false;
             this.IsOneUse = false;
         }

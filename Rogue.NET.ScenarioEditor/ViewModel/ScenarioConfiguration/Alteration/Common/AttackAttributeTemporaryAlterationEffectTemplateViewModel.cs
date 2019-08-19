@@ -24,6 +24,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         AlteredCharacterStateTemplateViewModel _alteredState;
         SymbolDeltaTemplateViewModel _symbolAlteration;
         bool _isStackable;
+        bool _hasAlteredState;
         RangeViewModel<int> _eventTime;
 
         public AlterationAttackAttributeCombatType CombatType
@@ -45,6 +46,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _isStackable; }
             set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
+        }
+        public bool HasAlteredState
+        {
+            get { return _hasAlteredState; }
+            set { this.RaiseAndSetIfChanged(ref _hasAlteredState, value); }
         }
 
         public RangeViewModel<int> EventTime

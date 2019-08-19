@@ -39,6 +39,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _mpRange;
         private RangeViewModel<double> _criticalHit;
         private bool _isStackable;
+        private bool _hasAlteredState;
 
         public SymbolDeltaTemplateViewModel SymbolAlteration
         {
@@ -149,6 +150,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _isStackable; }
             set { this.RaiseAndSetIfChanged(ref _isStackable, value); }
+        }
+        public bool HasAlteredState
+        {
+            get { return _hasAlteredState; }
+            set { this.RaiseAndSetIfChanged(ref _hasAlteredState, value); }
         }
 
 

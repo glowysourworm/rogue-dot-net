@@ -62,6 +62,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsOneUse = false;
             this.HasCharacterClassRequirement = false;
             this.CharacterClass = new CharacterClassTemplateViewModel();
+            this.AutomaticAlteration = new DoodadAlterationTemplateViewModel();
+            this.InvokedAlteration = new DoodadAlterationTemplateViewModel();
         }
     }
 }

@@ -18,9 +18,22 @@
                     <TextBlock Foreground="White" Text="Event Time" />
                     <controls:Range DataContext="{Binding EventTime}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
-                
+
+                <!-- Is Stackable -->
+                <Grid Margin="10">
+                    <TextBlock Text="Is Stackable (Can apply several times)" Foreground="White" />
+                    <CheckBox IsChecked="{Binding IsStackable, Mode=TwoWay}" HorizontalAlignment="Right" />
+                </Grid>
+
+                <!-- Has Altered State -->
+                <Grid Margin="10">
+                    <TextBlock Text="Has Altered State" Foreground="White" />
+                    <CheckBox IsChecked="{Binding HasAlteredState, Mode=TwoWay}" HorizontalAlignment="Right" />
+                </Grid>
+
                 <!-- Altered State -->
-                <Grid Margin="10,5,10,5">
+                <Grid Margin="10,5,10,5"
+                      Visibility="{Binding HasAlteredState, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="Altered Character State" Foreground="White" />
                     <ComboBox x:Name="AlteredStateCB" 
                               SelectedItem="{Binding AlteredState}"
@@ -36,11 +49,6 @@
                     <CheckBox IsChecked="{Binding CanSeeInvisibleCharacters}" HorizontalAlignment="Right" />
                 </Grid>
                 
-                <!-- Is Stackable-->
-                <Grid Margin="10,5,10,5">
-                    <TextBlock Foreground="White" Text="Is Stackable" />
-                    <CheckBox IsChecked="{Binding IsStackable}" HorizontalAlignment="Right" />
-                </Grid>                
             </StackPanel>
         </TabItem>
         <TabItem Header="Parameters">

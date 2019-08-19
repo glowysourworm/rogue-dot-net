@@ -20,6 +20,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         AlteredCharacterStateTemplate _alteredState;
         SymbolDeltaTemplate _symbolAlteration;
         bool _isStackable;
+        bool _hasAlteredState;
         Range<int> _eventTime;
 
 
@@ -70,6 +71,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _isStackable = value;
                     OnPropertyChanged("IsStackable");
+                }
+            }
+        }
+        public bool HasAlteredState
+        {
+            get { return _hasAlteredState; }
+            set
+            {
+                if (_hasAlteredState != value)
+                {
+                    _hasAlteredState = value;
+                    OnPropertyChanged("HasAlteredState");
                 }
             }
         }

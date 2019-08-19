@@ -750,3 +750,14 @@ IMMEDIATE TODO'S:
 				THESE WOULD BE GREAT THINGS TO HAVE.
 				
 	- TODO: Make Rogue.NET playable with only the mouse
+	
+	- TODO: Want probability parameter on the Equipment Attack Atleration.
+	
+	- TODO: Type-Specific tooltip for IAlterationEffect. This will help show all the wonderful / different effects of items. Also, can reuse
+			the UI in other places:  Skill Tree, and Rogue Encyclopedia
+			
+	- TODO: Provide Brush-Copy service that provides list of all brushes in the scenario to copy from - with a preview image (add to brush editor)
+	
+	- TODO: Provide asset navigation from Construction -> Assets. Also, make the Construction re-load on click.
+	
+	- TODO: Immunity Alteration Effect - Makes you immune to a specific altered state.

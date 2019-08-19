@@ -112,6 +112,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.HasCharacterClassRequirement = false;
             this.CharacterClass = new CharacterClassTemplateViewModel();
+            this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplateViewModel();
+            this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplateViewModel();
+            this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplateViewModel();
         }
     }
 }

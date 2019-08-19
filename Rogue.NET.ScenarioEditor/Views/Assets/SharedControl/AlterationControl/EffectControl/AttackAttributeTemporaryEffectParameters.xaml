@@ -4,17 +4,34 @@
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+    </UserControl.Resources>
     <TabControl TabStripPlacement="Left" Background="Black">
         <TabItem Header="General">
             <StackPanel>
+                
                 <!-- Event Time -->
                 <Grid Margin="10">
                     <TextBlock Text="Event Time" Foreground="White" />
                     <controls:Range DataContext="{Binding EventTime}" Width="300" HorizontalAlignment="Right" />
                 </Grid>
+
+                <!-- Is Stackable -->
+                <Grid Margin="10">
+                    <TextBlock Text="Is Stackable (Can apply several times)" Foreground="White" />
+                    <CheckBox IsChecked="{Binding IsStackable, Mode=TwoWay}" HorizontalAlignment="Right" />
+                </Grid>
+
+                <!-- Has Altered State -->
+                <Grid Margin="10">
+                    <TextBlock Text="Has Altered State" Foreground="White" />
+                    <CheckBox IsChecked="{Binding HasAlteredState, Mode=TwoWay}" HorizontalAlignment="Right" />
+                </Grid>                
                 
                 <!-- Altered State -->
-                <Grid Margin="10">
+                <Grid Margin="10"
+                      Visibility="{Binding HasAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                     <TextBlock Text="Altered Character State" Foreground="White" />
                     <ComboBox x:Name="AlteredStateCB" 
                               SelectedItem="{Binding AlteredState}"
@@ -23,12 +40,7 @@
                               DisplayMemberPath="Name" 
                               HorizontalAlignment="Right" Height="24"  Width="250" />
                 </Grid>
-                
-                <!-- Is Stackable -->
-                <Grid Margin="10">
-                    <TextBlock Text="Is Stackable" Foreground="White" />
-                    <CheckBox IsChecked="{Binding IsStackable, Mode=TwoWay}" HorizontalAlignment="Right" />
-                </Grid>
+
             </StackPanel>
         </TabItem>
         <TabItem Header="Type">

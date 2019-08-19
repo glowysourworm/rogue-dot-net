@@ -22,9 +22,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
     {
         readonly IAnimationCreator _animationCreator;
         readonly IAnimationGenerator _animationGenerator;
-        readonly Queue<IEnumerable<AnimationQueue>> _animationQueue;
 
-        IList<AnimationQueue> _animation = null;
+        IList<AnimationQueue> _animation = new List<AnimationQueue>();
 
         bool _updating = false;
 
@@ -33,7 +32,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             _animationCreator = animationCreator;
             _animationGenerator = animationGenerator;
-            _animationQueue = new Queue<IEnumerable<AnimationQueue>>();
 
             InitializeComponent();
         }
@@ -65,19 +63,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                     return _animationGenerator.GenerateAnimation(template);
                 });
 
-                _animationQueue.Clear();
-
                 // Queue Animations
-                foreach (var animation in animations)
-                    _animationQueue.Enqueue(CreateNewAnimation(animation, viewModel.TargetType));
+                _animation = animations.SelectMany(x => CreateNewAnimation(x, viewModel.TargetType)).ToList();
 
-                // Dequeue First Animation
-                if (_animationQueue.Any())
+                if (_animation.Any())
                 {
-                    _animation = new List<AnimationQueue>(_animationQueue.Dequeue());
-
-                    StartAnimation();
+                    StartAnimation(_animation[0]);
                 }
+                
             }
         }
 
@@ -90,36 +83,33 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                      viewModel.TargetType == AlterationTargetType.Source);
         }
 
-        private void StartAnimation()
+        private void StartAnimation(ITimedGraphic sender)
         {
-            if (_animation == null)
+            if (!_animation.Any())
                 return;
 
             // Put graphics on canvas
-            foreach (var queue in _animation)
+            foreach (var graphic in sender.GetGraphics())
             {
-                foreach (var graphic in queue.GetGraphics())
-                {
-                    Canvas.SetZIndex(graphic, 100);
-                    this.TheCanvas.Children.Add(graphic);
-                }
-
-                // Set Slider Maximum (ASSUME QUEUE HAS SET ALL EQUAL ANIMATION TIMES)
-                this.AnimationSlider.Maximum = queue.AnimationTime / 1000.0;
-
-                // Hook Finished Event
-                queue.TimeElapsed += StopAnimation;
-
-                // Hook Time Changed
-                queue.AnimationTimeChanged += UpdateAnimationTime;
-
-                queue.Start();
+                Canvas.SetZIndex(graphic, 100);
+                this.TheCanvas.Children.Add(graphic);
             }
+
+            // Set Slider Maximum (ASSUME QUEUE HAS SET ALL EQUAL ANIMATION TIMES)
+            this.AnimationSlider.Maximum = sender.AnimationTime / 1000.0;
+
+            // Hook Finished Event
+            sender.TimeElapsed += StopAnimation;
+
+            // Hook Time Changed
+            sender.AnimationTimeChanged += UpdateAnimationTime;
+
+            sender.Start();
         }
 
         private void StopAnimation(ITimedGraphic sender)
         {
-            if (_animation == null)
+            if (!_animation.Any())
                 return;
 
             // Remove Graphics From Canvas
@@ -140,17 +130,38 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             if (_animation.Contains(sender))
                 _animation.Remove(sender as AnimationQueue);
 
-            // Queue Next Animation
-            if (_animationQueue.Any() &&
-                _animation.Count == 0)
-            {
-                _animation = new List<AnimationQueue>(_animationQueue.Dequeue());
+            if (_animation.Any())
+                StartAnimation(_animation[0]);
+        }
 
-                StartAnimation();
+        private void ForceStopAnimation()
+        {
+            if (_animation == null)
+                return;
+
+            // Stop the animation that's running
+            foreach (var animation in _animation)
+            {
+                // Remove Graphics From Canvas
+                foreach (var graphic in animation.GetGraphics())
+                {
+                    if (this.TheCanvas.Children.Contains(graphic))
+                        this.TheCanvas.Children.Remove(graphic);
+                }
+
+                // Unhook Finished Event
+                animation.TimeElapsed -= StopAnimation;
+
+                // Unhook Time Changed Event
+                animation.AnimationTimeChanged -= UpdateAnimationTime;
+
+                // Clean Up Resources
+                animation.Stop();
+                animation.CleanUp();
             }
 
-            else
-                _animation = null;
+            // Clear running animation
+            _animation.Clear();
         }
 
         private void UpdateAnimationTime(object sender, AnimationTimeChangedEventArgs e)
@@ -195,36 +206,22 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_animation != null)
-            {
-                // Empty animation queue to prevent next animation from starting
-                _animationQueue.Clear();
-
-                // Iterate backwards to stop all animation graphics and remove from list
-                for (int i = _animation.Count - 1; i >= 0; i--)
-                    StopAnimation(_animation[i]);
-            }
+            ForceStopAnimation();
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_animation != null)
-            {
-                // Iterate backwards to stop all animation graphics and remove from list
-                for (int i = _animation.Count - 1; i >= 0; i--)
-                    StopAnimation(_animation[i]);
+            // Force animations to stop
+            if (_animation.Any())
+                ForceStopAnimation();
 
-                // Then, play animation
-                PlayAnimation();
-            }
-
-            else
-                PlayAnimation();
+            // Then, play animation
+            PlayAnimation();
         }
 
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_animation != null)
+            if (_animation.Any())
             {
                 foreach (var animation in _animation)
                 {
@@ -238,7 +235,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void AnimationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_animation != null && !_updating)
+            if (_animation.Any() && !_updating)
             {
                 foreach (var animation in _animation)
                     animation.Seek((int)(e.NewValue * 1000));
