@@ -28,6 +28,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
         readonly IScenarioValidationService _scenarioValidationService;
+        readonly IAlterationNameService _alterationNameService;
 
         readonly ScenarioConfigurationMapper _configurationMapper;
 
@@ -40,7 +41,8 @@ namespace Rogue.NET.Controller.ScenarioEditor
             IScenarioConfigurationUndoService rogueUndoService,
             IScenarioResourceService scenarioResourceService,
             IScenarioFileService scenarioFileService,
-            IScenarioValidationService scenarioValidationService)
+            IScenarioValidationService scenarioValidationService,
+            IAlterationNameService alterationNameService)
         {
             _eventAggregator = eventAggregator;
             _rogueUndoService = rogueUndoService;
@@ -48,6 +50,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _scenarioResourceService = scenarioResourceService;
             _scenarioFileService = scenarioFileService;
             _scenarioValidationService = scenarioValidationService;
+            _alterationNameService = alterationNameService;
 
             _configurationMapper = new ScenarioConfigurationMapper();
 
@@ -154,6 +157,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
             });
 
             PublishOutputMessage("Saving " + _config.DungeonTemplate.Name + " Scenario File...");
+
+            // SET ALTERATION EFFECT NAMES BEFORE MAPPING (THIS COULD BE REDESIGNED)
+            _alterationNameService.Execute(_config);
 
             // Map back to the model namespace
             var config = _configurationMapper.MapBack(_config);

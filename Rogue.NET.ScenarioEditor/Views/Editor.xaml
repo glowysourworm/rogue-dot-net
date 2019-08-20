@@ -11,6 +11,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Editor.xaml" />
+                <ResourceDictionary>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource LightBrush}"/>
+                    </Style>
+                </ResourceDictionary>                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

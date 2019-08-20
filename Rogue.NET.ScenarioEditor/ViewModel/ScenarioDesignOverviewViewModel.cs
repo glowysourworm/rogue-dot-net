@@ -36,6 +36,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         readonly ScenarioConfigurationContainerViewModel _scenarioConfiguration;
         readonly ScenarioConfigurationMapper _scenarioConfigurationMapper;
         readonly IScenarioValidationService _scenarioValidationService;
+        readonly IAlterationNameService _alterationNameService;
         readonly IRogueEventAggregator _eventAggregator;
 
         const string CHART_HUNGER_AVERAGE = "Hunger (Avg)";
@@ -94,12 +95,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ScenarioDesignOverviewViewModel(
             ScenarioConfigurationContainerViewModel scenarioConfiguration,
             IScenarioValidationService scenarioValidationService,
+            IAlterationNameService alterationNameService,
             IRogueEventAggregator eventAggregator)
         {
             _scenarioDifficultyCalculationService = ServiceLocator.Current.GetInstance<IScenarioDifficultyCalculationService>();
             _scenarioConfiguration = scenarioConfiguration;
             _scenarioConfigurationMapper = new ScenarioConfigurationMapper();
             _scenarioValidationService = scenarioValidationService;
+            _alterationNameService = alterationNameService;
             _eventAggregator = eventAggregator;
 
             this.IncludeAttackAttributes = true;
@@ -163,6 +166,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
             });
+
+            // SET ALTERATION EFFECT NAMES BEFORE MAPPING (THIS COULD BE REDESIGNED)
+            _alterationNameService.Execute(_scenarioConfiguration);
 
             // MAP BACK CONFIGURATION TO VALIDATE
             var configuration = _scenarioConfigurationMapper.MapBack(_scenarioConfiguration);

@@ -5,7 +5,10 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Extension;
 using Rogue.NET.Core.Model.Validation;
 using Rogue.NET.Core.Model.Validation.Interface;
 using Rogue.NET.Core.Service.Interface;
@@ -23,6 +26,7 @@ namespace Rogue.NET.Core.Service
         private LayoutHeightConverter _layoutHeightConverter;
         private LayoutWidthConverter _layoutWidthConverter;
 
+        [ImportingConstructor]
         public ScenarioValidationService()
         {
             _layoutHeightConverter = new LayoutHeightConverter();
@@ -269,33 +273,39 @@ namespace Rogue.NET.Core.Service
                         }
                     };
                 })),
-                // TODO:ALTERATION
-                //new ScenarioValidationRule("Remedy Alteration types must have remedied state set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                //{
-                //    var remedyAlterations = configuration.MagicSpells
-                //                                         .Where(x => x.Type == AlterationType.Remedy &&
-                //                                                     x.Effect.RemediedState == null);
+                new ScenarioValidationRule("Alteration Effect Issues Found", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var alterations = configuration.GetAllAlterationsForProcessing();
 
-                //    return remedyAlterations.Select(x =>
-                //        new ScenarioValidationResult()
-                //        {
-                //            Passed = false,
-                //            InnerMessage = x.Name + " has no remedied state set"
-                //        });
-                //})),
-                //new ScenarioValidationRule("Create Monster Alterations must have the monster set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                //{
-                //    var createMonsterAlterations = configuration.MagicSpells
-                //                                                .Where(x => x.Type == AlterationType.OtherMagicEffect &&
-                //                                                            x.OtherEffectType == AlterationMagicEffectType.CreateMonster &&
-                //                                                            string.IsNullOrEmpty(x.CreateMonsterEnemy));
+                    var results = alterations
+                                    .Where(x => x.Effect == null)
+                                    .Select(x => x.AssetName + " has an unset Effect")
+                                    .Union(alterations
+                                        .Where(x => x.Effect != null &&
+                                                    !string.IsNullOrEmpty(ValidateAlterationEffect(x.Effect)))
+                                        .Select(x => x.AssetName + " -> " + ValidateAlterationEffect(x.Effect)))
+                                    .Actualize();
 
-                //    return createMonsterAlterations.Select(x => new ScenarioValidationResult()
-                //    {
-                //        Passed = false,
-                //        InnerMessage = x.Name + " has no monster set"
-                //    });
-                //})),
+                    return results
+                              .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x
+                        });
+                })),
+                new ScenarioValidationRule("Alterations must have unique names", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    return configuration.GetAllAlterationsForProcessing()
+                                        .NonUnique(x => x.AlterationName)
+                                        .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.AssetName + " -> (has non-unique name) -> " + x.AlterationName
+
+                        }).Actualize();
+                })),
 
                 // Warnings
                 new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
@@ -617,6 +627,117 @@ namespace Rogue.NET.Core.Service
             }
 
             return result;
+        }
+
+        private string ValidateAlterationEffect(IAlterationEffectTemplate template)
+        {
+            if (template is AttackAttributeAuraAlterationEffectTemplate)
+                return null;
+
+            else if (template is AttackAttributeMeleeAlterationEffectTemplate)
+                return null;
+
+            else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
+            {
+                var effect = template as AttackAttributeTemporaryAlterationEffectTemplate;
+
+                if (effect.HasAlteredState &&
+                    effect.AlteredState == null)
+                    return effect.Name + " has no Altered State set";
+            }
+
+            else if (template is AttackAttributePassiveAlterationEffectTemplate)
+                return null;
+
+            else if (template is AuraAlterationEffectTemplate)
+                return null;
+
+            else if (template is ChangeLevelAlterationEffectTemplate)
+            {
+                var effect = template as ChangeLevelAlterationEffectTemplate;
+
+                if (effect.LevelChange.High < 1)
+                    return effect.Name + " has an invalid Level Change parameter";
+            }
+
+            else if (template is CreateMonsterAlterationEffectTemplate)
+            {
+                var effect = template as CreateMonsterAlterationEffectTemplate;
+
+                if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
+                    return effect.Name + " has no Create Monster Enemy set";
+            }
+
+            else if (template is EquipmentModifyAlterationEffectTemplate)
+            {
+                var effect = template as EquipmentModifyAlterationEffectTemplate;
+
+                switch (effect.Type)
+                {
+                    case AlterationModifyEquipmentType.ArmorClass:
+                    case AlterationModifyEquipmentType.WeaponClass:
+                        if (effect.ClassChange == 0)
+                            return effect.Name + " has no class change parameter set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorImbue:
+                    case AlterationModifyEquipmentType.WeaponImbue:
+                        if (effect.AttackAttributes.All(x => !x.Attack.IsSet() &&
+                                                             !x.Resistance.IsSet() &&
+                                                             !x.Weakness.IsSet()))
+                            return effect.Name + " has no imbue parameters set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorQuality:
+                    case AlterationModifyEquipmentType.WeaponQuality:
+                        if (effect.QualityChange == 0)
+                            return effect.Name + " has no quality change parameter set";
+                        break;
+                    default:
+                        throw new Exception("Unhandled Equipment Modify Type");
+                }
+            }
+
+            else if (template is OtherAlterationEffectTemplate)
+                return null;
+
+            else if (template is PassiveAlterationEffectTemplate)
+                return null;
+
+            else if (template is PermanentAlterationEffectTemplate)
+                return null;
+
+            else if (template is RemedyAlterationEffectTemplate)
+            {
+                var effect = template as RemedyAlterationEffectTemplate;
+
+                if (effect.RemediedState == null)
+                    return effect.Name + " has no Remedied State set";
+            }
+
+            else if (template is RevealAlterationEffectTemplate)
+                return null;
+
+            else if (template is RunAwayAlterationEffectTemplate)
+                return null;
+
+            else if (template is StealAlterationEffectTemplate)
+                return null;
+
+            else if (template is TeleportAlterationEffectTemplate)
+                return null;
+
+            else if (template is TemporaryAlterationEffectTemplate)
+            {
+                var effect = template as TemporaryAlterationEffectTemplate;
+
+                if (effect.HasAlteredState &&
+                    effect.AlteredState == null)
+                    return effect.Name + " has no Altered State set";
+            }
+
+            else
+                throw new Exception("Unhandled Alteration Effect Type");
+
+            return null;
         }
     }
 }

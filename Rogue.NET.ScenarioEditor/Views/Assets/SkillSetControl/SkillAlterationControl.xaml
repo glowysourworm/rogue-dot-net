@@ -19,6 +19,12 @@
     </UserControl.Resources>
 
     <TabControl TabStripPlacement="Left" Background="Black">
+        <TabItem Header="Name">
+            <Grid Margin="10" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                <TextBlock Text="Effect Name" Foreground="White" FontSize="16" HorizontalAlignment="Left" />
+                <TextBox Text="{Binding Name}" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+        </TabItem>        
         <TabItem Header="Target Type">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationTargetType}"
                                              EnumValue="{Binding AnimationGroup.TargetType, Mode=TwoWay}" />

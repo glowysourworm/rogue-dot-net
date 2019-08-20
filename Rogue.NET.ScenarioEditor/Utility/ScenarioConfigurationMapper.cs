@@ -91,30 +91,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            //foreach (var template in configuration.ConsumableTemplates)
-            //{
-            //    template.AmmoAnimationGroup.TargetType = AlterationTargetType.Target;
-            //    template.ConsumableAlteration.AnimationGroup.TargetType = template.ConsumableAlteration.TargetType;
-            //    template.ConsumableProjectileAlteration.AnimationGroup.TargetType = AlterationTargetType.Target;
-            //}
-
-            //foreach (var template in configuration.DoodadTemplates)
-            //{
-            //    template.AutomaticAlteration.AnimationGroup.TargetType = template.AutomaticAlteration.TargetType;
-            //    template.InvokedAlteration.AnimationGroup.TargetType = template.InvokedAlteration.TargetType;
-            //}
-
-            //foreach (var template in configuration.EquipmentTemplates)
-            //    template.EquipmentAttackAlteration.AnimationGroup.TargetType = AlterationTargetType.Target;
-
-            //foreach (var template in configuration.EnemyTemplates)
-            //    foreach (var behavior in template.BehaviorDetails.Behaviors)
-            //        behavior.EnemyAlteration.AnimationGroup.TargetType = behavior.EnemyAlteration.TargetType;
-
-            //foreach (var template in configuration.SkillTemplates)
-            //    foreach (var skill in template.Skills)
-            //        skill.SkillAlteration.AnimationGroup.TargetType = skill.SkillAlteration.TargetType;
-
             return configuration;
         }
         
@@ -363,12 +339,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
                 configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
                 configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
-                //configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
-                //configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
-                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
             }.SelectMany(x => x)
              .Actualize();
 

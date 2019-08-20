@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.Views
         public ScenarioDesignOverview(
             IScenarioEditorController scenarioEditorController,
             IScenarioValidationService scenarioValidationService,
+            IAlterationNameService alterationNameService,
             IRogueEventAggregator eventAggregator)
         {            
             InitializeComponent();
@@ -23,6 +25,7 @@ namespace Rogue.NET.ScenarioEditor.Views
                 this.DataContext = new ScenarioDesignOverviewViewModel(
                                     scenarioEditorController.CurrentConfig, 
                                     scenarioValidationService, 
+                                    alterationNameService,
                                     eventAggregator);
             };
         }

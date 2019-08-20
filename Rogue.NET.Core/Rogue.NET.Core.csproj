@@ -224,6 +224,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentAttackAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentCurseAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Equipment\EquipmentEquipAlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationProcessingContainer.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IConsumableAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IConsumableProjectileAlterationEffectTemplate.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationGroupTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\CharacterClassTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Extension\ScenarioConfigurationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />

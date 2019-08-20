@@ -290,7 +290,9 @@
     <Compile Include="Controller\Interface\IScenarioEditorController.cs" />
     <Compile Include="Controller\ScenarioEditorController.cs" />
     <Compile Include="ScenarioEditorModule.cs" />
+    <Compile Include="Service\AlterationNameService.cs" />
     <Compile Include="Service\CharacterCalculationService.cs" />
+    <Compile Include="Service\Interface\IAlterationNameService.cs" />
     <Compile Include="Service\Interface\ICharacterCalculationService.cs" />
     <Compile Include="Service\Interface\IScenarioAssetReferenceService.cs" />
     <Compile Include="Service\Interface\IScenarioCollectionProvider.cs" />

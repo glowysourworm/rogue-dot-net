@@ -163,5 +163,19 @@ namespace Rogue.NET.Common.Extension
 
             return result;
         }
+
+        /// <summary>
+        /// Returns elements that have a non-unique property
+        /// </summary>
+        public static IEnumerable<T> NonUnique<T, K>(this IEnumerable<T> collection, Func<T, K> selector) 
+        {
+            var counts = collection.Select(x => new
+            {
+                Item = x,
+                Count = collection.Where(z => selector(z).Equals(selector(x))).Count()
+            });
+
+            return counts.Where(x => x.Count > 1).Select(x => x.Item);
+        }
     }
 }
