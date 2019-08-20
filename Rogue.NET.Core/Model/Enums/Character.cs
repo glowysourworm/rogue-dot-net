@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace Rogue.NET.Core.Model.Enums
 {
     [Flags]
@@ -87,28 +89,23 @@ namespace Rogue.NET.Core.Model.Enums
     [Flags]
     public enum BehaviorCondition : int
     {
-        /// <summary>
-        /// Can attack using the prescribed behavior attack method (skill costs met)
-        /// </summary>
+        [Display(Name = "Attack Condition Met",
+                 Description = "Can attack using the prescribed behavior attack method (skill costs met)")]
         AttackConditionsMet = 1,
 
-        /// <summary>
-        /// Some behaviors may rely on having low HP
-        /// </summary>
+        [Display(Name = "Hp Low",
+                 Description = "Behavior ONLY available when Hp is below 10%")]
         HpLow = 2
     }
     [Flags]
     public enum BehaviorExitCondition : int
     {
-        /// <summary>
-        /// Behavior has a sub-counter that acts to change selected behavior in the
-        /// "state machine" (of behaviors)
-        /// </summary>
+        [Display(Name = "Behavior Counter Expired",
+                 Description = "Behavior has a sub-counter that acts to change selected behavior in the state machine (of behaviors)")]
         BehaviorCounterExpired = 1,
 
-        /// <summary>
-        /// Some behaviors may exit on low HP - others may switch on (see BehaviorCondition)
-        /// </summary>
+        [Display(Name = "Hp Low",
+                 Description = "Behavior will not be available when Hp is below 10%")]
         HpLow = 2
     }
     public enum SmileyMoods

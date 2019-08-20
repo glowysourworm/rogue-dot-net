@@ -24,7 +24,7 @@
                     <TextBlock Text="Point Cost" Foreground="White" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" />
                     <toolkit:IntegerUpDown Value="{Binding PointRequirement}" 
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Minimum="0" Maximum="50" Margin="2" Width="50" />
+                                   Minimum="0" Maximum="50" Margin="2" Width="80" />
                 </Grid>
 
                 <!-- Attribute Requirement -->
@@ -34,14 +34,14 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <CheckBox IsChecked="{Binding HasAttributeRequirement}" 
-                          VerticalAlignment="Center" />
+                                  VerticalAlignment="Center" />
 
                         <common:EnumComboBox EnumType="{x:Type coreModelEnums:CharacterAttribute}" 
-                                     EnumValue="{Binding AttributeRequirement, Mode=TwoWay}"                                      
-                                     VerticalAlignment="Center" Width="100" />
+                                             EnumValue="{Binding AttributeRequirement, Mode=TwoWay}"                                      
+                                             VerticalAlignment="Center" Width="100" Margin="10,0,0,0" />
 
                         <toolkit:DoubleUpDown Value="{Binding AttributeLevelRequirement}" 
-                                      VerticalAlignment="Center" Minimum="0" Maximum="50" Width="50" />
+                                              VerticalAlignment="Center" Minimum="0" Maximum="50" Width="80" Margin="10,0,0,0" />
                     </StackPanel>
                 </Grid>
 
@@ -54,12 +54,13 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" />
                         <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
-                           SelectedValue="{Binding CharacterClass.Name}" 
-                           SelectedItem="{Binding CharacterClass}"
-                           SelectedValuePath="Name"
-                           DisplayMemberPath="Name"
-                           VerticalAlignment="Center"
-                           Width="200" />
+                                   SelectedValue="{Binding CharacterClass.Name}" 
+                                   SelectedItem="{Binding CharacterClass}"
+                                   SelectedValuePath="Name"
+                                   DisplayMemberPath="Name"
+                                   VerticalAlignment="Center"
+                                   Width="200"
+                                   Margin="10,0,0,0" />
                     </StackPanel>
 
                 </Grid>

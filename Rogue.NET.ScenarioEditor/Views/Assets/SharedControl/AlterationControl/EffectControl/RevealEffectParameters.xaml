@@ -6,5 +6,5 @@
              Background="Black">
     <controls:EnumFlagsControl Header="Reveal Type (Check all that apply)" 
                                EnumType="{x:Type coreModelEnums:AlterationRevealType}"
-                               EnumValue="{Binding Type}" />
+                               EnumValue="{Binding Type, Mode=TwoWay}" />
 </UserControl>

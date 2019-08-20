@@ -760,38 +760,6 @@ IMMEDIATE TODO'S:
 	
 	- TODO: Provide asset navigation from Construction -> Assets. Also, make the Construction re-load on click.
 	
-	- TODO: Immunity Alteration Effect - Makes you immune to a specific altered state.
-	
-	- TODO: PROVIDE A WAY TO SET ALTERATION NAME IN EDITOR - FORCE UNIQUE NAMES IN VALIDATOR - COPY NAMES TO EFFECT
-	
-			(This has to be done to make Rogue.NET stable with the Atleration refactoring)
-			
-			- Design Issue:  Alteration Effects are applied uniquely down to the alteration name (which is set on the alteration 
-							 effect). 
-							 
-							 Example:  2 rings of "Asuage Hunger". The effect is passive - and therefore applied once even if both
-									   rings are equipped due to the fact that the CharacterAlteration applies any "collected" 
-									   (temporary, passive, or aura) effect uniquely by the Alteration name.
-									   
-									   This is true for all alterations with the exception of temporary ones which can have a 
-									   "Is Stackable" parameter set - allowing multiple instances of the same alteration.
-									   
-							 THIS HAS TO BE SHOWN TO THE USER SOMEHOW.. OR JUST ACCOUNTED FOR. (THE USER CAN FIGURE IT OUT).
-							 
-		    - Other Design Issue:  Can't have two assets - with similar effects - with the same effect name. 
-			
-								   Example:  "Poison" effect. You'd need something like "Bad Poison Alteration 1" and "Bad Poison Alteration 2"
-											 because you couldn't share the "Poison" name. 
-											 
-								   An obvious solution is to provide a "Display Name" which was part of the design before - but
-								   removed when alterations were refactored. 
-								   
-								   TODO:  Consider expanding the design around "Display Name" to include context for the 
-										  Alteration. 
-										  
-										  There may be other things to consider including in the parameter space for displaying
-										  alteration effects.
-										  
-										  For now, just going to validate for unique names; and go with that.
+	- TODO: Immunity Alteration Effect - Makes you immune to a specific altered state.	
 										
 	- TODO: Skill / Reveal UI (clean up)

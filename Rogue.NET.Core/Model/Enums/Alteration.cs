@@ -89,7 +89,7 @@ namespace Rogue.NET.Core.Model.Enums
 
         [Display(Name = "Reveal Layout",
                  Description = "Reveals level layout")]
-        Layout = 16,
+        Layout = 16
     }
     public enum AlterationModifyEquipmentType : int
     {

@@ -17,8 +17,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
         {
             InitializeComponent();
 
-            // NOTE*** THIS EVENT WILL UPDATE THE PROPER INSTANCE BECAUSE THERE IS ONLY ONE
-            //         INSTANCE OF THIS CONTROL
             eventAggregator.GetEvent<AlterationEffectChangedEvent>()
                            .Subscribe(e =>
                            {

@@ -2,7 +2,6 @@
 using Rogue.NET.Common.ViewModel;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -10,6 +9,7 @@ using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export(typeof(EnumFlagsControl))]
     public partial class EnumFlagsControl : UserControl
     {
@@ -61,6 +61,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
             }
         }
 
+        bool _initializing = false;
+
         [ImportingConstructor]
         public EnumFlagsControl()
         {
@@ -69,6 +71,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         protected void CreateItemsSource()
         {
+            _initializing = true;
+
             var itemValues = Enum.GetValues(this.EnumType);
             var items = new ObservableCollection<EnumItem>();
 
@@ -77,18 +81,24 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
                 {
                     Name = Enum.GetName(this.EnumType, itemValue),
                     Value = itemValue,
-                    IsChecked = ((int)itemValue & (int)this.EnumValue) != 0
+                    IsChecked = this.EnumValue == null ? false : (((int)itemValue & (int)this.EnumValue) != 0)
                 });
 
             this.EnumItemsControl.ItemsSource = items;
+
+            _initializing = false;
         }
         protected void UpdateItemsSource()
         {
+            _initializing = true;
+
             var items = this.EnumItemsControl.ItemsSource as ObservableCollection<EnumItem>;
 
             // Enum Flags are set using the bitwise & operator
             if (items != null)
                 items.ForEach(item => item.IsChecked = ((int)item.Value & (int)this.EnumValue) != 0);
+
+            _initializing = false;
         }
         protected void UpdateValue()
         {
@@ -121,8 +131,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
         {
             var control = d as EnumFlagsControl;
             if (control != null &&
-                e.NewValue != null &&
-                control.EnumValue != null)
+                e.NewValue != null)
                 control.CreateItemsSource();
         }
 
@@ -136,7 +145,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            UpdateValue();
+            if (!_initializing)
+                UpdateValue();
         }
     }
 }
