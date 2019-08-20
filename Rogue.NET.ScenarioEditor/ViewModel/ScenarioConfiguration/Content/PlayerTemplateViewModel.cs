@@ -8,7 +8,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     public class PlayerTemplateViewModel : CharacterTemplateViewModel
     {
         private string _class;
-        private double _auraRadius;
         private RangeViewModel<double> _foodUsage;
         private ObservableCollection<SkillSetTemplateViewModel> _skills;
 
@@ -16,11 +15,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _class; }
             set { this.RaiseAndSetIfChanged(ref _class, value); }
-        }
-        public double AuraRadius
-        {
-            get { return _auraRadius; }
-            set { this.RaiseAndSetIfChanged(ref _auraRadius, value); }
         }
         public RangeViewModel<double> FoodUsage
         {
@@ -38,7 +32,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Skills = new ObservableCollection<SkillSetTemplateViewModel>();
             this.FoodUsage = new RangeViewModel<double>(0.0001, 0.005, 0.01, 1);
             this.Class = "Fighter";
-            this.AuraRadius = 5;
             this.SymbolDetails.Type = SymbolTypes.Smiley;
         }
     }

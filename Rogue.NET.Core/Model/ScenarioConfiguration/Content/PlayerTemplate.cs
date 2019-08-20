@@ -9,7 +9,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     public class PlayerTemplate : CharacterTemplate
     {
         private string _class;
-        private double _auraRadius;
         private Range<double> _foodUsage;
         private List<SkillSetTemplate> _skills;
 
@@ -22,18 +21,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _class = value;
                     OnPropertyChanged("Class");
-                }
-            }
-        }
-        public double AuraRadius
-        {
-            get { return _auraRadius; }
-            set
-            {
-                if (_auraRadius != value)
-                {
-                    _auraRadius = value;
-                    OnPropertyChanged("AuraRadius");
                 }
             }
         }
@@ -67,7 +54,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Skills = new List<SkillSetTemplate>();
             this.FoodUsage = new Range<double>(0.0001, 0.005, 0.01, 1);
             this.Class = "Fighter";
-            this.AuraRadius = 5;
             this.SymbolDetails.Type = SymbolTypes.Smiley;
         }
     }

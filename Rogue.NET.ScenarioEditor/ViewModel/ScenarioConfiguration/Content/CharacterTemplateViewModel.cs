@@ -15,6 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private RangeViewModel<double> _speed;
         private RangeViewModel<double> _hp;
         private RangeViewModel<double> _mp;
+        private RangeViewModel<int> _lightRadius;
 
         public RangeViewModel<double> Strength
         {
@@ -46,6 +47,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _mp; }
             set { this.RaiseAndSetIfChanged(ref _mp, value); }
         }
+        public RangeViewModel<int> LightRadius
+        {
+            get { return _lightRadius; }
+            set { this.RaiseAndSetIfChanged(ref _lightRadius, value); }
+        }
 
         public CharacterTemplateViewModel()
         {
@@ -55,18 +61,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
             this.Hp = new RangeViewModel<double>(1, 10, 20, 10000);
             this.Mp = new RangeViewModel<double>(1, 2, 5, 10000);
-
-            this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
-            this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();
-        }
-        public CharacterTemplateViewModel(DungeonObjectTemplateViewModel tmp) : base(tmp)
-        {
-            this.Strength = new RangeViewModel<double>(1, 3, 5, 100);
-            this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
-            this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
-            this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
-            this.Hp = new RangeViewModel<double>(1, 10, 20, 10000);
-            this.Mp = new RangeViewModel<double>(1, 2, 5, 10000);
+            this.LightRadius = new RangeViewModel<int>(1, 5, 5, 20);
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();

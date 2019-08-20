@@ -49,11 +49,11 @@ namespace Rogue.NET.Core.Model.Generator
             player.StrengthBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Strength);
             player.AgilityBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Agility);
             player.SpeedBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.Speed);
+            player.LightRadiusBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.LightRadius);
             player.HpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Hp);
             player.MpMax = _randomSequenceGenerator.GetRandomValue(playerTemplate.Mp);
             player.Hp = player.HpMax;
             player.Mp = player.MpMax;
-            player.LightRadiusBase = playerTemplate.AuraRadius;
 
             player.Icon = playerTemplate.SymbolDetails.Icon;
             player.CharacterSymbol = playerTemplate.SymbolDetails.CharacterSymbol;
@@ -63,7 +63,6 @@ namespace Rogue.NET.Core.Model.Generator
             player.SmileyBodyColor = playerTemplate.SymbolDetails.SmileyBodyColor;
             player.SmileyLineColor = playerTemplate.SymbolDetails.SmileyLineColor;
             player.SymbolType = playerTemplate.SymbolDetails.Type;
-
 
             player.Class = playerTemplate.Class;
             player.Experience = 0;
@@ -104,8 +103,8 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
-                                          .Select(x => _skillSetGenerator.GenerateSkillSet(x, characterClasses))
-                                          .ToList();
+                                             .Select(x => _skillSetGenerator.GenerateSkillSet(x, characterClasses))
+                                             .ToList();
 
             // Character Class
             if (!string.IsNullOrEmpty(characterClassName))
@@ -134,6 +133,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.StrengthBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Strength);
             enemy.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Intelligence);
             enemy.SpeedBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.Speed);
+            enemy.LightRadiusBase = _randomSequenceGenerator.GetRandomValue(enemyTemplate.LightRadius);
             enemy.Icon = enemyTemplate.SymbolDetails.Icon;
             enemy.CharacterSymbol = enemyTemplate.SymbolDetails.CharacterSymbol;
             enemy.CharacterColor = enemyTemplate.SymbolDetails.CharacterColor;

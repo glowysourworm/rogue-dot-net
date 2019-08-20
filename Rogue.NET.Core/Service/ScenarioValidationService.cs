@@ -306,7 +306,18 @@ namespace Rogue.NET.Core.Service
 
                         }).Actualize();
                 })),
+                new ScenarioValidationRule("Enemies must have a Light Radius > 0", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    return configuration.EnemyTemplates
+                                        .Where(x => x.LightRadius.High <= 0 || x.LightRadius.Low <= 0)
+                                        .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.Name + " must have a Light Radius > 0"
 
+                        }).Actualize();
+                })),
                 // Warnings
                 new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {

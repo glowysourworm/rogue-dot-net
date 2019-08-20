@@ -16,6 +16,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private Range<double> _speed;
         private Range<double> _hp;
         private Range<double> _mp;
+        private Range<int> _lightRadius;
 
         public Range<double> Strength
         {
@@ -89,6 +90,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
+        public Range<int> LightRadius
+        {
+            get { return _lightRadius; }
+            set
+            {
+                if (_lightRadius != value)
+                {
+                    _lightRadius = value;
+                    OnPropertyChanged("LightRadius");
+                }
+            }
+        }
 
         public CharacterTemplate()
         {
@@ -98,18 +111,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.Speed = new Range<double>(0.1, 0.5, 0.5, 1);       // Exclude 0 because Paralyzed altered state
             this.Hp = new Range<double>(1, 10, 20, 100);
             this.Mp = new Range<double>(1, 2, 5, 100);
-
-            this.StartingConsumables = new List<ProbabilityConsumableTemplate>();
-            this.StartingEquipment = new List<ProbabilityEquipmentTemplate>();
-        }
-        public CharacterTemplate(DungeonObjectTemplate tmp) : base(tmp)
-        {
-            this.Strength = new Range<double>(1, 3, 5, 100);
-            this.Agility = new Range<double>(1, 4, 5, 100);
-            this.Intelligence = new Range<double>(1, 2, 3, 100);
-            this.Speed = new Range<double>(0.1, 0.5, 0.5, 1);
-            this.Hp = new Range<double>(1, 10, 20, 100);
-            this.Mp = new Range<double>(1, 2, 5, 100);
+            this.LightRadius = new Range<int>(1, 5, 5, 20);
 
             this.StartingConsumables = new List<ProbabilityConsumableTemplate>();
             this.StartingEquipment = new List<ProbabilityEquipmentTemplate>();

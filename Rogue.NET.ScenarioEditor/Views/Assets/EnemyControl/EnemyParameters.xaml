@@ -46,6 +46,10 @@
             <controls:Range DataContext="{Binding Speed}" />
         </Grid>
         <Grid>
+            <TextBlock Foreground="White" Text="Light Radius" VerticalAlignment="Center" />
+            <controls:Range DataContext="{Binding LightRadius}" />
+        </Grid>        
+        <Grid>
             <TextBlock Foreground="White" Text="Hp" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding Hp}" />
         </Grid>
