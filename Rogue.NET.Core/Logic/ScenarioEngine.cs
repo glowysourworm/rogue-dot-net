@@ -27,6 +27,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -437,63 +438,16 @@ namespace Rogue.NET.Core.Logic
             // Queue meta-data update
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, itemId));
         }
-        public void Enchant(string equipmentId)
+        public void EnhanceEquipment(EquipmentEnhanceAlterationEffect effect, string itemId)
         {
-            var equipment = _modelService.Player.Equipment[equipmentId];
-            equipment.Class++;
+            // Get Equipment from Player Inventory
+            var equipment = _modelService.Player.Equipment[itemId];
 
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your " + _modelService.GetDisplayName(equipment) + " starts to glow!");
+            // Apply Effect -> Publish Messages
+            _alterationProcessor.ApplyEquipmentEnhanceEffect(_modelService.Player, effect, equipment);
 
             // Queue update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, equipmentId));
-        }
-        public void ImbueArmor(string equipmentId, IEnumerable<AttackAttribute> attackAttributes)
-        {
-            var armor = _modelService.Player.Equipment[equipmentId];
-
-            // Update Resistance Attribute
-            foreach (var attackAttribute in attackAttributes)
-            {
-                var armorAttribute = armor.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
-
-                // Increment Resistance
-                armorAttribute.Resistance += attackAttribute.Resistance;
-
-                // Publish message
-                if (armorAttribute.Resistance > 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
-                        "{0} has increased {1} Resistance by {2}",
-                        _modelService.GetDisplayName(armor),
-                        attackAttribute.RogueName,
-                        attackAttribute.Resistance.ToString("F2"));
-            }
-
-            // Queue update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, equipmentId));
-        }
-        public void ImbueWeapon(string equipmentId, IEnumerable<AttackAttribute> attackAttributes)
-        {
-            var weapon = _modelService.Player.Equipment[equipmentId];
-
-            // Update Resistance Attribute
-            foreach (var attackAttribute in attackAttributes)
-            {
-                var weaponAttribute = weapon.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
-
-                // Increment Attack
-                weaponAttribute.Attack += attackAttribute.Attack;
-
-                // Publish message
-                if (weaponAttribute.Resistance > 0)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Good,
-                        "{0} has increased {1} Attack by {2}",
-                        _modelService.GetDisplayName(weapon),
-                        attackAttribute.RogueName,
-                        attackAttribute.Resistance.ToString("F2"));
-            }
-
-            // Queue update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, equipmentId));
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemId));
         }
         public void Uncurse(string itemId)
         {

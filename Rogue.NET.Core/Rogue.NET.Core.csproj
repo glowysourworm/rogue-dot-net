@@ -155,7 +155,7 @@
     <Compile Include="Event\Scenario\Level\EventArgs\LevelCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerAdvancementCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerCommandEventArgs.cs" />
-    <Compile Include="Event\Scenario\Level\EventArgs\PlayerImbueCommandEventArgs.cs" />
+    <Compile Include="Event\Scenario\Level\EventArgs\PlayerEnhanceEquipmentCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\UserCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\ViewCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\Event\LevelMessageEventArgs.cs" />
@@ -183,19 +183,19 @@
     <Compile Include="Logic\AlterationEngine.cs" />
     <Compile Include="Logic\Interface\IAlterationEngine.cs" />
     <Compile Include="Logic\Processing\AnimationUpdate.cs" />
-    <Compile Include="Logic\Processing\DialogEquipmentModifyUpdate.cs" />
+    <Compile Include="Logic\Processing\DialogEquipmentEnhanceUpdate.cs" />
     <Compile Include="Logic\Processing\DialogNoteUpdate.cs" />
     <Compile Include="Logic\Processing\DialogPlayerAdvancementUpdate.cs" />
-    <Compile Include="Logic\Processing\Interface\IDialogImbueUpdate.cs" />
+    <Compile Include="Logic\Processing\Interface\IDialogEquipmentEnhanceUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogNoteUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogPlayerAdvancementUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\ILevelProcessingAlterationAction.cs" />
     <Compile Include="Logic\Processing\Interface\IPlayerAdvancementCommandAction.cs" />
     <Compile Include="Logic\Processing\Interface\IPlayerCommandAction.cs" />
-    <Compile Include="Logic\Processing\Interface\IPlayerImbueCommandAction.cs" />
+    <Compile Include="Logic\Processing\Interface\IPlayerEnhanceEquipmentCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerAdvancementCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerCommandAction.cs" />
-    <Compile Include="Logic\Processing\PlayerImbueCommandAction.cs" />
+    <Compile Include="Logic\Processing\PlayerEnhanceEquipmentCommandAction.cs" />
     <Compile Include="Model\Enums\Alteration.cs" />
     <Compile Include="Model\Generator\AnimationGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IAnimationGenerator.cs" />
@@ -206,7 +206,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplate.cs" />
@@ -243,6 +242,7 @@
     <Compile Include="Model\ScenarioConfiguration\Extension\ScenarioConfigurationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\EquipmentEnhanceAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
@@ -255,7 +255,7 @@
     <Compile Include="Model\Scenario\Alteration\Effect\AuraAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\ChangeLevelAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\CreateMonsterAlterationEffect.cs" />
-    <Compile Include="Model\Scenario\Alteration\Effect\EquipmentModifyAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\EquipmentDamageAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\OtherAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\PassiveAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\PermanentAlterationEffect.cs" />

@@ -72,10 +72,6 @@ namespace Rogue.NET.Core.Logic.Content
         {
             // Add to player experience
             player.Experience += slainEnemy.ExperienceGiven;
-
-            // Check for point advancement
-
-            // TODO
         }
 
         public Equipment GetEquippedType(Player player, EquipmentType type)

@@ -339,19 +339,6 @@ namespace Rogue.NET.Core.Service
 
                         }).Actualize();
                 })),
-                new ScenarioValidationRule("[deprecated] Equipment Modify Effect", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
-                {
-                    return configuration.GetAllAlterationsForProcessing()
-                                        // ...Where Animation
-                                        .Where(x => x.Effect is EquipmentModifyAlterationEffectTemplate)
-                                        .Select(x =>
-                        new ScenarioValidationResult()
-                        {
-                            Passed = false,
-                            InnerMessage = x.AssetName + " Effect Must be changed"
-
-                        }).Actualize();
-                })),
 
             // Warnings
             new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
@@ -712,34 +699,6 @@ namespace Rogue.NET.Core.Service
 
                 if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
                     return effect.Name + " has no Create Monster Enemy set";
-            }
-
-            else if (template is EquipmentModifyAlterationEffectTemplate)
-            {
-                var effect = template as EquipmentModifyAlterationEffectTemplate;
-
-                switch (effect.Type)
-                {
-                    case AlterationModifyEquipmentType.ArmorClass:
-                    case AlterationModifyEquipmentType.WeaponClass:
-                        if (effect.ClassChange == 0)
-                            return effect.Name + " has no class change parameter set";
-                        break;
-                    case AlterationModifyEquipmentType.ArmorImbue:
-                    case AlterationModifyEquipmentType.WeaponImbue:
-                        if (effect.AttackAttributes.All(x => !x.Attack.IsSet() &&
-                                                             !x.Resistance.IsSet() &&
-                                                             !x.Weakness.IsSet()))
-                            return effect.Name + " has no imbue parameters set";
-                        break;
-                    case AlterationModifyEquipmentType.ArmorQuality:
-                    case AlterationModifyEquipmentType.WeaponQuality:
-                        if (effect.QualityChange == 0)
-                            return effect.Name + " has no quality change parameter set";
-                        break;
-                    default:
-                        throw new Exception("Unhandled Equipment Modify Type");
-                }
             }
 
             else if (template is EquipmentEnhanceAlterationEffectTemplate)

@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _consumableAlterationList.Add(typeof(AttackAttributeTemporaryAlterationEffect));
             _consumableAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _consumableAlterationList.Add(typeof(CreateMonsterAlterationEffect));
-            _consumableAlterationList.Add(typeof(EquipmentModifyAlterationEffect));
+            _consumableAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
             _consumableAlterationList.Add(typeof(OtherAlterationEffect));
             _consumableAlterationList.Add(typeof(PermanentAlterationEffect));
             _consumableAlterationList.Add(typeof(RevealAlterationEffect));
@@ -53,7 +53,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _doodadAlterationList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _doodadAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _doodadAlterationList.Add(typeof(CreateMonsterAlterationEffect));
-            _doodadAlterationList.Add(typeof(EquipmentModifyAlterationEffect));
+            _doodadAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
             _doodadAlterationList.Add(typeof(PermanentAlterationEffect));
             _doodadAlterationList.Add(typeof(RevealAlterationEffect));
             _doodadAlterationList.Add(typeof(TeleportAlterationEffect));
@@ -61,7 +61,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             // IEnemyAlterationEffect
             _enemyAlterationList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _enemyAlterationList.Add(typeof(CreateMonsterAlterationEffect));
-            _enemyAlterationList.Add(typeof(EquipmentModifyAlterationEffect));
+            _enemyAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
             _enemyAlterationList.Add(typeof(PermanentAlterationEffect));
             _enemyAlterationList.Add(typeof(RunAwayAlterationEffect));
             _enemyAlterationList.Add(typeof(StealAlterationEffect));
@@ -71,7 +71,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _skillAlterationList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _skillAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _skillAlterationList.Add(typeof(CreateMonsterAlterationEffect));
-            _skillAlterationList.Add(typeof(EquipmentModifyAlterationEffect));
+            _skillAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
             _skillAlterationList.Add(typeof(OtherAlterationEffect));
             _skillAlterationList.Add(typeof(PermanentAlterationEffect));
             _skillAlterationList.Add(typeof(RevealAlterationEffect));

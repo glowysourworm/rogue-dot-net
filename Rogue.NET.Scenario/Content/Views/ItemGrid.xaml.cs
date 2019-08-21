@@ -87,20 +87,30 @@ namespace Rogue.NET.Scenario.Content.Views
             LevelActionType levelAction;
             PlayerActionType playerAction;
 
+            // Level Action
             if (Enum.TryParse<LevelActionType>(this.IntendedAction.ToString(), out levelAction))
             {
                 await _eventAggregator.GetEvent<UserCommandEvent>()
                                       .Publish(new LevelCommandEventArgs(levelAction, Compass.Null, itemViewModel.Id));
             }
 
+            // Player Action (Originates from UI)
+            else if (this.IntendedAction == ItemGridActions.EnchantArmor ||
+                     this.IntendedAction == ItemGridActions.EnchantWeapon ||
+                     this.IntendedAction == ItemGridActions.EnhanceArmor ||
+                     this.IntendedAction == ItemGridActions.EnhanceWeapon ||
+                     this.IntendedAction == ItemGridActions.ImbueArmor ||
+                     this.IntendedAction == ItemGridActions.ImbueWeapon)
+            {
+                await _eventAggregator.GetEvent<UserCommandEvent>()
+                      .Publish(new PlayerEnhanceEquipmentCommandEventArgs(PlayerActionType.EnhanceEquipment, itemViewModel.Id));
+            }
             else if (Enum.TryParse<PlayerActionType>(this.IntendedAction.ToString(), out playerAction))
             {
                 switch (playerAction)
                 {
-                    case PlayerActionType.ImbueWeapon:
-                    case PlayerActionType.ImbueArmor:
-                        await _eventAggregator.GetEvent<UserCommandEvent>()
-                                              .Publish(new PlayerImbueCommandEventArgs(playerAction, itemViewModel.Id));
+                    case PlayerActionType.EnhanceEquipment:
+                        // Handled
                         break;
                     case PlayerActionType.PlayerAdvancement:
                         throw new Exception("Trying to invoke player advancement from item grid");
@@ -135,6 +145,8 @@ namespace Rogue.NET.Scenario.Content.Views
             this.EnchantWeapon.Visibility = mode == ItemGridModes.EnchantWeapon ? Visibility.Visible : Visibility.Collapsed;
             this.ImbueArmor.Visibility = mode == ItemGridModes.ImbueArmor ? Visibility.Visible : Visibility.Collapsed;
             this.ImbueWeapon.Visibility = mode == ItemGridModes.ImbueWeapon ? Visibility.Visible : Visibility.Collapsed;
+            this.EnhanceArmor.Visibility = mode == ItemGridModes.EnhanceArmor ? Visibility.Visible : Visibility.Collapsed;
+            this.EnhanceWeapon.Visibility = mode == ItemGridModes.EnhanceWeapon ? Visibility.Visible : Visibility.Collapsed;
             this.Throw.Visibility = mode == ItemGridModes.Consumable ? Visibility.Visible : Visibility.Collapsed;
             this.Drop.Visibility = mode == ItemGridModes.Consumable ? Visibility.Visible :
                                    mode == ItemGridModes.Equipment ? Visibility.Visible : Visibility.Collapsed;

@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 
@@ -19,5 +20,8 @@ namespace Rogue.NET.Core.Logic.Content.Interface
         void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost);
         void ApplyPermanentEffect(Character character, PermanentAlterationEffect alterationEffect);
         void ApplyRemedy(Character character, RemedyAlterationEffect alterationEffect);
+
+        void ApplyEquipmentEnhanceEffect(Player player, EquipmentEnhanceAlterationEffect effect, Equipment item);
+        void ApplyEquipmentDamageEffect(Character affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item);
     }
 }

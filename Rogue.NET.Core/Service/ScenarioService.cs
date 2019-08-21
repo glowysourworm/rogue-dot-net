@@ -242,13 +242,8 @@ namespace Rogue.NET.Core.Service
             // Player commands don't involve level actions - so no need to check for altered states.
             switch (command.Type)
             {
-                case PlayerActionType.EnchantWeapon:
-                case PlayerActionType.EnchantArmor:
-                    _scenarioEngine.Enchant(command.Id);
-                    break;
-                case PlayerActionType.ImbueWeapon:
-                case PlayerActionType.ImbueArmor:
-                    _scenarioEngine.ImbueArmor(command.Id, (command as IPlayerImbueCommandAction).ImbueAttackAttributes);
+                case PlayerActionType.EnhanceEquipment:
+                    _scenarioEngine.EnhanceEquipment((command as IPlayerEnhanceEquipmentCommandAction).Effect, command.Id);
                     break;
                 case PlayerActionType.Uncurse:
                     _scenarioEngine.Uncurse(command.Id);

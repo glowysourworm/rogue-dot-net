@@ -33,7 +33,17 @@ namespace Rogue.NET.Common.Extension
             return Math.Max(number, lowLimit);
         }
 
+        public static int LowLimit(this int number, int lowLimit = 0)
+        {
+            return Math.Max(number, lowLimit);
+        }
+
         public static double HighLimit(this double number, double highLimit = 1)
+        {
+            return Math.Min(number, highLimit);
+        }
+
+        public static int HighLimit(this int number, int highLimit = 1)
         {
             return Math.Min(number, highLimit);
         }

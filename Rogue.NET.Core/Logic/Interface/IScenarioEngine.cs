@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,7 @@ namespace Rogue.NET.Core.Logic.Interface
         LevelContinuationAction Throw(string itemId);
         LevelContinuationAction Consume(string itemId);
         void Identify(string itemId);
-        void Enchant(string itemId);
-        void ImbueArmor(string itemId, IEnumerable<AttackAttribute> attackAttributes);
-        void ImbueWeapon(string itemId, IEnumerable<AttackAttribute> attackAttributes);
+        void EnhanceEquipment(EquipmentEnhanceAlterationEffect effect, string itemId);
         void Uncurse(string itemId);
         void Drop(string itemId);
         LevelContinuationAction Fire();

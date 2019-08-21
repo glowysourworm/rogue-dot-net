@@ -172,8 +172,11 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is CreateMonsterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
 
-            else if (template is EquipmentModifyAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentModifyAlterationEffectTemplate);
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
+
+            else if (template is EquipmentEnhanceAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
             else if (template is OtherAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
@@ -205,6 +208,9 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeTemporaryAlterationEffectTemplate);
 
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
+
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
 
@@ -229,8 +235,11 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is CreateMonsterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
 
-            else if (template is EquipmentModifyAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentModifyAlterationEffectTemplate);
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
+
+            else if (template is EquipmentEnhanceAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
             else if (template is OtherAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
@@ -265,8 +274,8 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is CreateMonsterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
 
-            else if (template is EquipmentModifyAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentModifyAlterationEffectTemplate);
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -291,6 +300,9 @@ namespace Rogue.NET.Core.Model.Generator
         {
             if (template is AttackAttributeMeleeAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
+
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -358,8 +370,11 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is CreateMonsterAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
 
-            else if (template is EquipmentModifyAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentModifyAlterationEffectTemplate);
+            else if (template is EquipmentEnhanceAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
+
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is OtherAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
@@ -473,11 +488,24 @@ namespace Rogue.NET.Core.Model.Generator
             };
         }
 
-        protected EquipmentModifyAlterationEffect GenerateAlterationEffect(EquipmentModifyAlterationEffectTemplate template)
+        protected EquipmentDamageAlterationEffect GenerateAlterationEffect(EquipmentDamageAlterationEffectTemplate template)
         {
-            return new EquipmentModifyAlterationEffect()
+            return new EquipmentDamageAlterationEffect()
             {
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
+                ClassChange = template.ClassChange,
+                Type = template.Type,
+                QualityChange = template.QualityChange,
+                RogueName = template.Name
+            };
+        }
+
+        protected EquipmentEnhanceAlterationEffect GenerateAlterationEffect(EquipmentEnhanceAlterationEffectTemplate template)
+        {
+            return new EquipmentEnhanceAlterationEffect()
+            {
+                AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
+                UseDialog = template.UseDialog,
                 ClassChange = template.ClassChange,
                 Type = template.Type,
                 QualityChange = template.QualityChange,

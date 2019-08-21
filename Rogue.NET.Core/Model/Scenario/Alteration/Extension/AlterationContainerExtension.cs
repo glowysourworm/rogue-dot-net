@@ -73,7 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 else if (alteration.Effect is CreateMonsterAlterationEffect)
                     return AlterationCostType.OneTime;
 
-                else if (alteration.Effect is EquipmentModifyAlterationEffect)
+                else if (alteration.Effect is EquipmentDamageAlterationEffect)
                     return AlterationCostType.OneTime;
 
                 else if (alteration.Effect is OtherAlterationEffect)
@@ -182,7 +182,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
 
                 // Yes, because using these on other characters involves some kind of
                 // negative modification (like, "acid eats my armor"). So, need a blocking type
-                else if (alteration.Effect is EquipmentModifyAlterationEffect)
+                else if (alteration.Effect is EquipmentDamageAlterationEffect)
                     return true;
 
                 else if (alteration.Effect is OtherAlterationEffect)

@@ -259,9 +259,6 @@ namespace Rogue.NET.ScenarioEditor
                     else if (alterationEffect is AttackAttributeTemporaryAlterationEffectTemplateViewModel)
                         (alterationEffect as AttackAttributeTemporaryAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 
-                    else if (alterationEffect is EquipmentModifyAlterationEffectTemplateViewModel)
-                        (alterationEffect as EquipmentModifyAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
-
                     else if (alterationEffect is EquipmentEnhanceAlterationEffectTemplateViewModel)
                         (alterationEffect as EquipmentEnhanceAlterationEffectTemplateViewModel).AttackAttributes.AddRange(_scenarioEditorController.CurrentConfig.AttackAttributes.Select(x => x.DeepClone()));
 

@@ -49,10 +49,7 @@ namespace Rogue.NET.Core.Model.Enums
     /// </summary>
     public enum PlayerActionType
     {
-        EnchantWeapon,
-        EnchantArmor,
-        ImbueWeapon,
-        ImbueArmor,
+        EnhanceEquipment,
         Uncurse,
         Identify,
         ActivateSkillSet,

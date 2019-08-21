@@ -462,8 +462,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             else if (effect is CreateMonsterAlterationEffect)
                 return "Create Monster";
 
-            else if (effect is EquipmentModifyAlterationEffect)
-                return (effect as EquipmentModifyAlterationEffect).Type.ToString();
+            else if (effect is EquipmentDamageAlterationEffect)
+                return (effect as EquipmentDamageAlterationEffect).Type.ToString();
 
             else if (effect is OtherAlterationEffect)
                 return (effect as OtherAlterationEffect).Type.ToString();

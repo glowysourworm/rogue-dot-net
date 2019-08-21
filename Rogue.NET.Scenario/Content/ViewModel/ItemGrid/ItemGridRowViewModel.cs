@@ -32,6 +32,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         bool _enchantWeaponEnable;
         bool _imbueArmorEnable;
         bool _imbueWeaponEnable;
+        bool _enhanceArmorEnable;
+        bool _enhanceWeaponEnable;
         bool _isEquiped;
         bool _isCursed;
         bool _isObjective;
@@ -128,6 +130,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         {
             get { return _imbueWeaponEnable; }
             set { this.RaiseAndSetIfChanged(ref _imbueWeaponEnable, value); }
+        }
+        public bool EnhanceArmorEnable
+        {
+            get { return _enhanceArmorEnable; }
+            set { this.RaiseAndSetIfChanged(ref _enhanceArmorEnable, value); }
+        }
+        public bool EnhanceWeaponEnable
+        {
+            get { return _enhanceWeaponEnable; }
+            set { this.RaiseAndSetIfChanged(ref _enhanceWeaponEnable, value); }
         }
         public bool IsEquiped
         {
@@ -355,6 +367,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.EnchantWeaponEnable = false;
             this.ImbueArmorEnable = false;
             this.ImbueWeaponEnable = false;
+            this.EnhanceArmorEnable = false;
+            this.EnhanceWeaponEnable = false;
 
             // Symbol Details
             this.CharacterSymbol = consumable.CharacterSymbol;
@@ -449,6 +463,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.EnchantWeaponEnable = equipment.ClassApplies() && equipment.IsWeaponType();
             this.ImbueArmorEnable = equipment.CanImbue() && equipment.IsArmorType();
             this.ImbueWeaponEnable = equipment.CanImbue() && equipment.IsWeaponType();
+            this.EnhanceArmorEnable = equipment.ClassApplies() && equipment.IsArmorType();
+            this.EnhanceWeaponEnable = equipment.ClassApplies() && equipment.IsWeaponType();
 
             // Symbol Details
             this.CharacterSymbol = equipment.CharacterSymbol;

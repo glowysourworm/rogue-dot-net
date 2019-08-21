@@ -208,6 +208,12 @@
     <Compile Include="View\CommandsView.xaml.cs">
       <DependentUpon>CommandsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\EnhanceArmorView.xaml.cs">
+      <DependentUpon>EnhanceArmorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EnhanceWeaponView.xaml.cs">
+      <DependentUpon>EnhanceWeaponView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EnchantWeaponView.xaml.cs">
       <DependentUpon>EnchantWeaponView.xaml</DependentUpon>
     </Compile>
@@ -251,6 +257,14 @@
     <Page Include="View\CommandsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EnhanceArmorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\EnhanceWeaponView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\EnchantWeaponView.xaml">
       <Generator>MSBuild:Compile</Generator>

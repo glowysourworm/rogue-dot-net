@@ -18,7 +18,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         EnchantArmor,
         EnchantWeapon,
         ImbueArmor,
-        ImbueWeapon
+        ImbueWeapon,
+        EnhanceArmor,
+        EnhanceWeapon
     }
 
     /// <summary>
@@ -30,10 +32,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         Drop,
         EnchantWeapon,
         EnchantArmor,
-        Equip,
-        Identify,
         ImbueArmor,
         ImbueWeapon,
+        EnhanceWeapon,
+        EnhanceArmor,
+        Equip,
+        Identify,
         Throw,
         Uncurse
     }

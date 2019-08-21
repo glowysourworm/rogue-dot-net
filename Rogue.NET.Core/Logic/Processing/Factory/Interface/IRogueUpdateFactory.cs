@@ -24,7 +24,7 @@ namespace Rogue.NET.Core.Logic.Processing.Factory.Interface
         RogueUpdateEventArgs Tick();
         RogueUpdateEventArgs StatisticsUpdate(ScenarioUpdateType type, string contentRogueName);
         RogueUpdateEventArgs Dialog(DialogEventType type);
-        RogueUpdateEventArgs DialogModifyEquipment(EquipmentModifyAlterationEffect effect);
+        RogueUpdateEventArgs DialogEnhanceEquipment(EquipmentEnhanceAlterationEffect effect);
         RogueUpdateEventArgs DialogNote(string noteMessage, string noteTitle);
         RogueUpdateEventArgs DialogPlayerAdvancement(Player player, int playerPoints);
     }

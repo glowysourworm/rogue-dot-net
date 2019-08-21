@@ -169,11 +169,11 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
                 Priority = RogueUpdatePriority.High
             };
         }
-        public RogueUpdateEventArgs DialogModifyEquipment(EquipmentModifyAlterationEffect effect)
+        public RogueUpdateEventArgs DialogEnhanceEquipment(EquipmentEnhanceAlterationEffect effect)
         {
             return new RogueUpdateEventArgs()
             {
-                Update = new DialogEquipmentModifyUpdate()
+                Update = new DialogEquipmentEnhanceUpdate()
                 {
                     Type = DialogEventType.ModifyEquipment,
                     Effect = effect

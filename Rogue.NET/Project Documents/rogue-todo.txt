@@ -792,4 +792,22 @@ IMMEDIATE TODO'S:
 			5) Consider creating a subset of UTF-8 as a vector image set to show / size into cell containers. Problem is
 			   that some symbols get cut off - so would want to resize to fit. (Probably could do this by measuring the
 			   TextBlock first also)
+			   
+	- TODO:  Attack Attribute Refactoring:
+	
+				1) REMOVE SHARED ATTACK ATTRIBUTE COLLECTION FROM SCENARIO CONFIGURATION AND SCENARIO.
+				
+				2) Use sparse attack attributes; but create some centralized methods to apply them
+				
+				3) Simplify Alteration Effects by using SINGLE attack attributes for some; but breaking up the class into
+				   several use cases:
+				   
+					- Attack Attribute:  (A, R, W)
+					- Attack Attribute Positive Change:  (A, R, W) -> (+, +, -)
+					- Attack Attribute Negative Change:  (A, R, W) -> (-, -, +)
+					
+				4) Provide services for supplying the full attack attribute list
+				
+	- TODO: Deal with proper nouns. Probably can do this using a flag on the enemy. "Use Proper Noun" (when addressing enemy)
+					
 			

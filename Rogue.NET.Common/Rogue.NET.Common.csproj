@@ -953,9 +953,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resource\Images\EnchantWeapon.png">
+    <EmbeddedResource Include="Resource\Images\EnchantWeapon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\Images\EnchantArmor.png">
@@ -1349,6 +1349,12 @@
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeRed.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeWhite.png" />
     <EmbeddedResource Include="Resource\Images\ScenarioObjects\SnowFlakeYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\EnhanceWeapon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource\Images\EnhanceArmor.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

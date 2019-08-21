@@ -352,7 +352,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplateViewModel.cs" />

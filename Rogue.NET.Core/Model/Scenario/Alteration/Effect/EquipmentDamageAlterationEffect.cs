@@ -7,10 +7,12 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 {
     [Serializable]
-    public class EquipmentModifyAlterationEffect
+    public class EquipmentDamageAlterationEffect
         : RogueBase, IConsumableAlterationEffect,
+                     IConsumableProjectileAlterationEffect,
                      IDoodadAlterationEffect,
                      IEnemyAlterationEffect,
+                     IEquipmentAttackAlterationEffect,
                      ISkillAlterationEffect
     {
         public AlterationModifyEquipmentType Type { get; set; }
@@ -19,7 +21,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double QualityChange { get; set; }
         public List<AttackAttribute> AttackAttributes { get; set; }
 
-        public EquipmentModifyAlterationEffect()
+        public EquipmentDamageAlterationEffect()
         {
             this.AttackAttributes = new List<AttackAttribute>();
         }

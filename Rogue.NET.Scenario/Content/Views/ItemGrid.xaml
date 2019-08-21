@@ -6,7 +6,6 @@
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:itemGridModes="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid"
              xmlns:itemTemplateSelector="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemTemplateSelector"
              x:Class="Rogue.NET.Scenario.Content.Views.ItemGrid" 
              HorizontalContentAlignment="Stretch"
@@ -67,6 +66,8 @@
                                     <Binding Path="EnchantWeaponEnable" />
                                     <Binding Path="ImbueArmorEnable" />
                                     <Binding Path="ImbueWeaponEnable" />
+                                    <Binding Path="EnhanceArmorEnable" />
+                                    <Binding Path="EnhanceWeaponEnable" />                                    
                                     <Binding Path="ThrowEnable" />
                                     <Binding Path="DropEnable" />
                                 </MultiBinding>
@@ -457,6 +458,14 @@
                                     <Setter Property="Foreground" Value="Yellow" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.EnhanceWeapon}">
+                                    <Setter Property="Foreground" Value="LightSteelBlue" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
+                                         Value="{x:Static viewModel:ItemGridActions.EnhanceWeapon}">
+                                    <Setter Property="Foreground" Value="LightSteelBlue" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IntendedAction, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" 
                                          Value="{x:Static viewModel:ItemGridActions.Uncurse}">
                                     <Setter Property="Foreground" Value="White" />
                                 </DataTrigger>
@@ -486,6 +495,8 @@
                 <RadioButton x:Name="EnchantWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnchantWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnchantWeapon.png" BorderBrush="White" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enchant Weapon" Cursor="Hand" />
                 <RadioButton x:Name="ImbueArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueArmor.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Armor" Cursor="Hand" />
                 <RadioButton x:Name="ImbueWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.ImbueWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/ImbueWeapon.png" BorderBrush="Red" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Imbue Weapon" Cursor="Hand" />
+                <RadioButton x:Name="EnhanceArmor" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnhanceArmor}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnhanceArmor.png" BorderBrush="LightSteelBlue" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enhance Armor" Cursor="Hand" />
+                <RadioButton x:Name="EnhanceWeapon" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.EnhanceWeapon}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/EnhanceWeapon.png" BorderBrush="LightSteelBlue" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}"  HorizontalAlignment="Right" ToolTip="Enhance Weapon" Cursor="Hand" />                
                 <RadioButton x:Name="Throw" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Throw}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
                 <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static viewModel:ItemGridActions.Drop}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ItemGrid}}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
             </StackPanel>

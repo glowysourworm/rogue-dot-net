@@ -47,6 +47,12 @@ namespace Rogue.NET.Scenario.Content.Views.Extension
                 case ItemGridModes.ImbueWeapon:
                     view.DataContext = viewModel.ImbueWeaponEquipment;
                     break;
+                case ItemGridModes.EnhanceArmor:
+                    view.DataContext = viewModel.ImbueArmorEquipment;
+                    break;
+                case ItemGridModes.EnhanceWeapon:
+                    view.DataContext = viewModel.ImbueWeaponEquipment;
+                    break;
                 case ItemGridModes.Uncurse:
                     view.DataContext = viewModel.UncurseEquipment;
                     break;

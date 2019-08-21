@@ -4,9 +4,9 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 
 namespace Rogue.NET.Core.Logic.Processing
 {
-    public class DialogEquipmentModifyUpdate : IDialogModifyEquipmentUpdate
+    public class DialogEquipmentEnhanceUpdate : IDialogEquipmentEnhanceUpdate
     {
-        public EquipmentModifyAlterationEffect Effect { get; set; }
+        public EquipmentEnhanceAlterationEffect Effect { get; set; }
         public DialogEventType Type { get; set; }
     }
 }

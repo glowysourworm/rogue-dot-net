@@ -35,6 +35,8 @@ namespace Rogue.NET.Scenario.Converter
                                       x.EnchantWeaponEnable && intendedAction == ItemGridActions.EnchantWeapon ||
                                       x.ImbueArmorEnable && intendedAction == ItemGridActions.ImbueArmor ||
                                       x.ImbueWeaponEnable && intendedAction == ItemGridActions.ImbueWeapon ||
+                                      x.EnhanceArmorEnable && intendedAction == ItemGridActions.EnhanceArmor ||
+                                      x.EnhanceWeaponEnable && intendedAction == ItemGridActions.EnhanceWeapon ||
                                       x.ThrowEnable && intendedAction == ItemGridActions.Throw ||
                                       x.DropEnable && intendedAction == ItemGridActions.Drop) ?
 

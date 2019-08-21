@@ -147,8 +147,7 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         public static T PickRandom<T>(this IEnumerable<T> collection)
         {
-            return collection.RandomSubset(1)
-                             .FirstOrDefault();
+            return collection.Any() ? collection.RandomSubset(1).First() : default(T);
         }
 
         /// <summary>

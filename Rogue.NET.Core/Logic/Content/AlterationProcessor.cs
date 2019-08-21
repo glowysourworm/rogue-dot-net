@@ -8,6 +8,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
@@ -24,11 +25,15 @@ namespace Rogue.NET.Core.Logic.Content
     [Export(typeof(IAlterationProcessor))]
     public class AlterationProcessor : IAlterationProcessor
     {
+        readonly IModelService _modelService;
         readonly IScenarioMessageService _scenarioMessageService;
 
         [ImportingConstructor]
-        public AlterationProcessor(IScenarioMessageService scenarioMessageService)
+        public AlterationProcessor(
+                IModelService modelService,
+                IScenarioMessageService scenarioMessageService)
         {
+            _modelService = modelService;
             _scenarioMessageService = scenarioMessageService;
         }
 
@@ -348,6 +353,164 @@ namespace Rogue.NET.Core.Logic.Content
                     ScenarioMessagePriority.Good,
                     "{0} has been cured!",
                     alterationEffect.RogueName);
+            }
+        }
+        public void ApplyEquipmentEnhanceEffect(Player player, EquipmentEnhanceAlterationEffect effect, Equipment item)
+        {
+            switch (effect.Type)
+            {
+                case AlterationModifyEquipmentType.ArmorClass:
+                case AlterationModifyEquipmentType.WeaponClass:
+                    {
+                        // Change class of item
+                        item.Class += effect.ClassChange;
+
+                        // Publish message
+                        _scenarioMessageService
+                            .Publish(ScenarioMessagePriority.Good,
+                                     "Your {0} glows gently...",
+                                     _modelService.GetDisplayName(item));
+                    }
+                    break;
+                case AlterationModifyEquipmentType.ArmorImbue:
+                case AlterationModifyEquipmentType.WeaponImbue:
+                    {
+                        foreach (var attackAttribute in effect.AttackAttributes
+                                                              .Where(x => x.Attack != 0 ||
+                                                                          x.Resistance != 0 ||
+                                                                          x.Weakness != 0))
+                        {
+                            var equipmentAttackAttribute = item.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
+
+                            equipmentAttackAttribute.Attack += attackAttribute.Attack;
+                            equipmentAttackAttribute.Resistance += attackAttribute.Resistance;
+                            equipmentAttackAttribute.Weakness -= attackAttribute.Weakness;
+
+                            // Make sure to clip weakness value to zero
+                            equipmentAttackAttribute.Weakness = equipmentAttackAttribute.Weakness.LowLimit(0);
+                        }
+
+                        // Publish message
+                        _scenarioMessageService
+                            .Publish(ScenarioMessagePriority.Normal,
+                                     "Your {0} shines with a brilliant radiance!",
+                                     _modelService.GetDisplayName(item));
+                    }
+                    break;
+                case AlterationModifyEquipmentType.ArmorQuality:
+                case AlterationModifyEquipmentType.WeaponQuality:
+                    {
+                        // Change class of item
+                        item.Quality += effect.QualityChange;
+
+                        // Publish message
+                        _scenarioMessageService
+                            .Publish(ScenarioMessagePriority.Good,
+                                     "Your {0} has improved",
+                                     _modelService.GetDisplayName(item));
+                    }
+                    break;
+                default:
+                    throw new Exception("Unhandled Alteration Modify Equipment Type");
+            }
+        }
+        public void ApplyEquipmentDamageEffect(Character affectedCharacter, EquipmentDamageAlterationEffect effect, Equipment item)
+        {
+            switch (effect.Type)
+            {
+                case AlterationModifyEquipmentType.ArmorClass:
+                case AlterationModifyEquipmentType.WeaponClass:
+                    {
+                        // Change class of item
+                        item.Class -= effect.ClassChange;
+
+                        // Clip value of class to zero
+                        item.Class = item.Class.LowLimit(0);
+
+                        // Publish message
+                        if (affectedCharacter is Player)
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Bad,
+                                         "Your {0} darkens...!",
+                                         _modelService.GetDisplayName(item));
+                        }
+                        else
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Normal,
+                                         "You dis-enchanted {0}'s {1}", 
+                                         _modelService.GetDisplayName(affectedCharacter),
+                                         _modelService.GetDisplayName(item));
+                        }
+                    }
+                    break;
+                case AlterationModifyEquipmentType.ArmorImbue:
+                case AlterationModifyEquipmentType.WeaponImbue:
+                    {
+                        foreach (var attackAttribute in effect.AttackAttributes
+                                                              .Where(x => x.Attack != 0 ||
+                                                                          x.Resistance != 0 ||
+                                                                          x.Weakness != 0))
+                        {
+                            var equipmentAttackAttribute = item.AttackAttributes.First(x => x.RogueName == attackAttribute.RogueName);
+
+                            equipmentAttackAttribute.Attack -= attackAttribute.Attack;
+                            equipmentAttackAttribute.Resistance -= attackAttribute.Resistance;
+                            equipmentAttackAttribute.Weakness += attackAttribute.Weakness;
+
+                            // Clip Values to Zero
+                            equipmentAttackAttribute.Attack = equipmentAttackAttribute.Attack.LowLimit(0);
+                            equipmentAttackAttribute.Resistance = equipmentAttackAttribute.Resistance.LowLimit(0);
+                        }
+
+                        // Publish message
+                        if (affectedCharacter is Player)
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Bad,
+                                         "Your {0} looses its radiance",
+                                         _modelService.GetDisplayName(item));
+                        }
+                        else
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Normal,
+                                         "{0}'s {1} looses its radiance",
+                                         _modelService.GetDisplayName(affectedCharacter),
+                                         _modelService.GetDisplayName(item));
+                        }
+                    }
+                    break;
+                case AlterationModifyEquipmentType.ArmorQuality:
+                case AlterationModifyEquipmentType.WeaponQuality:
+                    {
+                        // Change quality of item
+                        item.Quality -= effect.QualityChange;
+
+                        // Clip value to zero
+                        item.Quality = item.Quality.LowLimit(0);
+
+                        // Publish message
+                        if (affectedCharacter is Player)
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Bad,
+                                         "Your {0} is damaged!",
+                                         _modelService.GetDisplayName(item));
+                        }
+                        else
+                        {
+                            _scenarioMessageService
+                                .Publish(ScenarioMessagePriority.Normal,
+                                         "{0}'s {1} is damaged",
+                                         _modelService.GetDisplayName(affectedCharacter),
+                                         _modelService.GetDisplayName(item));
+                        }
+                    }
+                    break;
+                default:
+                    throw new Exception("Unhandled Alteration Modify Equipment Type");
             }
         }
 
