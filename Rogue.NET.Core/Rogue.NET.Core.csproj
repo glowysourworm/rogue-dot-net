@@ -182,8 +182,8 @@
     <Compile Include="CoreModule.cs" />
     <Compile Include="Logic\AlterationEngine.cs" />
     <Compile Include="Logic\Interface\IAlterationEngine.cs" />
-    <Compile Include="Logic\Processing\AnimationUpdate_NEW.cs" />
-    <Compile Include="Logic\Processing\DialogImbueUpdate.cs" />
+    <Compile Include="Logic\Processing\AnimationUpdate.cs" />
+    <Compile Include="Logic\Processing\DialogEquipmentModifyUpdate.cs" />
     <Compile Include="Logic\Processing\DialogNoteUpdate.cs" />
     <Compile Include="Logic\Processing\DialogPlayerAdvancementUpdate.cs" />
     <Compile Include="Logic\Processing\Interface\IDialogImbueUpdate.cs" />
@@ -207,6 +207,8 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplate.cs" />

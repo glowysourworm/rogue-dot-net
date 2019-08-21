@@ -26,6 +26,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 
 namespace Rogue.NET.Core.Logic
 {
@@ -162,7 +163,7 @@ namespace Rogue.NET.Core.Logic
                 //         be the actor (player) as affected. (Example: Change Level)
                 //
                 //         This should simplify thinking about both processing the effect and animation.
-                ApplyAlteration(alteration, actor, affectedCharacter);
+                ApplyAlteration(alteration, affectedCharacter, actor);
 
                 // Alteration engages enemies
                 if (affectedCharacter is Enemy)
@@ -211,9 +212,7 @@ namespace Rogue.NET.Core.Logic
                 ProcessCreateMonster(alteration.Effect as CreateMonsterAlterationEffect, actor);
 
             else if (alteration.Effect is EquipmentModifyAlterationEffect)
-            {
-                // TODO:ALTERATION
-            }
+                ProcessEquipmentModify(alteration.Effect as EquipmentModifyAlterationEffect, actor, affectedCharacter);
 
             else if (alteration.Effect is OtherAlterationEffect)
             {
@@ -549,6 +548,58 @@ namespace Rogue.NET.Core.Logic
 
                 // Notify UI
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
+            }
+        }
+        private void ProcessEquipmentModify(EquipmentModifyAlterationEffect effect, Character actor, Character affectedCharacter)
+        {
+            // Modify Equipment:
+            //
+            //  - Actor != Affected Character:  Modify Equipped Item (at random) ONLY
+            //  - Actor == Affected Character:  Player: Bring up the Quality / Class / Imbue Dialog
+            //                                  Enemy:  (MAYBE NOT SUPPORT) Choose Equipped Item (at random)
+            //
+
+            // First, Check for Player Invoke
+            if (actor == affectedCharacter &&
+                actor is Player)
+                RogueUpdateEvent(this, _rogueUpdateFactory.DialogModifyEquipment(effect));
+
+            var isWeapon = effect.Type == AlterationModifyEquipmentType.WeaponClass ||
+                           effect.Type == AlterationModifyEquipmentType.WeaponImbue ||
+                           effect.Type == AlterationModifyEquipmentType.WeaponQuality;
+
+            var randomEquippedItem = isWeapon ? affectedCharacter.Equipment
+                                                     .Values
+                                                     .Where(x => x.IsEquipped &&
+                                                                 x.IsWeaponType())
+                                                     .PickRandom()
+                                              : affectedCharacter.Equipment
+                                                                 .Values
+                                                                 .Where(x => x.IsEquipped &&
+                                                                             x.IsArmorType())
+                                                                 .PickRandom();
+
+            // Since it's not the Player - Select a random equipped item
+            switch (effect.Type)
+            {
+                case AlterationModifyEquipmentType.ArmorClass:
+                case AlterationModifyEquipmentType.WeaponClass:
+                    {
+                        // Change class of item
+                        randomEquippedItem.Class += effect.ClassChange;
+
+                        // Publish message
+                        //_scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "{0} has )
+                    }
+                    break;
+                case AlterationModifyEquipmentType.ArmorImbue:
+                case AlterationModifyEquipmentType.WeaponImbue:
+                    break;
+                case AlterationModifyEquipmentType.ArmorQuality:
+                case AlterationModifyEquipmentType.WeaponQuality:
+                    break;
+                default:
+                    throw new Exception("Unhandled Alteration Modify Equipment Type");
             }
         }
         private CellPoint GetRandomLocation(AlterationRandomPlacementType placementType, CellPoint sourceLocation, int sourceRange)

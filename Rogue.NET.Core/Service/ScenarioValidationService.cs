@@ -318,8 +318,43 @@ namespace Rogue.NET.Core.Service
 
                         }).Actualize();
                 })),
-                // Warnings
-                new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                new ScenarioValidationRule("Improper Animation Parameters: Projectile and Chain Animations must not have the Source as an Affected Character", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    return configuration.GetAllAlterationsForProcessing()
+                                        // ...Where Animation
+                                        .Where(x => x.HasAnimation)
+                                        // ...Is Trying to Create a Projectile
+                                        .Where(x => x.AnimationGroup.Animations.Any(z => z.BaseType == AnimationBaseType.Chain ||
+                                                                                         z.BaseType == AnimationBaseType.ChainReverse ||
+                                                                                         z.BaseType == AnimationBaseType.Projectile ||
+                                                                                         z.BaseType == AnimationBaseType.ProjectileReverse))
+                                        // ...That will fire at the source character
+                                        .Where(x => x.AnimationGroup.TargetType == AlterationTargetType.AllInRange ||
+                                                    x.AnimationGroup.TargetType == AlterationTargetType.Source)
+                                        .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.AssetName + " Animation is improperly set. Try setting Target Type to 'Target'"
+
+                        }).Actualize();
+                })),
+                new ScenarioValidationRule("[deprecated] Equipment Modify Effect", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    return configuration.GetAllAlterationsForProcessing()
+                                        // ...Where Animation
+                                        .Where(x => x.Effect is EquipmentModifyAlterationEffectTemplate)
+                                        .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.AssetName + " Effect Must be changed"
+
+                        }).Actualize();
+                })),
+
+            // Warnings
+            new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     var contentNotSet = configuration.ConsumableTemplates.Cast<DungeonObjectTemplate>()
                                                                         .Union(configuration.DoodadTemplates)
@@ -682,6 +717,62 @@ namespace Rogue.NET.Core.Service
             else if (template is EquipmentModifyAlterationEffectTemplate)
             {
                 var effect = template as EquipmentModifyAlterationEffectTemplate;
+
+                switch (effect.Type)
+                {
+                    case AlterationModifyEquipmentType.ArmorClass:
+                    case AlterationModifyEquipmentType.WeaponClass:
+                        if (effect.ClassChange == 0)
+                            return effect.Name + " has no class change parameter set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorImbue:
+                    case AlterationModifyEquipmentType.WeaponImbue:
+                        if (effect.AttackAttributes.All(x => !x.Attack.IsSet() &&
+                                                             !x.Resistance.IsSet() &&
+                                                             !x.Weakness.IsSet()))
+                            return effect.Name + " has no imbue parameters set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorQuality:
+                    case AlterationModifyEquipmentType.WeaponQuality:
+                        if (effect.QualityChange == 0)
+                            return effect.Name + " has no quality change parameter set";
+                        break;
+                    default:
+                        throw new Exception("Unhandled Equipment Modify Type");
+                }
+            }
+
+            else if (template is EquipmentEnhanceAlterationEffectTemplate)
+            {
+                var effect = template as EquipmentEnhanceAlterationEffectTemplate;
+
+                switch (effect.Type)
+                {
+                    case AlterationModifyEquipmentType.ArmorClass:
+                    case AlterationModifyEquipmentType.WeaponClass:
+                        if (effect.ClassChange == 0)
+                            return effect.Name + " has no class change parameter set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorImbue:
+                    case AlterationModifyEquipmentType.WeaponImbue:
+                        if (effect.AttackAttributes.All(x => !x.Attack.IsSet() &&
+                                                             !x.Resistance.IsSet() &&
+                                                             !x.Weakness.IsSet()))
+                            return effect.Name + " has no imbue parameters set";
+                        break;
+                    case AlterationModifyEquipmentType.ArmorQuality:
+                    case AlterationModifyEquipmentType.WeaponQuality:
+                        if (effect.QualityChange == 0)
+                            return effect.Name + " has no quality change parameter set";
+                        break;
+                    default:
+                        throw new Exception("Unhandled Equipment Modify Type");
+                }
+            }
+
+            else if (template is EquipmentDamageAlterationEffectTemplate)
+            {
+                var effect = template as EquipmentDamageAlterationEffectTemplate;
 
                 switch (effect.Type)
                 {

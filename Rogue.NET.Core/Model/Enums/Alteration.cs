@@ -136,4 +136,18 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Attack Attributes are applied as an attack each turn against the affected characters")]
         MalignPerStep = 1
     }
+    public enum AlterationEquipmentModifyType
+    {
+        [Display(Name = "Class (Enchant)",
+                 Description = "Modifies class parameter of an item")]
+        Class,
+
+        [Display(Name = "Quality (Enhance)",
+                 Description = "Modifies quality parameter of an item")]
+        Quality,
+
+        [Display(Name = "Attack Attribute (Imbue)",
+                 Description = "Modifies attack attributes of an item")]
+        AttackAttribute
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
@@ -7,18 +8,23 @@ using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.Effe
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [UIType(DisplayName = "Modify Equipment",
-            Description = "Changes the target character's equipment (good / bad)",
-            ViewType = typeof(OtherEffectParameters))]
-    public class EquipmentModifyAlterationEffectTemplateViewModel 
+    [UIType(DisplayName = "Damage Equipment (Combat)",
+            Description = "Modifies a Character's Equipment NEGATIVELY (during combat)",
+            ViewType = typeof(EquipmentDamageEffectParameters))]
+    public class EquipmentDamageAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                    IDoodadAlterationEffectTemplateViewModel,
-                    IEnemyAlterationEffectTemplateViewModel,
-                    ISkillAlterationEffectTemplateViewModel
+                             IConsumableProjectileAlterationEffectTemplateViewModel,
+                             IDoodadAlterationEffectTemplateViewModel,
+                             IEnemyAlterationEffectTemplateViewModel,
+                             IEquipmentAttackAlterationEffectTemplateViewModel,
+                             ISkillAlterationEffectTemplateViewModel
     {
         AlterationModifyEquipmentType _type;
         int _classChange;
@@ -42,7 +48,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
-        public EquipmentModifyAlterationEffectTemplateViewModel()
+        public EquipmentDamageAlterationEffectTemplateViewModel()
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
         }

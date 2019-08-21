@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -168,14 +169,14 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
                 Priority = RogueUpdatePriority.High
             };
         }
-        public RogueUpdateEventArgs Dialog(DialogEventType type, IEnumerable<AttackAttribute> attackAttributes)
+        public RogueUpdateEventArgs DialogModifyEquipment(EquipmentModifyAlterationEffect effect)
         {
             return new RogueUpdateEventArgs()
             {
-                Update = new DialogImbueUpdate()
+                Update = new DialogEquipmentModifyUpdate()
                 {
-                    Type = type,
-                    ImbueAttackAttributes = attackAttributes
+                    Type = DialogEventType.ModifyEquipment,
+                    Effect = effect
                 },
                 Priority = RogueUpdatePriority.High
             };

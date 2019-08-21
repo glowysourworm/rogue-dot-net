@@ -351,7 +351,9 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentModifyAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PermanentAlterationEffectTemplateViewModel.cs" />
@@ -450,8 +452,11 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml.cs">
       <DependentUpon>CreateMonsterEffectParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentModifyEffectParameters.xaml.cs">
-      <DependentUpon>EquipmentModifyEffectParameters.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentEnhanceEffectParameters.xaml.cs">
+      <DependentUpon>EquipmentEnhanceEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentDamageEffectParameters.xaml.cs">
+      <DependentUpon>EquipmentDamageEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\OtherEffectParameters.xaml.cs">
       <DependentUpon>OtherEffectParameters.xaml</DependentUpon>
@@ -721,7 +726,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentModifyEffectParameters.xaml">
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentEnhanceEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentDamageEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

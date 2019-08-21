@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
@@ -7,22 +8,25 @@ using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.Effe
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [UIType(DisplayName = "Modify Equipment",
-            Description = "Changes the target character's equipment (good / bad)",
-            ViewType = typeof(OtherEffectParameters))]
-    public class EquipmentModifyAlterationEffectTemplateViewModel 
+    [UIType(DisplayName = "Enhance Equipment",
+            Description = "Modifies the Player's equipment with the option to use a dialog window",
+            ViewType = typeof(EquipmentEnhanceEffectParameters))]
+    public class EquipmentEnhanceAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                    IDoodadAlterationEffectTemplateViewModel,
-                    IEnemyAlterationEffectTemplateViewModel,
-                    ISkillAlterationEffectTemplateViewModel
+                             IDoodadAlterationEffectTemplateViewModel,
+                             ISkillAlterationEffectTemplateViewModel
     {
         AlterationModifyEquipmentType _type;
         int _classChange;
         double _qualityChange;
+        bool _useDialog;
 
         public AlterationModifyEquipmentType Type
         {
@@ -39,10 +43,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _qualityChange; }
             set { this.RaiseAndSetIfChanged(ref _qualityChange, value); }
         }
+        public bool UseDialog
+        {
+            get { return _useDialog; }
+            set { this.RaiseAndSetIfChanged(ref _useDialog, value); }
+        }
 
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 
-        public EquipmentModifyAlterationEffectTemplateViewModel()
+        public EquipmentEnhanceAlterationEffectTemplateViewModel()
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
         }

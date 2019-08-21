@@ -1,11 +1,9 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using System.Collections.Generic;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
-    public interface IDialogImbueUpdate : IDialogUpdate
+    public interface IDialogModifyEquipmentUpdate : IDialogUpdate
     {
-        IEnumerable<AttackAttribute> ImbueAttackAttributes { get; set; }
+        EquipmentModifyAlterationEffect Effect { get; set; }
     }
 }

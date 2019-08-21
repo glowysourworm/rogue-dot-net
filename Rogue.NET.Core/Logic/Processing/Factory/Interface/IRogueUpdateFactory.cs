@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
@@ -23,7 +24,7 @@ namespace Rogue.NET.Core.Logic.Processing.Factory.Interface
         RogueUpdateEventArgs Tick();
         RogueUpdateEventArgs StatisticsUpdate(ScenarioUpdateType type, string contentRogueName);
         RogueUpdateEventArgs Dialog(DialogEventType type);
-        RogueUpdateEventArgs Dialog(DialogEventType type, IEnumerable<AttackAttribute> attackAttributes);
+        RogueUpdateEventArgs DialogModifyEquipment(EquipmentModifyAlterationEffect effect);
         RogueUpdateEventArgs DialogNote(string noteMessage, string noteTitle);
         RogueUpdateEventArgs DialogPlayerAdvancement(Player player, int playerPoints);
     }

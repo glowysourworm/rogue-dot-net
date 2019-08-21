@@ -90,6 +90,12 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is EquipmentModifyAlterationEffectTemplateViewModel)
                 (effect as EquipmentModifyAlterationEffectTemplateViewModel).Name = name;
 
+            else if (effect is EquipmentDamageAlterationEffectTemplateViewModel)
+                (effect as EquipmentDamageAlterationEffectTemplateViewModel).Name = name;
+
+            else if (effect is EquipmentEnhanceAlterationEffectTemplateViewModel)
+                (effect as EquipmentEnhanceAlterationEffectTemplateViewModel).Name = name;
+
             else if (effect is OtherAlterationEffectTemplateViewModel)
                 (effect as OtherAlterationEffectTemplateViewModel).Name = name;
 

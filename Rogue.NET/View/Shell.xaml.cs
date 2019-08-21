@@ -248,14 +248,16 @@ namespace Rogue.NET.View
                     return GetInstance<IdentifyView>();
                 case DialogEventType.Uncurse:
                     return GetInstance<UncurseView>();
-                case DialogEventType.EnchantArmor:
-                    return GetInstance<EnchantArmorView>();
-                case DialogEventType.EnchantWeapon:
-                    return GetInstance<EnchantWeaponView>();
-                case DialogEventType.ImbueArmor:
-                    return GetInstance<ImbueArmorView>();
-                case DialogEventType.ImbueWeapon:
-                    return GetInstance<ImbueWeaponView>();
+                //case DialogEventType.ModifyEquipment:
+
+                //case DialogEventType.EnchantArmor:
+                //    return GetInstance<EnchantArmorView>();
+                //case DialogEventType.EnchantWeapon:
+                //    return GetInstance<EnchantWeaponView>();
+                //case DialogEventType.ImbueArmor:
+                //    return GetInstance<ImbueArmorView>();
+                //case DialogEventType.ImbueWeapon:
+                //    return GetInstance<ImbueWeaponView>();
                 case DialogEventType.PlayerAdvancement:
                     {
                         var view = GetInstance<PlayerAdvancementView>();

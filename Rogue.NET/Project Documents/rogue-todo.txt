@@ -763,3 +763,33 @@ IMMEDIATE TODO'S:
 	- TODO: Immunity Alteration Effect - Makes you immune to a specific altered state.	
 										
 	- TODO: Skill / Reveal UI (clean up)
+	
+	- TODO: 
+				- Haul Usage:  WHEN HAUL IS EXCEEDED - PLAYER MUST DROP SOMETHING TO PROCEED. This should be used when enemies drain strength from
+							   player.
+							   
+				- Animations:  Validate parameters so they don't cause in-game error message
+				
+				- Modify Equipment:  Implement enemy alteration on player as EQUIPPED ONLY.
+				
+				- Gremlin (Fighter Scenario): Change teleport to "Blink" inside player visible range (it's super annoying :))
+				
+	- TODO: Hide the Scenario Seed and randomize it by default
+			
+	- TBD:  If the scenarios need to be randomized for items (the symbol color) - might consider refactoring the images:
+	
+			1) Use SVG vector graphics
+			
+			2) Find a default coloring that works with HUE shifts to create the various colors (or) build some kind of 
+			   rotating color filter that can handle creating something like primary -> secondary -> tertiary colors from
+			   maybe a set of mask colors that can be used to create the base SVG.
+			   
+			3) Using a color filter - apply to create symbol changes instead of the parameterized one that's there. That
+			   would save a lot of time / parameter space.
+			   
+			4) Find a way to convert symbols into SVG's - should reduce the resource set by a factor of 10.
+			
+			5) Consider creating a subset of UTF-8 as a vector image set to show / size into cell containers. Problem is
+			   that some symbols get cut off - so would want to resize to fit. (Probably could do this by measuring the
+			   TextBlock first also)
+			
