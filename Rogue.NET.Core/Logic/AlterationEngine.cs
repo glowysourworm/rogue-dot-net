@@ -173,8 +173,21 @@ namespace Rogue.NET.Core.Logic
                     (affectedCharacter as Enemy).WasAttackedByPlayer = true;
                 }
 
-                // Apply blanket update for player to ensure symbol alterations are processed
+                // Apply blanket update for player AND affected character to ensure symbol alterations are processed.
+                //
+                // NOTE*** Player is treated SEPARATELY from level content. This should be refactored on the UI side
+                //         to make processing easier. (TODO)
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentUpdate, affectedCharacter.Id));
+
+                // TODO: REMOVE THIS!!!  And just use the above affectedCharacter.Id
+                //                       THE DESIGN NEEDS TO SUPPORT THIS!
+
+                // Update Player Symbol (REMOVE THIS!)
+                if (affectedCharacter is Player)
+                {
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.Id));
+                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
+                }
             }
         }
 
@@ -186,10 +199,10 @@ namespace Rogue.NET.Core.Logic
         #region (private) Alteration Apply Methods
         private void ApplyAlteration(AlterationContainer alteration, Character affectedCharacter, Character actor)
         {
-            // Aura => Actor is affected.. But always use the affected character - which should be the same.
-            //         Aura effects for the target characters are applied in the CharacterAlteration on turn.
+            // Aura => Actor is affected because the aura is collected by the source character to be applied
+            //         to the target characters in the CharacterAlteration on turn.
             if (alteration.Effect is AttackAttributeAuraAlterationEffect)
-                affectedCharacter.Alteration.Apply(alteration);
+                actor.Alteration.Apply(alteration);
 
             else if (alteration.Effect is AttackAttributeMeleeAlterationEffect)
                 _interactionProcessor.CalculateAttackAttributeHit(alteration.RogueName,
@@ -202,8 +215,10 @@ namespace Rogue.NET.Core.Logic
             else if (alteration.Effect is AttackAttributeTemporaryAlterationEffect)
                 affectedCharacter.Alteration.Apply(alteration);
 
+            // Aura => Actor is affected because the aura is collected by the source character to be applied
+            //         to the target characters in the CharacterAlteration on turn.
             else if (alteration.Effect is AuraAlterationEffect)
-                affectedCharacter.Alteration.Apply(alteration);
+                actor.Alteration.Apply(alteration);
 
             else if (alteration.Effect is ChangeLevelAlterationEffect)
                 ProcessChangeLevel(alteration.Effect as ChangeLevelAlterationEffect);
@@ -254,7 +269,7 @@ namespace Rogue.NET.Core.Logic
                 ProcessTeleport(alteration.Effect as TeleportAlterationEffect, actor);
 
             else if (alteration.Effect is TemporaryAlterationEffect)
-                actor.Alteration.Apply(alteration);
+                affectedCharacter.Alteration.Apply(alteration);
         }
         #endregion
 

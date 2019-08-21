@@ -432,7 +432,8 @@ namespace Rogue.NET.Core.Model.Generator
             {
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
                 CombatType = template.CombatType,
-                RogueName = template.Name
+                RogueName = template.Name,
+                SymbolAlteration = template.SymbolAlteration
             };
         }
 
@@ -445,7 +446,9 @@ namespace Rogue.NET.Core.Model.Generator
                 CombatType = template.CombatType,
                 EventTime = _randomSequenceGenerator.GetRandomValue(template.EventTime),
                 IsStackable = template.IsStackable,
-                RogueName = template.Name
+                RogueName = template.Name,
+                HasAlteredState = template.HasAlteredState,
+                SymbolAlteration = template.SymbolAlteration
             };
         }
 
@@ -628,7 +631,8 @@ namespace Rogue.NET.Core.Model.Generator
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
                 Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),                
                 SymbolAlteration = template.SymbolAlteration,
-                RogueName = template.Name
+                RogueName = template.Name,
+                HasAlteredState = template.HasAlteredState
             };
         }
         #endregion

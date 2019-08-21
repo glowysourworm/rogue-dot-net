@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         {
             var result = new Dictionary<string, double>()
             {
-                {"Hp", cost.Hp },
+                { "Hp", cost.Hp },
                 { "Mp", cost.Mp },
                 { "Strength", cost.Strength },
                 { "Agility", cost.Agility },
@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 { "Light Radius", cost.LightRadius }
             };
 
-            result.Filter(x => x.Value != 0D);
+            result.Filter(x => x.Value == 0D);
 
             return result;
         }

@@ -1,11 +1,7 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 {
@@ -41,12 +37,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _consumableAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _consumableAlterationList.Add(typeof(CreateMonsterAlterationEffect));
             _consumableAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
+            _consumableAlterationList.Add(typeof(EquipmentEnhanceAlterationEffect));
             _consumableAlterationList.Add(typeof(OtherAlterationEffect));
             _consumableAlterationList.Add(typeof(PermanentAlterationEffect));
             _consumableAlterationList.Add(typeof(RevealAlterationEffect));
 
             // ICharacterProjectileAlterationEffect
             _consumableProjectileAlterationList.Add(typeof(AttackAttributeMeleeAlterationEffect));
+            _consumableProjectileAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
             _consumableProjectileAlterationList.Add(typeof(PermanentAlterationEffect));
 
             // IDoodadAlterationEffect
@@ -54,6 +52,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _doodadAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _doodadAlterationList.Add(typeof(CreateMonsterAlterationEffect));
             _doodadAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
+            _doodadAlterationList.Add(typeof(EquipmentEnhanceAlterationEffect));
             _doodadAlterationList.Add(typeof(PermanentAlterationEffect));
             _doodadAlterationList.Add(typeof(RevealAlterationEffect));
             _doodadAlterationList.Add(typeof(TeleportAlterationEffect));
@@ -72,6 +71,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _skillAlterationList.Add(typeof(ChangeLevelAlterationEffect));
             _skillAlterationList.Add(typeof(CreateMonsterAlterationEffect));
             _skillAlterationList.Add(typeof(EquipmentDamageAlterationEffect));
+            _skillAlterationList.Add(typeof(EquipmentEnhanceAlterationEffect));
             _skillAlterationList.Add(typeof(OtherAlterationEffect));
             _skillAlterationList.Add(typeof(PermanentAlterationEffect));
             _skillAlterationList.Add(typeof(RevealAlterationEffect));
@@ -116,11 +116,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             var implementationType = effect.GetType();
 
-            if (!_consumableAlterationList.Contains(implementationType))
+            if (_consumableAlterationList.Contains(implementationType))
                 ThrowException(implementationType);
-
-            else
-                ThrowUnknownTypeException(implementationType);
         }
 
         /// <summary>
@@ -130,11 +127,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             var implementationType = effect.GetType();
 
-            if (!_consumableProjectileAlterationList.Contains(implementationType))
+            if (_consumableProjectileAlterationList.Contains(implementationType))
                 ThrowException(implementationType);
-
-            else
-                ThrowUnknownTypeException(implementationType);
         }
 
         /// <summary>
@@ -144,11 +138,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             var implementationType = effect.GetType();
 
-            if (!_doodadAlterationList.Contains(implementationType))
+            if (_doodadAlterationList.Contains(implementationType))
                 ThrowException(implementationType);
-
-            else
-                ThrowUnknownTypeException(implementationType);
         }
 
         /// <summary>
@@ -158,11 +149,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             var implementationType = effect.GetType();
 
-            if (!_enemyAlterationList.Contains(implementationType))
+            if (_enemyAlterationList.Contains(implementationType))
                 ThrowException(implementationType);
-
-            else
-                ThrowUnknownTypeException(implementationType);
         }
 
         /// <summary>
@@ -188,11 +176,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             var implementationType = effect.GetType();
 
-            if (!_skillAlterationList.Contains(implementationType))
+            if (_skillAlterationList.Contains(implementationType))
                 ThrowException(implementationType);
-
-            else
-                ThrowUnknownTypeException(implementationType);
         }
         #endregion
 

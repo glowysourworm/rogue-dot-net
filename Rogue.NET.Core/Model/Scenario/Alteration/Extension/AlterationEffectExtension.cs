@@ -338,7 +338,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             }
 
             if (result != null)
-                result.Filter(x => x.Value != 0D);
+                result.Filter(x => x.Value == 0D);
 
             return result ?? new Dictionary<string, double>();
         }
@@ -463,6 +463,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 return "Create Monster";
 
             else if (effect is EquipmentDamageAlterationEffect)
+                return (effect as EquipmentDamageAlterationEffect).Type.ToString();
+
+            else if (effect is EquipmentEnhanceAlterationEffect)
                 return (effect as EquipmentDamageAlterationEffect).Type.ToString();
 
             else if (effect is OtherAlterationEffect)

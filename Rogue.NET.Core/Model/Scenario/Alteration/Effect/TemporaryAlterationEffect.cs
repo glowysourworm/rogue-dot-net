@@ -32,11 +32,12 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
         public double CriticalHit { get; set; }
 
         public bool IsStackable { get; set; }
+        public bool HasAlteredState { get; set; }
 
         public TemporaryAlterationEffect()
         {
             this.SymbolAlteration = new SymbolDeltaTemplate();
-            this.AlteredState = new AlteredCharacterState();   // Creates a state of "Normal"
+            this.AlteredState = new AlteredCharacterState();   
         }
     }
 }

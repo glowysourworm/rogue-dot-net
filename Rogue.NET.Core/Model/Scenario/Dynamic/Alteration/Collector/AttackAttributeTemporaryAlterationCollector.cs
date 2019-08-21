@@ -31,7 +31,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 
         public bool Apply(AlterationContainer alteration)
         {
-            if (alteration.Effect.IsStackable() &&
+            if (!alteration.Effect.IsStackable() &&
                 this.Alterations.Any(x => x.RogueName == alteration.RogueName))
                 return false;
 
@@ -78,18 +78,29 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
         {
             return this.Alterations
-                       .ToDictionary(x => x.RogueName, x => x.Effect);
+                       .Select(x => new KeyValuePair<string, IAlterationEffect>(x.RogueName, x.Effect))
+                       .Actualize();
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()
         {
-            return new List<AlteredCharacterState>();
+            return this.Alterations
+                       .Select(x => x.Effect)
+                       .Cast<AttackAttributeTemporaryAlterationEffect>()
+                       .Where(x => x.HasAlteredState)
+                       .Select(x => x.AlteredState)
+                       .Actualize();
         }
 
         public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
         {
             // Attack attribute effects don't support symbol changes
-            return new List<SymbolDeltaTemplate>();
+            return this.Alterations
+                       .Select(x => x.Effect)
+                       .Cast<AttackAttributeTemporaryAlterationEffect>()
+                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
+                       .Select(x => x.SymbolAlteration)
+                       .Actualize();
         }
 
         public double GetAttributeAggregate(CharacterAttribute attribute)

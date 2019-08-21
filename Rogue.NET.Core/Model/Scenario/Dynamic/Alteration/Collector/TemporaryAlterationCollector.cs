@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
 
         public bool Apply(AlterationContainer alteration)
         {
-            if (alteration.Effect.IsStackable() &&
+            if (!alteration.Effect.IsStackable() &&
                 this.Alterations.Any(x => x.RogueName == alteration.RogueName))
                 return false;
 
@@ -72,7 +72,8 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
         public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
         {
             return this.Alterations
-                       .ToDictionary(x => x.RogueName, x => x.Effect);
+                       .Select(x => new KeyValuePair<string, IAlterationEffect>(x.RogueName, x.Effect))
+                       .Actualize();
         }
 
         public IEnumerable<AlteredCharacterState> GetAlteredStates()
@@ -80,6 +81,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return this.Alterations
                        .Select(x => x.Effect)
                        .Cast<TemporaryAlterationEffect>()
+                       .Where(x => x.HasAlteredState)
                        .Select(x => x.AlteredState)
                        .Actualize();
         }
@@ -89,6 +91,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return this.Alterations
                        .Select(x => x.Effect)
                        .Cast<TemporaryAlterationEffect>()
+                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
         }

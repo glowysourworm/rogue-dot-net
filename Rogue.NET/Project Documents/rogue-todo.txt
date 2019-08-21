@@ -809,5 +809,63 @@ IMMEDIATE TODO'S:
 				4) Provide services for supplying the full attack attribute list
 				
 	- TODO: Deal with proper nouns. Probably can do this using a flag on the enemy. "Use Proper Noun" (when addressing enemy)
+	
+	- TODO: HasAlteredState flag for each temporary
+	
+	- TODO: Enemy Light Radius - HAS BEEN MOVED TO CHARACTER BASED
+			
+			- NEXT:  Design behavior around Light Radius (Engage / Disengage) - (not necessarily around this parameter)
+			
+			- Then:  Enemy Targeting - Skill behavior around light radius
+			
+			- Then:  Line-of-sight per character - calculated on turn.
+			
+			- Then:  Enemy / Doodad as light source :)
+			
+			After that - decide how to do targeting:
+			
+				- Player "target what you can see?"
+						 "miss if out of range?"
+						 "miss probability?"
+						 "miss probability per alteration effect?"
+				
+				- Enemy  "target what you can see?"
+					     "engage if illuminated?"
+						 "engage if you can HEAR?"
+						 
+			The idea is just to enhance the API - but to keep it INTUITIVE. So, if it makes sense to do
+			then do it. Right now it's calculated all based on the Player visible range; but that can
+			change if the light-of-sight calculation isn't too intensive.
+			
+			If it is - then just use the enemy light radius in calculations.
+	
+	- TODO: Add back erradicity to the animation view
+	
+	- TODO: Refactor End-Of-Turn logic.
+	
+			- This generally needs to be systematized. It's all out of sorts - and there's no sequencing. It should
+			  be pretty easy and straight forward to do.
+			  
+	- TODO: Refactor Front-end logic some to remove ambiguity about updating player v.s. enemy (just do characters)
+			
+			Also, have a single enumeration (or method) to run an update per character (unless processing gets too slow);
+			but mostly to handle updating everything about a character without ambiguity.
+			
+			Example:  Apply an alteration. RogueUpdateEvent(AffectedCharacter.Id, Enum.SomeSpecificProperty [Flags])
+					  Can handle the update. 
+					  
+					  The problem is that the symbols for the characters are handled when they move around. This needs
+					  to be decoupled.
+					  
+					  If necessary - add a simple front-end controller to handle "Update for a character"
+					  
+					  IContentUpdateController
+					  
+						- UpdateSymbol(CharacterBase.Id)
+						- UpdateEquipment(CharacterBase.Id)
+						- UpdateAlterations(CharacterBase.Id)
+						- Remove(CharacterBase.Id)
+						- Add(Character)
+	
 					
 			

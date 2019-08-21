@@ -38,7 +38,8 @@
         
         <!-- All Animation Parameters -->
         <StackPanel Visibility="{Binding BaseType, Converter={StaticResource ParameterVisibilityVisibleConverter}, ConverterParameter={x:Static coreModelEnums:AnimationBaseType.ScreenBlink}}">
-            <Grid Height="36">
+            <Grid Height="36"
+                  Visibility="{Binding ConstantVelocity, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
                 <TextBlock FontSize="14" Foreground="White" Text="Animation Time (ms)" VerticalAlignment="Center" />
                 <wpftoolkit:IntegerUpDown Value="{Binding AnimationTime}" AllowSpin="True" AllowTextInput="True" Minimum="10" Maximum="10000" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
             </Grid>
@@ -55,7 +56,7 @@
                 <CheckBox IsChecked="{Binding ConstantVelocity}" VerticalAlignment="Center" HorizontalAlignment="Right" />
             </Grid>
             <Grid Height="36" Grid.Row="9"
-              Visibility="{Binding ConstantVelocity, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  Visibility="{Binding ConstantVelocity, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock FontSize="14" Foreground="White" Text="Velocity (pixels / second)" VerticalAlignment="Center" />
                 <wpftoolkit:IntegerUpDown Value="{Binding Velocity}" Minimum="25" Maximum="10000" AllowSpin="True" AllowTextInput="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
             </Grid>
@@ -63,6 +64,10 @@
                 <TextBlock FontSize="14" Foreground="White" Text="Repeat Count" VerticalAlignment="Center" />
                 <wpftoolkit:IntegerUpDown Value="{Binding RepeatCount}" Minimum="1" Maximum="50" AllowSpin="True" AllowTextInput="True" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
             </Grid>
+            <Grid x:Name="ErradicityGrid" Height="36" Grid.Row="1">
+                <TextBlock FontSize="14" Foreground="White" Text="Erradicity (Repetitions of Ellipse Animation)" VerticalAlignment="Center" />
+                <wpftoolkit:IntegerUpDown Value="{Binding Erradicity}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="1000" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
+            </Grid>            
             <Grid Height="36" Grid.Row="9">
                 <TextBlock FontSize="14" Foreground="White" Text="Auto Reverse" VerticalAlignment="Center" />
                 <CheckBox IsChecked="{Binding AutoReverse}" VerticalAlignment="Center" HorizontalAlignment="Right" />
@@ -101,17 +106,6 @@
                 </Grid.Visibility>
                 <TextBlock FontSize="14" Foreground="White" Text="Ellipse Count" VerticalAlignment="Center" />
                 <wpftoolkit:IntegerUpDown Value="{Binding ChildCount}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="10000" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
-            </Grid>
-            <Grid x:Name="ErradicityGrid" Height="36" Grid.Row="1">
-                <Grid.Visibility>
-                    <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                        <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Barrage}" />
-                        <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Bubbles}" />
-                        <Binding Path="BaseType" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static coreModelEnums:AnimationBaseType.Spiral}" />
-                    </MultiBinding>
-                </Grid.Visibility>
-                <TextBlock FontSize="14" Foreground="White" Text="Erradicity (Repetitions of Ellipse Animation)" VerticalAlignment="Center" />
-                <wpftoolkit:IntegerUpDown Value="{Binding Erradicity}" AllowSpin="True" AllowTextInput="True" Minimum="1" Maximum="1000" FormatString="N0" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center" Height="28" Width="100" />
             </Grid>
             <Grid x:Name="RadiusFromFocusGrid" Height="36" Grid.Row="2">
                 <Grid.Visibility>

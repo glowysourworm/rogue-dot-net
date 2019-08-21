@@ -76,6 +76,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 else if (alteration.Effect is EquipmentDamageAlterationEffect)
                     return AlterationCostType.OneTime;
 
+                else if (alteration.Effect is EquipmentEnhanceAlterationEffect)
+                    return AlterationCostType.OneTime;
+
                 else if (alteration.Effect is OtherAlterationEffect)
                     return AlterationCostType.OneTime;
 
@@ -183,6 +186,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 // Yes, because using these on other characters involves some kind of
                 // negative modification (like, "acid eats my armor"). So, need a blocking type
                 else if (alteration.Effect is EquipmentDamageAlterationEffect)
+                    return true;
+
+                // No way!
+                else if (alteration.Effect is EquipmentEnhanceAlterationEffect)
                     return true;
 
                 else if (alteration.Effect is OtherAlterationEffect)
