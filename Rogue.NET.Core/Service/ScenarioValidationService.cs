@@ -715,6 +715,9 @@ namespace Rogue.NET.Core.Service
                     return effect.Name + " has no Create Monster Enemy set";
             }
 
+            else if (template is DrainMeleeAlterationEffectTemplate)
+                return null;
+
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
             {
                 var effect = template as EquipmentEnhanceAlterationEffectTemplate;

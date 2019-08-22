@@ -525,6 +525,49 @@ namespace Rogue.NET.Core.Logic.Content
             }
         }
 
+        public void ApplyDrainMeleeEffect(Character actor, Character affectedCharacter, DrainMeleeAlterationEffect effect)
+        {
+            actor.Hp += effect.Hp;
+            affectedCharacter.Hp -= effect.Hp;
+
+            actor.Mp += effect.Mp;
+            affectedCharacter.Mp -= effect.Mp;
+
+            // TODO: Clean up ApplyLimits extension to a singe method
+            if (actor is Player)
+                (actor as Player).ApplyLimits();
+
+            else if (actor is Enemy)
+                (actor as Enemy).ApplyLimits();
+
+            if (affectedCharacter is Player)
+                (affectedCharacter as Player).ApplyLimits();
+
+            else if (affectedCharacter is Enemy)
+                (affectedCharacter as Enemy).ApplyLimits();
+
+            // TODO: Clean up this message
+            if (effect.Hp > 0)
+            {
+                _scenarioMessageService
+                    .Publish(ScenarioMessagePriority.Normal,
+                             "{0} has drained {1} Hp from {2}",
+                             _modelService.GetDisplayName(actor),
+                             effect.Hp.ToString("F1"),
+                             _modelService.GetDisplayName(affectedCharacter));
+            }
+
+            if (effect.Mp > 0)
+            {
+                _scenarioMessageService
+                    .Publish(ScenarioMessagePriority.Normal,
+                             "{0} has drained {1} Mp from {2}",
+                             _modelService.GetDisplayName(actor),
+                             effect.Mp.ToString("F1"),
+                             _modelService.GetDisplayName(affectedCharacter));
+            }
+        }
+
         protected void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
             player.AgilityBase -= alterationCost.Agility;

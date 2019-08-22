@@ -73,6 +73,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 else if (alteration.Effect is CreateMonsterAlterationEffect)
                     return AlterationCostType.OneTime;
 
+                else if (alteration.Effect is DrainMeleeAlterationEffect)
+                    return AlterationCostType.OneTime;
+
                 else if (alteration.Effect is EquipmentDamageAlterationEffect)
                     return AlterationCostType.OneTime;
 
@@ -130,6 +133,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             return true;
         }
 
+        // TODO:ALTERATION - BLOCK TYPE USED BY CONTAINER TO SPECIFY. IF THERE'S NO BLOCK TYPE
+        //                   THEN IT PROBABLY SHOULD NOT SUPPORT BLOCKING!
         /// <summary>
         /// Calculated support for blocking based on alteration / alteration effect type
         /// </summary>
@@ -144,6 +149,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             else if (alteration is DoodadAlteration)
                 return false;
 
+            // TODO:ALTERATION (TYPE INSPECT!!)
             // Temporary, Melee, or Equipment Modify (can block)
             else if (alteration is EnemyAlteration)
                 return true;
@@ -182,6 +188,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
                 // Could be - but usually no.. better to keep it simple
                 else if (alteration.Effect is CreateMonsterAlterationEffect)
                     return false;
+
+                else if (alteration.Effect is DrainMeleeAlterationEffect)
+                    return true;
 
                 // Yes, because using these on other characters involves some kind of
                 // negative modification (like, "acid eats my armor"). So, need a blocking type

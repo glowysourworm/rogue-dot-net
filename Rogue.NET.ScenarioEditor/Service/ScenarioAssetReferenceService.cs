@@ -30,6 +30,10 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var effect in GetAllAlterationEffects(configuration))
                 UpdateAttackAttributeAlterationEffect(effect, configuration.AttackAttributes);
 
+            // Equipment
+            foreach (var equipment in configuration.EquipmentTemplates)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
+
             // Enemies
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);

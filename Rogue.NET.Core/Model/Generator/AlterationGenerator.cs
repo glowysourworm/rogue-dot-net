@@ -301,6 +301,9 @@ namespace Rogue.NET.Core.Model.Generator
             if (template is AttackAttributeMeleeAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
 
+            else if (template is DrainMeleeAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as DrainMeleeAlterationEffectTemplate);
+
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
@@ -488,6 +491,15 @@ namespace Rogue.NET.Core.Model.Generator
                 RandomPlacementType = template.RandomPlacementType,
                 Range = template.Range,
                 RogueName = template.Name
+            };
+        }
+
+        protected DrainMeleeAlterationEffect GenerateAlterationEffect(DrainMeleeAlterationEffectTemplate template)
+        {
+            return new DrainMeleeAlterationEffect()
+            {
+                Hp = _randomSequenceGenerator.GetRandomValue(template.Hp),
+                Mp = _randomSequenceGenerator.GetRandomValue(template.Mp)
             };
         }
 

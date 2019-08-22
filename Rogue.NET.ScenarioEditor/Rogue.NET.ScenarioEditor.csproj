@@ -353,6 +353,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PassiveAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\PermanentAlterationEffectTemplateViewModel.cs" />
@@ -450,6 +451,9 @@
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml.cs">
       <DependentUpon>CreateMonsterEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DrainMeleeEffectParameters.xaml.cs">
+      <DependentUpon>DrainMeleeEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\EquipmentEnhanceEffectParameters.xaml.cs">
       <DependentUpon>EquipmentEnhanceEffectParameters.xaml</DependentUpon>
@@ -722,6 +726,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DrainMeleeEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -898,5 +898,7 @@ IMMEDIATE TODO'S:
 	
 	- TODO: Create Drain [Parameter] Equipment Attack Atleration Effect. Basically, Drain HP; but make a different
 			class to support it. Apply ONLY as an Equipment Attack Atleration.
+			
+	- TODO: Set Attack Attribute Collections EN-MAS for any new asset. FIX EXISTING ASSETS (Asset Reference Service)
 			   
-			  
+	- TODO: Consider systematizing part of the alteration effect pattern to consolidate some of the type inspection.

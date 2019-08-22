@@ -206,6 +206,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\OtherAlterationEffectTemplate.cs" />
@@ -242,6 +243,7 @@
     <Compile Include="Model\ScenarioConfiguration\Extension\ScenarioConfigurationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\DrainMeleeAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\EquipmentEnhanceAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />

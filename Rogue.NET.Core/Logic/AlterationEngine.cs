@@ -226,6 +226,9 @@ namespace Rogue.NET.Core.Logic
             else if (alteration.Effect is CreateMonsterAlterationEffect)
                 ProcessCreateMonster(alteration.Effect as CreateMonsterAlterationEffect, actor);
 
+            else if (alteration.Effect is DrainMeleeAlterationEffect)
+                _alterationProcessor.ApplyDrainMeleeEffect(actor, affectedCharacter, alteration.Effect as DrainMeleeAlterationEffect);
+
             else if (alteration.Effect is EquipmentDamageAlterationEffect)
                 ProcessEquipmentDamage(alteration.Effect as EquipmentDamageAlterationEffect, actor, affectedCharacter);
 

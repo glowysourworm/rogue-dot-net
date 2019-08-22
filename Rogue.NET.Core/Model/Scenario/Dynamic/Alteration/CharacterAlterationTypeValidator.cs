@@ -28,6 +28,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _alterationEffectList.Add(typeof(AttackAttributeMeleeAlterationEffect));
             _alterationEffectList.Add(typeof(ChangeLevelAlterationEffect));
             _alterationEffectList.Add(typeof(CreateMonsterAlterationEffect));
+            _alterationEffectList.Add(typeof(DrainMeleeAlterationEffect));
             _alterationEffectList.Add(typeof(EquipmentDamageAlterationEffect));
             _alterationEffectList.Add(typeof(EquipmentEnhanceAlterationEffect));
             _alterationEffectList.Add(typeof(OtherAlterationEffect));
