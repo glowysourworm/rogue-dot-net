@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Logic.Processing.Interface
 {
@@ -21,6 +22,8 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
         /// Character performing the action
         /// </summary>
         Character Actor { get; set; }
+
+        IEnumerable<Character> AlterationAffectedCharacters { get; set; }
 
         /// <summary>
         /// Alteration for processing

@@ -1,14 +1,21 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Content.Interface;
+using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
+using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
+using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
+using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
@@ -17,6 +24,7 @@ using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Utility;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -26,14 +34,17 @@ namespace Rogue.NET.Core.Logic.Content
     public class AlterationProcessor : IAlterationProcessor
     {
         readonly IModelService _modelService;
+        readonly ILayoutEngine _layoutEngine;
         readonly IScenarioMessageService _scenarioMessageService;
 
         [ImportingConstructor]
         public AlterationProcessor(
                 IModelService modelService,
+                ILayoutEngine layoutEngine,
                 IScenarioMessageService scenarioMessageService)
         {
             _modelService = modelService;
+            _layoutEngine = layoutEngine;
             _scenarioMessageService = scenarioMessageService;
         }
 

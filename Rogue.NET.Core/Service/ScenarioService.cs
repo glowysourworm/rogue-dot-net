@@ -318,7 +318,7 @@ namespace Rogue.NET.Core.Service
                         _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.Actor.Id));
                     break;
                 case LevelProcessingActionType.CharacterAlteration:
-                    _alterationEngine.Process(workItem.Actor, workItem.Alteration);
+                    _alterationEngine.Process(workItem.Actor, workItem.AlterationAffectedCharacters, workItem.Alteration);
                     break;
             }
             return true;

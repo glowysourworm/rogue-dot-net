@@ -839,8 +839,6 @@ IMMEDIATE TODO'S:
 			
 			If it is - then just use the enemy light radius in calculations.
 	
-	- TODO: Add back erradicity to the animation view
-	
 	- TODO: Refactor End-Of-Turn logic.
 	
 			- This generally needs to be systematized. It's all out of sorts - and there's no sequencing. It should
@@ -866,6 +864,39 @@ IMMEDIATE TODO'S:
 						- UpdateAlterations(CharacterBase.Id)
 						- Remove(CharacterBase.Id)
 						- Add(Character)
+						
+	- TODO: Make sure to apply "Generate on step" to enemies
 	
-					
+	- TODO: Make throwing generic - not pre-specified:
+	
+			1) Every item has a base throw effect - something like (Strength * [Throw Quality])
+			   AND something to deal with accuracy - maybe (function(Strength, Agility, and maybe [Throw Accuracy]))
+			   
+			   Probably want a couple parameters for the item so that it makes sense.. Can't do much
+			   damage throwing armor; but you could try...  (it won't help to be strong)
+			   
+			2) Player can try throwing any item; AND it's only consumed when it strikes the enemy 
+			   (like DOS Rogue or Brogue)
+			   
+			3) If there's ever time to do the per-step-identify (Identify items in levels based on 
+			   a) how long you have them (by type) and b) if you're using them, etc...) Then, this
+			   could be a part of that. (IdentifyParameter class to specify how it all happens. One
+			   per effect to identify)
+			   
+			4) For any special effects - they'd have to be added to the item. So, that could be done
+			   on the base class so that the player could try throwing equipment. 
+			   
+			That's pretty much all; but the idea is to try different things instead of being guided
+			by the throw effect that's already there on the consumable.
 			
+	- TODO: Skill Alteration UI: Fix up Block Type, Animation Opacity Binding (all alterations), Visibility for
+			Aura Source parameters.
+			
+	- TODO: Fix overlapping characters - seeing a problem using "Blink" and create monster (near the player).
+	
+	- TODO: Restrict Equipment Attack Alteration to One / Two handed melee weapons
+	
+	- TODO: Create Drain [Parameter] Equipment Attack Atleration Effect. Basically, Drain HP; but make a different
+			class to support it. Apply ONLY as an Equipment Attack Atleration.
+			   
+			  

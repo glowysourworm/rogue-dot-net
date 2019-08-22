@@ -339,6 +339,20 @@ namespace Rogue.NET.Core.Service
 
                         }).Actualize();
                 })),
+                new ScenarioValidationRule("Equipment Attack Alteration must be applied to either One or Two handed melee weapons ONLY", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    return configuration.EquipmentTemplates
+                                        .Where(x => x.HasAttackAlteration)
+                                        .Where(x => x.Type != EquipmentType.OneHandedMeleeWeapon &&
+                                                    x.Type != EquipmentType.TwoHandedMeleeWeapon)
+                                        .Select(x =>
+                        new ScenarioValidationResult()
+                        {
+                            Passed = false,
+                            InnerMessage = x.Name + " cannot support Equipment Attack Alteration"
+
+                        }).Actualize();
+                })),
 
             // Warnings
             new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>

@@ -638,7 +638,7 @@ namespace Rogue.NET.Core.Logic
                                     enemy.Consumables.Remove(ammo.Id);
 
                                     // Calculate hit - if enemy hit then queue Ammunition spell
-                                    var enemyHit = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Range);
+                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Range);
 
                                     // Process the spell associated with the ammo
                                     if (ammo.AmmoAnimationGroup.Animations.Any())
@@ -646,20 +646,32 @@ namespace Rogue.NET.Core.Logic
                                                                                              enemy.Location, 
                                                                                              new CellPoint[] { _modelService.Player.Location }));
 
-                                    // TODO:ALTERATION - Create an ConsumableAmmoAlteration and process here
-
                                     actionTaken = true;
                                 }
                             }
 
                             // Attack Conditions: !actionTaken (no range attack), location is non-null; AND enemy is not confused; OR enemy is confused and can strike
                             if (!actionTaken && 
-                                 attackLocation != null && (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
-                                                            (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
+                                 attackLocation != null && 
+                                 (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
+                                  (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
                             {
                                 if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
                                 {
-                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Melee);
+                                    var success = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Melee);
+
+                                    // If Successful, process Equipment Attack Alterations
+                                    foreach (var alteration in enemy.Equipment
+                                                                    .Values
+                                                                    .Where(x => x.IsEquipped)
+                                                                    .Where(x => x.HasAttackAlteration)
+                                                                    .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
+                                    {
+                                        // Validate -> Queue Equipment Attack Alteration
+                                        if (_alterationEngine.Validate(enemy, alteration.Cost))
+                                            _alterationEngine.Queue(enemy, new Character[] { _modelService.Player }, alteration);
+                                    }
+
                                     actionTaken = true;
                                 }
                             }

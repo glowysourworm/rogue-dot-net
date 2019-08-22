@@ -223,7 +223,23 @@ namespace Rogue.NET.Core.Logic
                 enemy.WasAttackedByPlayer = true;
 
                 // Enemy gets hit OR dodges
-                _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, PhysicalAttackType.Melee);
+                var success = _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, PhysicalAttackType.Melee);
+
+                // If hit was successful - then add on any additional equipment attack effects
+                if (success)
+                {
+                    // Validate -> Queue all alterations
+                    foreach (var alteration in player.Equipment
+                                                     .Values
+                                                     .Where(x => x.IsEquipped)
+                                                     .Where(x => x.HasAttackAlteration)
+                                                     .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
+                    {
+                        // If player meets alteration cost, queue with affected enemy
+                        if (_alterationEngine.Validate(player, alteration.Cost))
+                            _alterationEngine.Queue(player, new Character[] { enemy }, alteration);
+                    }
+                }
             }
         }
         public LevelContinuationAction Throw(string itemId)

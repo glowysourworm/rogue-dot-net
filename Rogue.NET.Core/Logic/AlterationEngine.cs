@@ -37,7 +37,6 @@ namespace Rogue.NET.Core.Logic
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
         readonly ICharacterGenerator _characterGenerator;
-        readonly IAlterationGenerator _alterationGenerator;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IInteractionProcessor _interactionProcessor;        
         readonly IScenarioMessageService _scenarioMessageService;
@@ -51,7 +50,6 @@ namespace Rogue.NET.Core.Logic
         public AlterationEngine(IModelService modelService,
                                 ILayoutEngine layoutEngine,
                                 ICharacterGenerator characterGenerator,
-                                IAlterationGenerator alterationGenerator,
                                 IAlterationProcessor alterationProcessor,
                                 IInteractionProcessor interactionProcessor,
                                 IScenarioMessageService scenarioMessageService,
@@ -61,7 +59,6 @@ namespace Rogue.NET.Core.Logic
             _modelService = modelService;
             _layoutEngine = layoutEngine;
             _characterGenerator = characterGenerator;
-            _alterationGenerator = alterationGenerator;
             _alterationProcessor = alterationProcessor;
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
@@ -79,8 +76,13 @@ namespace Rogue.NET.Core.Logic
             // Calculate Affected Characters
             var affectedCharacters = CalculateAffectedCharacters(alteration, actor);
 
+            Queue(actor, affectedCharacters, alteration);
+        }
+
+        public void Queue(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration)
+        {
             // Run animations before applying alterations
-            if (alteration.SupportsAnimations() && 
+            if (alteration.SupportsAnimations() &&
                 alteration.AnimationGroup.Animations.Count > 0)
             {
                 // NOTE*** For animations refactored the animation type
@@ -103,7 +105,7 @@ namespace Rogue.NET.Core.Logic
                             animationIssueDetected = true;
 
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Bad,
-                                                            "***Alteration has improper animation usage - " + alteration.RogueName); 
+                                                            "***Alteration has improper animation usage - " + alteration.RogueName);
                         }
                     }
                 });
@@ -122,18 +124,16 @@ namespace Rogue.NET.Core.Logic
             {
                 Type = LevelProcessingActionType.CharacterAlteration,
                 Actor = actor,
-                Alteration = alteration
+                Alteration = alteration,
+                AlterationAffectedCharacters = affectedCharacters
             });
         }
 
-        public void Process(Character actor, AlterationContainer alteration)
+        public void Process(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration)
         {
             // Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
             if (alteration.GetCostType() == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(actor, alteration.Cost);
-
-            // Calculate Affected Characters
-            var affectedCharacters = CalculateAffectedCharacters(alteration, actor);
 
             // Affected Character Alterations:
             //      
@@ -273,8 +273,9 @@ namespace Rogue.NET.Core.Logic
         }
         #endregion
 
+
         #region (private) Alteration Calculation Methods
-        private IEnumerable<Character> CalculateAffectedCharacters(AlterationContainer alteration, Character actor)
+        public IEnumerable<Character> CalculateAffectedCharacters(AlterationContainer alteration, Character actor)
         {
             if (alteration is ConsumableAlteration)
                 return CalculateAffectedCharacters(alteration as ConsumableAlteration, actor);
@@ -288,8 +289,9 @@ namespace Rogue.NET.Core.Logic
             else if (alteration is EnemyAlteration)
                 return CalculateAffectedCharacters(alteration as EnemyAlteration, actor);
 
+            // EQUIPMENT ATTACK ALTERATION APPLIED DIRECTLY TO ATTACKED ENEMY
             else if (alteration is EquipmentAttackAlteration)
-                return CalculateAffectedCharacters(alteration as EquipmentAttackAlteration, actor);
+                throw new Exception("Equipment Attack Alteration Effect trying to calculate affected characters");
 
             else if (alteration is EquipmentCurseAlteration)
                 return CalculateAffectedCharacters(alteration as EquipmentCurseAlteration, actor);
@@ -307,10 +309,6 @@ namespace Rogue.NET.Core.Logic
         {
             return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
         }
-        private IEnumerable<Character> CalculateAffectedCharacters(ConsumableProjectileAlteration alteration, Character actor)
-        {
-            return CalculateAffectedCharacters(AlterationTargetType.Target, actor);
-        }
         private IEnumerable<Character> CalculateAffectedCharacters(DoodadAlteration alteration, Character actor)
         {
             return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
@@ -318,10 +316,6 @@ namespace Rogue.NET.Core.Logic
         private IEnumerable<Character> CalculateAffectedCharacters(EnemyAlteration alteration, Character actor)
         {
             return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(EquipmentAttackAlteration alteration, Character actor)
-        {
-            throw new NotImplementedException("Have to add affected character based on player action");
         }
         private IEnumerable<Character> CalculateAffectedCharacters(EquipmentCurseAlteration alteration, Character actor)
         {
@@ -334,18 +328,6 @@ namespace Rogue.NET.Core.Logic
         private IEnumerable<Character> CalculateAffectedCharacters(SkillAlteration alteration, Character actor)
         {
             return CalculateAffectedCharacters(alteration.AnimationGroup.TargetType, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(PassiveAlterationEffect effect, Character actor)
-        {
-            return CalculateAffectedCharacters(AlterationTargetType.Source, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(PermanentAlterationEffect effect, Character actor)
-        {
-            return CalculateAffectedCharacters(AlterationTargetType.Source, actor);
-        }
-        private IEnumerable<Character> CalculateAffectedCharacters(RemedyAlterationEffect effect, Character actor)
-        {
-            return CalculateAffectedCharacters(AlterationTargetType.Source, actor);
         }
         private IEnumerable<Character> CalculateAffectedCharacters(AlterationTargetType targetType, Character actor)
         {
