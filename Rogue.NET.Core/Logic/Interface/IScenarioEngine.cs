@@ -16,12 +16,6 @@ namespace Rogue.NET.Core.Logic.Interface
         /// <returns>Continuation action - "DoNothing" means no altered state was processed.</returns>
         LevelContinuationAction ProcessAlteredPlayerState();
 
-        /// <summary>
-        /// Calculates new visibility for Level surrounding Player; applys end-of-turn for Player and 
-        /// for the Level (Generate new monster, etc...)
-        /// </summary>
-        void ProcessEndOfTurn(bool regenerate);
-
         ScenarioObject Move(Compass direction);
         ScenarioObject MoveRandom();
 

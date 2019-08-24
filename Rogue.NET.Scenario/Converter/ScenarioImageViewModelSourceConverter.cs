@@ -23,7 +23,7 @@ namespace Rogue.NET.Scenario.Converter
                 SmileyMood = viewModel.SmileyMood,
                 SmileyBodyColor = viewModel.SmileyBodyColor,
                 SmileyLineColor = viewModel.SmileyLineColor,
-                SmileyAuraColor = viewModel.SmileyAuraColor,
+                SmileyLightRadiusColor = viewModel.SmileyAuraColor,
                 SymbolType = viewModel.SymbolType,
                 RogueName = viewModel.RogueName
             };

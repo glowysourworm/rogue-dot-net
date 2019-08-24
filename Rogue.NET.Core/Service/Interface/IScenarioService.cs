@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Service.Interface
     public interface IScenarioService
     {
         /// <summary>
-        /// Tells IScenarioService to process it's data until finished (returns false).
+        /// Tells IScenarioService to process one backed message. If it's finished - returns false.
         /// </summary>
         /// <returns>true if more to process</returns>
         bool ProcessBackend();

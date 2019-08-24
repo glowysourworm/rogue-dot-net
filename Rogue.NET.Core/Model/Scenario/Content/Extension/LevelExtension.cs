@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// <summary>
         /// Returns random location from the level OR CellPoint.Empty (if result is empty)
         /// </summary>
-        public static CellPoint GetRandomLocation(this Level level, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
+        public static GridLocation GetRandomLocation(this Level level, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
         {
             // Get cell array from the grid
             var cells = level.Grid.GetCells();
@@ -28,17 +28,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = cells.Where(x => !occupiedLocations.Contains(x.Location));
 
                 // Return random cell
-                return randomSequenceGenerator.GetRandomElement(freeCells)?.Location ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(freeCells)?.Location ?? GridLocation.Empty;
             }
             // O(1)
             else
-                return randomSequenceGenerator.GetRandomElement(cells)?.Location ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(cells)?.Location ?? GridLocation.Empty;
         }
 
         /// <summary>
         /// Returns random location or CellPoint.Empty
         /// </summary>
-        public static CellPoint GetRandomLocation(this Level level, IEnumerable<CellPoint> otherExcludedLocations, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
+        public static GridLocation GetRandomLocation(this Level level, IEnumerable<GridLocation> otherExcludedLocations, bool excludeOccupiedLocations, IRandomSequenceGenerator randomSequenceGenerator)
         {
             var locations = level.Grid.GetCells()
                                   .Select(x => x.Location)
@@ -46,7 +46,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                                   .ToList();
 
             if (locations.Count <= 0)
-                return CellPoint.Empty;
+                return GridLocation.Empty;
 
             // Slower operation
             if (excludeOccupiedLocations)
@@ -56,11 +56,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                 var freeCells = locations.Except(occupiedLocations);
 
                 // Return random cell
-                return randomSequenceGenerator.GetRandomElement(freeCells) ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(freeCells) ?? GridLocation.Empty;
             }
             // O(1)
             else
-                return randomSequenceGenerator.GetRandomElement(locations) ?? CellPoint.Empty;
+                return randomSequenceGenerator.GetRandomElement(locations) ?? GridLocation.Empty;
         }
     }
 }

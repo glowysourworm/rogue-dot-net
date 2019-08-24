@@ -51,47 +51,42 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<CharacterClass> CharacterClasses { get; }
 
         /// <summary>
-        /// Primary method to process an update to the contents. This should be called after
-        /// a turn has been processed.
+        /// Primary method to update visible cells that are now in view of the Player - along with
+        /// contents
         /// </summary>
-        void UpdateContents();
+        void UpdateVisibility();
 
         /// <summary>
-        /// Primary method to update visible cells that are now in view of the Player
+        /// Statefully maintained collection of locations visible to a Character
         /// </summary>
-        void UpdateVisibleLocations();
-
-        /// <summary>
-        /// Statefully maintained collection of locations visible to the Player 
-        /// </summary>
-        IEnumerable<CellPoint> GetVisibleLocations();
+        IEnumerable<GridLocation> GetVisibleLocations(Character character);
 
         /// <summary>
         /// Statefully maintained collection of locations in the Player's line of sight
         /// </summary>
-        IEnumerable<CellPoint> GetLineOfSightLocations();
+        IEnumerable<GridLocation> GetLineOfSightLocations(Character character);
 
         /// <summary>
         /// Statefully maintained collection of locations that player has explored
         /// </summary>
-        IEnumerable<CellPoint> GetExploredLocations();
+        IEnumerable<GridLocation> GetExploredLocations();
 
         /// <summary>
         /// Statefully maintained collection of locations that are revealed
         /// </summary>
         /// <returns></returns>
-        IEnumerable<CellPoint> GetRevealedLocations();
+        IEnumerable<GridLocation> GetRevealedLocations();
 
         /// <summary>
-        /// Statefully maintained collection of level contents visible to the Player. THIS DOES NOT INCLUDE
+        /// Statefully maintained collection of level contents visible to a Character. THIS DOES NOT INCLUDE
         /// INVISIBILITY ALTERATION EFFECTS
         /// </summary>
-        IEnumerable<ScenarioObject> GetVisibleContents();
+        bool IsVisibleTo(Character sourceCharacter, ScenarioObject scenarioObject);
 
         /// <summary>
-        /// Statefully maintained collection of enemies visible to the Player
+        /// Statefully maintained collection of enemies visible to a Character
         /// </summary>
-        IEnumerable<Enemy> GetVisibleEnemies();
+        IEnumerable<Character> GetVisibleCharacters(Character character);
 
         /// <summary>
         /// Statefully maintained targeted enemy collection

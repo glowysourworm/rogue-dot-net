@@ -463,7 +463,7 @@
     <Compile Include="Model\Scenario\Content\Item\Equipment.cs" />
     <Compile Include="Model\Scenario\Content\Item\ItemBase.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Cell.cs" />
-    <Compile Include="Model\Scenario\Content\Layout\CellPoint.cs" />
+    <Compile Include="Model\Scenario\Content\Layout\GridLocation.cs" />
     <Compile Include="Model\Scenario\Content\Layout\CellRectangle.cs" />
     <Compile Include="Model\Scenario\Content\Layout\LevelGrid.cs" />
     <Compile Include="Model\Scenario\Content\Level.cs" />
@@ -471,6 +471,11 @@
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterClassAlteration.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Content\CharacterContentInformation.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Content\Interface\ICharacterContentInformation.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\CharacterLayoutInformation.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\DistanceLocation.cs" />
+    <Compile Include="Model\Scenario\Dynamic\Layout\Interface\ICharacterLayoutInformation.cs" />
     <Compile Include="Model\Scenario\RogueBase.cs" />
     <Compile Include="Model\Scenario\ScenarioContainer.cs" />
     <Compile Include="Model\Scenario\ScenarioMetaData.cs" />

@@ -44,7 +44,6 @@ namespace Rogue.NET.Core.Logic
         readonly IPlayerProcessor _playerProcessor;        
         readonly IAlterationProcessor _alterationProcessor;
         readonly IAlterationGenerator _alterationGenerator;
-        readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IRogueUpdateFactory _rogueUpdateFactory;
 
         public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
@@ -61,7 +60,6 @@ namespace Rogue.NET.Core.Logic
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,
             IAlterationGenerator alterationGenerator,
-            IRandomSequenceGenerator randomSequenceGenerator,
             IRogueUpdateFactory rogueUpdateFactory)
         {
             _layoutEngine = layoutEngine;
@@ -73,7 +71,6 @@ namespace Rogue.NET.Core.Logic
             _playerProcessor = playerProcessor;
             _alterationProcessor = alterationProcessor;
             _alterationGenerator = alterationGenerator;
-            _randomSequenceGenerator = randomSequenceGenerator;
             _rogueUpdateFactory = rogueUpdateFactory;
         }
 
@@ -115,7 +112,7 @@ namespace Rogue.NET.Core.Logic
             var desiredLocation = _modelService.Level.Grid.GetPointInDirection(_modelService.Player.Location, direction);
 
             // Invalid location
-            if (desiredLocation == CellPoint.Empty)
+            if (desiredLocation == GridLocation.Empty)
                 return null;
 
             //Look for road blocks - move player
@@ -129,8 +126,8 @@ namespace Rogue.NET.Core.Logic
             }
 
             //See what the player stepped on... Prefer Items first
-            return _modelService.Level.GetAtPoint<ItemBase>(_modelService.Player.Location) ??
-                   _modelService.Level.GetAtPoint<ScenarioObject>(_modelService.Player.Location);
+            return _modelService.Level.GetAt<ItemBase>(_modelService.Player.Location) ??
+                   _modelService.Level.GetAt<ScenarioObject>(_modelService.Player.Location);
         }
         public ScenarioObject MoveRandom()
         {
@@ -143,12 +140,7 @@ namespace Rogue.NET.Core.Logic
             return Move(direction);
         }
 
-        /// <summary>
-        /// Runs Ray-Tracing for end-of-turn; Applies Player end-of-turn, advancement, and death; and
-        /// applies Level end-of-turn (create new monsters). Updates IModelService { visible locations, visible contents, end targeting }
-        /// </summary>
-        /// <param name="regenerate">Set to false to prevent Player regeneration</param>
-        public void ProcessEndOfTurn(bool regenerate)
+        public void ApplyEndOfTurn(bool regenerate)
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
@@ -174,9 +166,6 @@ namespace Rogue.NET.Core.Logic
                     RogueUpdateEvent(this, _rogueUpdateFactory.PlayerDeath("Had a rough day..."));
             }
 
-            // Apply End-Of-Turn for the Level content
-            _contentEngine.ApplyEndOfTurn();
-
             // Update Model Content: 0) End Targeting
             //                       1) Update visible contents
             //                       2) Calculate model delta to prepare for UI
@@ -184,9 +173,9 @@ namespace Rogue.NET.Core.Logic
             foreach (var target in _modelService.GetTargetedEnemies())
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.TargetingEnd, target.Id));
 
-            _modelService.UpdateVisibleLocations();
+            _modelService.UpdateVisibility();
             _modelService.ClearTargetedEnemies();
-            _modelService.UpdateContents();
+            
 
             // Queue Updates for level
             // QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
@@ -205,14 +194,14 @@ namespace Rogue.NET.Core.Logic
             var attackLocation = _modelService.Level.Grid.GetPointInDirection(location, direction);
 
             // Invalid attack location
-            if (attackLocation == CellPoint.Empty)
+            if (attackLocation == GridLocation.Empty)
                 return;
 
             // Check to see whether path is clear to attack
             var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, attackLocation, false);
 
             // Get target for attack
-            var enemy = _modelService.Level.GetAtPoint<Enemy>(attackLocation);
+            var enemy = _modelService.Level.GetAt<Enemy>(attackLocation);
 
             if (enemy != null && !blocked)
             {
@@ -340,7 +329,7 @@ namespace Rogue.NET.Core.Logic
                     return LevelContinuationAction.DoNothing;
                 }
 
-                else if (alteration.RequiresCharacterInRange() && !_modelService.GetVisibleEnemies().Any())
+                else if (alteration.RequiresCharacterInRange() && !_modelService.GetVisibleCharacters(player).Any())
                 {
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must have enemies in range");
                     return LevelContinuationAction.DoNothing;
@@ -537,7 +526,7 @@ namespace Rogue.NET.Core.Logic
                         _rogueUpdateFactory.Animation(
                             ammo.AmmoAnimationGroup.Animations, 
                             _modelService.Player.Location, 
-                            new CellPoint[] { targetedEnemy.Location }));
+                            new GridLocation[] { targetedEnemy.Location }));
                 }
             }
             return LevelContinuationAction.ProcessTurn;
@@ -545,7 +534,8 @@ namespace Rogue.NET.Core.Logic
         public void Target(Compass direction)
         {
             var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
-            var enemiesInRange = _modelService.GetVisibleEnemies()
+            var enemiesInRange = _modelService.GetVisibleCharacters(_modelService.Player)
+                                              .Cast<Enemy>()
                                               .ToList();
 
             // Filter out invisible enemies
@@ -797,7 +787,7 @@ namespace Rogue.NET.Core.Logic
         public LevelContinuationAction InvokeDoodad()
         {
             var player = _modelService.Player;
-            var doodad = _modelService.Level.GetAtPoint<DoodadBase>(player.Location);
+            var doodad = _modelService.Level.GetAt<DoodadBase>(player.Location);
             if (doodad == null)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing here to use! (Requires Scenario Object)");

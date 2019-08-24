@@ -15,17 +15,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         int _westDoorSearchCounter;
 
         #region (public) Volatile Properties (Change during game play)
-        /// <summary>
-        /// Set to "True" if Cell is also marked "IsLineOfSight"; and it's within the light radius of the
-        /// Player. 
-        /// </summary>
-        public bool IsPhysicallyVisible { get; set; }
-        /// <summary>
-        /// Set to "True" if Cell is directly in the path from a ray originating from the Player. It will not be
-        /// visible unless it's within the player's light radius. (Or, TBD - the light radius of another Doodad.. or potentially
-        /// another character)
-        /// </summary>
-        public bool IsLineOfSight { get; set; }
         public bool IsExplored { get; set; }
         public bool IsRevealed { get; set; }
         #endregion
@@ -80,7 +69,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 return result;
             }
         }
-        public CellPoint Location { get; set; }
+        public GridLocation Location { get; set; }
         #endregion
 
         public void OpenDoor(Compass direction)
@@ -148,23 +137,20 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public Cell()
         {
             this.Walls = Compass.Null;
-            this.Location = new CellPoint(-1, -1);
-            this.IsPhysicallyVisible = false;
+            this.Location = new GridLocation(-1, -1);
             this.IsExplored = false;
             this.IsRevealed = false;
         }
-        public Cell(CellPoint p, Compass walls)
+        public Cell(GridLocation p, Compass walls)
         {
-            this.Location = new CellPoint(p);
+            this.Location = new GridLocation(p);
             this.Walls = walls;
-            this.IsPhysicallyVisible = false;
             this.IsExplored = false;
         }
         public Cell(int col, int row, Compass walls)
         {
-            this.Location = new CellPoint(row, col);
+            this.Location = new GridLocation(row, col);
             this.Walls = walls;
-            this.IsPhysicallyVisible = false;
             this.IsExplored = false;
         }
         public override string ToString()
@@ -180,7 +166,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             _isDoor = info.GetBoolean("IsDoor");
             this.Walls = (Compass)info.GetValue("Walls", typeof(Compass));
             this.Doors = (Compass)info.GetValue("Doors", typeof(Compass));
-            this.Location = (CellPoint)info.GetValue("Location", typeof(CellPoint));
+            this.Location = (GridLocation)info.GetValue("Location", typeof(GridLocation));
             _northDoorSearchCounter = info.GetInt32("NorthDoorSearchCounter");
             _southDoorSearchCounter = info.GetInt32("SouthDoorSearchCounter");
             _eastDoorSearchCounter = info.GetInt32("EastDoorSearchCounter");

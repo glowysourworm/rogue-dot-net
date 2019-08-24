@@ -129,15 +129,17 @@ namespace Rogue.NET.Scenario.Controller
             // 2) If (no further processing of either) Then completed (can accept new user command)
             while (processing)
             {
-                // High Priority
+                // High Priority (Animations)
                 while (_scenarioService.AnyUpdates(RogueUpdatePriority.High))
                     await ProcessUpdate(_scenarioService.DequeueUpdate(RogueUpdatePriority.High));
 
-                // Low Priority
+                // Low Priority (UI Updating)
                 while (_scenarioService.AnyUpdates(RogueUpdatePriority.Low))
                     await ProcessUpdate(_scenarioService.DequeueUpdate(RogueUpdatePriority.Low));
                 
-                // Fifth: Process all Scenario Events
+                // Process all Scenario Events
+                //
+                // THESE AFFECT THE LEVEL LOADING. SO, ALLOW UI PROCESSING FIRST (Low / High)
                 while (_scenarioService.AnyUpdates(RogueUpdatePriority.Critical))
                 {
                     // Have to cancel processing on certain scenario events
@@ -145,6 +147,8 @@ namespace Rogue.NET.Scenario.Controller
                 }
 
                 // Finally: Process the next backend work item. (If processing finished - then allow user command)
+                //
+                //          Processing backend messages will queue new work items for all priorities.
                 if (!_scenarioService.ProcessBackend() && processing)
                     processing = false;
             }

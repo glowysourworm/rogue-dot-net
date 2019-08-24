@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Logic.Processing
     public class AnimationUpdate : IAnimationUpdate
     {
         public IEnumerable<AnimationData> Animations { get; set; }
-        public CellPoint SourceLocation { get; set; }
-        public IEnumerable<CellPoint> TargetLocations { get; set; }
+        public GridLocation SourceLocation { get; set; }
+        public IEnumerable<GridLocation> TargetLocations { get; set; }
     }
 }

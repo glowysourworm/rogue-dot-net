@@ -8,26 +8,26 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     [Serializable]
     public class CellRectangle
     {
-        public CellPoint Location { get; set; }
+        public GridLocation Location { get; set; }
         public int CellHeight { get; set; }
         public int CellWidth { get; set; }
 
         public CellRectangle()
         {
-            this.Location = new CellPoint(-1, -1);
+            this.Location = new GridLocation(-1, -1);
             this.CellWidth = -1;
             this.CellHeight = -1;
         }
-        public CellRectangle(CellPoint location, int cellwidth, int cellheight)
+        public CellRectangle(GridLocation location, int cellwidth, int cellheight)
         {
             // Copy the cell point to avoid data corruption (should make CellPoint value type)
-            this.Location = new CellPoint(location.Row, location.Column);
+            this.Location = new GridLocation(location.Row, location.Column);
             this.CellHeight = cellheight;
             this.CellWidth = cellwidth;
         }
         public CellRectangle(int left, int top, int right, int bottom)
         {
-            this.Location = new CellPoint(top, left);
+            this.Location = new GridLocation(top, left);
             
             // Don't forget that the index math is off of the total dimensions by one.
             this.CellHeight = bottom - top + 1;
@@ -39,17 +39,17 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public int Top { get { return this.Location.Row; } }
         public int Bottom { get { return (this.Location.Row + this.CellHeight) - 1; } }
 
-        public CellPoint TopLeft { get { return this.Location; } }
-        public CellPoint TopRight { get { return new CellPoint(this.Top, this.Right); } }
-        public CellPoint BottomRight { get { return new CellPoint(this.Bottom, this.Right); } }
-        public CellPoint BottomLeft { get { return new CellPoint(this.Bottom, this.Left); } }
+        public GridLocation TopLeft { get { return this.Location; } }
+        public GridLocation TopRight { get { return new GridLocation(this.Top, this.Right); } }
+        public GridLocation BottomRight { get { return new GridLocation(this.Bottom, this.Right); } }
+        public GridLocation BottomLeft { get { return new GridLocation(this.Bottom, this.Left); } }
 
-        public CellPoint[] Corners { get { return new CellPoint[] { this.TopLeft,
+        public GridLocation[] Corners { get { return new GridLocation[] { this.TopLeft,
                                                                     this.TopRight,
                                                                     this.BottomRight,
                                                                     this.BottomLeft }; } }
 
-        public CellPoint Center
+        public GridLocation Center
         {
             get
             {
@@ -62,7 +62,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
                 if (this.CellWidth <= 1)
                     column = this.Left;
 
-                return new CellPoint(row, column);
+                return new GridLocation(row, column);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Expands rectangle to include provided location
         /// </summary>
-        public void Expand(CellPoint location)
+        public void Expand(GridLocation location)
         {
             if (this.Left > location.Column)
                 this.Location.Column = location.Column;
@@ -117,7 +117,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         /// <summary>
         /// Includes Boundary
         /// </summary>
-        public bool Contains(CellPoint cellPoint)
+        public bool Contains(GridLocation cellPoint)
         {
             if (cellPoint.Column < this.Left)
                 return false;

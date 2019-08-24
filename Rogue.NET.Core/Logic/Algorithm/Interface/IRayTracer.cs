@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -17,6 +18,6 @@ namespace Rogue.NET.Core.Logic.Algorithm.Interface
         /// <param name="lightRadius">The input location light radius</param>
         /// <param name="lineOfSightLocations">The output set of line-of-sight locations</param>
         /// <returns></returns>
-        IEnumerable<CellPoint> CalculateVisibility(LevelGrid grid, CellPoint location, int lightRadius, out IEnumerable<CellPoint> lineOfSightLocations);
+        IEnumerable<DistanceLocation> CalculateVisibility(LevelGrid grid, GridLocation location, double lightRadius, out IEnumerable<DistanceLocation> lineOfSightLocations);
     }
 }

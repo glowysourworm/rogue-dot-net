@@ -89,7 +89,15 @@ namespace Rogue.NET.Core.Model.Enums
 
         [Display(Name = "Reveal Layout",
                  Description = "Reveals level layout")]
-        Layout = 16
+        Layout = 16,
+
+        [Display(Name = "Reveal Stairs",
+                 Description = "Reveals stairs up and stairs down (if applicable)")]
+        Stairs = 32,
+
+        [Display(Name = "Reveal Scenario Objects",
+                 Description = "Reveals scenario objects - including hidden ones")]
+        ScenarioObjects = 64
     }
     public enum AlterationModifyEquipmentType : int
     {

@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Logic.Processing.Interface
     public interface IAnimationUpdate : IRogueUpdate
     {
         IEnumerable<AnimationData> Animations { get; set; }
-        CellPoint SourceLocation { get; set; }
-        IEnumerable<CellPoint> TargetLocations { get; set; }
+        GridLocation SourceLocation { get; set; }
+        IEnumerable<GridLocation> TargetLocations { get; set; }
     }
 }

@@ -285,7 +285,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         }
 
         /// <summary>
-        /// Returns aura data
+        /// Returns aura data for auras that this character is the SOURCE of.
         /// </summary>
         public IEnumerable<Tuple<AuraAlterationEffect, AuraSourceParameters>> GetAuras()
         {

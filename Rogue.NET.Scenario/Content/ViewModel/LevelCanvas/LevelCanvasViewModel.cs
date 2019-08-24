@@ -1,6 +1,4 @@
-﻿using Prism.Events;
-
-using Rogue.NET.Common.ViewModel;
+﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Model.Events;
@@ -47,9 +45,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         const string WALLS_KEY = "Layout";
         const string DOORS_KEY = "Doors";
         const string REVEALED_KEY = "Revealed";
-        const string AURA_EXT = "-Aura";
+        const string LIGHT_RADIUS_EXT = "-LightRadius";        
 
-        const int AURA_ZINDEX = 1;
+        const int LIGHT_RADIUS_ZINDEX = 1;
         const int DOODAD_ZINDEX = 2;
         const int ITEM_ZINDEX = 3;
         const int CHARACTER_ZINDEX = 4;
@@ -170,11 +168,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             {
                 case LevelUpdateType.ContentAll:
                     DrawContent();
-                    UpdateLayoutVisibility(); // Opacity Mask for Auras
+                    UpdateLayoutVisibility(); // Opacity Mask for Light Radius
                     break;
                 case LevelUpdateType.ContentVisible:
                     DrawContent();
-                    UpdateLayoutVisibility(); // Opacity Mask for Auras
+                    UpdateLayoutVisibility(); // Opacity Mask for Light Radius
                     break;
                 case LevelUpdateType.ContentReveal:
                     DrawContent();
@@ -320,7 +318,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
-            var visibleContents = _modelService.GetVisibleEnemies();
 
             // Create contents for all ScenarioObjects + Player
             DrawCollection(level.DoodadsNormal);
@@ -342,12 +339,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 // Add
                 else
                 {
-                    Rectangle aura = null;
-                    var contentObject = CreateObject(scenarioObject, out aura);
+                    Rectangle lightRadius = null;
+                    var contentObject = CreateObject(scenarioObject, out lightRadius);
 
                     UpdateOrAddContent(scenarioObject.Id, contentObject);
-                    if (aura != null)
-                        UpdateOrAddContent(scenarioObject.Id + AURA_EXT, aura);
+                    if (lightRadius != null)
+                        UpdateOrAddContent(scenarioObject.Id + LIGHT_RADIUS_EXT, lightRadius);
                 }
             }
         }
@@ -359,7 +356,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         {
             var level = _modelService.Level;
             var exploredLocations = _modelService.GetExploredLocations();
-            var visibleLocations = _modelService.GetVisibleLocations();
+            var visibleLocations = _modelService.GetVisibleLocations(_modelService.Player);
             var revealedLocations = _modelService.GetRevealedLocations();
 
             var exploredLocationsOpacityMask = new StreamGeometry();
@@ -439,17 +436,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _contentDict[REVEALED_KEY].OpacityMask = revealedDrawingBrush;
 
             // PERFORMANCE ISSUE - OPACITY MASKS VERY VERY VERY SLOW. CONSIDER TRYING TO 
-            // DRAW AURAS BEFORE RENDERING... INSTEAD OF USING OPACITY MASKS
-            // Update Aura Opacity masks
+            // DRAW LIGHT RADIUS BEFORE RENDERING... INSTEAD OF USING OPACITY MASKS
+            // Update Light Radius Opacity masks
 
             // JUST UPDATE PLAYER ONLY - OTHER MASKS SHOULD BE OMITTED
-            foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(AURA_EXT)))
+            foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(LIGHT_RADIUS_EXT)))
                 _contentDict[key].OpacityMask = visibleDrawingBrush;
         }
         #endregion
 
         #region (private) Add / Update collections
-        private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle aura)
+        private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle lightRadius)
         {
             var image = new LevelCanvasImage();
             var isEnemyInvisible = false;                // FOR ENEMY INVISIBILITY ONLY
@@ -490,38 +487,55 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            image.Visibility = (scenarioObject.IsPhysicallyVisible || 
+            image.Visibility = (_modelService.IsVisibleTo(_modelService.Player, scenarioObject) || 
+                                scenarioObject == _modelService.Player ||
                                 scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
             Canvas.SetLeft(image, point.X);
             Canvas.SetTop(image, point.Y);
 
-            aura = null;
+            lightRadius = null;
 
-            // AURA - PLAYER ONLY
+            // LIGHT RADIUS - PLAYER ONLY
             if (scenarioObject is Player)
             {
                 // TODO: Put transform somewhere else
                 var character = scenarioObject as Character;
-                var auraRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
+                var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
                 var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
 
                 // Make the full size of the level - then apply the level opacity mask drawing
-                aura = new Rectangle();
-                aura.Height = this.LevelHeight;
-                aura.Width = this.LevelWidth;
+                lightRadius = new Rectangle();
+                lightRadius.Height = this.LevelHeight;
+                lightRadius.Width = this.LevelWidth;
 
-                var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyAuraColor), Colors.Transparent);
-                brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
-                brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
+                var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
+                brush.RadiusX = 0.7 * (lightRadiusUI / this.LevelWidth);
+                brush.RadiusY = 0.7 * (lightRadiusUI / this.LevelHeight);
                 brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
                 brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
                 brush.Opacity = 0.3;
 
-                Canvas.SetZIndex(aura, AURA_ZINDEX);
+                Canvas.SetZIndex(lightRadius, LIGHT_RADIUS_ZINDEX);
 
-                aura.Fill = brush;
-                aura.Stroke = null;
+                lightRadius.Fill = brush;
+                lightRadius.Stroke = null;
+            }
+
+            // Apply Auras from alteration effects
+            if (scenarioObject is Character)
+            {
+                var character = scenarioObject as Character;
+
+                // Get the Aura data
+                var auras = character.Alteration.GetAuras();
+
+                foreach (var tuple in auras)
+                {
+                    var id = tuple.Item1.Id;
+
+                    // 
+                }
             }
 
             return image;
@@ -556,7 +570,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
             }
 
-            content.Visibility = (scenarioObject.IsPhysicallyVisible ||
+            content.Visibility = (_modelService.IsVisibleTo(_modelService.Player,scenarioObject) ||
+                                  scenarioObject == _modelService.Player ||
                                   scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
             (content as LevelCanvasImage).Source =
@@ -566,23 +581,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);
             
-            // Update related Aura - PLAYER ONLY
-            if (_contentDict.ContainsKey(scenarioObject.Id + AURA_EXT))
+            // Update related Light Radius - PLAYER ONLY
+            if (_contentDict.ContainsKey(scenarioObject.Id + LIGHT_RADIUS_EXT))
             {
                 // TODO: Put transform somewhere else
-                var auraRadiusUI = (scenarioObject as Character).GetLightRadius() * ModelConstants.CellHeight;
+                var lightRadiusUI = (scenarioObject as Character).GetLightRadius() * ModelConstants.CellHeight;
                 var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
 
-                var aura = _contentDict[scenarioObject.Id + AURA_EXT] as Rectangle;
-                aura.Height = this.LevelHeight;
-                aura.Width = this.LevelWidth;
+                var lightRadius = _contentDict[scenarioObject.Id + LIGHT_RADIUS_EXT] as Rectangle;
+                lightRadius.Height = this.LevelHeight;
+                lightRadius.Width = this.LevelWidth;
 
-                var brush = aura.Fill as RadialGradientBrush;
+                var brush = lightRadius.Fill as RadialGradientBrush;
                 brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
                 brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
-                brush.RadiusX = 0.7 * (auraRadiusUI / this.LevelWidth);
-                brush.RadiusY = 0.7 * (auraRadiusUI / this.LevelHeight);
-                brush.GradientStops[0].Color = ColorUtility.Convert(effectiveSymbol.SmileyAuraColor);
+                brush.RadiusX = 0.7 * (lightRadiusUI / this.LevelWidth);
+                brush.RadiusY = 0.7 * (lightRadiusUI / this.LevelHeight);
+                brush.GradientStops[0].Color = ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor);
             }
         }
 
@@ -618,12 +633,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 this.Contents.Remove(content);
             }
 
-            if (_contentDict.ContainsKey(key + AURA_EXT))
+            if (_contentDict.ContainsKey(key + LIGHT_RADIUS_EXT))
             {
-                var contentAura = _contentDict[key + AURA_EXT];
+                var contentLightRadius = _contentDict[key + LIGHT_RADIUS_EXT];
 
-                _contentDict.Remove(key + AURA_EXT);
-                this.Contents.Remove(contentAura);
+                _contentDict.Remove(key + LIGHT_RADIUS_EXT);
+                this.Contents.Remove(contentLightRadius);
             }
         }
         #endregion

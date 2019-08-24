@@ -7,7 +7,7 @@ namespace Rogue.NET.Core.Model.Event
     public class LocationChangedEventArgs : EventArgs
     {
         public ScenarioObject ScenarioObject { get; set; }
-        public CellPoint OldLocation { get; set; }
-        public CellPoint NewLocation { get; set; }
+        public GridLocation OldLocation { get; set; }
+        public GridLocation NewLocation { get; set; }
     }
 }

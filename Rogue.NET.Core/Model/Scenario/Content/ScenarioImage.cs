@@ -12,7 +12,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public SmileyMoods SmileyMood { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
-        public string SmileyAuraColor { get; set; }
+        public string SmileyLightRadiusColor { get; set; }
 
         //Character Details
         public string CharacterSymbol { get; set; }
@@ -49,7 +49,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             : base(name)
         {
             this.SmileyMood = mood;
-            this.SmileyAuraColor = smileyAuraColor;
+            this.SmileyLightRadiusColor = smileyAuraColor;
             this.SmileyBodyColor = smileyBodyColor;
             this.SmileyLineColor = smileyLineColor;
 

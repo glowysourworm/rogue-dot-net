@@ -93,7 +93,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                     CharacterSymbol = x.CharacterSymbol,
                     DisplayIcon = x.DisplayIcon,
                     Icon = x.Icon,
-                    SmileyAuraColor = x.SmileyAuraColor,
+                    SmileyLightRadiusColor = x.SmileyLightRadiusColor,
                     SmileyBodyColor = x.SmileyBodyColor,
                     SmileyLineColor = x.SmileyLineColor,
                     SmileyMood = x.SmileyMood,

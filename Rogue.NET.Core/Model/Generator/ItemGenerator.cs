@@ -47,7 +47,7 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.CharacterColor = equipmentTemplate.SymbolDetails.CharacterColor;
             equipment.CharacterSymbol = equipmentTemplate.SymbolDetails.CharacterSymbol;
             equipment.Icon = equipmentTemplate.SymbolDetails.Icon;
-            equipment.SmileyAuraColor = equipmentTemplate.SymbolDetails.SmileyAuraColor;
+            equipment.SmileyLightRadiusColor = equipmentTemplate.SymbolDetails.SmileyAuraColor;
             equipment.SmileyBodyColor = equipmentTemplate.SymbolDetails.SmileyBodyColor;
             equipment.SmileyLineColor = equipmentTemplate.SymbolDetails.SmileyLineColor;
             equipment.SmileyMood = equipmentTemplate.SymbolDetails.SmileyMood;
@@ -98,7 +98,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.CharacterColor = consumableTemplate.SymbolDetails.CharacterColor;
             consumable.CharacterSymbol = consumableTemplate.SymbolDetails.CharacterSymbol;
             consumable.Icon = consumableTemplate.SymbolDetails.Icon;
-            consumable.SmileyAuraColor = consumableTemplate.SymbolDetails.SmileyAuraColor;
+            consumable.SmileyLightRadiusColor = consumableTemplate.SymbolDetails.SmileyAuraColor;
             consumable.SmileyBodyColor = consumableTemplate.SymbolDetails.SmileyBodyColor;
             consumable.SmileyLineColor = consumableTemplate.SymbolDetails.SmileyLineColor;
             consumable.SmileyMood = consumableTemplate.SymbolDetails.SmileyMood;

@@ -187,7 +187,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// </summary>
         private LevelGrid CreateRectangularGridRooms(LayoutTemplate template, out Room[,] roomGrid)
         {
-            var bounds = new CellRectangle(new CellPoint(0, 0), template.Width, template.Height);
+            var bounds = new CellRectangle(new GridLocation(0, 0), template.Width, template.Height);
             var gridDivisionWidth = template.RoomWidthLimit + (2 * template.RectangularGridPadding);
             var gridDivisionHeight = template.RoomHeightLimit + (2 * template.RectangularGridPadding);
 
@@ -222,9 +222,9 @@ namespace Rogue.NET.Core.Model.Generator
                               _randomSequenceGenerator.Get(template.RectangularGridPadding, 
                                                            gridDivisionHeight - (roomHeight + template.RectangularGridPadding) + 1);
 
-                    var roomBounds = new CellRectangle(new CellPoint(row, column), roomWidth, roomHeight);
-                    var roomCells = new List<CellPoint>();
-                    var edgeCells = new List<CellPoint>();
+                    var roomBounds = new CellRectangle(new GridLocation(row, column), roomWidth, roomHeight);
+                    var roomCells = new List<GridLocation>();
+                    var edgeCells = new List<GridLocation>();
 
                     // Create cells to fill the room
                     for (int roomCol = column; roomCol < column + roomWidth; roomCol++)
@@ -259,7 +259,7 @@ namespace Rogue.NET.Core.Model.Generator
         }
         private LevelGrid CreateRandomRooms(LayoutTemplate template)
         {
-            var bounds = new CellRectangle(new CellPoint(0, 0), template.Width, template.Height);
+            var bounds = new CellRectangle(new GridLocation(0, 0), template.Width, template.Height);
 
             // 2D Cell array used for primary LevelGrid object
             var grid = new Cell[bounds.CellWidth, bounds.CellHeight];
@@ -295,7 +295,7 @@ namespace Rogue.NET.Core.Model.Generator
             // 1) Iterate grid several times using smoothing rules
             // 2) Locate rooms and store them in an array
 
-            var bounds = new CellRectangle(new CellPoint(0, 0), template.Width, template.Height);
+            var bounds = new CellRectangle(new GridLocation(0, 0), template.Width, template.Height);
 
             // 2D Cell array used for primary LevelGrid object
             var grid = new Cell[bounds.CellWidth, bounds.CellHeight];
@@ -453,7 +453,7 @@ namespace Rogue.NET.Core.Model.Generator
                 grid[1, 0] = cell3;
                 grid[1, 1] = cell4;
 
-                var locations = new CellPoint[] { cell1.Location, cell2.Location, cell3.Location, cell4.Location };
+                var locations = new GridLocation[] { cell1.Location, cell2.Location, cell3.Location, cell4.Location };
 
                 rooms.Add(new Room(locations, locations, new CellRectangle(0, 0, 1, 1)));
             }
@@ -722,7 +722,7 @@ namespace Rogue.NET.Core.Model.Generator
                                              // However, for small or near-infinity slopes, off-by-one errors can add a point that
                                              // is outside the bounds of the grid. So, those must filtered off prior to entering 
                                              // the loop below.
-                                             var location = new CellPoint((int)Math.Floor(point.Y / ModelConstants.CellHeight),
+                                             var location = new GridLocation((int)Math.Floor(point.Y / ModelConstants.CellHeight),
                                                                           (int)Math.Floor(point.X / ModelConstants.CellWidth));
 
                                              if (location.Column < 0 ||
@@ -742,7 +742,7 @@ namespace Rogue.NET.Core.Model.Generator
             foreach (var point in intersections)
             {
                 // cell location of intersection
-                var location = new CellPoint((int)Math.Floor(point.Y / ModelConstants.CellHeight), 
+                var location = new GridLocation((int)Math.Floor(point.Y / ModelConstants.CellHeight), 
                                              (int)Math.Floor(point.X / ModelConstants.CellWidth));
 
                 // intersection landed on one of the vertical lines
@@ -757,11 +757,11 @@ namespace Rogue.NET.Core.Model.Generator
                 // result
                 if (horizontal)
                 {
-                    var location1 = directionX > 0 ? new CellPoint(location.Row, location.Column - 1) :
-                                                     new CellPoint(location.Row, location.Column);
+                    var location1 = directionX > 0 ? new GridLocation(location.Row, location.Column - 1) :
+                                                     new GridLocation(location.Row, location.Column);
 
-                    var location2 = directionX > 0 ? new CellPoint(location.Row, location.Column) :
-                                                     new CellPoint(location.Row, location.Column - 1);
+                    var location2 = directionX > 0 ? new GridLocation(location.Row, location.Column) :
+                                                     new GridLocation(location.Row, location.Column - 1);
 
                     gridCell1 = grid[location1.Column, location1.Row];
                     gridCell2 = grid[location2.Column, location2.Row];
@@ -776,11 +776,11 @@ namespace Rogue.NET.Core.Model.Generator
                 }
                 else
                 {
-                    var location1 = directionY > 0 ? new CellPoint(location.Row - 1, location.Column) :
-                                                     new CellPoint(location.Row, location.Column);
+                    var location1 = directionY > 0 ? new GridLocation(location.Row - 1, location.Column) :
+                                                     new GridLocation(location.Row, location.Column);
 
-                    var location2 = directionY > 0 ? new CellPoint(location.Row , location.Column) :
-                                                     new CellPoint(location.Row - 1, location.Column);
+                    var location2 = directionY > 0 ? new GridLocation(location.Row , location.Column) :
+                                                     new GridLocation(location.Row - 1, location.Column);
 
                     gridCell1 = grid[location1.Column, location1.Row];
                     gridCell2 = grid[location2.Column, location2.Row];
@@ -887,7 +887,7 @@ namespace Rogue.NET.Core.Model.Generator
         /// <summary>
         /// Calculates whether adjacent cell is connected by accessible path
         /// </summary>
-        private bool IsAdjacentCellConnected(Cell[,] grid, CellPoint location, CellPoint adjacentLocation)
+        private bool IsAdjacentCellConnected(Cell[,] grid, GridLocation location, GridLocation adjacentLocation)
         {
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location, adjacentLocation);
 
@@ -919,20 +919,20 @@ namespace Rogue.NET.Core.Model.Generator
         /// <paramref name="roomError">Identifies error with room creation (ROOM SIZE MUST BE >= 4)</paramref>
         /// <paramref name="removeRoomErrors">This removes rooms that don't fit the criteria (Size >= 4)</paramref>
         /// </summary>
-        private bool ApplyFloodFill(Cell[,] grid, CellPoint testLocation, bool removeRoomErrors, out Cell[,] roomGrid, out Room room)
+        private bool ApplyFloodFill(Cell[,] grid, GridLocation testLocation, bool removeRoomErrors, out Cell[,] roomGrid, out Room room)
         {
             if (grid[testLocation.Column, testLocation.Row] == null)
                 throw new Exception("Trying to locate cell that is non-existent:  LayoutGenerator.GetConnectedCells");
 
-            var bounds = new CellRectangle(new CellPoint(0, 0), grid.GetLength(0), grid.GetLength(1));
+            var bounds = new CellRectangle(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
 
             // Room 2D Array
             roomGrid = new Cell[bounds.CellWidth, bounds.CellHeight];
             room = null;
 
             // Room Data
-            var roomCells = new List<CellPoint>();
-            var edgeCells = new List<CellPoint>();
+            var roomCells = new List<GridLocation>();
+            var edgeCells = new List<GridLocation>();
             var roomBounds = new CellRectangle(testLocation, 1, 1);
 
             var resultCounter = 0;
@@ -1223,7 +1223,7 @@ namespace Rogue.NET.Core.Model.Generator
         #region (private) Maze Creation       
         private LevelGrid CreateMaze(LayoutTemplate template)
         {
-            var bounds = new CellRectangle(new CellPoint(0, 0), template.Width, template.Height);
+            var bounds = new CellRectangle(new GridLocation(0, 0), template.Width, template.Height);
             var grid = new Cell[bounds.CellWidth, bounds.CellHeight];
 
             // Initialize starting cell
@@ -1368,9 +1368,9 @@ namespace Rogue.NET.Core.Model.Generator
             history.Clear();
 
             // Store room data
-            var roomCells = new List<CellPoint>();
-            var edgeCells = new List<CellPoint>();
-            var roomBounds = new CellRectangle(new CellPoint(0, 0), bounds.CellWidth, bounds.CellHeight);
+            var roomCells = new List<GridLocation>();
+            var edgeCells = new List<GridLocation>();
+            var roomBounds = new CellRectangle(new GridLocation(0, 0), bounds.CellWidth, bounds.CellHeight);
 
             for (int i = 0; i < bounds.CellWidth; i++)
             {

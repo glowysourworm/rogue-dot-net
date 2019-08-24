@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Converter
                 SmileyMood = (SmileyMoods)values[4],
                 SmileyBodyColor = (string)values[5],
                 SmileyLineColor = (string)values[6],
-                SmileyAuraColor = (string)values[7],
+                SmileyLightRadiusColor = (string)values[7],
                 SymbolType = (SymbolTypes)values[8]
             });
         }

@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Logic.Processing.Factory
     [Export(typeof(IRogueUpdateFactory))]
     public class RogueUpdateFactory : IRogueUpdateFactory
     {
-        public RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High)
+        public RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, GridLocation source, IEnumerable<GridLocation> targets, RogueUpdatePriority priority = RogueUpdatePriority.High)
         {
             return new RogueUpdateEventArgs()
             {

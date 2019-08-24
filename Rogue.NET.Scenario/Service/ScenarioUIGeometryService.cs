@@ -13,7 +13,7 @@ namespace Rogue.NET.Scenario.Service
         {
             return new Point(x * ModelConstants.CellWidth, y * ModelConstants.CellHeight);
         }
-        public Point Cell2UI(CellPoint p, bool offsetToMiddleOfCell = false)
+        public Point Cell2UI(GridLocation p, bool offsetToMiddleOfCell = false)
         {
             if (!offsetToMiddleOfCell)
                 return new Point(p.Column * ModelConstants.CellWidth, p.Row * ModelConstants.CellHeight);
@@ -21,7 +21,7 @@ namespace Rogue.NET.Scenario.Service
             else
                 return new Point((p.Column + 0.5D) * ModelConstants.CellWidth, (p.Row + 0.5D) * ModelConstants.CellHeight);
         }
-        public Rect Cell2UIRect(CellPoint p, bool addCellOffset)
+        public Rect Cell2UIRect(GridLocation p, bool addCellOffset)
         {
             if (!addCellOffset)
                 return new Rect(Cell2UI(p), new Size(ModelConstants.CellWidth, ModelConstants.CellHeight));

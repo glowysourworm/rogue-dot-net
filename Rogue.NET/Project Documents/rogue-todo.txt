@@ -865,6 +865,9 @@ IMMEDIATE TODO'S:
 						- Remove(CharacterBase.Id)
 						- Add(Character)
 						
+					  Also, break up and componentize LevelCanvasViewModel - which basically is a collection of ScenarioImage
+					  elements - to be drawn / updated somewhere else; and collected by the IContentUpdateController.
+					  
 	- TODO: Make sure to apply "Generate on step" to enemies
 	
 	- TODO: Make throwing generic - not pre-specified:
@@ -902,3 +905,125 @@ IMMEDIATE TODO'S:
 	- TODO: Set Attack Attribute Collections EN-MAS for any new asset. FIX EXISTING ASSETS (Asset Reference Service)
 			   
 	- TODO: Consider systematizing part of the alteration effect pattern to consolidate some of the type inspection.
+	
+	- TODO: Finish alteration sub-panel by showing what aura effects do - and effects of enemy equipment auras.
+	
+	DECIDED TO CREATE A COMPONENT FOR STORING GRID-LEVEL INFORMATION ABOUT LINE-OF-SIGHT / LIGHT RADIUS / AURA RADII
+	
+		Assumptions:       Player Type (currently) is treated as a light SOURCE; "Light Radius" really means "Sight Radius" (TODO - Refactor).
+						   Auras are independent of "Light Radius" and light SOURCES.
+						
+						   Any character (or object) COULD be marked as a "Light Source"; but that's not currently supported. It
+						   would be nice to have light sources in the scenario.. Possibly even on the walls (like a flag on each
+						   cell to be accounted for on this component).
+						
+		How to Calculate:  What's this for? This will calculate all characters' line-of-sight: locations; objects (enemies, doodads, items);
+						   Light "radius" locations; and aura radius locations for all alterations. PER CHARACTER.
+						   
+						   The state should be stored here; but not serialized. 
+	
+		Input:  		   Any Character
+		
+		Calculations:      Line-of-sight, Light Radius, Aura Radius (per aura)
+		
+		Output:   		   Line-of-sight:        Locations
+						   Light Radius:  		 Locations
+						   Aura (many):          Locations, Colors
+						   
+		Future TBD: 	   The point of this component is to start to consolidate some of the grid-related scenario data that 
+						   needs to be calculated and stored. 
+						   
+						   There's lots of ideas of what to do in the future if there's time. One would be to create more light 
+						   sources - which is pretty straight forward given this design. Another could be cell coloring or opacity
+						   based on many different character's auras, light source (maybe colors), etc.. Then, line-of-sight 
+						   is probably more important - as it could change some of the possible actions of the characters.
+						   
+						   Example: Enemy is far away; but in a lit-up tile (another object's light radius). You could try and
+									throw / fire something at the enemy; but have a small % of success. 
+									
+									More imporantly - you could see the enemy.
+									
+						   Another idea is to have patches of lit up tiles as part of the layout. This would be to simulate light
+						   coming in through the ceiling. (varying per level)
+						   
+						   One final one - requiring more design - is TERRAIN :) :) :)  Water, Fire, Swamp, Steam, Anything Brouge
+						   tried - but only if there's others helping because it's a lot to do.
+						   
+						   Light sources, auras, and line-of-sight would probably be enough for this guy.
+						 
+	- TODO: Draw a Diagram of the Backend Processing.
+	
+				- Start with the ScenarioService - drawing pointers for each method entry into the engines.
+				
+				- Show the flow of events onto the ScenarioService queues.
+				
+				- Show the updating of the UI from events.
+				
+			Need to know how the backend is updated - specifically:
+			
+				- Character stats
+				
+				- Layout (Topology and visibility and line-of-sight)
+				
+				- Character Visibility (Same component)
+				
+				- Item / Object Visibility (And Revealed / Explored status)
+				
+			So, need to understand the sequence of events surrounding specific actions to be able to be
+			confindent systematizing the backend end-of-turn logic.
+			
+			IDEA:  Hide the Level object inside the IModelService (or something like that component) and
+				   prevent firing of events to the queues where possible.
+				   
+				   It would be easier to think of if the update events were encapsulated into components;
+				   and the major data containers were also encapsulated with those components - so updating
+				   the front end and queuing up other events was much more intuitive.
+				   
+			NEEDS TODO:  It's getting a little too involved to keep queuing events for the back end. The
+						 processing needs to be refactored to make it easier to manage the state (IModelService)
+						 sequentially.
+						 
+						 IDEA:  SEQUENCE all character activities. This could be accomplished with some other
+								simple queue architecture that allowed sequences (maybe per character) to be
+								processed before continuing with other sequences.
+								
+								Example:  Player Reveal Item -> Animation, Consumable Item Remove, Revealed Content, 
+									      UI Updates -> Enemy 1 Reaction (.., .., ..) -> Enemy 2 Reaction -> (.., .., ..)
+										  
+										  What this means is that the queues could provide a sequence for these 
+										  actions. 
+										  
+										  BUT - there's a big problem with updating the state. Model updates have
+										  to be injected where they're important.. maybe between characters. 
+										  
+										  Player -> Model update -> Enemy 1 -> Model Update -> ...
+										  
+										  There might be a better way; but trying to sequence all of these things
+										  at the "End of Turn" really doesn't work right.
+										  
+										  I'm thinking it should be more like this:
+										  
+										  Player -> Player End of Turn -> Model update -> Check for Scenario Event (Player Died, etc..)
+										   -> Enemy 1 -> Enemy 1 end of turn -> Model update -> Check for Scenario Event (Player Died, etc..)
+						   
+										  So, as long as the processing isn't too involved - it might be easier just
+										  to check "everything" or "everything per character" (which includes bigger
+										  events like player death, or level change, or maybe dialog events) between
+										  queued reactions.
+										  
+										  Then, one final primary concern is when to update the UI. Animations should
+										  take the highest priority; but UI updates I'd think should also be done 
+										  between characters. And, the Update types probably should be thinned out and
+										  just refactored.
+										  
+										  The LevelCanvasViewModel is also too crowded and needs refactoring. 
+										  
+										  The design favoring a front-end controller would be ideal for processing 
+										  updates PER-CHARACTER. So, if this new queueing design is implemented - 
+										  it might be a good idea to try and work with the front end to break up
+										  some of that junk that's collected to update view models.
+										  
+	- IDEA:  Have an enemy behavior condition that "helps them when they're lagging behind the player". Maybe like 
+			 the hippogrif in the socerer scenario casts "gather" when they're lagging behind. or teleport near player.
+			 
+			 Also, TELEPORT ADJACENT PLAYER would be a nice-to-have effect enum.

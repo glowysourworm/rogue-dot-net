@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Model.Generator
                 HasBonusAttackAttributes = template.HasBonusAttackAttributes,
                 Icon = template.SymbolDetails.Icon,
                 RogueName = template.Name,
-                SmileyAuraColor = template.SymbolDetails.SmileyAuraColor,
+                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = template.SymbolDetails.SmileyLineColor,
                 SmileyMood = template.SymbolDetails.SmileyMood,

@@ -28,17 +28,17 @@ namespace Rogue.NET.Core.Logic.Algorithm
             _layoutEngine = layoutEngine;
         }
 
-        public CellPoint FindPath(CellPoint point1, CellPoint point2, double maxRadius, bool canOpenDoors)
+        public GridLocation FindPath(GridLocation point1, GridLocation point2, double maxRadius, bool canOpenDoors)
         {
             // Initialize recurse A* algorithm with pathIdx = 1; and start point added to history
-            return FindPath(maxRadius, canOpenDoors, new Dictionary<CellPoint, int>() { { point1, 0 } }, point1, point2, 1);
+            return FindPath(maxRadius, canOpenDoors, new Dictionary<GridLocation, int>() { { point1, 0 } }, point1, point2, 1);
         }
 
-        private CellPoint FindPath(double maxSeparation,
+        private GridLocation FindPath(double maxSeparation,
                                    bool canOpenDoors,
-                                   Dictionary<CellPoint, int> pathDictionary, 
-                                   CellPoint start, 
-                                   CellPoint end, 
+                                   Dictionary<GridLocation, int> pathDictionary, 
+                                   GridLocation start, 
+                                   GridLocation end, 
                                    int pathIdx)
         {
             if (pathIdx > maxSeparation)

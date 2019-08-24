@@ -19,7 +19,6 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public Player()
         {
             this.SkillSets = new List<SkillSet>();
-            this.IsPhysicallyVisible = true;
         }
     }
 }

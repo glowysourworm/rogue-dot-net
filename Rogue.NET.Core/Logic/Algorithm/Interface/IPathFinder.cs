@@ -11,6 +11,6 @@ namespace Rogue.NET.Core.Logic.Algorithm.Interface
         /// Returns next point towards point2. If limits are reached algorithm returns point1.
         /// </summary>
         /// <param name="maxRadius">Maximum euclidean distance between points before algorithm terminates</param>
-        CellPoint FindPath(CellPoint point1, CellPoint point2, double maxRadius, bool canOpenDoors);
+        GridLocation FindPath(GridLocation point1, GridLocation point2, double maxRadius, bool canOpenDoors);
     }
 }

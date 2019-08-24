@@ -154,7 +154,7 @@ namespace Rogue.NET.Core.Service
                     result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
+                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor);
                     break;
                 case SymbolTypes.Image:
                     result = GetImage(scenarioImage.Icon);
@@ -209,7 +209,7 @@ namespace Rogue.NET.Core.Service
                     result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetElement(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyAuraColor);
+                    result = GetElement(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor);
                     break;
                 case SymbolTypes.Image:
                     result = GetElement(scenarioImage.Icon);

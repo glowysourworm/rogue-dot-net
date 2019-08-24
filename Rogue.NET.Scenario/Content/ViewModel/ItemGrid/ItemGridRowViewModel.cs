@@ -378,7 +378,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.SmileyMood = consumable.SmileyMood;
             this.SmileyBodyColor = consumable.SmileyBodyColor;
             this.SmileyLineColor = consumable.SmileyLineColor;
-            this.SmileyAuraColor = consumable.SmileyAuraColor;
+            this.SmileyAuraColor = consumable.SmileyLightRadiusColor;
             this.SymbolType = consumable.SymbolType;
 
             this.IsEquiped = false;
@@ -474,7 +474,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.SmileyMood = equipment.SmileyMood;
             this.SmileyBodyColor = equipment.SmileyBodyColor;
             this.SmileyLineColor = equipment.SmileyLineColor;
-            this.SmileyAuraColor = equipment.SmileyAuraColor;
+            this.SmileyAuraColor = equipment.SmileyLightRadiusColor;
             this.SymbolType = equipment.SymbolType;
 
             this.AttackAttributes.Clear();

@@ -59,7 +59,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.CharacterSymbol = playerTemplate.SymbolDetails.CharacterSymbol;
             player.CharacterColor = playerTemplate.SymbolDetails.CharacterColor;
             player.SmileyMood = playerTemplate.SymbolDetails.SmileyMood;
-            player.SmileyAuraColor = playerTemplate.SymbolDetails.SmileyAuraColor;
+            player.SmileyLightRadiusColor = playerTemplate.SymbolDetails.SmileyAuraColor;
             player.SmileyBodyColor = playerTemplate.SymbolDetails.SmileyBodyColor;
             player.SmileyLineColor = playerTemplate.SymbolDetails.SmileyLineColor;
             player.SymbolType = playerTemplate.SymbolDetails.Type;
@@ -138,7 +138,7 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.CharacterSymbol = enemyTemplate.SymbolDetails.CharacterSymbol;
             enemy.CharacterColor = enemyTemplate.SymbolDetails.CharacterColor;
             enemy.SmileyMood = enemyTemplate.SymbolDetails.SmileyMood;
-            enemy.SmileyAuraColor = enemyTemplate.SymbolDetails.SmileyAuraColor;
+            enemy.SmileyLightRadiusColor = enemyTemplate.SymbolDetails.SmileyAuraColor;
             enemy.SmileyBodyColor = enemyTemplate.SymbolDetails.SmileyBodyColor;
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;

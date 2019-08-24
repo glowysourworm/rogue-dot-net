@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.SmileyMood = scenarioImage.SmileyMood;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
-            this.SmileyAuraColor = scenarioImage.SmileyAuraColor;
+            this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.Icon = scenarioImage.Icon;

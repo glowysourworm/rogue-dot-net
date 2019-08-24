@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -30,8 +31,9 @@ namespace Rogue.NET.Core.Service
         readonly ILayoutEngine _layoutEngine;
         readonly IDebugEngine _debugEngine;
 
+        readonly IRogueEngine[] _rogueEngines;
+
         readonly IModelService _modelService;
-        readonly IRayTracer _rayTracer;
 
         // These queues are processed with priority for the UI. Processing is called from
         // the UI to dequeue next work-item (Animations (then) UI (then) Data)
@@ -59,26 +61,24 @@ namespace Rogue.NET.Core.Service
             IContentEngine contentEngine, 
             IAlterationEngine alterationEngine,
             ILayoutEngine layoutEngine,
-            IModelService modelService,
             IDebugEngine debugEngine,
-            IRayTracer rayTracer)
+            IModelService modelService)
         {
             _scenarioEngine = scenarioEngine;
             _contentEngine = contentEngine;
             _alterationEngine = alterationEngine;
             _layoutEngine = layoutEngine;
-            _modelService = modelService;
             _debugEngine = debugEngine;
-            _rayTracer = rayTracer;
+            _modelService = modelService;            
 
-            var rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _alterationEngine, _debugEngine };
+            _rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _alterationEngine, _debugEngine };
 
             _lowQueue = new Queue<IRogueUpdate>();
             _highQueue = new Queue<IRogueUpdate>();
             _criticalQueue = new Queue<IRogueUpdate>();
             _dataQueue = new Queue<ILevelProcessingAction>();
             
-            foreach (var engine in rogueEngines)
+            foreach (var engine in _rogueEngines)
             {
                 // Updates
                 engine.RogueUpdateEvent += (sender, args) =>
@@ -229,12 +229,14 @@ namespace Rogue.NET.Core.Service
 #endif
             }
 
+            // This method constitutes ONE TURN. The Player has made a move and the enemies
+            // need to be allowed to react before any of the Player / Enemies stats are calculated.
+            //
+            // The End-Of-Turn methods also calculate visible for each character and any items / objects
+            // in view of the Player.
             if (nextAction == LevelContinuationAction.ProcessTurn || 
                 nextAction == LevelContinuationAction.ProcessTurnNoRegeneration)
-            {
                 EndOfTurn(nextAction == LevelContinuationAction.ProcessTurn);
-                return;
-            }
         }
 
         public void IssuePlayerCommand(IPlayerCommandAction command)
@@ -280,10 +282,14 @@ namespace Rogue.NET.Core.Service
 
         private void EndOfTurn(bool regenerate)
         {
+            // Queue Enemy Reactions
             _contentEngine.CalculateEnemyReactions();
+
+
             _dataQueue.Enqueue(new LevelProcessingAction()
             {
-                Type = regenerate ? LevelProcessingActionType.EndOfTurn  : LevelProcessingActionType.EndOfTurnNoRegenerate
+                Type = regenerate ? LevelProcessingActionType.EndOfTurn  : 
+                                    LevelProcessingActionType.EndOfTurnNoRegenerate
             });
         }
 
@@ -298,10 +304,10 @@ namespace Rogue.NET.Core.Service
             switch (workItem.Type)
             {
                 case LevelProcessingActionType.EndOfTurn:
-                    _scenarioEngine.ProcessEndOfTurn(true);
+                    _rogueEngines.ForEach(engine => engine.ApplyEndOfTurn(true));
                     break;
                 case LevelProcessingActionType.EndOfTurnNoRegenerate:
-                    _scenarioEngine.ProcessEndOfTurn(false);
+                    _rogueEngines.ForEach(engine => engine.ApplyEndOfTurn(false));
                     break;
                 case LevelProcessingActionType.Reaction:
                     // Enemy not available (Reasons)

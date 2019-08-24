@@ -18,6 +18,6 @@ namespace Rogue.NET.Core.Logic.Interface
         /// Method to run at "End of Turn": Defined as anything after enemy reactions are fully
         /// processed. Player -> Enemy Reactions -> (processing queues finished) -> End of Turn.
         /// </summary>
-        void ApplyEndOfTurn();
+        void ApplyEndOfTurn(bool regenerate);
     }
 }

@@ -39,7 +39,7 @@ namespace Rogue.NET.Scenario.Converter
                 Icon = (ImageResources)values[2],
                 DisplayIcon = (DisplayImageResources)values[3],
                 SmileyMood = (SmileyMoods)values[4],
-                SmileyAuraColor = (string)values[5],
+                SmileyLightRadiusColor = (string)values[5],
                 SmileyBodyColor = (string)values[6],
                 SmileyLineColor = (string)values[7],
                 SymbolType = (SymbolTypes)values[8]

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Event;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
@@ -8,8 +9,6 @@ using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.Scenario.Dynamic;
-using Rogue.NET.Core.Model.Event;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
@@ -167,7 +166,7 @@ namespace Rogue.NET.Core.Model.Scenario
             _levelContent.Add(scenarioObject);
 
             // If object has an empty location it will be changed later on - which has an event hook below
-            if (scenarioObject.Location != CellPoint.Empty)
+            if (scenarioObject.Location != GridLocation.Empty)
                 _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Add(scenarioObject);
 
             scenarioObject.LocationChangedEvent += OnScenarioObjectLocationChanged;
@@ -203,7 +202,7 @@ namespace Rogue.NET.Core.Model.Scenario
 
             // If the CellPoint is empty then the object is being removed before it's mapped (by the Generators). So,
             // this is safe to do. The CellPoint should never be set to Empty by any of the in-game components (Logic)
-            if (scenarioObject.Location != CellPoint.Empty)
+            if (scenarioObject.Location != GridLocation.Empty)
                 _levelContentGrid[scenarioObject.Location.Column, scenarioObject.Location.Row].Remove(scenarioObject);
 
             scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
@@ -238,11 +237,11 @@ namespace Rogue.NET.Core.Model.Scenario
         /// <param name="cellPoint">point in question</param>
         /// <param name="playerLocation">player location (not provided by Level)</param>
         /// <returns></returns>
-        public bool IsCellOccupied(CellPoint cellPoint, CellPoint playerLocation)
+        public bool IsCellOccupied(GridLocation cellPoint, GridLocation playerLocation)
         {
-            return _levelContentGrid[cellPoint.Column, cellPoint.Row].Count > 0 || cellPoint == playerLocation;
+            return (_levelContentGrid[cellPoint.Column, cellPoint.Row].Count > 0) || (cellPoint == playerLocation);
         }
-        public bool IsCellOccupiedByEnemy(CellPoint cellPoint)
+        public bool IsCellOccupiedByEnemy(GridLocation cellPoint)
         {
             return _levelContentGrid[cellPoint.Column, cellPoint.Row].Any(x => x is Enemy);
         }        
@@ -250,11 +249,16 @@ namespace Rogue.NET.Core.Model.Scenario
         /// <summary>
         /// Returns the First-Or-Default object of type T located at the cellPoint
         /// </summary>
-        public T GetAtPoint<T>(CellPoint cellPoint) where T : ScenarioObject
+        public T GetAt<T>(GridLocation location) where T : ScenarioObject
         {
-            var scenarioObjects = _levelContentGrid[cellPoint.Column, cellPoint.Row];
+            var scenarioObjects = _levelContentGrid[location.Column, location.Row];
 
-            return (T)scenarioObjects.FirstOrDefault(x => x is T);
+            return (T)scenarioObjects.Where(x => x is T).Cast<T>().FirstOrDefault();
+        }
+
+        public IEnumerable<T> GetManyAt<T>(GridLocation location) where T : ScenarioObject
+        {
+            return _levelContentGrid[location.Column, location.Row].Where(x => x is T).Cast<T>();
         }
 
         private void RebuildContentGrid()
@@ -270,10 +274,10 @@ namespace Rogue.NET.Core.Model.Scenario
         }
         private void OnScenarioObjectLocationChanged(object sender, LocationChangedEventArgs e)
         {
-            if (e.OldLocation != CellPoint.Empty)
+            if (e.OldLocation != GridLocation.Empty)
                 _levelContentGrid[e.OldLocation.Column, e.OldLocation.Row].Remove(e.ScenarioObject);
 
-            if (e.NewLocation != CellPoint.Empty)
+            if (e.NewLocation != GridLocation.Empty)
                 _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
         }
 

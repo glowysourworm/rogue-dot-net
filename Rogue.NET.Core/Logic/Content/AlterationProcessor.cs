@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Logic.Content
                         CharacterColor = symbolDelta.CharacterColor,
                         CharacterSymbol = symbolDelta.SmileyAuraColor,
                         Icon = symbolDelta.Icon,
-                        SmileyAuraColor = symbolDelta.SmileyAuraColor,
+                        SmileyLightRadiusColor = symbolDelta.SmileyAuraColor,
                         SmileyBodyColor = symbolDelta.SmileyBodyColor,
                         SmileyLineColor = symbolDelta.SmileyLineColor,
                         SmileyMood = symbolDelta.SmileyMood,
@@ -76,9 +76,9 @@ namespace Rogue.NET.Core.Logic.Content
 
                 //Aura
                 if (symbolDelta.IsAuraDelta)
-                    symbol.SmileyAuraColor = firstAlteration ?
+                    symbol.SmileyLightRadiusColor = firstAlteration ?
                                                 symbolDelta.SmileyAuraColor :
-                                                ColorUtility.Add(symbol.SmileyAuraColor, symbolDelta.SmileyAuraColor);
+                                                ColorUtility.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
 
                 //Body
                 if (symbolDelta.IsBodyDelta)

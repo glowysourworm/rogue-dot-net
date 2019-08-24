@@ -44,7 +44,7 @@ namespace Rogue.NET.Core.Logic
         }
 
         #region (public) Player Action Methods
-        public void Search(LevelGrid grid, CellPoint location)
+        public void Search(LevelGrid grid, GridLocation location)
         {
             Cell c = grid[location.Column, location.Row];
             Cell n = grid[location.Column, location.Row - 1];
@@ -72,17 +72,17 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Door found!");
 
-                _modelService.UpdateVisibleLocations();
+                _modelService.UpdateVisibility();
 
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
         }
-        public void ToggleDoor(LevelGrid grid, Compass direction, CellPoint characterLocation)
+        public void ToggleDoor(LevelGrid grid, Compass direction, GridLocation characterLocation)
         {
-            var openingPosition1 = CellPoint.Empty;
-            var openingPosition2 = CellPoint.Empty;
+            var openingPosition1 = GridLocation.Empty;
+            var openingPosition2 = GridLocation.Empty;
             var openingDirection2 = Compass.Null;
             var shouldMoveToOpeningPosition1 = false;
 
@@ -98,9 +98,9 @@ namespace Rogue.NET.Core.Logic
                 characterCell.OpenDoor(direction);
                 openingPositionCell.OpenDoor(openingDirection2);
 
-                _modelService.UpdateVisibleLocations();
-                _modelService.UpdateContents();
+                _modelService.UpdateVisibility();
 
+                // Notify Front-End of a change in the layout
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
             }
         }
@@ -109,15 +109,15 @@ namespace Rogue.NET.Core.Logic
         #region (public) Query Methods
         public bool IsPathToCellThroughDoor(
             LevelGrid grid, 
-            CellPoint location1, 
+            GridLocation location1, 
             Compass openingDirection1,              // Represents the Door for location1
-            out CellPoint openingPosition1,         // Represents the opening position for the door
-            out CellPoint openingPosition2,         // Represents the same door opposite cell
+            out GridLocation openingPosition1,         // Represents the opening position for the door
+            out GridLocation openingPosition2,         // Represents the same door opposite cell
             out Compass openingDirection2,          // Represents the Door for location2
             out bool shouldMoveToOpeningPosition1)  // Should move into position for opening the door before opening
         {
-            openingPosition1 = CellPoint.Empty;
-            openingPosition2 = CellPoint.Empty;
+            openingPosition1 = GridLocation.Empty;
+            openingPosition2 = GridLocation.Empty;
             openingDirection2 = Compass.Null;
             shouldMoveToOpeningPosition1 = false;
 
@@ -222,7 +222,7 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsPathToCellThroughWall(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
+        public bool IsPathToCellThroughWall(Level level, GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
         {
             var grid = level.Grid;
             var cell1 = grid[location1.Column, location1.Row];
@@ -281,7 +281,7 @@ namespace Rogue.NET.Core.Logic
             }
             return false;
         }
-        public bool IsPathToAdjacentCellBlocked(Level level, CellPoint location1, CellPoint location2, bool includeBlockedByEnemy)
+        public bool IsPathToAdjacentCellBlocked(Level level, GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
         {
             var cell1 = level.Grid[location1.Column, location1.Row];
             var cell2 = level.Grid[location2.Column, location2.Row];
@@ -348,7 +348,7 @@ namespace Rogue.NET.Core.Logic
         #endregion
 
         #region (public) Get Methods
-        public CellPoint GetRandomAdjacentLocation(Level level, Player player, CellPoint location, bool excludeOccupiedCells)
+        public GridLocation GetRandomAdjacentLocation(Level level, Player player, GridLocation location, bool excludeOccupiedCells)
         {
             var adjacentLocations = level.
                                     Grid.
@@ -356,22 +356,22 @@ namespace Rogue.NET.Core.Logic
                                     Where(x => !(excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
-                                           : CellPoint.Empty;
+                                           : GridLocation.Empty;
 
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocations(Level level, Player player, CellPoint location)
+        public IEnumerable<GridLocation> GetFreeAdjacentLocations(Level level, Player player, GridLocation location)
         {
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x, player.Location));
         }
-        public IEnumerable<CellPoint> GetFreeAdjacentLocationsForMovement(Level level, Player player, CellPoint location)
+        public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(Level level, Player player, GridLocation location)
         {
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
         }
-        public IEnumerable<CellPoint> GetLocationsInRange(Level level, CellPoint location, int cellRange)
+        public IEnumerable<GridLocation> GetLocationsInRange(Level level, GridLocation location, int cellRange)
         {
             // Calculate locations within a cell-range using a "pseudo-euclidean" measure to make
             // an elliptical shape. (not roguian - which would make a rectangular shape)
@@ -379,7 +379,7 @@ namespace Rogue.NET.Core.Logic
             // 0) Start by calculating the "square" around the location
             // 1) Narrow the result by calculating the euclidean norm of the cell location differences
 
-            var result = new List<CellPoint>();
+            var result = new List<GridLocation>();
 
             // Iterate from the top left corner to the bottom right - respecting grid boundaries
             for (int i = Math.Max(location.Column - cellRange, 0); 
@@ -405,6 +405,11 @@ namespace Rogue.NET.Core.Logic
             return result;
         }
         #endregion
+
+        public void ApplyEndOfTurn(bool regenerate)
+        {
+
+        }
 
         #region (private) Methods
         public void ApplyEndOfTurn()

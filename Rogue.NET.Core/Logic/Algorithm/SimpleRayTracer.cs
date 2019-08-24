@@ -1,12 +1,13 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
+using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Drawing;
 using System.Linq;
 
 namespace Rogue.NET.Core.Logic.Algorithm
@@ -17,13 +18,17 @@ namespace Rogue.NET.Core.Logic.Algorithm
         [ImportingConstructor]
         public SimpleRayTracer() { }
 
-        public IEnumerable<CellPoint> CalculateVisibility(LevelGrid grid, CellPoint location, int lightRadius, out IEnumerable<CellPoint> lineOfSightLocations)
+        public IEnumerable<DistanceLocation> 
+                CalculateVisibility(LevelGrid grid, 
+                                    GridLocation location, 
+                                    double lightRadius, 
+                                    out IEnumerable<DistanceLocation> lineOfSightLocations)
         {
-            var result = new Dictionary<int, Cell>();
+            var result = new Dictionary<int, DistanceLocation>();
             var locationCell = grid[location.Column, location.Row];
             var gridBounds = grid.Bounds;
 
-            result.Add(locationCell.GetHashCode(), locationCell);
+            result.Add(locationCell.GetHashCode(), new DistanceLocation(locationCell.Location, locationCell.Location));
 
             var origin = LevelGridExtension.TransformToPhysicalLayout(location);
             origin.X += ModelConstants.CellWidth / 2.0F;
@@ -87,14 +92,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         else if (cell2 == null)
                         {
                             if (!result.ContainsKey(cell1.GetHashCode()))
-                                result.Add(cell1.GetHashCode(), cell1);
+                                result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
                             hitWall = true;
                         }
                         else
                         {
                             if (!result.ContainsKey(cell1.GetHashCode()))
-                                result.Add(cell1.GetHashCode(), cell1);
+                                result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
                             if (angle < 180) // cell2 is further South
                             {
@@ -104,7 +109,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                                           (cell1.Doors & Compass.S) != 0;
 
                                 if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), cell2);
+                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                             }
                             else
                             {
@@ -114,7 +119,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                                           (cell1.Doors & Compass.N) != 0;
 
                                 if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), cell2);
+                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                             }
                         }
 
@@ -136,14 +141,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
                         else if (cell2 == null)
                         {
                             if (!result.ContainsKey(cell1.GetHashCode()))
-                                result.Add(cell1.GetHashCode(), cell1);
+                                result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
                             hitWall = true;
                         }
                         else
                         {
                             if (!result.ContainsKey(cell1.GetHashCode()))
-                                result.Add(cell1.GetHashCode(), cell1);
+                                result.Add(cell1.GetHashCode(), new DistanceLocation(location, cell1.Location));
 
                             if (angle < 90 || angle > 270) // cell2 is further East
                             {
@@ -153,7 +158,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                                           (cell1.Doors & Compass.E) != 0;
 
                                 if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), cell2);
+                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                             }
                             else
                             {
@@ -163,7 +168,7 @@ namespace Rogue.NET.Core.Logic.Algorithm
                                           (cell1.Doors & Compass.W) != 0;
 
                                 if (!hitWall && !result.ContainsKey(cell2.GetHashCode()))
-                                    result.Add(cell2.GetHashCode(), cell2);
+                                    result.Add(cell2.GetHashCode(), new DistanceLocation(location, cell2.Location));
                             }
                         }
 
@@ -175,19 +180,14 @@ namespace Rogue.NET.Core.Logic.Algorithm
             }
 
             // Calculate Line-Of-Sight / Visibility Radius
-            var visibleLocations = result.Values.Where(x =>
+            lineOfSightLocations = result.Values.ToList();
+
+            return result.Values.Where(x =>
             {
-                var deltaX = x.Location.Column - location.Column;
-                var deltaY = x.Location.Row - location.Row;
-
-                return Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2) < Math.Pow(lightRadius, 2);
+                return Calculator.EuclideanDistance(x.Location, location) <= lightRadius;
             })
-            .Select(x => x.Location)
-            .ToList();
-
-            lineOfSightLocations = result.Values.Select(x => x.Location).ToList();
-
-            return visibleLocations;
+            .Select(x => new DistanceLocation(location, x.Location))
+            .ToList(); ;
         }
     }
 }

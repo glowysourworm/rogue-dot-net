@@ -9,11 +9,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
     [Serializable]
     public class Room : ISerializable
     {
-        public CellPoint[] Cells { get; private set; }
-        public CellPoint[] EdgeCells { get; private set; }
+        public GridLocation[] Cells { get; private set; }
+        public GridLocation[] EdgeCells { get; private set; }
         public CellRectangle Bounds { get; private set; }
 
-        public Room(CellPoint[] cells, CellPoint[] edgeCells, CellRectangle bounds)
+        public Room(GridLocation[] cells, GridLocation[] edgeCells, CellRectangle bounds)
         {
             this.Cells = cells;
             this.EdgeCells = edgeCells;
@@ -21,15 +21,15 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         }
         public Room(SerializationInfo info, StreamingContext context)
         {
-            this.Cells = new CellPoint[info.GetInt32("CellsLength")];
-            this.EdgeCells = new CellPoint[info.GetInt32("EdgeCellsLength")];
+            this.Cells = new GridLocation[info.GetInt32("CellsLength")];
+            this.EdgeCells = new GridLocation[info.GetInt32("EdgeCellsLength")];
             this.Bounds = (CellRectangle)info.GetValue("Bounds", typeof(CellRectangle));
 
             for (int i = 0; i < this.Cells.Length; i++)
-                this.Cells[i] = (CellPoint)info.GetValue("Cell" + i.ToString(), typeof(CellPoint));
+                this.Cells[i] = (GridLocation)info.GetValue("Cell" + i.ToString(), typeof(GridLocation));
 
             for (int i = 0; i < this.EdgeCells.Length; i++)
-                this.EdgeCells[i] = (CellPoint)info.GetValue("EdgeCell" + i.ToString(), typeof(CellPoint));
+                this.EdgeCells[i] = (GridLocation)info.GetValue("EdgeCell" + i.ToString(), typeof(GridLocation));
         }
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

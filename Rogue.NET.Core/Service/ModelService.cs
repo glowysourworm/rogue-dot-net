@@ -16,6 +16,11 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Content;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
+using System;
 
 namespace Rogue.NET.Core.Service
 {
@@ -27,17 +32,10 @@ namespace Rogue.NET.Core.Service
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
 
-        // Line of sight collection calculated each time player moves. This is used for enemy calculations.
-        IEnumerable<CellPoint> _lineOfSightLocations;
-
-        // Explored location collection calculated each time the player moves; and kept up to date
-        IEnumerable<CellPoint> _exploredLocations;
-
-        // Visible location collection calculated each time the player moves
-        IEnumerable<CellPoint> _visibleLocations;
-
-        // Revealed locations calculated on player move
-        IEnumerable<CellPoint> _revealedLocations;
+        // Dynamic (non-serialized) data about line-of-sight / visible line-of-sight / aura line-of-sight
+        // per character (These must be re-created each level)
+        ICharacterLayoutInformation _characterLayoutInformation;
+        ICharacterContentInformation _characterContentInformation;
 
         // Collection of targeted enemies
         IList<Enemy> _targetedEnemies;
@@ -52,10 +50,6 @@ namespace Rogue.NET.Core.Service
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
 
-            _lineOfSightLocations = new List<CellPoint>();
-            _exploredLocations = new List<CellPoint>();
-            _visibleLocations = new List<CellPoint>();
-            _revealedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
         }
 
@@ -92,22 +86,26 @@ namespace Rogue.NET.Core.Service
                     break;
             }
 
-            UpdateVisibleLocations();
-            UpdateContents();
+            _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _rayTracer);
+            _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
+
+            UpdateVisibility();
         }
 
         public void Unload()
         {
+            if (this.Level != null)
+                this.Level.Dispose();
+
+            _characterContentInformation = null;
+            _characterLayoutInformation = null;
+
             this.Level = null;
             this.Player = null;
             this.ScenarioConfiguration = null;
             this.ScenarioEncyclopedia = null;
             this.CharacterClasses = null;
 
-            _exploredLocations = new List<CellPoint>();
-            _lineOfSightLocations = new List<CellPoint>();
-            _visibleLocations = new List<CellPoint>();
-            _revealedLocations = new List<CellPoint>();
             _targetedEnemies = new List<Enemy>();
         }
 
@@ -170,33 +168,34 @@ namespace Rogue.NET.Core.Service
         {
             _killedBy = killedBy;
         }
-        public IEnumerable<Enemy> GetVisibleEnemies()
+
+        public bool IsVisibleTo(Character sourceCharacter, ScenarioObject scenarioObject)
         {
-            return this.Level
-                       .Enemies
-                       .Where(x => _visibleLocations.Contains(x.Location));
+            return _characterContentInformation.GetVisibleContents(sourceCharacter)
+                                               .Contains(scenarioObject);
         }
-        public IEnumerable<ScenarioObject> GetVisibleContents()
+
+        public IEnumerable<GridLocation> GetVisibleLocations(Character character)
         {
-            return this.Level
-                       .GetContents()
-                       .Where(x => _visibleLocations.Contains(x.Location));
+            return _characterLayoutInformation.GetVisibleLocations(character);
         }
-        public IEnumerable<CellPoint> GetVisibleLocations()
+
+        public IEnumerable<GridLocation> GetLineOfSightLocations(Character character)
         {
-            return _visibleLocations;
+            return _characterLayoutInformation.GetLineOfSightLocations(character);
         }
-        public IEnumerable<CellPoint> GetExploredLocations()
+
+        public IEnumerable<Character> GetVisibleCharacters(Character character)
         {
-            return _exploredLocations;
+            return _characterContentInformation.GetVisibleCharacters(character);
         }
-        public IEnumerable<CellPoint> GetLineOfSightLocations()
+        public IEnumerable<GridLocation> GetExploredLocations()
         {
-            return _lineOfSightLocations;
+            return _characterLayoutInformation.GetExploredLocations();
         }
-        public IEnumerable<CellPoint> GetRevealedLocations()
+        public IEnumerable<GridLocation> GetRevealedLocations()
         {
-            return _revealedLocations;
+            return _characterLayoutInformation.GetRevealedLocations();
         }
 
         public void SetTargetedEnemy(Enemy enemy)
@@ -204,83 +203,17 @@ namespace Rogue.NET.Core.Service
             if (!_targetedEnemies.Contains(enemy))
                 _targetedEnemies.Add(enemy);
         }
-        public void UpdateContents()
+        public void UpdateVisibility()
         {
-            foreach (var scenarioObject in this.Level.GetContents())
-            {
-                var cell = this.Level.Grid[scenarioObject.Location.Column, scenarioObject.Location.Row];
+            // Apply blanket update for layout visibiltiy
+            _characterLayoutInformation
+                .ApplyUpdate(this.Level
+                                 .Enemies
+                                 .Cast<Character>()
+                                 .Union(new Character[] { this.Player }));
 
-                scenarioObject.IsExplored = cell.IsPhysicallyVisible;
-                scenarioObject.IsPhysicallyVisible = cell.IsPhysicallyVisible && !scenarioObject.IsHidden;
-
-                // Set this based on whether the cell is physically visible. Once the cell is seen
-                // the IsRevealed flag gets reset. So, if it's set and the cell isn't visible then
-                // don't reset it just yet.
-                scenarioObject.IsRevealed = scenarioObject.IsRevealed && !cell.IsPhysicallyVisible;
-            }
-        }
-        public void UpdateVisibleLocations()
-        {
-            var lightRadius = this.Player.GetLightRadius();
-
-            // Perform Visibility Calculation - if player is blind then use light radius of 1.
-            IEnumerable<CellPoint> lineOfSightLocations = null;
-            IEnumerable<CellPoint> visibleLocations = 
-                _rayTracer.CalculateVisibility(
-                    this.Level.Grid, 
-                    this.Player.Location, 
-                    this.Player.Is(CharacterStateType.Blind) ? 1 : (int)lightRadius, 
-                    out lineOfSightLocations);
-
-            // Reset flag for line of sight locations
-            foreach (var cell in _lineOfSightLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
-            {
-                cell.IsLineOfSight = false;
-            }
-
-            // Reset flag for currently visible locations
-            foreach (var cell in _visibleLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
-            {
-                cell.IsPhysicallyVisible = false;
-            }
-
-            // Set flags for newly calculated visible locations
-            foreach (var cell in visibleLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
-            {
-                cell.IsPhysicallyVisible = true;
-                cell.IsExplored = true;
-
-                //No longer have to highlight revealed cells
-                cell.IsRevealed = false;
-            }
-
-            // Set flags for newly calculated line of sight locations
-            foreach (var cell in lineOfSightLocations.Select(x => this.Level.Grid[x.Column, x.Row]))
-            {
-                cell.IsLineOfSight = true;
-            }
-
-            // Update visible cell locations
-            _visibleLocations = visibleLocations;
-
-            // Update line of sight locations
-            _lineOfSightLocations = lineOfSightLocations;
-
-            // Update Explored locations
-            _exploredLocations = this.Level
-                         .Grid
-                         .GetCells()
-                         .Where(x => x.IsExplored)
-                         .Select(x => x.Location)
-                         .ToList();
-
-            // Update Revealed locations
-            _revealedLocations = this.Level
-                                     .Grid
-                                     .GetCells()
-                                     .Where(x => x.IsRevealed)
-                                     .Select(x => x.Location)
-                                     .ToList();
+            // Apply blanket update for contents
+            _characterContentInformation.ApplyUpdate(this.Level, this.Player);
         }
     }
 }

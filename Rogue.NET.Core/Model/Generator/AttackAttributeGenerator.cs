@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Model.Generator
             attackAttribute.CharacterColor = attackAttributeTemplate.SymbolDetails.CharacterColor;
             attackAttribute.CharacterSymbol = attackAttributeTemplate.SymbolDetails.CharacterSymbol;
             attackAttribute.Icon = attackAttributeTemplate.SymbolDetails.Icon;
-            attackAttribute.SmileyAuraColor = attackAttributeTemplate.SymbolDetails.SmileyAuraColor;
+            attackAttribute.SmileyLightRadiusColor = attackAttributeTemplate.SymbolDetails.SmileyAuraColor;
             attackAttribute.SmileyBodyColor = attackAttributeTemplate.SymbolDetails.SmileyBodyColor;
             attackAttribute.SmileyLineColor = attackAttributeTemplate.SymbolDetails.SmileyLineColor;
             attackAttribute.SmileyMood = attackAttributeTemplate.SymbolDetails.SmileyMood;

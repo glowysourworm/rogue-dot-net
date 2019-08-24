@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
                    southWest == null;
         }
 
-        public static IEnumerable<CellPoint> GetAdjacentLocations(this LevelGrid grid, CellPoint location)
+        public static IEnumerable<GridLocation> GetAdjacentLocations(this LevelGrid grid, GridLocation location)
         {
             var n = grid[location.Column, location.Row - 1]?.Location ?? null;
             var s = grid[location.Column, location.Row + 1]?.Location ?? null;
@@ -61,12 +61,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
             var se = grid[location.Column + 1, location.Row + 1]?.Location ?? null;
             var sw = grid[location.Column - 1, location.Row + 1]?.Location ?? null;
 
-            var result = new List<CellPoint>() { n, s, e, w, ne, nw, se, sw };
+            var result = new List<GridLocation>() { n, s, e, w, ne, nw, se, sw };
 
             return result.Where(x => x != null);
         }
 
-        public static Cell[] GetCardinalAdjacentCells(this LevelGrid grid, CellPoint location)
+        public static Cell[] GetCardinalAdjacentCells(this LevelGrid grid, GridLocation location)
         {
             var n = grid[location.Column, location.Row - 1];
             var s = grid[location.Column, location.Row + 1];
@@ -92,7 +92,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
 
         }
 
-        public static Compass GetDirectionOfAdjacentLocation(this LevelGrid grid, CellPoint location, CellPoint adjacentLocation)
+        public static Compass GetDirectionOfAdjacentLocation(this LevelGrid grid, GridLocation location, GridLocation adjacentLocation)
         {
             var north = (adjacentLocation.Row - location.Row) == -1;
             var south = (adjacentLocation.Row - location.Row) == 1;
@@ -114,18 +114,18 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// <summary>
         /// Returns first cell in the specified direction
         /// </summary>
-        public static CellPoint GetPointInDirection(this LevelGrid grid, CellPoint location, Compass direction)
+        public static GridLocation GetPointInDirection(this LevelGrid grid, GridLocation location, Compass direction)
         {
             switch (direction)
             {
-                case Compass.N: return grid[location.Column, location.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.S: return grid[location.Column, location.Row + 1]?.Location ?? CellPoint.Empty;
-                case Compass.E: return grid[location.Column + 1, location.Row]?.Location ?? CellPoint.Empty;
-                case Compass.W: return grid[location.Column - 1, location.Row]?.Location ?? CellPoint.Empty;
-                case Compass.NE: return grid[location.Column + 1, location.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.NW: return grid[location.Column - 1, location.Row - 1]?.Location ?? CellPoint.Empty;
-                case Compass.SW: return grid[location.Column - 1, location.Row + 1]?.Location ?? CellPoint.Empty;
-                case Compass.SE: return grid[location.Column + 1, location.Row + 1]?.Location ?? CellPoint.Empty;
+                case Compass.N: return grid[location.Column, location.Row - 1]?.Location ?? GridLocation.Empty;
+                case Compass.S: return grid[location.Column, location.Row + 1]?.Location ?? GridLocation.Empty;
+                case Compass.E: return grid[location.Column + 1, location.Row]?.Location ?? GridLocation.Empty;
+                case Compass.W: return grid[location.Column - 1, location.Row]?.Location ?? GridLocation.Empty;
+                case Compass.NE: return grid[location.Column + 1, location.Row - 1]?.Location ?? GridLocation.Empty;
+                case Compass.NW: return grid[location.Column - 1, location.Row - 1]?.Location ?? GridLocation.Empty;
+                case Compass.SW: return grid[location.Column - 1, location.Row + 1]?.Location ?? GridLocation.Empty;
+                case Compass.SE: return grid[location.Column + 1, location.Row + 1]?.Location ?? GridLocation.Empty;
                 case Compass.Null:
                 default:
                     return location;
@@ -136,7 +136,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// Returns 1st of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> N cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static Cell GetOffDiagonalCell1(this LevelGrid grid, CellPoint location, Compass direction, out Compass cardinalDirection1)
+        public static Cell GetOffDiagonalCell1(this LevelGrid grid, GridLocation location, Compass direction, out Compass cardinalDirection1)
         {
             switch (direction)
             {
@@ -157,7 +157,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> E cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static Cell GetOffDiagonalCell2(this LevelGrid grid, CellPoint location, Compass direction, out Compass cardinalDirection2)
+        public static Cell GetOffDiagonalCell2(this LevelGrid grid, GridLocation location, Compass direction, out Compass cardinalDirection2)
         {
             switch (direction)
             {
@@ -178,7 +178,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// Returns 1st of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> N cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static Cell GetOffDiagonalCell1(this Cell[,] grid, CellPoint location, Compass direction, out Compass cardinalDirection1)
+        public static Cell GetOffDiagonalCell1(this Cell[,] grid, GridLocation location, Compass direction, out Compass cardinalDirection1)
         {
             switch (direction)
             {
@@ -199,7 +199,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
         /// Returns 2nd of 2 off diagonal cells in the specified non-cardinal direction (Example: NE -> E cell)
         /// </summary>
         /// <param name="direction">NE, NW, SE, SW</param>
-        public static Cell GetOffDiagonalCell2(this Cell[,] grid, CellPoint location, Compass direction, out Compass cardinalDirection2)
+        public static Cell GetOffDiagonalCell2(this Cell[,] grid, GridLocation location, Compass direction, out Compass cardinalDirection2)
         {
             switch (direction)
             {
@@ -216,7 +216,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
             }
         }
 
-        public static Compass GetDirectionBetweenAdjacentPoints(CellPoint cell1, CellPoint cell2)
+        public static Compass GetDirectionBetweenAdjacentPoints(GridLocation cell1, GridLocation cell2)
         {
             int deltaX = cell2.Column - cell1.Column;
             int deltaY = cell2.Row - cell1.Row;
@@ -276,7 +276,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Extension
             }
         }
 
-        public static PointF TransformToPhysicalLayout(CellPoint p)
+        public static PointF TransformToPhysicalLayout(GridLocation p)
         {
             float x = (float)(ModelConstants.CellWidth * p.Column);
             float y = (float)(ModelConstants.CellHeight * p.Row);

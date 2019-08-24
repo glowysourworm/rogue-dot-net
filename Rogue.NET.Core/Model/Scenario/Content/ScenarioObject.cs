@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
     [Serializable]
     public abstract class ScenarioObject : ScenarioImage
     {
-        CellPoint _location;
+        GridLocation _location;
 
         /// <summary>
         /// Event fired when the Location reference is changed. (Note*** CellPoint references 
@@ -18,7 +18,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         /// </summary>
         public event EventHandler<LocationChangedEventArgs> LocationChangedEvent;
 
-        public CellPoint Location
+        public GridLocation Location
         {
             get { return _location; }
             set
@@ -43,33 +43,32 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public bool IsExplored { get; set; }
         public bool IsHidden { get; set; }
         public bool IsRevealed { get; set; }
-        public bool IsPhysicallyVisible { get; set; }
 
         public ScenarioObject()
         {
             this.RogueName = "Unnamed";
 
-            this.Location = CellPoint.Empty;
+            this.Location = GridLocation.Empty;
         }
         public ScenarioObject(string name, ImageResources icon)
             : base(name, icon)
         {
-            this.Location = CellPoint.Empty;
+            this.Location = GridLocation.Empty;
         }
         public ScenarioObject(string name, DisplayImageResources displayIcon)
             : base(name, displayIcon)
         {
-            this.Location = CellPoint.Empty;
+            this.Location = GridLocation.Empty;
         }
         public ScenarioObject(string name, string symbol, string color)
             : base(name, symbol, color)
         {
-            this.Location = CellPoint.Empty;
+            this.Location = GridLocation.Empty;
         }
         public ScenarioObject(string name, SmileyMoods mood, string body, string line, string aura)
             : base(name, mood, body, line, aura)
         {
-            this.Location = CellPoint.Empty;
+            this.Location = GridLocation.Empty;
         }
 
         public override string ToString()

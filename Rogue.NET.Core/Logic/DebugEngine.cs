@@ -44,9 +44,8 @@ namespace Rogue.NET.Core.Logic
         public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
         public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
 
-        public void ApplyEndOfTurn()
+        public void ApplyEndOfTurn(bool regenerate)
         {
-            throw new NotImplementedException();
         }
 
         public void GivePlayerExperience()
@@ -98,9 +97,6 @@ namespace Rogue.NET.Core.Logic
 
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
-
-            _modelService.UpdateVisibleLocations();
-            _modelService.UpdateContents();
         }
 
         public void AdvanceToNextLevel()
@@ -125,10 +121,6 @@ namespace Rogue.NET.Core.Logic
 
             // Calculate Path Length
             var pathLength = template.GetPathLength();
-
-            // Extra Enemies - for each step in the path length apply end of turn
-            for (int i=0;i<pathLength;i++)
-                _contentEngine.ApplyEndOfTurn();
 
             // Give all items and experience to the player and 
             // put player at exit
@@ -192,8 +184,7 @@ namespace Rogue.NET.Core.Logic
             player.Hunger += player.FoodUsagePerTurnBase * pathLength;
 
             // Queue update: TODO: Clean this up maybe? 
-            _modelService.UpdateVisibleLocations();
-            _modelService.UpdateContents();
+            _modelService.UpdateVisibility();
 
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutAll, ""));

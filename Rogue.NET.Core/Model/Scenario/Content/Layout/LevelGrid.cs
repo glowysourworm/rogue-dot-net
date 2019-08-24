@@ -60,7 +60,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
         public LevelGrid(Cell[,] grid, Room[] rooms)
         {
             _grid = grid;
-            _bounds = new CellRectangle(new CellPoint(0, 0), grid.GetLength(0), grid.GetLength(1));
+            _bounds = new CellRectangle(new GridLocation(0, 0), grid.GetLength(0), grid.GetLength(1));
             _roomArray = rooms;
         }
 
@@ -73,7 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Layout
             var roomCount = info.GetInt32("RoomCount");
 
             _grid = new Cell[width, height];
-            _bounds = new CellRectangle(new CellPoint(0, 0), width, height);
+            _bounds = new CellRectangle(new GridLocation(0, 0), width, height);
 
             var roomData = new List<Room>();
 

@@ -242,7 +242,7 @@ namespace Rogue.NET.Core.Logic
 
             // Queue Animation for enemy death
             if (enemy.DeathAnimation.Animations.Count > 0)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new CellPoint[] { _modelService.Player.Location }));
+                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new GridLocation[] { _modelService.Player.Location }));
 
             // Calculate player gains
             _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
@@ -327,7 +327,7 @@ namespace Rogue.NET.Core.Logic
             if (enemy.Hp <= 0)
                 EnemyDeath(enemy);
         }
-        public void ApplyEndOfTurn()
+        public void ApplyEndOfTurn(bool regenerate)
         {
             ProcessMonsterGeneration();
         }
@@ -365,9 +365,6 @@ namespace Rogue.NET.Core.Logic
                         if (character is Player)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
 
-                        // Update Content Visibility
-                        _modelService.UpdateContents();
-
                         // Queue update to level 
                         if (character is Enemy)
                             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, character.Id));
@@ -387,7 +384,7 @@ namespace Rogue.NET.Core.Logic
                         // Have to boot enemy if it's sitting on other teleporter
                         if (character is Player && level.IsCellOccupiedByEnemy(otherTeleporter.Location))
                         {
-                            var enemy = level.GetAtPoint<Enemy>(otherTeleporter.Location);
+                            var enemy = level.GetAt<Enemy>(otherTeleporter.Location);
 
                             // Remove from the level
                             level.RemoveContent(enemy);
@@ -625,7 +622,7 @@ namespace Rogue.NET.Core.Logic
                             if (enemy.IsRangeMelee())
                             {
                                 // Check for line of sight and firing range
-                                var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
+                                var isLineOfSight = _modelService.GetLineOfSightLocations(enemy).Any(x => x == _modelService.Player.Location);
                                 var range = Calculator.RoguianDistance(enemy.Location, _modelService.Player.Location);
 
                                 // These are guaranteed by the enemy check IsRangeMelee()
@@ -644,7 +641,7 @@ namespace Rogue.NET.Core.Logic
                                     if (ammo.AmmoAnimationGroup.Animations.Any())
                                         RogueUpdateEvent(this, _rogueUpdateFactory.Animation(ammo.AmmoAnimationGroup.Animations, 
                                                                                              enemy.Location, 
-                                                                                             new CellPoint[] { _modelService.Player.Location }));
+                                                                                             new GridLocation[] { _modelService.Player.Location }));
 
                                     actionTaken = true;
                                 }
@@ -682,7 +679,8 @@ namespace Rogue.NET.Core.Logic
                         if (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
                         {
                             // Must have line of sight to player
-                            var isLineOfSight = _modelService.GetLineOfSightLocations().Any(x => x == enemy.Location);
+                            var isLineOfSight = _modelService.GetLineOfSightLocations(enemy)
+                                                             .Any(x => x == _modelService.Player.Location);
                             var isInRange = true;
 
                             // Add a check for close range skills
@@ -731,7 +729,7 @@ namespace Rogue.NET.Core.Logic
                 _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, actionTaken);
             }
         }
-        private CellPoint CalculateEnemyMoveLocation(Enemy enemy, CellPoint desiredLocation)
+        private GridLocation CalculateEnemyMoveLocation(Enemy enemy, GridLocation desiredLocation)
         {
             //Return random if confused
             if (enemy.Is(CharacterStateType.MovesRandomly))
@@ -762,7 +760,7 @@ namespace Rogue.NET.Core.Logic
         // Processes logic for found path point. This includes anything required for Enemy to
         // relocate to point "moveLocation". This point has been calculated as the next point
         // towards Player
-        private void ProcessEnemyMove(Enemy enemy, CellPoint moveLocation)
+        private void ProcessEnemyMove(Enemy enemy, GridLocation moveLocation)
         {
             // Case where path finding algorithm returns null; or heat seeking algorithm
             // returns null.
@@ -770,8 +768,8 @@ namespace Rogue.NET.Core.Logic
                 return;
 
             // Check for opening of doors
-            var openingPosition1 = CellPoint.Empty;
-            var openingPosition2 = CellPoint.Empty;
+            var openingPosition1 = GridLocation.Empty;
+            var openingPosition2 = GridLocation.Empty;
             var openingDirection2 = Compass.Null;
             var shouldMoveToOpeningPosition1 = false;
 
@@ -798,9 +796,6 @@ namespace Rogue.NET.Core.Logic
                         // Update enemy location
                         enemy.Location = openingPosition1;
 
-                        // Update Content Visibility
-                        _modelService.UpdateContents();
-
                         // Notify listener queue
                         RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
                     }
@@ -819,20 +814,17 @@ namespace Rogue.NET.Core.Logic
                 // Update enemy location
                 enemy.Location = moveLocation;
 
-                // Update Content Visibility
-                _modelService.UpdateContents();
-
                 // Notify listener queue
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
             }
 
             // Check for items
-            var item = _modelService.Level.GetAtPoint<ItemBase>(enemy.Location);
+            var item = _modelService.Level.GetAt<ItemBase>(enemy.Location);
             if (item != null)
                 StepOnItem(enemy, item);
 
             // Check for doodad
-            var doodad = _modelService.Level.GetAtPoint<DoodadBase>(enemy.Location);
+            var doodad = _modelService.Level.GetAt<DoodadBase>(enemy.Location);
             if (doodad != null)
                 StepOnDoodad(enemy, doodad);
         }
@@ -863,14 +855,13 @@ namespace Rogue.NET.Core.Logic
                 return;
 
             // Check to see that there is an empty cell available
-            var availableLocation = _modelService.Level
-                                                 .GetRandomLocation(_modelService
-                                                                        .GetVisibleLocations()
-                                                                        .Union(new List<CellPoint>() { _modelService.Player.Location }),
-                                                                    true,
-                                                                    _randomSequenceGenerator);
+            var availableLocation = 
+                    _modelService.Level
+                                 .GetRandomLocation(_modelService.GetVisibleLocations(_modelService.Player),
+                                                    true,
+                                                    _randomSequenceGenerator);
 
-            if (availableLocation == CellPoint.Empty)
+            if (availableLocation == GridLocation.Empty)
                 return;
 
             // Create enemy from template

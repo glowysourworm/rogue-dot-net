@@ -191,9 +191,9 @@ namespace Rogue.NET.Core.Logic
             }
         }
 
-        public void ApplyEndOfTurn()
+        public void ApplyEndOfTurn(bool regenerate)
         {
-            throw new NotImplementedException();
+            
         }
 
         #region (private) Alteration Apply Methods
@@ -276,7 +276,6 @@ namespace Rogue.NET.Core.Logic
         }
         #endregion
 
-
         #region (private) Alteration Calculation Methods
         public IEnumerable<Character> CalculateAffectedCharacters(AlterationContainer alteration, Character actor)
         {
@@ -349,10 +348,10 @@ namespace Rogue.NET.Core.Logic
                     throw new Exception("Unknown Attack Attribute Target Type");
             }
         }
-        private IEnumerable<Character> CalculateCharactersInRange(CellPoint location, int cellRange)
+        private IEnumerable<Character> CalculateCharactersInRange(GridLocation location, int cellRange)
         {
             // TODO:ALTERATION - LINE OF SIGHT! Consider calculating line-of-sight characters for each enemy on end of turn
-            //                   and storing them on the character
+            //                   and storing them on the character (or creating a new component to store them)
 
             var result = new List<Character>();
             var locationsInRange = _layoutEngine.GetLocationsInRange(_modelService.Level, location, cellRange);
@@ -454,33 +453,41 @@ namespace Rogue.NET.Core.Logic
         }
         private void ProcessReveal(RevealAlterationEffect effect)
         {
-            switch (effect.Type)
-            {
-                case AlterationRevealType.Items:
-                    break;
-                case AlterationRevealType.Monsters:
-                    break;
-                case AlterationRevealType.SavePoint:
-                    break;
-                case AlterationRevealType.Food:
-                    break;
-                case AlterationRevealType.Layout:
-                    _modelService.UpdateVisibleLocations();
-                    _modelService.UpdateContents();
-                    break;
-                default:
-                    break;
-            }
+            if (effect.Type.HasFlag(AlterationRevealType.Food))
+                RevealFood();
 
-            // Update the UI
+            if (effect.Type.HasFlag(AlterationRevealType.Items))
+                RevealItems();
+
+            if (effect.Type.HasFlag(AlterationRevealType.Layout))
+                RevealLayout();
+
+            if (effect.Type.HasFlag(AlterationRevealType.Monsters))
+                RevealMonsters();
+
+            if (effect.Type.HasFlag(AlterationRevealType.SavePoint))
+                RevealSavePoint();
+
+            if (effect.Type.HasFlag(AlterationRevealType.ScenarioObjects))
+                RevealScenarioObjects();
+
+            if (effect.Type.HasFlag(AlterationRevealType.Stairs))
+                RevealStairs();
+
+            // Update the UI (TODO:ALTERATION - figure out more systematic updating)
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
         }
         private void ProcessTeleport(TeleportAlterationEffect effect, Character character)
         {
-            CellPoint openLocation = CellPoint.Empty;
-
             // Calculate Teleport Location
-            character.Location = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
+            var openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
+
+            // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
+            if (openLocation == null ||
+                openLocation == GridLocation.Empty)
+                return;
+
+            character.Location = openLocation;
 
             // Publish Message
             if (character is Player)
@@ -512,7 +519,7 @@ namespace Rogue.NET.Core.Logic
             var location = GetRandomLocation(effect.RandomPlacementType, actor.Location, effect.Range);
 
             // TODO:ALTERATION
-            if (location == CellPoint.Empty)
+            if (location == GridLocation.Empty)
                 return;
 
             // Get the enemy template
@@ -631,12 +638,12 @@ namespace Rogue.NET.Core.Logic
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Damage");
         }
-        private CellPoint GetRandomLocation(AlterationRandomPlacementType placementType, CellPoint sourceLocation, int sourceRange)
+        private GridLocation GetRandomLocation(AlterationRandomPlacementType placementType, GridLocation sourceLocation, int sourceRange)
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
 
-            CellPoint openLocation = CellPoint.Empty;
+            GridLocation openLocation = GridLocation.Empty;
 
             switch (placementType)
             {
@@ -645,19 +652,19 @@ namespace Rogue.NET.Core.Logic
                     break;
                 case AlterationRandomPlacementType.InRangeOfCharacter:
                     openLocation = _layoutEngine.GetLocationsInRange(level, sourceLocation, sourceRange)
-                                                .Where(x => level.IsCellOccupied(sourceLocation, player.Location))
+                                                .Where(x => !level.IsCellOccupied(x, player.Location))
                                                 .PickRandom();
                     break;
                 case AlterationRandomPlacementType.InPlayerVisibleRange:
-                    openLocation = _modelService.GetVisibleLocations()
-                                                .Where(x => level.IsCellOccupied(sourceLocation, player.Location))
+                    openLocation = _modelService.GetVisibleLocations(player)
+                                                .Where(x => !level.IsCellOccupied(x, player.Location))
                                                 .PickRandom();
                     break;
                 default:
                     throw new Exception("Unhandled AlterationRandomPlacementType");
             }
 
-            return openLocation ?? (openLocation == CellPoint.Empty ? sourceLocation : openLocation);
+            return openLocation ?? (openLocation == GridLocation.Empty ? sourceLocation : openLocation);
         }
         #endregion
 
@@ -676,15 +683,10 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
         }
-        private void RevealLevel()
+        private void RevealLayout()
         {
             foreach (var cell in _modelService.Level.Grid.GetCells())
                 cell.IsRevealed = true;
-
-            RevealSavePoint();
-            RevealStairs();
-            RevealMonsters();
-            RevealContent();
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Your senses are vastly awakened");
         }
@@ -708,22 +710,25 @@ namespace Rogue.NET.Core.Logic
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
         }
-        private void RevealContent()
-        {
-            foreach (var scenarioObject in _modelService.Level.GetContents())
-            {
-                scenarioObject.IsHidden = false;
-                scenarioObject.IsRevealed = true;
-            }
-
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense objects nearby");
-        }
         private void RevealFood()
         {
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Hunger makes a good sauce.....  :)");
+        }
+        private void RevealScenarioObjects()
+        {
+            foreach (var scenarioObject in _modelService.Level.Doodads)
+            {
+                // Remove Hidden Status
+                scenarioObject.IsHidden = false;
+
+                // Set Revealed
+                scenarioObject.IsRevealed = true;
+            }
+
+            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You sense special objects near by...");
         }
         #endregion
     }

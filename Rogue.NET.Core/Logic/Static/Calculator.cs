@@ -66,13 +66,13 @@ namespace Rogue.NET.Core.Logic.Static
             return Math.Min(Math.Max(result, 0), 1);
         }
 
-        public static double EuclideanDistance(CellPoint location1, CellPoint location2)
+        public static double EuclideanDistance(GridLocation location1, GridLocation location2)
         {
             double x = location2.Column - location1.Column;
             double y = location2.Row - location1.Row;
             return Math.Sqrt((x * x) + (y * y));
         }
-        public static double EuclideanSquareDistance(CellPoint location1, CellPoint location2)
+        public static double EuclideanSquareDistance(GridLocation location1, GridLocation location2)
         {
             double x = location2.Column - location1.Column;
             double y = location2.Row - location1.Row;
@@ -86,7 +86,7 @@ namespace Rogue.NET.Core.Logic.Static
 
             return (x * x) + (y * y);
         }
-        public static int RoguianDistance(CellPoint location1, CellPoint location2)
+        public static int RoguianDistance(GridLocation location1, GridLocation location2)
         {
             int x = Math.Abs(location2.Column - location1.Column);
             int y = Math.Abs(location2.Row - location1.Row);

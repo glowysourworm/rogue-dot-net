@@ -20,10 +20,10 @@ namespace Rogue.NET.Core.Model.Generator.Component
             var center1 = room1.Bounds.Center;
             var center2 = room2.Bounds.Center;
 
-            if (center1 == CellPoint.Empty)
-                return center2 == CellPoint.Empty;
+            if (center1 == GridLocation.Empty)
+                return center2 == GridLocation.Empty;
 
-            else if (center2 == CellPoint.Empty)
+            else if (center2 == GridLocation.Empty)
                 return false;
 
             return center1.Equals(center2);

@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Logic.Processing.Factory.Interface
 {
     public interface IRogueUpdateFactory
     {
-        RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, CellPoint source, IEnumerable<CellPoint> targets, RogueUpdatePriority priority = RogueUpdatePriority.High);
+        RogueUpdateEventArgs Animation(IEnumerable<AnimationData> animations, GridLocation source, IEnumerable<GridLocation> targets, RogueUpdatePriority priority = RogueUpdatePriority.High);
         RogueUpdateEventArgs Update(LevelUpdateType type, string contentId, RogueUpdatePriority priority = RogueUpdatePriority.Low);
         RogueUpdateEventArgs Update(LevelUpdateType type, string[] contentIds, RogueUpdatePriority priority = RogueUpdatePriority.Low);
         RogueUpdateEventArgs ConsumableAddUpdate(string consumableId, RogueUpdatePriority priority = RogueUpdatePriority.Low);

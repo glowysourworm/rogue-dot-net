@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Model.Generator
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Icon = template.SymbolDetails.Icon,
-                SmileyAuraColor = template.SymbolDetails.SmileyAuraColor,
+                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = template.SymbolDetails.SmileyLineColor,
                 SmileyMood = template.SymbolDetails.SmileyMood,

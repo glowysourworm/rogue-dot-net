@@ -19,11 +19,6 @@ namespace Rogue.NET.Core.Logic.Interface
         /// </summary>
         void ProcessEnemyReaction(Enemy enemy);
 
-        /// <summary>
-        /// Applies end of turn for level contents. This does not include any characters
-        /// </summary>
-        void ApplyEndOfTurn();
-
         void DropPlayerItem(string itemId);
         void StepOnItem(Character character, ItemBase item);
         void StepOnDoodad(Character character, DoodadBase doodad);
