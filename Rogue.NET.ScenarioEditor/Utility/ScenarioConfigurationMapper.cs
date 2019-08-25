@@ -113,6 +113,22 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
 #if DEBUG_CONFIGURATION_SOURCE_INSTANTIATE
 
+                // Check for invalid enum values
+                if (sourcePropertyValue != null &&
+                    sourceProperty.Value.PropertyType.IsEnum &&
+                    !Enum.IsDefined(sourceProperty.Value.PropertyType, sourcePropertyValue) &&
+                     Enum.GetValues(sourceProperty.Value.PropertyType).Length > 0)
+                {
+                    // Set the sourcePropertyValue and source property to the default enum value
+                    var defaultEnumValue = Enum.GetValues(sourceProperty.Value.PropertyType).GetValue(0);
+
+                    // Set new property value
+                    sourceProperty.Value.SetValue(source, defaultEnumValue);
+
+                    // Reset Source Property Object
+                    sourcePropertyValue = defaultEnumValue;
+                }
+
                 // Instantiate null properties if they have a default constructor. This
                 // will help to fix dangling properties that have been added to the configuration
                 if (sourcePropertyValue == null &&

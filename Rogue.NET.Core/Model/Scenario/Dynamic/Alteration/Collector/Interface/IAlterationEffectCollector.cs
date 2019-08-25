@@ -14,9 +14,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
         /// <summary>
         /// Returns list of effects (by Alteration name) associated with the collector 
         /// THAT AFFECT THE CHARACTER ONLY. (This exclues aura source effects because 
-        /// they're only applied to the target)
+        /// they're only applied to the target). To INCLUDE aura source effects just
+        /// pass in the includeSourceEffects flag as "true".
         /// </summary>
-        IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects();
+        IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false);
 
         /// <summary>
         /// Returns all altered states for the collector

@@ -54,7 +54,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                        .ToDictionary(x => x.Key, x => x.Value.Cost);
         }
 
-        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             return this.Alterations
                        .ToDictionary(x => x.Key, x => x.Value.Effect);

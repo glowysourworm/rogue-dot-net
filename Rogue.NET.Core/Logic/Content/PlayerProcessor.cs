@@ -16,9 +16,7 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using System.Windows.Media;
-
-
-
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -207,6 +205,34 @@ namespace Rogue.NET.Core.Logic.Content
 
                     // Deactive the passive alteration - referenced by Spell Id
                     player.Alteration.Remove(currentSkill.Name);
+                }
+            }
+
+            // TODO: Figure out a nicer way to clear these; but they are only cleared out when
+            //       new ones are applied.. so have to clear them this way for now.
+            player.Alteration.ApplyTargetAuraEffects(new AttackAttributeAuraAlterationEffect[] { });
+            player.Alteration.ApplyTargetAuraEffects(new AuraAlterationEffect[] { });
+
+            // Apply Enemy Auras (where Player is in an affected cell)
+            foreach (var enemy in _modelService.Level.Enemies)
+            {
+                var enemyAuras = enemy.Alteration
+                                      .GetAuras()
+                                      .Where(x => _modelService.GetAuraLocations(enemy, x.Item1.Id).Contains(player.Location))
+                                      .Select(x => x.Item1)
+                                      .GroupBy(x => x.GetType());
+
+                // Set Effect to Enemies
+                foreach (var auraGroup in enemyAuras)
+                {
+                    if (auraGroup.Key == typeof(AttackAttributeAuraAlterationEffect))
+                        player.Alteration.ApplyTargetAuraEffects(auraGroup.Cast<AttackAttributeAuraAlterationEffect>());
+
+                    else if (auraGroup.Key == typeof(AuraAlterationEffect))
+                        player.Alteration.ApplyTargetAuraEffects(auraGroup.Cast<AuraAlterationEffect>());
+
+                    else
+                        throw new Exception("Unknwon Aura Alteration Effect Type");
                 }
             }
 

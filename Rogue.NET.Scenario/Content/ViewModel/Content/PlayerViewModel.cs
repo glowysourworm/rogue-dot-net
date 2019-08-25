@@ -500,7 +500,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             var alterationCosts = player.Alteration.GetAlterationCosts();
 
             // Alteration Effects (by Alteration Name) - NOT 1-1 WITH COSTS
-            var alterationEffects = player.Alteration.GetAlterationEffects();
+            var alterationEffects = player.Alteration.GetAlterationEffects(true);
 
             // Need 1-1 correspondence between Cost <-> Effect for an alteration
             //

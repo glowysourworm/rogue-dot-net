@@ -89,29 +89,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
                     }
                 }
 
+                // Instantiate the aura collection to empty
+                _auraDict.Add(character, new Dictionary<string, AuraInformation>());
+
                 // Auras
                 foreach (var aura in character.Alteration.GetAuras())
                 {
-                    if (!_auraDict.ContainsKey(character))
-                        _auraDict.Add(character, new Dictionary<string, AuraInformation>());
-
-                    _auraDict[character].Add(aura.Item1.Id, new AuraInformation()
-                    {
-                        AffectedLocations = _lineOfSightDict[character].Where(x =>
-                        {
-                            // NOTE*** Using Euclidean distance to calculate auras
-                            return x.EuclideanDistance <= aura.Item2.AuraRange;
-                        }),
-                        Color = aura.Item2.AuraColor
-                    });
-                }
-
-                // Attack Attribute Auras
-                foreach (var aura in character.Alteration.GetAttackAttributeAuras())
-                {
-                    if (!_auraDict.ContainsKey(character))
-                        _auraDict.Add(character, new Dictionary<string, AuraInformation>());
-
                     _auraDict[character].Add(aura.Item1.Id, new AuraInformation()
                     {
                         AffectedLocations = _lineOfSightDict[character].Where(x =>

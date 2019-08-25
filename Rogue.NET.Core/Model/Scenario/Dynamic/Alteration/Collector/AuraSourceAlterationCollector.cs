@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
     public class AuraSourceAlterationCollector 
                  : IAlterationCollector,
                    IAlterationEffectCollector,
-                   IAlterationAuraSourceCollector<AuraAlterationEffect>
+                   IAlterationAuraSourceCollector
     {
         protected IDictionary<string, AlterationContainer> Alterations { get; set; }
 
@@ -48,10 +48,11 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                        .ToDictionary(x => x.Key, x => x.Value.Cost);
         }
 
-        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             // Aura source not affected by the IAlterationEffect
-            return new Dictionary<string, IAlterationEffect>();
+            return includeSourceEffects ? this.Alterations.ToDictionary(x => x.Key, x => x.Value.Effect)
+                                        : new Dictionary<string, IAlterationEffect>();
         }
 
         public IEnumerable<AuraSourceParameters> GetAuraSourceParameters()
@@ -76,28 +77,28 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return 0D;
         }
 
-        public IEnumerable<Tuple<AuraAlterationEffect, AuraSourceParameters>> GetAuraEffects()
+        public IEnumerable<Tuple<IAlterationEffect, AuraSourceParameters>> GetAuraEffects()
         {
-            var result = new List<Tuple<AuraAlterationEffect, AuraSourceParameters>>();
+            var result = new List<Tuple<IAlterationEffect, AuraSourceParameters>>();
 
             foreach (var alteration in this.Alterations.Values)
             {
                 // Equipment Equip Alteration
                 if (alteration is EquipmentEquipAlteration)
-                    result.Add(new Tuple<AuraAlterationEffect,
-                                         AuraSourceParameters>(alteration.Effect as AuraAlterationEffect,
+                    result.Add(new Tuple<IAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect,
                                                               (alteration as EquipmentEquipAlteration).AuraParameters));
 
                 // Equipment Curse Alteration
                 else if (alteration is EquipmentCurseAlteration)
-                    result.Add(new Tuple<AuraAlterationEffect,
-                                         AuraSourceParameters>(alteration.Effect as AuraAlterationEffect,
+                    result.Add(new Tuple<IAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect,
                                                               (alteration as EquipmentCurseAlteration).AuraParameters));
 
                 // Skill Alteration
                 else if (alteration is SkillAlteration)
-                    result.Add(new Tuple<AuraAlterationEffect,
-                                         AuraSourceParameters>(alteration.Effect as AuraAlterationEffect,
+                    result.Add(new Tuple<IAlterationEffect,
+                                         AuraSourceParameters>(alteration.Effect,
                                                               (alteration as SkillAlteration).AuraParameters));
 
                 else

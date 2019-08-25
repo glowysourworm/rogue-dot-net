@@ -433,7 +433,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 {
                     // Auras
                     var character = scenarioObject as Character;
-                    var characterAuras = character.Alteration.GetCombinedAuraSourceParameters();
+                    var characterAuras = character.Alteration.GetAuraSourceParameters();
                     var auraUpdates = this.Auras.Where(x => characterAuras.Select(z => z.Item1).Contains(x.Id));
                     var auraAdditions = characterAuras.Where(x => !auraUpdates.Any(z => z.Id == x.Item1));
 

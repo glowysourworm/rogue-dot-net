@@ -269,34 +269,32 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         }
 
         /// <summary>
-        /// Returns a collection of all Alteration effects THAT AFFECT THE CHARACTER by Alteration name
+        /// Returns a collection of all Alteration effects THAT AFFECT THE CHARACTER by Alteration name. You can include
+        /// the source effects that apply to target characters by passing in the includeSourceEffects flag.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetAlterationEffects()
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetAlterationEffects(bool includeSourceEffects = false)
         {
-            return _effectCollectors.SelectMany(x => x.GetEffects());
-        }
-
-        /// <summary>
-        /// Returns attack attribute aura data
-        /// </summary>
-        public IEnumerable<Tuple<AttackAttributeAuraAlterationEffect, AuraSourceParameters>> GetAttackAttributeAuras()
-        {
-            return this.AttackAttributeAuraSourceCollector.GetAuraEffects();
+            return _effectCollectors.SelectMany(x => x.GetEffects(includeSourceEffects));
         }
 
         /// <summary>
         /// Returns aura data for auras that this character is the SOURCE of.
         /// </summary>
-        public IEnumerable<Tuple<AuraAlterationEffect, AuraSourceParameters>> GetAuras()
+        public IEnumerable<Tuple<IAlterationEffect, AuraSourceParameters>> GetAuras()
         {
-            return this.AuraSourceCollector.GetAuraEffects();
+            return this.AuraSourceCollector
+                       .GetAuraEffects()
+                       .Union(this.AttackAttributeAuraSourceCollector
+                                  .GetAuraEffects())
+                       .Actualize();
+
         }
 
         /// <summary>
         /// Returns tuple of [AlterationEffectId, AuraSourceParameters] for all aura sources to 
         /// provide information for the UI.
         /// </summary>
-        public IEnumerable<Tuple<string, AuraSourceParameters>> GetCombinedAuraSourceParameters()
+        public IEnumerable<Tuple<string, AuraSourceParameters>> GetAuraSourceParameters()
         {
             return this.AuraSourceCollector
                        .GetAuraEffects()

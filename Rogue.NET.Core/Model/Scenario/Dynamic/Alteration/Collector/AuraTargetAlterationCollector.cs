@@ -37,7 +37,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                 this.TargetEffects.Add(effect);
         }
 
-        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects()
+        public IEnumerable<KeyValuePair<string, IAlterationEffect>> GetEffects(bool includeSourceEffects = false)
         {
             return this.TargetEffects
                        .ToDictionary(x => x.RogueName, x => (IAlterationEffect)x);

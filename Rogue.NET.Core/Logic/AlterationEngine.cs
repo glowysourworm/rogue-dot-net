@@ -173,6 +173,14 @@ namespace Rogue.NET.Core.Logic
                     (affectedCharacter as Enemy).WasAttackedByPlayer = true;
                 }
 
+                // DESIGN ISSUE - THIS CALL UPDATES ALL AFFECTED DATA FOR VISIBILITY, AND AURA ALTERATIONS
+                //                BY DOING A CELL CALCULATION.
+                //
+                //                THE DESIGN NEEDS TO BE PUT IN SEQUENCE SO THAT THESE CAN BE DONE BETWEEN
+                //                CHARACTER ACTIONS WHEN THEY'RE NEEDED.
+                _modelService.UpdateVisibility();
+
+
                 // Apply blanket update for player AND affected character to ensure symbol alterations are processed.
                 //
                 // NOTE*** Player is treated SEPARATELY from level content. This should be refactored on the UI side

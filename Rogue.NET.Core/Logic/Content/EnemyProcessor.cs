@@ -4,9 +4,11 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Service.Interface;
+using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -43,20 +45,30 @@ namespace Rogue.NET.Core.Logic.Content
             // Calculate Auras Affecting Enemy
             var distance = Calculator.EuclideanDistance(player.Location, enemy.Location);
 
-            // Get Player Active Auras
-            var playerAttackAttributeAuraEffects = player.Alteration.GetAttackAttributeAuras();
-            var playerAuraEffects = player.Alteration.GetAuras();
+            // Get Player Active Auras (where Enemy is in an affected cell)
+            var playerAuras = player.Alteration
+                                    .GetAuras()
+                                    .Where(x => _modelService.GetAuraLocations(player, x.Item1.Id).Contains(enemy.Location))
+                                    .Select(x => x.Item1)
+                                    .GroupBy(x => x.GetType());
 
-            // Set Effect to Enemies in range
-            enemy.Alteration
-                 .ApplyTargetAuraEffects(playerAuraEffects.Where(x => x.Item2.AuraRange >= distance)
-                                                          .Select(x => x.Item1)
-                                                          .Actualize());
+            // TODO: Figure out a nicer way to clear these; but they are only cleared out when
+            //       new ones are applied.. so have to clear them this way for now.
+            enemy.Alteration.ApplyTargetAuraEffects(new AttackAttributeAuraAlterationEffect[] { });
+            enemy.Alteration.ApplyTargetAuraEffects(new AuraAlterationEffect[] { });
 
-            enemy.Alteration
-                 .ApplyTargetAuraEffects(playerAttackAttributeAuraEffects.Where(x => x.Item2.AuraRange >= distance)
-                                                                         .Select(x => x.Item1)
-                                                                         .Actualize());
+            // Set Effect to Enemies
+            foreach (var auraGroup in playerAuras)
+            {
+                if (auraGroup.Key == typeof(AttackAttributeAuraAlterationEffect))
+                    enemy.Alteration.ApplyTargetAuraEffects(auraGroup.Cast<AttackAttributeAuraAlterationEffect>());
+
+                else if (auraGroup.Key == typeof(AuraAlterationEffect))
+                    enemy.Alteration.ApplyTargetAuraEffects(auraGroup.Cast<AuraAlterationEffect>());
+
+                else
+                    throw new Exception("Unknwon Aura Alteration Effect Type");
+            }
 
             // Increment Behavior Turn Counter / Select next behavior
             enemy.BehaviorDetails.IncrementBehavior(enemy, _alterationProcessor, actionTaken, _randomSequenceGenerator.Get());
