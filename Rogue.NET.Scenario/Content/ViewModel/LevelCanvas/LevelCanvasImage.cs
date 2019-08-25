@@ -5,17 +5,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
     public class LevelCanvasImage : Image
     {
-        public static readonly DependencyProperty ZIndexProperty =
-            DependencyProperty.Register("ZIndex", typeof(int), typeof(LevelCanvasImage));
+        public string ScenarioObjectId { get; private set; }
 
-        public int ZIndex
+        public LevelCanvasImage(string scenarioObjectId)
         {
-            get { return (int)GetValue(ZIndexProperty); }
-            set { SetValue(ZIndexProperty, value); }
-        }
-
-        public LevelCanvasImage()
-        {
+            this.ScenarioObjectId = scenarioObjectId;
         }
     }
 }

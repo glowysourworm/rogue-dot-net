@@ -23,6 +23,7 @@ namespace Rogue.NET.Core.Model.Generator
         private readonly IBehaviorGenerator _behaviorGenerator;
         private readonly IItemGenerator _itemGenerator;
         private readonly IAnimationGenerator _animationGenerator;
+        private readonly IAlterationGenerator _alterationGenerator;
 
         [ImportingConstructor]
         public CharacterGenerator(
@@ -31,7 +32,8 @@ namespace Rogue.NET.Core.Model.Generator
             ISkillSetGenerator skillSetGenerator,
             IBehaviorGenerator behaviorGenerator,
             IItemGenerator itemGenerator,
-            IAnimationGenerator animationGenerator)
+            IAnimationGenerator animationGenerator,
+            IAlterationGenerator alterationGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
@@ -39,6 +41,7 @@ namespace Rogue.NET.Core.Model.Generator
             _behaviorGenerator = behaviorGenerator;
             _itemGenerator = itemGenerator;
             _animationGenerator = animationGenerator;
+            _alterationGenerator = alterationGenerator;
         }
 
         public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
@@ -95,8 +98,22 @@ namespace Rogue.NET.Core.Model.Generator
                 int generationNumber = _randomSequenceGenerator.CalculateGenerationNumber(template.GenerationProbability);
                 for (int i = 0; i < generationNumber; i++)
                 {
+                    // Generate the Equipment
                     var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate, characterClasses);
+
+                    // Set Equipped
                     equipment.IsEquipped = template.EquipOnStartup;
+
+                    if (equipment.IsEquipped)
+                    {
+                        if (equipment.HasEquipAlteration)
+                            player.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+
+                        if (equipment.HasCurseAlteration)
+                            player.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
+                    }
+
+
                     player.Equipment.Add(equipment.Id, equipment);
                 }
             }
@@ -195,7 +212,17 @@ namespace Rogue.NET.Core.Model.Generator
 
                 // Equip on Startup
                 if (equipmentTemplate.EquipOnStartup)
+                {
+                    // Set Equipped
                     equipment.IsEquipped = true;
+
+                    // Set any Alterations
+                    if (equipment.HasEquipAlteration)
+                        enemy.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.EquipAlteration));
+
+                    if (equipment.HasCurseAlteration)
+                        enemy.Alteration.Apply(_alterationGenerator.GenerateAlteration(equipment.CurseAlteration));
+                }
 
                 enemy.Equipment.Add(equipment.Id, equipment);
             }

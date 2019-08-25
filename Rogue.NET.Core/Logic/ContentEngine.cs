@@ -472,7 +472,15 @@ namespace Rogue.NET.Core.Logic
 
                 // If equip alteration is present - make sure it's deactivated and removed
                 if (equipment.HasEquipAlteration)
+                {
                     _modelService.Player.Alteration.Remove(equipment.EquipAlteration.Name);
+
+                    // THIS SEEMS TO BE HANDLED BY A BLANKET UPDATE EACH TURN. SO, SOME REFACTORING
+                    // NEEDED TO FIX THE UPDATING ISSUE
+                    //
+                    // Fire update for content to update the aura
+                    // RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentUpdate, _modelService.Player.Id));
+                }
 
                 return true;
             }

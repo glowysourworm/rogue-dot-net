@@ -9,7 +9,6 @@ using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Interface;
 
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +27,8 @@ using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using System.Collections.ObjectModel;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -41,21 +42,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         readonly IAnimationCreator _animationCreator;
         readonly IAlterationProcessor _alterationProcessor;
 
-        // Identifies the layout entry in the content dictionary
-        const string WALLS_KEY = "Layout";
-        const string DOORS_KEY = "Doors";
-        const string REVEALED_KEY = "Revealed";
-        const string LIGHT_RADIUS_EXT = "-LightRadius";        
+        const int DOODAD_ZINDEX = 1;
+        const int ITEM_ZINDEX = 2;
+        const int CHARACTER_ZINDEX = 3;
 
-        const int LIGHT_RADIUS_ZINDEX = 1;
-        const int DOODAD_ZINDEX = 2;
-        const int ITEM_ZINDEX = 3;
-        const int CHARACTER_ZINDEX = 4;
-        const int WALLS_ZINDEX = -2;
-        const int DOORS_ZINDEX = -1;
-        const int REVEALED_ZINDEX = 0;
-
-        ObservableCollection<FrameworkElement> _content;
         int _levelWidth;
         int _levelHeight;
         Point _playerLocation = new Point(0, 0);
@@ -63,8 +53,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         // Targeting animation (singular)
         IList<ITimedGraphic> _targetingAnimations;
 
-        // Used for quick access to elements
-        IDictionary<string, FrameworkElement> _contentDict;
+        // Elements for the layout
+        Path _wallElement;
+        Path _doorElement;
+        Path _revealedElement;
+
+        // Opacity Masks
+        DrawingBrush _exploredDrawingBrush;
+        DrawingBrush _revealedDrawingBrush;
+        DrawingBrush _visibleDrawingBrush;
 
         [ImportingConstructor]
         public LevelCanvasViewModel(
@@ -81,8 +78,26 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             _animationCreator = animationCreator;
             _alterationProcessor = alterationProcessor;
 
-            this.Contents = new ObservableCollection<FrameworkElement>();
-            _contentDict = new Dictionary<string, FrameworkElement>();
+            this.WallLayout = new Path();
+            this.DoorLayout = new Path();
+            this.RevealedLayout = new Path();
+
+            this.Animations = new ObservableCollection<FrameworkElement>();
+            this.Auras = new ObservableCollection<LevelCanvasShape>();
+            this.Contents = new ObservableCollection<LevelCanvasImage>();
+            this.LightRadii = new ObservableCollection<LevelCanvasShape>();
+
+            this.ExploredOpacityMask = new DrawingBrush();
+            this.RevealedOpacityMask = new DrawingBrush();
+            this.VisibleOpacityMask = new DrawingBrush();
+
+            this.ExploredOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
+            this.VisibleOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
+            this.RevealedOpacityMask.ViewboxUnits = BrushMappingMode.Absolute;
+
+            this.ExploredOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
+            this.VisibleOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
+            this.RevealedOpacityMask.ViewportUnits = BrushMappingMode.Absolute;
 
             _targetingAnimations = new List<ITimedGraphic>();
 
@@ -92,8 +107,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                _content.Clear();
-                _contentDict.Clear();
+                this.Animations.Clear();
+                this.Contents.Clear();
+
                 _targetingAnimations.Clear();
 
                 DrawLayout();
@@ -113,15 +129,80 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         }
 
         #region (public) Properties
-        public ObservableCollection<FrameworkElement> Contents
+        /// <summary>
+        /// Wall layer of the layout
+        /// </summary>
+        public Path WallLayout
         {
-            get { return _content; }
-            set
-            {
-                _content = value;
-                OnPropertyChanged("Contents");
-            }
+            get { return _wallElement; }
+            set { this.RaiseAndSetIfChanged(ref _wallElement, value); }
         }
+
+        /// <summary>
+        /// Door layer of the layout
+        /// </summary>
+        public Path DoorLayout
+        {
+            get { return _doorElement; }
+            set { this.RaiseAndSetIfChanged(ref _doorElement, value); }
+        }
+
+        /// <summary>
+        /// Revealed layer of the layout
+        /// </summary>
+        public Path RevealedLayout
+        {
+            get { return _revealedElement; }
+            set { this.RaiseAndSetIfChanged(ref _revealedElement, value); }
+        }
+
+        /// <summary>
+        /// Opacity DrawingBrush for explored portion of the layout
+        /// </summary>
+        public DrawingBrush ExploredOpacityMask
+        {
+            get { return _exploredDrawingBrush; }
+            set { this.RaiseAndSetIfChanged(ref _exploredDrawingBrush, value); }
+        }
+
+        /// <summary>
+        /// Opacity DrawingBrush for revealed portion of the layout
+        /// </summary>
+        public DrawingBrush RevealedOpacityMask
+        {
+            get { return _revealedDrawingBrush; }
+            set { this.RaiseAndSetIfChanged(ref _revealedDrawingBrush, value); }
+        }
+
+        /// <summary>
+        /// Opacity DrawingBrush for visible portion of the layout
+        /// </summary>
+        public DrawingBrush VisibleOpacityMask
+        {
+            get { return _visibleDrawingBrush; }
+            set { this.RaiseAndSetIfChanged(ref _visibleDrawingBrush, value); }
+        }
+
+        /// <summary>
+        /// Layer of Visuals for the Light Radii
+        /// </summary>
+        public ObservableCollection<LevelCanvasShape> LightRadii { get; set; }
+
+        /// <summary>
+        /// Layer of Visuals for the Auras
+        /// </summary>
+        public ObservableCollection<LevelCanvasShape> Auras { get; set; }
+
+        /// <summary>
+        /// Layer of Visuals for the Contents
+        /// </summary>
+        public ObservableCollection<LevelCanvasImage> Contents { get; set; }
+
+        /// <summary>
+        /// Layer of Visuals for the Animations
+        /// </summary>
+        public ObservableCollection<FrameworkElement> Animations { get; set; }
+        
         public int LevelWidth
         {
             get { return _levelWidth; }
@@ -130,6 +211,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 _levelWidth = value;
                 OnPropertyChanged("LevelWidth");
                 OnPropertyChanged("LevelContainerWidth");
+                OnLevelDimensionChange();
             }
         }
         public int LevelHeight
@@ -140,6 +222,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 _levelHeight = value;
                 OnPropertyChanged("LevelHeight");
                 OnPropertyChanged("LevelContainerHeight");
+                OnLevelDimensionChange();
             }
         }
         public int LevelContainerWidth
@@ -178,8 +261,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     DrawContent();
                     break;
                 case LevelUpdateType.ContentRemove:
-                    foreach (var contentId in levelUpdate.ContentIds)
-                        RemoveContent(contentId);
+                    // Filter out contents with matching id's
+                    this.Contents.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
+                    this.LightRadii.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
+                    this.Auras.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
                     break;
                 case LevelUpdateType.ContentAdd:
                     DrawContent();
@@ -191,9 +276,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                         // Performance Hit - Have to look up keys instead of use dictionaries for fast access...
                         //                   Problem is a design flaw with the backend queues. However, this is really
                         //                   not a performance issue. Just frustrating.
-                        if (_modelService.Level.HasContent(contentId) &&
-                            _contentDict.ContainsKey(contentId))
-                            UpdateObject(_contentDict[contentId], _modelService.Level.GetContent(contentId));
+
+                        var content = this.Contents.FirstOrDefault(x => x.ScenarioObjectId == contentId);
+
+                        if (_modelService.Level.HasContent(contentId) && content != null)
+                            UpdateContent(content, _modelService.Level.GetContent(contentId));
                     }
                     break;
                 case LevelUpdateType.LayoutAll:
@@ -211,11 +298,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     UpdateLayoutVisibility();
                     break;
                 case LevelUpdateType.PlayerLocation:
-                    if (!_contentDict.ContainsKey(_modelService.Player.Id))
-                        throw new Exception("Level Canvas View Model doens't contain player Id");
+                    {
+                        var player = this.Contents.FirstOrDefault(x => x.ScenarioObjectId == _modelService.Player.Id);
 
-                    UpdateObject(_contentDict[_modelService.Player.Id], _modelService.Player);
-                    //UpdateLayoutVisibility();
+                        if (player == null)
+                            throw new Exception("Level Canvas View Model doens't contain player Id");
+
+                        UpdateContent(player, _modelService.Player);
+                        //UpdateLayoutVisibility();
+                    }
                     break;
                 case LevelUpdateType.TargetingStart:
                     PlayTargetAnimation();
@@ -286,65 +377,79 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 }
             }
 
-            var wallsPath = new Path();
-            wallsPath.Data = wallsGeometry;
-            wallsPath.Fill = Brushes.Transparent;
-            wallsPath.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.WallColor));
-            wallsPath.StrokeThickness = 2;
+            this.WallLayout.Data = wallsGeometry;
+            this.WallLayout.Fill = Brushes.Transparent;
+            this.WallLayout.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.WallColor));
+            this.WallLayout.StrokeThickness = 2;
 
-            var doorsPath = new Path();
-            doorsPath.Data = doorsGeometry;
-            doorsPath.Fill = Brushes.Transparent;
-            doorsPath.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.DoorColor));
-            doorsPath.StrokeThickness = 3;
+            this.DoorLayout.Data = doorsGeometry;
+            this.DoorLayout.Fill = Brushes.Transparent;
+            this.DoorLayout.Stroke = new SolidColorBrush(ColorUtility.Convert(_modelService.Level.DoorColor));
+            this.DoorLayout.StrokeThickness = 3;
 
-            var revealedPath = new Path();
-            revealedPath.Data = revealedGeometry;
-            revealedPath.Fill = Brushes.Transparent;
-            revealedPath.Stroke = Brushes.White;
-            revealedPath.StrokeThickness = 2;
-
-            Canvas.SetZIndex(wallsPath, WALLS_ZINDEX);
-            Canvas.SetZIndex(doorsPath, DOORS_ZINDEX);
-            Canvas.SetZIndex(revealedPath, REVEALED_ZINDEX);
-
-            // Update collections
-            UpdateOrAddContent(WALLS_KEY, wallsPath);
-            UpdateOrAddContent(DOORS_KEY, doorsPath);
-            UpdateOrAddContent(REVEALED_KEY, revealedPath);
+            this.RevealedLayout.Data = revealedGeometry;
+            this.RevealedLayout.Fill = Brushes.Transparent;
+            this.RevealedLayout.Stroke = Brushes.White;
+            this.RevealedLayout.StrokeThickness = 2;
         }
 
         private void DrawContent()
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
+            var allContents = level.GetContents()
+                                   .Union(new ScenarioObject[] { player });
 
-            // Create contents for all ScenarioObjects + Player
-            DrawCollection(level.DoodadsNormal);
-            DrawCollection(level.Doodads);
-            DrawCollection(level.Consumables);
-            DrawCollection(level.Equipment);
-            DrawCollection(level.Enemies);
-            DrawCollection(new ScenarioObject[] { player });
-        }
+            // Remove
+            this.Contents.Filter(x => !allContents.Any(z => z.Id == x.ScenarioObjectId));
+            this.LightRadii.Filter(x => !allContents.Any(z => z.Id == x.ScenarioObjectId));
+            this.Auras.Filter(x => !allContents.Any(z => z.Id == x.ScenarioObjectId));
 
-        private void DrawCollection(IEnumerable<ScenarioObject> collection)
-        {
-            foreach (var scenarioObject in collection)
+            // Update / Add
+            foreach (var scenarioObject in allContents)
             {
-                // Update
-                if (_contentDict.ContainsKey(scenarioObject.Id))
-                    UpdateObject(_contentDict[scenarioObject.Id], scenarioObject);
+                var content = this.Contents.FirstOrDefault(x => x.ScenarioObjectId == scenarioObject.Id);
+                var lightRadius = this.LightRadii.FirstOrDefault(x => x.Id == scenarioObject.Id);
 
-                // Add
+                // Update Content
+                if (content != null)
+                    UpdateContent(content, scenarioObject);
+
                 else
-                {
-                    Rectangle lightRadius = null;
-                    var contentObject = CreateObject(scenarioObject, out lightRadius);
+                    this.Contents.Add(CreateContent(scenarioObject));
 
-                    UpdateOrAddContent(scenarioObject.Id, contentObject);
-                    if (lightRadius != null)
-                        UpdateOrAddContent(scenarioObject.Id + LIGHT_RADIUS_EXT, lightRadius);
+                // Update Light Radius
+                if ((lightRadius != null) && (scenarioObject is Player))
+                    UpdateLightRadius(lightRadius, scenarioObject as Player);
+
+                // TODO: Can support for Character if performance is good enough. Have to understand
+                //       Opacity masks better. Maybe because the drawing is level-sized? Could try 
+                //       putting all light radii on one drawing? etc...
+                else if (scenarioObject is Player)
+                    this.LightRadii.Add(CreateLightRadius(scenarioObject as Player));
+
+                // Update / Add Auras
+                if (scenarioObject is Character)
+                {
+                    // Auras
+                    var character = scenarioObject as Character;
+                    var characterAuras = character.Alteration.GetCombinedAuraSourceParameters();
+                    var auraUpdates = this.Auras.Where(x => characterAuras.Select(z => z.Item1).Contains(x.Id));
+                    var auraAdditions = characterAuras.Where(x => !auraUpdates.Any(z => z.Id == x.Item1));
+
+                    // Update Auras
+                    foreach (var aura in auraUpdates)
+                        UpdateAura(aura, characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraColor,
+                                         characterAuras.First(x => x.Item1 == aura.Id).Item2.AuraRange, character);
+
+                    // Add Auras
+                    foreach (var aura in auraAdditions)
+                        this.Auras.Add(CreateAura(character, aura.Item1, aura.Item2.AuraColor, aura.Item2.AuraRange));
+
+                    // Remove Auras*** This has to be checked because there may be characters that have had their
+                    //                 equipment removed
+                    this.Auras.Filter(x => x.ScenarioObjectId == character.Id &&
+                                           !characterAuras.Any(z => z.Item1 == x.Id));
                 }
             }
         }
@@ -354,7 +459,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// </summary>
         private void UpdateLayoutVisibility()
         {
-            var level = _modelService.Level;
             var exploredLocations = _modelService.GetExploredLocations();
             var visibleLocations = _modelService.GetVisibleLocations(_modelService.Player);
             var revealedLocations = _modelService.GetRevealedLocations();
@@ -405,51 +509,59 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 }
             }
 
-            var exploredDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), exploredLocationsOpacityMask);
-            var visibleDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), visibleLocationsOpacityMask);
-            var revealedDrawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), revealedLocationsOpacityMask);
+            this.ExploredOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), exploredLocationsOpacityMask);
+            this.VisibleOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), visibleLocationsOpacityMask);
+            this.RevealedOpacityMask.Drawing = new GeometryDrawing(Brushes.White, new Pen(Brushes.White, 2), revealedLocationsOpacityMask);
 
-            var exploredDrawingBrush = new DrawingBrush(exploredDrawing);
-            var visibleDrawingBrush = new DrawingBrush(visibleDrawing);
-            var revealedDrawingBrush = new DrawingBrush(revealedDrawing);
+            OnPropertyChanged("ExploredOpacityMask");
+            OnPropertyChanged("VisibleOpacityMask");
+            OnPropertyChanged("RevealedOpacityMask");
 
-            exploredDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            exploredDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
-
-            exploredDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            exploredDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-
-            visibleDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            visibleDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
-
-            visibleDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            visibleDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-
-            revealedDrawingBrush.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            revealedDrawingBrush.ViewportUnits = BrushMappingMode.Absolute;
-
-            revealedDrawingBrush.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
-            revealedDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-
-            _contentDict[WALLS_KEY].OpacityMask = exploredDrawingBrush;
-            _contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
-            _contentDict[REVEALED_KEY].OpacityMask = revealedDrawingBrush;
+            //_contentDict[WALLS_KEY].OpacityMask = exploredDrawingBrush;
+            //_contentDict[DOORS_KEY].OpacityMask = exploredDrawingBrush;
+            //_contentDict[REVEALED_KEY].OpacityMask = revealedDrawingBrush;
 
             // PERFORMANCE ISSUE - OPACITY MASKS VERY VERY VERY SLOW. CONSIDER TRYING TO 
             // DRAW LIGHT RADIUS BEFORE RENDERING... INSTEAD OF USING OPACITY MASKS
             // Update Light Radius Opacity masks
 
             // JUST UPDATE PLAYER ONLY - OTHER MASKS SHOULD BE OMITTED
-            foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(LIGHT_RADIUS_EXT)))
-                _contentDict[key].OpacityMask = visibleDrawingBrush;
+            //foreach (var key in _contentDict.Keys.Where(x => x.EndsWith(LIGHT_RADIUS_EXT)))
+            //    _contentDict[key].OpacityMask = visibleDrawingBrush;
         }
         #endregion
 
         #region (private) Add / Update collections
-        private LevelCanvasImage CreateObject(ScenarioObject scenarioObject, out Rectangle lightRadius)
+        private LevelCanvasImage CreateContent(ScenarioObject scenarioObject)
         {
-            var image = new LevelCanvasImage();
-            var isEnemyInvisible = false;                // FOR ENEMY INVISIBILITY ONLY
+            var image = new LevelCanvasImage(scenarioObject.Id);
+
+            UpdateContent(image, scenarioObject);
+
+            return image;
+        }
+
+        private LevelCanvasShape CreateLightRadius(Player player)
+        {
+            var canvasShape = new LevelCanvasShape(player.Id, player.Id, new RectangleGeometry());
+
+            UpdateLightRadius(canvasShape, player);
+
+            return canvasShape;
+        }
+
+        private LevelCanvasShape CreateAura(Character character, string alterationEffectId, string auraColor, int auraRange)
+        {
+            var canvasShape = new LevelCanvasShape(alterationEffectId, character.Id, new RectangleGeometry());
+
+            UpdateAura(canvasShape, auraColor, auraRange, character);
+
+            return canvasShape;
+        }
+
+        private void UpdateContent(LevelCanvasImage content, ScenarioObject scenarioObject)
+        {
+            var isEnemyInvisible = false;                           // FOR ENEMY INVISIBILITY ONLY
 
             // Calculate effective symbol
             var effectiveSymbol = (ScenarioImage)scenarioObject;
@@ -466,180 +578,124 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             else if (scenarioObject is Player)
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
 
-            image.Source = scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
-                                                       _resourceService.GetImageSource(effectiveSymbol);
+            content.Source = scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
+                                                         _resourceService.GetImageSource(effectiveSymbol);
 
-            image.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
+            content.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 
             if (scenarioObject is DoodadBase)
-                Canvas.SetZIndex(image, DOODAD_ZINDEX);
+                Canvas.SetZIndex(content, DOODAD_ZINDEX);
 
             else if (scenarioObject is ItemBase)
-                Canvas.SetZIndex(image, ITEM_ZINDEX);
+                Canvas.SetZIndex(content, ITEM_ZINDEX);
 
             else if (scenarioObject is Character)
-                Canvas.SetZIndex(image, CHARACTER_ZINDEX);
+                Canvas.SetZIndex(content, CHARACTER_ZINDEX);
             else
                 throw new Exception("Unhandled ScenarioObject Type");
 
-            // Set the special ZIndex property - used for binding
-            image.ZIndex = Canvas.GetZIndex(image);
-
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            image.Visibility = (_modelService.IsVisibleTo(_modelService.Player, scenarioObject) || 
+            content.Visibility = (_modelService.IsVisibleTo(_modelService.Player, scenarioObject) ||
                                 scenarioObject == _modelService.Player ||
                                 scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
-            Canvas.SetLeft(image, point.X);
-            Canvas.SetTop(image, point.Y);
-
-            lightRadius = null;
-
-            // LIGHT RADIUS - PLAYER ONLY
-            if (scenarioObject is Player)
-            {
-                // TODO: Put transform somewhere else
-                var character = scenarioObject as Character;
-                var lightRadiusUI = character.GetLightRadius() * ModelConstants.CellHeight;
-                var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
-
-                // Make the full size of the level - then apply the level opacity mask drawing
-                lightRadius = new Rectangle();
-                lightRadius.Height = this.LevelHeight;
-                lightRadius.Width = this.LevelWidth;
-
-                var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
-                brush.RadiusX = 0.7 * (lightRadiusUI / this.LevelWidth);
-                brush.RadiusY = 0.7 * (lightRadiusUI / this.LevelHeight);
-                brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
-                brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
-                brush.Opacity = 0.3;
-
-                Canvas.SetZIndex(lightRadius, LIGHT_RADIUS_ZINDEX);
-
-                lightRadius.Fill = brush;
-                lightRadius.Stroke = null;
-            }
-
-            // Apply Auras from alteration effects
-            if (scenarioObject is Character)
-            {
-                var character = scenarioObject as Character;
-
-                // Get the Aura data
-                var auras = character.Alteration.GetAuras();
-
-                foreach (var tuple in auras)
-                {
-                    var id = tuple.Item1.Id;
-
-                    // 
-                }
-            }
-
-            return image;
-        }
-
-        private void UpdateObject(FrameworkElement content, ScenarioObject scenarioObject)
-        {
-            var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
-            var isEnemyInvisible = false;                // FOR ENEMY INVISIBILITY ONLY
-
-            // Calculate effective symbol
-            var effectiveSymbol = (ScenarioImage)scenarioObject;
-
-            // Update Effective Symbol
-            if (content is LevelCanvasImage &&
-               (scenarioObject is Enemy ||
-                scenarioObject is Player))
-            {
-                if (scenarioObject is Enemy)
-                {
-                    // Calculate invisibility
-                    var enemy = (scenarioObject as Enemy);
-
-                    isEnemyInvisible = (enemy.IsInvisible || 
-                                        enemy.Is(CharacterStateType.Invisible)) && 
-                                        !_modelService.Player.Alteration.CanSeeInvisible();
-
-                    effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
-                }
-
-                else if (scenarioObject is Player)
-                    effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
-            }
-
-            content.Visibility = (_modelService.IsVisibleTo(_modelService.Player,scenarioObject) ||
-                                  scenarioObject == _modelService.Player ||
-                                  scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
-
-            (content as LevelCanvasImage).Source =
-                scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
-                                            _resourceService.GetImageSource(effectiveSymbol);
-
             Canvas.SetLeft(content, point.X);
             Canvas.SetTop(content, point.Y);
-            
-            // Update related Light Radius - PLAYER ONLY
-            if (_contentDict.ContainsKey(scenarioObject.Id + LIGHT_RADIUS_EXT))
-            {
-                // TODO: Put transform somewhere else
-                var lightRadiusUI = (scenarioObject as Character).GetLightRadius() * ModelConstants.CellHeight;
-                var cellOffset = new Point(ModelConstants.CellWidth / 2, ModelConstants.CellHeight / 2);
-
-                var lightRadius = _contentDict[scenarioObject.Id + LIGHT_RADIUS_EXT] as Rectangle;
-                lightRadius.Height = this.LevelHeight;
-                lightRadius.Width = this.LevelWidth;
-
-                var brush = lightRadius.Fill as RadialGradientBrush;
-                brush.Center = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
-                brush.GradientOrigin = new Point((point.X + cellOffset.X) / this.LevelWidth, (point.Y + cellOffset.Y) / this.LevelHeight);
-                brush.RadiusX = 0.7 * (lightRadiusUI / this.LevelWidth);
-                brush.RadiusY = 0.7 * (lightRadiusUI / this.LevelHeight);
-                brush.GradientStops[0].Color = ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor);
-            }
         }
 
-        // Updates an entry in the dictionary along with the observable collection
-        private void UpdateOrAddContent(string key, FrameworkElement newElement)
+        private void UpdateLightRadius(LevelCanvasShape canvasShape, Player player)
         {
-            // Do a search for the key first - (performance hit; but a safe removal)
-            if (_contentDict.ContainsKey(key))
-            {
-                var existingElement = _contentDict[key];
+            var point = _scenarioUIGeometryService.Cell2UI(player.Location, true);
+            var lightRadiusUI = player.GetLightRadius() * ModelConstants.CellHeight;
 
-                this.Contents.Remove(existingElement);
+            // Effective Character Symbol
+            var effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(player);
 
-                _contentDict[key] = newElement;
-                this.Contents.Add(newElement);
-            }
-            else
-            {
-                _contentDict[key] = newElement;
-                this.Contents.Add(newElement);
-            }
+            // Make the full size of the level - then apply the level opacity mask drawing
+            (canvasShape.RenderedGeometry as RectangleGeometry).Rect = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+
+            // Create Brush
+            var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
+            brush.RadiusX = 0.7 * (lightRadiusUI / this.LevelWidth);
+            brush.RadiusY = 0.7 * (lightRadiusUI / this.LevelHeight);
+            brush.Center = new Point(point.X / this.LevelWidth, point.Y / this.LevelHeight);
+            brush.GradientOrigin = new Point(point.X / this.LevelWidth, point.Y / this.LevelHeight);
+            brush.Opacity = 0.3;
+
+            canvasShape.Fill = brush;
+            canvasShape.Stroke = null;
         }
 
-        // Removes an entry from the dictionary
-        private void RemoveContent(string key)
+        private void UpdateAura(LevelCanvasShape aura, string auraColor, int auraRange, Character character)
         {
-            // Do a search for the key first - (performance hit; but a safe removal)
-            if (_contentDict.ContainsKey(key))
+            // Create a Path per character aura
+            //var path = new PathGeometry();
+
+            //foreach (var location in _modelService.GetAuraLocations(character, aura.Id))
+            //{
+            //    // Would be nice to make this geometry service more useful
+            //    var cellRectangle = _scenarioUIGeometryService.Cell2UIRect(location, false);
+
+            //    // Add rectangle to the path geometry data
+            //    path.AddGeometry(new RectangleGeometry(cellRectangle));
+            //}
+
+            //var renderedGeometry = path.GetOutlinedPathGeometry();
+            //var renderedBounds = renderedGeometry.GetRenderBounds(new Pen(Brushes.Transparent, 0));
+
+            (aura.RenderedGeometry as RectangleGeometry).Rect = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            //(aura.RenderedGeometry as PathGeometry).AddGeometry(renderedGeometry);
+
+            //aura.Stroke = new SolidColorBrush(ColorUtility.Convert(auraColor))
+            //{
+            //    Opacity = 0.5
+            //};
+            //aura.StrokeThickness = 0.75;
+            //aura.Fill = new SolidColorBrush(ColorUtility.Convert(auraColor))
+            //{
+            //    Opacity = 0.05
+            //};
+
+            var auraUI = (double)auraRange * (double)ModelConstants.CellHeight;
+            var point = _scenarioUIGeometryService.Cell2UI(character.Location, true);
+
+            // Create Brush
+            var brush = new RadialGradientBrush(new GradientStopCollection(new GradientStop[]
             {
-                var content = _contentDict[key];
+                new GradientStop(Colors.Transparent, 0),
+                new GradientStop(ColorUtility.Convert(auraColor), .8),
+                new GradientStop(ColorUtility.Convert(auraColor), .9),
+                new GradientStop(Colors.Transparent, 1)
+            }));
 
-                _contentDict.Remove(key);
-                this.Contents.Remove(content);
-            }
+            brush.RadiusX = 0.7 * (auraUI / this.LevelWidth);
+            brush.RadiusY = 0.7 * (auraUI / this.LevelHeight);
+            brush.Center = new Point(point.X / this.LevelWidth, point.Y / this.LevelHeight);
+            brush.GradientOrigin = new Point(point.X / this.LevelWidth, point.Y / this.LevelHeight);
 
-            if (_contentDict.ContainsKey(key + LIGHT_RADIUS_EXT))
-            {
-                var contentLightRadius = _contentDict[key + LIGHT_RADIUS_EXT];
+            //brush.RadiusX = 0.7 * (renderedBounds.Height / renderedBounds.Width); 
+            //brush.RadiusY = 0.7;
+            //brush.Center = new Point((point.X - renderedBounds.Left) / renderedBounds.Width, 
+            //                         (point.Y - renderedBounds.Top) / renderedBounds.Height);
+            //brush.GradientOrigin = new Point((point.X - renderedBounds.Left) / renderedBounds.Width,
+            //                                 (point.Y - renderedBounds.Top) / renderedBounds.Height);
 
-                _contentDict.Remove(key + LIGHT_RADIUS_EXT);
-                this.Contents.Remove(contentLightRadius);
-            }
+            brush.Opacity = 0.3;
+
+            aura.Fill = brush;
+            aura.Stroke = null;
+        }
+
+        protected void OnLevelDimensionChange()
+        {
+            this.ExploredOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.VisibleOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.RevealedOpacityMask.Viewport = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+
+            this.ExploredOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.VisibleOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
+            this.RevealedOpacityMask.Viewbox = new Rect(0, 0, this.LevelWidth, this.LevelHeight);
         }
         #endregion
 
@@ -673,7 +729,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     foreach (var graphic in animationQueue.GetGraphics())
                     {
                         Canvas.SetZIndex(graphic, 100);
-                        this.Contents.Add(graphic);
+                        this.Animations.Add(graphic);
                     }
 
                     animationQueue.TimeElapsed += new TimerElapsedHandler(OnAnimationTimerElapsed);
@@ -686,7 +742,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private void OnAnimationTimerElapsed(ITimedGraphic sender)
         {
             foreach (var timedGraphic in sender.GetGraphics())
-                this.Contents.Remove(timedGraphic);
+                this.Animations.Remove(timedGraphic);
 
             sender.TimeElapsed -= new TimerElapsedHandler(OnAnimationTimerElapsed);
             sender.CleanUp();
@@ -707,7 +763,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 foreach (var graphic in animation.GetGraphics())
                 {
                     Canvas.SetZIndex(graphic, 100);
-                    this.Contents.Add(graphic);
+                    this.Animations.Add(graphic);
                 }
 
                 animation.Start();
@@ -723,7 +779,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 foreach (var animation in _targetingAnimations)
                 {
                     foreach (var graphic in animation.GetGraphics())
-                        this.Contents.Remove(graphic);
+                        this.Animations.Remove(graphic);
 
                     animation.Stop();
                     animation.CleanUp();

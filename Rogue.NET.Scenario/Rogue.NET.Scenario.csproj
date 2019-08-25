@@ -192,6 +192,8 @@
     <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\SkillViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AlterationViewModel.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasElement.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasShape.cs" />
     <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\AttributeChangeViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioAlterationMessageViewModel.cs" />

@@ -97,6 +97,8 @@ namespace Rogue.NET.Core.Logic
 
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
+
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
         }
 
         public void AdvanceToNextLevel()

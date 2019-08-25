@@ -3,18 +3,108 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Width="{Binding LevelContainerWidth}"
              Height="{Binding LevelContainerHeight}" Background="LightCoral">
-    <ItemsControl x:Name="TheItemsControl"
-                  ItemsSource="{Binding Contents}" 
+    <Grid>
+
+        <!-- Wall Layer -->
+        <Canvas   x:Name="WallCanvas"                  
+                  Background="Transparent"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  OpacityMask="{Binding ExploredOpacityMask}"
+                  Width="{Binding LevelWidth, FallbackValue=500}" 
+                  Height="{Binding LevelHeight, FallbackValue=500}">
+            <ContentPresenter Content="{Binding WallLayout}" />
+        </Canvas>
+
+        <!-- Door Layer -->
+        <Canvas   x:Name="DoorCanvas"
+                  OpacityMask="{Binding ExploredOpacityMask}"
+                  Background="Transparent"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Width="{Binding LevelWidth, FallbackValue=500}" 
+                  Height="{Binding LevelHeight, FallbackValue=500}">
+            <ContentPresenter Content="{Binding DoorLayout}" />
+        </Canvas>
+
+        <!-- Revealed Layer -->
+        <Canvas   x:Name="RevealedCanvas"
+                  OpacityMask="{Binding RevealedOpacityMask}"
+                  Background="Transparent"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Width="{Binding LevelWidth, FallbackValue=500}" 
+                  Height="{Binding LevelHeight, FallbackValue=500}">
+            <ContentPresenter Content="{Binding RevealedLayout}" />
+        </Canvas>
+
+        <!-- Light Radii-->
+        <ItemsControl x:Name="LightRadiiItemsControl"
+                  ItemsSource="{Binding LightRadii}" 
+                  OpacityMask="{Binding VisibleOpacityMask}"                      
+                  DisplayMemberPath="Symbol"
+                  BorderBrush="Transparent" 
+                  BorderThickness="0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"                      
+                  Width="{Binding LevelWidth, FallbackValue=500}" 
+                  Height="{Binding LevelHeight, FallbackValue=500}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False"  />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <!-- Auras -->
+        <ItemsControl x:Name="AuraItemsControl"
+                  ItemsSource="{Binding Auras}" 
+                  OpacityMask="{Binding VisibleOpacityMask}"
+                  DisplayMemberPath="Symbol"
                   BorderBrush="Transparent" 
                   BorderThickness="0"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   Width="{Binding LevelWidth, FallbackValue=500}" 
                   Height="{Binding LevelHeight, FallbackValue=500}">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <Canvas ClipToBounds="False" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <!-- Contents -->
+        <ItemsControl x:Name="ContentItemsControl"
+                      ItemsSource="{Binding Contents}" 
+                      BorderBrush="Transparent" 
+                      BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="{Binding LevelWidth, FallbackValue=500}" 
+                      Height="{Binding LevelHeight, FallbackValue=500}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <!-- Animations -->
+        <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->
+        <ItemsControl x:Name="AnimationItemsControl"
+                      ItemsSource="{Binding Animations}" 
+                      BorderBrush="Transparent" 
+                      BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="{Binding LevelWidth, FallbackValue=500}" 
+                      Height="{Binding LevelHeight, FallbackValue=500}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+    </Grid>
 </UserControl>

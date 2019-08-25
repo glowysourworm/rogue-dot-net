@@ -291,6 +291,21 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             return this.AuraSourceCollector.GetAuraEffects();
         }
+
+        /// <summary>
+        /// Returns tuple of [AlterationEffectId, AuraSourceParameters] for all aura sources to 
+        /// provide information for the UI.
+        /// </summary>
+        public IEnumerable<Tuple<string, AuraSourceParameters>> GetCombinedAuraSourceParameters()
+        {
+            return this.AuraSourceCollector
+                       .GetAuraEffects()
+                       .Select(x => new Tuple<string, AuraSourceParameters>(x.Item1.Id, x.Item2))
+                       .Union(this.AttackAttributeAuraSourceCollector
+                                  .GetAuraEffects()
+                                  .Select(x => new Tuple<string, AuraSourceParameters>(x.Item1.Id, x.Item2)))
+                       .Actualize();
+        }
         #endregion
 
         #region (public) Character Class Query Methods

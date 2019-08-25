@@ -10,17 +10,14 @@ using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
-using System;
 
 namespace Rogue.NET.Core.Service
 {
@@ -183,6 +180,11 @@ namespace Rogue.NET.Core.Service
         public IEnumerable<GridLocation> GetLineOfSightLocations(Character character)
         {
             return _characterLayoutInformation.GetLineOfSightLocations(character);
+        }
+
+        public IEnumerable<GridLocation> GetAuraLocations(Character character, string alterationEffectId)
+        {
+            return _characterLayoutInformation.GetAuraAffectedLocations(character, alterationEffectId);
         }
 
         public IEnumerable<Character> GetVisibleCharacters(Character character)

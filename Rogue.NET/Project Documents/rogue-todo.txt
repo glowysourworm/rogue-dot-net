@@ -1027,3 +1027,51 @@ IMMEDIATE TODO'S:
 			 the hippogrif in the socerer scenario casts "gather" when they're lagging behind. or teleport near player.
 			 
 			 Also, TELEPORT ADJACENT PLAYER would be a nice-to-have effect enum.
+			 
+	- NOTE:  Aura support for enemies was to deal with equipment auras that would be applied to enemy equipment.
+	
+	- IDEA:  Split up level canvas into several layers to deal with z-index; and to break up the collections to store
+			 the ui elements.
+			 
+				- Each layer is associated with a separate view-model type (LevelCanvasImageViewModel, LevelCanvasAuraViewModel, 
+																			LevelCanvasLightRadiusViewModel, ...)
+																			
+				- Collection of view-models is bound to a layer in the view (maybe ItemsControl)
+				
+				- The collection of collections is known to a UI controller (somewhere) to handle updating
+				
+	- TODO:  Fix enemy / player aura removal:  steal item, un-equipment
+			
+		     Fix enemy / player aura application:  enemy doesn't show unless they react. player doesn't show at all.
+			 
+	- IDEA:  AURA / LIGHT RADIUS RENDERING:  Thinking that the performance issue may have been about dealing with the
+										     level layout PATH FIGURES - using software rendering (not sure what that means) - 
+											 so that probably means that all of those figures had to be calculated in when
+											 applying the opacity mask.
+											 
+											 So, since the brush for the light radius is [LEVEL WIDTH, LEVEL HEIGHT], it probably
+											 was doing much more than it had to. 
+											 
+											 I'm GUESSING that could be solved in a couple ways:
+											 
+											 1) making an "Outlined Path Geometry" for the layout cells - which may clump
+												together all of those stream geometry strokes. I'm not convinced that the
+												stream geometry is any faster in this particular case.
+												
+											 2) Make the "light radius" or "aura" size constant based on the number of cells
+												in the radius (light radius = 5) or aura. 
+												
+												This would make the size of the rectangle boundary constant so that the 
+												brush wouldn't change shape as a character approached the wall.
+												
+											 Then, the last question is whether or not applying the opacity mask to the container
+											 object for the layer (ItemsControl or Canvas) is performing better than applying
+											 it to the individual aura / light radius.
+											 
+											 (I'M GUESSING IT HELPS).. But, i'm not doing any benchmarking. So, just a matter
+											 of avoiding the performance problem.. Which was something like: 40 zombies with 40
+											 auras at once.. That was like several seconds between steps.. maybe like 5-10 seconds
+											 to render each step.
+											 
+	- TODO: Front end is updating on each step (DrawContent).. Already needs fixing to deal with a controller.. so will have to
+			make this granular again.

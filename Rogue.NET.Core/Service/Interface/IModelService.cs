@@ -67,6 +67,11 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<GridLocation> GetLineOfSightLocations(Character character);
 
         /// <summary>
+        /// Statefully maintained collection of auras per character
+        /// </summary>
+        IEnumerable<GridLocation> GetAuraLocations(Character character, string alterationEffectId);
+
+        /// <summary>
         /// Statefully maintained collection of locations that player has explored
         /// </summary>
         IEnumerable<GridLocation> GetExploredLocations();

@@ -51,7 +51,13 @@ namespace Rogue.NET.Scenario.Content.Views
             transform.Children.Add(_scaleXform);
             transform.Children.Add(_translateXform);
 
-            this.TheItemsControl.RenderTransform = transform;
+            this.WallCanvas.RenderTransform = transform;
+            this.DoorCanvas.RenderTransform = transform;
+            this.RevealedCanvas.RenderTransform = transform;
+            this.LightRadiiItemsControl.RenderTransform = transform;
+            this.AuraItemsControl.RenderTransform = transform;
+            this.ContentItemsControl.RenderTransform = transform;
+            this.AnimationItemsControl.RenderTransform = transform;
 
             this.Loaded += (sender, args) =>
             {
