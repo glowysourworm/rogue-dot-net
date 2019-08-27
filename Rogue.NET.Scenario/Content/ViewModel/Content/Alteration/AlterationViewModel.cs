@@ -3,8 +3,10 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
+using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System;
 using System.Collections.ObjectModel;
@@ -136,21 +138,25 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
 
         #endregion
 
-        public AlterationViewModel(AlterationContainer alteration) : base(alteration)
+        public AlterationViewModel(
+                IAlterationEffect effect, 
+                bool supportsBlocking, 
+                AlterationBlockType blockType) : base()
         {
-            this.Type = alteration.Effect.GetUITypeDescription();
-            this.BlockType = alteration.SupportsBlocking() ? alteration.BlockType.ToString() : "N/A";
-            this.OtherEffectType = alteration.Effect.GetUIOtherEffectType();
-            this.AttackAttributeType = alteration.Effect.GetUIAttackAttributeType();
+            this.Type = effect.GetUITypeDescription();
+            this.BlockType = supportsBlocking ? blockType.ToString() : "N/A";
+
+            // TODO:ALTERATION
+            //this.OtherEffectType = effect.
+            //this.AttackAttributeType = effect.GetUIAttackAttributeType();
 
             // TODO:ALTERATION
             this.DisplayType = this.Type;
 
-            // TODO:ALTERATION
             // For Auras
             //this.EffectRange = alteration.EffectRange.ToString("N0");
             //this.AuraAlteredState = alteration.AuraEffect.AlteredState == null ? null :
-            //                        new ScenarioImageViewModel(alteration.AuraEffect.Guid, 
+            //                        new ScenarioImageViewModel(alteration.AuraEffect.Guid,
             //                                                   alteration.AuraEffect.Name,
             //                                                   alteration.AuraEffect.AlteredState.SymbolDetails);
 

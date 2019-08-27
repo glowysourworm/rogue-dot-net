@@ -187,7 +187,9 @@
     <Compile Include="Extension\ButtonExtension.cs" />
     <Compile Include="Extension\CustomDialogResultTrigger.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />
+    <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="Extension\NumberExtension.cs" />
+    <Compile Include="Extension\ObjectExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />

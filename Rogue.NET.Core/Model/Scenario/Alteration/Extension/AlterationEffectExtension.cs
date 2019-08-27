@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
@@ -393,13 +394,13 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         public static string GetUITypeDescription(this IAlterationEffect effect)
         {
             if (effect is AttackAttributeAuraAlterationEffect)
-                return string.Format("Aura ({0})", GetUIAttackAttributeCombatType((effect as AttackAttributeAuraAlterationEffect).CombatType));
+                return string.Format("Aura ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
 
             else if (effect is AttackAttributePassiveAlterationEffect)
-                return string.Format("Passive ({0})", GetUIAttackAttributeCombatType((effect as AttackAttributePassiveAlterationEffect).CombatType));
+                return string.Format("Passive ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
 
             else if (effect is AttackAttributeTemporaryAlterationEffect)
-                return string.Format("Temporary ({0})", GetUIAttackAttributeCombatType((effect as AttackAttributeTemporaryAlterationEffect).CombatType));
+                return string.Format("Temporary ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
 
             else if (effect is AuraAlterationEffect)
                 return "Aura";
@@ -413,125 +414,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             else
                 throw new Exception("Unhandled IAlterationEffect UI-Type Description");
         }
-
-        /// <summary>
-        /// Returns a descriptive string for the corresponding "AlterationOtherEffectType" enum and also 
-        /// deals with type inspection
-        /// </summary>
-        public static string GetUIOtherEffectType(this IAlterationEffect effect)
-        {
-            if (effect is OtherAlterationEffect)
-            {
-                switch ((effect as OtherAlterationEffect).Type)
-                {
-                    case AlterationOtherEffectType.Identify:
-                        return "Identify";
-                    case AlterationOtherEffectType.Uncurse:
-                        return "Uncurse";
-                    default:
-                        throw new Exception("Unhandled AlterationOtherEffectType");
-                }
-            }
-
-            return "None";
-        }
-
-        /// <summary>
-        /// UI Type for the Skill Tree (Consider another way to provide UI structure)
-        /// </summary>
-        public static string GetUIType(this IAlterationEffect effect)
-        {
-            if (effect is AttackAttributeAuraAlterationEffect)
-                return "Attack Attribute (Aura)";
-
-            else if (effect is AttackAttributeMeleeAlterationEffect)
-                return "Attack Attribute (Combat)";
-
-            else if (effect is AttackAttributePassiveAlterationEffect)
-                return "Attack Attribute (Passive)";
-
-            else if (effect is AttackAttributeTemporaryAlterationEffect)
-                return "Attack Attribute (Temporary)";
-
-            else if (effect is AuraAlterationEffect)
-                return "Aura";
-
-            else if (effect is ChangeLevelAlterationEffect)
-                return "Change Level";
-
-            else if (effect is CreateMonsterAlterationEffect)
-                return "Create Monster";
-
-            else if (effect is DrainMeleeAlterationEffect)
-                return "Drain";
-
-            else if (effect is EquipmentDamageAlterationEffect)
-                return (effect as EquipmentDamageAlterationEffect).Type.ToString();
-
-            else if (effect is EquipmentEnhanceAlterationEffect)
-                return (effect as EquipmentDamageAlterationEffect).Type.ToString();
-
-            else if (effect is OtherAlterationEffect)
-                return (effect as OtherAlterationEffect).Type.ToString();
-
-            else if (effect is PassiveAlterationEffect)
-                return "Passive";
-
-            else if (effect is PermanentAlterationEffect)
-                return "Permanent";
-
-            else if (effect is RemedyAlterationEffect)
-                return "Remedy";
-
-            else if (effect is RevealAlterationEffect)
-                return "Reveal";
-
-            else if (effect is RunAwayAlterationEffect)
-                return "Run Away";
-
-            else if (effect is StealAlterationEffect)
-                return "Steal";
-
-            else if (effect is TeleportAlterationEffect)
-                return "Teleport";
-
-            else
-                throw new Exception("Unhandled IAlterationEffect Type");
-        }
-
-        /// <summary>
-        /// UI Attack Attribute Type (Consider another way to provide UI structure)
-        /// </summary>
-        public static string GetUIAttackAttributeType(this IAlterationEffect effect)
-        {
-            if (effect is AttackAttributeAuraAlterationEffect)
-                return GetUIAttackAttributeCombatType((effect as AttackAttributeAuraAlterationEffect).CombatType);
-
-            else if (effect is AttackAttributeMeleeAlterationEffect)
-                return "(Combat)";
-
-            else if (effect is AttackAttributePassiveAlterationEffect)
-                return GetUIAttackAttributeCombatType((effect as AttackAttributePassiveAlterationEffect).CombatType);
-
-            else if (effect is AttackAttributeTemporaryAlterationEffect)
-                return GetUIAttackAttributeCombatType((effect as AttackAttributeTemporaryAlterationEffect).CombatType);
-
-            else
-                throw new Exception("Unhandled Attack Attribue IAlterationEffect type");
-        }
         #endregion
-
-        private static string GetUIAttackAttributeCombatType(AlterationAttackAttributeCombatType combatType)
-        {
-            switch (combatType)
-            {
-                case AlterationAttackAttributeCombatType.FriendlyAggregate:
-                    return "Friendly";
-                case AlterationAttackAttributeCombatType.MalignPerStep:
-                    return "Malign";
-                default:
-                    throw new Exception("Unhandled AlterationAttackAttributeCombatType");
-            }
-        }
     }
 }

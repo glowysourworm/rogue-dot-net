@@ -10,7 +10,7 @@ using System.Windows.Media.Animation;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
-    [PartCreationPolicy(CreationPolicy.Shared)]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
     public partial class EquipmentSubpanel : UserControl
     {

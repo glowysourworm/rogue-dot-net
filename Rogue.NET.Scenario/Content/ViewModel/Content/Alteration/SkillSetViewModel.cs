@@ -91,7 +91,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     //Alteration = new AlterationViewModel(x.Alteration),
                     AttributeRequirement = x.AttributeRequirement,
                     AttributeLevelRequirement = x.AttributeLevelRequirement,
-                    // TODO:ALTERATION
                     //Description = encyclopedia[x.Alteration.RogueName].LongDescription,
                     HasAttributeRequirement = x.HasAttributeRequirement,
                     HasCharacterClassRequirement = x.HasCharacterClassRequirement,

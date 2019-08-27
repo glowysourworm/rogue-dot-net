@@ -1,11 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
-using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
-using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
-using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
-using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using System;
 

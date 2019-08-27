@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.Alteration.TemporaryAlterationEffectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:Rogue.NET.Scenario.Content.Views"
+             Background="Transparent">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
+        <StackPanel>
+
+            <!-- IAlterationEffect.RogueName -->
+            <Grid Margin="4">
+                <TextBlock Text="{Binding RogueName}" Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Display Type -->
+            <Grid Margin="4">
+                <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Event Time -->
+            <Grid Margin="4">
+                <TextBlock Text="Event Time" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding EventTime}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- See Invisible -->
+            <Grid Margin="4">
+                <TextBlock Text="See Invisible" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding CanSeeInvisibleCharacters}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Is Stackable -->
+            <Grid Margin="4">
+                <TextBlock Text="Stackable" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding IsStackable}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Altered State -->
+            <Grid Margin="4">
+                <Image Height="15" Width="10" VerticalAlignment="Center" HorizontalAlignment="Left"
+                       Visibility="{Binding HasAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                    <Image.Source>
+                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                            <Binding Path="AlteredState.CharacterSymbol" />
+                            <Binding Path="AlteredState.CharacterColor" />
+                            <Binding Path="AlteredState.Icon" />
+                            <Binding Path="AlteredState.DisplayIcon" />
+                            <Binding Path="AlteredState.SmileyMood" />
+                            <Binding Path="AlteredState.SmileyBodyColor" />
+                            <Binding Path="AlteredState.SmileyLineColor" />
+                            <Binding Path="AlteredState.SmileyAuraColor" />
+                            <Binding Path="AlteredState.SymbolType" />
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
+                <TextBlock Text="{Binding AlteredState.RogueName}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Alteration Attributes { Strength, Intelligence, ... } -->
+            <ItemsControl ItemsSource="{Binding AlterationEffectAttributes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding AttributeName}" HorizontalAlignment="Left" FontSize="14" Foreground="White" />
+                            <TextBlock Text="{Binding AttributeValue}" HorizontalAlignment="Right" FontSize="14" Foreground="Beige" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </Border>
+</UserControl>

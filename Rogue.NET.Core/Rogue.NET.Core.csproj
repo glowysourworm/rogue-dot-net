@@ -124,6 +124,8 @@
     <Compile Include="Converter\ColorBrushConverter.cs" />
     <Compile Include="Converter\DebugVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\DualBoolVisibilityCollapsedConverter.cs" />
+    <Compile Include="Converter\EnumDisplayAttributeDescriptionConverter.cs" />
+    <Compile Include="Converter\EnumDisplayAttributeNameConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityInverseConverter.cs" />
     <Compile Include="Converter\GreaterThanZeroVisibilityConverter.cs" />

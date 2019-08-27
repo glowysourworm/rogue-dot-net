@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -32,6 +33,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             this.Id = rogueBase.Id;
             this.RogueName = rogueBase.RogueName;
+        }
+
+        public RogueBaseViewModel(Template templateBase)
+        {
+            this.Id = templateBase.Guid;
+            this.RogueName = templateBase.Name;
         }
 
         #region Notify Property Changed

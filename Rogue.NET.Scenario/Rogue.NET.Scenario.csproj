@@ -70,6 +70,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -176,10 +177,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constant\RegionName.cs" />
+    <Compile Include="Content\ViewModel\Attribute\UIDisplayAttribute.cs" />
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AlterationAttributeViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AlterationDescriptionViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\AttackAttributeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributeAuraAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributePassiveAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributeMeleeAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributeTemporaryAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\AuraAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\ChangeLevelAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateMonsterAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\DrainMeleeAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentDamageAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentEnhanceAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\OtherAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\PermanentAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\PassiveAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\RemedyAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\RevealAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\RunAwayAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\StealAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TeleportAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TemporaryAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\CharacterClassViewModel.cs" />
@@ -212,6 +234,60 @@
     <Compile Include="Content\ViewModel\Message\ScenarioSkillAdvancementMessageViewModel.cs" />
     <Compile Include="Content\Views\AlterationCtrl.xaml.cs">
       <DependentUpon>AlterationCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\TemporaryAlterationEffectView.xaml.cs">
+      <DependentUpon>TemporaryAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\TeleportAlterationEffectView.xaml.cs">
+      <DependentUpon>TeleportAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\StealAlterationEffectView.xaml.cs">
+      <DependentUpon>StealAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\RevealAlterationEffectView.xaml.cs">
+      <DependentUpon>RevealAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\RemedyAlterationEffectView.xaml.cs">
+      <DependentUpon>RemedyAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\AttackAttributeTemporaryAlterationEffectView.xaml.cs">
+      <DependentUpon>AttackAttributeTemporaryAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\AttackAttributePassiveAlterationEffectView.xaml.cs">
+      <DependentUpon>AttackAttributePassiveAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\AttackAttributeMeleeAlterationEffectView.xaml.cs">
+      <DependentUpon>AttackAttributeMeleeAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\AttackAttributeAuraAlterationEffectView.xaml.cs">
+      <DependentUpon>AttackAttributeAuraAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\PermanentAlterationEffectView.xaml.cs">
+      <DependentUpon>PermanentAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\PassiveAlterationEffectView.xaml.cs">
+      <DependentUpon>PassiveAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\OtherAlterationEffectView.xaml.cs">
+      <DependentUpon>OtherAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\EquipmentEnhanceAlterationEffectView.xaml.cs">
+      <DependentUpon>EquipmentEnhanceAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\EquipmentDamageAlterationEffectView.xaml.cs">
+      <DependentUpon>EquipmentDamageAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\DrainMeleeAlterationEffectView.xaml.cs">
+      <DependentUpon>DrainMeleeAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\CreateMonsterAlterationEffectView.xaml.cs">
+      <DependentUpon>CreateMonsterAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\ChangeLevelAlterationEffectView.xaml.cs">
+      <DependentUpon>ChangeLevelAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\AuraAlterationEffectView.xaml.cs">
+      <DependentUpon>AuraAlterationEffectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\AttackAttributesCtrl.xaml.cs">
       <DependentUpon>AttackAttributesCtrl.xaml</DependentUpon>
@@ -348,6 +424,78 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\AlterationCtrl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\Alteration\TemporaryAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\TeleportAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\StealAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\RevealAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\RemedyAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\AttackAttributeTemporaryAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\AttackAttributePassiveAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\AttackAttributeMeleeAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\AttackAttributeAuraAlterationEffectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\Alteration\PermanentAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\PassiveAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\OtherAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\EquipmentEnhanceAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\EquipmentDamageAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\DrainMeleeAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\CreateMonsterAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\ChangeLevelAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\AuraAlterationEffectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

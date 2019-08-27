@@ -20,10 +20,12 @@
     <converter:CollectionEmptyVisibilityConverter x:Key="CollectionEmptyVisibilityConverter" />
     <converter:CollectionNonEmptyVisibilityConverter x:Key="CollectionNonEmptyVisibilityConverter" />
     <converter:ColorBrushConverter x:Key="ColorBrushConverter" />
+    <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:DualBoolVisibilityCollapsedConverter x:Key="DualBoolVisibilityCollapsedConverter" />
+    <converter:EnumDisplayAttributeNameConverter x:Key="EnumDisplayAttributeNameConverter" />
+    <converter:EnumDisplayAttributeDescriptionConverter x:Key="EnumDisplayAttributeDescriptionConverter" />
     <converter:NonNullBoolConverter x:Key="NonNullBoolConverter" />
     <converter:NonNullVisibilityConverter x:Key="NonNullVisibilityConverter" />
-    <converter:DebugVisibilityCollapsedConverter x:Key="DebugVisibilityCollapsedConverter" />
     <converter:LessThanZeroConverter x:Key="LessThanZeroConverter" />
     <converter:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
     <converter:GreaterThanZeroVisibilityConverter x:Key="GreaterThanZeroVisibilityConverter" />

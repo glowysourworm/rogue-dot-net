@@ -22,5 +22,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             get { return _attributeValue; }
             set { this.RaiseAndSetIfChanged(ref _attributeValue, value); }
         }
+
+        public AlterationAttributeViewModel()
+        {
+
+        }
+        public AlterationAttributeViewModel(string name, string value)
+        {
+            this.AttributeName = name;
+            this.AttributeValue = value;
+        }
     }
 }

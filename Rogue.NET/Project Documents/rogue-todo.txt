@@ -1075,3 +1075,307 @@ IMMEDIATE TODO'S:
 											 
 	- TODO: Front end is updating on each step (DrawContent).. Already needs fixing to deal with a controller.. so will have to
 			make this granular again.
+			
+	- TODO: Break down "Food Usage Per Turn" UI to show contributions per type (Alteration, Haul)
+	
+	- IDEA: Consider getting rid of Dodge, Mental Block, and Critical hit statistics. (And the related alteration parameters).
+	
+			Instead: Have a new alteration that BLOCKS ALL (something).. to replace an alteration that boosts your "Mental Block %"
+			
+			Also:    Go ahead and calculate blocking behind-the-scenes; and show it as a % of success somewhat like Brogue on
+					 a mouse-over. Do the same for Dodge, and Critical hit.
+					 
+			Also:    Need to calculate a Miss %. So, there's things to do for character interactions.
+			
+			Then:    Maybe would want to show some of the calculated parameters for changing equipment; and possibly active skills.
+			
+	- IDEA: Maybe change HP -> Health; and MP -> (something like) Stamina (but it's for skills / alterations that require stamina)
+	
+	- IDEA: Maybe try some proof-of-concept scenarios for some of the weirder support that Rogue.NET provides. Maybe, have a game
+			centered around "keeping the lights on" - where everything you do affects your light radius (?) Maybe even simple attacks
+			(using weapons with attack alterations).
+			
+			Other things to make it interesting... ? (too many to count) How about multiple stair-wells? Or, challenge levels (?) 
+			(an alternate stairwell with a single room and no other way down after that) 
+			
+			I like - PUZZLES~! Pretty sure there's a lot of ways to do that; but anything working with the level to solve a puzzle
+			would be really really phenomenal:  Hidden passages, locked-rooms-with-one-key outside the room, locked-rooms-with-enemy
+			guards; button sequences (stand on one, stand on another, don't mess up - or you will be in "danger" (enemies, etc..))
+			
+	- TODO: Explain attack attributes in terms of % difference between two values:
+	
+			Example: Equipment shows % + or - change when worn or removed. 
+			
+			PROBLEM: Have a dependence on Attack and Resistence for a change in the value.
+			
+					 [F(A, R, W = 0) - F(A, R + e, W = 0)] / F(A, R, W = 0) = 1 - [(A + R) / (A + R + e)]
+					 
+					 So, if A = R = 5 and e = 1, dF / F = 1 / 11. 
+					 
+					     if A = R = 10 and e = 1, dF / F = 1 / 21.
+			
+					 That means the % difference is dependent on A and R. That's a problem for 
+					 showing to users because you can't factor out A.
+					 
+					 So, what if the resistance was based on a simple rational function just
+					 of R. The output of F(R) would be [0,1) (for all R >= 0). Similarly, the Weakness function
+					 would just be a simple function G(W) that doesn't depend on A either. So,
+					 The total attack value is:
+					 
+					 Attack Value = A * [F(R) + G(W)] 
+					 
+					 Where:
+					 
+					 Resistence = Arctan(R) (maybe 2/pi * arctan(R))
+					 
+					 But, it won't actually work. Because, that would say you're "Adding on a % of resistance" - which
+					 only works relative to A. 
+					 
+					 So, FOR SHOWING THE USERS how effective their equipment and alterations are at defending or
+					 attacking based on attack attributes - the number they see will have to suffice. 
+					 
+					 BUT, it will have to show you what's happening for those attributes so that you know (DURING COMBAT).
+					 
+					 And, the method that's being used now is really perfect for attack attributes because it gives
+					 you a ratio of 1/2 for R=A.. which guarantees A always wins (which it should) (same with strength)..
+					 but having this kind of calculation will be the best for every type of attack attribute related
+					 effect. 
+					 
+					 So, probably, the UI will have to be easy to intuit for these - whether it be a log, or an enemy
+					 HP meter with "the last hit shown (in terms of attack attributes", or some visual queue when there's
+					 an attack being made with them (maybe). But, they have to be considered to know easily.
+					
+	TODO: GET RID OF Range<T>.HighLimit and Range<T>.LowLimit from the class - and move to the UI only.
+	
+	TODO: Make (most) Attack Attribute properties "single-attribute".  
+	
+		  Example:  Equipment Attack Attributes - Probably won't ever use more than one at a time - espeically because
+					there's a lot of equipment! (two rings, a belt, shoulders, an orb, an amulet, etc... etc... So, 
+					probably want the "innate" attack attribute for the equipment to either
+					
+					1) Go away (in favor of the attack alteration)
+					
+					(or)
+
+					2) Go to a single attribute (each equipment item just gets one)
+					
+		  I'd think probably along these lines for changing this:
+		  
+			- Enemies get a full list 
+			
+			- Equipment innate properties go to ONE attribute - with the addition of another ONE attribute for each Alteration
+			  (Attack, Equip, Curse)
+			  
+			- All other alteration effects go to just ONE attribute
+			
+			- Character class also goes to a SINGLE attribute.
+			
+		  Then, change Rogue.NET to deal with sparse collections of attack attributes:
+		  
+		  Example:  For Enemies, the editor should add on to a list of attack attributes - allowing just a SINGLE INSTANCE per
+					NAME of attack attribute. 
+					
+					The editor should provide a dropdown list of current attribute to select from to prevent creating new ones
+					with the same name; and to copy over the name / symbol for each one to create a new instance for the enemy.
+					
+					The editor should provide a way to create a new attribute NOT in the dropdown to add to the scenario 
+					(calculated) collection. This can be modified RIGHT THERE; but once it's done - the attribute will NOT be
+					allowed to be modified - just DELETED. The primary scenario list will be managed by probably the 
+					ScenarioEditorModule using Events.
+					
+	- TODO: Problems with "Magic Block", "Criticl Hit" and "Dodge" as a probability. 
+					
+			1) Too many "things" to fuss with for the user. (And for the UI).. But, primarily, these don't do enough to show you
+			   that they're important. 
+			   
+			2) Using different forms of balancing (Attack Attributes, Character Class, Base Attributes, and Altered States) the
+			   user would want to know when / how to BLOCK, DODGE, or CRITICALLY HIT based on those.
+			   
+			3) The calculated [ Hit, Miss, Dodge, Critical Hit ] could be based on base attributes [Strength, Intelligence, Agility]
+			   but, most likely, kept more like simple PHYSICAL combat [ Hit, Miss, Dodge, Critical Hit* ]
+			   
+		    One of the PRIMARY problems designing a "Magical" Character (like the Sorcerer) - was dealing with Intelligence-based 
+			combat using weapons.
+			
+			This problem was solved by introducing an attribute parameter that specifies the base attribute to use in the 
+			calculation. 
+			
+			BUT, that doesn't deal with other things like [ Hit, Miss, Dodge, Critical Hit ]. These really should probably be 
+			calculated BEHIND-THE-SCENES; but not shown to the user unless it can be done without confusing them. Brogue does
+			a pretty good job of this with their "interaction dialog" describing what "could happen" when they attack.
+			
+			Here's what I think COULD happen for doing blocking in a bigger way to include some of the other things like 
+			[ Attack Attributes, Character Class, and Altered States ]
+			
+				1) BLOCKING AN ALTERATION should be based on a) The switch on the Alteration (Physical / Mental) (CHANGE TO
+				   BASE ATTRIBUTE [ Strength, Agility, Intelligence ]; and the base attributes. 
+				   
+				   The current calculation uses a trancendental function (Arctan) to come up with probability based on 
+				   the RATIO of the attributes: P = F(Enemy Attribute, Player Attribute) = C * Arctan( f(E / P) ).. which
+				   will provide a number between [0, 1].
+				   
+				   This should work fine; but we don't want to over-display this probability.. Just maybe show when it's
+				   useful to show and not overwhelming. (Something like the Brogue mouse-over for enemies would be fine)
+				   
+				   FINALLY, Blocking an Alteration NEEDS TO BE SHOWN. The Animation NEEDS TO PLAY Before blocking. A blocking
+				   animation WOULD BE NICE (As an addition on the Alteration). (I LIKE THIS IDEA). But, it's not necessary 
+				   so long as the user understands what happened.
+				   
+				   The in-game log is a little to much to parse continually to know what's going on. Probably better to remove
+				   it in favor of an intuitive UI that shows the enemies actions (like a list of enemies with their HP meter
+				   and maybe something about their last action.. like an Alteration or Attack Attributes used or Critical hit)
+				   
+				2) CRITICAL HIT should be moved because it's not based on an innate character attribute. It should be removed
+				   from alterations and put directly on the EQUIPMENT item. 
+
+				   This would make it an innate property of the equipment - which is a lot easier to think about from the user's
+				   perspective.
+				   
+				   So, the Equipment item would have a CRITICAL HIT %. 
+				   
+				   The Equipment Attack Alteration COULD have a boost for this; but it's really not necessary. 
+				   
+				3) [ Hit, Miss, Dodge ] based on character base attributes [ Strength , Agility, Intelligence ].
+				
+					BUT, HOW? 
+					
+					For Attribute based Melee - keep the hit calculation based on the attribute.
+					
+					Example:  "Sorcerer's Staff" - (Based on Intelligence) v.s. "Worlock's Magic Armor" (Based on Intelligence)
+					
+						      Attack = F(Intellgience, Staff Quality, Staff Class) v.s. Defense = F(Intelligence, Armor Quality, Armor Class)
+
+						      Hit = Attack - Defense (clipped to zero)
+							  
+							  Miss % = ???
+							  
+							  Dodge % = ???
+							  
+					Those will remain % based on base attributes. 
+					
+						Miss = Function ( ??? ) 
+
+					Brogue would make this based on what's difficult for the character to use. Like, "my strength determines my Miss %".
+					
+					That might be fine - so long as the UI makes it apparent and SIMPLE to understand. 
+					
+					So, probably 
+					
+						Miss = Function ( Strength / Item Weight ) 
+						
+					Miss % could be based on just the ratio of the character's strength to the item weight. This DOES NOT DEPEND
+					ON the character's Agility OR the Enemy's Agility.
+					
+					WHICH DECOUPLES IT from any other parameters - which means it can be displayed in the UI in the equipment 
+					list. (with the equipment details)
+					
+					The Dodge % should remain based on the ratio of character agility:
+					
+						Dodge = Function ( Player Agility / Enemy Agility )
+						
+					So, Miss does NOT depend (or is NOT COUPLED) to Dodge. THIS IS GOOD. It would cause a problem showing, displaying,
+					and otherwise confusing the player.
+					
+					Miss still needs to be implemented.
+					
+				4) Would like to introduce IMMUNITY in several possible ways:
+				
+					- Attack Attribute Immunity:  Easiest approach to implement would be a flag on the attack attribute. DON'T DO IT 
+												  THIS WAY! It would overlap parameters and is not a good idea. EXISTING ALTERATIONS
+												  USE ATTACK ATTRIBUTES IN A CERTAIN WAY - AND IT WOULD NOT BE A GOOD IDEA TO ADD
+												  FUNCTIONALITY TO THOSE.												  
+												  
+												  INSTEAD:  Move Attack Attribute Immunity to a SEPARATE set of Alterations.
+												  
+															- AttackAttributeTemporaryImmunityAlterationEffect
+															
+															- AttackAttributePassiveImmunityAlterationEffect
+															
+												  FOR ENEMIES:  Since they don't have an innate property for this - go ahead and 
+																give them one for PERMANENT IMMUNITY.
+																
+															- Enemy:  List< AttackAttributeImmunity >
+															
+																The UI might have to be set up to show both the attack attribute 
+																collection AND the immunity collection together. (which is tricky
+																but that UI is already overcrowded.. so a refactoring to do this
+																might be ok)
+																
+																BUT, the attack attribute and attack attribute immunity collections
+																should be SEPARATE. 
+																
+																Combining them would be too confusing to keep straight.
+																
+																(ONE MORE THING) Adding an enum option to the Combat Type (Friendly,
+																Malign, Immunity) is NOT a good idea because of overlapping uses.
+																	
+																We don't want an Aura of immunity. Maybe in the future; but NOT NOW.
+															
+												  ALSO:  (Just thought of this) Character Class is supposed to provide things like
+														 this idea because it would work well to balance the scenario.
+														 
+														 So, would like to do PERMANENT IMMUNITY for the Character BASE class. This
+														 would mean that the Player could have permanent attack attribute immunity. 
+														 
+														 The way to make this work easily is to let the Character Class select basically
+														 an entirely different PlayerTemplate. :) :) :) :) :)
+														 
+														 This would be MUCH MUCH MUCH BETTER than just specifying a couple bonus attributes.
+														 
+														 1) It would remove the Character Class Alteration from the Character Alteration
+															that is supposed to be for all the Dynamic alteration data only.
+															
+														 2) It would provide lots more alternatives for starting with different options: 
+															Equipment, Consumables, Stats, Attack Attributes, Immunities, etc...
+															
+														 3) IT WOULD PROVIDE A DIFFERENT CHARACTER SYMBOL :) :) :)
+														 
+														 This is EASILY accomplished by creating a list of PlayerTemplate instances per
+														 scenario; and would share the Enemy UI for Attack Attribute Immunity.
+														 
+					- Altered State Immunity:  This should be similar to attack attribute immunity for the Character base. It would 
+											   be part of the Enemy and Player (per class) design.
+											   
+											   Altered State Immunity:  Each Character gets a SINGLE immunity chosen from a list of
+																		Altered States.
+																		
+											   Alterations:  Provide Passive and Temporary Alteration Effects to grant immunity
+															
+																- AlteredStateImmunityPassiveAlterationEffect
+																
+																- AlteredStateImmunityTemporaryAlterationEffect
+																
+															 These should be provided just for the Player to INVOKE. The Equipment
+															 Effects COULD be granted to the Enemy like Auras but are not given as
+															 Enemy Skills. 
+															 
+															 The innate Character immunity will grant the Enemy with ONE option for
+															 this. Anything extra will have to be equipment.
+															 
+											   Character Class:  The Attack Attributes, Attack Attribute Immunities, and Altered State
+															     Immunity need to be shown to the user when they're selecting a character.
+																 
+																 The base stats COULD be shown if it was not too much information.
+																 
+																 The immunities should probably be shown as part of the Attack Attribute
+																 and Alteration UI's that are already there. (at least for now)
+																 
+																 IDEA:  Show the Character Class information as part of the Player UI
+																		in the top-left. Will have to design it; and save space for it
+																		somehow.
+																		
+																		Need to remove the Character Class entries from the Rogue
+																		Encyclopedia. The reason is to force the User to try each 
+																		one to see what they're about.																		
+											
+	- TODO: Player Invisible / Transmorgified:  when you attack an enemy, set the status of all enemies that SEE you to "IsAlerted".
+												Remove the "WasAttackedByPlayer" and replace it with "IsAlerted".. And set it when
+												you do something to attack an enemy for all enemies that SEE you.
+												
+												This should be RESET when you're out of SIGHT range (Light Radius in Line-of-Sight)
+												from the Enemy's perspective. 
+												
+												It should allow them to track you when you're invisible and transmorgified.. (or
+												whatever altered state is based on "CantBeSeenByEnemy")
+												
+												
