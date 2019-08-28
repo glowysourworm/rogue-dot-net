@@ -22,6 +22,10 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.Scenario.Constant;
 using Rogue.NET.Scenario.Intro.Views;
+using Rogue.NET.Scenario.Events.Content.SkillTree;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect;
+using Rogue.NET.Scenario.Content.Views.Alteration;
+using System;
 
 namespace Rogue.NET.Scenario
 {
@@ -66,14 +70,6 @@ namespace Rogue.NET.Scenario
                 }
                 else if (update.ScenarioUpdateType == ScenarioUpdateType.ScenarioCompleted)
                 {
-                    // TODO:REGIONMANAGER  Opacity needs to be reset!!!
-                    //(_regionManager.Regions["MainRegion"]
-                    //               .Views
-                    //               .FirstOrDefault(x => x.GetType() == typeof(OutroDisplay)) as OutroDisplay)
-                    //               .Opacity = 1;
-
-                    //  ?
-
                     var view = _regionManager.LoadSingleInstance(RegionName.MainRegion, typeof(OutroDisplay));
                 }
 
@@ -125,6 +121,69 @@ namespace Rogue.NET.Scenario
                 _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(DungeonEncyclopedia));
             });
 
+            // Content -> Skill Tree
+            _eventAggregator.GetEvent<SkillTreeLoadAlterationEffectRegionEvent>().Subscribe((region, payload) =>
+            {
+                // TODO: Could move these to an attribute for the view models
+
+                if (payload is AttackAttributeAuraAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(AttackAttributeAuraAlterationEffectView));
+
+                else if (payload is AttackAttributeMeleeAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(AttackAttributeMeleeAlterationEffectView));
+
+                else if (payload is AttackAttributePassiveAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(AttackAttributePassiveAlterationEffectView));
+
+                else if (payload is AttackAttributeTemporaryAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(AttackAttributeTemporaryAlterationEffectView));
+
+                else if (payload is AuraAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(AuraAlterationEffectView));
+
+                else if (payload is ChangeLevelAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(ChangeLevelAlterationEffectView));
+
+                else if (payload is CreateMonsterAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(CreateMonsterAlterationEffectView));
+
+                else if (payload is DrainMeleeAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(DrainMeleeAlterationEffectView));
+
+                else if (payload is EquipmentDamageAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(EquipmentDamageAlterationEffectView));
+
+                else if (payload is EquipmentEnhanceAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(EquipmentEnhanceAlterationEffectView));
+
+                else if (payload is OtherAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(OtherAlterationEffectView));
+
+                else if (payload is PassiveAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(PassiveAlterationEffectView));
+
+                else if (payload is PermanentAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(PermanentAlterationEffectView));
+
+                else if (payload is RemedyAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(RemedyAlterationEffectView));
+
+                else if (payload is RevealAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(RevealAlterationEffectView));
+
+                else if (payload is StealAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(StealAlterationEffectView));
+
+                else if (payload is TeleportAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(TeleportAlterationEffectView));
+
+                else if (payload is TemporaryAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(TemporaryAlterationEffectView));
+
+                else
+                    throw new Exception("Unhandled AlterationEffectViewModel");
+            });
+
             // Delete Scenario
             _eventAggregator.GetEvent<DeleteScenarioEvent>().Subscribe((e) =>
             {
@@ -157,8 +216,6 @@ namespace Rogue.NET.Scenario
             // Leaving these (below) views un-registered caused problems when loading scenario view models
             // because most of the event-aggregator events had already been called to initialize the view.
 
-            // I'm thinking that loading the primary game view may be enough to get all the child-views 
-            // instantiated.. but will have to see how it works.
             _regionManager.PreRegisterView(RegionName.MainRegion, typeof(GameView));
             _regionManager.PreRegisterView(RegionName.GameRegion, typeof(LevelView));
             _regionManager.PreRegisterView(RegionName.GameRegion, typeof(EquipmentSelectionCtrl));

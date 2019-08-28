@@ -10,41 +10,36 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
-        <StackPanel>
 
-            <!-- IAlterationEffect.RogueName -->
-            <Grid Margin="4">
-                <TextBlock Text="{Binding RogueName}" Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right" />
-            </Grid>
+    <StackPanel>
 
-            <!-- Display Type -->
-            <Grid Margin="4">
-                <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
-                <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
-            </Grid>
+        <!-- IAlterationEffect.RogueName -->
+        <Grid Margin="4">
+            <TextBlock Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right">
+                <Run Text="{Binding RogueName}" />
+                <Run Text=" Effect" />
+            </TextBlock>
+        </Grid>
 
-            <!-- Altered State -->
-            <Grid Margin="4">
-                <Image Height="15" Width="10" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <Image.Source>
-                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                            <Binding Path="RemediedState.CharacterSymbol" />
-                            <Binding Path="RemediedState.CharacterColor" />
-                            <Binding Path="RemediedState.Icon" />
-                            <Binding Path="RemediedState.DisplayIcon" />
-                            <Binding Path="RemediedState.SmileyMood" />
-                            <Binding Path="RemediedState.SmileyBodyColor" />
-                            <Binding Path="RemediedState.SmileyLineColor" />
-                            <Binding Path="RemediedState.SmileyAuraColor" />
-                            <Binding Path="RemediedState.SymbolType" />
-                        </MultiBinding>
-                    </Image.Source>
-                </Image>
-                <TextBlock Text="{Binding RemediedState.RogueName}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
-            </Grid>
+        <!-- Altered State -->
+        <Grid Margin="4">
+            <Image Height="15" Width="10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
+                        <Binding Path="RemediedState.CharacterSymbol" />
+                        <Binding Path="RemediedState.CharacterColor" />
+                        <Binding Path="RemediedState.Icon" />
+                        <Binding Path="RemediedState.DisplayIcon" />
+                        <Binding Path="RemediedState.SmileyMood" />
+                        <Binding Path="RemediedState.SmileyBodyColor" />
+                        <Binding Path="RemediedState.SmileyLineColor" />
+                        <Binding Path="RemediedState.SmileyAuraColor" />
+                        <Binding Path="RemediedState.SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+            <TextBlock Text="{Binding RemediedState.RogueName}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
+        </Grid>
 
-        </StackPanel>
-    </Border>
+    </StackPanel>
 </UserControl>

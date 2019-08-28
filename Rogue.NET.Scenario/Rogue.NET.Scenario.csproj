@@ -346,6 +346,7 @@
     <Compile Include="Events\Content\RequestNavigateToSkillTreeEvent.cs" />
     <Compile Include="Events\Content\ShiftDisplayEvent.cs" />
     <Compile Include="Events\Content\GameUpdateEvent.cs" />
+    <Compile Include="Events\Content\SkillTree\SkillTreeLoadAlterationEffectRegionEvent.cs" />
     <Compile Include="Events\GameSetupDisplayFinished.cs" />
     <Compile Include="Events\IntroFinishedEvent.cs" />
     <Compile Include="Events\RequestNaviateParametersDisplayEvent.cs" />

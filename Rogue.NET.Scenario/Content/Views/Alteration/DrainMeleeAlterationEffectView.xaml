@@ -9,32 +9,27 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
-        <StackPanel>
+    <StackPanel>
 
-            <!-- IAlterationEffect.RogueName -->
-            <Grid Margin="4">
-                <TextBlock Text="{Binding RogueName}" Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right" />
-            </Grid>
+        <!-- IAlterationEffect.RogueName -->
+        <Grid Margin="4">
+            <TextBlock Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right">
+                <Run Text="{Binding RogueName}" />
+                <Run Text=" Effect" />
+            </TextBlock>
+        </Grid>
 
-            <!-- Display Type -->
-            <Grid Margin="4">
-                <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
-                <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
-            </Grid>
+        <!-- Alteration Attributes { Hp, Mp } -->
+        <ItemsControl ItemsSource="{Binding AlterationEffectAttributes}" Margin="4">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock Text="{Binding AttributeName}" HorizontalAlignment="Left" FontSize="18" Foreground="Tan" />
+                        <TextBlock Text="{Binding AttributeValue}" HorizontalAlignment="Right" FontSize="18" Foreground="White" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-            <!-- Alteration Attributes { Hp, Mp } -->
-            <ItemsControl ItemsSource="{Binding AlterationEffectAttributes}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <TextBlock Text="{Binding AttributeName}" HorizontalAlignment="Left" FontSize="14" Foreground="White" />
-                            <TextBlock Text="{Binding AttributeValue}" HorizontalAlignment="Right" FontSize="14" Foreground="Beige" />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-        </StackPanel>
-    </Border>
+    </StackPanel>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,8 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.Scenario.Content.Views.Alteration
 {
-    /// <summary>
-    /// Interaction logic for AttackAttributeAuraAlterationEffectView.xaml
-    /// </summary>
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
     public partial class AttackAttributeAuraAlterationEffectView : UserControl
     {
         public AttackAttributeAuraAlterationEffectView()

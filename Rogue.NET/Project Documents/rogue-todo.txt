@@ -1485,4 +1485,5 @@ IMMEDIATE TODO'S:
 						 
 						 This HAS to be done right or there'll be some unintended bugs.						
 	
-			
+	- TODO: If there's room on the Skill Tree - (looks like there's a "quadrant" left to fill up...) Could show a large
+			"Smiley" with the effect applied. :)

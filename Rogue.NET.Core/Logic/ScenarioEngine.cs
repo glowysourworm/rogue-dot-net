@@ -349,11 +349,16 @@ namespace Rogue.NET.Core.Logic
                 RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, consumable.Id));
             }
 
+            // Validate for the Alteration
+            if (consumable.HasAlteration &&
+               !_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+                return LevelContinuationAction.ProcessTurn;
+
+
             // Check for removal of item
             switch (consumable.Type)
             {
                 case ConsumableType.OneUse:
-                    if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
                     {
                         // Remove the item
                         player.Consumables.Remove(itemId);
@@ -361,15 +366,11 @@ namespace Rogue.NET.Core.Logic
                         // Queue an update
                         RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
                     }
-                    else
-                        return LevelContinuationAction.ProcessTurn;
                     break;
                 case ConsumableType.MultipleUses:
                     {
-                        if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
-                            consumable.Uses--;
-                        else
-                            return LevelContinuationAction.ProcessTurn;
+                        // Subtract a Use
+                        consumable.Uses--;
 
                         if (consumable.Uses <= 0)
                         {

@@ -56,6 +56,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
                 AlterationCostType costType,
                 AlterationBlockType blockType) : base()
         {
+            this.RogueName = effect.RogueName;
             
             this.Cost = new AlterationCostViewModel(cost);
             this.CostType = costType;
@@ -73,6 +74,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
                 AlterationCostType costType,
                 AlterationBlockType blockType) : base()
         {
+            this.RogueName = effect.Name;
+
             this.Cost = new AlterationCostViewModel(cost);
             this.CostType = costType;
             this.BlockType = supportsBlocking ? blockType.ToString() : "N/A";

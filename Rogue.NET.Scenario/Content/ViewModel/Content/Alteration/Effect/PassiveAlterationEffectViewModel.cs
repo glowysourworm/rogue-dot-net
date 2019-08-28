@@ -22,6 +22,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
         public PassiveAlterationEffectViewModel(PassiveAlterationEffect effect) : base(effect)
         {
+            this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
             this.CanSeeInvisibleCharacters = effect.CanSeeInvisibleCharacters;
 
             if (effect.Strength != 0)
@@ -66,6 +67,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
         public PassiveAlterationEffectViewModel(PassiveAlterationEffectTemplate template) : base(template)
         {
+            this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
             this.CanSeeInvisibleCharacters = template.CanSeeInvisibleCharacters;
 
             if (template.StrengthRange.IsSet())

@@ -7,7 +7,14 @@ namespace Rogue.NET.Common.Extension
     {
         public static T GetAttribute<T>(this Enum value) where T : Attribute
         {
-            var attributes = value.GetType().GetCustomAttributes(typeof(T), true);
+            var member = value.GetType()
+                              .GetMember(value.ToString())
+                              .FirstOrDefault();
+
+            if (member == null)
+                throw new Exception("No Member Defined for Enum Type");
+
+            var attributes = member.GetCustomAttributes(typeof(T), true);
 
             return attributes.Any() ? (T)attributes.First() : default(T);
         }

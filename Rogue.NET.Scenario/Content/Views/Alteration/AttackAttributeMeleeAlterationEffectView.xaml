@@ -10,32 +10,27 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Border Margin="10" Background="#3F000000" CornerRadius="10" Width="300" Padding="4">
-        <StackPanel>
 
-            <!-- IAlterationEffect.RogueName -->
-            <Grid Margin="4">
-                <TextBlock Text="{Binding RogueName}" Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right" />
-            </Grid>
+    <StackPanel>
 
-            <!-- Display Type -->
-            <Grid Margin="4">
-                <TextBlock Text="Effect Type" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
-                <TextBlock Text="{Binding DisplayType}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
-            </Grid>
+        <!-- IAlterationEffect.RogueName -->
+        <Grid Margin="4">
+            <TextBlock Foreground="Tan" FontStyle="Italic" FontSize="18" HorizontalAlignment="Right">
+                <Run Text="{Binding RogueName}" />
+                <Run Text=" Effect" />
+            </TextBlock>
+        </Grid>
 
-            <!-- Attack Attributes -->
-            <Grid Margin="4">
-                <ItemsControl ItemsSource="{Binding AttackAttributes}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <views:DungeonEncyclopediaAttackAttributeCtrl />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
-            
-        </StackPanel>
-    </Border>
+        <!-- Attack Attributes -->
+        <Grid Margin="4">
+            <ItemsControl ItemsSource="{Binding AttackAttributes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <views:DungeonEncyclopediaAttackAttributeCtrl />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+    </StackPanel>
 </UserControl>
