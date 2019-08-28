@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System.Collections.ObjectModel;
 

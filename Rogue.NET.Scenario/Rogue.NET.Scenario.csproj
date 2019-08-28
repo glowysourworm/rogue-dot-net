@@ -179,9 +179,10 @@
     <Compile Include="Constant\RegionName.cs" />
     <Compile Include="Content\ViewModel\Attribute\UIDisplayAttribute.cs" />
     <Compile Include="Content\ViewModel\CommandPreferencesViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\AlterationAttributeViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\AlterationDescriptionViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\AttackAttributeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationAttributeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationListViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AttackAttributeViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationCostViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributeAuraAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributePassiveAlterationEffectViewModel.cs" />
@@ -213,7 +214,7 @@
     <Compile Include="Content\ViewModel\Content\ScenarioMetaData\ScenarioMetaDataViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\SkillViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\AlterationViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasElement.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasShape.cs" />
     <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
@@ -299,7 +300,7 @@
     <Compile Include="Content\Views\ItemGrid.xaml.cs">
       <DependentUpon>ItemGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\ItemTemplateSelector\AlterationGridDataTemplateSelector.cs" />
+    <Compile Include="Content\Views\ItemTemplateSelector\AlterationListTemplateSelector.cs" />
     <Compile Include="Content\Views\ItemTemplateSelector\RogueItemGridRowDetailsTemplateSelector.cs" />
     <Compile Include="Content\Views\ItemTemplateSelector\ScenarioMessageItemTemplateSelector.cs" />
     <Compile Include="Content\Views\LevelCanvas.xaml.cs">
@@ -574,6 +575,10 @@
     <Page Include="Outro\Views\Outro.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Dictionaries\AlterationList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\AttackAttribute.xaml">
       <SubType>Designer</SubType>

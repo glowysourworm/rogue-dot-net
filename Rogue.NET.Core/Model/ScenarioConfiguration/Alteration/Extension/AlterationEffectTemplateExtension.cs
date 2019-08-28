@@ -1,6 +1,9 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Attribute;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,41 +17,36 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
             return effect is OtherAlterationEffectTemplate &&
                   (effect as OtherAlterationEffectTemplate).Type == AlterationOtherEffectType.Identify;
         }
-        #endregion
 
-        #region (public) UI-Related Methods (Consider moving these)
-        //public static IEnumerable<KeyValuePair<string, string>> GetUIAttributes(this AlterationEffectTemplate template)
-        //{
-        //    var values = new List<KeyValuePair<string, Range<double>>>()
-        //    {
-        //        new KeyValuePair<string, Range<double>>("Hp", template.HpRange),
-        //        new KeyValuePair<string, Range<double>>("Mp", template.MpRange),
-        //        new KeyValuePair<string, Range<double>>("Hp Regen", template.HpPerStepRange),
-        //        new KeyValuePair<string, Range<double>>("Mp Regen", template.MpPerStepRange),
-        //        new KeyValuePair<string, Range<double>>("Strength", template.StrengthRange),
-        //        new KeyValuePair<string, Range<double>>("Agility", template.AgilityRange),
-        //        new KeyValuePair<string, Range<double>>("Intelligence", template.IntelligenceRange),
-        //        new KeyValuePair<string, Range<double>>("Speed", template.SpeedRange),
-        //        new KeyValuePair<string, Range<double>>("Food Usage", template.FoodUsagePerTurnRange),
-        //        new KeyValuePair<string, Range<double>>("Hunger", template.HungerRange),
-        //        new KeyValuePair<string, Range<double>>("Experience", template.ExperienceRange),
-        //        new KeyValuePair<string, Range<double>>("Light Radius", template.AuraRadiusRange),
-        //        new KeyValuePair<string, Range<double>>("Attack", template.AttackRange),
-        //        new KeyValuePair<string, Range<double>>("Defense", template.DefenseRange),
-        //        new KeyValuePair<string, Range<double>>("Critical Hit", template.CriticalHit),
-        //        new KeyValuePair<string, Range<double>>("Dodge", template.DodgeProbabilityRange),
-        //        new KeyValuePair<string, Range<double>>("Magic Block", template.MagicBlockProbabilityRange),
-        //    };
+        /// <summary>
+        /// Returns true if the IAlterationEffect supports blocking when used with the supplied
+        /// alteration type.
+        /// </summary>
+        /// <returns>True if the alteration should support blocking</returns>
+        public static bool GetSupportsBlocking(this IAlterationEffectTemplate template, Type alterationType)
+        {
+            // Must look up the interface type using the first or default interface for the alteration type
+            var interfaceType = alterationType.GetInterfaces().FirstOrDefault();
 
-        //    return values.Where(x => x.Value.IsSet())
-        //                 .Select(x => new KeyValuePair<string, string>(x.Key,
+            return interfaceType != null ? template.GetAttribute<AlterationBlockableAttribute>()
+                                                   .GetSupportsBlocking(interfaceType)
+                                         : false;
+        }
 
-        //                 x.Value.Low == x.Value.High ? 
-        //                    x.Value.Low.ToString("F2") :
-        //                    x.Value.Low.ToString("F2") + 
-        //                    " to " + 
-        //                    x.Value.High.ToString("F2")));
-        //}
+        /// <summary>
+        /// Returns true if the IAlterationEffect supports blocking when used with the supplied
+        /// alteration type.
+        /// </summary>
+        /// <returns>True if the alteration should support blocking</returns>
+        public static AlterationCostType GetCostType(this IAlterationEffectTemplate template, Type alterationType)
+        {
+            // Must look up the interface type using the first or default interface for the alteration type
+            var interfaceType = alterationType.GetInterfaces().FirstOrDefault();
+
+            return interfaceType != null ? template.GetAttribute<AlterationCostSpecifierAttribute>()
+                                                   .GetCostType(interfaceType)
+                                         : AlterationCostType.None;
+        }
         #endregion
     }
 }

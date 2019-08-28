@@ -46,7 +46,6 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new AlterationCost()
             {
-                Type = template.Type,
                 Agility = template.Agility,
                 Speed = template.Speed,
                 LightRadius = template.AuraRadius,

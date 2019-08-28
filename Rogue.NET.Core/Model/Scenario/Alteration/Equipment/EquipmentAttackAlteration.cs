@@ -11,9 +11,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
         {
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IEquipmentAttackAlterationEffect;
+            get { return typeof(IEquipmentAttackAlterationEffect); }
         }
     }
 }

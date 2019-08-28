@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         private double _mpPerStep;
         private double _hungerPerStep;
 
+        // TODO:ALTERATION - REMOVE THIS
         public AlterationCostType Type
         {
             get { return _type; }
@@ -94,6 +95,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
+
+        // TODO:ALTERATION - REMOVE THIS (LightRadius)
         public double AuraRadius
         {
             get { return _auraRadius; }

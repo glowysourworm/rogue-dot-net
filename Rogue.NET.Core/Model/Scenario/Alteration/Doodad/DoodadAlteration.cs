@@ -12,9 +12,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Doodad
         {
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IDoodadAlterationEffect;
+            get { return typeof(IDoodadAlterationEffect); }
         }
     }
 }

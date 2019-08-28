@@ -1,18 +1,16 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Attribute;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
 {
     public static class AlterationEffectExtension
     {
-        #region (public) UI Related Query Methods
+        #region (public) Query Methods
         /// <summary>
         /// Calculates "IsStackable" for any IAlterationEffect type (using type inspection)
         /// </summary>
@@ -240,138 +238,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         }
 
         /// <summary>
-        /// Returns set of UI-Formatted attributes to display on the UI.
-        /// </summary>
-        public static IDictionary<string, double> GetUIAttributes(this IAlterationEffect alterationEffect)
-        {
-            // Create a lookup of UI-related attributes (just character stats) for any
-            // IAlterationEffect type (that supports stat changes):
-            //
-            // AuraAlterationEffect
-            // PassiveAlterationEffect
-            // PermanentAlterationEffect
-            // TemporaryAlterationEffect
-
-            Dictionary<string, double> result = null;
-
-            if (alterationEffect.GetType() == typeof(AuraAlterationEffect))
-            {
-                var effect = alterationEffect as AuraAlterationEffect;
-
-                result = new Dictionary<string, double>()
-                {
-                    { "Strength", effect.Strength },
-                    { "Agility", effect.Agility },
-                    { "Intelligence", effect.Intelligence },
-                    { "Speed", effect.Speed },
-
-                    { "Hp Per Step", effect.HpPerStep },
-                    { "Mp Per Step", effect.MpPerStep },
-
-                    { "Attack", effect.Attack },
-                    { "Defense", effect.Defense },
-                    { "Mental Block", effect.MagicBlockProbability },
-                    { "Dodge", effect.DodgeProbability }
-                };
-            }
-            else if (alterationEffect.GetType() == typeof(PassiveAlterationEffect))
-            {
-                var effect = alterationEffect as PassiveAlterationEffect;
-
-                result = new Dictionary<string, double>()
-                {
-                    { "Strength", effect.Strength },
-                    { "Agility", effect.Agility },
-                    { "Intelligence", effect.Intelligence },
-                    { "Speed", effect.Speed },
-                    { "Light Radius", effect.LightRadius },
-
-                    { "Hp Per Step", effect.HpPerStep },
-                    { "Mp Per Step", effect.MpPerStep },
-                    { "Food Usage", effect.FoodUsagePerTurn },
-
-                    { "Attack", effect.Attack },
-                    { "Defense", effect.Defense },
-                    { "Mental Block", effect.MagicBlockProbability },
-                    { "Dodge", effect.DodgeProbability },
-                    { "Critical Hit", effect.CriticalHit }
-                };
-            }
-            else if (alterationEffect.GetType() == typeof(PermanentAlterationEffect))
-            {
-                var effect = alterationEffect as PermanentAlterationEffect;
-
-                result = new Dictionary<string, double>()
-                {
-                    { "Strength", effect.Strength },
-                    { "Agility", effect.Agility },
-                    { "Intelligence", effect.Intelligence },
-                    { "Speed", effect.Speed },
-                    { "Light Radius", effect.LightRadius },
-                    { "Experience", effect.Experience },
-                    { "Hunger", effect.Hunger },
-                    { "Hp", effect.Hp },
-                    { "Mp", effect.Mp }
-                };
-            }
-            else if (alterationEffect.GetType() == typeof(TemporaryAlterationEffect))
-            {
-                var effect = alterationEffect as TemporaryAlterationEffect;
-
-                result = new Dictionary<string, double>()
-                {
-                    { "Hp", effect.HpPerStep },
-                    { "Mp", effect.MpPerStep },
-                    { "Strength", effect.Strength },
-                    { "Agility", effect.Agility },
-                    { "Intelligence", effect.Intelligence },
-                    { "Speed", effect.Speed },
-
-                    { "Food Usage", effect.FoodUsagePerTurn },
-                    { "Light Radius", effect.LightRadius },
-
-                    { "Attack", effect.Attack },
-                    { "Defense", effect.Defense },
-                    { "Critical Hit", effect.CriticalHit },
-                    { "Dodge", effect.DodgeProbability },
-                    { "Mental Block", effect.MentalBlockProbability }
-                };
-            }
-
-            if (result != null)
-                result.Filter(x => x.Value == 0D);
-
-            return result ?? new Dictionary<string, double>();
-        }
-
-        /// <summary>
-        /// Returns collection of attack attributes for the alteration (using type inspection)
-        /// </summary>
-        public static IEnumerable<AttackAttribute> GetAttackAttributes(this IAlterationEffect alterationEffect)
-        {
-            IEnumerable<AttackAttribute> result = null;
-
-            if (alterationEffect.GetType() == typeof(AttackAttributeAuraAlterationEffect))
-            {
-                result = (alterationEffect as AttackAttributeAuraAlterationEffect).AttackAttributes;
-            }
-            else if (alterationEffect.GetType() == typeof(AttackAttributeMeleeAlterationEffect))
-            {
-                result = (alterationEffect as AttackAttributeMeleeAlterationEffect).AttackAttributes;
-            }
-            else if (alterationEffect.GetType() == typeof(AttackAttributePassiveAlterationEffect))
-            {
-                result = (alterationEffect as AttackAttributePassiveAlterationEffect).AttackAttributes;
-            }
-            else if (alterationEffect.GetType() == typeof(AttackAttributeTemporaryAlterationEffect))
-            {
-                result = (alterationEffect as AttackAttributeTemporaryAlterationEffect).AttackAttributes;
-            }
-
-            return result ?? new List<AttackAttribute>();
-        }
-
-        /// <summary>
         /// Returns altered character state using type inspection
         /// </summary>
         /// <returns>AlteredCharacterState for the IAlterationEffect (or null)</returns>
@@ -387,33 +253,28 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         }
 
         /// <summary>
-        /// Returns a UI Type descriptor for the IAlterationEffect. This is specific to listing out
-        /// types of alteration effects to accompany the GetUIAttributes method above. (This could
-        /// be refactored to a UI-specific component; but didn't think it warranted the work right now)
+        /// Returns true if the IAlterationEffect supports blocking when used with the supplied
+        /// alteration type.
         /// </summary>
-        public static string GetUITypeDescription(this IAlterationEffect effect)
+        /// <returns>True if the alteration should support blocking</returns>
+        public static bool GetSupportsBlocking(this IAlterationEffect effect, AlterationContainer alteration)
         {
-            if (effect is AttackAttributeAuraAlterationEffect)
-                return string.Format("Aura ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
+            return effect.GetAttribute<AlterationBlockableAttribute>()
+                         .GetSupportsBlocking(alteration.EffectInterfaceType);
+        }
 
-            else if (effect is AttackAttributePassiveAlterationEffect)
-                return string.Format("Passive ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
-
-            else if (effect is AttackAttributeTemporaryAlterationEffect)
-                return string.Format("Temporary ({0})", (effect as AttackAttributeAuraAlterationEffect).CombatType.GetAttribute<DisplayAttribute>().Name);
-
-            else if (effect is AuraAlterationEffect)
-                return "Aura";
-
-            else if (effect is PassiveAlterationEffect)
-                return "Passive";
-
-            else if (effect is TemporaryAlterationEffect)
-                return "Temporary";
-
-            else
-                throw new Exception("Unhandled IAlterationEffect UI-Type Description");
+        /// <summary>
+        /// Returns true if the IAlterationEffect supports blocking when used with the supplied
+        /// alteration type.
+        /// </summary>
+        /// <returns>True if the alteration should support blocking</returns>
+        public static AlterationCostType GetCostType(this IAlterationEffect effect, AlterationContainer alteration)
+        {
+            return effect.GetAttribute<AlterationCostSpecifierAttribute>()
+                         .GetCostType(alteration.EffectInterfaceType);
         }
         #endregion
+
+
     }
 }

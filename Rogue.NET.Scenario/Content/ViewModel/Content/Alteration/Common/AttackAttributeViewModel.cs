@@ -1,10 +1,8 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
+namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
 {
     public class AttackAttributeViewModel : ScenarioImageViewModel
     {

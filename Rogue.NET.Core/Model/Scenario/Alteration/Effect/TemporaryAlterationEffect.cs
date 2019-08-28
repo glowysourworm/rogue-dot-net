@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Attribute;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
@@ -6,6 +8,12 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 {
     [Serializable]
+    [AlterationBlockable(typeof(IEnemyAlterationEffect),
+                         typeof(ISkillAlterationEffect))]
+    [AlterationCostSpecifier(AlterationCostType.OneTime,
+                             typeof(IConsumableAlterationEffect),
+                             typeof(IEnemyAlterationEffect),
+                             typeof(ISkillAlterationEffect))]
     public class TemporaryAlterationEffect 
         : RogueBase, IConsumableAlterationEffect, 
                      IConsumableProjectileAlterationEffect,

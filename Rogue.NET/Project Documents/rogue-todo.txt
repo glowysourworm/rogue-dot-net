@@ -1378,4 +1378,111 @@ IMMEDIATE TODO'S:
 												It should allow them to track you when you're invisible and transmorgified.. (or
 												whatever altered state is based on "CantBeSeenByEnemy")
 												
-												
+	- TODO: Effect Range might need to be specified for several alteration effects
+	
+	- TODO: Modify Enemy Behavior Details to use Light Radius instead of Engage / Disengage Radius
+	
+	- IDEA / TODO:  Dealing with 17 different types of alteration effects is a little much for creating a UI. So, to handle 
+					the Alteration list PLUS the Skill Tree - probably better to get a dual use out of the Views for each effect.
+					
+					So, if it doesn't look right working with the Alteration Effect Views in the Alteration List - then create
+					2 sections in each Alteration Effect View - one to support "List Mode".. which can be added as a parameter.
+					
+	- TODO:  Calculated parameters for alterations need a way to prevent type inspection:
+	
+			 - Supports Blocking
+			 - Cost Type
+			 - etc...
+			 
+			 Probably, should consider adding Attributes to the class to provide these parameters.
+			 
+	- TODO: Forgot Equipment Equip Alteration Cost (HAVE TO ADD)
+	
+	- IDEA FORGOT:  For Blocking - Should consider having a Blocking Animation specifically for Alterations. This would alert
+					the user that there was a block that happened.
+					
+					(The BlockAnimationGroup would be per Alteration Effect that supported blocking)
+					
+	- TODO: Probably remove support for all of the interface types from Equipment Damage Alteration Effect EXCEPT for Enemy and
+			Consumable and (MAYBE) Doodad. 
+			
+			The problem is that it's ambiguous. The primary use is for an Enemy to damage the player's equipment. The next obvious
+			use is for a consumable that will damage your Player's equipment. Then, MAYBE a Doodad that will do that same.
+			
+			The real problem is that you don't know what the enemy is wearing for equipment. So, it's really pretty pointless to 
+			support unless the enemy equipment is shown on the screen (WHICH IT WON'T BE.)
+			
+			So, this is probably a good TODO. Doodad support could stay there; but would need to be sure to have SOURCE targeting
+			ONLY for this effect type (FOR DOODADS) (if it's possible) (SAME FOR CONSUMABLES)
+			
+	- TODO: I know I wrote this down before...... But ... WE NEED TO REMOVE THE ENTIRE TEMPLATE CLASS SET FROM ROGUE.NET!
+	
+			Here's what I'd Like:
+			
+				- Sceanrio Assets are just the ordinary Scenario objects: Enemy, Player, Doodad, Consumable, Alteration, etc...
+				  
+				  BUT, WITH ADDED RANDOMIZER COMPONENTS FOR RANDOMIZING SPECIFIC PARAMETERS.
+				  
+				  Example:  Enemy (Scenario namespace)
+							
+							- double Strength 
+							- double Agility
+							- double Intellgience
+							- ...
+							- BehaviorDetails
+								- Behaviors [] 
+									- Skill
+										- IAlterationEffect
+							
+					(IDEA)	ParameterRandomizer  (Scenario namespace)
+							
+							- RogueBase Asset
+							
+							- string PropertyPath
+							
+							- double Variance
+							
+							
+							ScenarioConfiguration  (Scenario namespace)
+							
+							- Enemy[] Enemies  				(Enemy Assets)
+							- Doodad[] Doodads
+							- ...
+							- ParameterRandomizer[] Randomizers
+														
+							When the Enemy is generated - the Randomizers are involved - but some kind of
+							property lookup would need to be invoked to randomize parameters.
+							
+							That might be fine; but NOT LIKED unless it could be validated somehow.
+							
+							Also, during game-play, random values are always drawn - especially for alterations.
+							
+							So, that would be extra-concerning. However, what COULD work is to create
+							actual Randomizers built INTO the model that are instantiated - with the soul
+							purpose of randomizing one parameter. 
+							
+							The obvious use-case would be for Alterations (which use their parent Template for
+							randomizing each time).
+							
+							The main idea is to avoid creating a "Template" like class structure to do all the
+							randomizing!! 
+							
+							So, the best way I can think of right now is to attach randomizer components somehow.
+							
+							AND, there may just be a way to do that WITHOUT using Reflection.. Which is really the
+							only way I think I'd consider it because reflection is too buggy.
+							
+	- TODO: Just found "Key not present in Dictionary" for the CharacterLayoutInformation component.
+	
+			THIS MEANS:  There's a sequencing problem with the queues. The character had died but a calculation
+					     was run for the character's aura locations. 
+						 
+						 The IModelService MUST UPDATE after EACH CHARACTER. So, what has to happen is like this:
+						 
+						 Player Attacks -> IModelService Updates -> Enemy 1 Attacks -> IModelService Updates -> ...
+						 
+						 AND: After each action - Enemies and ALL CONTENT MUST BE REMOVED BEFORE RUNNING THE UPDATE.
+						 
+						 This HAS to be done right or there'll be some unintended bugs.						
+	
+			

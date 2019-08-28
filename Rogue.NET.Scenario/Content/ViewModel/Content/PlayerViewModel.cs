@@ -24,6 +24,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -358,9 +359,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         public ObservableCollection<AttackAttributeViewModel> MeleeAttackAttributes { get; set; }
 
         /// <summary>
-        /// Alteration effect / cause container for player - one per passive or temporary effect
+        /// Alterations collected by the player Character Alteration. These contain both a
+        /// cost and effect
         /// </summary>
-        public ObservableCollection<AlterationDescriptionViewModel> Alterations { get; set; }
+        public ObservableCollection<AlterationListViewModel> Alterations { get; set; }
 
         public CharacterClassViewModel CharacterClass { get; set; }
 
@@ -381,7 +383,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
-            this.Alterations = new ObservableCollection<AlterationDescriptionViewModel>();
+            this.Alterations = new ObservableCollection<AlterationListViewModel>();
             this.CharacterClass = new CharacterClassViewModel();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
@@ -515,33 +517,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
 
             var alterations = alterationCosts.FullJoin(alterationEffects, x => x.Key, y => y.Key, x =>
             {
-                // Result for Alteration Cost Only
-                return new Tuple<string, 
-                                 string, 
-                                 AlteredCharacterState, 
-                                 AlterationCost, 
-                                 IAlterationEffect>(x.Key, "Cost", null, x.Value, null);
+                // Result for Alteration Cost Only (ALL ARE PER-STEP FROM THE CHARACTER ALTERATION)
+                return new AlterationListViewModel(x.Value);
             }, y =>
             {
                 // Result for Alteration Effect Only
-                return new Tuple<string, 
-                                 string, 
-                                 AlteredCharacterState, 
-                                 AlterationCost, 
-                                 IAlterationEffect>(y.Key, y.Value.GetUITypeDescription(), y.Value.GetAlteredState(), null, y.Value);
+                return new AlterationListViewModel(y.Value);
             }, (x, y) =>
             {
                 // Result for Both
-                return new Tuple<string,
-                                 string,
-                                 AlteredCharacterState,
-                                 AlterationCost,
-                                 IAlterationEffect>(y.Key, y.Value.GetUITypeDescription(), y.Value.GetAlteredState(), x.Value, y.Value);
+                return new AlterationListViewModel(x.Value, y.Value);
             });
 
-
-            this.Alterations
-                .AddRange(alterations.Select(x => new AlterationDescriptionViewModel(x.Item1, x.Item2, x.Item5, x.Item3, x.Item4)));
+            // Add Alterations
+            this.Alterations.AddRange(alterations);
 
             // Update Effective Symbol
             var symbol = _alterationProcessor.CalculateEffectiveSymbol(player);
@@ -665,13 +654,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                 // Bonus Attribute
                 if (characterClass.HasAttributeBonus)
                 {
-                    // Must be ONE attribute alteration if effect is non-null
-                    var attribute = characterClass.AttributeAlteration
-                                                  .GetUIAttributes()
-                                                  .First();
+                    //// Must be ONE attribute alteration if effect is non-null
+                    //var attribute = characterClass.AttributeAlteration
+                    //                              .GetUIAttributes()
+                    //                              .First();
 
-                    // Show SINGLE attribute bonus as a string
-                    this.CharacterClass.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
+                    //// Show SINGLE attribute bonus as a string
+                    //this.CharacterClass.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
                 }
             }
             else

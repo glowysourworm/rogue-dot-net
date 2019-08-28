@@ -6,8 +6,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
     [Serializable]
     public class AlterationCost : RogueBase
     {
-        public AlterationCostType Type { get; set; }
-
         public double Strength { get; set; }
         public double Intelligence { get; set; }
         public virtual double Agility { get; set; }

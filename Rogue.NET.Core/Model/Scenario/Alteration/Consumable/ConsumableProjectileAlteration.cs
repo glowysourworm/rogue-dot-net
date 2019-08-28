@@ -11,9 +11,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
         {
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IConsumableProjectileAlterationEffect;
+            get { return typeof(IConsumableProjectileAlterationEffect); }
         }
     }
 }

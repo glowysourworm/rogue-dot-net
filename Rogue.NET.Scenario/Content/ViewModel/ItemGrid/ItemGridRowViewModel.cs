@@ -3,15 +3,14 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
 namespace Rogue.NET.Scenario.ViewModel.ItemGrid
 {

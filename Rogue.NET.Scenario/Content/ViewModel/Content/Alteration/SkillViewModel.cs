@@ -4,6 +4,7 @@ using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Skill;
+using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System.Windows;
 using System.Windows.Input;
@@ -22,7 +23,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         int _skillPointRequirement;
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
-        string _description;
         ScenarioImageViewModel _characterClass;
         AlterationViewModel _alteration;        
 
@@ -55,11 +55,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
         {
             get { return _attributeRequirement; }
             set { this.RaiseAndSetIfChanged(ref _attributeRequirement, value); }
-        }
-        public string Description
-        {
-            get { return _description; }
-            set { this.RaiseAndSetIfChanged(ref _description, value); }
         }
         public ScenarioImageViewModel CharacterClass
         {

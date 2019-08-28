@@ -133,10 +133,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             return true;
         }
 
-        // TODO:ALTERATION - BLOCK TYPE USED BY CONTAINER TO SPECIFY. IF THERE'S NO BLOCK TYPE
-        //                   THEN IT PROBABLY SHOULD NOT SUPPORT BLOCKING!
         /// <summary>
-        /// Calculated support for blocking based on alteration / alteration effect type
+        /// Calculated support for blocking based on alteration / alteration effect type. The Block Type
+        /// MAY STILL BE SET TO NON-BLOCKABLE. This just says whether it can be blocked AT ALL.
         /// </summary>
         public static bool SupportsBlocking(this AlterationContainer alteration)
         {
@@ -149,10 +148,45 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
             else if (alteration is DoodadAlteration)
                 return false;
 
-            // TODO:ALTERATION (TYPE INSPECT!!)
             // Temporary, Melee, or Equipment Modify (can block)
             else if (alteration is EnemyAlteration)
-                return true;
+            {
+                if (alteration.Effect is AttackAttributeMeleeAlterationEffect)
+                    return true;
+
+                else if (alteration.Effect is AttackAttributeTemporaryAlterationEffect)
+                    return true;
+
+                // Could be - but usually no.. better to keep it simple
+                else if (alteration.Effect is CreateMonsterAlterationEffect)
+                    return false;
+
+                else if (alteration.Effect is DrainMeleeAlterationEffect)
+                    return true;
+
+                // Yes, because using these on other characters involves some kind of
+                // negative modification (like, "acid eats my armor"). So, need a blocking type
+                else if (alteration.Effect is EquipmentDamageAlterationEffect)
+                    return true;
+
+                else if (alteration.Effect is PermanentAlterationEffect)
+                    return true;
+
+                else if (alteration.Effect is RunAwayAlterationEffect)
+                    return false;
+
+                else if (alteration.Effect is StealAlterationEffect)
+                    return true;
+
+                else if (alteration.Effect is TeleportAlterationEffect)
+                    return true;
+
+                else if (alteration.Effect is TemporaryAlterationEffect)
+                    return true;
+
+                else
+                    throw new Exception("Unhandled Alteration Effect type");
+            }
 
             // Allow character to block
             else if (alteration is EquipmentAttackAlteration)

@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Attribute;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -14,6 +15,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     /// Equipment Modification Effect that is applied as a one-time NEGATIVE hit
     /// </summary>
     [Serializable]
+    [AlterationBlockable(typeof(IEnemyAlterationEffectTemplate),
+                         typeof(IEquipmentAttackAlterationEffectTemplate),
+                         typeof(ISkillAlterationEffectTemplate))]
+    [AlterationCostSpecifier(AlterationCostType.OneTime,
+                             typeof(IConsumableAlterationEffectTemplate),
+                             typeof(IEnemyAlterationEffectTemplate),
+                             typeof(IEquipmentAttackAlterationEffectTemplate),
+                             typeof(ISkillAlterationEffectTemplate))]
     public class EquipmentDamageAlterationEffectTemplate 
         : Template, IConsumableAlterationEffectTemplate,
                     IConsumableProjectileAlterationEffectTemplate,

@@ -12,9 +12,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Enemy
         {
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IEnemyAlterationEffect;
+            get { return typeof(IEnemyAlterationEffect); }
         }
     }
 }

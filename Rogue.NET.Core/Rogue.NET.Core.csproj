@@ -198,6 +198,8 @@
     <Compile Include="Logic\Processing\PlayerAdvancementCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerCommandAction.cs" />
     <Compile Include="Logic\Processing\PlayerEnhanceEquipmentCommandAction.cs" />
+    <Compile Include="Model\Attribute\AlterationBlockableAttribute.cs" />
+    <Compile Include="Model\Attribute\AlterationCostSpecifierAttribute.cs" />
     <Compile Include="Model\Enums\Alteration.cs" />
     <Compile Include="Model\Generator\AnimationGenerator.cs" />
     <Compile Include="Model\Generator\Interface\IAnimationGenerator.cs" />

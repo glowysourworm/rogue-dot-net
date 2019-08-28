@@ -14,9 +14,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
             this.AuraParameters = new AuraSourceParameters();
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IEquipmentEquipAlterationEffect;
+            get { return typeof(IEquipmentEquipAlterationEffect); }
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+﻿using Rogue.NET.Core.Model.Attribute;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -9,6 +9,12 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
+    [AlterationBlockable(typeof(IEnemyAlterationEffectTemplate),
+                         typeof(ISkillAlterationEffectTemplate))]
+    [AlterationCostSpecifier(AlterationCostType.OneTime,
+                             typeof(IConsumableAlterationEffectTemplate),
+                             typeof(IEnemyAlterationEffectTemplate),
+                             typeof(ISkillAlterationEffectTemplate))]
     public class AttackAttributeTemporaryAlterationEffectTemplate 
         : Template, IConsumableAlterationEffectTemplate, 
                     IConsumableProjectileAlterationEffectTemplate,

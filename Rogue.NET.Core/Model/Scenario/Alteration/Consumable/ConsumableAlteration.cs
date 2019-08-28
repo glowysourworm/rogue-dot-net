@@ -14,9 +14,9 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
             this.AnimationGroup = new AnimationGroup();
         }
 
-        protected override bool ValidateEffectType()
+        public override Type EffectInterfaceType
         {
-            return this.Effect is IConsumableAlterationEffect;
+            get { return typeof(IConsumableAlterationEffect); }
         }
     }
 }
