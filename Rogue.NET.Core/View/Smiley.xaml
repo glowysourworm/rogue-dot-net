@@ -1,8 +1,6 @@
-﻿<UserControl
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	x:Class="Rogue.NET.Core.View.Smiley"
-    x:Name="UserControl">
+﻿<UserControl    x:Class="Rogue.NET.Core.View.Smiley"
+	            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>

@@ -44,7 +44,7 @@ namespace Rogue.NET.Core.Model.Generator
             _alterationGenerator = alterationGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var player = new Player();
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
@@ -71,6 +71,9 @@ namespace Rogue.NET.Core.Model.Generator
             player.Experience = 0;
             player.Hunger = 0;
             player.Level = 0;
+
+            player.AttackAttributes = playerTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                                                                     .ToDictionary(x => x.RogueName);
 
             //Starting Consumables
             foreach (ProbabilityConsumableTemplate template in playerTemplate.StartingConsumables)
@@ -168,9 +171,8 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.BehaviorDetails.RandomizerTurnCount = enemyTemplate.BehaviorDetails.RandomizerTurnCount;
             enemy.BehaviorDetails.UseRandomizer = enemyTemplate.BehaviorDetails.UseRandomizer;
 
-            // TODO:CHARACTERCLASS
-            //enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-            //                                       .ToDictionary(x => x.RogueName);
+            enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+                                                                   .ToDictionary(x => x.RogueName);
 
             enemy.DeathAnimation = _animationGenerator.GenerateAnimationGroup(enemyTemplate.DeathAnimationGroup);
 

@@ -47,7 +47,6 @@ namespace Rogue.NET.Core.View
             get { return (double)GetValue(Smiley.SmileyLineBlurProperty); }
             set { SetValue(Smiley.SmileyLineBlurProperty, value); }
         }
-        public string Id { get; set; }
 
         static Smiley()
         {
@@ -65,13 +64,9 @@ namespace Rogue.NET.Core.View
             Smiley.SmileyLineBlurProperty = DependencyProperty.Register("SmileyLineBlur", typeof(double), typeof(Smiley), lineBlurMeta);
             Smiley.SmileyLineThicknessProperty = DependencyProperty.Register("SmileyLineThickness", typeof(double), typeof(Smiley), lineThicknessMeta);
         }
-        [ImportingConstructor]
         public Smiley()
         {
             InitializeComponent();
-
-
-            this.Id = System.Guid.NewGuid().ToString();
         }
 
         private static void SetLines(Smiley instance)

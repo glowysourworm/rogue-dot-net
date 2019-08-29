@@ -54,14 +54,11 @@ namespace Rogue.NET.Core.Model.Generator
                                                      .Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                      .ToDictionary(x => x.RogueName, x => x);
 
-            // TODO:CHARACTERCLASS
-            // Generate Character Classes
-            //scenario.CharacterClasses = configuration.CharacterClasses
-            //                                         .Select(x => _characterClassGenerator.GenerateCharacterClass(x, configuration.SkillTemplates))
-            //                                         .ToDictionary(x => x.RogueName, x => x);
-            // TODO:CHARACTERCLASS
             // Generate Player
-            //scenario.Player = _characterGenerator.GeneratePlayer(configuration.PlayerTemplate, characterClassName, scenario.CharacterClasses.Values, scenario.AttackAttributes.Values);
+            scenario.Player = _characterGenerator
+                                .GeneratePlayer(configuration.PlayerTemplates
+                                                             .First(x => x.Name == characterClassName), 
+                                                scenario.AttackAttributes.Values);
 
             var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
@@ -86,16 +83,6 @@ namespace Rogue.NET.Core.Model.Generator
             //Load Encyclopedia Rogue-Tanica (Skill Sets)
             foreach (var template in configuration.SkillTemplates)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            // TODO:ALTERATION
-            //Load Encyclopedia Rogue-Tanica (Alterations - NOT SHOWN IN UI)
-            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.Alteration)))
-            //    scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
-
-            // TODO:CHARACTERCLASS
-            //Load Encyclopedia Rogue-Tanica (Character Classes)
-            //foreach (var template in configuration.CharacterClasses)
-            //    scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
             //Load Encyclopedia Rogue-Tanica (Normal Doodads)
             scenario.ScenarioEncyclopedia.Add(ModelConstants.DoodadSavePointRogueName, _scenarioMetaDataGenerator.CreateScenarioMetaData(DoodadNormalType.SavePoint));
@@ -126,12 +113,6 @@ namespace Rogue.NET.Core.Model.Generator
                 scenario.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
                 consumable.IsIdentified = true;
             }
-
-            // TODO:CHARACTERCLASS
-            //foreach (var template in configuration.CharacterClasses)
-            //{
-            //    scenario.ScenarioEncyclopedia[template.Name].IsIdentified = true;
-            //}
 
             return scenario;
         }

@@ -19,9 +19,9 @@
 
         <coreView:Smiley 
             Grid.Row="1"
-            SmileyColor="{Binding SelectedConfiguration.SmileyColor}" 
+            SmileyColor="{Binding SelectedConfiguration.SmileyBodyColor}" 
             SmileyLineColor="{Binding SelectedConfiguration.SmileyLineColor}"
-            SmileyMood="Happy"
+            SmileyMood="{Binding SelectedConfiguration.SmileyMood}"
             Height="270" Width="180" SmileyRadius="40"
             VerticalAlignment="Top"
             HorizontalAlignment="Left" />

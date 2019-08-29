@@ -30,7 +30,6 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var effect in GetAllAlterationEffects(configuration))
                 UpdateAttackAttributeAlterationEffect(effect, configuration.AttackAttributes);
 
-            // TODO:CHARACTERCLASS
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
@@ -40,7 +39,8 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
 
             // Player Template
-
+            foreach (var player in configuration.PlayerTemplates)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, player.AttackAttributes);
         }
 
         public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
@@ -293,10 +293,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                 configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                // TODO:CHARACTERCLASS
-                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
-                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
+                configuration.PlayerTemplates.SelectMany(q => q.Skills).SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                configuration.PlayerTemplates.SelectMany(q => q.StartingConsumables).SelectMany(x => consumableFunc(x.TheTemplate)),
+                configuration.PlayerTemplates.SelectMany(q => q.StartingEquipment).SelectMany(x => equipmentFunc(x.TheTemplate)),
             };
 
             return alterations.SelectMany(x => x).Actualize();

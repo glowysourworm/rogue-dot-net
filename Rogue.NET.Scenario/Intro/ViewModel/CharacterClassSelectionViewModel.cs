@@ -1,25 +1,29 @@
-﻿using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using System.Collections.ObjectModel;
+﻿using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using Rogue.NET.Core.Utility;
+using Rogue.NET.Core.View;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Intro.ViewModel
 {
-    public class CharacterClassSelectionViewModel : Image
+    public class CharacterClassSelectionViewModel : ContentPresenter
     {
         public string RogueName { get; set; }
-        public ScenarioMetaDataViewModel MetaData { get; set; }
-        public bool HasBonusAttribute { get; set; }
-        public bool HasBonusAttackAttributes { get; set; }
-        public CharacterAttribute BonusAttribute { get; set; }
-        public double BonusAttributeValue { get; set; }
-        public ObservableCollection<AttackAttribute> BonusAttackAttributes { get; set; }
+        public string Description { get; set; }
 
-        public CharacterClassSelectionViewModel()
+        public CharacterClassSelectionViewModel(SymbolDetailsTemplate template)
         {
-            this.BonusAttackAttributes = new ObservableCollection<AttackAttribute>();
+            var smiley = new Smiley();
+
+            smiley.SmileyColor = ColorUtility.Convert(template.SmileyBodyColor);
+            smiley.SmileyLineColor = ColorUtility.Convert(template.SmileyLineColor);
+            smiley.SmileyLineThickness = 2;
+            smiley.SmileyMood = template.SmileyMood;
+            smiley.SmileyRadius = 4;
+            smiley.Height = ModelConstants.CellHeight * 2;
+            smiley.Width = ModelConstants.CellWidth * 2;
+
+            this.Content = smiley;
         }
     }
 }

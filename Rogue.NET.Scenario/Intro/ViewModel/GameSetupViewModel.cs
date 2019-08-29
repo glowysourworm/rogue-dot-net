@@ -3,15 +3,13 @@ using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Intro.ViewModel;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Utility;
+
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
 using System.Linq;
-using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Common.Extension;
-using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -21,8 +19,6 @@ namespace Rogue.NET.Intro.ViewModel
     {
         readonly IScenarioResourceService _scenarioResourceService;
         readonly IScenarioFileService _scenarioFileService;
-        readonly IAttackAttributeGenerator _attackAttributeGenerator;
-        readonly IScenarioMetaDataGenerator _scenarioMetaDataGenerator;
         readonly IRogueEventAggregator _eventAggregator;
 
         #region Fields
@@ -75,14 +71,10 @@ namespace Rogue.NET.Intro.ViewModel
         public GameSetupViewModel(
                 IScenarioResourceService scenarioResourceService, 
                 IScenarioFileService scenarioFileService, 
-                IAttackAttributeGenerator attackAttributeGenerator,
-                IScenarioMetaDataGenerator scenarioMetaDataGenerator,
                 IRogueEventAggregator eventAggregator)
         {
             _scenarioFileService = scenarioFileService;
             _scenarioResourceService = scenarioResourceService;
-            _attackAttributeGenerator = attackAttributeGenerator;
-            _scenarioMetaDataGenerator = scenarioMetaDataGenerator;
             _eventAggregator = eventAggregator;
 
             _eventAggregator.GetEvent<ScenarioDeletedEvent>().Subscribe(() =>
@@ -118,38 +110,24 @@ namespace Rogue.NET.Intro.ViewModel
                 });
             }
 
-            foreach (var config in _scenarioResourceService.GetScenarioConfigurations())
+            // Select Configurations with at least ONE PLAYER TEMPLATE (Character Class)
+            foreach (var config in _scenarioResourceService.GetScenarioConfigurations()
+                                                           .Where(x => x.PlayerTemplates.Any()))
             {
-                // Identify Skill Sets for showing on the startup screen
-                var skillSets = config.SkillTemplates.Select(x => _scenarioMetaDataGenerator.CreateScenarioMetaData(x))
-                                                     .Actualize();
-
-                skillSets.ForEach(x => x.IsIdentified = true);
-
                 this.Configurations.Add(new ScenarioViewModel()
                 {
                     Name = config.DungeonTemplate.Name,
-                    // TODO:CHARACTERCLASS
-                    SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
-                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    // TODO:CHARACTERCLASS
-                    //CharacterClasses = new ObservableCollection<Scenario.Intro.ViewModel.CharacterClassSelectionViewModel>(config.CharacterClasses
-                    //                                                                    .Select(x => 
-                    //new Scenario.Intro.ViewModel.CharacterClassSelectionViewModel()
-                    //{
-                    //    HasBonusAttackAttributes = x.HasBonusAttackAttributes,
-                    //    HasBonusAttribute = x.HasAttributeBonus,
-                    //    BonusAttackAttributes = new ObservableCollection<AttackAttribute>(x.BonusAttackAttributes
-                    //                                                                       .Where(z => z.Attack.IsSet() || z.Resistance.IsSet() || z.Weakness.IsSet())
-                    //                                                                       .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
-                    //    BonusAttribute = x.BonusAttribute,
-                    //    BonusAttributeValue = x.BonusAttributeValue,
-                    //    MetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
-                    //    RogueName = x.Name,
-
-                    //    Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)
-                    //}))
+                    SmileyMood = config.PlayerTemplates.First().SymbolDetails.SmileyMood,
+                    SmileyBodyColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
+                    SmileyLineColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
+                    CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>(config.PlayerTemplates
+                                                                                                        .Select(x =>
+                    new CharacterClassSelectionViewModel(x.SymbolDetails)
+                    {
+                        Description = x.LongDescription,
+                        RogueName = x.Name
+                    }))
                 });
             }
         }

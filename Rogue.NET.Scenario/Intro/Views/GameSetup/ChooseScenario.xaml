@@ -21,9 +21,9 @@
                         Width="200" 
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        SmileyMood="Happy"
+                        SmileyMood="{Binding SmileyMood}"
                         SmileyRadius="50" 
-                        SmileyColor="{Binding SmileyColor}" 
+                        SmileyColor="{Binding SmileyBodyColor}" 
                         SmileyLineColor="{Binding SmileyLineColor}" />
                     <StackPanel HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">
@@ -66,9 +66,9 @@
                                             Width="20" 
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            SmileyMood="Happy"
+                                            SmileyMood="{Binding SmileyMood}"
                                             SmileyRadius="5" 
-                                            SmileyColor="{Binding SmileyColor}" 
+                                            SmileyColor="{Binding SmileyBodyColor}" 
                                             SmileyLineColor="{Binding SmileyLineColor}" />
                                 <TextBlock Text="{Binding Name}" Foreground="White" HorizontalAlignment="Center" FontSize="18" VerticalAlignment="Center" Margin="8" />
                             </StackPanel>

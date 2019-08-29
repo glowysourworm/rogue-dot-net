@@ -99,7 +99,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
                 constructor(DoodadType.Magic.ToString(), "Magic Scenario Objects", "Objects that have special effects"),
                 constructor("Enemy", "Enemy", "Characters that will likely try and hurt you"),
                 constructor("Skill", "Skill", "Skill sets that you can learn"),
-                constructor("Character Class", "Character Class", "Character classes that your player can have"),
                 constructor(OBJECTIVE_NAME, OBJECTIVE_NAME, "Enemies, Items, or Objects that are your mission objective")
 
               // Filter all empty categories (always leave objective category)
@@ -113,10 +112,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             // To locate the ScenarioMetaDataViewModel -> find category by Type
             foreach (var metaData in modelService.ScenarioEncyclopedia.Values)
             {
-                // TODO: Refactor this to add a filter to meta data (OR) Add Alterations to the Rogue-Encyclopedia UI
-                if (metaData.Type == "Alteration")
-                    continue;
-
                 // Update base category
                 UpdateCategory(this.Categories.PagedFirstOrDefault(x => x.CategoryName == metaData.Type), metaData, scenarioResourceService);
 
