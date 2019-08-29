@@ -28,13 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
     {
         private static readonly CharacterAlterationTypeValidator _characterAlterationTypeValidator = new CharacterAlterationTypeValidator();
 
-        /// <summary>
-        /// The primary character class alteration for the character. This must be instantiated with
-        /// the character's class in order to function. It will function in a pass-through manner in
-        /// either case.
-        /// </summary>
-        protected CharacterClassAlteration ClassAlteration { get; set; }
-
         protected AttackAttributeAuraSourceAlterationCollector AttackAttributeAuraSourceCollector { get; set; }
         protected AttackAttributeAuraTargetAlterationCollector AttackAttributeAuraTargetCollector { get; set; }
         protected AttackAttributePassiveAlterationCollector AttackAttributePassiveCollector { get; set; }
@@ -61,61 +54,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// </summary>
         public CharacterAlteration()
         {
-            this.ClassAlteration = new CharacterClassAlteration();
-
-            this.AttackAttributeAuraSourceCollector = new AttackAttributeAuraSourceAlterationCollector();
-            this.AttackAttributeAuraTargetCollector = new AttackAttributeAuraTargetAlterationCollector();
-            this.AttackAttributePassiveCollector = new AttackAttributePassiveAlterationCollector();
-            this.AttackAttributeTemporaryCollector = new AttackAttributeTemporaryAlterationCollector();
-            this.AuraSourceCollector = new AuraSourceAlterationCollector();
-            this.AuraTargetCollector = new AuraTargetAlterationCollector();
-            this.PassiveCollector = new PassiveAlterationCollector();
-            this.TemporaryCollector = new TemporaryAlterationCollector();
-
-            _collectors = new IAlterationCollector[]
-            {
-                this.AttackAttributeAuraSourceCollector,
-                this.AttackAttributePassiveCollector,
-                this.AttackAttributeTemporaryCollector,
-                this.AuraSourceCollector,
-                this.PassiveCollector,
-                this.TemporaryCollector
-            };
-
-            _effectCollectors = new IAlterationEffectCollector[]
-            {
-                this.AttackAttributeAuraSourceCollector,
-                this.AttackAttributeAuraTargetCollector,
-                this.AttackAttributePassiveCollector,
-                this.AttackAttributeTemporaryCollector,
-                this.AuraTargetCollector,
-                this.AuraSourceCollector,
-                this.PassiveCollector,
-                this.TemporaryCollector
-            };
-
-            _attackAttributeCollectors = new IAttackAttributeAlterationCollector[]
-            {
-                this.AttackAttributeAuraTargetCollector,
-                this.AttackAttributePassiveCollector,
-                this.AttackAttributeTemporaryCollector
-            };
-
-            _temporaryCollectors = new ITemporaryAlterationCollector[]
-            {
-                this.AttackAttributeTemporaryCollector,
-                this.TemporaryCollector
-            };
-        }
-
-        /// <summary>
-        /// Creates a character alteration with added character class bonuses
-        /// </summary>
-        public CharacterAlteration(CharacterClass characterClass, IEnumerable<AttackAttribute> scenarioAttackAttributes)
-        {
-            this.ClassAlteration = new CharacterClassAlteration();
-            this.ClassAlteration.Initialize(characterClass, scenarioAttackAttributes);
-
             this.AttackAttributeAuraSourceCollector = new AttackAttributeAuraSourceAlterationCollector();
             this.AttackAttributeAuraTargetCollector = new AttackAttributeAuraTargetAlterationCollector();
             this.AttackAttributePassiveCollector = new AttackAttributePassiveAlterationCollector();
@@ -168,12 +106,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// </summary>
         public double GetAttribute(CharacterAttribute attribute)
         {
-            var result = _effectCollectors.Sum(collector => collector.GetAttributeAggregate(attribute));
-
-            if (this.ClassAlteration.HasAttributeEffect)
-                result += this.ClassAlteration.AttributeEffect.GetAttribute(attribute);
-
-            return result;
+            return _effectCollectors.Sum(collector => collector.GetAttributeAggregate(attribute));
         }
 
         /// <summary>
@@ -228,13 +161,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
 
                 return aggregator;
             });
-
-            if (this.ClassAlteration.HasAttackAttributeEffect)
-            {
-                // Aggregate the character class contributions
-                foreach (var attackAttribute in this.ClassAlteration.AttackAttributeEffect.AttackAttributes)
-                    aggregateFunc(result, attackAttribute);
-            }
 
             return result;
         }
@@ -303,24 +229,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                                   .GetAuraEffects()
                                   .Select(x => new Tuple<string, AuraSourceParameters>(x.Item1.Id, x.Item2)))
                        .Actualize();
-        }
-        #endregion
-
-        #region (public) Character Class Query Methods
-        public bool MeetsClassRequirement(CharacterClass characterClass)
-        {
-            if (this.ClassAlteration.HasCharacterClass())
-                return this.ClassAlteration.CharacterClass.RogueName == characterClass.RogueName;
-
-            return false;
-        }
-        public bool HasCharacterClass()
-        {
-            return this.ClassAlteration.HasCharacterClass();
-        }
-        public CharacterClass GetCharacterClass()
-        {
-            return this.ClassAlteration.CharacterClass;
         }
         #endregion
 

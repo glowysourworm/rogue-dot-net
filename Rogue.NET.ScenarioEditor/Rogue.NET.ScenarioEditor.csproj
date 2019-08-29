@@ -398,7 +398,6 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Content\CharacterClassTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
@@ -567,6 +566,9 @@
       <DependentUpon>SkillControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Constants\RegionNames.cs" />
+    <Compile Include="Views\Construction\PlayerDesignItem.xaml.cs">
+      <DependentUpon>PlayerDesignItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Construction\ScenarioObjectPlacement.xaml.cs">
       <DependentUpon>ScenarioObjectPlacement.xaml</DependentUpon>
     </Compile>
@@ -878,6 +880,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\SkillSetControl\SkillControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Construction\PlayerDesignItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

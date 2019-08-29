@@ -538,7 +538,7 @@ namespace Rogue.NET.Core.Logic
             if (enemyTemplate != null)
             {
                 // Create Enemy
-                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.CharacterClasses, _modelService.AttackAttributes);
+                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.AttackAttributes);
 
                 // Set Enemy Location
                 enemy.Location = location;

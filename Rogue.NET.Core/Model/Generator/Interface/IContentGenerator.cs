@@ -11,7 +11,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         IEnumerable<Level> CreateContents(
                 IEnumerable<Level> levels,
                 ScenarioConfigurationContainer configurationContainer,
-                IEnumerable<CharacterClass> characterClasses,
                 IEnumerable<AttackAttribute> scenarioAttributes,
                 bool survivorMode);
     }

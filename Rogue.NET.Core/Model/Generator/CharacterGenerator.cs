@@ -44,7 +44,7 @@ namespace Rogue.NET.Core.Model.Generator
             _alterationGenerator = alterationGenerator;
         }
 
-        public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Player GeneratePlayer(PlayerTemplate playerTemplate, string characterClassName, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             var player = new Player();
             player.FoodUsagePerTurnBase = _randomSequenceGenerator.GetRandomValue(playerTemplate.FoodUsage);
@@ -83,7 +83,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                 for (int i = 0; i < generationNumber; i++)
                 {
-                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate, characterClasses);
+                    var consumable = _itemGenerator.GenerateConsumable(consumableTemplate);
                     player.Consumables.Add(consumable.Id, consumable);
                 }
             }
@@ -99,7 +99,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; i < generationNumber; i++)
                 {
                     // Generate the Equipment
-                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate, characterClasses);
+                    var equipment = _itemGenerator.GenerateEquipment(equipmentTemplate);
 
                     // Set Equipped
                     equipment.IsEquipped = template.EquipOnStartup;
@@ -120,21 +120,12 @@ namespace Rogue.NET.Core.Model.Generator
 
             //Starting Skills
             player.SkillSets = playerTemplate.Skills
-                                             .Select(x => _skillSetGenerator.GenerateSkillSet(x, characterClasses))
+                                             .Select(x => _skillSetGenerator.GenerateSkillSet(x))
                                              .ToList();
-
-            // Character Class
-            if (!string.IsNullOrEmpty(characterClassName))
-            {
-                var characterClass = characterClasses.First(x => x.RogueName == characterClassName);
-
-                // Start with chosen character class
-                player.Alteration = new CharacterAlteration(characterClass, scenarioAttributes);
-            }
 
             return player;
         }
-        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes)
+        public Enemy GenerateEnemy(EnemyTemplate enemyTemplate, IEnumerable<AttackAttribute> scenarioAttributes)
         {
             if (enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate unique enemy twice");
@@ -177,8 +168,9 @@ namespace Rogue.NET.Core.Model.Generator
             enemy.BehaviorDetails.RandomizerTurnCount = enemyTemplate.BehaviorDetails.RandomizerTurnCount;
             enemy.BehaviorDetails.UseRandomizer = enemyTemplate.BehaviorDetails.UseRandomizer;
 
-            enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
-                                                   .ToDictionary(x => x.RogueName);
+            // TODO:CHARACTERCLASS
+            //enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
+            //                                       .ToDictionary(x => x.RogueName);
 
             enemy.DeathAnimation = _animationGenerator.GenerateAnimationGroup(enemyTemplate.DeathAnimationGroup);
 
@@ -192,7 +184,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var consumable = _itemGenerator.GenerateConsumable(template, characterClasses);
+                var consumable = _itemGenerator.GenerateConsumable(template);
 
                 enemy.Consumables.Add(consumable.Id, consumable);
             }
@@ -208,7 +200,7 @@ namespace Rogue.NET.Core.Model.Generator
                 if (template.IsUnique && template.HasBeenGenerated)
                     continue;
 
-                var equipment = _itemGenerator.GenerateEquipment(template, characterClasses);
+                var equipment = _itemGenerator.GenerateEquipment(template);
 
                 // Equip on Startup
                 if (equipmentTemplate.EquipOnStartup)

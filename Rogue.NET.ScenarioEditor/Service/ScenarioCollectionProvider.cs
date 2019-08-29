@@ -18,7 +18,8 @@ namespace Rogue.NET.ScenarioEditor.Service
         public ObservableCollection<ConsumableTemplateViewModel> Consumables { get; private set; }
         public ObservableCollection<SkillSetTemplateViewModel> SkillSets { get; private set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; private set; }
-        public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; private set; }
+        // TODO:CHARACTERCLASS
+        //public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; private set; }
 
         [ImportingConstructor]
         public ScenarioCollectionProvider(
@@ -43,7 +44,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             this.Consumables = configuration.ConsumableTemplates;
             this.SkillSets = configuration.SkillTemplates;
             this.AlteredCharacterStates = configuration.AlteredCharacterStates;
-            this.CharacterClasses = configuration.CharacterClasses;
+            // TODO:CHARACTERCLASS
+            //this.CharacterClasses = configuration.CharacterClasses;
 
             // Publish Update Event
             eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(this);

@@ -8,7 +8,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class EnemyTemplate : CharacterTemplate
     {
-        public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AnimationTemplate> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
@@ -82,7 +81,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
-            this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.DeathAnimations = new List<AnimationTemplate>();
             this.DeathAnimationGroup = new AnimationGroupTemplate();
         }

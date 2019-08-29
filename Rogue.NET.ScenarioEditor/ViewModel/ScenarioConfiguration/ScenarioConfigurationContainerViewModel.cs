@@ -10,20 +10,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
     public class ScenarioConfigurationContainerViewModel : INotifyPropertyChanged, INotifyPropertyChanging
     {        
         DungeonTemplateViewModel _dungeonTemplate;
-        PlayerTemplateViewModel _playerTemplate;
 
         public DungeonTemplateViewModel DungeonTemplate
         {
             get { return _dungeonTemplate; }
             set { this.RaiseAndSetIfChanged(ref _dungeonTemplate, value); }
         }
-        public PlayerTemplateViewModel PlayerTemplate
-        {
-            get { return _playerTemplate; }
-            set { this.RaiseAndSetIfChanged(ref _playerTemplate, value); }
-        }
 
-        
+        public ObservableCollection<PlayerTemplateViewModel> PlayerTemplates { get; set; }
         public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
         public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
         public ObservableCollection<ConsumableTemplateViewModel> ConsumableTemplates { get; set; }
@@ -33,20 +27,18 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         // "General" Assets
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
         public ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; set; }
-        public ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; set; }
 
         public ScenarioConfigurationContainerViewModel()
         {
             this.DungeonTemplate = new DungeonTemplateViewModel();
+            this.PlayerTemplates = new ObservableCollection<PlayerTemplateViewModel>();
             this.EnemyTemplates = new ObservableCollection<EnemyTemplateViewModel>();
             this.EquipmentTemplates = new ObservableCollection<EquipmentTemplateViewModel>();
             this.ConsumableTemplates = new ObservableCollection<ConsumableTemplateViewModel>();
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();
-            this.PlayerTemplate = new PlayerTemplateViewModel();
             this.DoodadTemplates = new ObservableCollection<DoodadTemplateViewModel>();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredCharacterStates = new ObservableCollection<AlteredCharacterStateTemplateViewModel>();
-            this.CharacterClasses = new ObservableCollection<CharacterClassTemplateViewModel>();
         }
 
         public event PropertyChangingEventHandler PropertyChanging;

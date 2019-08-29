@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator
             _skillSetGenerator = skillSetGenerator;
         }
 
-        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate, IEnumerable<CharacterClass> characterClasses)
+        public Equipment GenerateEquipment(EquipmentTemplate equipmentTemplate)
         {
             if (equipmentTemplate.IsUnique && equipmentTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
@@ -73,14 +73,15 @@ namespace Rogue.NET.Core.Model.Generator
 
             equipment.HasCharacterClassRequirement = equipmentTemplate.HasCharacterClassRequirement;
 
+            // TODO:CHARACTERCLASS
             // Character Class Requirement
-            if (equipmentTemplate.HasCharacterClassRequirement)
-                equipment.CharacterClass = characterClasses.First(x => x.RogueName == equipmentTemplate.CharacterClass.Name);
+            //if (equipmentTemplate.HasCharacterClassRequirement)
+            //    equipment.CharacterClass = characterClasses.First(x => x.RogueName == equipmentTemplate.CharacterClass.Name);
 
             equipmentTemplate.HasBeenGenerated = true;
             return equipment;
         }
-        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate, IEnumerable<CharacterClass> characterClasses)
+        public Consumable GenerateConsumable(ConsumableTemplate consumableTemplate)
         {
             if (consumableTemplate.IsUnique && consumableTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a Unique item twice");
@@ -89,7 +90,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.RogueName = consumableTemplate.Name;
             consumable.Alteration = consumableTemplate.ConsumableAlteration;
             consumable.ProjectileAlteration = consumableTemplate.ConsumableProjectileAlteration;
-            consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill, characterClasses);
+            consumable.LearnedSkill = _skillSetGenerator.GenerateSkillSet(consumableTemplate.LearnedSkill);
             consumable.AmmoAnimationGroup = _animationGenerator.GenerateAnimationGroup(consumableTemplate.AmmoAnimationGroup);
             consumable.HasLearnedSkillSet = consumableTemplate.HasLearnedSkill;
             consumable.HasAlteration = consumableTemplate.HasAlteration;
@@ -114,9 +115,10 @@ namespace Rogue.NET.Core.Model.Generator
 
             consumable.HasCharacterClassRequirement = consumableTemplate.HasCharacterClassRequirement;
 
+            // TODO:CHARACTERCLASS
             // Character Class Affiliation Requirement
-            if (consumableTemplate.HasCharacterClassRequirement)
-                consumable.CharacterClass = characterClasses.First(x => x.RogueName == consumableTemplate.CharacterClass.Name);
+            //if (consumableTemplate.HasCharacterClassRequirement)
+            //    consumable.CharacterClass = characterClasses.First(x => x.RogueName == consumableTemplate.CharacterClass.Name);
 
             consumableTemplate.HasBeenGenerated = true;
 
@@ -124,18 +126,18 @@ namespace Rogue.NET.Core.Model.Generator
         }
 
 
-        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate, IEnumerable<CharacterClass> characterClasses)
+        public Consumable GenerateProbabilityConsumable(ProbabilityConsumableTemplate probabilityTemplate)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 
-            return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate, characterClasses) : null;
+            return (num > 0) ? GenerateConsumable((ConsumableTemplate)probabilityTemplate.TheTemplate) : null;
         }
 
-        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, IEnumerable<CharacterClass> characterClasses, bool equipOnStartup = false)
+        public Equipment GenerateProbabilityEquipment(ProbabilityEquipmentTemplate probabilityTemplate, bool equipOnStartup = false)
         {
             int num = _randomSequenceGenerator.CalculateGenerationNumber(probabilityTemplate.GenerationProbability);
 
-            var equipment = (num > 0) ? GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate, characterClasses) : null;
+            var equipment = (num > 0) ? GenerateEquipment((EquipmentTemplate)probabilityTemplate.TheTemplate) : null;
 
             if (equipment != null)
                 equipment.IsEquipped = probabilityTemplate.EquipOnStartup && equipOnStartup;

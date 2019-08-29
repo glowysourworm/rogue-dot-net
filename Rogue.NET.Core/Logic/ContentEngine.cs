@@ -145,12 +145,12 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (equipment.HasCharacterClassRequirement &&
-               !player.Alteration.MeetsClassRequirement(equipment.CharacterClass))
+                player.Class != equipment.CharacterClass)
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
                     "Required Character Class Not Met!",
-                    equipment.CharacterClass.RogueName);
+                    equipment.CharacterClass);
 
                 return false;
             }
@@ -874,7 +874,7 @@ namespace Rogue.NET.Core.Logic
 
             // Create enemy from template
             var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
-            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.CharacterClasses, _modelService.AttackAttributes);
+            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.AttackAttributes);
             
             // Map enemy location to level
             enemy.Location = availableLocation;

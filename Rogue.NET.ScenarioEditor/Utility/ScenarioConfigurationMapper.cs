@@ -88,7 +88,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.CharacterClasses.Sort((x, y) => x.Name.CompareTo(y.Name));
             configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             return configuration;
@@ -284,23 +283,25 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.ConsumableTemplates)
             {
                 template.LearnedSkill = Match(configuration.SkillTemplates, template.LearnedSkill);
-                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = Match(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Doodad
-            foreach (var template in configuration.DoodadTemplates)
-                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
+            //foreach (var template in configuration.DoodadTemplates)
+            //    template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
 
             // Skill Sets
-            foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
-                template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
+            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
+            //    template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
@@ -313,14 +314,16 @@ namespace Rogue.NET.ScenarioEditor.Utility
             }
 
             // Player
-            MatchCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+            foreach (var player in configuration.PlayerTemplates)
+            {
+                MatchCollection(configuration.SkillTemplates, player.Skills);
 
-            for (int i = 0; i < configuration.PlayerTemplate.StartingConsumables.Count; i++)
-                configuration.PlayerTemplate.StartingConsumables[i].TheTemplate = Match(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables[i].TheTemplate);
+                for (int i = 0; i < player.StartingConsumables.Count; i++)
+                    player.StartingConsumables[i].TheTemplate = Match(configuration.ConsumableTemplates, player.StartingConsumables[i].TheTemplate);
 
-            for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
-                configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
-
+                for (int i = 0; i < player.StartingEquipment.Count; i++)
+                    player.StartingEquipment[i].TheTemplate = Match(configuration.EquipmentTemplates, player.StartingEquipment[i].TheTemplate);
+            }
             #endregion
 
             #region Alteration Effects - Fix up references { Altered States, Brushes }
@@ -410,23 +413,25 @@ namespace Rogue.NET.ScenarioEditor.Utility
             foreach (var template in configuration.ConsumableTemplates)
             {
                 template.LearnedSkill = MatchVM(configuration.SkillTemplates, template.LearnedSkill);
-                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
             {
                 template.AmmoTemplate = MatchVM(configuration.ConsumableTemplates, template.AmmoTemplate);
-                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
             }
 
             // Doodad
-            foreach (var template in configuration.DoodadTemplates)
-                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
+            //foreach (var template in configuration.DoodadTemplates)
+            //    template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
 
             // Skill Sets
-            foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
-                template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
+            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
+            //    template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
@@ -439,13 +444,16 @@ namespace Rogue.NET.ScenarioEditor.Utility
             }
 
             // Player
-            MatchCollectionVM(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+            foreach (var player in configuration.PlayerTemplates)
+            {
+                MatchCollectionVM(configuration.SkillTemplates, player.Skills);
 
-            for (int i = 0; i < configuration.PlayerTemplate.StartingConsumables.Count; i++)
-                configuration.PlayerTemplate.StartingConsumables[i].TheTemplate = MatchVM(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables[i].TheTemplate);
+                for (int i = 0; i < player.StartingConsumables.Count; i++)
+                    player.StartingConsumables[i].TheTemplate = MatchVM(configuration.ConsumableTemplates, player.StartingConsumables[i].TheTemplate);
 
-            for (int i = 0; i < configuration.PlayerTemplate.StartingEquipment.Count; i++)
-                configuration.PlayerTemplate.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment[i].TheTemplate);
+                for (int i = 0; i < player.StartingEquipment.Count; i++)
+                    player.StartingEquipment[i].TheTemplate = MatchVM(configuration.EquipmentTemplates, player.StartingEquipment[i].TheTemplate);
+            }
 
             #endregion
 
@@ -481,12 +489,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
                 configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
                 configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
                 configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
-                //configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
-                //configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
-                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
             }.SelectMany(x => x)
              .Actualize();
 

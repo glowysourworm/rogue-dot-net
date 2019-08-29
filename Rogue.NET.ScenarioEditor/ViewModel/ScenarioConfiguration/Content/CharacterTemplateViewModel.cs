@@ -9,6 +9,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public ObservableCollection<ProbabilityEquipmentTemplateViewModel> StartingEquipment { get; set; }
         public ObservableCollection<ProbabilityConsumableTemplateViewModel> StartingConsumables { get; set; }
 
+        public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
+
         private RangeViewModel<double> _strength;
         private RangeViewModel<double> _agility;
         private RangeViewModel<double> _intelligence;
@@ -65,6 +67,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();
+
+            this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
         }
     }
 }

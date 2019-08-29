@@ -17,6 +17,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
 
         // Shared General Assets
         ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; }
-        ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; }
+        // TODO:CHARACTERCLASS
+        //ObservableCollection<CharacterClassTemplateViewModel> CharacterClasses { get; }
     }
 }

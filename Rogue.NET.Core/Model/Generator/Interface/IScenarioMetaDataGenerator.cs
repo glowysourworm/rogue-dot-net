@@ -13,6 +13,5 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         ScenarioMetaData CreateScenarioMetaData(DoodadTemplate template);
         ScenarioMetaData CreateScenarioMetaData(SkillSetTemplate template);
         ScenarioMetaData CreateScenarioMetaData(DoodadNormalType doodadNormalType);
-        ScenarioMetaData CreateScenarioMetaData(CharacterClassTemplate template);
     }
 }

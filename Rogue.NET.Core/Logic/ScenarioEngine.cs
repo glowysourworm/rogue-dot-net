@@ -251,12 +251,12 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (thrownItem.HasCharacterClassRequirement &&
-                player.Alteration.MeetsClassRequirement(thrownItem.CharacterClass))
+                player.Class != thrownItem.CharacterClass)
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
                     "Required Character Class Not Met!",
-                    thrownItem.CharacterClass.RogueName);
+                    thrownItem.CharacterClass);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -307,12 +307,12 @@ namespace Rogue.NET.Core.Logic
 
             // Check Character Class Requirement
             if (consumable.HasCharacterClassRequirement &&
-                !player.Alteration.MeetsClassRequirement(consumable.CharacterClass))
+                player.Class != consumable.CharacterClass)
             {
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal,
                     "Required Character Class Not Met!",
-                    consumable.CharacterClass.RogueName);
+                    consumable.CharacterClass);
 
                 return LevelContinuationAction.DoNothing;
             }
@@ -501,12 +501,12 @@ namespace Rogue.NET.Core.Logic
 
                 // Check Character Class Requirement
                 if (ammo.HasCharacterClassRequirement &&
-                    _modelService.Player.Alteration.MeetsClassRequirement(ammo.CharacterClass))
+                    _modelService.Player.Class != ammo.CharacterClass)
                 {
                     _scenarioMessageService.Publish(
                         ScenarioMessagePriority.Normal,
                         "Required Character Class Not Met!",
-                        ammo.CharacterClass.RogueName);
+                        ammo.CharacterClass);
 
                     return LevelContinuationAction.ProcessTurn;
                 }

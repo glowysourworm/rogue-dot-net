@@ -16,7 +16,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SkillAlterationTemplate _skillAlteration;
-        CharacterClassTemplate _characterClass;
 
         public int LevelRequirement
         {
@@ -102,25 +101,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration
                 }
             }
         }
-        public CharacterClassTemplate CharacterClass
-        {
-            get { return _characterClass; }
-            set
-            {
-                if (_characterClass != value)
-                {
-                    _characterClass = value;
-                    OnPropertyChanged("CharacterClass");
-                }
-            }
-        }
 
         public SkillTemplate()
         {
             this.SkillAlteration = new SkillAlterationTemplate(); 
             this.AttributeRequirement = CharacterAttribute.Agility;
             this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplate();
         }
     }
 }

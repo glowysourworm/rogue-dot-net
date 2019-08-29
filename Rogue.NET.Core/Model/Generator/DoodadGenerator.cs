@@ -17,7 +17,7 @@ namespace Rogue.NET.Core.Model.Generator
         {
         }
 
-        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate, IEnumerable<CharacterClass> characterClasses)
+        public DoodadMagic GenerateDoodad(DoodadTemplate doodadTemplate)
         {
             if (doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated)
                 throw new Exception("Trying to generate a unique Doodad twice");
@@ -46,9 +46,10 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.HasBeenUsed = false;
             doodad.HasCharacterClassRequirement = doodadTemplate.HasCharacterClassRequirement;
 
+            // TODO:CHARACTERCLASS
             // Character Class Requirement
-            if (doodadTemplate.HasCharacterClassRequirement)
-                doodad.CharacterClass = characterClasses.First(x => x.RogueName == doodadTemplate.CharacterClass.Name);
+            //if (doodadTemplate.HasCharacterClassRequirement)
+            //    doodad.CharacterClass = characterClasses.First(x => x.RogueName == doodadTemplate.CharacterClass.Name);
 
             doodadTemplate.HasBeenGenerated = true;
 

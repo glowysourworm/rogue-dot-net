@@ -129,25 +129,27 @@ namespace Rogue.NET.Intro.ViewModel
                 this.Configurations.Add(new ScenarioViewModel()
                 {
                     Name = config.DungeonTemplate.Name,
-                    SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyBodyColor),
-                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplate.SymbolDetails.SmileyLineColor),
+                    // TODO:CHARACTERCLASS
+                    SmileyColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
+                    SmileyLineColor = (Color)ColorConverter.ConvertFromString(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    CharacterClasses = new ObservableCollection<Scenario.Intro.ViewModel.CharacterClassSelectionViewModel>(config.CharacterClasses
-                                                                                        .Select(x => 
-                    new Scenario.Intro.ViewModel.CharacterClassSelectionViewModel()
-                    {
-                        HasBonusAttackAttributes = x.HasBonusAttackAttributes,
-                        HasBonusAttribute = x.HasAttributeBonus,
-                        BonusAttackAttributes = new ObservableCollection<AttackAttribute>(x.BonusAttackAttributes
-                                                                                           .Where(z => z.Attack.IsSet() || z.Resistance.IsSet() || z.Weakness.IsSet())
-                                                                                           .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
-                        BonusAttribute = x.BonusAttribute,
-                        BonusAttributeValue = x.BonusAttributeValue,
-                        MetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
-                        RogueName = x.Name,
+                    // TODO:CHARACTERCLASS
+                    //CharacterClasses = new ObservableCollection<Scenario.Intro.ViewModel.CharacterClassSelectionViewModel>(config.CharacterClasses
+                    //                                                                    .Select(x => 
+                    //new Scenario.Intro.ViewModel.CharacterClassSelectionViewModel()
+                    //{
+                    //    HasBonusAttackAttributes = x.HasBonusAttackAttributes,
+                    //    HasBonusAttribute = x.HasAttributeBonus,
+                    //    BonusAttackAttributes = new ObservableCollection<AttackAttribute>(x.BonusAttackAttributes
+                    //                                                                       .Where(z => z.Attack.IsSet() || z.Resistance.IsSet() || z.Weakness.IsSet())
+                    //                                                                       .Select(z => _attackAttributeGenerator.GenerateAttackAttribute(z))),
+                    //    BonusAttribute = x.BonusAttribute,
+                    //    BonusAttributeValue = x.BonusAttributeValue,
+                    //    MetaData = new ScenarioMetaDataViewModel(_scenarioMetaDataGenerator.CreateScenarioMetaData(x), _scenarioResourceService),
+                    //    RogueName = x.Name,
 
-                        Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)
-                    }))
+                    //    Source = _scenarioResourceService.GetImageSource(x.SymbolDetails)
+                    //}))
                 });
             }
         }

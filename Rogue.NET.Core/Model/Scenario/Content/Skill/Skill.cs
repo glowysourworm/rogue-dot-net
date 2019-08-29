@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill
         public bool HasAttributeRequirement { get; set; }
         public double AttributeLevelRequirement { get; set; }
         public CharacterAttribute AttributeRequirement { get; set; }
-        public CharacterClass CharacterClass { get; set; }
+        public string CharacterClass { get; set; }
 
         public bool IsLearned { get; set; }
         public bool AreRequirementsMet { get; set; }

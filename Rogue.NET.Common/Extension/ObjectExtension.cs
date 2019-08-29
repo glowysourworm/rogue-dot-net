@@ -13,5 +13,14 @@ namespace Rogue.NET.Common.Extension
 
             return attributes.Any() ? (T)attributes.First() : default(T);
         }
+
+        /// <summary>
+        /// Returns a deep clone of the object using the Agile.Mapper
+        /// </summary>
+        public static T DeepCopy<T>(this T value) where T : class
+        {
+            return value.DeepClone();
+        }
+
     }
 }

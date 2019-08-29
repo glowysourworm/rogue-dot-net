@@ -15,12 +15,11 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public DoodadAlterationTemplate InvokedAlteration { get; set; }
 
         public bool HasCharacterClassRequirement { get; set; }
-        public CharacterClass CharacterClass { get; set; }
+        public string CharacterClass { get; set; }
 
         public DoodadMagic() : base()
         {
             this.Type = DoodadType.Magic;
-            this.CharacterClass = new CharacterClass();
         }
     }
 }

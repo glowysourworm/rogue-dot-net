@@ -5,6 +5,7 @@ using Rogue.NET.Core.Model.Scenario.Dynamic.Alteration;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {
@@ -43,6 +44,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public CharacterAlteration Alteration { get; set; }
 
+        public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
+
         public Character() : base() 
         {
             Initialize();
@@ -57,6 +60,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             this.Alteration = new CharacterAlteration();
             this.Equipment = new Dictionary<string, Equipment>();
             this.Consumables = new Dictionary<string, Consumable>();
+            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
         }
     }
 }

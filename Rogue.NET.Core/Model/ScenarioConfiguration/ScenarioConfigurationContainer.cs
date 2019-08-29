@@ -10,8 +10,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
     public class ScenarioConfigurationContainer
     {
         public DungeonTemplate DungeonTemplate { get; set; }
-        public PlayerTemplate PlayerTemplate { get; set; }
 
+        public List<PlayerTemplate> PlayerTemplates { get; set; }
         public List<SkillSetTemplate> SkillTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
@@ -19,20 +19,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<DoodadTemplate> DoodadTemplates { get; set; }
         public List<AttackAttributeTemplate> AttackAttributes { get; set; }
         public List<AlteredCharacterStateTemplate> AlteredCharacterStates { get; set; }
-        public List<CharacterClassTemplate> CharacterClasses { get; set; }
 
         public ScenarioConfigurationContainer()
         {
             this.DungeonTemplate = new DungeonTemplate();
+            this.PlayerTemplates = new List<PlayerTemplate>();
             this.EnemyTemplates = new List<EnemyTemplate>();
             this.EquipmentTemplates = new List<EquipmentTemplate>();
             this.ConsumableTemplates = new List<ConsumableTemplate>();
             this.SkillTemplates = new List<SkillSetTemplate>();
-            this.PlayerTemplate = new PlayerTemplate();
             this.DoodadTemplates = new List<DoodadTemplate>();
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredCharacterStates = new List<AlteredCharacterStateTemplate>();
-            this.CharacterClasses = new List<CharacterClassTemplate>();
         }
     }
 }

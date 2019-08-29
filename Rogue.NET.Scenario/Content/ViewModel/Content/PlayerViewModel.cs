@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
+﻿using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -21,8 +20,6 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
@@ -33,10 +30,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
     public class PlayerViewModel : ScenarioImageViewModel
     {
         readonly IModelService _modelService;
-        readonly IPlayerProcessor _playerProcessor;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IRogueEventAggregator _eventAggregator;
-        readonly IScenarioResourceService _scenarioResourceService;
 
         #region (private) Backing Fields
         int _level;
@@ -364,7 +359,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// </summary>
         public ObservableCollection<AlterationListViewModel> Alterations { get; set; }
 
-        public CharacterClassViewModel CharacterClass { get; set; }
+        public string CharacterClass { get; set; }
 
         [ImportingConstructor]
         public PlayerViewModel(
@@ -375,16 +370,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             IScenarioResourceService scenarioResourceService)
         {
             _modelService = modelService;
-            _playerProcessor = playerProcessor;
             _alterationProcessor = alterationProcessor;
             _eventAggregator = eventAggregator;
-            _scenarioResourceService = scenarioResourceService;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
             this.Alterations = new ObservableCollection<AlterationListViewModel>();
-            this.CharacterClass = new CharacterClassViewModel();
 
             eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
             {
@@ -461,8 +453,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
                         skill.IsAttributeRequirementMet = !skillSource.HasAttributeRequirement ||
                                                            player.GetAttribute(skillSource.AttributeRequirement) >= skillSource.AttributeLevelRequirement;
                         skill.IsCharacterClassRequirementMet = !skillSource.HasCharacterClassRequirement ||
-                                                                 (skillSource.HasCharacterClassRequirement &&
-                                                                  player.Alteration.MeetsClassRequirement(skillSource.CharacterClass));
+                                                                player.Class == skillSource.CharacterClass;
                     });
                 });
 
@@ -625,46 +616,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MeleeAttackAttributes.Clear();
             this.MeleeAttackAttributes.AddRange(attackAttributes);
 
-            // Character Class 
-            if (player.Alteration.HasCharacterClass() &&
-                _modelService.CharacterClasses.Any()) // Check that model is loaded (could be that no model has loaded for the level)
-                                                      // TODO:  Force view model updates to wait until after IModelService is loaded
-            {
-                var characterClass = player.Alteration.GetCharacterClass();
-
-                this.CharacterClass.DisplayName = characterClass.RogueName;
-                this.CharacterClass.HasAttackAttributeBonus = characterClass.HasBonusAttackAttributes;
-                this.CharacterClass.HasAttributeBonus = characterClass.HasAttributeBonus;
-                this.CharacterClass.HasCharacterClass = true;
-
-                this.CharacterClass.UpdateSymbol(characterClass);
-
-                // Bonus Attack Attributes
-                if (characterClass.HasBonusAttackAttributes)
-                {
-                    this.CharacterClass.AttackAttributeBonus.Clear();
-                    this.CharacterClass
-                        .AttackAttributeBonus
-                        .AddRange(characterClass.AttackAttributeAlteration
-                                                .AttackAttributes
-                                                .Where(x => x.Attack > 0 || x.Resistance > 0 || x.Weakness > 0)
-                                                .Select(x => new AttackAttributeViewModel(x)));
-                }
-
-                // Bonus Attribute
-                if (characterClass.HasAttributeBonus)
-                {
-                    //// Must be ONE attribute alteration if effect is non-null
-                    //var attribute = characterClass.AttributeAlteration
-                    //                              .GetUIAttributes()
-                    //                              .First();
-
-                    //// Show SINGLE attribute bonus as a string
-                    //this.CharacterClass.AttributeBonus = attribute.Value.Sign() + attribute.Value.ToString("F2") + " " + attribute.Key;
-                }
-            }
-            else
-                this.CharacterClass.HasCharacterClass = false;
+            this.CharacterClass = player.Class;
         }
 
         private void SynchronizeCollection<TSource, TDest>(

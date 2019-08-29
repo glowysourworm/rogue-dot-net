@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Model.Generator
         {
         }
 
-        public Skill GenerateSkill(SkillTemplate skillTemplate, IEnumerable<CharacterClass> characterClasses)
+        public Skill GenerateSkill(SkillTemplate skillTemplate)
         {
             return new Skill()
             { 
@@ -27,7 +27,8 @@ namespace Rogue.NET.Core.Model.Generator
                 HasCharacterClassRequirement = skillTemplate.HasCharacterClassRequirement,                
                 LevelRequirement = skillTemplate.LevelRequirement,
                 PointRequirement = skillTemplate.PointRequirement,
-                CharacterClass = skillTemplate.HasCharacterClassRequirement ? characterClasses.First(x => x.RogueName == skillTemplate.CharacterClass.Name) : new CharacterClass(),
+                // TODO:CHARACTERCLASS
+                //CharacterClass = skillTemplate.HasCharacterClassRequirement ? characterClasses.First(x => x.RogueName == skillTemplate.CharacterClass.Name) : new CharacterClass(),
                 SkillPointRequirement = skillTemplate.PointRequirement
             };
         }

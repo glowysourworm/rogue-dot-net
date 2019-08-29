@@ -39,7 +39,6 @@ namespace Rogue.NET.Core.Model.Generator
         public IEnumerable<Level> CreateContents(
             IEnumerable<Level> levels, 
             ScenarioConfigurationContainer configurationContainer, 
-            IEnumerable<CharacterClass> characterClasses,
             IEnumerable<AttackAttribute> scenarioAttributes,
             bool survivorMode)
         {
@@ -47,12 +46,12 @@ namespace Rogue.NET.Core.Model.Generator
             var result = new List<Level>();
 
             for (int i=0;i<levels.Count();i++)
-                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, characterClasses, scenarioAttributes, levelNumber++, survivorMode));
+                result.Add(GenerateLevelContent(levels.ElementAt(i), configurationContainer, scenarioAttributes, levelNumber++, survivorMode));
 
             return result;
         }
 
-        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
+        private Level GenerateLevelContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, bool survivorMode)
         {
             // Create lists to know what cells are free
             var rooms = level.Grid.Rooms.ToList();
@@ -95,15 +94,15 @@ namespace Rogue.NET.Core.Model.Generator
             }
 
             // Applies to all levels - (UNMAPPED)
-            GenerateEnemies(level, configurationContainer, characterClasses, scenarioAttributes, levelNumber);
-            GenerateItems(level, configurationContainer, levelNumber, characterClasses);
-            GenerateDoodads(level, configurationContainer, levelNumber, characterClasses);
+            GenerateEnemies(level, configurationContainer, scenarioAttributes, levelNumber);
+            GenerateItems(level, configurationContainer, levelNumber);
+            GenerateDoodads(level, configurationContainer, levelNumber);
 
-            MapLevel(level, configurationContainer, characterClasses, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
+            MapLevel(level, configurationContainer, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
 
             return level;
         }
-        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<CharacterClass> characterClasses)
+        private void GenerateDoodads(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
         {
             foreach (var doodadTemplate in configurationContainer.DoodadTemplates)
             {
@@ -119,11 +118,11 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated))
                                             && !(doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate, characterClasses));
+                    level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate));
                 }
             }
         }
-        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
+        private void GenerateEnemies(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber)
         {
             foreach (var enemyTemplate in configurationContainer.EnemyTemplates)
             {
@@ -138,11 +137,11 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
                                             && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate, characterClasses, scenarioAttributes));
+                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate, scenarioAttributes));
                 }
             }
         }
-        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber, IEnumerable<CharacterClass> characterClasses)
+        private void GenerateItems(Level level, ScenarioConfigurationContainer configurationContainer, int levelNumber)
         {
             // Equipment for the level
             foreach (var template in configurationContainer.EquipmentTemplates)
@@ -158,7 +157,7 @@ namespace Rogue.NET.Core.Model.Generator
                 for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                             && !(template.IsUnique && template.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_itemGenerator.GenerateEquipment(template, characterClasses));
+                    level.AddContent(_itemGenerator.GenerateEquipment(template));
                 }
             }
 
@@ -175,7 +174,7 @@ namespace Rogue.NET.Core.Model.Generator
                     for (int i = 0; (i < number || (template.IsObjectiveItem && !template.HasBeenGenerated))
                                                 && !(template.IsUnique && template.HasBeenGenerated); i++)
                     {
-                        level.AddContent(_itemGenerator.GenerateConsumable(template, characterClasses));
+                        level.AddContent(_itemGenerator.GenerateConsumable(template));
                     }
                 }
             }
@@ -270,7 +269,7 @@ namespace Rogue.NET.Core.Model.Generator
                 level.AddContent(doodad);
             }
         }
-        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void AddPartyRoomContent(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var rooms = level.Grid.Rooms.ToList();
             var partyRoom = _randomSequenceGenerator.GetRandomElement(rooms);
@@ -293,7 +292,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                     if (location != GridLocation.Empty)
                     {
-                        var equipment = _itemGenerator.GenerateEquipment(template, characterClasses);
+                        var equipment = _itemGenerator.GenerateEquipment(template);
                         equipment.Location = location;
                         level.AddContent(equipment);
                     }
@@ -317,7 +316,7 @@ namespace Rogue.NET.Core.Model.Generator
 
                         if (location != GridLocation.Empty)
                         {
-                            var consumable = _itemGenerator.GenerateConsumable(template, characterClasses);
+                            var consumable = _itemGenerator.GenerateConsumable(template);
                             consumable.Location = location;
                             level.AddContent(consumable);
                         }
@@ -338,14 +337,14 @@ namespace Rogue.NET.Core.Model.Generator
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
                     if (location != GridLocation.Empty)
                     { 
-                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, characterClasses, scenarioAttributes);
+                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, scenarioAttributes);
                         enemy.Location = location;
                         level.AddContent(enemy);
                     }
                 }
             }
         }
-        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<CharacterClass> characterClasses, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
+        private void MapLevel(Level level, ScenarioConfigurationContainer configurationContainer, IEnumerable<AttackAttribute> scenarioAttributes, int levelNumber, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)
         {
             var levelContents = level.GetContents();
 
@@ -370,7 +369,7 @@ namespace Rogue.NET.Core.Model.Generator
             // Create party room if there's a room to use and the rate is greater than U[0,1]
             if ((configurationContainer.DungeonTemplate.PartyRoomGenerationRate > _randomSequenceGenerator.Get()) &&
                 (level.Type == LayoutType.ConnectedRectangularRooms))
-                AddPartyRoomContent(level, configurationContainer, characterClasses, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
+                AddPartyRoomContent(level, configurationContainer, scenarioAttributes, levelNumber, freeCells, freeRoomCells);
         }
 
         private GridLocation GetRandomCell(bool inRoom, Room room, IList<GridLocation> freeCells, Dictionary<Room, List<GridLocation>> freeRoomCells)

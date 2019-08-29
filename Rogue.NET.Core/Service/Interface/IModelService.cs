@@ -20,8 +20,7 @@ namespace Rogue.NET.Core.Service.Interface
                 PlayerStartLocation startLocation,
                 Level level,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
-                ScenarioConfigurationContainer configuration,
-                IEnumerable<CharacterClass> characterClasses);
+                ScenarioConfigurationContainer configuration);
 
         void Unload();
 
@@ -48,7 +47,7 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Character Classes for the scenario
         /// </summary>
-        IEnumerable<CharacterClass> CharacterClasses { get; }
+        IEnumerable<string> CharacterClasses { get; }
 
         /// <summary>
         /// Primary method to update visible cells that are now in view of the Player - along with

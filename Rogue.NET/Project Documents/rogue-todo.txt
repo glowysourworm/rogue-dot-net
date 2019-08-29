@@ -1432,7 +1432,7 @@ IMMEDIATE TODO'S:
 							- BehaviorDetails
 								- Behaviors [] 
 									- Skill
-										- IAlterationEffect
+										- IAlterationEffect  (These types of burried parameters are problematic)
 							
 					(IDEA)	ParameterRandomizer  (Scenario namespace)
 							
@@ -1487,3 +1487,43 @@ IMMEDIATE TODO'S:
 	
 	- TODO: If there's room on the Skill Tree - (looks like there's a "quadrant" left to fill up...) Could show a large
 			"Smiley" with the effect applied. :)
+			
+	- TODO: See if the Xceed WPF Toolkit TabControl has something with an ADD button by DEFAULT. Otherwise, find something
+			that does. (Don't bother making a custom control)
+			
+	- TODO: Just re-iterating this idea. Reference-type objects that are shared in the scenario configuration are a big
+			source of problems - mostly because the references have to be "Fixed" after mapping. And, doing anything other
+			than creating a "tree structure" of an object graph begins to become a lot more work to maintain. 
+			
+			The ideal thing to do is to not have to worry about fixing references; and to have them work better with 
+			serialization.
+			
+			The first step to dealing with serialization is to use something like Protobuf - to create a custom serialization
+			routine that knows how to repair the object graph - with the purpose of sharing the data structure between two 
+			different deserialization targets (basically, different "languages".. but this would be one for the model and one
+			for the view-model which requires dependency objects).
+			
+			So, deserializing / mapping would be accomplished all at once - using a common routine. I'm pretty sure Protobuf
+			provides something LIKE this; but I got upset trying to implement it.
+			
+			THE MODEL AND VIEW-MODEL MUST BE AUTO-GENERATED. AUTO-UPDATED. AUTO-VERSIONED. WITHOUT ANY EXTRA WORK. (USING CODE TEMPLATES)
+			
+			So, update source model -> auto-update model & auto-update view-model. Changing source model works well with
+			versioning.
+			
+			AND - WE NEED DATABASE SUPPORT. To prevent data change issues. So, should there be a problem, the data can be
+			maintained.
+			
+	- TODO: Create some Smiley Moods that help support different character classes
+	
+	- TODO: Consider buidling support for "Building" or "Creating" or "Making" or (some generic word) for making one item out of
+			many. 
+			
+			- Consumable Type "Ingredient"
+			- Equipment Type "Part"
+			
+			- Alteration "Make" or "Create" (or whatever word)
+			
+			This would support some more interesting characters like "Alchemist" or "Engineer" or .... or creating "The Ultimate Weapon".. etc...
+			
+	

@@ -105,10 +105,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsAttributeRequirementMet = !x.HasAttributeRequirement || 
                                                  player.GetAttribute(x.AttributeRequirement) > x.AttributeLevelRequirement,
                     IsCharacterClassRequirementMet = !x.HasCharacterClassRequirement ||
-                                                (player.Alteration.HasCharacterClass() &&
-                                                 player.Alteration.GetCharacterClass().RogueName == x.CharacterClass.RogueName),
+                                                      player.Class == x.CharacterClass,
                     SkillPointRequirement = x.SkillPointRequirement,
-                    CharacterClass =  new ScenarioImageViewModel(x.CharacterClass),
+                    // TODO:CHARACTERCLASS
+                    //CharacterClass =  new ScenarioImageViewModel(x.CharacterClass),
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

@@ -55,14 +55,13 @@ namespace Rogue.NET.Core.Service
             PlayerStartLocation startLocation,
             Level level, 
             IDictionary<string, ScenarioMetaData> encyclopedia, 
-            ScenarioConfigurationContainer configuration,
-            IEnumerable<CharacterClass> characterClasses)
+            ScenarioConfigurationContainer configuration)
         {
             this.Level = level;
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
-            this.CharacterClasses = characterClasses;
+            this.CharacterClasses = configuration.PlayerTemplates.Select(x => x.Class).Actualize();
 
             switch (startLocation)
             {
@@ -114,7 +113,7 @@ namespace Rogue.NET.Core.Service
 
         public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
 
-        public IEnumerable<CharacterClass> CharacterClasses { get; private set; }
+        public IEnumerable<string> CharacterClasses { get; private set; }
 
         public IEnumerable<AttackAttribute> AttackAttributes
         {

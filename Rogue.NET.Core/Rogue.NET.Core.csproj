@@ -243,7 +243,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Skill\SkillAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationGroupTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Content\CharacterClassTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Extension\ScenarioConfigurationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AuraSourceParameters.cs" />
@@ -307,9 +306,7 @@
     <Compile Include="Model\Generator\AlteredStateGenerator.cs" />
     <Compile Include="Model\Generator\Component\RoomEqualityComparer.cs" />
     <Compile Include="Model\Generator\Interface\IAlteredStateGenerator.cs" />
-    <Compile Include="Model\Generator\Interface\ICharacterClassGenerator.cs" />
     <Compile Include="Model\Generator\Interface\ISkillGenerator.cs" />
-    <Compile Include="Model\Generator\CharacterClassGenerator.cs" />
     <Compile Include="Model\Generator\SkillGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
@@ -440,7 +437,6 @@
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
     <Compile Include="Model\Scenario\Content\Item\Extension\EquipmentExtension.cs" />
     <Compile Include="Model\Scenario\Content\Layout\Room.cs" />
-    <Compile Include="Model\Scenario\Content\CharacterClass.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Extension\SkillExtension.cs" />
     <Compile Include="Model\Scenario\Content\Skill\Skill.cs" />
     <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterAlterationTypeValidator.cs" />
@@ -474,7 +470,6 @@
     <Compile Include="Model\Scenario\Content\ScenarioImage.cs" />
     <Compile Include="Model\Scenario\Content\ScenarioObject.cs" />
     <Compile Include="Model\Scenario\Content\Skill\SkillSet.cs" />
-    <Compile Include="Model\Scenario\Dynamic\Alteration\CharacterClassAlteration.cs" />
     <Compile Include="Model\Scenario\Dynamic\Content\CharacterContentInformation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Content\Interface\ICharacterContentInformation.cs" />
     <Compile Include="Model\Scenario\Dynamic\Layout\CharacterLayoutInformation.cs" />

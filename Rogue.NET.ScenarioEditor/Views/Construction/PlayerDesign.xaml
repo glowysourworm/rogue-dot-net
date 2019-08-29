@@ -1,86 +1,53 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.PlayerDesign"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"             
-             mc:Ignorable="d" Background="Black">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"      
+             xmlns:local="clr-namespace:Rogue.NET.ScenarioEditor.Views.Construction"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             Background="Black">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" >
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid DataContext="{Binding PlayerTemplate}" Background="Black">
+    <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <TextBlock Margin="10" FontSize="18" Foreground="White" Text="Player Design" />
-        <Grid Grid.Row="1" Margin="10">
-            <TabControl>
-                <TabItem Header="Player Symbol">
-                    <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
-                </TabItem>
-                <TabItem Header="Player Stats">
-                    <Grid Background="Black">
+
+        <Button x:Name="AddPlayerButton" FontSize="16" Content="Add Player Class" Click="AddPlayerButton_Click" HorizontalAlignment="Right" Padding="4" Margin="10" VerticalAlignment="Center" />
+
+        <TabControl Background="Black" Grid.Row="1"
+                    ItemsSource="{Binding PlayerTemplates}">
+
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <controls:Range DataContext="{Binding Strength}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="0" />
-                        <controls:Range DataContext="{Binding Agility}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="1" />
-                        <controls:Range DataContext="{Binding Intelligence}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="2" />
-                        <controls:Range DataContext="{Binding Speed}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="3" />
-                        <controls:Range DataContext="{Binding LightRadius}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="4" />
-                        <controls:Range DataContext="{Binding Hp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="5" />
-                        <controls:Range DataContext="{Binding Mp}" Margin="0,4,0,4" Grid.Column="1" Grid.Row="6" />
-
-                        <TextBlock Foreground="White" Text="Strength" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="1" Foreground="White" Text="Agility" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="2" Foreground="White" Text="Intelligence" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="3" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="4" Foreground="White" Text="Speed" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="5" Foreground="White" Text="Hp" Margin="10" VerticalAlignment="Center" />
-                        <TextBlock Grid.Row="6" Foreground="White" Text="Mp" Margin="10" VerticalAlignment="Center" />
-
+                        <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 4, 0" />
+                        <Button x:Name="RemovePlayerButton" Click="RemovePlayerButton_Click" Grid.Column="1"
+                                Style="{StaticResource ShinyTextButtonStyle}" Height="20" Width="20" Cursor="Hand"
+                                FontFamily="{StaticResource FontAwesome}" Content="&#xf068;" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" Background="Black" />
                     </Grid>
-                </TabItem>
-                <TabItem Header="Player Skills">
-                    <StackPanel Background="Black">
-                        <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select Skill Sets that the player will learn while gaining experience" />
-                        <controls:ListBuilder x:Name="SkillsLB" 
-                                              DestinationItemsSource="{Binding Skills}"
-                                              Height="100" 
-                                              Margin="10" />
-                    </StackPanel>
-                </TabItem>
-                <TabItem Header="Player Items">
-                    <StackPanel Background="Black">
-                        <TextBlock Foreground="White" Margin="10" FontSize="14" Text="Select items that the player will have when starting the scenario" />
-                        <GroupBox Header="Consumables" Margin="10">
-                            <controls:ListBuilder x:Name="ConsumablesLB" 
-                                                      DestinationItemsSource="{Binding StartingConsumables}"
-                                                      Height="100" 
-                                                      Margin="10" />
-                        </GroupBox>
-                        <GroupBox Header="Equipment" Margin="10">
-                            <controls:ListBuilder x:Name="EquipmentLB" 
-                                                      DestinationItemsSource="{Binding StartingEquipment}"
-                                                      Height="100" 
-                                                      Margin="10" />
-                        </GroupBox>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
-        </Grid>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type local:PlayerDesignItem}" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+            
+        </TabControl>
     </Grid>
 </UserControl>

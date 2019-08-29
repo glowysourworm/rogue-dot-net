@@ -120,30 +120,31 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
             if (config == null || string.IsNullOrEmpty(this.CharacterClassTB.Text))
                 return;
 
-            if (config.CharacterClasses.Any(x => x.Name == this.CharacterClassTB.Text))
-                return;
+            // TODO:CHARACTERCLASS
+            //if (config.CharacterClasses.Any(x => x.Name == this.CharacterClassTB.Text))
+            //    return;
 
-            _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new CharacterClassTemplateViewModel()
-            {
-                Name = this.CharacterClassTB.Text,
-                BonusAttackAttributes = config.AttackAttributes.DeepClone(),
-                SymbolDetails = new SymbolDetailsTemplateViewModel()
-                {
-                    Type = SymbolTypes.DisplayImage,
-                    DisplayIcon = this.CharacterClassSymbolCB.Value
-                }
-            });
+            //_eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new CharacterClassTemplateViewModel()
+            //{
+            //    Name = this.CharacterClassTB.Text,
+            //    BonusAttackAttributes = config.AttackAttributes.DeepClone(),
+            //    SymbolDetails = new SymbolDetailsTemplateViewModel()
+            //    {
+            //        Type = SymbolTypes.DisplayImage,
+            //        DisplayIcon = this.CharacterClassSymbolCB.Value
+            //    }
+            //});
 
             this.CharacterClassTB.Text = "";
         }
 
         private void RemoveCharacterClassButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = this.CharacterClassLB.SelectedItem as CharacterClassTemplateViewModel;
-            if (selectedItem != null)
-            {
-                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
-            }
+            //var selectedItem = this.CharacterClassLB.SelectedItem as CharacterClassTemplateViewModel;
+            //if (selectedItem != null)
+            //{
+            //    _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
+            //}
         }
         #endregion
     }

@@ -1,10 +1,14 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
-using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.Views.Controls;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Rogue.NET.ScenarioEditor.Views.Construction
@@ -12,79 +16,56 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
     [Export]
     public partial class PlayerDesign : UserControl
     {
+        readonly IRogueEventAggregator _eventAggregator;
+
         [ImportingConstructor]
         public PlayerDesign(
-                IRogueEventAggregator eventAggregator,
-                IScenarioCollectionProvider scenarioCollectionProvider)
+                IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
-            Initialize(scenarioCollectionProvider);
 
-            eventAggregator.GetEvent<ScenarioUpdateEvent>()
-                           .Subscribe(provider =>
-                           {
-                               Initialize(provider);
-                           });
-
-            this.ConsumablesLB.AddEvent += OnAddConsumable;
-            this.EquipmentLB.AddEvent += OnAddEquipment;
-            this.SkillsLB.AddEvent += OnAddSkill;
-
-            this.ConsumablesLB.RemoveEvent += OnRemoveConsumable;
-            this.EquipmentLB.RemoveEvent += OnRemoveEquipment;
-            this.SkillsLB.RemoveEvent += OnRemoveSkill;
+            _eventAggregator = eventAggregator;
         }
 
-        private void Initialize(IScenarioCollectionProvider provider)
+        private void RemovePlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            this.ConsumablesLB.SourceItemsSource = provider.Consumables;
-            this.EquipmentLB.SourceItemsSource = provider.Equipment;
-            this.SkillsLB.SourceItemsSource = provider.SkillSets;
-        }
+            var configuration = this.DataContext as ScenarioConfigurationContainerViewModel;
+            var player = (sender as Button).DataContext as PlayerTemplateViewModel;
 
-        private void OnAddConsumable(object sender, object consumable)
-        {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var consumableTemplate = consumable as ConsumableTemplateViewModel;
-            player.StartingConsumables.Add(new ProbabilityConsumableTemplateViewModel()
+            if (configuration != null &&
+                player != null)
             {
-                Name = consumableTemplate.Name,
-                TheTemplate = consumableTemplate
-            });
+                _eventAggregator.GetEvent<RemoveGeneralAssetEvent>()
+                                .Publish(player);
+            }
         }
-        private void OnAddEquipment(object sender, object equipment)
+
+        private void AddPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var equipmentTemplate = equipment as EquipmentTemplateViewModel;
-            player.StartingEquipment.Add(new ProbabilityEquipmentTemplateViewModel()
+            var configuration = this.DataContext as ScenarioConfigurationContainerViewModel;
+
+            if (configuration != null)
             {
-                Name = equipmentTemplate.Name,
-                TheTemplate = equipmentTemplate
-            });
-        }
-        private void OnAddSkill(object sender, object skill)
-        {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var skillSetTemplate = skill as SkillSetTemplateViewModel;
-            player.Skills.Add(skillSetTemplate);
-        }
-        private void OnRemoveConsumable(object sender, object consumable)
-        {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var probabilityConsumableTemplate = consumable as ProbabilityConsumableTemplateViewModel;
-            player.StartingConsumables.Remove(probabilityConsumableTemplate);
-        }
-        private void OnRemoveEquipment(object sender, object equipment)
-        {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var probabilityEquipmentTemplate = equipment as ProbabilityEquipmentTemplateViewModel;
-            player.StartingEquipment.Remove(probabilityEquipmentTemplate);
-        }
-        private void OnRemoveSkill(object sender, object skill)
-        {
-            var player = (this.DataContext as ScenarioConfigurationContainerViewModel).PlayerTemplate;
-            var skillSetTemplate = skill as SkillSetTemplateViewModel;
-            player.Skills.Remove(skillSetTemplate);
+                // Show rename control to name Player
+                var view = new RenameControl();
+                var player = new PlayerTemplateViewModel();
+
+                // TODO: Consider a better design. The player template is being treated more
+                //       like an Asset; but it's not categorized as an "Asset". So, it would
+                //       not be a big deal to do; and it would follow the design better.. 
+                //
+                //       For now, just going to set the attack attributes; but it should probably
+                //       be treated as an "Asset". 
+                player.AttackAttributes.AddRange(configuration.AttackAttributes.Select(x => x.DeepCopy()));
+
+                view.DataContext = player;
+
+                if (DialogWindowFactory.Show(view, "Create Player Class"))
+                {
+                    _eventAggregator.GetEvent<AddGeneralAssetEvent>()
+                                    .Publish(player);
+                }
+            }
         }
     }
 }

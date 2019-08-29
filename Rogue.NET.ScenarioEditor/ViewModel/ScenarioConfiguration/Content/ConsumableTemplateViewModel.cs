@@ -22,7 +22,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private ConsumableAlterationTemplateViewModel _consumableAlteration;
         private ConsumableProjectileAlterationTemplateViewModel _consumableProjectileAlteration;
         private AnimationGroupTemplateViewModel _ammoAnimationGroup;
-        private CharacterClassTemplateViewModel _characterClass;
         private string _noteMessage;
 
 
@@ -101,11 +100,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCharacterClassRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
         }
-        public CharacterClassTemplateViewModel CharacterClass
-        {
-            get { return _characterClass; }
-            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
-        }
 
         public ConsumableTemplateViewModel()
         {
@@ -120,7 +114,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.IsUnique = false;
             this.IdentifyOnUse = false;
             this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplateViewModel();
             this.NoteMessage = "";
         }
     }

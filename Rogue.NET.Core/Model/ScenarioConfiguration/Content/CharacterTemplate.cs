@@ -10,6 +10,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public List<ProbabilityEquipmentTemplate> StartingEquipment { get; set; }
         public List<ProbabilityConsumableTemplate> StartingConsumables { get; set; }
 
+        public List<AttackAttributeTemplate> AttackAttributes { get; set; }
+
         private Range<double> _strength;
         private Range<double> _agility;
         private Range<double> _intelligence;
@@ -115,6 +117,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
             this.StartingConsumables = new List<ProbabilityConsumableTemplate>();
             this.StartingEquipment = new List<ProbabilityEquipmentTemplate>();
+
+            this.AttackAttributes = new List<AttackAttributeTemplate>();
         }
     }
 }

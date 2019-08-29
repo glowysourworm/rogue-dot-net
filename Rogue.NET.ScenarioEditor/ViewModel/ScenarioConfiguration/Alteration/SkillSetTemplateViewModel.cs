@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+
 using System.Collections.ObjectModel;
 
 

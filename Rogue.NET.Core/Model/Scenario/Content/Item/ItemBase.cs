@@ -14,15 +14,13 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public int LevelRequired { get; set; }
 
         public bool HasCharacterClassRequirement { get; set; }
-        public CharacterClass CharacterClass { get; set; }
+        public string CharacterClass { get; set; }
 
         public ItemBase()
         {
-            this.CharacterClass = new CharacterClass();
         }
         public ItemBase(string name, ImageResources icon) : base(name, icon)
         {
-            this.CharacterClass = new CharacterClass();
         }
     }
 }

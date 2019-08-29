@@ -39,8 +39,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             bool usePlayerStrengthAttributeEmphasis,
             bool includeAttackAttributes)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            // TODO:CHARACTERCLASS
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -135,8 +136,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            // TODO:CHARACTERCLASS
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -184,9 +186,9 @@ namespace Rogue.NET.ScenarioEditor.Service
 
                         return new ProjectedQuantityViewModel()
                         {
-                            Average = pathLength.Average * configuration.PlayerTemplate.FoodUsage.GetAverage(),
-                            High = pathLength.High * configuration.PlayerTemplate.FoodUsage.High,
-                            Low = pathLength.Low * configuration.PlayerTemplate.FoodUsage.Low,
+                            Average = pathLength.Average * configuration.PlayerTemplates.First().FoodUsage.GetAverage(),
+                            High = pathLength.High * configuration.PlayerTemplates.First().FoodUsage.High,
+                            Low = pathLength.Low * configuration.PlayerTemplates.First().FoodUsage.Low,
                             Level = levelNumber
                         };
                     }));
@@ -199,8 +201,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             bool usePlayerStrengthAttributeEmphasis,
             bool includeAttackAttributes)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
                 Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -247,8 +249,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -273,8 +275,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
             bool usePlayerStrengthAttributeEmphasis)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -299,8 +301,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             IEnumerable<IDifficultyAssetViewModel> includedAssets,
             bool usePlayerStrengthAttributeEmphasis)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -324,8 +326,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -349,8 +351,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             ScenarioConfigurationContainerViewModel configuration,
             IEnumerable<IDifficultyAssetViewModel> includedAssets)
         {
-            var playerLow = CreatePlayer(configuration.PlayerTemplate, true);
-            var playerHigh = CreatePlayer(configuration.PlayerTemplate, false);
+            var playerLow = CreatePlayer(configuration.PlayerTemplates.First(), true);
+            var playerHigh = CreatePlayer(configuration.PlayerTemplates.First(), false);
 
             return new List<IProjectedQuantityViewModel>(
               Enumerable.Range(1, configuration.DungeonTemplate.NumberOfLevels)
@@ -425,7 +427,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         {
             // Create a new player to use for the simulation
             if (player == null)
-                player = CreatePlayer(configuration.PlayerTemplate, simulateLow);
+                player = CreatePlayer(configuration.PlayerTemplates.First(), simulateLow);
 
             // Calculate the projected path length for this level
             var projectedPathLengths = CalculateLayoutPathLength(configuration, includedAssets);
@@ -622,14 +624,15 @@ namespace Rogue.NET.ScenarioEditor.Service
             equipment.LevelRequired = template.LevelRequired;
             equipment.Type = template.Type;
 
+            // TODO:CHARACTERCLASS
             // Adding on Attack Attributes
-            equipment.AttackAttributes = template.AttackAttributes.Select(x => new AttackAttribute()
-            {
-                RogueName = x.Name,
-                Attack = simulateLow ? x.Attack.Low : x.Attack.High,
-                Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
+            //equipment.AttackAttributes = template.AttackAttributes.Select(x => new AttackAttribute()
+            //{
+            //    RogueName = x.Name,
+            //    Attack = simulateLow ? x.Attack.Low : x.Attack.High,
+            //    Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High,
 
-            }).ToList();
+            //}).ToList();
 
             return equipment;
         }
@@ -648,15 +651,17 @@ namespace Rogue.NET.ScenarioEditor.Service
                 Consumables = template.StartingConsumables
                                     .Where(x => (simulateLow ? x.GenerationProbability >= 1 : x.GenerationProbability > 0))
                                     .Select(x => CreateConsumable(x.TheTemplate))
-                                    .ToDictionary(x => x.Id),
-                AttackAttributes = template.AttackAttributes
-                                           .Select(x => new AttackAttribute()
-                                           {
-                                               RogueName = x.Name,
-                                               Attack = simulateLow ? x.Attack.Low : x.Attack.High,
-                                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High
-                                           })
-                                           .ToDictionary(x => x.RogueName)
+                                    .ToDictionary(x => x.Id)
+                                    // TODO:CHARACTERCLASS
+                                    //,
+                //AttackAttributes = template.AttackAttributes
+                //                           .Select(x => new AttackAttribute()
+                //                           {
+                //                               RogueName = x.Name,
+                //                               Attack = simulateLow ? x.Attack.Low : x.Attack.High,
+                //                               Resistance = simulateLow ? x.Resistance.Low : x.Resistance.High
+                //                           })
+                //                           .ToDictionary(x => x.RogueName)
             };
         }
         private IEnumerable<AttackAttributeTemplate> CreateAttackAttributes(ScenarioConfigurationContainerViewModel configuration)

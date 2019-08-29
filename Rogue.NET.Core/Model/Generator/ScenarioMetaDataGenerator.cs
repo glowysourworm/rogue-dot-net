@@ -74,7 +74,8 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new ScenarioMetaData()
             {
-                AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
+                // TODO:CHARACTERCLASS
+                //AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,
@@ -253,32 +254,6 @@ namespace Rogue.NET.Core.Model.Generator
                     throw new Exception("Trying to create unknown Normal Doodad type");
             }
 
-        }
-
-        public ScenarioMetaData CreateScenarioMetaData(CharacterClassTemplate template)
-        {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(template.BonusAttackAttributes),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.LongDescription,
-                DisplayIcon = template.SymbolDetails.DisplayIcon,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = false,
-                IsCurseIdentified = false,
-                IsIdentified = true,                
-                IsObjective = false,                
-                IsUnique = false,
-                LongDescription = template.LongDescription,                
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyMood = template.SymbolDetails.SmileyMood,
-                SymbolType = template.SymbolDetails.Type,
-                Type = "Character Class"
-            };
         }
     }
 }

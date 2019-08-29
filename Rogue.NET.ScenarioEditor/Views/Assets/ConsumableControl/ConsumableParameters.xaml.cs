@@ -27,7 +27,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
         private void Initialize(IScenarioCollectionProvider provider)
         {
             this.LearnedSkillCB.ItemsSource = provider.SkillSets;
-            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            // TODO:CHARACTERCLASS
+            //this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
     }
 }

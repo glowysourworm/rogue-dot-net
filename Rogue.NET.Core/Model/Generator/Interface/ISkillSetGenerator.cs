@@ -7,6 +7,6 @@ namespace Rogue.NET.Core.Model.Generator.Interface
 {
     public interface ISkillSetGenerator
     {
-        SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate, IEnumerable<CharacterClass> characterClasses);
+        SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate);
     }
 }

@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Skill.Extension
 
             // Character Class Requirement
             if (skill.HasCharacterClassRequirement &&
-               !player.Alteration.MeetsClassRequirement(skill.CharacterClass))
+                player.Class != skill.CharacterClass)
                 return false;
 
             return true;

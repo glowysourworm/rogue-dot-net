@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.Generator
             _skillGenerator = skillGenerator;
         }
 
-        public SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate, IEnumerable<CharacterClass> characterClasses)
+        public SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate)
         {
             return new SkillSet()
             {
@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Model.Generator
                 DisplayIcon = skillSetTemplate.SymbolDetails.DisplayIcon,
                 Icon = skillSetTemplate.SymbolDetails.Icon,
                 RogueName = skillSetTemplate.Name,
-                Skills = skillSetTemplate.Skills.Select(x => _skillGenerator.GenerateSkill(x, characterClasses)).ToList(),
+                Skills = skillSetTemplate.Skills.Select(x => _skillGenerator.GenerateSkill(x)).ToList(),
                 SmileyLightRadiusColor = skillSetTemplate.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = skillSetTemplate.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = skillSetTemplate.SymbolDetails.SmileyLineColor,

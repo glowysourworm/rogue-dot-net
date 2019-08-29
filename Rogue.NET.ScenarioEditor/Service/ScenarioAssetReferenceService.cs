@@ -30,6 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var effect in GetAllAlterationEffects(configuration))
                 UpdateAttackAttributeAlterationEffect(effect, configuration.AttackAttributes);
 
+            // TODO:CHARACTERCLASS
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, equipment.AttackAttributes);
@@ -38,9 +39,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
 
-            // Character Classes
-            foreach (var characterClass in configuration.CharacterClasses)
-                UpdateAttackAttributeCollection(configuration.AttackAttributes, characterClass.BonusAttackAttributes);
+            // Player Template
+
         }
 
         public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
@@ -48,28 +48,30 @@ namespace Rogue.NET.ScenarioEditor.Service
             // Consumables
             foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasCharacterClassRequirement))
             {
-                consumable.CharacterClass = MatchByName(configuration.CharacterClasses, consumable.CharacterClass);
+                //consumable.CharacterClass = MatchByName(configuration.CharacterClasses, consumable.CharacterClass);
 
-                if (consumable.CharacterClass == null)
-                    consumable.HasCharacterClassRequirement = false;
+                //if (consumable.CharacterClass == null)
+                //    consumable.HasCharacterClassRequirement = false;
             }
 
             // Equipment
             foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasCharacterClassRequirement))
             {
-                equipment.CharacterClass = MatchByName(configuration.CharacterClasses, equipment.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //equipment.CharacterClass = MatchByName(configuration.CharacterClasses, equipment.CharacterClass);
 
-                if (equipment.CharacterClass == null)
-                    equipment.HasCharacterClassRequirement = false;
+                //if (equipment.CharacterClass == null)
+                //    equipment.HasCharacterClassRequirement = false;
             }
 
             // Doodads
             foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasCharacterClassRequirement))
             {
-                doodad.CharacterClass = MatchByName(configuration.CharacterClasses, doodad.CharacterClass);
+                // TODO:CHARACTERCLASS
+                //doodad.CharacterClass = MatchByName(configuration.CharacterClasses, doodad.CharacterClass);
 
-                if (doodad.CharacterClass == null)
-                    doodad.HasCharacterClassRequirement = false;
+                //if (doodad.CharacterClass == null)
+                //    doodad.HasCharacterClassRequirement = false;
             }
 
             // Skills
@@ -77,10 +79,11 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 foreach (var skill in skillSet.Skills)
                 {
-                    skill.CharacterClass = MatchByName(configuration.CharacterClasses, skill.CharacterClass);
+                    // TODO:CHARACTERCLASS
+                    //skill.CharacterClass = MatchByName(configuration.CharacterClasses, skill.CharacterClass);
 
-                    if (skill.CharacterClass == null)
-                        skill.HasCharacterClassRequirement = false;
+                    //if (skill.CharacterClass == null)
+                    //    skill.HasCharacterClassRequirement = false;
                 }
             }
         }
@@ -140,9 +143,10 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, enemy.StartingEquipment);
             }
 
+            // TODO:CHARACTERCLASS
             // Player
-            UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables);
-            UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment);
+            //UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables);
+            //UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment);
         }
 
         public void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration)
@@ -156,8 +160,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                     consumable.HasLearnedSkill = false;
             }
 
+            // TODO:CHARACTERCLASS
             // Player Starting Skills
-            UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+            //UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
         }
 
         #endregion      
@@ -288,9 +293,10 @@ namespace Rogue.NET.ScenarioEditor.Service
                 configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
-                configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
-                configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
+                // TODO:CHARACTERCLASS
+                //configuration.PlayerTemplate.Skills.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
+                //configuration.PlayerTemplate.StartingConsumables.SelectMany(x => consumableFunc(x.TheTemplate)),
+                //configuration.PlayerTemplate.StartingEquipment.SelectMany(x => equipmentFunc(x.TheTemplate)),
             };
 
             return alterations.SelectMany(x => x).Actualize();

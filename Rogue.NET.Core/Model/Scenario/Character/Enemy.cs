@@ -25,20 +25,16 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public BehaviorDetails BehaviorDetails { get; set; }
 
-        public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
-
         public AnimationGroup DeathAnimation { get; set; }
 
         public Enemy() : base()
         {
             this.BehaviorDetails = new BehaviorDetails();
-            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
             this.DeathAnimation = new AnimationGroup();
         }
         public Enemy(string symbol, string name) : base(name, symbol)
         {
             this.BehaviorDetails = new BehaviorDetails();
-            this.AttackAttributes = new Dictionary<string, AttackAttribute>();
             this.DeathAnimation = new AnimationGroup();
         }
     }

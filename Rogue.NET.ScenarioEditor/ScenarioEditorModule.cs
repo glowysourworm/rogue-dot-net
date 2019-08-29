@@ -156,10 +156,10 @@ namespace Rogue.NET.ScenarioEditor
                     _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
                 }
 
-                else if (e is CharacterClassTemplateViewModel)
+                else if (e is PlayerTemplateViewModel)
                 {
                     // Add Character Class Asset
-                    _scenarioEditorController.CurrentConfig.CharacterClasses.Add(e as CharacterClassTemplateViewModel);
+                    _scenarioEditorController.CurrentConfig.PlayerTemplates.Add(e as PlayerTemplateViewModel);
 
                     // Update Scenario object references
                     _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);
@@ -200,10 +200,10 @@ namespace Rogue.NET.ScenarioEditor
                     _scenarioAssetReferenceService.UpdateAttackAttributes(_scenarioEditorController.CurrentConfig);
                 }
 
-                else if (e is CharacterClassTemplateViewModel)
+                else if (e is PlayerTemplateViewModel)
                 {
                     // Add Character Class Asset
-                    _scenarioEditorController.CurrentConfig.CharacterClasses.Remove(e as CharacterClassTemplateViewModel);
+                    _scenarioEditorController.CurrentConfig.PlayerTemplates.Remove(e as PlayerTemplateViewModel);
 
                     // Update Scenario object references
                     _scenarioAssetReferenceService.UpdateCharacterClasses(_scenarioEditorController.CurrentConfig);

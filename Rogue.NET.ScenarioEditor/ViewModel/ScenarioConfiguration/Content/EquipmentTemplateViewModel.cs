@@ -25,7 +25,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasEquipAlteration;
         private bool _hasCurseAlteration;
         private bool _hasCharacterClassRequirement;
-        private CharacterClassTemplateViewModel _characterClass;
 
         public RangeViewModel<int> Class
         {
@@ -97,11 +96,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _hasCharacterClassRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
         }
-        public CharacterClassTemplateViewModel CharacterClass
-        {
-            get { return _characterClass; }
-            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
-        }
 
         public EquipmentTemplateViewModel()
         {
@@ -111,7 +105,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.HasCharacterClassRequirement = false;
-            this.CharacterClass = new CharacterClassTemplateViewModel();
             this.EquipmentAttackAlteration = new EquipmentAttackAlterationTemplateViewModel();
             this.EquipmentCurseAlteration = new EquipmentCurseAlterationTemplateViewModel();
             this.EquipmentEquipAlteration = new EquipmentEquipAlterationTemplateViewModel();

@@ -278,8 +278,7 @@ namespace Rogue.NET.Scenario.Controller
                     location,
                     nextLevel, 
                     _scenarioContainer.ScenarioEncyclopedia, 
-                    _scenarioContainer.Configuration,
-                    _scenarioContainer.CharacterClasses.Values);
+                    _scenarioContainer.Configuration);
 
                 // Notify Listeners - Level Loaded -> Game Update
                 _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
