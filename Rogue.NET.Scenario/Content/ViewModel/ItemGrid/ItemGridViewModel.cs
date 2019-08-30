@@ -1,5 +1,4 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Scenario.Level.Event;
 using Rogue.NET.Core.Logic.Processing.Enum;
@@ -89,7 +88,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                                                  identifyConsumable,
                                                  consumables.Count(z => z.RogueName == item.RogueName),
                                                  consumables.Where(z => z.RogueName == item.RogueName).Sum(z => z.Uses),
-                                                 consumables.Where(z => z.RogueName == item.RogueName).Sum(z => z.Weight)),
+                                                 consumables.Where(z => z.RogueName == item.RogueName).Sum(z => z.Weight),
+                                                 modelService.CharacterClasses),
                 (viewModel, consumable) =>
                 {
                     viewModel.UpdateConsumable(consumable, 
@@ -97,15 +97,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                                                identifyConsumable,
                                                consumables.Count(z => z.RogueName == consumable.RogueName),
                                                consumables.Where(z => z.RogueName == consumable.RogueName).Sum(z => z.Uses),
-                                               consumables.Where(z => z.RogueName == consumable.RogueName).Sum(z => z.Weight));
+                                               consumables.Where(z => z.RogueName == consumable.RogueName).Sum(z => z.Weight),
+                                               modelService.CharacterClasses);
                 });
 
             // Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values,
                 this.Equipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Identify Inventory
             SynchronizeCollection<ItemBase, ItemGridRowViewModel>(
@@ -117,16 +118,16 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     if (item is Consumable)
                         return new ItemGridRowViewModel(item as Consumable,
                                              encyclopedia[item.RogueName],
-                                             identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
+                                             identifyConsumable, 1, (item as Consumable).Uses, item.Weight, modelService.CharacterClasses);
                     else
-                        return new ItemGridRowViewModel(item as Equipment, encyclopedia[item.RogueName]);
+                        return new ItemGridRowViewModel(item as Equipment, encyclopedia[item.RogueName], modelService.CharacterClasses);
                 },
                 (viewModel, item) =>
                 {
                     if (item is Consumable)
-                        viewModel.UpdateConsumable(item as Consumable, encyclopedia[viewModel.RogueName], identifyConsumable, 1, (item as Consumable).Uses, item.Weight);
+                        viewModel.UpdateConsumable(item as Consumable, encyclopedia[viewModel.RogueName], identifyConsumable, 1, (item as Consumable).Uses, item.Weight, modelService.CharacterClasses);
                     else
-                        viewModel.UpdateEquipment(item as Equipment, encyclopedia[viewModel.RogueName]);
+                        viewModel.UpdateEquipment(item as Equipment, encyclopedia[viewModel.RogueName], modelService.CharacterClasses);
                 });
 
 
@@ -134,50 +135,50 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsCursed),
                 this.UncurseEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Enchant Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsWeaponType() && x.ClassApplies()),
                 this.EnchantWeaponEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Enchant Armor Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsArmorType() && x.ClassApplies()),
                 this.EnchantArmorEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Imbue Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsWeaponType() && x.CanImbue()),
                 this.ImbueWeaponEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Imbue Armor Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsArmorType() && x.CanImbue()),
                 this.ImbueArmorEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Enhance Armor Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsArmorType() && x.ClassApplies()),
                 this.EnhanceArmorEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
 
             // Enhance Weapon Equipment
             SynchronizeCollection<Equipment, ItemGridRowViewModel>(
                 modelService.Player.Equipment.Values.Where(x => x.IsWeaponType() && x.ClassApplies()),
                 this.EnhanceWeaponEquipment,
-                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName]),
-                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName]));
+                item => new ItemGridRowViewModel(item, encyclopedia[item.RogueName], modelService.CharacterClasses),
+                (viewModel, item) => viewModel.UpdateEquipment(item, encyclopedia[item.RogueName], modelService.CharacterClasses));
         }
 
         private void SynchronizeCollection<TSource, TDest>(

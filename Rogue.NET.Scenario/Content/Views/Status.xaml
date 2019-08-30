@@ -42,33 +42,10 @@
                     <Run Text="{Binding Level}" />
                 </TextBlock>
 
-                <StackPanel Orientation="Horizontal"
-                            Visibility="{Binding CharacterClass.HasCharacterClass, Converter={StaticResource BoolVisibilityCollapseConverter}}">
-
-                    <!-- Character Class Image -> Tooltip -> Character Class Details -->
-                    <Image Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                <Binding Path="CharacterClass.CharacterSymbol" />
-                                <Binding Path="CharacterClass.CharacterColor" />
-                                <Binding Path="CharacterClass.Icon" />
-                                <Binding Path="CharacterClass.DisplayIcon" />
-                                <Binding Path="CharacterClass.SmileyMood" />
-                                <Binding Path="CharacterClass.SmileyBodyColor" />
-                                <Binding Path="CharacterClass.SmileyLineColor" />
-                                <Binding Path="CharacterClass.SmileyAuraColor" />
-                                <Binding Path="CharacterClass.SymbolType" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
-
-                    <!-- Character Class Name -->
-                    <TextBlock FontSize="18" Margin="4,0">
-                        <Run Text="{Binding CharacterClass.DisplayName}" Foreground="#FFFFE56E" />
-                        <Run Text="{Binding CharacterClass.AffiliationLevel, StringFormat=P0}" Foreground="White" />
-                    </TextBlock>
-
-                </StackPanel>
+                <!-- Character Class Name -->
+                <TextBlock FontSize="18" Margin="4,0">
+                    <Run Text="{Binding Class}" Foreground="#FFFFE56E" />
+                </TextBlock>
 
             </StackPanel>
 

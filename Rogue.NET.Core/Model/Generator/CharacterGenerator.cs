@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Model.Generator
             player.SmileyLineColor = playerTemplate.SymbolDetails.SmileyLineColor;
             player.SymbolType = playerTemplate.SymbolDetails.Type;
 
-            player.Class = playerTemplate.Class;
+            player.Class = playerTemplate.Name; // TODO: Have to move character class name to PlayerTemplate.Class
             player.Experience = 0;
             player.Hunger = 0;
             player.Level = 0;

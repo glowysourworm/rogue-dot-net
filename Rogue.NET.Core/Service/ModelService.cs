@@ -41,7 +41,10 @@ namespace Rogue.NET.Core.Service
         string _killedBy;
 
         [ImportingConstructor]
-        public ModelService(IRayTracer rayTracer, IRandomSequenceGenerator randomSequenceGenerator, IAttackAttributeGenerator attackAttributeGenerator)
+        public ModelService(
+                IRayTracer rayTracer, 
+                IRandomSequenceGenerator randomSequenceGenerator, 
+                IAttackAttributeGenerator attackAttributeGenerator)
         {
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
@@ -61,7 +64,21 @@ namespace Rogue.NET.Core.Service
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
-            this.CharacterClasses = configuration.PlayerTemplates.Select(x => x.Class).Actualize();
+            this.CharacterClasses = configuration.PlayerTemplates.Select(x => new ScenarioImage()
+            {
+                // TODO: Set the Character Class to PlayerTemplate.Class
+                RogueName = x.Name,
+                CharacterColor = x.SymbolDetails.CharacterColor,
+                CharacterSymbol = x.SymbolDetails.CharacterSymbol,
+                DisplayIcon = x.SymbolDetails.DisplayIcon,
+                Icon = x.SymbolDetails.Icon,
+                SmileyLightRadiusColor = x.SymbolDetails.SmileyAuraColor,
+                SymbolType = x.SymbolDetails.Type,
+                SmileyBodyColor = x.SymbolDetails.SmileyBodyColor,
+                SmileyLineColor = x.SymbolDetails.SmileyLineColor,
+                SmileyMood = x.SymbolDetails.SmileyMood
+
+            }).Actualize();
 
             switch (startLocation)
             {
@@ -113,7 +130,7 @@ namespace Rogue.NET.Core.Service
 
         public ScenarioConfigurationContainer ScenarioConfiguration { get; private set; }
 
-        public IEnumerable<string> CharacterClasses { get; private set; }
+        public IEnumerable<ScenarioImage> CharacterClasses { get; private set; }
 
         public IEnumerable<AttackAttribute> AttackAttributes
         {

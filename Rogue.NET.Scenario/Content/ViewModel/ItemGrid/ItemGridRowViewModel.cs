@@ -304,19 +304,19 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         }
         #endregion
 
-        public ItemGridRowViewModel(Equipment equipment, ScenarioMetaData metaData)
+        public ItemGridRowViewModel(Equipment equipment, ScenarioMetaData metaData, IEnumerable<ScenarioImage> characterClasses)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
-            UpdateEquipment(equipment, metaData);
+            UpdateEquipment(equipment, metaData, characterClasses);
         }
-        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public ItemGridRowViewModel(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight, IEnumerable<ScenarioImage> characterClasses)
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
-            UpdateConsumable(consumable, metaData, identifyConsumable, totalQuantity, totalUses, totalWeight);
+            UpdateConsumable(consumable, metaData, identifyConsumable, totalQuantity, totalUses, totalWeight, characterClasses);
         }
-        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight)
+        public void UpdateConsumable(Consumable consumable, ScenarioMetaData metaData, bool identifyConsumable, int totalQuantity, int totalUses, double totalWeight, IEnumerable<ScenarioImage> characterClasses)
         {
             this.Id = consumable.Id;
             this.RogueName = consumable.RogueName;
@@ -343,9 +343,8 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // Character Class
             this.HasCharacterClassRequirement = consumable.HasCharacterClassRequirement;
 
-            // TODO:CHARACTERCLASS
-            //if (consumable.HasCharacterClassRequirement)
-            //    this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == consumable.CharacterClass));
+            if (consumable.HasCharacterClassRequirement)
+                this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == consumable.CharacterClass));
 
 
             this.Quantity = totalQuantity;
@@ -409,7 +408,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
                     this.DisplayName = consumable.RogueName;
             }
         }
-        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData)
+        public void UpdateEquipment(Equipment equipment, ScenarioMetaData metaData, IEnumerable<ScenarioImage> characterClasses)
         {
             this.Id = equipment.Id;
             this.RogueName = equipment.RogueName;
@@ -434,11 +433,11 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.Class = equipment.ClassApplies() && equipment.IsIdentified ? equipment.Class.ToString("F0") :
                                                      equipment.IsIdentified ? "-" : "?";
 
-            // TODO:CHARACTERCLASS
             // Character Class
             this.HasCharacterClassRequirement = equipment.HasCharacterClassRequirement;
-            //if (equipment.HasCharacterClassRequirement)
-            //    this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == equipment.CharacterClass.RogueName));
+
+            if (equipment.HasCharacterClassRequirement)
+                this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == equipment.CharacterClass));
 
             // Attack and Defense Value
             if (!equipment.IsIdentified)

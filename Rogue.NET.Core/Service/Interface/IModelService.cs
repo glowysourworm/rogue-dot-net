@@ -47,7 +47,7 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Character Classes for the scenario
         /// </summary>
-        IEnumerable<string> CharacterClasses { get; }
+        IEnumerable<ScenarioImage> CharacterClasses { get; }
 
         /// <summary>
         /// Primary method to update visible cells that are now in view of the Player - along with

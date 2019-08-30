@@ -1514,7 +1514,12 @@ IMMEDIATE TODO'S:
 			AND - WE NEED DATABASE SUPPORT. To prevent data change issues. So, should there be a problem, the data can be
 			maintained.
 			
-	- TODO: Create some Smiley Moods that help support different character classes
+	- TODO: Create some Smiley Moods that help support different character classes. Maybe, LeftWink, RightWink, Emoji >_<, 
+			Frustrated, Gleeful, whatever can be done.. probably change the enum to SmileyExpression, and clean up the control
+			to make it symmetric; and to scale the line thickness automatically. 
+			
+			Would be nice to do that with the Radius also, and keep the aspect ratio to the cell width x cell height. So, very
+			easy to scale and fewer parameters.
 	
 	- TODO: Consider buidling support for "Building" or "Creating" or "Making" or (some generic word) for making one item out of
 			many. 
@@ -1527,3 +1532,7 @@ IMMEDIATE TODO'S:
 			This would support some more interesting characters like "Alchemist" or "Engineer" or .... or creating "The Ultimate Weapon".. etc...
 			
 	- TODO: Maybe change "Rogue.NET" to "Rogue Builder" (?) Needs a NON-MICROSOFT name...
+	
+	- TOOD: Think the Hippogrif create monster was the cause of the aura location crash (model service). but, still need long
+			term fix of creating full-proof queue.
+		
