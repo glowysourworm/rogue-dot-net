@@ -1,12 +1,10 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Controls;
 using System.ComponentModel.Composition;
@@ -110,41 +108,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
         {
             if (e.AddedItems.Count > 0)
                 this.AlteredStateStack.DataContext = e.AddedItems[0];
-        }
-        #endregion
-
-        #region Character Classes
-        private void AddCharacterClassButton_Click(object sender, RoutedEventArgs e)
-        {
-            var config = this.DataContext as ScenarioConfigurationContainerViewModel;
-            if (config == null || string.IsNullOrEmpty(this.CharacterClassTB.Text))
-                return;
-
-            // TODO:CHARACTERCLASS
-            //if (config.CharacterClasses.Any(x => x.Name == this.CharacterClassTB.Text))
-            //    return;
-
-            //_eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new CharacterClassTemplateViewModel()
-            //{
-            //    Name = this.CharacterClassTB.Text,
-            //    BonusAttackAttributes = config.AttackAttributes.DeepClone(),
-            //    SymbolDetails = new SymbolDetailsTemplateViewModel()
-            //    {
-            //        Type = SymbolTypes.DisplayImage,
-            //        DisplayIcon = this.CharacterClassSymbolCB.Value
-            //    }
-            //});
-
-            this.CharacterClassTB.Text = "";
-        }
-
-        private void RemoveCharacterClassButton_Click(object sender, RoutedEventArgs e)
-        {
-            //var selectedItem = this.CharacterClassLB.SelectedItem as CharacterClassTemplateViewModel;
-            //if (selectedItem != null)
-            //{
-            //    _eventAggregator.GetEvent<RemoveGeneralAssetEvent>().Publish(selectedItem);
-            //}
         }
         #endregion
     }

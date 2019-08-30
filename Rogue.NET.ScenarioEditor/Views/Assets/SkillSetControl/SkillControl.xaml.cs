@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SkillSetControl
 {
-    /// <summary>
-    /// Interaction logic for SkillControl.xaml
-    /// </summary>
     public partial class SkillControl : UserControl
     {
         public SkillControl()

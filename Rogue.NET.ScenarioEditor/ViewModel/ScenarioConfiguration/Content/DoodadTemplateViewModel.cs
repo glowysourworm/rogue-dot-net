@@ -13,6 +13,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _isInvoked;
         private bool _isOneUse;
         private bool _hasCharacterClassRequirement;
+        private string _characterClass;
 
         public DoodadAlterationTemplateViewModel AutomaticAlteration
         {
@@ -48,6 +49,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _hasCharacterClassRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
 
         public DoodadTemplateViewModel()

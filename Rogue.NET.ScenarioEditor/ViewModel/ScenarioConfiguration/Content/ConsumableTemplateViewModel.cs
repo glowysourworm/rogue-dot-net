@@ -23,6 +23,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private ConsumableProjectileAlterationTemplateViewModel _consumableProjectileAlteration;
         private AnimationGroupTemplateViewModel _ammoAnimationGroup;
         private string _noteMessage;
+        private string _characterClass;
 
 
         public ConsumableType Type
@@ -94,6 +95,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _noteMessage; }
             set { this.RaiseAndSetIfChanged(ref _noteMessage, value); }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
         public bool HasCharacterClassRequirement
         {

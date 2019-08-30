@@ -45,47 +45,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateCharacterClasses(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Consumables
-            foreach (var consumable in configuration.ConsumableTemplates.Where(x => x.HasCharacterClassRequirement))
-            {
-                //consumable.CharacterClass = MatchByName(configuration.CharacterClasses, consumable.CharacterClass);
-
-                //if (consumable.CharacterClass == null)
-                //    consumable.HasCharacterClassRequirement = false;
-            }
-
-            // Equipment
-            foreach (var equipment in configuration.EquipmentTemplates.Where(x => x.HasCharacterClassRequirement))
-            {
-                // TODO:CHARACTERCLASS
-                //equipment.CharacterClass = MatchByName(configuration.CharacterClasses, equipment.CharacterClass);
-
-                //if (equipment.CharacterClass == null)
-                //    equipment.HasCharacterClassRequirement = false;
-            }
-
-            // Doodads
-            foreach (var doodad in configuration.DoodadTemplates.Where(x => x.HasCharacterClassRequirement))
-            {
-                // TODO:CHARACTERCLASS
-                //doodad.CharacterClass = MatchByName(configuration.CharacterClasses, doodad.CharacterClass);
-
-                //if (doodad.CharacterClass == null)
-                //    doodad.HasCharacterClassRequirement = false;
-            }
-
-            // Skills
-            foreach (var skillSet in configuration.SkillTemplates)
-            {
-                foreach (var skill in skillSet.Skills)
-                {
-                    // TODO:CHARACTERCLASS
-                    //skill.CharacterClass = MatchByName(configuration.CharacterClasses, skill.CharacterClass);
-
-                    //if (skill.CharacterClass == null)
-                    //    skill.HasCharacterClassRequirement = false;
-                }
-            }
+            // Nothing to do while Character Class is stored as a string
         }
 
         public void UpdateAlteredCharacterStates(ScenarioConfigurationContainerViewModel configuration)
@@ -143,10 +103,12 @@ namespace Rogue.NET.ScenarioEditor.Service
                 UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, enemy.StartingEquipment);
             }
 
-            // TODO:CHARACTERCLASS
             // Player
-            //UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, configuration.PlayerTemplate.StartingConsumables);
-            //UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, configuration.PlayerTemplate.StartingEquipment);
+            foreach (var player in configuration.PlayerTemplates)
+            {
+                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, player.StartingConsumables);
+                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, player.StartingEquipment);
+            }
         }
 
         public void UpdateSkillSets(ScenarioConfigurationContainerViewModel configuration)
@@ -160,9 +122,9 @@ namespace Rogue.NET.ScenarioEditor.Service
                     consumable.HasLearnedSkill = false;
             }
 
-            // TODO:CHARACTERCLASS
             // Player Starting Skills
-            //UpdateCollection(configuration.SkillTemplates, configuration.PlayerTemplate.Skills);
+            foreach (var player in configuration.PlayerTemplates)
+                UpdateCollection(configuration.SkillTemplates, player.Skills);
         }
 
         #endregion      

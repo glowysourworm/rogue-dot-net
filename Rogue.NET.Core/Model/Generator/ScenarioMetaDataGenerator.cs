@@ -74,8 +74,7 @@ namespace Rogue.NET.Core.Model.Generator
         {
             return new ScenarioMetaData()
             {
-                // TODO:CHARACTERCLASS
-                //AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
+                AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
                 CharacterColor = template.SymbolDetails.CharacterColor,
                 CharacterSymbol = template.SymbolDetails.CharacterSymbol,
                 Description = template.ShortDescription,

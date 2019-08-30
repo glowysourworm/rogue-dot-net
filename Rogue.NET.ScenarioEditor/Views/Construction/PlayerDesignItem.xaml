@@ -10,6 +10,11 @@
             <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
         </TabItem>
 
+        <!-- Player Class Description -->
+        <TabItem Header="Player Description">
+            <assets:MetaDataControl />
+        </TabItem>
+        
         <!-- Player Stats -->
         <TabItem Header="Player Stats">
             <Grid Background="Black">

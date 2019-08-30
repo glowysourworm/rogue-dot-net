@@ -68,8 +68,7 @@
                         <TextBlock Foreground="White" Text="Character Class Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
                         <ComboBox x:Name="CharacterClassCB" 
                                   DisplayMemberPath="Name"
-                                  SelectedItem="{Binding CharacterClass}"
-                                  SelectedValue="{Binding CharacterClass.Name}"
+                                  SelectedValue="{Binding CharacterClass}"
                                   SelectedValuePath="Name"
                                   VerticalAlignment="Center" 
                                   Width="200"                              
@@ -79,10 +78,10 @@
                           Margin="5">
                         <TextBlock Grid.Row="4" Foreground="White" Text="Ammunition (Required for Range Weapon)" VerticalAlignment="Center" />                        
                         <ComboBox x:Name="AmmoTemplateCB" DisplayMemberPath="Name" 
-                          SelectedItem="{Binding AmmoTemplate}" 
-                          SelectedValue="{Binding AmmoTemplate.Name}" 
-                          SelectedValuePath="Name"
-                          HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="4" />
+                                  SelectedItem="{Binding AmmoTemplate}" 
+                                  SelectedValue="{Binding AmmoTemplate.Name}" 
+                                  SelectedValuePath="Name"
+                                  HorizontalAlignment="Right" MinWidth="400" Height="24" Grid.Column="1" Grid.Row="4" />
                     </Grid>
                 </StackPanel>
             </GroupBox>

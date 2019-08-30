@@ -107,8 +107,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsCharacterClassRequirementMet = !x.HasCharacterClassRequirement ||
                                                       player.Class == x.CharacterClass,
                     SkillPointRequirement = x.SkillPointRequirement,
-                    // TODO:CHARACTERCLASS
-                    //CharacterClass =  new ScenarioImageViewModel(x.CharacterClass),
+                    CharacterClass =  new ScenarioImageViewModel(player)
+                    {
+                        // TODO: Remove one of these
+                        DisplayName = player.Class,
+                        RogueName = player.Class
+                    },
                     LevelRequirement = x.LevelRequirement,
                 };
             }));

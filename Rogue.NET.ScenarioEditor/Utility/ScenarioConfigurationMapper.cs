@@ -281,27 +281,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
-            {
                 template.LearnedSkill = Match(configuration.SkillTemplates, template.LearnedSkill);
-                // TODO:CHARACTERCLASS
-                //template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
-            }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
-            {
                 template.AmmoTemplate = Match(configuration.ConsumableTemplates, template.AmmoTemplate);
-                // TODO:CHARACTERCLASS
-                //template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
-            }
-
-            // Doodad
-            //foreach (var template in configuration.DoodadTemplates)
-            //    template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
-
-            // Skill Sets
-            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
-            //    template.CharacterClass = Match(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)
@@ -411,27 +395,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
             // Consumables
             foreach (var template in configuration.ConsumableTemplates)
-            {
                 template.LearnedSkill = MatchVM(configuration.SkillTemplates, template.LearnedSkill);
-                // TODO:CHARACTERCLASS
-                //template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
-            }
 
             // Equipment
             foreach (var template in configuration.EquipmentTemplates)
-            {
                 template.AmmoTemplate = MatchVM(configuration.ConsumableTemplates, template.AmmoTemplate);
-                // TODO:CHARACTERCLASS
-                //template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
-            }
-
-            // Doodad
-            //foreach (var template in configuration.DoodadTemplates)
-            //    template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
-
-            // Skill Sets
-            //foreach (var template in configuration.SkillTemplates.SelectMany(x => x.Skills))
-            //    template.CharacterClass = MatchVM(configuration.CharacterClasses, template.CharacterClass);
 
             // Enemies
             foreach (var template in configuration.EnemyTemplates)

@@ -46,10 +46,9 @@ namespace Rogue.NET.Core.Model.Generator
             doodad.HasBeenUsed = false;
             doodad.HasCharacterClassRequirement = doodadTemplate.HasCharacterClassRequirement;
 
-            // TODO:CHARACTERCLASS
             // Character Class Requirement
-            //if (doodadTemplate.HasCharacterClassRequirement)
-            //    doodad.CharacterClass = characterClasses.First(x => x.RogueName == doodadTemplate.CharacterClass.Name);
+            if (doodadTemplate.HasCharacterClassRequirement)
+                doodad.CharacterClass = doodadTemplate.CharacterClass;
 
             doodadTemplate.HasBeenGenerated = true;
 

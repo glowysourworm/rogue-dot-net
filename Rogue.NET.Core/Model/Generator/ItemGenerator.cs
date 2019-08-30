@@ -73,10 +73,9 @@ namespace Rogue.NET.Core.Model.Generator
 
             equipment.HasCharacterClassRequirement = equipmentTemplate.HasCharacterClassRequirement;
 
-            // TODO:CHARACTERCLASS
             // Character Class Requirement
-            //if (equipmentTemplate.HasCharacterClassRequirement)
-            //    equipment.CharacterClass = characterClasses.First(x => x.RogueName == equipmentTemplate.CharacterClass.Name);
+            if (equipmentTemplate.HasCharacterClassRequirement)
+                equipment.CharacterClass = equipmentTemplate.CharacterClass;
 
             equipmentTemplate.HasBeenGenerated = true;
             return equipment;
@@ -115,10 +114,9 @@ namespace Rogue.NET.Core.Model.Generator
 
             consumable.HasCharacterClassRequirement = consumableTemplate.HasCharacterClassRequirement;
 
-            // TODO:CHARACTERCLASS
-            // Character Class Affiliation Requirement
-            //if (consumableTemplate.HasCharacterClassRequirement)
-            //    consumable.CharacterClass = characterClasses.First(x => x.RogueName == consumableTemplate.CharacterClass.Name);
+            // Character Class
+            if (consumableTemplate.HasCharacterClassRequirement)
+                consumable.CharacterClass = consumableTemplate.CharacterClass;
 
             consumableTemplate.HasBeenGenerated = true;
 

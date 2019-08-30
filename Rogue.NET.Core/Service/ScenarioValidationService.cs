@@ -353,6 +353,43 @@ namespace Rogue.NET.Core.Service
 
                         }).Actualize();
                 })),
+                new ScenarioValidationRule("Character Class Requirement must have a Character Class Set", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                {
+                    var equipment = configuration.EquipmentTemplates
+                                                 .Where(x => x.HasCharacterClassRequirement)
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Select(x => "Equipment -> " + x.Name)
+                                                 .Actualize();
+
+                    var consumables = configuration.EquipmentTemplates
+                                                 .Where(x => x.HasCharacterClassRequirement)
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Select(x => "Consumable -> " + x.Name)
+                                                 .Actualize();
+
+                    var doodads = configuration.DoodadTemplates
+                                                 .Where(x => x.HasCharacterClassRequirement)
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Select(x => "Doodad -> " + x.Name)
+                                                 .Actualize();
+
+                    var skills = configuration.SkillTemplates
+                                              .SelectMany(x => x.Skills)
+                                                 .Where(x => x.HasCharacterClassRequirement)
+                                                 .Where(x => string.IsNullOrEmpty(x.CharacterClass))
+                                                 .Select(x => "Skill -> " + x.Name)
+                                                 .Actualize();
+
+                    return equipment.Union(consumables)
+                                    .Union(doodads)
+                                    .Union(skills)
+                                    .Select(x => new ScenarioValidationResult()
+                                    {
+                                        InnerMessage = x,
+                                        Passed = false
+                                    })
+                                    .Actualize();
+                })),
 
             // Warnings
             new ScenarioValidationRule("Asset generation rate set to zero", ValidationMessageSeverity.Warning, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>

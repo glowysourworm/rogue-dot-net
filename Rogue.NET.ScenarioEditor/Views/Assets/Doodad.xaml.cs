@@ -34,8 +34,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            // TODO:CHARACTERCLASS
-            //this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

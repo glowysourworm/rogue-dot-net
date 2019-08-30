@@ -27,8 +27,7 @@ namespace Rogue.NET.Core.Model.Generator
                 HasCharacterClassRequirement = skillTemplate.HasCharacterClassRequirement,                
                 LevelRequirement = skillTemplate.LevelRequirement,
                 PointRequirement = skillTemplate.PointRequirement,
-                // TODO:CHARACTERCLASS
-                //CharacterClass = skillTemplate.HasCharacterClassRequirement ? characterClasses.First(x => x.RogueName == skillTemplate.CharacterClass.Name) : new CharacterClass(),
+                CharacterClass = skillTemplate.CharacterClass,
                 SkillPointRequirement = skillTemplate.PointRequirement
             };
         }

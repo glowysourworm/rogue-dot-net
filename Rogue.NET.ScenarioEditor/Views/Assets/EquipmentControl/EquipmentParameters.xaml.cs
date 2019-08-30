@@ -29,8 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
         private void Initialize(IScenarioCollectionProvider provider)
         {
             this.AmmoTemplateCB.ItemsSource = provider.Consumables.Where(a => a.SubType == ConsumableSubType.Ammo);
-            // TODO:CHARACTERCLASS
-            //this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
         }
     }
 }

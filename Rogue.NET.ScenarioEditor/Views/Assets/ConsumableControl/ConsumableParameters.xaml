@@ -44,9 +44,9 @@
             <Grid Margin="10"
                   Visibility="{Binding HasCharacterClassRequirement, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Foreground="White" Text="Character Class Requirement" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                <ComboBox x:Name="CharacterClassCB" DisplayMemberPath="Name"
-                                  SelectedItem="{Binding CharacterClass}"
-                                  SelectedValue="{Binding CharacterClass.Name}"
+                <ComboBox x:Name="CharacterClassCB" 
+                                  DisplayMemberPath="Name"
+                                  SelectedValue="{Binding CharacterClass}"
                                   SelectedValuePath="Name"
                                   VerticalAlignment="Center" 
                                   Width="200"                              

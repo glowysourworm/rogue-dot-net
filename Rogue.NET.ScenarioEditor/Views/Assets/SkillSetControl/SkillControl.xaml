@@ -53,9 +53,8 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <CheckBox IsChecked="{Binding HasCharacterClassRequirement}" VerticalAlignment="Center" />
-                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.CharacterClasses, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
-                                   SelectedValue="{Binding CharacterClass.Name}" 
-                                   SelectedItem="{Binding CharacterClass}"
+                        <ComboBox  ItemsSource="{Binding Path=DataContext.Configuration.PlayerTemplates, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=views:Editor}}"
+                                   SelectedValue="{Binding CharacterClass}" 
                                    SelectedValuePath="Name"
                                    DisplayMemberPath="Name"
                                    VerticalAlignment="Center"

@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private ConsumableProjectileAlterationTemplate _consumableProjectileAlteration;
         private AnimationGroupTemplate _ammoAnimationGroup;
         private string _noteMessage;
+        private string _characterClass;
 
         private bool _hasCharacterClassRequirement;
 
@@ -192,6 +193,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _noteMessage = value;
                     OnPropertyChanged("NoteMessage");
+                }
+            }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

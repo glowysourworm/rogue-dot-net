@@ -346,7 +346,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             // TODO:CHARACTERCLASS
             //if (consumable.HasCharacterClassRequirement)
             //    this.CharacterClass = new ScenarioImageViewModel(characterClasses.First(x => x.RogueName == consumable.CharacterClass));
-                                                
+
 
             this.Quantity = totalQuantity;
             this.Weight = totalWeight.ToString("F2");

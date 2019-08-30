@@ -26,6 +26,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _hasEquipAlteration;
         private bool _hasCurseAlteration;
         private bool _hasCharacterClassRequirement;
+        private string _characterClass;
 
         public Range<int> Class
         {
@@ -192,6 +193,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasCharacterClassRequirement = value;
                     OnPropertyChanged("HasCharacterClassRequirement");
+                }
+            }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

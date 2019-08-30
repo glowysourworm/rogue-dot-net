@@ -105,7 +105,8 @@ namespace Rogue.NET.Intro.ViewModel
                 this.Scenarios.Add(new SavedGameViewModel(_eventAggregator)
                 {
                     Name = header.Key,
-                    SmileyColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyBodyColor),
+                    SmileyMood = header.Value.SmileyMood,
+                    SmileyBodyColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyBodyColor),
                     SmileyLineColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyLineColor)
                 });
             }

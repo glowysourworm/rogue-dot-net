@@ -25,6 +25,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         private bool _hasEquipAlteration;
         private bool _hasCurseAlteration;
         private bool _hasCharacterClassRequirement;
+        private string _characterClass;
 
         public RangeViewModel<int> Class
         {
@@ -95,6 +96,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _hasCharacterClassRequirement; }
             set { this.RaiseAndSetIfChanged(ref _hasCharacterClassRequirement, value); }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
 
         public EquipmentTemplateViewModel()

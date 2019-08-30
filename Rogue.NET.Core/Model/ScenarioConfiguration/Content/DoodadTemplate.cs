@@ -15,6 +15,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         private bool _isInvoked;
         private bool _isOneUse;
         private bool _hasCharacterClassRequirement;
+        private string _characterClass;
 
         public DoodadAlterationTemplate AutomaticAlteration
         {
@@ -97,6 +98,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _hasCharacterClassRequirement = value;
                     OnPropertyChanged("HasCharacterClassRequirement");
+                }
+            }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set
+            {
+                if (_characterClass != value)
+                {
+                    _characterClass = value;
+                    OnPropertyChanged("CharacterClass");
                 }
             }
         }

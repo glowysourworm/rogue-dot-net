@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         double _attributeLevelRequirement;
         CharacterAttribute _attributeRequirement;
         SkillAlterationTemplateViewModel _skillAlteration;
+        string _characterClass;
 
         public int LevelRequirement
         {
@@ -49,6 +50,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
         {
             get { return _skillAlteration; }
             set { this.RaiseAndSetIfChanged(ref _skillAlteration, value); }
+        }
+        public string CharacterClass
+        {
+            get { return _characterClass; }
+            set { this.RaiseAndSetIfChanged(ref _characterClass, value); }
         }
 
         public SkillTemplateViewModel()
