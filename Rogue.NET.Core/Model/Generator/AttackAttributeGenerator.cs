@@ -29,7 +29,7 @@ namespace Rogue.NET.Core.Model.Generator
             attackAttribute.SmileyLightRadiusColor = attackAttributeTemplate.SymbolDetails.SmileyAuraColor;
             attackAttribute.SmileyBodyColor = attackAttributeTemplate.SymbolDetails.SmileyBodyColor;
             attackAttribute.SmileyLineColor = attackAttributeTemplate.SymbolDetails.SmileyLineColor;
-            attackAttribute.SmileyMood = attackAttributeTemplate.SymbolDetails.SmileyMood;
+            attackAttribute.SmileyExpression = attackAttributeTemplate.SymbolDetails.SmileyExpression;
             attackAttribute.SymbolType = attackAttributeTemplate.SymbolDetails.Type;
             attackAttribute.Attack = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Attack);
             attackAttribute.Resistance = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Resistance);

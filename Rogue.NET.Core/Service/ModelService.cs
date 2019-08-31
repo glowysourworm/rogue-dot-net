@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Service
                 SymbolType = x.SymbolDetails.Type,
                 SmileyBodyColor = x.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = x.SymbolDetails.SmileyLineColor,
-                SmileyMood = x.SymbolDetails.SmileyMood
+                SmileyExpression = x.SymbolDetails.SmileyExpression
 
             }).Actualize();
 

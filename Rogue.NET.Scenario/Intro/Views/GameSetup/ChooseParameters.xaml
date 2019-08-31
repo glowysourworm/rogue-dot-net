@@ -35,7 +35,7 @@
                             <Border x:Name="border" CornerRadius="10,0,0,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
                                 <Grid>
                                     <coreView:Smiley SmileyColor="Blue" 
-                                                SmileyMood="Scared" 
+                                                SmileyExpression="Scared" 
                                                 SmileyLineColor="Yellow"
                                                 HorizontalAlignment="Left"
                                                 Margin="8,0,0,0"
@@ -59,7 +59,7 @@
                                 <Grid>
                                     <coreView:Smiley x:Name="NextSmiley" 
                                              SmileyColor="Green" 
-                                                SmileyMood="Happy" 
+                                                SmileyExpression="Happy" 
                                                 SmileyLineColor="Yellow"
                                                 HorizontalAlignment="Right"
                                                 Margin="0,0,8,0"

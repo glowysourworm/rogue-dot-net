@@ -7,6 +7,7 @@
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"  
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,16 +34,19 @@
                             <GradientStop Color="Transparent" Offset="1" />
                         </RadialGradientBrush>
                     </Border.Background>
-                    <Image VerticalAlignment="Center" 
-                           HorizontalAlignment="Center"
-                           Stretch="None">
+                    <Image  VerticalAlignment="Stretch" 
+                            HorizontalAlignment="Stretch"
+                            Stretch="None">
                         <Image.Source>
                             <MultiBinding Converter="{StaticResource SymbolDetailsMultiConverter}">
+                                <MultiBinding.ConverterParameter>
+                                    <system:Double>1.5</system:Double>
+                                </MultiBinding.ConverterParameter>
                                 <Binding Path="CharacterSymbol" />
                                 <Binding Path="CharacterColor" />
                                 <Binding Path="Icon" />
                                 <Binding Path="DisplayIcon" />
-                                <Binding Path="SmileyMood" />
+                                <Binding Path="SmileyExpression" />
                                 <Binding Path="SmileyBodyColor" />
                                 <Binding Path="SmileyLineColor" />
                                 <Binding Path="SmileyAuraColor" />
@@ -67,12 +71,12 @@
                         <controls:ColorComboBox SelectedValue="{Binding SmileyLineColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10">
-                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Aura Color" />
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Light Radius Color" />
                         <controls:ColorComboBox SelectedValue="{Binding SmileyAuraColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                     <Grid Margin="10">
-                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Mood" />
-                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyMoods}"  EnumValue="{Binding SmileyMood, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Expression" />
+                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyExpression}"  EnumValue="{Binding SmileyExpression, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>                    
                 </StackPanel>
             </GroupBox>
@@ -116,8 +120,8 @@
                         <CheckBox  IsChecked="{Binding IsImageDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="10">
-                        <TextBlock Text="Is Mood Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                        <CheckBox  IsChecked="{Binding IsMoodDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                        <TextBlock Text="Is Expression Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsExpressionDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="10">
                         <TextBlock Text="Is Body Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />

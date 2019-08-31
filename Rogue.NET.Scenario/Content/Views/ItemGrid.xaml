@@ -190,7 +190,7 @@
                                                     <Binding Path="CharacterClass.CharacterSymbol" />
                                                     <Binding Path="CharacterClass.Icon" />
                                                     <Binding Path="CharacterClass.DisplayIcon" />
-                                                    <Binding Path="CharacterClass.SmileyMood" />
+                                                    <Binding Path="CharacterClass.SmileyExpression" />
                                                     <Binding Path="CharacterClass.SmileyAuraColor" />
                                                     <Binding Path="CharacterClass.SmileyBodyColor" />
                                                     <Binding Path="CharacterClass.SmileyLineColor" />
@@ -324,7 +324,7 @@
                                                     <Binding Path="CharacterClass.CharacterSymbol" />
                                                     <Binding Path="CharacterClass.Icon" />
                                                     <Binding Path="CharacterClass.DisplayIcon" />
-                                                    <Binding Path="CharacterClass.SmileyMood" />
+                                                    <Binding Path="CharacterClass.SmileyExpression" />
                                                     <Binding Path="CharacterClass.SmileyAuraColor" />
                                                     <Binding Path="CharacterClass.SmileyBodyColor" />
                                                     <Binding Path="CharacterClass.SmileyLineColor" />

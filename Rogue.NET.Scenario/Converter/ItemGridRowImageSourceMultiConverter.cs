@@ -38,14 +38,14 @@ namespace Rogue.NET.Scenario.Converter
                 CharacterSymbol = (string)values[1],
                 Icon = (ImageResources)values[2],
                 DisplayIcon = (DisplayImageResources)values[3],
-                SmileyMood = (SmileyMoods)values[4],
+                SmileyExpression = (SmileyExpression)values[4],
                 SmileyLightRadiusColor = (string)values[5],
                 SmileyBodyColor = (string)values[6],
                 SmileyLineColor = (string)values[7],
                 SymbolType = (SymbolTypes)values[8]
             };
 
-            return _scenarioResourceService.GetImageSource(model);
+            return _scenarioResourceService.GetImageSource(model, 1.0);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

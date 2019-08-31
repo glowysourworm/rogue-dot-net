@@ -120,6 +120,28 @@ namespace Rogue.NET.Core.Model.Enums
         Scared,
         Mischievous
     }
+    public enum SmileyExpression
+    { 
+        Happy = 0,
+        Blind = 1,
+        Dead = 2,
+        Disgruntled = 3,
+        Emoji = 4,
+        FreakedOut = 5,
+        Frustrated = 6,
+        Insane = 7,
+        LeftWink = 8,
+        MeanPumpkinFace = 9,
+        Mischievous = 10,
+        RightWink = 11,
+        Sad = 12,
+        Scared = 13,
+        Shocked = 14,
+        Sleeping = 15,
+        Sour = 16,
+        Unsure = 17,
+        WeirdWhistler = 18
+    }
 
     /// <summary>
     /// Represents charater attributes

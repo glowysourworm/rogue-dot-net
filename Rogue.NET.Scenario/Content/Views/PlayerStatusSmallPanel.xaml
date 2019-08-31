@@ -17,7 +17,7 @@
                         Margin="4"
                         SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                         SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}"
-                        SmileyMood="{Binding SmileyMood}" 
+                        SmileyExpression="{Binding SmileyExpression}" 
                          />
 
         <TextBlock Foreground="Red" FontSize="16" Margin="4">

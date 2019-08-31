@@ -1,10 +1,8 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Construction.ObjectiveDesign"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Background="Black"
-             d:DesignWidth="550">
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +24,7 @@
                                         <Binding Path="SymbolDetails.CharacterColor" />
                                         <Binding Path="SymbolDetails.Icon" />
                                         <Binding Path="SymbolDetails.DisplayIcon" />
-                                        <Binding Path="SymbolDetails.SmileyMood" />
+                                        <Binding Path="SymbolDetails.SmileyExpression" />
                                         <Binding Path="SymbolDetails.SmileyBodyColor" />
                                         <Binding Path="SymbolDetails.SmileyLineColor" />
                                         <Binding Path="SymbolDetails.SmileyAuraColor" />

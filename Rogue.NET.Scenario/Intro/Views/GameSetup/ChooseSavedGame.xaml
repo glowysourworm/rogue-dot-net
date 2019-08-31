@@ -18,7 +18,7 @@
                         <Border x:Name="border" CornerRadius="10,10,10,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
                             <Grid>
                                 <coreView:Smiley SmileyColor="Maroon" 
-                                                        SmileyMood="Scared" 
+                                                        SmileyExpression="Scared" 
                                                         SmileyLineColor="Yellow"
                                                         HorizontalAlignment="Right"
                                                         Margin="8,0,8,0"
@@ -54,7 +54,7 @@
                                             VerticalAlignment="Center"
                                             SmileyColor="{Binding SmileyBodyColor}"
                                             SmileyLineColor="{Binding SmileyLineColor}"
-                                            SmileyMood="{Binding SmileyMood}" />
+                                            SmileyExpression="{Binding SmileyExpression}" />
                             <TextBlock Foreground="White" FontSize="28" Text="{Binding Name}" Margin="60,10,10,10" VerticalAlignment="Bottom" />
                             <Grid HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                 <StackPanel Orientation="Horizontal">

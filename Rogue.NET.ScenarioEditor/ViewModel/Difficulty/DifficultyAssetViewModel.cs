@@ -57,7 +57,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
                 SmileyAuraColor = viewModel.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = viewModel.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = viewModel.SymbolDetails.SmileyLineColor,
-                SmileyMood = viewModel.SymbolDetails.SmileyMood,
+                SmileyExpression = viewModel.SymbolDetails.SmileyExpression,
                 Type = viewModel.SymbolDetails.Type
             };
         }

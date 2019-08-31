@@ -69,7 +69,7 @@
                                             <Binding Path="CharacterColor" />
                                             <Binding Path="Icon" />
                                             <Binding Path="DisplayIcon" />
-                                            <Binding Path="SmileyMood" />
+                                            <Binding Path="SmileyExpression" />
                                             <Binding Path="SmileyBodyColor" />
                                             <Binding Path="SmileyLineColor" />
                                             <Binding Path="SmileyAuraColor" />
@@ -87,7 +87,7 @@
                                         <Binding Path="CharacterColor" />
                                         <Binding Path="Icon" />
                                         <Binding Path="DisplayIcon" />
-                                        <Binding Path="SmileyMood" />
+                                        <Binding Path="SmileyExpression" />
                                         <Binding Path="SmileyBodyColor" />
                                         <Binding Path="SmileyLineColor" />
                                         <Binding Path="SmileyAuraColor" />
@@ -109,7 +109,7 @@
                                              Padding="0" Margin="0">
                                         <Border Background="Black" Padding="4" BorderBrush="Purple" BorderThickness="2" CornerRadius="8">
                                             <StackPanel Orientation="Horizontal">
-                                                <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Happy" />
+                                                <coreView:Smiley VerticalAlignment="Center" SmileyColor="Purple" SmileyLineColor="Yellow" Margin="4,4,20,4" Width="20" Height="30" SmileyExpression="Happy" />
                                                 <TextBlock Text="Click to View Skill Detail" Foreground="LightSteelBlue" FontSize="12" Margin="4" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>
@@ -131,7 +131,7 @@
                                              Padding="0" Margin="0">
                                         <Border Background="Black" Padding="4" BorderBrush="Red" BorderThickness="2" CornerRadius="8">
                                             <StackPanel Orientation="Horizontal">
-                                                <coreView:Smiley VerticalAlignment="Center" SmileyColor="Black" SmileyLineColor="Red" Margin="4,4,20,4" Width="20" Height="30" SmileyMood="Scared" />
+                                                <coreView:Smiley VerticalAlignment="Center" SmileyColor="Black" SmileyLineColor="Red" Margin="4,4,20,4" Width="20" Height="30" SmileyExpression="Scared" />
                                                 <TextBlock Text="Minimum Requirements Not Met!" Foreground="Red" FontSize="12" Margin="4" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </Border>

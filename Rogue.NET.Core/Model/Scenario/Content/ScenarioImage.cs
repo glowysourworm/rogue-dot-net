@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content
@@ -9,7 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public SymbolTypes SymbolType { get; set; }
 
         //Smiley Details
-        public SmileyMoods SmileyMood { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
         public string SmileyLightRadiusColor { get; set; }
@@ -45,15 +46,28 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
             this.SymbolType = SymbolTypes.Character;
         }
-        public ScenarioImage(string name, SmileyMoods mood, string smileyBodyColor, string smileyLineColor, string smileyAuraColor)
+        public ScenarioImage(string name, SmileyExpression expression, string smileyBodyColor, string smileyLineColor, string smileyAuraColor)
             : base(name)
         {
-            this.SmileyMood = mood;
+            this.SmileyExpression = expression;
             this.SmileyLightRadiusColor = smileyAuraColor;
             this.SmileyBodyColor = smileyBodyColor;
             this.SmileyLineColor = smileyLineColor;
 
             this.SymbolType = SymbolTypes.Smiley;
+        }
+        public ScenarioImage(SymbolDetailsTemplate template)
+            : base(template.Name)
+        {
+            this.CharacterColor = template.CharacterColor;
+            this.CharacterSymbol = template.CharacterSymbol;
+            this.DisplayIcon = template.DisplayIcon;
+            this.Icon = template.Icon;
+            this.SmileyBodyColor = template.SmileyBodyColor;
+            this.SmileyExpression = template.SmileyExpression;
+            this.SmileyLightRadiusColor = template.SmileyAuraColor;
+            this.SmileyLineColor = template.SmileyLineColor;
+            this.SymbolType = template.Type;
         }
     }
 }

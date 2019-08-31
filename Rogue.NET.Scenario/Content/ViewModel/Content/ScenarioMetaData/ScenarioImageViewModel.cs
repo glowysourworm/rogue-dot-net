@@ -16,7 +16,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         string _characterColor;
         ImageResources _icon;
         DisplayImageResources _displayIcon;
-        SmileyMoods _smileyMood;
+        SmileyExpression _smileyExpression;
         string _smileyBodyColor;
         string _smileyLineColor;
         string _smileyAuraColor;
@@ -49,10 +49,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _displayIcon; }
             set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
         }
-        public SmileyMoods SmileyMood
+        public SmileyExpression SmileyExpression
         {
-            get { return _smileyMood; }
-            set { this.RaiseAndSetIfChanged(ref _smileyMood, value); }
+            get { return _smileyExpression; }
+            set { this.RaiseAndSetIfChanged(ref _smileyExpression, value); }
         }
         public string SmileyBodyColor
         {
@@ -82,7 +82,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.CharacterColor = scenarioImage.CharacterColor;
             this.Icon = scenarioImage.Icon;
             this.DisplayIcon = scenarioImage.DisplayIcon;
-            this.SmileyMood = scenarioImage.SmileyMood;
+            this.SmileyExpression = scenarioImage.SmileyExpression;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
             this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
@@ -108,7 +108,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.SmileyAuraColor = symbolDetailsTemplate.SmileyAuraColor;
             this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
             this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
-            this.SmileyMood = symbolDetailsTemplate.SmileyMood;
+            this.SmileyExpression = symbolDetailsTemplate.SmileyExpression;
             this.SymbolType = symbolDetailsTemplate.Type;
         }
     }

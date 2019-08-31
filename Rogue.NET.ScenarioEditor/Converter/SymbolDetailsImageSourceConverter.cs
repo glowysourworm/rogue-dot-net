@@ -30,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
 
             var model = symbolDetails.Map<SymbolDetailsTemplateViewModel, SymbolDetailsTemplate>();
 
-            return _scenarioResourceService.GetImageSource(model);
+            return _scenarioResourceService.GetImageSource(model, 1.0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

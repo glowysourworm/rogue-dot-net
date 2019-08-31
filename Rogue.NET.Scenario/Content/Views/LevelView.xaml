@@ -93,7 +93,7 @@
                                 <coreView:Smiley Height="15" Width="10"
                                          SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                                          SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
-                                         SmileyMood="{Binding PlayerScenarioImage.SmileyMood}" 
+                                         SmileyExpression="{Binding PlayerScenarioImage.SmileyExpression}" 
                                          />
                             </Button.Content>
                         </Button>

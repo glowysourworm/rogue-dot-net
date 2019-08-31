@@ -185,7 +185,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                     existing.SymbolDetails.SmileyAuraColor = attrib.SymbolDetails.SmileyAuraColor;
                     existing.SymbolDetails.SmileyBodyColor = attrib.SymbolDetails.SmileyBodyColor;
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
-                    existing.SymbolDetails.SmileyMood = attrib.SymbolDetails.SmileyMood;
+                    existing.SymbolDetails.SmileyExpression = attrib.SymbolDetails.SmileyExpression;
                     existing.SymbolDetails.Type = attrib.SymbolDetails.Type;
                 }
             }

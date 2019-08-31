@@ -13,7 +13,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
         readonly IRogueEventAggregator _eventAggregator;
 
         public string Name { get; set; }
-        public SmileyMoods SmileyMood { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
         public Color SmileyBodyColor { get; set; }
         public Color SmileyLineColor { get; set; }
         public int CurrentLevel { get; set; }

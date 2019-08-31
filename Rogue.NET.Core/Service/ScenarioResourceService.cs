@@ -99,10 +99,13 @@ namespace Rogue.NET.Core.Service
             // Have to copy configuration because of the HasBeenGenerated flags in memory
             return _scenarioConfigurations[configurationName].DeepClone();
         }
-        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails)
+        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale)
         {
+            // Clip the scale to a safe number
+            var safeScale = scale.Clip(1, 10);
+
             // Create cache image to retrieve cached BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(symbolDetails, false);
+            var cacheImage = new ScenarioCacheImage(symbolDetails, false, safeScale);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -115,10 +118,10 @@ namespace Rogue.NET.Core.Service
             switch (cacheImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor);
+                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor, cacheImage.Scale);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetImage(cacheImage.SmileyMood, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor);
+                    result = GetImage(cacheImage.SmileyExpression, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor, cacheImage.Scale);
                     break;
                 case SymbolTypes.Image:
                     result = GetImage(cacheImage.Icon);
@@ -135,10 +138,13 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
-        public BitmapSource GetImageSource(ScenarioImage scenarioImage)
+        public BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale)
         {
+            // Clip the scale to a safe number
+            var safeScale = scale.Clip(1, 10);
+
             // Create cache image to retrieve cached BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, false);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, false, safeScale);
             var cacheKey = cacheImage.ToFingerprint();
             
             // Check for cached image
@@ -151,10 +157,10 @@ namespace Rogue.NET.Core.Service
             switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
+                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, safeScale);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetImage(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor);
+                    result = GetImage(scenarioImage.SmileyExpression, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor, safeScale);
                     break;
                 case SymbolTypes.Image:
                     result = GetImage(scenarioImage.Icon);
@@ -171,10 +177,13 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
-        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage)
+        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale)
         {
+            // Clip the scale to a safe number
+            var safeScale = scale.Clip(1, 10);
+
             // Create cache image to retrieve cached GrayScale BitmapSource or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, true);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, true, safeScale);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
@@ -183,7 +192,7 @@ namespace Rogue.NET.Core.Service
 
             // Create gray-scale image (also can use cache to get color image)
             // TODO: figure out why transparency doesn't work; and fix the gray scale image
-            var bitmapSource = GetImageSource(scenarioImage);
+            var bitmapSource = GetImageSource(scenarioImage, safeScale);
             var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Pbgra32, BitmapPalettes.WebPaletteTransparent, 100);
 
             // Cache the gray-scale image
@@ -191,10 +200,13 @@ namespace Rogue.NET.Core.Service
 
             return formatConvertedBitmap;
         }
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale)
         {
+            // Clip the scale to a safe number
+            var safeScale = scale.Clip(1, 10);
+
             // Create cache image to retrieve cached FrameworkElement or to store it
-            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.FrameworkElement, false);
+            var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.FrameworkElement, false, safeScale);
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement
@@ -206,16 +218,16 @@ namespace Rogue.NET.Core.Service
             switch (scenarioImage.SymbolType)
             {
                 case SymbolTypes.Character:
-                    result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor);
+                    result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, safeScale);
                     break;
                 case SymbolTypes.Smiley:
-                    result = GetElement(scenarioImage.SmileyMood, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor);
+                    result = GetElement(scenarioImage.SmileyExpression, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor, safeScale);
                     break;
                 case SymbolTypes.Image:
-                    result = GetElement(scenarioImage.Icon);
+                    result = GetElement(scenarioImage.Icon, safeScale);
                     break;
                 case SymbolTypes.DisplayImage:
-                    result = GetElement(scenarioImage.DisplayIcon);
+                    result = GetElement(scenarioImage.DisplayIcon, safeScale);
                     break;
                 default:
                     throw new Exception("Unknown symbol type");
@@ -249,49 +261,49 @@ namespace Rogue.NET.Core.Service
             var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             return decoder.Frames[0];
         }
-        private BitmapSource GetImage(string symbol, string symbolColor)
+        private BitmapSource GetImage(string symbol, string symbolColor, double scale)
         {
-            var text = GetElement(symbol, symbolColor);
+            var text = GetElement(symbol, symbolColor, scale);
             text.Background = Brushes.Transparent;
             text.Measure(new Size(text.Width, text.Height));
             text.Arrange(new Rect(text.DesiredSize));
 
-            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth), (int)(ModelConstants.CellHeight), DPI, DPI, PixelFormats.Default);
+            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth * scale), (int)(ModelConstants.CellHeight * scale), DPI, DPI, PixelFormats.Default);
             bmp.Render(text);
             return bmp;
         }
-        private BitmapSource GetImage(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
+        private BitmapSource GetImage(SmileyExpression expression, string bodyColor, string lineColor, string auraColor, double scale)
         {
-            var ctrl = GetElement(mood, bodyColor, lineColor, auraColor);
+            var ctrl = GetElement(expression, bodyColor, lineColor, auraColor, scale);
             ctrl.Background = Brushes.Transparent;
             ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
             ctrl.Arrange(new Rect(0,0,ctrl.Width, ctrl.Height));
             RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
-            var bmp = new RenderTargetBitmap(ModelConstants.CellWidth, ModelConstants.CellHeight, DPI, DPI, PixelFormats.Default);
+            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth * scale), (int)(ModelConstants.CellHeight * scale), DPI, DPI, PixelFormats.Default);
 
             bmp.Render(ctrl);
             return bmp;
         }
 
-        private Image GetElement(ImageResources imageResource)
+        private Image GetElement(ImageResources imageResource, double scale)
         {
             var result = new Image();
-            result.Width = ModelConstants.CellWidth;
-            result.Height = ModelConstants.CellHeight;
+            result.Width = ModelConstants.CellWidth * scale;
+            result.Height = ModelConstants.CellHeight * scale;
             result.Source = GetImage(imageResource);
 
             return result;
         }
-        private Image GetElement(DisplayImageResources displayImageResource)
+        private Image GetElement(DisplayImageResources displayImageResource, double scale)
         {
             var result = new Image();
-            result.Width = ModelConstants.CellWidth;
-            result.Height = ModelConstants.CellHeight;
+            result.Width = ModelConstants.CellWidth * scale;
+            result.Height = ModelConstants.CellHeight * scale;
             result.Source = GetImage(displayImageResource);
 
             return result;
         }
-        private TextBlock GetElement(string symbol, string symbolColor)
+        private TextBlock GetElement(string symbol, string symbolColor, double scale)
         {
             var text = new TextBlock();
             var foregroundColor = (Color)ColorConverter.ConvertFromString(symbolColor);
@@ -299,23 +311,27 @@ namespace Rogue.NET.Core.Service
             text.Foreground = new SolidColorBrush(foregroundColor);
             text.Background = Brushes.Transparent;
             text.Text = symbol;
-            text.FontSize = 12;
+            text.FontSize = 12 * scale.Clip(1, 10);
             text.FontFamily = Application.Current.MainWindow.FontFamily;
             text.TextAlignment = TextAlignment.Center;
             text.Margin = new Thickness(0);
-            text.Height = ModelConstants.CellHeight;
-            text.Width = ModelConstants.CellWidth;
+            text.Height = ModelConstants.CellHeight * scale;
+            text.Width = ModelConstants.CellWidth * scale;
 
             return text;
         }
-        private Smiley GetElement(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
+        private Smiley GetElement(SmileyExpression expression, string bodyColor, string lineColor, string auraColor, double scale)
         {
             var ctrl = new Smiley();
-            ctrl.Width = ModelConstants.CellWidth;
-            ctrl.Height = ModelConstants.CellHeight;
+            ctrl.Width = ModelConstants.CellWidth * scale;
+            ctrl.Height = ModelConstants.CellHeight * scale;
             ctrl.SmileyColor = (Color)ColorConverter.ConvertFromString(bodyColor);
             ctrl.SmileyLineColor = (Color)ColorConverter.ConvertFromString(lineColor);
-            ctrl.SmileyMood = mood;
+            ctrl.SmileyExpression = expression;
+
+            // TODO: fix the initialization problem. (OR) just get rid of images in favor of vector drawings...
+            ctrl.Initialize();
+
             return ctrl;
         }
         #endregion

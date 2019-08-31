@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     public class SymbolDeltaTemplate : Template
     {
         private SymbolTypes _type;
-        private SmileyMoods _smileyMood;
+        private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
-        private bool _isMoodDelta;
+        private bool _isExpressionDelta;
         private bool _isBodyDelta;
         private bool _isLineDelta;
         private bool _isAuraDelta;
@@ -38,15 +38,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public SmileyMoods SmileyMood
+        public SmileyExpression SmileyExpression
         {
-            get { return _smileyMood; }
+            get { return _smileyExpression; }
             set
             {
-                if (_smileyMood != value)
+                if (_smileyExpression != value)
                 {
-                    _smileyMood = value;
-                    OnPropertyChanged("SmileyMood");
+                    _smileyExpression = value;
+                    OnPropertyChanged("SmileyExpression");
                 }
             }
         }
@@ -158,15 +158,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public bool IsMoodDelta
+        public bool IsExpressionDelta
         {
-            get { return _isMoodDelta; }
+            get { return _isExpressionDelta; }
             set
             {
-                if (_isMoodDelta != value)
+                if (_isExpressionDelta != value)
                 {
-                    _isMoodDelta = value;
-                    OnPropertyChanged("IsMoodDelta");
+                    _isExpressionDelta = value;
+                    OnPropertyChanged("IsExpressionDelta");
                 }
             }
         }
@@ -235,7 +235,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         {
             return this.IsFullSymbolDelta ||
                    this.IsImageDelta ||
-                   this.IsMoodDelta ||
+                   this.IsExpressionDelta ||
                    this.IsBodyDelta ||
                    this.IsLineDelta ||
                    this.IsAuraDelta ||

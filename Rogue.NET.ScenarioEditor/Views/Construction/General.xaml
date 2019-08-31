@@ -7,6 +7,7 @@
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
              xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -72,7 +73,7 @@
                                                         <Binding Path="CharacterColor" />
                                                         <Binding Path="Icon" />
                                                         <Binding Path="DisplayIcon" />
-                                                        <Binding Path="SmileyMood" />
+                                                        <Binding Path="SmileyExpression" />
                                                         <Binding Path="SmileyBodyColor" />
                                                         <Binding Path="SmileyLineColor" />
                                                         <Binding Path="SmileyAuraColor" />
@@ -105,7 +106,7 @@
                                                             <Binding Path="SymbolDetails.CharacterColor" />
                                                             <Binding Path="SymbolDetails.Icon" />
                                                             <Binding Path="SymbolDetails.DisplayIcon" />
-                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyExpression" />
                                                             <Binding Path="SymbolDetails.SmileyBodyColor" />
                                                             <Binding Path="SymbolDetails.SmileyLineColor" />
                                                             <Binding Path="SymbolDetails.SmileyAuraColor" />
@@ -146,7 +147,7 @@
                                                             <Binding Path="SymbolDetails.CharacterColor" />
                                                             <Binding Path="SymbolDetails.Icon" />
                                                             <Binding Path="SymbolDetails.DisplayIcon" />
-                                                            <Binding Path="SymbolDetails.SmileyMood" />
+                                                            <Binding Path="SymbolDetails.SmileyExpression" />
                                                             <Binding Path="SymbolDetails.SmileyBodyColor" />
                                                             <Binding Path="SymbolDetails.SmileyLineColor" />
                                                             <Binding Path="SymbolDetails.SmileyAuraColor" />

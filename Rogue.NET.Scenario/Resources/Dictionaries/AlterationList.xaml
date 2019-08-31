@@ -127,7 +127,7 @@
                             <Binding Path="Effect.AlteredState.CharacterColor" />
                             <Binding Path="Effect.AlteredState.Icon" />
                             <Binding Path="Effect.AlteredState.DisplayIcon" />
-                            <Binding Path="Effect.AlteredState.SmileyMood" />
+                            <Binding Path="Effect.AlteredState.SmileyExpression" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />
                             <Binding Path="Effect.AlteredState.SmileyLineColor" />
                             <Binding Path="Effect.AlteredState.SmileyAuraColor" />
@@ -260,7 +260,7 @@
                             <Binding Path="Effect.AlteredState.CharacterColor" />
                             <Binding Path="Effect.AlteredState.Icon" />
                             <Binding Path="Effect.AlteredState.DisplayIcon" />
-                            <Binding Path="Effect.AlteredState.SmileyMood" />
+                            <Binding Path="Effect.AlteredState.SmileyExpression" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />
                             <Binding Path="Effect.AlteredState.SmileyLineColor" />
                             <Binding Path="Effect.AlteredState.SmileyAuraColor" />

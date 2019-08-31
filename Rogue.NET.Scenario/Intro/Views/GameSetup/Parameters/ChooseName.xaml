@@ -21,7 +21,7 @@
             Grid.Row="1"
             SmileyColor="{Binding SelectedConfiguration.SmileyBodyColor}" 
             SmileyLineColor="{Binding SelectedConfiguration.SmileyLineColor}"
-            SmileyMood="{Binding SelectedConfiguration.SmileyMood}"
+            SmileyExpression="{Binding SelectedConfiguration.SmileyExpression}"
             Height="270" Width="180"
             VerticalAlignment="Top"
             HorizontalAlignment="Left" />

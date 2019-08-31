@@ -71,7 +71,7 @@
 
                 <Button Style="{StaticResource ActionButton}" ToolTip="Load Fighter Scenario" Margin="16,0,0,0">
                     <Button.Content>
-                        <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyMood="Happy" Height="18" Width="12" />
+                        <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
                     </Button.Content>
                     <Button.InputBindings>
                         <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Fighter" MouseAction="LeftClick" />
@@ -79,7 +79,7 @@
                 </Button>
                 <Button Style="{StaticResource ActionButton}" ToolTip="Load Paladin Scenario" Margin="2,0,0,0">
                     <Button.Content>
-                        <coreView:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyMood="Happy" Height="18" Width="12" />
+                        <coreView:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
                     </Button.Content>
                     <Button.InputBindings>
                         <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Paladin" MouseAction="LeftClick" />
@@ -87,7 +87,7 @@
                 </Button>
                 <Button Style="{StaticResource ActionButton}" ToolTip="Load Witch Scenario" Margin="2,0,0,0">
                     <Button.Content>
-                        <coreView:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyMood="Happy" Height="18" Width="12" />
+                        <coreView:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyExpression="Happy" Height="18" Width="12" />
                     </Button.Content>
                     <Button.InputBindings>
                         <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Witch" MouseAction="LeftClick" />
@@ -95,7 +95,7 @@
                 </Button>
                 <Button Style="{StaticResource ActionButton}" ToolTip="Load Sorcerer Scenario" Margin="2,0,0,0">
                     <Button.Content>
-                        <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyMood="Happy" Height="18" Width="12" />
+                        <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyExpression="Happy" Height="18" Width="12" />
                     </Button.Content>
                     <Button.InputBindings>
                         <MouseBinding Command="{Binding LoadBuiltInCommand}" CommandParameter="Sorcerer" MouseAction="LeftClick" />
@@ -106,7 +106,7 @@
                 <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="16,0,0,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyMood="Happy" Height="18" Width="12" />
+                            <coreView:Smiley SmileyColor="Yellow" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
                             <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>
                     </Button.Content>
@@ -117,7 +117,7 @@
                 <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="2,0,0,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <coreView:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyMood="Happy" Height="18" Width="12" />
+                            <coreView:Smiley SmileyColor="Silver" SmileyLineColor="Black" SmileyExpression="Happy" Height="18" Width="12" />
                             <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>                        
                     </Button.Content>
@@ -128,7 +128,7 @@
                 <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="2,0,0,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <coreView:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyMood="Happy" Height="18" Width="12" />
+                            <coreView:Smiley SmileyColor="Green" SmileyLineColor="Yellow" SmileyExpression="Happy" Height="18" Width="12" />
                             <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>
                     </Button.Content>
@@ -139,7 +139,7 @@
                 <Button Style="{StaticResource ActionButton}" Width="100" Visibility="{Binding Converter={StaticResource DebugVisibilityCollapsedConverter}}" Margin="2,0,0,0">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyMood="Happy" Height="18" Width="12" />
+                            <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" SmileyExpression="Happy" Height="18" Width="12" />
                             <TextBlock Text="Save / Embed" VerticalAlignment="Center" Margin="10,0,0,0" />
                         </StackPanel>                        
                     </Button.Content>
@@ -169,7 +169,7 @@
                     <Border x:Name="border" CornerRadius="10,10,10,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
                         <Grid>
                             <coreView:Smiley SmileyColor="#FF00008F" 
-                                                    SmileyMood="Happy" 
+                                                    SmileyExpression="Happy" 
                                                     SmileyLineColor="Yellow"
                                                     HorizontalAlignment="Right"
                                                     Margin="0,0,8,0"

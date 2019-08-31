@@ -59,7 +59,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
         string _characterColor;
         ImageResources _icon;
         DisplayImageResources _displayIcon;
-        SmileyMoods _smileyMood;
+        SmileyExpression _smileyExpression;
         string _smileyBodyColor;
         string _smileyLineColor;
         string _smileyAuraColor;
@@ -277,10 +277,10 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             get { return _displayIcon; }
             set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
         }
-        public SmileyMoods SmileyMood
+        public SmileyExpression SmileyExpression
         {
-            get { return _smileyMood; }
-            set { this.RaiseAndSetIfChanged(ref _smileyMood, value); }
+            get { return _smileyExpression; }
+            set { this.RaiseAndSetIfChanged(ref _smileyExpression, value); }
         }
         public string SmileyBodyColor
         {
@@ -375,7 +375,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.CharacterColor = consumable.CharacterColor;
             this.Icon = consumable.Icon;
             this.DisplayIcon = consumable.DisplayIcon;
-            this.SmileyMood = consumable.SmileyMood;
+            this.SmileyExpression = consumable.SmileyExpression;
             this.SmileyBodyColor = consumable.SmileyBodyColor;
             this.SmileyLineColor = consumable.SmileyLineColor;
             this.SmileyAuraColor = consumable.SmileyLightRadiusColor;
@@ -472,7 +472,7 @@ namespace Rogue.NET.Scenario.ViewModel.ItemGrid
             this.CharacterColor = equipment.CharacterColor;
             this.Icon = equipment.Icon;
             this.DisplayIcon = equipment.DisplayIcon;
-            this.SmileyMood = equipment.SmileyMood;
+            this.SmileyExpression = equipment.SmileyExpression;
             this.SmileyBodyColor = equipment.SmileyBodyColor;
             this.SmileyLineColor = equipment.SmileyLineColor;
             this.SmileyAuraColor = equipment.SmileyLightRadiusColor;

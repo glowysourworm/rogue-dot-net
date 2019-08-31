@@ -93,10 +93,10 @@ namespace Rogue.NET.Scenario.Intro.Views
             else if (_ctr == 4)
             {
                 //Change Smiley1's eyes to Dead X_X
-                this.Smiley1.SmileyMood = SmileyMoods.Drunk;
-                this.Smiley2.SmileyMood = SmileyMoods.Scared;
-                this.Smiley3.SmileyMood = SmileyMoods.Scared;
-                this.Smiley4.SmileyMood = SmileyMoods.Scared;
+                this.Smiley1.SmileyExpression = SmileyExpression.Dead;
+                this.Smiley2.SmileyExpression = SmileyExpression.FreakedOut;
+                this.Smiley3.SmileyExpression = SmileyExpression.FreakedOut;
+                this.Smiley4.SmileyExpression = SmileyExpression.FreakedOut;
                 this.Smiley1.SmileyColor = Colors.Red;
 
                 Storyboard s = this.Resources["RunawayStoryboard"] as Storyboard;

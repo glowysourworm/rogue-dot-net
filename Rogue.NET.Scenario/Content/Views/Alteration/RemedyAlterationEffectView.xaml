@@ -30,7 +30,7 @@
                         <Binding Path="RemediedState.CharacterColor" />
                         <Binding Path="RemediedState.Icon" />
                         <Binding Path="RemediedState.DisplayIcon" />
-                        <Binding Path="RemediedState.SmileyMood" />
+                        <Binding Path="RemediedState.SmileyExpression" />
                         <Binding Path="RemediedState.SmileyBodyColor" />
                         <Binding Path="RemediedState.SmileyLineColor" />
                         <Binding Path="RemediedState.SmileyAuraColor" />

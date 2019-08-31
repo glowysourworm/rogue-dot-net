@@ -6,9 +6,12 @@ namespace Rogue.NET.Core.Model.ResourceCache
 {
     public class ScenarioCacheImage
     {
+        // Scale Relative to the ModelConstant Height / Width
+        public double Scale { get; set; }
+
         // Symbol Details
         public SymbolTypes SymbolType { get; set; }
-        public SmileyMoods SmileyMood { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
         public string SmileyAuraColor { get; set; }
@@ -23,10 +26,12 @@ namespace Rogue.NET.Core.Model.ResourceCache
         // Output Format
         public ScenarioCacheImageType OutputType { get; set; }
 
-        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType, bool isGrayScale)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType, bool isGrayScale, double scale)
         {
+            this.Scale = scale;
+
             this.SymbolType = scenarioImage.SymbolType;
-            this.SmileyMood = scenarioImage.SmileyMood;
+            this.SmileyExpression = scenarioImage.SmileyExpression;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
             this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
@@ -43,10 +48,12 @@ namespace Rogue.NET.Core.Model.ResourceCache
         /// <summary>
         /// Constructor that supports image sources only - no option for black background
         /// </summary>
-        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale)
+        public ScenarioCacheImage(SymbolDetailsTemplate symbolDetails, bool grayScale, double scale)
         {
+            this.Scale = scale;
+
             this.SymbolType = symbolDetails.Type;
-            this.SmileyMood = symbolDetails.SmileyMood;
+            this.SmileyExpression = symbolDetails.SmileyExpression;
             this.SmileyBodyColor = symbolDetails.SmileyBodyColor;
             this.SmileyLineColor = symbolDetails.SmileyLineColor;
             this.SmileyAuraColor = symbolDetails.SmileyAuraColor;

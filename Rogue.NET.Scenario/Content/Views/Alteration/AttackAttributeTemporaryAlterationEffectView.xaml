@@ -49,7 +49,7 @@
                         <Binding Path="AlteredState.CharacterColor" />
                         <Binding Path="AlteredState.Icon" />
                         <Binding Path="AlteredState.DisplayIcon" />
-                        <Binding Path="AlteredState.SmileyMood" />
+                        <Binding Path="AlteredState.SmileyExpression" />
                         <Binding Path="AlteredState.SmileyBodyColor" />
                         <Binding Path="AlteredState.SmileyLineColor" />
                         <Binding Path="AlteredState.SmileyAuraColor" />

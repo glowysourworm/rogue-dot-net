@@ -17,7 +17,7 @@
                                  Width="30" 
                                  SmileyColor="Blue" 
                                  SmileyLineColor="Yellow"  
-                                 SmileyMood="Happy" />
+                                 SmileyExpression="Happy" />
                 <TextBlock x:Name="LoadingTB" 
                            Text="Loading..." 
                            FontSize="20"

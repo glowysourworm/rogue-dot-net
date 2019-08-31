@@ -106,7 +106,7 @@
 						</ControlTemplate.Resources>
 						<Grid Height="Auto" Width="Auto">
 							<Grid x:Name="grid" Cursor="Hand" HorizontalAlignment="Center" Margin="10,20">
-                                <coreView:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyMood="Happy" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
+                                <coreView:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyExpression="Happy" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
 								<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Continue" Foreground="White" FontSize="32" Margin="0" VerticalAlignment="Center" d:LayoutOverrides="Width" HorizontalAlignment="Center">
 									<TextBlock.Effect>
 										<BlurEffect Radius="0"/>
@@ -138,7 +138,7 @@
 								</Trigger.EnterActions>
 							</Trigger>
 							<Trigger Property="IsPressed" Value="True">
-								<Setter Property="SmileyMood" TargetName="SmileyContinue" Value="Shocked"/>
+                                <Setter Property="SmileyExpression" TargetName="SmileyContinue" Value="Shocked"/>
 							</Trigger>
 						</ControlTemplate.Triggers>
 					</ControlTemplate>
@@ -159,7 +159,7 @@
 					<ControlTemplate TargetType="{x:Type Button}">
 						<Grid Height="Auto" Width="Auto">
 							<StackPanel Orientation="Horizontal" Cursor="Hand" HorizontalAlignment="Center">
-                                <coreView:Smiley x:Name="SmileyExit" Height="45" SmileyColor="#FF0800FF" SmileyLineColor="#FF00FF04" SmileyMood="Sad" Margin="8" Width="30"/>
+                                <coreView:Smiley x:Name="SmileyExit" Height="45" SmileyColor="#FF0800FF" SmileyLineColor="#FF00FF04" SmileyExpression="Sad" Margin="8" Width="30"/>
 								<TextBlock x:Name="textBlock1" TextWrapping="Wrap" Text="Exit" Margin="8" FontSize="32" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">
 									<TextBlock.Effect>
 										<BlurEffect Radius="0"/>
@@ -230,7 +230,7 @@
 						</ControlTemplate.Resources>
 						<Grid Height="Auto" Width="Auto">
 							<Grid x:Name="grid" Cursor="Hand" HorizontalAlignment="Center" Margin="10,20">
-                                <coreView:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyMood="Sad" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
+                                <coreView:Smiley x:Name="SmileyContinue" Height="90" SmileyColor="#FF13FF00" SmileyLineColor="#FF0004FF" SmileyExpression="Sad" Margin="0" Width="60" HorizontalAlignment="Stretch" Opacity="0"/>
 								<TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Exit" Foreground="White" FontSize="32" Margin="0" VerticalAlignment="Center" d:LayoutOverrides="Width" HorizontalAlignment="Center">
 									<TextBlock.Effect>
 										<BlurEffect Radius="0"/>
@@ -262,7 +262,7 @@
 								</Trigger.EnterActions>
 							</Trigger>
 							<Trigger Property="IsPressed" Value="True">
-								<Setter Property="SmileyMood" TargetName="SmileyContinue" Value="Shocked"/>
+                                <Setter Property="SmileyExpression" TargetName="SmileyContinue" Value="Shocked"/>
 							</Trigger>
 						</ControlTemplate.Triggers>
 					</ControlTemplate>

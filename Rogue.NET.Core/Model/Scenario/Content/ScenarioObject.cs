@@ -65,8 +65,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         {
             this.Location = GridLocation.Empty;
         }
-        public ScenarioObject(string name, SmileyMoods mood, string body, string line, string aura)
-            : base(name, mood, body, line, aura)
+        public ScenarioObject(string name, SmileyExpression expression, string body, string line, string aura)
+            : base(name, expression, body, line, aura)
         {
             this.Location = GridLocation.Empty;
         }

@@ -9,7 +9,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public SmileyMoods SmileyMood { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
         public Color SmileyBodyColor { get; set; }
         public Color SmileyLineColor { get; set; }
 

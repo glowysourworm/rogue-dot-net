@@ -7,7 +7,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     public class SymbolDeltaTemplateViewModel : TemplateViewModel
     {
         private SymbolTypes _type;
-        private SmileyMoods _smileyMood;
+        private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
@@ -17,7 +17,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
-        private bool _isMoodDelta;
+        private bool _isExpressionDelta;
         private bool _isBodyDelta;
         private bool _isLineDelta;
         private bool _isAuraDelta;
@@ -29,10 +29,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _type; }
             set { this.RaiseAndSetIfChanged(ref _type, value); }
         }
-        public SmileyMoods SmileyMood
+        public SmileyExpression SmileyExpression
         {
-            get { return _smileyMood; }
-            set { this.RaiseAndSetIfChanged(ref _smileyMood, value); }
+            get { return _smileyExpression; }
+            set { this.RaiseAndSetIfChanged(ref _smileyExpression, value); }
         }
         public string SmileyBodyColor
         {
@@ -79,10 +79,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _isImageDelta; }
             set { this.RaiseAndSetIfChanged(ref _isImageDelta, value); }
         }
-        public bool IsMoodDelta
+        public bool IsExpressionDelta
         {
-            get { return _isMoodDelta; }
-            set { this.RaiseAndSetIfChanged(ref _isMoodDelta, value); }
+            get { return _isExpressionDelta; }
+            set { this.RaiseAndSetIfChanged(ref _isExpressionDelta, value); }
         }
         public bool IsBodyDelta
         {
@@ -116,7 +116,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             this.Icon = ImageResources.AmuletOrange;
             this.DisplayIcon = DisplayImageResources.ChristianBlack;
 
-            this.SmileyMood = SmileyMoods.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();

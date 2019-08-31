@@ -24,6 +24,12 @@ namespace Rogue.NET.ScenarioEditor.Converter
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            var scale = 1.0;
+
+            if (parameter != null &&
+                parameter is double)
+                scale = (double)parameter;
+
             if (values == null)
                 return Binding.DoNothing;
 
@@ -39,12 +45,12 @@ namespace Rogue.NET.ScenarioEditor.Converter
                 CharacterColor = (string)values[1],
                 Icon = (ImageResources)values[2],
                 DisplayIcon = (DisplayImageResources)values[3],
-                SmileyMood = (SmileyMoods)values[4],
+                SmileyExpression = (SmileyExpression)values[4],
                 SmileyBodyColor = (string)values[5],
                 SmileyLineColor = (string)values[6],
                 SmileyAuraColor = (string)values[7],
                 Type = (SymbolTypes)values[8]
-            });
+            }, scale);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

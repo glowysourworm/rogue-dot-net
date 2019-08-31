@@ -105,7 +105,7 @@ namespace Rogue.NET.Intro.ViewModel
                 this.Scenarios.Add(new SavedGameViewModel(_eventAggregator)
                 {
                     Name = header.Key,
-                    SmileyMood = header.Value.SmileyMood,
+                    SmileyExpression = header.Value.SmileyExpression,
                     SmileyBodyColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyBodyColor),
                     SmileyLineColor = (Color)ColorConverter.ConvertFromString(header.Value.SmileyLineColor)
                 });
@@ -119,7 +119,7 @@ namespace Rogue.NET.Intro.ViewModel
                 {
                     Name = config.DungeonTemplate.Name,
                     Description = config.DungeonTemplate.ObjectiveDescription,
-                    SmileyMood = config.PlayerTemplates.First().SymbolDetails.SmileyMood,
+                    SmileyExpression = config.PlayerTemplates.First().SymbolDetails.SmileyExpression,
                     SmileyBodyColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
                     SmileyLineColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
                     CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>(config.PlayerTemplates

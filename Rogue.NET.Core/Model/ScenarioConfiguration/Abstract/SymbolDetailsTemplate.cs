@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     public class SymbolDetailsTemplate : Template
     {
         private SymbolTypes _type;
-        private SmileyMoods _smileyMood;
+        private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
@@ -17,14 +17,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private string _characterColor;
         private ImageResources _icon;
         private DisplayImageResources _displayIcon;
-        private bool _isFullSymbolDelta;
-        private bool _isImageDelta;
-        private bool _isMoodDelta;
-        private bool _isBodyDelta;
-        private bool _isLineDelta;
-        private bool _isAuraDelta;
-        private bool _isCharacterDelta;
-        private bool _isColorDelta;
 
         public SymbolTypes Type
         {
@@ -38,15 +30,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        public SmileyMoods SmileyMood
+        public SmileyExpression SmileyExpression
         {
-            get { return _smileyMood; }
+            get { return _smileyExpression; }
             set
             {
-                if (_smileyMood != value)
+                if (_smileyExpression != value)
                 {
-                    _smileyMood = value;
-                    OnPropertyChanged("SmileyMood");
+                    _smileyExpression = value;
+                    OnPropertyChanged("SmileyExpression");
                 }
             }
         }
@@ -134,102 +126,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        public bool IsFullSymbolDelta
-        {
-            get { return _isFullSymbolDelta; }
-            set
-            {
-                if (_isFullSymbolDelta != value)
-                {
-                    _isFullSymbolDelta = value;
-                    OnPropertyChanged("IsFullSymbolDelta");
-                }
-            }
-        }
-        public bool IsImageDelta
-        {
-            get { return _isImageDelta; }
-            set
-            {
-                if (_isImageDelta != value)
-                {
-                    _isImageDelta = value;
-                    OnPropertyChanged("IsImageDelta");
-                }
-            }
-        }
-        public bool IsMoodDelta
-        {
-            get { return _isMoodDelta; }
-            set
-            {
-                if (_isMoodDelta != value)
-                {
-                    _isMoodDelta = value;
-                    OnPropertyChanged("IsMoodDelta");
-                }
-            }
-        }
-        public bool IsBodyDelta
-        {
-            get { return _isBodyDelta; }
-            set
-            {
-                if (_isBodyDelta != value)
-                {
-                    _isBodyDelta = value;
-                    OnPropertyChanged("IsBodyDelta");
-                }
-            }
-        }
-        public bool IsLineDelta
-        {
-            get { return _isLineDelta; }
-            set
-            {
-                if (_isLineDelta != value)
-                {
-                    _isLineDelta = value;
-                    OnPropertyChanged("IsLineDelta");
-                }
-            }
-        }
-        public bool IsAuraDelta
-        {
-            get { return _isAuraDelta; }
-            set
-            {
-                if (_isAuraDelta != value)
-                {
-                    _isAuraDelta = value;
-                    OnPropertyChanged("IsAuraDelta");
-                }
-            }
-        }
-        public bool IsCharacterDelta
-        {
-            get { return _isCharacterDelta; }
-            set
-            {
-                if (_isCharacterDelta != value)
-                {
-                    _isCharacterDelta = value;
-                    OnPropertyChanged("IsCharacterDelta");
-                }
-            }
-        }
-        public bool IsColorDelta
-        {
-            get { return _isColorDelta; }
-            set
-            {
-                if (_isColorDelta != value)
-                {
-                    _isColorDelta = value;
-                    OnPropertyChanged("IsColorDelta");
-                }
-            }
-        }
 
         public SymbolDetailsTemplate()
         {
@@ -250,7 +146,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
             this.SmileyAuraColor = tmp.SmileyAuraColor;
             this.SmileyBodyColor = tmp.SmileyBodyColor;
             this.SmileyLineColor = tmp.SmileyLineColor;
-            this.SmileyMood = tmp.SmileyMood;
             this.Type = tmp.Type;
         }
     }

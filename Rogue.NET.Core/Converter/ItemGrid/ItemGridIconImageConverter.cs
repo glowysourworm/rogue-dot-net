@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Converter.ItemGrid
 
             var icon = (ImageResources)value;
 
-            return _scenarioResourceService.GetImageSource(new ScenarioImage("", icon));
+            return _scenarioResourceService.GetImageSource(new ScenarioImage("", icon), 1.0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

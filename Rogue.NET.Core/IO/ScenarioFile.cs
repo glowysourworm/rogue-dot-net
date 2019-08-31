@@ -303,7 +303,7 @@ namespace Rogue.NET.Core.IO
             //Store the player's colors for showing in the intro screens
             header.SmileyLineColor = dungeon.Player.SmileyLineColor;
             header.SmileyBodyColor = dungeon.Player.SmileyBodyColor;
-            header.SmileyMood = dungeon.Player.SmileyMood;
+            header.SmileyExpression = dungeon.Player.SmileyExpression;
 
             //Stream to build new buffer to dump back to file
             MemoryStream dungeonFileStream = new MemoryStream();
@@ -402,7 +402,7 @@ namespace Rogue.NET.Core.IO
     {
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
-        public SmileyMoods SmileyMood { get; set; }
+        public SmileyExpression SmileyExpression { get; set; }
         public List<IndexedObject> StaticObjects { get; set; }
         public List<IndexedObject> DynamicObjects { get; set; }
         public ScenarioFileHeader()
@@ -411,7 +411,7 @@ namespace Rogue.NET.Core.IO
             this.DynamicObjects = new List<IndexedObject>();
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
-            this.SmileyMood = SmileyMoods.Happy;
+            this.SmileyExpression = SmileyExpression.Happy;
         }
     }
 

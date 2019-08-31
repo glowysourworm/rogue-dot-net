@@ -69,7 +69,7 @@
                     <view:Smiley x:Name="Smiley" Height="150" 
                                              SmileyColor="{Binding SmileyBodyColor}" 
                                              SmileyLineColor="{Binding SmileyLineColor}"
-                                             SmileyMood="{Binding SmileyMood}"
+                                             SmileyExpression="{Binding SmileyExpression}"
                                              Width="100"/>
                 
                     <TextBlock HorizontalAlignment="Center" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Belt" TextWrapping="Wrap"/>

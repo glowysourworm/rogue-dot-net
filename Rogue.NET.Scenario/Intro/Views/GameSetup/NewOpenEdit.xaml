@@ -7,19 +7,19 @@
     <Grid Background="Black">
         <StackPanel>
             <StackPanel x:Name="NewStack" Cursor="Hand" Background="Transparent"  Orientation="Horizontal">
-                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyLineColor="Black" SmileyMood="Happy" />
+                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyLineColor="Black" SmileyExpression="Happy" />
                 <TextBlock VerticalAlignment="Center"  Margin="10" Text="New" Foreground="White" FontSize="48" />
             </StackPanel>
             <StackPanel x:Name="OpenStack"  Cursor="Hand" Background="Transparent" Orientation="Horizontal">
-                <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" Margin="10"  Height="75" Width="50" SmileyMood="Happy" />
+                <coreView:Smiley SmileyColor="Blue" SmileyLineColor="Yellow" Margin="10"  Height="75" Width="50" SmileyExpression="Happy" />
                 <TextBlock VerticalAlignment="Center" Margin="10"  Text="Open" Foreground="White" FontSize="48" />
             </StackPanel>
             <StackPanel x:Name="EditStack"  Cursor="Hand" Background="Transparent" Orientation="Horizontal">
-                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyColor="Black" SmileyLineColor="Red" SmileyMood="Happy" />
+                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyColor="Black" SmileyLineColor="Red" SmileyExpression="Happy" />
                 <TextBlock VerticalAlignment="Center" Margin="10"  Text="Edit" Foreground="White" FontSize="48" />
             </StackPanel>
             <StackPanel x:Name="ExitStack"  Cursor="Hand" Background="Transparent" Orientation="Horizontal">
-                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyColor="Silver" SmileyLineColor="Black" SmileyMood="Happy" />
+                <coreView:Smiley Margin="10"  Height="75" Width="50" SmileyColor="Silver" SmileyLineColor="Black" SmileyExpression="Happy" />
                 <TextBlock VerticalAlignment="Center" Margin="10"  Text="Exit" Foreground="White" FontSize="48" />
             </StackPanel>
         </StackPanel>

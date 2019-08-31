@@ -21,7 +21,7 @@
             <!-- Player Smiley -->
             <coreView:Smiley x:Name="smileyCtrl" 
                              Margin="4,0,0,4"
-                             SmileyMood="{Binding SmileyMood}"  
+                             SmileyExpression="{Binding SmileyExpression}"  
                              SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}" 
                              SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}" 
                              Width="40" 
@@ -74,7 +74,7 @@
                                 <Binding Path="ActiveSkillSet.CharacterColor" />
                                 <Binding Path="ActiveSkillSet.Icon" />
                                 <Binding Path="ActiveSkillSet.DisplayIcon" />
-                                <Binding Path="ActiveSkillSet.SmileyMood" />
+                                <Binding Path="ActiveSkillSet.SmileyExpression" />
                                 <Binding Path="ActiveSkillSet.SmileyBodyColor" />
                                 <Binding Path="ActiveSkillSet.SmileyLineColor" />
                                 <Binding Path="ActiveSkillSet.SmileyAuraColor" />

@@ -122,10 +122,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.ObjectType = metaData.ObjectType;
 
             if (metaData.IsIdentified)
-                this.Source = scenarioResourceService.GetImageSource(metaData);
+                this.Source = scenarioResourceService.GetImageSource(metaData, 1.0);
 
             else
-                this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("", "?", Colors.White.ToString()));
+                this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("", "?", Colors.White.ToString()), 1.0);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

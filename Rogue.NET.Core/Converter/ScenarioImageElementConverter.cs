@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Converter
             if (scenarioImage == null)
                 return Binding.DoNothing;
 
-            return _scenarioResourceService.GetFrameworkElement(scenarioImage);
+            return _scenarioResourceService.GetFrameworkElement(scenarioImage, 1.0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

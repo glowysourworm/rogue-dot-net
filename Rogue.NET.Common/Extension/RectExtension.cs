@@ -36,5 +36,34 @@ namespace Rogue.NET.Common.Extension
         {
             return new Point(rect.X + (rect.Width * fraction), rect.Top);
         }
+
+        /// <summary>
+        /// returns a point along the left of the Rect at the fractional distance from the top
+        /// </summary>
+        public static Point LeftAtFraction(this Rect rect, double fraction)
+        {
+            return new Point(rect.Left, rect.Top + (rect.Height * fraction));
+        }
+
+        /// <summary>
+        /// returns a point along the right of the Rect at the fractional distance from the top
+        /// </summary>
+        public static Point RightAtFraction(this Rect rect, double fraction)
+        {
+            return new Point(rect.Right, rect.Top + (rect.Height * fraction));
+        }
+
+        /// <summary>
+        /// returns a point inside the rectangle at the given fractional distance (from the origin of the Rect)
+        /// </summary>
+        public static Point PointAtFraction(this Rect rect, double fractionX, double fractionY)
+        {
+            return new Point(rect.Left + (rect.Width * fractionX), rect.Top + (rect.Height * fractionY));
+        }
+
+        public static Point Center(this Rect rect)
+        {
+            return new Point(rect.X + (rect.Width / 2.0), rect.Y + (rect.Height / 2.0));
+        }
     }
 }

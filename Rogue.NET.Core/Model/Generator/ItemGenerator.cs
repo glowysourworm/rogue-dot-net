@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Model.Generator
             equipment.SmileyLightRadiusColor = equipmentTemplate.SymbolDetails.SmileyAuraColor;
             equipment.SmileyBodyColor = equipmentTemplate.SymbolDetails.SmileyBodyColor;
             equipment.SmileyLineColor = equipmentTemplate.SymbolDetails.SmileyLineColor;
-            equipment.SmileyMood = equipmentTemplate.SymbolDetails.SmileyMood;
+            equipment.SmileyExpression = equipmentTemplate.SymbolDetails.SmileyExpression;
             equipment.SymbolType = equipmentTemplate.SymbolDetails.Type;
 
             equipment.HasEquipAlteration = equipmentTemplate.HasEquipAlteration;
@@ -101,7 +101,7 @@ namespace Rogue.NET.Core.Model.Generator
             consumable.SmileyLightRadiusColor = consumableTemplate.SymbolDetails.SmileyAuraColor;
             consumable.SmileyBodyColor = consumableTemplate.SymbolDetails.SmileyBodyColor;
             consumable.SmileyLineColor = consumableTemplate.SymbolDetails.SmileyLineColor;
-            consumable.SmileyMood = consumableTemplate.SymbolDetails.SmileyMood;
+            consumable.SmileyExpression = consumableTemplate.SymbolDetails.SmileyExpression;
             consumable.SymbolType = consumableTemplate.SymbolDetails.Type;
 
             consumable.Type = consumableTemplate.Type;

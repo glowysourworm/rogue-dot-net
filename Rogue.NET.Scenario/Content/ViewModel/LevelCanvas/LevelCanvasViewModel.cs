@@ -578,8 +578,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             else if (scenarioObject is Player)
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Player);
 
-            content.Source = scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol) :
-                                                         _resourceService.GetImageSource(effectiveSymbol);
+            content.Source = scenarioObject.IsRevealed ? _resourceService.GetDesaturatedImageSource(effectiveSymbol, 1.0) :
+                                                         _resourceService.GetImageSource(effectiveSymbol, 1.0);
 
             content.ToolTip = scenarioObject.RogueName + "   Id: " + scenarioObject.Id;
 

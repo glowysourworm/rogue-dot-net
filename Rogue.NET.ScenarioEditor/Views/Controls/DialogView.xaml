@@ -25,7 +25,7 @@
                                      Margin="4"
                                      HorizontalAlignment="Left"
                                      VerticalAlignment="Center"
-                                     SmileyMood="Happy" 
+                                     SmileyExpression="Happy" 
                                      SmileyColor="CornflowerBlue" 
                                      SmileyLineColor="Black" />
 

@@ -36,12 +36,12 @@ namespace Rogue.NET.Core.Converter
                 CharacterColor = (string)values[1],
                 Icon = (ImageResources)values[2],
                 DisplayIcon = (DisplayImageResources)values[3],
-                SmileyMood = (SmileyMoods)values[4],
+                SmileyExpression = (SmileyExpression)values[4],
                 SmileyBodyColor = (string)values[5],
                 SmileyLineColor = (string)values[6],
                 SmileyLightRadiusColor = (string)values[7],
                 SymbolType = (SymbolTypes)values[8]
-            });
+            }, 1.0);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
