@@ -24,7 +24,6 @@
                              SmileyMood="{Binding SmileyMood}"  
                              SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}" 
                              SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}" 
-                             SmileyRadius="7" 
                              Width="40" 
                              Height="60" 
                              VerticalAlignment="Top"

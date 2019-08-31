@@ -15,11 +15,10 @@
         <coreView:Smiley Height="15" 
                          Width="10"
                         Margin="4"
-                        SmileyLineThickness="1"
                         SmileyColor="{Binding SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                         SmileyLineColor="{Binding SmileyLineColor, Converter={StaticResource StringColorConverter}}"
                         SmileyMood="{Binding SmileyMood}" 
-                        SmileyRadius="2" />
+                         />
 
         <TextBlock Foreground="Red" FontSize="16" Margin="4">
                     <Run Text="HP: " />

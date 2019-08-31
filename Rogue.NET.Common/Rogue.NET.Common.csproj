@@ -204,6 +204,7 @@
     <Compile Include="Extension\Prism\RegionManager\RogueRegion.cs" />
     <Compile Include="Extension\Prism\RegionManager\RogueRegionManager.cs" />
     <Compile Include="Extension\Prism\RegionManager\Transition.cs" />
+    <Compile Include="Extension\RectExtension.cs" />
     <Compile Include="Extension\TypeExtension.cs" />
     <Compile Include="Extension\UpdatingTextBox.cs" />
     <Compile Include="Extension\MapperExtension.cs" />

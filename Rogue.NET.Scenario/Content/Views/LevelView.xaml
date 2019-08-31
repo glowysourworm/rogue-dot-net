@@ -91,11 +91,10 @@
                         Cursor="Hand" Height="28" ToolTip="Center on Player">
                             <Button.Content>
                                 <coreView:Smiley Height="15" Width="10"
-                                         SmileyLineThickness="1"
                                          SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                                          SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
                                          SmileyMood="{Binding PlayerScenarioImage.SmileyMood}" 
-                                         SmileyRadius="2" />
+                                         />
                             </Button.Content>
                         </Button>
                         <Button x:Name="UpButton"     Content="&#xf062;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="UpButton_Click" Margin="4" Style="{DynamicResource ShinyTextButtonStyle}" Width="28" Cursor="Hand" ToolTip="Shift Display Up" Height="28" />

@@ -35,9 +35,7 @@
                         <coreView:Smiley 
                                     SmileyColor="{Binding PlayerScenarioImage.SmileyBodyColor, Converter={StaticResource StringColorConverter}}"
                                     SmileyLineColor="{Binding PlayerScenarioImage.SmileyLineColor, Converter={StaticResource StringColorConverter}}"
-                                    SmileyLineThickness="2"
                                     SmileyMood="Happy"
-                                    SmileyRadius="4"
                                     Margin="10"
                                     Width="20"
                                     Height="30" />

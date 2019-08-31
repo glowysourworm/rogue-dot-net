@@ -87,7 +87,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Canvas x:Name="TheCanvas">
-                <coreView:Smiley x:Name="TheSmiley" Width="10" Height="15" Canvas.Left="60" Canvas.Top="96.833" SmileyColor="#FFE4FF00" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="2" />
+                <coreView:Smiley x:Name="TheSmiley" Width="10" Height="15" Canvas.Left="60" Canvas.Top="96.833" SmileyColor="#FFE4FF00" SmileyLineColor="Black" SmileyMood="Happy" />
                 <TextBlock x:Name="TheEnemy"  Canvas.Left="180" Canvas.Top="56" Foreground="White" Text="T" TextWrapping="Wrap"/>
                 <TextBlock x:Name="TheSecondEnemy"  Canvas.Left="206.666" Canvas.Top="96.833" Foreground="White" Text="G" TextWrapping="Wrap"/>
                 <TextBlock x:Name="TheThirdEnemy"  Canvas.Left="180" Canvas.Top="136" Foreground="White" Text="S" TextWrapping="Wrap"/>

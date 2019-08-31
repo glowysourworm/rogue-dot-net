@@ -25,11 +25,9 @@
                                      Margin="4"
                                      HorizontalAlignment="Left"
                                      VerticalAlignment="Center"
-                                     SmileyRadius="2"
                                      SmileyMood="Happy" 
                                      SmileyColor="CornflowerBlue" 
-                                     SmileyLineColor="Black" 
-                                     SmileyLineThickness="1" />
+                                     SmileyLineColor="Black" />
 
                     <TextBlock x:Name="TitleTB" 
                                Text="Title" 

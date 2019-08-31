@@ -74,7 +74,7 @@
                                          Margin="0">
                                     <Border Background="Black" Padding="10" BorderBrush="Purple" BorderThickness="1.5" CornerRadius="8">
                                         <StackPanel Orientation="Horizontal">
-                                            <coreView:Smiley VerticalAlignment="Center" Margin="4" SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
+                                            <coreView:Smiley VerticalAlignment="Center" Margin="4" SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" />
                                             <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
                                         </StackPanel>
                                     </Border>
@@ -183,7 +183,7 @@
                                          Margin="0">
                                     <Border Background="Black" Padding="10" BorderBrush="Purple" BorderThickness="1.5" CornerRadius="8">
                                         <StackPanel Orientation="Horizontal">
-                                            <coreView:Smiley VerticalAlignment="Top" SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" SmileyRadius="3" />
+                                            <coreView:Smiley VerticalAlignment="Top" SmileyColor="Purple" SmileyLineColor="Yellow" Width="20" Height="30" SmileyMood="Happy" />
                                             <StackPanel>
                                                 <TextBlock Text="Skill is currently locked" Foreground="White" FontSize="14" Margin="4" />
                                                 <TextBlock Foreground="LightBlue" FontSize="14" Margin="0,4,0,0">

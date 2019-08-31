@@ -17,9 +17,7 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
 
             smiley.SmileyColor = ColorUtility.Convert(template.SmileyBodyColor);
             smiley.SmileyLineColor = ColorUtility.Convert(template.SmileyLineColor);
-            smiley.SmileyLineThickness = 2;
             smiley.SmileyMood = template.SmileyMood;
-            smiley.SmileyRadius = 4;
             smiley.Height = ModelConstants.CellHeight * 2;
             smiley.Width = ModelConstants.CellWidth * 2;
 

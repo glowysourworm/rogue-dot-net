@@ -89,7 +89,7 @@
 	</UserControl.Resources>
     <Grid Margin="0" Background="Black">
 
-        <coreView:Smiley x:Name="Smiley1_Copy1" HorizontalAlignment="Right" Margin="0,109.794,41.493,0" Width="21.014" Height="31.412" SmileyColor="#FF00FF2B" SmileyLineColor="Black" SmileyMood="Drunk" SmileyRadius="4" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley1_Copy1" HorizontalAlignment="Right" Margin="0,109.794,41.493,0" Width="21.014" Height="31.412" SmileyColor="#FF00FF2B" SmileyLineColor="Black" SmileyMood="Drunk" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -99,7 +99,7 @@
     			</TransformGroup>
             </coreView:Smiley.RenderTransform>
                 </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley1_Copy" HorizontalAlignment="Right" Margin="0,86,131.5,0" Width="34" Height="55" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyMood="Drunk" SmileyRadius="6" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley1_Copy" HorizontalAlignment="Right" Margin="0,86,131.5,0" Width="34" Height="55" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyMood="Drunk" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -109,7 +109,7 @@
     			</TransformGroup>
                 </coreView:Smiley.RenderTransform>
                 </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley1" HorizontalAlignment="Left" Margin="201.5,178.829,0,138.829" Width="75" Height="112" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyMood="Happy" SmileyRadius="14" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley1" HorizontalAlignment="Left" Margin="201.5,178.829,0,138.829" Width="75" Height="112" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyMood="Happy" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -119,7 +119,7 @@
     			</TransformGroup>
                 </coreView:Smiley.RenderTransform>
                 </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley4" HorizontalAlignment="Left" Margin="104.5,0,0,34.5" Width="75" SmileyColor="#FF0400FF" SmileyLineColor="#FFE4FF00" SmileyMood="Indifferent" SmileyRadius="14" VerticalAlignment="Bottom" Height="112" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley4" HorizontalAlignment="Left" Margin="104.5,0,0,34.5" Width="75" SmileyColor="#FF0400FF" SmileyLineColor="#FFE4FF00" SmileyMood="Indifferent" VerticalAlignment="Bottom" Height="112" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -173,7 +173,7 @@
     			</TransformGroup>
     		</Path.RenderTransform>
     	</Path>
-        <coreView:Smiley x:Name="Smiley2" HorizontalAlignment="Left" Margin="63,157.159,0,160.5" Width="75" SmileyColor="#FF9D9D9D" SmileyLineColor="Black" SmileyMood="Indifferent" SmileyRadius="14" Height="112" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley2" HorizontalAlignment="Left" Margin="63,157.159,0,160.5" Width="75" SmileyColor="#FF9D9D9D" SmileyLineColor="Black" SmileyMood="Indifferent" Height="112" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -183,7 +183,7 @@
     			</TransformGroup>
                 </coreView:Smiley.RenderTransform>
                 </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley3" HorizontalAlignment="Left" Margin="25.5,0,0,77.5" Width="75" SmileyColor="#FFA900FF" SmileyLineColor="Black" SmileyMood="Indifferent" SmileyRadius="14" VerticalAlignment="Bottom" Height="112.5" RenderTransformOrigin="0.5,0.5">
+        <coreView:Smiley x:Name="Smiley3" HorizontalAlignment="Left" Margin="25.5,0,0,77.5" Width="75" SmileyColor="#FFA900FF" SmileyLineColor="Black" SmileyMood="Indifferent" VerticalAlignment="Bottom" Height="112.5" RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>

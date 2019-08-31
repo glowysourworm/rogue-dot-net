@@ -20,8 +20,6 @@
                                 <coreView:Smiley SmileyColor="Maroon" 
                                                         SmileyMood="Scared" 
                                                         SmileyLineColor="Yellow"
-                                                        SmileyRadius="4"
-                                                        SmileyLineBlur="0"
                                                         HorizontalAlignment="Right"
                                                         Margin="8,0,8,0"
                                                         Height="30"
@@ -54,7 +52,6 @@
                                             Width="30"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            SmileyRadius="6"
                                             SmileyColor="{Binding SmileyBodyColor}"
                                             SmileyLineColor="{Binding SmileyLineColor}"
                                             SmileyMood="{Binding SmileyMood}" />

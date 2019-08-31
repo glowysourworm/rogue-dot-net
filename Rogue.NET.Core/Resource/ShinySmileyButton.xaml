@@ -14,7 +14,7 @@
                                 <BlurBitmapEffect Radius="1" />
                             </Ellipse.BitmapEffect>
                         </Ellipse>
-                        <view:Smiley  Height="15" Width="10" SmileyRadius="2" SmileyColor="{TemplateBinding Foreground}" SmileyLineColor="{TemplateBinding BorderBrush}" SmileyMood="Happy" />
+                        <view:Smiley  Height="15" Width="10" SmileyColor="{TemplateBinding Foreground}" SmileyLineColor="{TemplateBinding BorderBrush}" SmileyMood="Happy" />
                         <Path x:Name="ReflectionLayer" VerticalAlignment="Top" Stretch="Fill" Margin="2" Opacity="0.7">
                             <Path.RenderTransform>
                                 <ScaleTransform ScaleY="0.5" />

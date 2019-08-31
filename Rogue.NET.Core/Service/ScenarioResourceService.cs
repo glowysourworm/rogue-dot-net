@@ -265,7 +265,7 @@ namespace Rogue.NET.Core.Service
             var ctrl = GetElement(mood, bodyColor, lineColor, auraColor);
             ctrl.Background = Brushes.Transparent;
             ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
-            ctrl.Arrange(new Rect(ctrl.DesiredSize));
+            ctrl.Arrange(new Rect(0,0,ctrl.Width, ctrl.Height));
             RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
             var bmp = new RenderTargetBitmap(ModelConstants.CellWidth, ModelConstants.CellHeight, DPI, DPI, PixelFormats.Default);
 
@@ -311,12 +311,11 @@ namespace Rogue.NET.Core.Service
         private Smiley GetElement(SmileyMoods mood, string bodyColor, string lineColor, string auraColor)
         {
             var ctrl = new Smiley();
+            ctrl.Width = ModelConstants.CellWidth;
+            ctrl.Height = ModelConstants.CellHeight;
             ctrl.SmileyColor = (Color)ColorConverter.ConvertFromString(bodyColor);
             ctrl.SmileyLineColor = (Color)ColorConverter.ConvertFromString(lineColor);
             ctrl.SmileyMood = mood;
-            ctrl.SmileyRadius = 2;
-            ctrl.Width = ModelConstants.CellWidth;
-            ctrl.Height = ModelConstants.CellHeight;
             return ctrl;
         }
         #endregion

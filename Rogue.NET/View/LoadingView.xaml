@@ -15,12 +15,9 @@
                 <coreView:Smiley x:Name="SmileyCtrl"
                                  Height="45" 
                                  Width="30" 
-                                 SmileyLineBlur="1" 
-                                 SmileyLineThickness="2"  
                                  SmileyColor="Blue" 
                                  SmileyLineColor="Yellow"  
-                                 SmileyMood="Happy" 
-                                 SmileyRadius="5" />
+                                 SmileyMood="Happy" />
                 <TextBlock x:Name="LoadingTB" 
                            Text="Loading..." 
                            FontSize="20"
