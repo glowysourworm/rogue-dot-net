@@ -543,8 +543,9 @@ namespace Rogue.NET.Core.Logic
                 // Set Enemy Location
                 enemy.Location = location;
 
-                // Add Content to Level
+                // Add Content to Level -> Update Visibility
                 _modelService.Level.AddContent(enemy);
+                _modelService.UpdateVisibility();
 
                 // Publish Message
                 switch (effect.RandomPlacementType)

@@ -879,8 +879,9 @@ namespace Rogue.NET.Core.Logic
             // Map enemy location to level
             enemy.Location = availableLocation;
 
-            // Add content to level
+            // Add content to level -> Update Visibility
             _modelService.Level.AddContent(enemy);
+            _modelService.UpdateVisibility();
 
             // Queue level update for added content
             RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
