@@ -549,7 +549,7 @@ IMMEDIATE TODO'S:
 	- OTHER BIG TODO:  Redo enemy behavior
 	- OTHER BIG TODO:  Make pathfinding algorithm more efficient.
 	- OTHER OTHER BIG TODO:  Terrain
-	- TODO: Path-finding efficiency
+	- TODO: Path-finding efficiency (need to learn about heuristics)
 	- TODO: Fix up the simulator for equipment attack / defense values based on attributes; and anything else that has changed.
 	- TODO: Generate Alterations right away (don't store the template on the item / enemy behavior). To randomize add a component
 			to do this with some variance (gaussian distributed or whatever) around the base (mean) instead.
@@ -690,6 +690,44 @@ IMMEDIATE TODO'S:
 			THIS MIGHT BE A VERY SIMPLE UNDO SERVICE
 			
 	- IDEA: Could support "Detect Magic"
+	
+			- Design Problem: Purpose of "Detect Magic" is to reveal / identify (in your inventory) things that are "Bad" or "Good". 
+			
+							  1) What does it mean to be "Bad" or "Good". Either calculate a value based on the alteration OR just
+								 add a flag to the Alteration and have the scenario editor set it. (probably that way)
+								 
+							  2) Then, why stop there? Create some kind of categorization of Alterations (or Alteration Effects) that
+								 carries several uses:
+								 
+									- Bad or Good? (Detec "Magic")
+									
+									- Type:  This is a "Dark Magic" Alteration (Used for identification to supply Blocking Alteration Effect)
+									
+											 (Also thought of an Amplification Alteration.. but that's tricky)
+											 
+											 Example:  "Amplify Dark Magic" - would target specific parameters to "Amplify" by some multiplier
+											 
+											 Probably:  Blocking is the best use I can think of for grouping by "Type". Because, it would allow
+														a 100% block (immunity) for specific Alteration Effects.
+														
+														"Osiris casts Condemn" .. "Blocked by Player's Amulet"
+														
+									*** Attack Attributes:  Why not identify attack attributes using something like "reveal" or "Detect Fire".
+									
+									THIS ONE IS A GOOD ONE TO DESIGN WITH:  
+									
+										Problem:  Can't know anything about Attack Attributes without looking at the Enemy in depth or
+												  having some sort of UI show the user. 
+												  
+												  This prevents Attack Attributes from being know in a way that makes them important.
+												  
+										Solution: Besides using the UI to show them; why not add something like "Detect Fire" to show
+												  a fire symbol on the map where an alteration effect, or innate attack attribute sits?
+												  
+										Also:     Like "Detect Magic", it could affect your inventory to identify attack attributes - both
+												  innate ones; and alteration effects (which still need a UI)
+									
+									
 	
 	- TODO: Attack Attribute Refactoring
 			
@@ -1483,7 +1521,9 @@ IMMEDIATE TODO'S:
 						 
 						 AND: After each action - Enemies and ALL CONTENT MUST BE REMOVED BEFORE RUNNING THE UPDATE.
 						 
-						 This HAS to be done right or there'll be some unintended bugs.						
+						 This HAS to be done right or there'll be some unintended bugs.	
+
+			UPDATE: Fixed the bug - but still need to refactor the queueing
 	
 	- TODO: If there's room on the Skill Tree - (looks like there's a "quadrant" left to fill up...) Could show a large
 			"Smiley" with the effect applied. :)
@@ -1535,4 +1575,161 @@ IMMEDIATE TODO'S:
 	
 	- TOOD: Think the Hippogrif create monster was the cause of the aura location crash (model service). but, still need long
 			term fix of creating full-proof queue.
-		
+			
+	- TODO: There's a fundamental issue dealing with the design of the Template (Base) -> RogueBase.
+	
+			The Template.Name property is typically thought of as the unique identifier FOR THE TEMPLATE. So, when using
+			the template as a generator for some of the content - DURING GAMEPLAY - the uniqueness isn't accounted for other
+			than by Template.Name.
+			
+			EXAMPLE 1: Alteration Effect - is unique up to Alteration.Name (which is propagated to) AlterationEffect.Name when
+					   saving in the editor. (THIS NEEDS TO BE FIXED)
+					   
+					   These templates are stored in the Scenario namespace during gameplay and resolved when instantiating
+					   the actual IAlterationEffect - which has a RogueBase.Name property == Template.Name.
+					   
+			EXAMPLE 2: Items saved in the Player / Enemy inventory are resolved by Template.Name before they're saved on the
+					   editor side. The references to the primary list of assets are fixed as part of mapping the configuraiton.
+					   
+					   This really should be fixed (by serialization first); but also probably by Template.Id. The Name property
+					   COULD be unique - BUT IT SHOULD NOT BE A REQUIREMENT.
+					   
+			EXAMPLE 3: Enemies for "Create Monster" are referenced by string to the Tempalte.Name. 
+			
+					   I essentially gave up trying to make this more constrained because of dealing with the Id; and reference
+					   matching during serialization.
+					   
+					   While it was more intuitive to match by the Template.Name property - it was another constraint that shouldn't
+					   be there. 
+					   
+			EXAMPLE 4: Recipe Alteration Effect has lists of items that are referenced by Template.Name. so, the same issue here.
+			
+			
+			Problem 1: Reference "matching" shouldn't have to happen when deserializing. The mapping component for the serializer
+					   needs to be removed and replaced with something like Protobuf - which has a single source for the data 
+					   deserialization - and maps to any number of targets using it's templates (like a wpf-view-model-template and
+					   a poco-template).
+					   
+					   If I can't get THAT to work - THEN, I'M GOING TO BUILD IT MYSELF!!! It's too much work to deal with all of
+					   each namespace and serialization issues EACH TIME!
+					   
+		    Problem 2: Referencing the primary lists of assets COULD be done easily if serialization were fixed. 
+			
+					   However, there's the problem of updating dangling references for leaf objects when a primary asset is removed.
+					   
+					   An obvious example is enemy inventory (remove an item from the primary consumable list) - must update the
+					   enemy inventory list to remove it.
+					   
+					   Would be nice to do this without code; but if it came to it - probably a simple attribute mechanism to do some
+					   event listening could auto-update the list.
+					   
+			Problem 3: The Template.Id - MUST BE A UNIQUE IDENTIFIER - For the TYPE of asset (or asset effect, or branch asset, or 
+					   anything deriving from Template) in the game.
+					   
+					   So, the Template.Id property could be used to carry an identifier for a Template somewhere else in either the
+					   editor namespace or the scenario namespace. 
+					   
+					   This isn't currently working because of these issues; but IS NEEDS TO.
+					
+	- TODO: When Haul > Haul Max - don't allow character to move. 
+	
+			AND:  When there's no room to drop anything, go ahead and allow multiple drops per space. (but, prefer an empty one)
+			
+	- TODO: Transmute Skill - Basically, a skill to develop that is a random transmutation of selected items...
+	
+			- IDEA:  So, it goes like this:
+			
+					 - Transmute "Tries" to create a product; but has a set of weighted products that are 
+					   selected from.
+					   
+					 - INPUT: A selected set of items
+					 
+					 - OUTPUT: A SINGLE item selected at random from a list
+					 
+					 How do you know what to do? Hmmm...
+					 
+					 Well, you'd need some kind of a hint. 
+					 
+					 - "Transmute Potion":  Applied to an item - creates a "better potion"
+					 
+					 Maybe, if you add "other things" to the list of INPUTS, you get a better product (?)
+					 
+			- AS IT DEVELOPS:  It sounds like development of this skill would depend on having a classification
+							   of "what makes better".
+							   
+							   I'd force this classification to be parameterized on the Alteration Effect class.
+							   
+							       - Create some sort of "vector" of classification:
+								   
+										Transmute Item:
+										
+											- Name   ProductItem
+											- Name[] RequiredItems											
+											- Weighting
+											- Intelligence [or base attribute] Requirement
+											- Level Requirement
+											
+										Transmute Classification:
+										
+											- Transmute Item[] Vector;
+											- Transmute Item   DefaultItem;										
+										
+									- So, the chosen product would be a random draw from the weighted products; and
+									  the weightings would have to be chosen so that it made sense WHAT would be 
+									  drawn at a higher level.
+									  
+									  (If you have 10 items with equal weighting - the higher level ones wouldn't
+									   take precedence when they're discovered.. so, up to the developer)									   
+									 
+									  
+			- WHAT ABOUT WEIRD STUFF?:  It would be fun to have "random things" pop out of the transmute effect.
+			
+								So, here's our data model...
+			
+								Transmute Effect:
+								
+									Transmute Classification:
+									
+										- Transmute Item[] Vector;
+										- Transmute Item   DefaultItem;
+										* Hash [Name, Name] Direct Products;
+										
+								The Hash table "Direct Products" behaves like "If you put this SPECIFIC thing in, Then you get this SPECIFIC thing out".							
+								
+								When there's multiple items with a "Direct Product" - choose one at random. This
+								would cover some corner cases like "I put my unique super item in the effect and
+								got this weird rock"								
+								
+			- APPLICATIONS:  Witch potion brewing; Fighter equipment crafting; etc.. etc.. etc.. etc..
+			
+			- EXAMPLE:  Witch Transmute Potion:
+			
+						- Transmute Item 1:  Input: healing herbs, Output: a bat's wing (useless),  Level 0, Intelligence 4
+						- Transmute Item 2:  Input: healing herbs, Output: A mana potion, 			Level 0, Intelligence 4
+						- Transmute Item 3:  Input: healing herbs, Output: A major healing potion,  Level 1, Intelligence 5
+						...
+						
+						- Transmute Item 10: Inputs: healing herbs, torch oil, sulfur powder, empty vial, Output: Imbue Fire Ointment, Level 15, Intelligence 10
+						
+						...
+						
+						The sky is the limit; and you can have things that blow up on you.. maybe some "bad ingredients" or
+						"you're not intelligent enough to try this yet and it will fail" .. but there are a MILLION ways to 
+						make this fun. And, you won't really ever know if you got it right. 
+						
+						You could also leave NOTES around the map to find hints on this too... Lots of ideas.
+						
+						And, it relieves the burden of input ingredients for a recipe because it's sort of different than that
+						in a way that will be more of a "skill".
+						
+			- ONE CONSTRAINT:  The Default Item should probably not be there. If you don't have at least one Transmute Item 
+							   selected because of requirements (inputs or player stats), then you probably should just have
+							   it fail and not do anything.
+							   
+			- ONE OTHER ISSUE: People might get upset if they transmute some important item. So, you might want to have a flag
+							   on the item base to protect it from trasmutation - which would mean you can't transmute it at all.
+							   
+							   One obvious one is for Scenario Objective Items; but those are already known. 
+							   
+							   This might not be necessary; but it might be nice to have for people.
+						
