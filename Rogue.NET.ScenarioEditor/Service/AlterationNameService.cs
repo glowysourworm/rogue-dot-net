@@ -123,6 +123,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is TemporaryAlterationEffectTemplateViewModel)
                 (effect as TemporaryAlterationEffectTemplateViewModel).Name = name;
 
+            else if (effect is TransmuteAlterationEffectTemplateViewModel)
+                (effect as TransmuteAlterationEffectTemplateViewModel).Name = name;
+
             else
                 throw new Exception("Unhandled Alteration Effect Type");
         }

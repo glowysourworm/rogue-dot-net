@@ -233,6 +233,8 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\StealAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TemporaryAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectItemTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Consumable\ConsumableAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Consumable\ConsumableProjectileAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Doodad\DoodadAlterationTemplate.cs" />
@@ -260,6 +262,8 @@
     <Compile Include="Model\Scenario\Alteration\Effect\EquipmentEnhanceAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RunAwayAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\StealAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\TransmuteAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\TransmuteAlterationEffectItem.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Animation\AnimationGroup.cs" />

@@ -203,6 +203,7 @@
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\StealAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\TeleportAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\TemporaryAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TransmuteAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\ObjectiveViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\CharacterClassViewModel.cs" />

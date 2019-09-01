@@ -43,12 +43,12 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
             var behaviorGenerator = new BehaviorGenerator();
             var scenarioMetaDataGenerator = new ScenarioMetaDataGenerator();
             var alteredStateGenerator = new AlteredStateGenerator();
-            var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator, animationGenerator);
             var itemGenerator = new ItemGenerator(
                 randomSequenceGenerator,
                 attackAttributeGenerator,
                 animationGenerator,
                 skillSetGenerator);
+            var alterationGenerator = new AlterationGenerator(randomSequenceGenerator, attackAttributeGenerator, alteredStateGenerator, animationGenerator, itemGenerator);
             var characterGenerator = new CharacterGenerator(
                 randomSequenceGenerator,
                 attackAttributeGenerator,

@@ -1732,4 +1732,7 @@ IMMEDIATE TODO'S:
 							   One obvious one is for Scenario Objective Items; but those are already known. 
 							   
 							   This might not be necessary; but it might be nice to have for people.
+							   
+			- UPDATE:  Removing the Level and Intellgience [attribute] requirement from the alteration effect because it's too
+					   complex for an Alteration Effect - and also it's part of the Skill design.
 						

@@ -364,6 +364,8 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TeleportAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TemporaryAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectItemTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Consumable\ConsumableAlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Consumable\ConsumableProjectileAlterationTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Doodad\DoodadAlterationTemplateViewModel.cs" />
@@ -498,6 +500,9 @@
     </Compile>
     <Compile Include="Views\Assets\EquipmentControl\EquipmentEquipAlterationControl.xaml.cs">
       <DependentUpon>EquipmentEquipAlterationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TransmuteEffectParameters.xaml.cs">
+      <DependentUpon>TransmuteEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\MetaDataControl.xaml.cs">
       <DependentUpon>MetaDataControl.xaml</DependentUpon>
@@ -792,6 +797,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Assets\EquipmentControl\EquipmentEquipAlterationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TransmuteEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

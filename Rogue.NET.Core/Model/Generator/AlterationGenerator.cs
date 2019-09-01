@@ -28,18 +28,21 @@ namespace Rogue.NET.Core.Model.Generator
         private readonly IAttackAttributeGenerator _attackAttributeGenerator;
         private readonly IAlteredStateGenerator _alteredStateGenerator;
         private readonly IAnimationGenerator _animationGenerator;
+        private readonly IItemGenerator _itemGenerator;
 
         [ImportingConstructor]
         public AlterationGenerator(
             IRandomSequenceGenerator randomSequenceGenerator, 
             IAttackAttributeGenerator attackAttributeGenerator,
             IAlteredStateGenerator alteredStateGenerator,
-            IAnimationGenerator animationGenerator)
+            IAnimationGenerator animationGenerator,
+            IItemGenerator itemGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _alteredStateGenerator = alteredStateGenerator;
             _animationGenerator = animationGenerator;
+            _itemGenerator = itemGenerator;
         }
 
         public AlterationCost GenerateAlterationCost(AlterationCostTemplate template)
@@ -195,6 +198,9 @@ namespace Rogue.NET.Core.Model.Generator
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
 
+            else if (template is TransmuteAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
+
             else
                 throw new Exception("Unhandled IConsumableAlterationEffectTemplate Type");
         }
@@ -257,6 +263,9 @@ namespace Rogue.NET.Core.Model.Generator
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
+
+            else if (template is TransmuteAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
 
             else
                 throw new Exception("Unhandled IDoodadAlterationEffectTemplate Type");
@@ -401,6 +410,9 @@ namespace Rogue.NET.Core.Model.Generator
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
+
+            else if (template is TransmuteAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TransmuteAlterationEffectTemplate);
 
             else
                 throw new Exception("Unhandled ISkillAlterationEffectTemplate Type");
@@ -644,6 +656,29 @@ namespace Rogue.NET.Core.Model.Generator
                 SymbolAlteration = template.SymbolAlteration,
                 RogueName = template.Name,
                 HasAlteredState = template.HasAlteredState
+            };
+        }
+
+        protected TransmuteAlterationEffect GenerateAlterationEffect(TransmuteAlterationEffectTemplate template)
+        {
+            return new TransmuteAlterationEffect()
+            {
+                ProbabilityOfSuccess = template.ProbabilityOfSuccess,
+                RogueName = template.Name,
+                TransmuteItems = template.TransmuteItems.Select(x =>
+                {
+                    return new TransmuteAlterationEffectItem()
+                    {
+                        ConsumableProduct = x.IsConsumableProduct ? _itemGenerator.GenerateConsumable(x.ConsumableProduct) : null,
+                        ConsumableRequirements = x.ConsumableRequirements.Select(z => _itemGenerator.GenerateConsumable(z)).ToList(),
+                        EquipmentProduct = x.IsEquipmentProduct ? _itemGenerator.GenerateEquipment(x.EquipmentProduct) : null,
+                        EquipmentRequirements = x.EquipmentRequirements.Select(z => _itemGenerator.GenerateEquipment(z)).ToList(),
+                        IsConsumableProduct = x.IsConsumableProduct,
+                        IsEquipmentProduct = x.IsEquipmentProduct,
+                        RogueName = x.Name,
+                        Weighting = x.Weighting
+                    };
+                }).ToList()
             };
         }
         #endregion

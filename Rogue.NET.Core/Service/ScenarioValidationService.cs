@@ -849,6 +849,29 @@ namespace Rogue.NET.Core.Service
                     return effect.Name + " has no Altered State set";
             }
 
+            else if (template is TransmuteAlterationEffectTemplate)
+            {
+                var effect = template as TransmuteAlterationEffectTemplate;
+
+                if (effect.ProbabilityOfSuccess <= 0)
+                    return effect.Name + " has no probability of success";
+
+                if (effect.TransmuteItems.Any(x => x.IsConsumableProduct &&
+                                                   x.ConsumableProduct == null))
+                    return effect.Name + " has no product set (for one item)";
+
+                if (effect.TransmuteItems.Any(x => x.IsEquipmentProduct &&
+                                                   x.EquipmentProduct == null))
+                    return effect.Name + " has no product set (for one item)";
+
+                if (effect.TransmuteItems.Any(x => x.IsEquipmentProduct &&
+                                                   x.IsConsumableProduct))
+                    return effect.Name + " has both product types set (for one item)";
+
+                if (effect.TransmuteItems.Any(x => x.Weighting <= 0))
+                    return effect.Name + " has weighting <= 0 (for one item)";
+            }
+
             else
                 throw new Exception("Unhandled Alteration Effect Type");
 
