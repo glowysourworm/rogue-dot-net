@@ -94,6 +94,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is TemporaryAlterationEffect)
                 return new TemporaryAlterationEffectViewModel(effect as TemporaryAlterationEffect);
 
+            else if (effect is TransmuteAlterationEffect)
+                return new TransmuteAlterationEffectViewModel(effect as TransmuteAlterationEffect);
+
             else
                 throw new Exception("Unknown IAlterationEffect AlterationViewModel");
         }

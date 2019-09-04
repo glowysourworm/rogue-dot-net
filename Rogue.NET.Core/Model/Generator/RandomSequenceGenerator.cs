@@ -58,5 +58,41 @@ namespace Rogue.NET.Core.Model.Generator
             // NOTE*** Random.NextDouble() is [1, 0) (exclusive upper bound)
             return !collection.Any() ? default(T) : collection.ElementAt((int)(collection.Count() * _random.NextDouble()));
         }
+
+        /// <summary>
+        /// Selects a weighted random element from the sequence using the supplied weight selector
+        /// </summary>
+        public T GetWeightedRandom<T>(IEnumerable<T> collection, Func<T, double> weightSelector)
+        {
+            if (collection.Count() == 0)
+                return default(T);
+
+            if (collection.Count() == 1)
+                return collection.First();
+
+            // Generate weigths for each item
+            var weightedItems = collection.Select(x => new { Item = x, Weight = weightSelector(x) });
+
+            // Draw random number scaled by the sum of weights
+            var randomDraw = _random.NextDouble() * weightedItems.Sum(x => x.Weight);
+
+            // Figure out which item corresponds to the random draw - treating each 
+            // like a "bucket" of size "weight"
+
+            var cummulativeSum = 0D;
+
+            foreach (var item in weightedItems)
+            {
+                // Add onto sum - searching for the "bucket" that the 
+                // random draw fell into.
+                cummulativeSum += item.Weight;
+
+                // Found the "bucket"
+                if (cummulativeSum >= randomDraw)
+                    return item.Item;
+            }
+
+            throw new Exception("PickRandom<T> has an issue searching using CDF method");
+        }
     }
 }

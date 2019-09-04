@@ -15,10 +15,10 @@ namespace Rogue.NET.Core.Service.Interface
         IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations();
         ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource);
         ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
-        BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale);
-        BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale);
-        BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale);
-        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale);
+        BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, bool bypassCache = false);
+        BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
+        BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
+        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
         IEnumerable<ColorViewModel> GetColors();
     }
 }

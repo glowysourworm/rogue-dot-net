@@ -48,7 +48,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         public TemporaryAlterationEffectViewModel(TemporaryAlterationEffect effect) : base(effect)
         {
             this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
-            this.AlteredState = new ScenarioImageViewModel(effect.AlteredState);
+            this.AlteredState = new ScenarioImageViewModel(effect.AlteredState, effect.RogueName);
             this.CanSeeInvisibleCharacters = effect.CanSeeInvisibleCharacters;
             this.EventTime = effect.EventTime.ToString("F1");
             this.HasAlteredState = effect.HasAlteredState;
@@ -100,7 +100,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         public TemporaryAlterationEffectViewModel(TemporaryAlterationEffectTemplate template) : base(template)
         {
             this.AlterationEffectAttributes = new ObservableCollection<AlterationAttributeViewModel>();
-            this.AlteredState = new ScenarioImageViewModel(template.Guid, template.Name, template.AlteredState.SymbolDetails);
+            this.AlteredState = new ScenarioImageViewModel(template.Guid, template.Name, template.Name, template.AlteredState.SymbolDetails);
             this.CanSeeInvisibleCharacters = template.CanSeeInvisibleCharacters;
             this.EventTime = template.EventTime.ToString();
             this.HasAlteredState = template.HasAlteredState;

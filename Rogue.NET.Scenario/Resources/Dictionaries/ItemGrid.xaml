@@ -5,9 +5,6 @@
                     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Rogue.NET.Core;component/Resource/Converter.xaml" />
-        <ResourceDictionary>
-            <scenarioConverter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
-        </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
     <LinearGradientBrush x:Key="HorizontalSliderThumbHoverBackgroundInverted" EndPoint="0,0" StartPoint="0,1">
         <GradientStop Color="white" Offset="0"/>
@@ -925,7 +922,7 @@
                    Grid.Column="1" 
                    HorizontalAlignment="Center">
                 <Image.Source>
-                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                    <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
                         <Binding Path="Icon" />

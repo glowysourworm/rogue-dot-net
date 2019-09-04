@@ -83,6 +83,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
@@ -190,9 +191,11 @@
     <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="Extension\NumberExtension.cs" />
     <Compile Include="Extension\ObjectExtension.cs" />
-    <Compile Include="Extension\Prism\EventAggregator\AsyncCommand.cs" />
+    <Compile Include="Extension\Event\SimpleAsyncCommand.cs" />
     <Compile Include="Extension\DictionaryExtension.cs" />
-    <Compile Include="Extension\Prism\EventAggregator\IAsyncCommand.cs" />
+    <Compile Include="Extension\Event\ISimpleAsyncCommand.cs" />
+    <Compile Include="Extension\Event\EventHandler.cs" />
+    <Compile Include="Extension\Event\SimpleCommand.cs" />
     <Compile Include="Extension\Prism\RegionManager\BlurTransition.cs" />
     <Compile Include="Extension\Prism\EventAggregator\IRogueEventAggregator.cs" />
     <Compile Include="Extension\Prism\EventAggregator\RogueAsyncEvent.cs" />

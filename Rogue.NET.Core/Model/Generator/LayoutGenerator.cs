@@ -57,37 +57,18 @@ namespace Rogue.NET.Core.Model.Generator
                                                    .Where(x => x.Level.Contains(levelNumber))
                                                    .ToList();
 
-                //Calculate sum of the weights
-                var sumWeights = layoutTemplates.Sum(y => y.GenerationRate);
+                // Choose random layout template in the level range
+                var template = _randomSequenceGenerator.GetWeightedRandom(layoutTemplates, x => x.GenerationRate);
 
-                if (sumWeights <= 0)
-                    sumWeights = 1;
-
-                var weights = layoutTemplates.Select(x => x.GenerationRate / sumWeights)
-                                             .ToList();
-
-                //Draw Uniform[0,1] and sum weights until it is reached.
-                //Chose that index
-                var random = _randomSequenceGenerator.Get();
-                var cumulativeWeight = 0.0D;
-
-                for (int j = 0; j < weights.Count; j++)
-                {
-                    cumulativeWeight += weights[j];
-                    if (cumulativeWeight >= random || weights.Count == 1)
-                    {
-                        var grid = CreateLayout(layoutTemplates[j]);
-                        var level = new  Level(layoutTemplates[j].Name, 
-                                               grid, 
-                                               layoutTemplates[j].Type, 
-                                               layoutTemplates[j].ConnectionType,
-                                               levelNumber, 
-                                               layoutTemplates[j].WallColor, 
-                                               layoutTemplates[j].DoorColor);
-                        levels.Add(level);
-                        break;
-                    }
-                }
+                var grid = CreateLayout(template);
+                var level = new Level(template.Name,
+                                       grid,
+                                       template.Type,
+                                       template.ConnectionType,
+                                       levelNumber,
+                                       template.WallColor,
+                                       template.DoorColor);
+                levels.Add(level);
             }
             return levels;
         }

@@ -180,6 +180,9 @@ namespace Rogue.NET.Scenario
                 else if (payload is TemporaryAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(TemporaryAlterationEffectView));
 
+                else if (payload is TransmuteAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(TransmuteAlterationEffectView));
+
                 else
                     throw new Exception("Unhandled AlterationEffectViewModel");
             });

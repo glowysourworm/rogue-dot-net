@@ -143,7 +143,7 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
-        /// Selects a random element from the sequence using the supplied random number draw U[0,1).
+        /// Selects a random element from the sequence
         /// </summary>
         public static T PickRandom<T>(this IEnumerable<T> collection)
         {
@@ -175,6 +175,57 @@ namespace Rogue.NET.Common.Extension
             });
 
             return counts.Where(x => x.Count > 1).Select(x => x.Item);
+        }
+
+        /// <summary>
+        /// Returns all elements in the collection that match the given item using the provided key selector
+        /// </summary>
+        public static IEnumerable<T> Gather<T, K>(this IEnumerable<T> collection, T item, Func<T, K> keySelector)
+        {
+            return collection.Where(x => keySelector(x).Equals(keySelector(item)));
+        }
+
+        /// <summary>
+        /// Returns elements that are distinct up to the selected key (property). This would be the first
+        /// such element in a grouping by the provided key selector
+        /// </summary>
+        public static IEnumerable<T> DistinctBy<T, K>(this IEnumerable<T> collection, Func<T, K> keySelector)
+        {
+            return collection.GroupBy(x => keySelector(x)).Select(x => x.First());
+        }
+
+        /// <summary>
+        /// Synchronizes a souce collection with a destination collection using the provided: equality comparer,
+        /// constructor, and updater Func's.
+        /// </summary>
+        /// <param name="equalityComparer">Anonymous method that provides a bool for the source / dest inputs</param>
+        /// <param name="construct">Anonymous method that constructs a TDest object</param>
+        /// <param name="update">Anonymous method that updates a destination object from the source</param>
+        public static void SynchronizeFrom<TSource, TDest>(
+                            this IList<TDest> destCollection,
+                            IEnumerable<TSource> sourceCollection,
+                            Func<TSource, TDest, bool> equalityComparer,
+                            Func<TSource, TDest> construct,
+                            Action<TSource, TDest> update)
+        {
+            foreach (var item in sourceCollection)
+            {
+                var itemGridRowItem = destCollection.FirstOrDefault(x => equalityComparer(item, x));
+
+                // Add
+                if (itemGridRowItem == null)
+                    destCollection.Add(construct(item));
+
+                // Update
+                else
+                    update(item, itemGridRowItem);
+            }
+            for (int i = destCollection.Count - 1; i >= 0; i--)
+            {
+                // Remove
+                if (!sourceCollection.Any(x => equalityComparer(x, destCollection[i])))
+                    destCollection.RemoveAt(i);
+            }
         }
     }
 }

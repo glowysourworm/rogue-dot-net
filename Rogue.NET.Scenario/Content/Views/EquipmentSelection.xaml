@@ -5,7 +5,7 @@
 	         xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
-             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension">
+             xmlns:itemGrid="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemGrid">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -132,8 +132,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <region:RogueRegion x:Name="EquipmentListCtrl"  Margin="8"
-                                    region:RogueRegionManager.RegionName="EquipmentSelectionRegion">
-                    <extension:ItemGridConstructor Mode="Equipment" IntendedAction="Equip" IsDialogMode="False" />
+                                    region:RogueRegionManager.RegionName="EquipmentSelectionRegion"
+                                    region:RogueRegionManager.DefaultViewType="{x:Type itemGrid:EquipmentItemGrid}">
                 </region:RogueRegion>
 
                 <region:RogueRegion x:Name="EquipmentSubpanel" Grid.Row="1" Margin="8"

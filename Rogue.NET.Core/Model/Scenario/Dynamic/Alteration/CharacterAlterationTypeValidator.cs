@@ -37,6 +37,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
             _alterationEffectList.Add(typeof(RunAwayAlterationEffect));
             _alterationEffectList.Add(typeof(StealAlterationEffect));
             _alterationEffectList.Add(typeof(TeleportAlterationEffect));
+            _alterationEffectList.Add(typeof(TransmuteAlterationEffect));
         }
 
         /// <summary>

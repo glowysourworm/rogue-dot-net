@@ -2,13 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml">
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="ScenarioMessageTextBlockStyle" TargetType="TextBlock">
@@ -73,11 +67,11 @@
     <DataTemplate x:Key="AttackAttributeHitDataTemplate">
         <StackPanel Orientation="Horizontal" Margin="2, 0, 0, 0">
             <TextBlock Text="{Binding Hit, StringFormat=F1}" Style="{StaticResource ScenarioMessageTextBlockStyle}" />
-            <Image Margin="2,0,0,0" 
-                    VerticalAlignment="Center" 
-                    HorizontalAlignment="Center">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+            <ContentPresenter Margin="2"
+                              VerticalAlignment="Center" 
+                              HorizontalAlignment="Center">
+                <ContentPresenter.Content>
+                    <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
                         <Binding Path="Icon" />
@@ -88,8 +82,8 @@
                         <Binding Path="SmileyLineColor" />
                         <Binding Path="SymbolType" />
                     </MultiBinding>
-                </Image.Source>
-            </Image>
+                </ContentPresenter.Content>
+            </ContentPresenter>
         </StackPanel>
     </DataTemplate>
 

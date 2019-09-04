@@ -25,6 +25,11 @@ namespace Rogue.NET.Core.Service.Interface
         void Unload();
 
         /// <summary>
+        /// Gets a value saying whether or not the IModelService is loaded (Load(...) has beed called)
+        /// </summary>
+        bool IsLoaded { get; }
+
+        /// <summary>
         /// Currently loaded Scenario Level
         /// </summary>
         Level Level { get; }

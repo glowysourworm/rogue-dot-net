@@ -37,5 +37,10 @@ namespace Rogue.NET.Core.Model.Generator.Interface
         /// Gets a random element from the collection
         /// </summary>
         T GetRandomElement<T>(IEnumerable<T> collection);
+
+        /// <summary>
+        /// Gets a random element from the collection with the supplied weight selector
+        /// </summary>
+        T GetWeightedRandom<T>(IEnumerable<T> collection, Func<T, double> weightSelector);
     }
 }

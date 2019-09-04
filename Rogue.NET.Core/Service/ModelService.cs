@@ -18,6 +18,8 @@ using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Content;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
+using System.Text;
 
 namespace Rogue.NET.Core.Service
 {
@@ -25,6 +27,8 @@ namespace Rogue.NET.Core.Service
     [Export(typeof(IModelService))]
     public class ModelService : IModelService
     {
+        static readonly string INFINITY = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E });
+
         readonly IRayTracer _rayTracer;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
@@ -122,6 +126,8 @@ namespace Rogue.NET.Core.Service
             _targetedEnemies = new List<Enemy>();
         }
 
+        public bool IsLoaded { get { return this.Level != null; } }
+
         public Level Level { get; private set; }
 
         public Player Player { get; private set; }
@@ -147,22 +153,34 @@ namespace Rogue.NET.Core.Service
         {
             // TODO - HANDLE PROPER NOUNS (Example:  Player (assumed proper noun), Enemy that is Unique
 
-            if (scenarioObject is Player)
-                return scenarioObject.RogueName;
+            var noun = scenarioObject.RogueName;
 
-            return this.ScenarioEncyclopedia[scenarioObject.RogueName].IsIdentified ? 
-                            scenarioObject.RogueName : 
-                            ModelConstants.UnIdentifiedDisplayName;
+            // Player not in the Scenario Encyclopedia
+            if (scenarioObject is Player)
+                return noun;
+
+            var identified = this.ScenarioEncyclopedia[scenarioObject.RogueName].IsIdentified;
+
+            return identified ? 
+                        noun : 
+                        ModelConstants.UnIdentifiedDisplayName;
         }
 
         public string GetDisplayName(ScenarioImage scenarioImage)
         {
-            if (scenarioImage is Player)
-                return scenarioImage.RogueName;
+            // TODO - HANDLE PROPER NOUNS (Example:  Player (assumed proper noun), Enemy that is Unique
 
-            return this.ScenarioEncyclopedia[scenarioImage.RogueName].IsIdentified ?
-                            scenarioImage.RogueName :
-                            ModelConstants.UnIdentifiedDisplayName;
+            var noun = scenarioImage.RogueName;
+
+            // Player not in the Scenario Encyclopedia
+            if (scenarioImage is Player)
+                return noun;
+
+            var identified = this.ScenarioEncyclopedia[scenarioImage.RogueName].IsIdentified;
+
+            return identified ?
+                        noun :
+                        ModelConstants.UnIdentifiedDisplayName;
         }
 
         public IEnumerable<Enemy> GetTargetedEnemies()

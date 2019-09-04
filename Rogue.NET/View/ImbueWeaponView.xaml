@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension;assembly=Rogue.NET.Scenario"
              x:Class="Rogue.NET.View.ImbueWeaponView" 
              Width="500" Height="300" Background="Transparent" Opacity="1">
     <UserControl.Resources>
@@ -15,12 +14,12 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <region:RogueRegion x:Name="ItemGridControl"  Margin="10"
+            <!--region:RogueRegion x:Name="ItemGridControl"  Margin="10"
                                 region:RogueRegionManager.RegionName="ImbueWeaponItemGridRegion">
                 <region:RogueRegionManager.DefaultView>
                     <extension:ItemGridConstructor Mode="ImbueWeapon" IntendedAction="ImbueWeapon" IsDialogMode="True" />
                 </region:RogueRegionManager.DefaultView>
-            </region:RogueRegion>        
+            </-->        
             
             <Button x:Name="BackButton" 
                     HorizontalContentAlignment="Center" 

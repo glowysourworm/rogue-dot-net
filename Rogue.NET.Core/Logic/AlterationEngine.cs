@@ -66,9 +66,15 @@ namespace Rogue.NET.Core.Logic
             _rogueUpdateFactory = rogueUpdateFactory;
         }
 
-        public bool Validate(Character actor, AlterationCost cost)
+        public bool Validate(Character actor, AlterationContainer alteration)
         {
-            return _alterationProcessor.CalculateMeetsAlterationCost(actor, cost);
+            // First, validate the Alteration Cost
+            if (!_alterationProcessor.CalculateMeetsAlterationCost(actor, alteration.Cost))
+                return false;
+
+            // Then, anything else involving the Alteration
+
+            return true;
         }
 
         public void Queue(Character actor, AlterationContainer alteration)
@@ -132,7 +138,7 @@ namespace Rogue.NET.Core.Logic
         public void Process(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration)
         {
             // Apply alteration cost (ONLY ONE-TIME APPLIED HERE. PER-STEP APPLIED IN CHARACTER ALTERATION)
-            if (alteration.GetCostType() == AlterationCostType.OneTime)
+            if (alteration.Effect.GetCostType(alteration) == AlterationCostType.OneTime)
                 _alterationProcessor.ApplyOneTimeAlterationCost(actor, alteration.Cost);
 
             // Affected Character Alterations:
@@ -146,7 +152,7 @@ namespace Rogue.NET.Core.Logic
             {
                 // Character attempts block
                 bool blocked = affectedCharacter != actor &&
-                               alteration.SupportsBlocking() &&
+                               alteration.Effect.GetSupportsBlocking(alteration) &&
                               _interactionProcessor.CalculateAlterationBlock(actor, affectedCharacter, alteration.BlockType);
 
                 // Blocked -> Message and continue
@@ -281,6 +287,12 @@ namespace Rogue.NET.Core.Logic
 
             else if (alteration.Effect is TemporaryAlterationEffect)
                 affectedCharacter.Alteration.Apply(alteration);
+
+            else if (alteration.Effect is TransmuteAlterationEffect)
+                RogueUpdateEvent(this, _rogueUpdateFactory.DialogAlterationEffect(alteration.Effect));
+
+            else
+                throw new Exception("Unhandled Alteration Effect Type IAlterationEngine.ApplyAlteration");
         }
         #endregion
 
@@ -582,7 +594,7 @@ namespace Rogue.NET.Core.Logic
 
             // Use the dialog to select an item
             if (effect.UseDialog)
-                RogueUpdateEvent(this, _rogueUpdateFactory.DialogEnhanceEquipment(effect));
+                RogueUpdateEvent(this, _rogueUpdateFactory.DialogAlterationEffect(effect));
 
             // Select a random equipped item
             else
@@ -647,6 +659,52 @@ namespace Rogue.NET.Core.Logic
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Damage");
         }
+        public void ProcessTransmute(TransmuteAlterationEffect effect, IEnumerable<string> chosenItemIds)
+        {
+            // Transmute is for Player only
+            var player = _modelService.Player;
+
+            // Chosen items from player inventory
+            var chosenItems = player.Inventory.Values.Where(x => chosenItemIds.Contains(x.Id));
+
+            // Requirements met for Equipment
+            var requirementsMetEquipment = effect.TransmuteItems
+                                                 .Where(x => x.EquipmentRequirements
+                                                              .All(e => chosenItems.Any(z => z.RogueName == e.RogueName)) ||
+                                                            !x.EquipmentRequirements.Any())
+                                                 .Actualize();
+
+            // Requirements met for Consumables
+            var requirementsMetConsumables = effect.TransmuteItems
+                                                   .Where(x => x.ConsumableRequirements
+                                                                .All(e => chosenItems.Any(z => z.RogueName == e.RogueName)) ||
+                                                              !x.ConsumableRequirements.Any())
+                                                   .Actualize();
+
+            // Possible Product Items
+            var possibleProductItems = requirementsMetConsumables.Intersect(requirementsMetEquipment).Actualize();
+
+            // Draw weighted random item from the possible products
+            var productItem = _randomSequenceGenerator.GetWeightedRandom(possibleProductItems, x => x.Weighting);
+
+            // Remove required items from the actor's inventory
+            foreach(var item in chosenItems)
+            {
+                if (player.Consumables.ContainsKey(item.Id))
+                    player.Consumables.Remove(item.Id);
+
+                else if (player.Equipment.ContainsKey(item.Id))
+                    player.Equipment.Remove(item.Id);
+            }
+
+            // Add product item to the actor's inventory
+            if (productItem.IsConsumableProduct)
+                player.Consumables.Add(productItem.Id, productItem.ConsumableProduct);
+
+            else if (productItem.IsEquipmentProduct)
+                player.Equipment.Add(productItem.Id, productItem.EquipmentProduct);
+        }
+
         private GridLocation GetRandomLocation(AlterationRandomPlacementType placementType, GridLocation sourceLocation, int sourceRange)
         {
             var level = _modelService.Level;

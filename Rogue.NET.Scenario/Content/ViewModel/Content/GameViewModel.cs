@@ -77,7 +77,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             {
                 this.ScenarioName = modelService.ScenarioConfiguration.DungeonTemplate.Name;
                 this.ScenarioDescription = modelService.ScenarioConfiguration.DungeonTemplate.ObjectiveDescription;
-                this.PlayerScenarioImage = new ScenarioImageViewModel(modelService.Player);
+                this.PlayerScenarioImage = new ScenarioImageViewModel(modelService.Player, modelService.Player.RogueName);
             });
 
             // TODO: Think of a way to decouple this better to hide the IModelService

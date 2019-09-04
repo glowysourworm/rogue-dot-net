@@ -11,20 +11,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Reflection;
 using System.ComponentModel.Composition.Hosting;
+using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
+using Rogue.NET.Scenario.Intro.Views;
+using Rogue.NET.Scenario.Constant;
 
 using Microsoft.Practices.ServiceLocation;
 
-using Rogue.NET.Common.Extension.Prism;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
-using Rogue.NET.Scenario.ViewModel.ItemGrid;
 using System.Windows.Threading;
 using System;
 using Prism.Modularity;
 using System.Collections.Generic;
-using Rogue.NET.Scenario.Content.Views;
-using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
-using Rogue.NET.Scenario.Intro.Views;
-using Rogue.NET.Scenario.Constant;
+
 
 namespace Rogue.NET.PrismExtension
 {

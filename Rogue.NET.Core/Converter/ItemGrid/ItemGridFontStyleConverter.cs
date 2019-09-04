@@ -10,10 +10,10 @@ namespace Rogue.NET.Core.Converter.ItemGrid
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values.Length != 4 || values.All(x => x == DependencyProperty.UnsetValue))
+            if (values.Length != 4 || values.Any(x => x == DependencyProperty.UnsetValue))
                 return Brushes.White;
 
-            bool equiped = (bool)values[0];
+            bool equipped = (bool)values[0];
             bool cursed = (bool)values[1];
             bool objective = (bool)values[2];
             bool unique = (bool)values[3];

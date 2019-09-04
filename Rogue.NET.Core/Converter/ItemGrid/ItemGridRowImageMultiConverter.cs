@@ -1,22 +1,20 @@
-﻿using Rogue.NET.Core.Converter;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Scenario.ViewModel.ItemGrid;
-using System;
+﻿using System;
 using System.Linq;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Service.Interface;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Rogue.NET.Scenario.Converter
+namespace Rogue.NET.Core.Converter.ItemGrid
 {
-    public class ItemGridRowImageSourceMultiConverter : IMultiValueConverter
+    public class ItemGridRowImageMultiConverter : IMultiValueConverter
     {
         readonly IScenarioResourceService _scenarioResourceService;
 
-        public ItemGridRowImageSourceMultiConverter()
+        public ItemGridRowImageMultiConverter()
         {
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
         }
@@ -45,7 +43,7 @@ namespace Rogue.NET.Scenario.Converter
                 SymbolType = (SymbolTypes)values[8]
             };
 
-            return _scenarioResourceService.GetImageSource(model, 1.0);
+            return _scenarioResourceService.GetFrameworkElement(model, 1.15, true);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

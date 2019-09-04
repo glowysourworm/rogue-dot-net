@@ -8,7 +8,7 @@ namespace Rogue.NET.Core.Logic.Processing.Enum
 {
     public enum DialogEventType
     {
-        ModifyEquipment,
+        AlterationEffect,
         Identify,
         Uncurse,
         Help,

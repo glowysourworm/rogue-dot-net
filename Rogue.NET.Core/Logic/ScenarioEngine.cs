@@ -225,7 +225,7 @@ namespace Rogue.NET.Core.Logic
                                                      .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
                     {
                         // If player meets alteration cost, queue with affected enemy
-                        if (_alterationEngine.Validate(player, alteration.Cost))
+                        if (_alterationEngine.Validate(player, alteration))
                             _alterationEngine.Queue(player, new Character[] { enemy }, alteration);
                     }
                 }
@@ -268,7 +268,7 @@ namespace Rogue.NET.Core.Logic
                 var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
 
                 // If Alteration Cost is Met (PUBLISHES MESSAGES)
-                if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+                if (_alterationEngine.Validate(_modelService.Player, alteration))
                 {
                     // Queue the alteration and remove the item
                     _alterationEngine.Queue(_modelService.Player, alteration);
@@ -351,7 +351,7 @@ namespace Rogue.NET.Core.Logic
 
             // Validate for the Alteration
             if (consumable.HasAlteration &&
-               !_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+               !_alterationEngine.Validate(_modelService.Player, alteration))
                 return LevelContinuationAction.ProcessTurn;
 
 
@@ -746,7 +746,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Meets Alteration Cost?
-            if (!_alterationEngine.Validate(_modelService.Player, skillAlteration.Cost))
+            if (!_alterationEngine.Validate(_modelService.Player, skillAlteration))
                 return LevelContinuationAction.DoNothing;
 
             // For passives / auras - work with IsTurnedOn flag
@@ -827,7 +827,7 @@ namespace Rogue.NET.Core.Logic
                             doodadMagic.HasBeenUsed = true;
 
                             // Validate -> Queue Alteration
-                            if (_alterationEngine.Validate(_modelService.Player, alteration.Cost))
+                            if (_alterationEngine.Validate(_modelService.Player, alteration))
                                 _alterationEngine.Queue(_modelService.Player, alteration);
 
                             // Failed Validation (Player Doesn't Meet Cost)

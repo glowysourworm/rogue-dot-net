@@ -71,11 +71,11 @@ namespace Rogue.NET.Scenario.Controller
                 });
             }
 
-            else if (e is PlayerEnhanceEquipmentCommandEventArgs)
+            else if (e is PlayerAlterationEffectCommandEventArgs)
             {
-                var args = e as PlayerEnhanceEquipmentCommandEventArgs;
+                var args = e as PlayerAlterationEffectCommandEventArgs;
 
-                _scenarioService.IssuePlayerCommand(new PlayerEnhanceEquipmentCommandAction()
+                _scenarioService.IssuePlayerCommand(new PlayerAlterationEffectCommandAction()
                 {
                     Id = args.Id,
                     Type = args.Type,

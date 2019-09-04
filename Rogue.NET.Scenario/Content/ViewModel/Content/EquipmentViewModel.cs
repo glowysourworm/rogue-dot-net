@@ -14,7 +14,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         }
 
         public EquipmentViewModel() { }
-        public EquipmentViewModel(Equipment equipment) : base(equipment)
+        public EquipmentViewModel(Equipment equipment, string displayName) : base(equipment, displayName)
         {
 
         }

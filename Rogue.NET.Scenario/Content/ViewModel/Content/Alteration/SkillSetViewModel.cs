@@ -1,6 +1,5 @@
 ﻿using Prism.Commands;
-using Prism.Events;
-using Rogue.NET.Common.Events.Scenario;
+using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
@@ -72,12 +71,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             set { this.RaiseAndSetIfChanged(ref _activeSkill, value); }
         }
 
-        public IAsyncCommand ActivateSkillCommand { get; set; }
+        public ISimpleAsyncCommand ActivateSkillCommand { get; set; }
         public ICommand ViewSkillsCommand { get; set; }
 
         public ObservableCollection<SkillViewModel> Skills { get; set; }
 
-        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IRogueEventAggregator eventAggregator) : base(skillSet)
+        public SkillSetViewModel(SkillSet skillSet, Player player, IDictionary<string, ScenarioMetaDataClass> encyclopedia, IRogueEventAggregator eventAggregator) : base(skillSet, skillSet.RogueName)
         {
             this.IsActive = skillSet.IsActive;
             this.IsTurnedOn = skillSet.IsTurnedOn;
@@ -107,7 +106,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                     IsCharacterClassRequirementMet = !x.HasCharacterClassRequirement ||
                                                       player.Class == x.CharacterClass,
                     SkillPointRequirement = x.SkillPointRequirement,
-                    CharacterClass =  new ScenarioImageViewModel(player)
+                    CharacterClass =  new ScenarioImageViewModel(player, player.RogueName)
                     {
                         // TODO: Remove one of these
                         DisplayName = player.Class,
@@ -120,7 +119,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             this.ActiveSkill = skillSet.SelectedSkill != null ? this.Skills.First(x => x.Id == skillSet.SelectedSkill.Id) : null;
 
             // Hook-up commands
-            this.ActivateSkillCommand = new AsyncCommand(async () =>
+            this.ActivateSkillCommand = new SimpleAsyncCommand(async () =>
             {
                 await eventAggregator.GetEvent<UserCommandEvent>().Publish(
                     new PlayerCommandEventArgs(PlayerActionType.ActivateSkillSet, this.Id));

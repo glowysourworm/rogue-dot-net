@@ -50,7 +50,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         public AttackAttributeTemporaryAlterationEffectViewModel(AttackAttributeTemporaryAlterationEffect effect)
                 : base(effect)
         {
-            this.AlteredState = new ScenarioImageViewModel(effect.AlteredState);
+            this.AlteredState = new ScenarioImageViewModel(effect.AlteredState, effect.RogueName);
             this.CombatType = effect.CombatType;
             this.EventTime = effect.EventTime.ToString();
             this.HasAlteredState = effect.HasAlteredState;
@@ -65,7 +65,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
         public AttackAttributeTemporaryAlterationEffectViewModel(AttackAttributeTemporaryAlterationEffectTemplate template)
                 : base(template)
         {
-            this.AlteredState = new ScenarioImageViewModel(template.Guid, template.Name, template.AlteredState.SymbolDetails);
+            this.AlteredState = new ScenarioImageViewModel(template.Guid, template.Name, template.Name, template.AlteredState.SymbolDetails);
             this.CombatType = template.CombatType;
             this.EventTime = template.EventTime.ToString();
             this.HasAlteredState = template.HasAlteredState;

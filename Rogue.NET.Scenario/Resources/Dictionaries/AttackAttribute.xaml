@@ -1,24 +1,19 @@
 ﻿<ResourceDictionary x:Class="Rogue.NET.Scenario.Resources.Dictionaries.AttackAttribute"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </ResourceDictionary.MergedDictionaries>
     
-    <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
-
     <!-- Resources to support display like the one in Rogue Encyclopedia (Horizontal Images with tooltips) -->
     
     <DataTemplate x:Key="AttackAttributeDataTemplate">
         <StackPanel Orientation="Horizontal" Margin="2, 0, 0, 0">
-            <Image Margin="2,0,0,0" 
-                                   Width="15"
-                                   Height="22.5"
-                                    VerticalAlignment="Center" 
-                                    HorizontalAlignment="Center">
-                <Image.Source>
-                    <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+            <ContentPresenter Margin="2,0,0,0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center">
+                <ContentPresenter.Content>
+                    <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
                         <Binding Path="Icon" />
@@ -28,9 +23,9 @@
                         <Binding Path="SmileyBodyColor" />
                         <Binding Path="SmileyLineColor" />
                         <Binding Path="SymbolType" />
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
+                    </MultiBinding>                    
+                </ContentPresenter.Content>
+            </ContentPresenter>
         </StackPanel>
     </DataTemplate>
 
@@ -45,13 +40,11 @@
                                                 Padding="2"
                                                 CornerRadius="3">
                             <StackPanel Orientation="Horizontal">
-                                <Image Margin="2" 
-                                                       Width="15"
-                                                       Height="22.5"
-                                                       VerticalAlignment="Center" 
-                                                       HorizontalAlignment="Center">
-                                    <Image.Source>
-                                        <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                <ContentPresenter Margin="2"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center">
+                                    <ContentPresenter.Content>
+                                        <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
                                             <Binding Path="CharacterColor" />
                                             <Binding Path="CharacterSymbol" />
                                             <Binding Path="Icon" />
@@ -62,8 +55,8 @@
                                             <Binding Path="SmileyLineColor" />
                                             <Binding Path="SymbolType" />
                                         </MultiBinding>
-                                    </Image.Source>
-                                </Image>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
                                 <TextBlock Text="{Binding RogueName}" Margin="2" Foreground="White" FontSize="18" />
                                 <TextBlock Margin="2" Foreground="Yellow" FontSize="18" Visibility="{Binding IsAttackSet, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                                             <Run Text="{Binding AttackLow, StringFormat=F1}" />
@@ -102,13 +95,11 @@
                                                 Padding="2"
                                                 CornerRadius="3">
                             <StackPanel Orientation="Horizontal">
-                                <Image Margin="2" 
-                                                       Width="15"
-                                                       Height="22.5"
-                                                       VerticalAlignment="Center" 
-                                                       HorizontalAlignment="Center">
-                                    <Image.Source>
-                                        <MultiBinding Converter="{StaticResource ItemGridRowImageSourceMultiConverter}">
+                                <ContentPresenter Margin="2"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center">
+                                    <ContentPresenter.Content>
+                                        <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
                                             <Binding Path="CharacterColor" />
                                             <Binding Path="CharacterSymbol" />
                                             <Binding Path="Icon" />
@@ -119,8 +110,8 @@
                                             <Binding Path="SmileyLineColor" />
                                             <Binding Path="SymbolType" />
                                         </MultiBinding>
-                                    </Image.Source>
-                                </Image>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
                                 <TextBlock Text="{Binding RogueName}" Margin="2" Foreground="White" FontSize="18" />
                                 <TextBlock Margin="2" Foreground="Yellow" FontSize="18" Visibility="{Binding Attack, Converter={StaticResource GreaterThanZeroVisibilityConverter}}">
                                                     <Run Text="{Binding Attack, StringFormat=F1}" />

@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:common="clr-namespace:Rogue.NET.Common.Views;assembly=Rogue.NET.Common">
+                    xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core">
     <ControlTemplate x:Key="RogueIntroButtonStyle" TargetType="{x:Type ButtonBase}">
         <Border x:Name="border" BorderBrush="White" BorderThickness="2" CornerRadius="10">
             <Grid>
@@ -44,7 +44,7 @@
     <DataTemplate x:Key="ScenarioSelectionItemTemplate" DataType="ListBoxItem">
         <Border>
             <Grid>
-                <common:Smiley HorizontalAlignment="Left" Height="30" Width="20" SmileyExpression="Happy" SmileyColor="{Binding SmileyColor}" SmileyLineColor="{Binding SmileyLineColor}" />
+                <view:Smiley HorizontalAlignment="Left" Height="30" Width="20" SmileyExpression="Happy" SmileyColor="{Binding SmileyColor}" SmileyLineColor="{Binding SmileyLineColor}" />
                 <TextBlock Text="{Binding Name}" Foreground="White" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Center" />
             </Grid>
         </Border>
@@ -54,12 +54,11 @@
     <DataTemplate x:Key="ConfigSelectionItemTemplate" DataType="ListBoxItem">
         <Grid>
             <Grid Margin="8">
-                <common:Smiley HorizontalAlignment="Left" 
+                <view:Smiley HorizontalAlignment="Left" 
                                 VerticalAlignment="Center"
                                 SmileyColor="{Binding SmileyColor}" 
                                 SmileyLineColor="{Binding SmileyLineColor}" 
                                 SmileyExpression="Happy"
-                                SmileyRadius="4"
                                 Height="30"
                                 Width="20"/>
                 <TextBlock Foreground="White" Background="Transparent" Text="{Binding Name}" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Center" />

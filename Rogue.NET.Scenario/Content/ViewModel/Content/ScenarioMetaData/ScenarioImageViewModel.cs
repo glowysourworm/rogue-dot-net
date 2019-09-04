@@ -90,16 +90,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         }
 
         public ScenarioImageViewModel() { }
-        public ScenarioImageViewModel(ScenarioImage scenarioObject) : base(scenarioObject)
+        public ScenarioImageViewModel(ScenarioImage scenarioObject, string displayName) : base(scenarioObject)
         {
-            this.DisplayName = scenarioObject.RogueName;  // TODO - set if identified
+            this.DisplayName = displayName;  // TODO - set if identified
 
             UpdateSymbol(scenarioObject);
         }
-        public ScenarioImageViewModel(string id, string rogueName, SymbolDetailsTemplate symbolDetailsTemplate)
+        public ScenarioImageViewModel(string id, string rogueName, string displayName, SymbolDetailsTemplate symbolDetailsTemplate)
             : base (id, rogueName)
         {
-            this.DisplayName = rogueName;
+            this.DisplayName = displayName;
 
             this.CharacterColor = symbolDetailsTemplate.CharacterColor;
             this.CharacterSymbol = symbolDetailsTemplate.CharacterSymbol;

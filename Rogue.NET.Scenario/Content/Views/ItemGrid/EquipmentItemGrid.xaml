@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.ItemGrid.EquipmentItemGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:itemGrid="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemGrid"
+             xmlns:itemGridEnum="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGridControl.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ImageButton.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Item Grid Header -->
+        <TextBlock x:Name="ModeTB"  
+                    Text="{Binding Header}"
+                    Foreground="{Binding HeaderBrush}"                                          
+                    VerticalAlignment="Center"                    
+                    HorizontalAlignment="Left"
+                    FontSize="20" 
+                    Margin="8" />
+
+        <!-- Item Grid Functions -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8">
+            
+            <!-- BLOCK ACTIONS FOR OTHER MODES (Facilitates Dialog Modes) -->
+            <StackPanel.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Equip}" />
+                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Drop}" />
+                </MultiBinding>
+            </StackPanel.Visibility>
+            
+            <RadioButton x:Name="Equip" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Equip}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
+            <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+        </StackPanel>
+
+        <!-- Item Grid (Single Selection Mode) -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Items}"
+                  Style="{StaticResource ItemGridStyle}"                  
+                  RowStyle="{DynamicResource ItemGridControlRowStyle}" 
+                  CellStyle="{StaticResource ItemGridControlCellStyle}"
+                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Single}}">
+            <DataGrid.Columns>
+
+                <!-- Button / Action -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridButtonCellTemplate}" />
+
+                <!-- Image -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridImageCellTemplate}" />
+
+                <!-- Combat Value -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridEquipmentCombatValueCellTemplate}" />                
+                
+                <!-- Attack Attribute Indicator (Boolean) -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridAttackAttributesCellTemplate}" />
+
+                <!-- Display Name -->
+                <DataGridTemplateColumn Width="*"    HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridDisplayNameCellTemplate}" />
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Item Grid (Multiple Selection Mode) -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Items}"
+                  Style="{StaticResource ItemGridStyle}"                  
+                  RowStyle="{DynamicResource ItemGridControlRowStyle}" 
+                  CellStyle="{StaticResource ItemGridControlCellStyle}"
+                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Multiple}}">
+            <DataGrid.Columns>
+
+                <!-- Button / Action -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridToggleButtonCellTemplate}" />
+
+                <!-- Image -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridImageCellTemplate}" />
+
+                <!-- Combat Value -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridEquipmentCombatValueCellTemplate}" />
+
+                <!-- Attack Attribute Indicator (Boolean) -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridAttackAttributesCellTemplate}" />
+
+                <!-- Display Name -->
+                <DataGridTemplateColumn Width="*"    HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridDisplayNameCellTemplate}" />
+                
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

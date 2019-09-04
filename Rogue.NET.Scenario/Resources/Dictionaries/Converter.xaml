@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:scenarioConverter="clr-namespace:Rogue.NET.Scenario.Converter">
+    <scenarioConverter:AttackAttributeCollectionNonEmptyVisibilityConverter x:Key="AttackAttributeCollectionNonEmptyVisibilityConverter" />
+    <scenarioConverter:AttackAttributeIsSetVisibilityConverter x:Key="AttackAttributeIsSetVisibilityConverter" />
+    <scenarioConverter:CharacterBaseAttributeForegroundConverter x:Key="CharacterBaseAttributeForegroundConverter" />
+    <scenarioConverter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
+    <scenarioConverter:ScenarioObjectiveTypeCompletionConverter x:Key="ScenarioObjectiveTypeCompletionConverter" />
+</ResourceDictionary>

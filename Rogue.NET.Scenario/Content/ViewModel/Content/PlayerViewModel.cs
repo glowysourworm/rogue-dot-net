@@ -562,7 +562,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.Speed = player.GetSpeed();
             this.SpeedBase = player.SpeedBase;
 
-            var constructor = new Func<Equipment, EquipmentViewModel>(x => x == null ? null : new EquipmentViewModel(x));
+            var constructor = new Func<Equipment, EquipmentViewModel>(x => x == null ? null : new EquipmentViewModel(x, _modelService.GetDisplayName(x)));
 
             this.EquippedAmulet = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Amulet));
             this.EquippedArmor = constructor(equippedItems.FirstOrDefault(x => x.Type == EquipmentType.Armor));

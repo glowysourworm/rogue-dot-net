@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.ItemGrid.DualItemGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
+             xmlns:itemGrid="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemGrid"
+             xmlns:itemGridEnum="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGridControl.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Equipment Grid -->
+        <region:RogueRegion x:Name="EquipmentRegion" 
+                            region:RogueRegionManager.DefaultViewType="{x:Type itemGrid:EquipmentItemGrid}" />
+
+        <!-- Consumables Grid -->
+        <region:RogueRegion x:Name="ConsumablesRegion" Grid.Row="1"
+                            region:RogueRegionManager.DefaultViewType="{x:Type itemGrid:ConsumableItemGrid}" />
+
+        <!-- Ok Button (# Select) -->
+        <Button x:Name="OkMultiSelectionButton"
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                Style="{StaticResource ShinyTextButtonStyle}">
+            <Button.Visibility>
+                <Binding Path="DataContext.SelectionMode"
+                         ElementName="ConsumablesRegion"
+                         Converter="{StaticResource ParameterVisibilityCollapsedConverter}"
+                         ConverterParameter="{x:Static itemGridEnum:ItemGridSelectionMode.Multiple}" />
+            </Button.Visibility>
+            <Button.IsEnabled>
+                <MultiBinding Converter="{StaticResource SumGreaterThanParameterBoolConverter}"
+                              ConverterParameter="1">
+                    <Binding ElementName="ConsumablesRegion" Path="DataContext.TotalSelected" />
+                    <Binding ElementName="EquipmentRegion" Path="DataContext.TotalSelected" />
+                </MultiBinding>
+            </Button.IsEnabled>
+            <Button.Content>
+                <TextBlock>
+                    <Run Text="Ok (" />
+                    <Run>
+                        <Run.Text>
+                            <MultiBinding Converter="{StaticResource SumConverter}" StringFormat="N0">
+                                <Binding ElementName="ConsumablesRegion" Path="DataContext.TotalSelected" />
+                                <Binding ElementName="EquipmentRegion" Path="DataContext.TotalSelected" />
+                            </MultiBinding>                            
+                        </Run.Text>
+                    </Run>
+                    <Run Text=" Selected)" />
+                </TextBlock>
+            </Button.Content>
+        </Button>
+    </Grid>
+</UserControl>

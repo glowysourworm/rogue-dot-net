@@ -17,7 +17,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/AttackAttribute.xaml" />
                 <ResourceDictionary>
-                    <converter:ItemGridRowImageSourceMultiConverter x:Key="ItemGridRowImageSourceMultiConverter" />
                     <Style x:Key="CategoryTextBlockStyle" TargetType="TextBlock">
                         <Setter Property="Foreground" Value="White" />
                         <Style.Triggers>

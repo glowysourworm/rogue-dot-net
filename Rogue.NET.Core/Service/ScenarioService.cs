@@ -1,16 +1,10 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Logic.Interface;
 using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
-using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
-using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
-using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
-using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
@@ -244,8 +238,16 @@ namespace Rogue.NET.Core.Service
             // Player commands don't involve level actions - so no need to check for altered states.
             switch (command.Type)
             {
-                case PlayerActionType.EnhanceEquipment:
-                    _scenarioEngine.EnhanceEquipment((command as IPlayerEnhanceEquipmentCommandAction).Effect, command.Id);
+                case PlayerActionType.AlterationEffect:
+                    {
+                        var effectCommand = command as IPlayerAlterationEffectCommandAction;
+
+                        if (effectCommand.Effect is EquipmentEnhanceAlterationEffect)
+                            _scenarioEngine.EnhanceEquipment(effectCommand.Effect as EquipmentEnhanceAlterationEffect, command.Id);
+
+                        else
+                            throw new Exception("Unknonw IPlayerAlterationEffectCommandAction.Effect");
+                    }
                     break;
                 case PlayerActionType.Uncurse:
                     _scenarioEngine.Uncurse(command.Id);
@@ -273,6 +275,27 @@ namespace Rogue.NET.Core.Service
                                                           advancementCommand.Agility,
                                                           advancementCommand.Intelligence,
                                                           advancementCommand.SkillPoints);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void IssuePlayerMultiItemCommand(IPlayerMultiItemCommandAction command)
+        {
+            // Player commands don't involve level actions - so no need to check for altered states.
+            switch (command.Type)
+            {
+                case PlayerMultiItemActionType.AlterationEffect:
+                    {
+                        var effectCommand = command as IPlayerAlterationEffectMultiItemCommandAction;
+
+                        if (effectCommand.Effect is TransmuteAlterationEffect)
+                            _alterationEngine.ProcessTransmute(effectCommand.Effect as TransmuteAlterationEffect, command.ItemIds);
+
+                        else
+                            throw new Exception("Unknonw IPlayerAlterationEffectCommandAction.Effect");
                     }
                     break;
                 default:

@@ -28,6 +28,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
             foreach (var action in actions)
                 action.Invoke(payload);
         }
+
+        public void UnSubscribe(string token)
+        {
+            _actions.Remove(token);
+        }
     }
     public class RogueEvent : RogueEventBase
     {
@@ -46,7 +51,7 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
             return token;
         }
-        public void Unsubscribe(string token)
+        public void UnSubscribe(string token)
         {
             _actions.Remove(token);
         }

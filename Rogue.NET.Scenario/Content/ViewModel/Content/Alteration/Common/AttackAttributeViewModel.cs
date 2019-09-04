@@ -14,7 +14,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
         double _resistanceHigh;
         double _weaknessHigh;
 
-        public AttackAttributeViewModel(AttackAttribute attackAttribute) : base(attackAttribute)
+        public AttackAttributeViewModel(AttackAttribute attackAttribute) : base(attackAttribute, attackAttribute.RogueName)
         {
             this.Attack = attackAttribute.Attack;
             this.Resistance = attackAttribute.Resistance;
@@ -22,7 +22,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
         }
 
         public AttackAttributeViewModel(AttackAttributeTemplate attackAttributeTemplate) 
-            : base(attackAttributeTemplate.Guid, attackAttributeTemplate.Name, attackAttributeTemplate.SymbolDetails)
+            : base(attackAttributeTemplate.Guid, attackAttributeTemplate.Name, attackAttributeTemplate.Name, attackAttributeTemplate.SymbolDetails)
         {
             this.Attack = attackAttributeTemplate.Attack.Low;
             this.AttackHigh = attackAttributeTemplate.Attack.High;
@@ -63,6 +63,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
         {
             get { return _weaknessHigh; }
             set { this.RaiseAndSetIfChanged(ref _weaknessHigh, value); }
+        }
+
+        public bool IsSet()
+        {
+            return this.Attack != 0D ||
+                   this.Resistance != 0D ||
+                   this.Weakness != 0D;
         }
     }
 }

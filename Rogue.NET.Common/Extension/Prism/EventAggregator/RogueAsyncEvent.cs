@@ -22,6 +22,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
             return token;
         }
 
+        public void UnSubscribe(string token)
+        {
+            _functions.Remove(token);
+        }
+
         public async Task Publish(T payload)
         {
             var functions = _functions.Values.Copy();

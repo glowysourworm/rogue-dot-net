@@ -245,4 +245,44 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="ShinyTextRectangleButtonStyle" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesome}" />
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="Black" BorderBrush="White" BorderThickness="0.75" CornerRadius="4">
+                        <Grid>
+                            <Rectangle x:Name="rectangle" RenderTransformOrigin="0.5,0.5" Stroke="Transparent" RadiusX="2" RadiusY="2">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush Opacity="0.5" StartPoint="0.5, 0" EndPoint="0.5, 1">
+                                        <GradientStop Color="White" Offset="0" />
+                                        <GradientStop Color="White" Offset="0.15"/>
+                                        <GradientStop Color="Transparent" Offset="0.3"/>
+                                        <GradientStop Color="Transparent" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <ContentPresenter 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="rectangle" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="-1" ScaleY="-1" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>    
 </ResourceDictionary>

@@ -49,7 +49,7 @@ namespace Rogue.NET.Core.Model.Enums
     /// </summary>
     public enum PlayerActionType
     {
-        EnhanceEquipment,
+        AlterationEffect,
         Uncurse,
         Identify,
         ActivateSkillSet,
@@ -57,6 +57,16 @@ namespace Rogue.NET.Core.Model.Enums
         SelectSkill,
         UnlockSkill,
         PlayerAdvancement
+    }
+
+    /// <summary>
+    /// These types of actions are initiated by the UI. (They originate from
+    /// some kind of a UI or Dialog interaction) They will have multiple items
+    /// carried from the UI interaction. (Maybe a multi-item selector or something)
+    /// </summary>
+    public enum PlayerMultiItemActionType
+    {
+        AlterationEffect
     }
 
     /// <summary>

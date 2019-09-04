@@ -434,7 +434,7 @@ namespace Rogue.NET.Core.Logic
                     var alteration = _alterationGenerator.GenerateAlteration(doodad.AutomaticAlteration);
 
                     // Validate Alteration Cost -> Queue with animation
-                    if (_alterationEngine.Validate(character, alteration.Cost))
+                    if (_alterationEngine.Validate(character, alteration))
                         _alterationEngine.Queue(character, alteration);
                 }
                 else
@@ -673,7 +673,7 @@ namespace Rogue.NET.Core.Logic
                                                                     .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
                                     {
                                         // Validate -> Queue Equipment Attack Alteration
-                                        if (_alterationEngine.Validate(enemy, alteration.Cost))
+                                        if (_alterationEngine.Validate(enemy, alteration))
                                             _alterationEngine.Queue(enemy, new Character[] { _modelService.Player }, alteration);
                                     }
 
@@ -713,7 +713,7 @@ namespace Rogue.NET.Core.Logic
                                 var alteration = _alterationGenerator.GenerateAlteration(enemy.BehaviorDetails.CurrentBehavior.EnemyAlteration);
 
                                 // Validate the cost and process
-                                if (_alterationEngine.Validate(enemy, alteration.Cost))
+                                if (_alterationEngine.Validate(enemy, alteration))
                                     _alterationEngine.Queue(enemy, alteration);
 
                                 actionTaken = true;

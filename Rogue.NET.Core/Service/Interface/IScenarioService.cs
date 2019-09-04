@@ -32,6 +32,12 @@ namespace Rogue.NET.Core.Service.Interface
         /// <param name="playerCommand"></param>
         void IssuePlayerCommand(IPlayerCommandAction playerCommand);
 
+        /// <summary>
+        /// Issues player commands that have multiple item id's (originating from dialog interaction)
+        /// </summary>
+        /// <param name="command"></param>
+        void IssuePlayerMultiItemCommand(IPlayerMultiItemCommandAction command);
+
         // Methods to show queue status
         bool AnyUpdates(RogueUpdatePriority priority);
 

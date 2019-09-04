@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
@@ -19,7 +20,7 @@ namespace Rogue.NET.Core.Logic.Interface
         /// Validates the parameters involved with the alteration and returns true if they are met. Also, 
         /// publishes Scenario Messages for Player about failed Validation.
         /// </summary>
-        bool Validate(Character actor, AlterationCost cost);
+        bool Validate(Character actor, AlterationContainer alteration);
 
         /// <summary>
         /// Begins process of invoking character alteration. This queues animations and post-processing
@@ -39,5 +40,12 @@ namespace Rogue.NET.Core.Logic.Interface
         /// or if it is to be invoked without processing animations first.
         /// </summary>
         void Process(Character actor, IEnumerable<Character> affectedCharacters, AlterationContainer alteration);
+
+        /// <summary>
+        /// Processes a Transmute Alteration Effect using the selected items from a player interaction with 
+        /// the dialog. (This breaks the normal pattern of player -> dialog interaction because the effect
+        /// itself requires a dialog)
+        /// </summary>
+        void ProcessTransmute(TransmuteAlterationEffect effect, IEnumerable<string> itemIds);
     }
 }

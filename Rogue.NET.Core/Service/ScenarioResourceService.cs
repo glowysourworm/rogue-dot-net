@@ -99,7 +99,7 @@ namespace Rogue.NET.Core.Service
             // Have to copy configuration because of the HasBeenGenerated flags in memory
             return _scenarioConfigurations[configurationName].DeepClone();
         }
-        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale)
+        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -109,7 +109,7 @@ namespace Rogue.NET.Core.Service
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
-            if (_scenarioImageCache.ContainsKey(cacheKey))
+            if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
                 return _scenarioImageCache[cacheKey] as BitmapSource;
 
             BitmapSource result;
@@ -138,7 +138,7 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
-        public BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale)
+        public BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -148,7 +148,7 @@ namespace Rogue.NET.Core.Service
             var cacheKey = cacheImage.ToFingerprint();
             
             // Check for cached image
-            if (_scenarioImageCache.ContainsKey(cacheKey))
+            if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
                 return _scenarioImageCache[cacheKey] as BitmapSource;
 
             BitmapSource result;
@@ -177,7 +177,7 @@ namespace Rogue.NET.Core.Service
 
             return result;
         }
-        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale)
+        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -187,7 +187,7 @@ namespace Rogue.NET.Core.Service
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached image
-            if (_scenarioImageCache.ContainsKey(cacheKey))
+            if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
                 return _scenarioImageCache[cacheKey] as BitmapSource;
 
             // Create gray-scale image (also can use cache to get color image)
@@ -200,7 +200,7 @@ namespace Rogue.NET.Core.Service
 
             return formatConvertedBitmap;
         }
-        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale)
+        public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -210,7 +210,7 @@ namespace Rogue.NET.Core.Service
             var cacheKey = cacheImage.ToFingerprint();
 
             // Check for cached FrameworkElement
-            if (_scenarioImageCache.ContainsKey(cacheKey))
+            if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
                 return _scenarioImageCache[cacheKey] as FrameworkElement;
 
             FrameworkElement result;

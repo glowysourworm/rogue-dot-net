@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.ItemGrid.ConsumableItemGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:itemGridEnum="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/ItemGridControl.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ImageButton.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Item Grid Header -->
+        <TextBlock x:Name="ModeTB"  
+                    Text="{Binding Header}"
+                    Foreground="{Binding HeaderBrush}"                                          
+                    VerticalAlignment="Center"                    
+                    HorizontalAlignment="Left"
+                    FontSize="20"
+                    Margin="8" />
+        
+        <!-- Item Grid Functions -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8">
+            <RadioButton x:Name="Consume" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Consume}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
+            <RadioButton x:Name="Throw" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Throw}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
+            <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+        </StackPanel>
+
+        <!-- Item Grid (Single Selection Mode) -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Items}"
+                  Style="{StaticResource ItemGridStyle}"                
+                  RowStyle="{DynamicResource ItemGridControlRowStyle}" 
+                  CellStyle="{StaticResource ItemGridControlCellStyle}"
+                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Single}}">
+            <DataGrid.Columns>
+
+                <!-- Button / Action -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridButtonCellTemplate}" />
+
+                <!-- Image -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridImageCellTemplate}" />
+
+                <!-- Quantity -->
+                <DataGridTextColumn     Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" Binding="{Binding Quantity, StringFormat=N0}" FontSize="14" />
+
+                <!-- Display Name -->
+                <DataGridTemplateColumn Width="*"    HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridDisplayNameCellTemplate}" />
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Item Grid (Multiple Selection Mode) -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Items}"
+                  Style="{StaticResource ItemGridStyle}"                
+                  RowStyle="{DynamicResource ItemGridControlRowStyle}" 
+                  CellStyle="{StaticResource ItemGridControlCellStyle}"
+                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Multiple}}">
+            <DataGrid.Columns>
+
+                <!-- Up-Down Selection Button -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridUpDownButtonCellTemplate}" />
+
+                <!-- Image -->
+                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridImageCellTemplate}" />
+
+                <!-- Quantity -->
+                <DataGridTextColumn     Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" Binding="{Binding Quantity, StringFormat=N0}" FontSize="14" />
+
+                <!-- Selected Quantity -->
+                <DataGridTextColumn     Width="Auto" HeaderStyle="{StaticResource ItemGridHeaderStyle}" Binding="{Binding SelectedQuantity, StringFormat=N0}" FontSize="14" Foreground="YellowGreen" />                
+                
+                <!-- Display Name -->
+                <DataGridTemplateColumn Width="*"    HeaderStyle="{StaticResource ItemGridHeaderStyle}" CellTemplate="{StaticResource ItemGridDisplayNameCellTemplate}" />
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

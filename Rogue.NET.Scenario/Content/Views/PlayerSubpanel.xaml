@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:contentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
-             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension"
+             xmlns:itemGrid="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemGrid"
              Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,17 +23,13 @@
         <Rectangle Fill="DarkBlue" Height="36" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="0.3" />
 
         <region:RogueRegion x:Name="EquipmentCtrl" Grid.Row="1" 
-                            region:RogueRegionManager.RegionName="PlayerSubpanelEquipmentRegion">
-            <region:RogueRegionManager.DefaultView>
-                <extension:ItemGridConstructor Mode="Equipment" IntendedAction="Equip" IsDialogMode="False" />
-            </region:RogueRegionManager.DefaultView>
+                            region:RogueRegionManager.RegionName="PlayerSubpanelEquipmentRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type itemGrid:EquipmentItemGrid}">
         </region:RogueRegion>
 
         <region:RogueRegion x:Name="ConsumablesCtrl" Grid.Row="1" Visibility="Collapsed"
-                            region:RogueRegionManager.RegionName="PlayerSubpanelConsumablesRegion">
-            <region:RogueRegionManager.DefaultView>
-                <extension:ItemGridConstructor Mode="Consumable" IntendedAction="Consume" IsDialogMode="False" />
-            </region:RogueRegionManager.DefaultView>
+                            region:RogueRegionManager.RegionName="PlayerSubpanelConsumablesRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type itemGrid:ConsumableItemGrid}">
         </region:RogueRegion>
 
         <region:RogueRegion x:Name="SkillCtrl" Visibility="Collapsed" Grid.Row="1"

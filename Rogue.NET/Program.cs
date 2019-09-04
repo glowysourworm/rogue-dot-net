@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Rogue.NET.Common.Utility;
-using Rogue.NET.Utility;
 
 namespace Rogue.NET
 {
@@ -10,9 +9,6 @@ namespace Rogue.NET
         [STAThread]
         public static void Main()
         {
-            // Initialize Express Mapper
-            MapperInit.Initialize();
-
             // Create Game Directories
             if (!Directory.Exists(ResourceConstants.SavedGameDirectory))
                 Directory.CreateDirectory(ResourceConstants.SavedGameDirectory);

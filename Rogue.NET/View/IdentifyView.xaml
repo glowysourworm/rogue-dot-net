@@ -1,7 +1,6 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:extension="clr-namespace:Rogue.NET.Scenario.Content.Views.Extension;assembly=Rogue.NET.Scenario"
              x:Class="Rogue.NET.View.IdentifyView" 
              Background="Transparent" Opacity="1">
     <UserControl.Resources>
@@ -14,12 +13,12 @@
         		<RowDefinition Height="Auto"/>
         	</Grid.RowDefinitions>
 
-            <region:RogueRegion x:Name="ItemGridControl"  Width="500" Height="300" Margin="10"
+            <!--region:RogueRegion x:Name="ItemGridControl"  Width="500" Height="300" Margin="10"
                                 region:RogueRegionManager.RegionName="IdentifyItemGridRegion">
                 <region:RogueRegionManager.DefaultView>
                     <extension:ItemGridConstructor Mode="Identify" IntendedAction="Identify" IsDialogMode="True" />
                 </region:RogueRegionManager.DefaultView>
-            </region:RogueRegion>            
+            </-->            
         </Grid>
     </Border>
 </UserControl>

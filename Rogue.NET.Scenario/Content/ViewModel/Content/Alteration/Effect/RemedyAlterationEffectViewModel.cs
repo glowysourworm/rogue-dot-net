@@ -20,12 +20,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 
         public RemedyAlterationEffectViewModel(RemedyAlterationEffect effect) : base(effect)
         {
-            this.RemediedState = new ScenarioImageViewModel(effect.RemediedState);
+            this.RemediedState = new ScenarioImageViewModel(effect.RemediedState, effect.RogueName);
         }
 
         public RemedyAlterationEffectViewModel(RemedyAlterationEffectTemplate template) : base(template)
         {
-            this.RemediedState = new ScenarioImageViewModel(template.Guid, template.Name, template.RemediedState.SymbolDetails);
+            this.RemediedState = new ScenarioImageViewModel(template.Guid, template.Name, template.Name, template.RemediedState.SymbolDetails);
         }
     }
 }

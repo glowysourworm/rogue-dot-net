@@ -1736,3 +1736,135 @@ IMMEDIATE TODO'S:
 			- UPDATE:  Removing the Level and Intellgience [attribute] requirement from the alteration effect because it's too
 					   complex for an Alteration Effect - and also it's part of the Skill design.
 						
+	- TODO: SERIALIZATION PROBLEM:	
+	
+			Haven't yet had self referential loops in the mapper. 
+			
+			One scenario where this COULD happen is if an Alteration has a reference to an Asset. This WOULD have been "Create Monster"
+			but that ended up being a string.. And, I think there actually may have been a problem where this caused a stack overflow.
+			
+			The Agile Mapper was used to try and solve a problem like this earlier on.. and I remember seeing something about self-referencing 
+			loops in the XML comments; but was never satisfied with how it worked. Probalby something with configuring it.
+			
+			SOLVING THIS PROBLEM: I THINK - relies on storing a hash of object references. The first time an object is encountered its
+								  reference is stored in the hash to retrieve later as a subtitute for iterating a second, third, .. , nth reference.
+								  
+			I'd like to try implementing this simple idea in the mapping utility we built. So, first, I'll make it crash using the new
+			Transmute alteration effect - having a self referential item that has the Transmute effect as a use alteration.
+			
+			Should it work, it will replace the "FixReferences" method! :) :) :)  That would be a great step towards removing that type
+			of code from the editor.
+			
+	- IDEA ON MAPPING: 
+	
+			There should not be any "Generator" code in the Scenario namepsace. It should be replaced by a mapper that takes custom
+			types specific to "Generating".
+			
+				Example:  Range<T> random draw types 
+				
+						  Obvious solution would be to have an interface to set up a special mapping method to do a random draw.
+						  
+						  public class Range<T> : ICustomMapperProvider<T> where T : IComparable
+						  {
+							  ...
+							  
+							  public T ICustomMapperProvider.ProvideValue( ... )
+							  {
+							      return [Get Random Value In Range]
+							  }	  
+				
+				The idea is pretty simple:  Create an interface to provide a custom method for generating the scenario model when it
+											is necessary to create custom type-mapping code.
+											
+				This could also be done using any mapping utility with custom configuration.. So, DEFINITELY something to look into
+				because we have too much simple mapping code that should NOT exist.
+							
+	- MORE ABOUT SERIALIZATION:
+	
+			The bigger issue is removing the mapping utility all together and having a single source for deserializing two object graphs
+			that are equal (but different type namespace).
+			
+			Much thinking on this...
+			
+				- Protobuf is VERY limited for support on meta-programming the get / set portion of deserialization from the buffer "message".
+				
+			      It's also tricky to set up self referential pointers in the object graph. There would definitely be issues with "cycles" - 
+				  or circular dependencies.
+				  
+				- Meta-programming is required to prevent writing Get / Set code into the object model. However, if it could be done
+				  automatically during the compilation process, doing get / set code is fairly simple and could be written that way.
+				  
+			First of all, writing a parser / compiler for a custom pseudo-language would go like this:
+			
+				1) Create object graph into a text file
+				
+				2) Parse file -> Create code files for each domain to compile
+				
+				3) Create a serializer for each type in the object graph
+				
+				4) Deserialize data from file
+				
+				5) Construct type instances from the deserialized data using meta-programming for each domain
+				
+			Trying to construct code classes from the pseudo-language might be a little too far out-of-scope. However, using meta-programming
+			in .NET to create the custom classes might be a little easier.
+			
+				1) Create meta-description for primary object graph in .NET (using reflection or reflection.emit or expressions or some other facility)
+			
+				2) Create meta-description for types in each domain - probably using patterned public property names to 
+				   make it easier.
+				   
+				3) Probably would try serializing / deserializing in one of the two domains to make it easy.. But, the
+				   goal is to serialize in the primary "domain" which is the basic instructions on creating the object 
+				   graph in a memory stream.
+				   
+			So, basically, we will have created a mapping utility anyway.. And not gained much from doing it because the problems will
+			be the same. 
+			
+			I'd only think that creating the full solution:  pseudo-language; parser; code generator; deserializer; meta-programming (get/set)
+			would provide the greatest benefit. 
+			
+			But, this is a bigger problem that would take a lot of time to solve and provide robust code.
+			
+			So, probably, the best solution (for the moment) is to remove reference "fixing" by storing object references and
+			using reflection - which seems to work well for our special case:
+			
+				1) Class names follow a strict pattern "Template" -> "TemplateViewModel"
+				
+				2) Public property names are the same (case sensitive)
+				
+				3) Collections all must implement IList
+				
+				4) Interfaces must follow the same pattern "Template" -> "TemplateViewModel" (to find implementation)
+				
+			For now, probably going to implement an object hash to prevent duplicating data for shared references; and also to prevent
+			circular dependency issues that cause stack overflows.
+			
+	THOUGHT OF A NAME!!!
+	
+		***"Rogue Stories" or "Rogue Adventures" or "Rogue Story"
+		
+	- IDEA:  Use for attributes / UI settings. 
+	
+			 Example:  CharacterBaseAttribute (enum) [Strength, Agility, Intelligence]
+			 
+					   Add UIDisplayAttribute [ Name, DisplayName, ItemGridDisplayName, ScenarioEncyclopediaDisplayName ]
+					   
+					   For each field the enum:
+					   
+					   enum
+					   {
+							[UIDisplay(Name = "Strength", DisplayName = "Strength", ItemGridDisplayName = "S", ScenarioEncyclopediaDisplayName = "Str"]
+							Strength,
+							
+							...
+						}
+			 
+			 We could start to set up attributes to describe how to display enums so that there's less work to do 
+			 for the UI code - like collapse some of those converters.
+						
+				
+				
+					
+				
+				

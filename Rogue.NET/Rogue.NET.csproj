@@ -203,7 +203,6 @@
       <DependentUpon>RogueApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="RogueModule.cs" />
-    <Compile Include="Utility\MapperInit.cs" />
     <Compile Include="ViewModel\PlayerAdvancementViewModel.cs" />
     <Compile Include="View\CommandsView.xaml.cs">
       <DependentUpon>CommandsView.xaml</DependentUpon>

@@ -248,26 +248,28 @@ namespace Rogue.NET.View
                     return GetInstance<IdentifyView>();
                 case DialogEventType.Uncurse:
                     return GetInstance<UncurseView>();
-                case DialogEventType.ModifyEquipment:
+                case DialogEventType.AlterationEffect:
                     {
-                        switch ((update as IDialogEquipmentEnhanceUpdate).Effect.Type)
-                        {
-                            case AlterationModifyEquipmentType.ArmorClass:
-                                return GetInstance<EnchantArmorView>();
-                            case AlterationModifyEquipmentType.ArmorImbue:
-                                return GetInstance<ImbueArmorView>();
-                            case AlterationModifyEquipmentType.ArmorQuality:
-                                return GetInstance<EnhanceArmorView>();
-                            case AlterationModifyEquipmentType.WeaponClass:
-                                return GetInstance<EnchantWeaponView>();
-                            case AlterationModifyEquipmentType.WeaponImbue:
-                                return GetInstance<ImbueWeaponView>();
-                            case AlterationModifyEquipmentType.WeaponQuality:
-                                return GetInstance<EnhanceWeaponView>();
-                            default:
-                                throw new Exception("Unhandled Alteration Equipment Modify Type");
-                        }
+                        // TODO:ITEMGRID
+                        //switch ((update as IDialogAlterationEffectUpdate).Effect.Type)
+                        //{
+                        //    case AlterationModifyEquipmentType.ArmorClass:
+                        //        return GetInstance<EnchantArmorView>();
+                        //    case AlterationModifyEquipmentType.ArmorImbue:
+                        //        return GetInstance<ImbueArmorView>();
+                        //    case AlterationModifyEquipmentType.ArmorQuality:
+                        //        return GetInstance<EnhanceArmorView>();
+                        //    case AlterationModifyEquipmentType.WeaponClass:
+                        //        return GetInstance<EnchantWeaponView>();
+                        //    case AlterationModifyEquipmentType.WeaponImbue:
+                        //        return GetInstance<ImbueWeaponView>();
+                        //    case AlterationModifyEquipmentType.WeaponQuality:
+                        //        return GetInstance<EnhanceWeaponView>();
+                        //    default:
+                        //        throw new Exception("Unhandled Alteration Equipment Modify Type");
+                        //}
                     }
+                    return null;
                 case DialogEventType.PlayerAdvancement:
                     {
                         var view = GetInstance<PlayerAdvancementView>();

@@ -27,6 +27,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
             return token;
         }
 
+        public void UnSubscribe(string token)
+        {
+            _actions.Remove(token);
+        }
+
         public void Publish(RogueRegion region)
         {
             var actions = _actions.Values.Copy();
@@ -65,6 +70,11 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 
             foreach (var action in actions)
                 action(region, payload);
+        }
+
+        public void UnSubscribe(string token)
+        {
+            _actions.Remove(token);
         }
     }
 }

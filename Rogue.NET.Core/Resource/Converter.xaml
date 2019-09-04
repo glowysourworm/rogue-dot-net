@@ -39,6 +39,8 @@
     <converter:ScenarioImageSourceMultiConverter x:Key="ScenarioImageSourceMultiConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
     <converter:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyVisibilityConverter" />
+    <converter:SumConverter x:Key="SumConverter" />
+    <converter:SumGreaterThanParameterBoolConverter x:Key="SumGreaterThanParameterBoolConverter" />
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
@@ -48,6 +50,9 @@
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
     <converterItemGrid:ItemGridIconImageConverter x:Key="ItemGridIconImageConverter" />
+    <converterItemGrid:ItemGridRowImageMultiConverter x:Key="ItemGridRowImageMultiConverter" />
+    <converterItemGrid:ItemGridZeroValueParameterConverter x:Key="ItemGridZeroValueParameterConverter" />
+    <converterItemGrid:ItemGridCombatTypeConverter x:Key="ItemGridCombatTypeConverter" />
     <converterModelScenarioConfiguration:LayoutHeightConverter x:Key="LayoutHeightConverter" />
     <converterModelScenarioConfiguration:LayoutWidthConverter x:Key="LayoutWidthConverter" />
     <converterScenarioMetaData:ScenarioMetaDataToBrushConverter x:Key="ScenarioMetaDataToBrushConverter" />
