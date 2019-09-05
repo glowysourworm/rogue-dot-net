@@ -216,6 +216,7 @@
     <Compile Include="Content\ViewModel\Content\GameViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\SkillViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Common\AlterationViewModel.cs" />
+    <Compile Include="Content\ViewModel\Dialog\PlayerAdvancementViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ConsumableItemGridRowViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ConsumableItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\Enum\ItemGridIntendedAction.cs" />
@@ -301,6 +302,26 @@
     </Compile>
     <Compile Include="Content\Views\AttackAttributesCtrl.xaml.cs">
       <DependentUpon>AttackAttributesCtrl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\CommandsDialogView.xaml.cs">
+      <DependentUpon>CommandsDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\DialogContainer.xaml.cs">
+      <DependentUpon>DialogContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\HelpDialogView.xaml.cs">
+      <DependentUpon>HelpDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\Interface\IDialogContainer.cs" />
+    <Compile Include="Content\Views\Dialog\Interface\IDialogView.cs" />
+    <Compile Include="Content\Views\Dialog\NoteDialogView.xaml.cs">
+      <DependentUpon>NoteDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\ObjectiveDialogView.xaml.cs">
+      <DependentUpon>ObjectiveDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Dialog\PlayerAdvancementDialogView.xaml.cs">
+      <DependentUpon>PlayerAdvancementDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\EquipmentSubpanel.xaml.cs">
       <DependentUpon>EquipmentSubpanel.xaml</DependentUpon>
@@ -520,6 +541,30 @@
     <Page Include="Content\Views\AttackAttributesCtrl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\Dialog\CommandsDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Dialog\DialogContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Content\Views\Dialog\HelpDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Dialog\NoteDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Dialog\ObjectiveDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Dialog\PlayerAdvancementDialogView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Content\Views\EquipmentSubpanel.xaml">
       <SubType>Designer</SubType>

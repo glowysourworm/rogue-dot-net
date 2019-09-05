@@ -84,6 +84,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             // Go ahead and reset "IsSelected" because update typically follows some kind of model update
             // action (which means the use for the grid is "over")
             this.IsSelected = false;
+
+            this.DisplayName = displayName;
         }
 
         /// <summary>

@@ -173,10 +173,10 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager
 
         public RogueRegionManager() { }
 
-        public IEnumerable<RogueRegion> GetRegions()
+        public RogueRegion GetRegion(string regionName)
         {
-            return RegionViews.Select(x => x.Key)
-                              .Actualize();
+            // Allow exception if the region is not found
+            return RegionViews.First(x => GetRegionName(x.Key) == regionName).Key;                              
         }
 
         public void PreRegisterView(string regionName, Type viewType)

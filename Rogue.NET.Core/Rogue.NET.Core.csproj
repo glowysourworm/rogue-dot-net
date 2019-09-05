@@ -171,7 +171,7 @@
     <Compile Include="Event\ExitEvent.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\LevelCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerAdvancementCommandEventArgs.cs" />
-    <Compile Include="Event\Scenario\Level\EventArgs\PlayerAlterationEffectMultiItemCommandActionEventArgs.cs" />
+    <Compile Include="Event\Scenario\Level\EventArgs\PlayerAlterationEffectMultiItemCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerAlterationEffectCommandEventArgs.cs" />
     <Compile Include="Event\Scenario\Level\EventArgs\PlayerMultiItemCommandEventArgs.cs" />

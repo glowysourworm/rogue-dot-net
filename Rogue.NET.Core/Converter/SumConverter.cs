@@ -14,9 +14,8 @@ namespace Rogue.NET.Core.Converter
                 values.Any(x => x == DependencyProperty.UnsetValue))
                 return Binding.DoNothing;
 
-            var sum = values.Sum(x => (double)x);
-
-            return sum;
+            // Using System.Convert - TypeConverter (?)
+            return values.Sum(x => System.Convert.ToDouble(x));
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

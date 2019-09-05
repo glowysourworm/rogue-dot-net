@@ -25,19 +25,31 @@
                     VerticalAlignment="Center"                    
                     HorizontalAlignment="Left"
                     FontSize="20" 
-                    Margin="8" />
+                    Margin="8">
+            
+            <!-- BLOCK ACTIONS FOR OTHER MODES (Facilitates Dialog Modes) -->
+            <!-- TODO: COMBINE THESE INTO A SINGLE CALCULATED PARAMETER   -->
+            <TextBlock.Visibility>
+                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Equip}" />
+                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Drop}" />
+                </MultiBinding>
+            </TextBlock.Visibility>          
+            
+        </TextBlock>
 
         <!-- Item Grid Functions -->
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8">
-            
+
             <!-- BLOCK ACTIONS FOR OTHER MODES (Facilitates Dialog Modes) -->
+            <!-- TODO: COMBINE THESE INTO A SINGLE CALCULATED PARAMETER   -->
             <StackPanel.Visibility>
                 <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
                     <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Equip}" />
                     <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Drop}" />
                 </MultiBinding>
             </StackPanel.Visibility>
-            
+
             <RadioButton x:Name="Equip" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Equip}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Equip.png" BorderBrush="Silver" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Equip" Cursor="Hand" />
             <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
         </StackPanel>

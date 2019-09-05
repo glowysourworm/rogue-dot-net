@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Core.Event.Scenario.Level.EventArgs
 {
-    public class PlayerAlterationEffectMultiItemCommandActionEventArgs : PlayerMultiItemCommandEventArgs
+    public class PlayerAlterationEffectMultiItemCommandEventArgs : PlayerMultiItemCommandEventArgs
     {
         public IAlterationEffect Effect { get; set; }
 
-        public PlayerAlterationEffectMultiItemCommandActionEventArgs(IAlterationEffect effect, PlayerMultiItemActionType action, params string[] itemIds)
+        public PlayerAlterationEffectMultiItemCommandEventArgs(IAlterationEffect effect, PlayerMultiItemActionType action, string[] itemIds)
             : base(action, itemIds)
         {
             this.Effect = effect;

@@ -1864,7 +1864,24 @@ IMMEDIATE TODO'S:
 			 for the UI code - like collapse some of those converters.
 						
 				
-				
-					
-				
+	- TODO: Create a UI component to show some diagnostics:
+	
+			1) Number of region instances in the region manager
+			2) Number of distinct region types in the region manager
+			3) Number of registered event types in the event aggregator
+			4) Number of method handles in each event type
+			
+	- IDEA: When walking into an enemy, maybe there should be a penalty because it was sort of that way in the original (?)
+	
+	- TODO: Mapper Instance Dictionary; Animation refactoring
+	
+	- MORE ANIMATIONS: It'd be nice to animate the character symbol. But, going there is gonna mean support for more alterations
+					   that move / animate the character symbol.. so maybe if change to vector graphics.
+					   
+	- TRANSMUTE:  "What if it blows up?" 
+				  "What if it steals your items?"
+				  "What if it turns into a monster?"  (TransmuteBlowsUpAlterationEffect)
+				  
+				  What if it recurses through the scenario configuration object graph and creates a stack overflow?
+				  (Use the reference dictionary idea...)
 				

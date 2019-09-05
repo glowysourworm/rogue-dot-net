@@ -15,5 +15,6 @@ namespace Rogue.NET.Scenario.Constant
         public const string GameRegion = "GameRegion";
         public const string GameSetupRegion = "GameSetupRegion";
         public const string ChooseParametersRegion = "ChooseParametersRegion";
+        public const string DialogRegion = "DialogRegion";
     }
 }

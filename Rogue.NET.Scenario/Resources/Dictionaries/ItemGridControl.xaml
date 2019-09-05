@@ -204,22 +204,26 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch" />
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding IsEnabled, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
     </DataTemplate>
 
     <!-- Item Grid Toggle Button Cell Template -->
     <DataTemplate x:Key="ItemGridToggleButtonCellTemplate">
         <ToggleButton Style="{StaticResource ItemGridToggleButtonCellStyle}"                
                       IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                      Command="{Binding ProcessSingleItemCommand}"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       HorizontalContentAlignment="Stretch"
-                      VerticalContentAlignment="Stretch" />
+                      VerticalContentAlignment="Stretch"
+                      Visibility="{Binding IsEnabled, Converter={StaticResource BoolVisibilityCollapseConverter}}" />
     </DataTemplate>
 
     <!-- Item Grid Up Down Button Cell Template -->
     <DataTemplate x:Key="ItemGridUpDownButtonCellTemplate">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                    Visibility="{Binding IsEnabled, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <Button Style="{StaticResource ShinyTextRectangleButtonStyle}"
                     Command="{Binding IncreaseSelectedQuantityCommand}"
                     Height="16"

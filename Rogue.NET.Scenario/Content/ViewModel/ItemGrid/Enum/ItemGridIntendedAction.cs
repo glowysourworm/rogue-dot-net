@@ -22,6 +22,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum
         Equip,
         Identify,
         Throw,
-        Uncurse
+        Uncurse,
+        Transmute
     }
 }

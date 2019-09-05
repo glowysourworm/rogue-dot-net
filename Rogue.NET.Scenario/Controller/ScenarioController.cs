@@ -213,7 +213,7 @@ namespace Rogue.NET.Scenario.Controller
         }
         private void ProcessDialogUpdate(IDialogUpdate update)
         {
-            // Synchronous window.ShowDialog() events
+            // Synchronous events for showing a "Dialog"
             _eventAggregator.GetEvent<DialogEvent>().Publish(update);
         }
         #endregion

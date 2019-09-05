@@ -196,7 +196,8 @@ namespace Rogue.NET.Common.Extension
 
         /// <summary>
         /// Synchronizes a souce collection with a destination collection using the provided: equality comparer,
-        /// constructor, and updater Func's.
+        /// constructor, and updater Func's. This will also apply a hard-constraint on ordering (using the source
+        /// ordering as a guide)
         /// </summary>
         /// <param name="equalityComparer">Anonymous method that provides a bool for the source / dest inputs</param>
         /// <param name="construct">Anonymous method that constructs a TDest object</param>
@@ -208,24 +209,40 @@ namespace Rogue.NET.Common.Extension
                             Func<TSource, TDest> construct,
                             Action<TSource, TDest> update)
         {
+            // Use an index to apply proper ordering
+            var index = 0;
+
+            // Start from the beginning of the source
             foreach (var item in sourceCollection)
             {
-                var itemGridRowItem = destCollection.FirstOrDefault(x => equalityComparer(item, x));
+                // Get Destination Item to compare
+                var destItem = destCollection.ElementAtOrDefault(index);
 
                 // Add
-                if (itemGridRowItem == null)
+                if (destItem == null)
                     destCollection.Add(construct(item));
 
-                // Update
+                // Compare for Equality (FALSE) => Replace
+                else if (!equalityComparer(item, destItem))
+                {
+                    destCollection.RemoveAt(index);
+                    destCollection.Insert(index, construct(item));
+                }
+
+                // Compare for Equality (TRUE) => Update
+                else if (equalityComparer(item, destItem))
+                    update(item, destItem);
+
+                // Error Handling: improper use of equality comparer
                 else
-                    update(item, itemGridRowItem);
+                    throw new Exception("Improper use of equality comparer in SynchronizeFrom");
+
+                index++;
             }
-            for (int i = destCollection.Count - 1; i >= 0; i--)
-            {
-                // Remove
-                if (!sourceCollection.Any(x => equalityComparer(x, destCollection[i])))
-                    destCollection.RemoveAt(i);
-            }
+
+            // Continue on to remove additional items from the destination collection
+            for (int i = destCollection.Count - 1; i >= index; i--)
+                destCollection.RemoveAt(i);
         }
     }
 }

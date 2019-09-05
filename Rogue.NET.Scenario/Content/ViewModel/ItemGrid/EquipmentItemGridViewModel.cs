@@ -12,8 +12,9 @@ using System.Linq;
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 {
     /// <summary>
-    /// View Model component for the primary equipment item grid. Updates are collected using
-    /// the event aggregator
+    /// View Model component for the equipment item grid. updates from the backend are
+    /// subscribed to for updating individual items; and two constructors are provided for
+    /// injection / manual use.
     /// </summary>
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
@@ -26,10 +27,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         {
             // Initializing Intended Action Here
             //
-            // NOTE*** The data cycle for the item grid and the view model depends on this;
-            //         and it has to be initialized somewhere. Exporting this creates an
-            //         issue of where to "Import" the proper value. So, setting here until
-            //         some other pattern makes more sense.
+            // NOTE*** This is for the primary use of this view model - which is to
+            //         provide data binding for the primary equipment grids.
             this.IntendedAction = ItemGridIntendedAction.Equip;
             this.SelectionMode = ItemGridSelectionMode.Single;
         }
@@ -69,6 +68,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 
                 case ItemGridIntendedAction.Uncurse:
                     return equipment.IsCursed;
+
+                case ItemGridIntendedAction.Transmute:
+                    return !metaData.IsObjective;
+
                 default:
                     throw new Exception("Improper use of Single Action Item Grid View Model");
             }
@@ -83,6 +86,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             {
                 case ItemGridIntendedAction.Equip:
                 case ItemGridIntendedAction.Drop:
+                case ItemGridIntendedAction.Transmute:
                     SynchronizeCollection(modelService.Player.Equipment.Values, modelService);
                     break;
                 case ItemGridIntendedAction.EnchantWeapon:
@@ -131,7 +135,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             this.Items.SynchronizeFrom(
 
                 // Source
-                source,
+                source.OrderBy(x => x.Type.ToString())
+                      .ThenBy(x => x.RogueName),
 
                 // Comparer
                 (item, viewModel) => item.Id == viewModel.Id,

@@ -1,7 +1,102 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.TransmuteEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            
+            <!-- Probability of Success -->
+            <Grid Margin="10">
+                <TextBlock Text="Probability of Success" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <toolkit:DoubleUpDown Value="{Binding ProbabilityOfSuccess}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Add / Remove Transmute Item -->
+            <Grid Margin="10">
+                <TextBlock Text="Add / Remove" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="AddButton" ToolTip="Add Transmute Item" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="0, 0, 4, 0" />
+                    <Button x:Name="RemoveButton" ToolTip="Remove Transmute Item" Click="RemoveButton_Click" Content="&#xf068;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Transmute Items -->
+            <ListBox x:Name="TransmuteItemsListBox" 
+                     ItemsSource="{Binding TransmuteItems}" 
+                     DisplayMemberPath="Name"
+                     Width="200"
+                     Margin="10, 0, 10, 10" />
+        </StackPanel>
+
+        <!-- Transmute Item Parameters -->
+        <StackPanel Grid.Column="1" 
+                    DataContext="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem}">
+            <Grid Margin="10">
+                <TextBlock Text="Is Consumable Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <CheckBox IsChecked="{Binding IsConsumableProduct}" HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Is Equipment Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <CheckBox IsChecked="{Binding IsEquipmentProduct}" HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="10">
+                <TextBlock Text="Relative Weighting" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <toolkit:DoubleUpDown Value="{Binding Weighting}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="10"
+                  Visibility="{Binding IsConsumableProduct, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <TextBlock Text="Consumable Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <ComboBox x:Name="ConsumableCB"
+                          SelectedItem="{Binding ConsumableProduct}"
+                          DisplayMemberPath="Name"
+                          Width="200"
+                          HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="10"
+                  Visibility="{Binding IsEquipmentProduct, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                <TextBlock Text="Equipment Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
+                <ComboBox x:Name="EquipmentCB"
+                          SelectedItem="{Binding EquipmentProduct}"
+                          DisplayMemberPath="Name"
+                          Width="200"
+                          HorizontalAlignment="Right" />                
+            </Grid>            
+            
+        </StackPanel>
+
+        <!-- Transmute Item Requirements -->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+
+            <TextBlock Text="Select requirement item(s) for the above product" Margin="10" />
+
+            <!-- Consumable Requirements -->
+            <controls:ListBuilder x:Name="ConsumableRequirementsLB"        
+                                  DestinationItemsSource="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem.ConsumableRequirements}" 
+                                  Height="200"
+                                  Margin="10,0,10,10" />
+
+            <!-- Equipment Requirements -->
+            <controls:ListBuilder x:Name="EquipmentRequirementsLB"
+                                  DestinationItemsSource="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem.EquipmentRequirements}"
+                                  Height="200"
+                                  Margin="10,0,10,10" />
+        </StackPanel>
     </Grid>
 </UserControl>

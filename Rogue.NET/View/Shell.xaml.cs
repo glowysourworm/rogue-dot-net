@@ -9,7 +9,11 @@ using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Model.Events;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
+using Rogue.NET.Scenario.Content.Views.ItemGrid;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.ViewModel;
@@ -95,15 +99,16 @@ namespace Rogue.NET.View
 
             });
 
-            _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
-            {
-                var window = CreatePopupWindow();
-                // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
-                Application.Current.MainWindow.Tag = window;
+            // TODO:DIALOG
+            //_eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
+            //{
+            //    var window = CreatePopupWindow();
+            //    // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
+            //    Application.Current.MainWindow.Tag = window;
 
-                window.Content = CreateDialogView(update);
-                window.ShowDialog();
-            });
+            //    window.Content = CreateDialogView(update);
+            //    window.ShowDialog();
+            //});
         }
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {
@@ -221,87 +226,6 @@ namespace Rogue.NET.View
                 default:
                     throw new Exception("Unknwon Splash View Type");
             }
-        }
-
-        private UserControl CreateDialogView(IDialogUpdate update)
-        {
-            // Passing these in to take care of dependency injection. Another way is to create
-            // multiple region managers and have a separate Shell window.
-            switch (update.Type)
-            {
-                case DialogEventType.Help:
-                    return GetInstance<HelpView>();
-                case DialogEventType.Commands:
-                    return GetInstance<CommandsView>();
-                case DialogEventType.Objective:
-                    return GetInstance<ObjectiveView>();
-                case DialogEventType.Note:
-                    {
-                        // TODO: Use Binding Somehow...
-                        var view = GetInstance<NoteView>();
-                        view.TitleTB.Text = (update as IDialogNoteUpdate).NoteTitle;
-                        view.MessageTB.Text = (update as IDialogNoteUpdate).NoteMessage;
-
-                        return view;
-                    }
-                case DialogEventType.Identify:
-                    return GetInstance<IdentifyView>();
-                case DialogEventType.Uncurse:
-                    return GetInstance<UncurseView>();
-                case DialogEventType.AlterationEffect:
-                    {
-                        // TODO:ITEMGRID
-                        //switch ((update as IDialogAlterationEffectUpdate).Effect.Type)
-                        //{
-                        //    case AlterationModifyEquipmentType.ArmorClass:
-                        //        return GetInstance<EnchantArmorView>();
-                        //    case AlterationModifyEquipmentType.ArmorImbue:
-                        //        return GetInstance<ImbueArmorView>();
-                        //    case AlterationModifyEquipmentType.ArmorQuality:
-                        //        return GetInstance<EnhanceArmorView>();
-                        //    case AlterationModifyEquipmentType.WeaponClass:
-                        //        return GetInstance<EnchantWeaponView>();
-                        //    case AlterationModifyEquipmentType.WeaponImbue:
-                        //        return GetInstance<ImbueWeaponView>();
-                        //    case AlterationModifyEquipmentType.WeaponQuality:
-                        //        return GetInstance<EnhanceWeaponView>();
-                        //    default:
-                        //        throw new Exception("Unhandled Alteration Equipment Modify Type");
-                        //}
-                    }
-                    return null;
-                case DialogEventType.PlayerAdvancement:
-                    {
-                        var view = GetInstance<PlayerAdvancementView>();
-                        var playerUpdate = update as IDialogPlayerAdvancementUpdate;
-
-                        view.DataContext = new PlayerAdvancementViewModel()
-                        {
-                            Agility = playerUpdate.Agility,                            
-                            Intelligence = playerUpdate.Intelligence,
-                            Strength = playerUpdate.Strength,
-                            SkillPoints = playerUpdate.SkillPoints,
-
-                            // Initialize the new variables
-                            NewAgility = playerUpdate.Agility,
-                            NewIntelligence = playerUpdate.Intelligence,
-                            NewStrength = playerUpdate.Strength,
-                            NewSkillPoints = playerUpdate.SkillPoints,
-
-                            // Points to spend
-                            PlayerPoints = playerUpdate.PlayerPoints
-                        };
-
-                        return view;
-                    }
-                default:
-                    throw new Exception("Unknwon Splash View Type");
-            }
-        }
-
-        private T GetInstance<T>()
-        {
-            return ServiceLocator.Current.GetInstance<T>();
         }
     }
 }

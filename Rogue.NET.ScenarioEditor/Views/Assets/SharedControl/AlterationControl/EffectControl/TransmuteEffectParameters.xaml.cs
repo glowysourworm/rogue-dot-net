@@ -1,5 +1,11 @@
-﻿using System;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.Utility;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +21,56 @@ using System.Windows.Shapes;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl
 {
-    /// <summary>
-    /// Interaction logic for TransmuteEffectParameters.xaml
-    /// </summary>
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
     public partial class TransmuteEffectParameters : UserControl
     {
-        public TransmuteEffectParameters()
+        [ImportingConstructor]
+        public TransmuteEffectParameters(
+            IRogueEventAggregator eventAggregator,
+            IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
+            Initialize(scenarioCollectionProvider);
+
+            eventAggregator.GetEvent<ScenarioUpdateEvent>()
+                           .Subscribe(provider =>
+                           {
+                               Initialize(provider);
+                           });
+        }
+
+        private void Initialize(IScenarioCollectionProvider provider)
+        {
+            this.EquipmentCB.ItemsSource = provider.Equipment;
+            this.ConsumableCB.ItemsSource = provider.Consumables;
+            this.EquipmentRequirementsLB.SourceItemsSource = provider.Equipment;
+            this.ConsumableRequirementsLB.SourceItemsSource = provider.Consumables;
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as TransmuteAlterationEffectTemplateViewModel;
+            if (viewModel != null)
+            {
+                var name = NameGenerator.Get(viewModel.TransmuteItems.Select(x => x.Name), "Transmute Item");
+
+                viewModel.TransmuteItems.Add(new TransmuteAlterationEffectItemTemplateViewModel()
+                {
+                    Name = name
+                });
+            }
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as TransmuteAlterationEffectTemplateViewModel;
+            if (viewModel != null)
+            {
+                var item = this.TransmuteItemsListBox.SelectedItem as TransmuteAlterationEffectItemTemplateViewModel;
+                if (item != null)
+                    viewModel.TransmuteItems.Remove(item);
+            }
         }
     }
 }

@@ -23,6 +23,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
+                    <!-- Add / Remove Animation Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <TextBlock HorizontalAlignment="Left" FontSize="16" Foreground="White"
                                    Text="Animation List" Margin="8" />

@@ -22,18 +22,35 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 {
     public abstract class ItemGridViewModel<T> : NotifyViewModel, IDisposable where T : ItemBase
     {
+        /// <summary>
+        /// Event to notify UI listeners on selection changed (single selection DIALOG mode only). During
+        /// multiple selection - it's assumed the UI is bound to the total selecte count to provide
+        /// an OK button.
+        /// </summary>
+        public event SimpleEventHandler<ItemGridRowViewModel<T>> SingleDialogSelectionEvent;
+
         readonly IRogueEventAggregator _eventAggregator;
         readonly IModelService _modelService;
         readonly string _levelLoadedToken;
         readonly string _levelUpdateToken;
 
         bool _isDisposed;
+        bool _isDialog;
 
         ItemGridIntendedAction _intendedAction;
         ItemGridSelectionMode _selectionMode;
         string _header;
         Brush _headerBrush;
         int _totalSelected;
+
+        /// <summary>
+        /// Set to true to prevent automatic single-item events from firing
+        /// </summary>
+        public bool IsDialog
+        {
+            get { return _isDialog; }
+            set { this.RaiseAndSetIfChanged(ref _isDialog, value); }
+        }
 
         public ItemGridIntendedAction IntendedAction
         {
@@ -108,6 +125,23 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 
         protected virtual Task ProcessSingleItem(ItemGridRowViewModel<T> item)
         {
+            // First, handle dialog mode events - these will process event aggregator publish
+            // tasks in the IDialogContainer
+            //
+            if (this.IsDialog)
+            {
+                // MUST SET TO SELECTED BECAUSE OF THE WAY THE EVENT IS PROPAGATED BACK
+                item.IsSelected = true;
+
+                if (this.SingleDialogSelectionEvent != null)
+                {
+                    this.SingleDialogSelectionEvent(item);
+                    return Task.Delay(1);
+                }
+                else
+                    throw new Exception("Improper use of dialog mode / single-selection ItemGridViewModel");
+            }
+
             // Level Action
             switch (this.IntendedAction)
             {
@@ -120,10 +154,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                         LevelActionType levelAction;
 
                         if (System.Enum.TryParse(this.IntendedAction.ToString(), out levelAction))
+                        {
+                            // Primary use is non-dialog (player sub-panel equipment / consumables)
                             return _eventAggregator.GetEvent<UserCommandEvent>()
                                                    .Publish(new LevelCommandEventArgs(levelAction,
                                                                                       Compass.Null,
                                                                                       item.Id));
+                        }
                         else
                             throw new Exception("Unknown Level Action Type");
                     }
@@ -138,7 +175,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                 case ItemGridIntendedAction.Consume:
                     {
                         this.Header = "Consume";
-                        this.HeaderBrush = Brushes.White;
+                        this.HeaderBrush = Brushes.Fuchsia;
                     }
                     break;
                 case ItemGridIntendedAction.Drop:
@@ -162,13 +199,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                 case ItemGridIntendedAction.ImbueArmor:
                     {
                         this.Header = "Imbue Armor";
-                        this.HeaderBrush = Brushes.Fuchsia;
+                        this.HeaderBrush = Brushes.OrangeRed;
                     }
                     break;
                 case ItemGridIntendedAction.ImbueWeapon:
                     {
                         this.Header = "Imbue Weapon";
-                        this.HeaderBrush = Brushes.Fuchsia;
+                        this.HeaderBrush = Brushes.OrangeRed;
                     }
                     break;
                 case ItemGridIntendedAction.EnhanceWeapon:
@@ -223,7 +260,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             foreach (var item in this.Items)
             {
                 item.ProcessSingleItemEvent += ProcessSingleItem;
-                item.SelectionChanged += UpdateTotalSelected;
+                item.SelectionChanged += OnSelectionChanged;
             }
         }
 
@@ -235,15 +272,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             foreach (var item in this.Items)
             {
                 item.ProcessSingleItemEvent -= ProcessSingleItem;
-                item.SelectionChanged -= UpdateTotalSelected;
+                item.SelectionChanged -= OnSelectionChanged;
             }
         }
 
         protected abstract void Update(IModelService modelService);
         protected abstract bool IsItemEnabled(T item, IModelService modelService);
 
-        protected void UpdateTotalSelected()
+        private void OnSelectionChanged()
         {
+            // Update total items selected
             this.TotalSelected = this.Items.Sum(item =>
             {
                 if (item is ConsumableItemGridRowViewModel)

@@ -26,6 +26,15 @@ using Rogue.NET.Scenario.Events.Content.SkillTree;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect;
 using Rogue.NET.Scenario.Content.Views.Alteration;
 using System;
+using Rogue.NET.Core.Event.Splash;
+using Rogue.NET.Scenario.Content.Views.ItemGrid;
+using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Event.Scenario.Level.Command;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
+using Rogue.NET.Core.Model.Enums;
+using System.Collections.Generic;
 
 namespace Rogue.NET.Scenario
 {
@@ -201,7 +210,82 @@ namespace Rogue.NET.Scenario
                 }
             });
 
+            // Dialog Event:  Going to show a "Synchronous" "Dialog" "Window"
+            //
+            // Brief History:  This has been an issue to deal with because of all of the
+            //                 involved events wired up to the Shell for showing a window.
+            //
+            //                 Window.Show resulted in un-desired behavior for forcing 
+            //                 the proper event sequence.
+            //
+            //                 Window.ShowDialog became a mess because the dialog result
+            //                 had to be set while the view was being "consumed"..
+            //
+            //                 I'd like to use the region manager to try and create a
+            //                 synchronous dialog "window" (region) so that it can be done smoothly
+            //                 without dealing with Window.ShowDialog
+            //
+            //                 Another way is to create multiple region managers and have a 
+            //                 separate Shell window. I'm not sure WPF will allow two windows
+            //                 with separate dispatchers.
+            //                 
+            _eventAggregator.GetEvent<DialogEvent>()
+                            .Subscribe(dialogUpdate =>
+                            {
+                                // Get regions involved with the dialog sequence
+                                var gameRegion = _regionManager.GetRegion(RegionName.GameRegion);
+                                var dialogRegion = _regionManager.GetRegion(RegionName.DialogRegion);
+
+                                // Set opacity to dim the background
+                                gameRegion.Opacity = 0.5;
+
+                                // Show the dialog region
+                                dialogRegion.Visibility = Visibility.Visible;
+
+                                // Get the IDialogContainer
+                                var dialogContainer = dialogRegion.Content as IDialogContainer;
+
+                                // Initialize the dialog container with the new update - which
+                                // loads the proper content view into the container
+                                dialogContainer.Initialize(dialogUpdate);
+
+                                // Hook the completed method to finish the dialog sequence
+                                dialogContainer.DialogFinishedEvent += OnDialogFinished;
+                            });
+
             RegisterViews();
+        }
+
+        // NOTE*** A couple things might consider a better design: async / await method isn't propagated with        
+        //         a Task (does this work properly in the call stack to wait on the method?)
+        //  
+        //         Another is the UserCommandEventArgs. This depends on the view-model passed into the dialog
+        //         view and other parameters that are specific to what's happening. So, it's assumed to be
+        //         "ready to go" so that the event aggregator can just fire a user command event back to the
+        //         back end (ONLY IF IT'S NON-NULL)
+        //
+        //         For null UserCommandEventArgs - there's no user command to fire. So, wasn't sure how to
+        //         handle this case using the same dialog "cycle".
+        //
+        private async void OnDialogFinished(IDialogContainer dialogContainer, UserCommandEventArgs eventArgs)
+        {
+            // Get regions involved with the dialog sequence
+            var gameRegion = _regionManager.GetRegion(RegionName.GameRegion);
+            var dialogRegion = _regionManager.GetRegion(RegionName.DialogRegion);
+
+            // Set opacity to dim the background
+            gameRegion.Opacity = 1;
+
+            // Show the dialog region
+            dialogRegion.Visibility = Visibility.Collapsed;
+
+            // Unhook event to complete the sequence
+            dialogContainer.DialogFinishedEvent -= OnDialogFinished;
+
+            // Fire event to backend ONLY IF event args is non-null (there's an event to be processed)
+            if (eventArgs != null)
+                await _eventAggregator.GetEvent<UserCommandEvent>()
+                                      .Publish(eventArgs);
         }
 
         private void RegisterViews()

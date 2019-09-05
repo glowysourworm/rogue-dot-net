@@ -1,41 +1,44 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Logic.Processing;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
+using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using System;
-using System.ComponentModel.Composition;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Content.Views.ItemGrid
 {
     /// <summary>
-    /// Component for showing (typically) a user dialog with some kind of return value. This component supports
-    /// injection; but - for multiple selection mode - must be hand constructed. The SelectionMode property
-    /// MUST BE SET ON BOTH view models in the constructor for multiple selection mode ONLY. It is, by default,
-    /// set up for single selection mode.
+    /// Component for showing (typically) a user dialog with some kind of return value. 
     /// </summary>
-    [PartCreationPolicy(CreationPolicy.NonShared)]
-    [Export]
-    public partial class DualItemGrid : UserControl
+    public partial class DualItemGrid : UserControl, IDialogView
     {
-        [ImportingConstructor]
+        public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
+
         public DualItemGrid(EquipmentItemGridViewModel equipmentViewModel,
-                            ConsumableItemGridViewModel consumableViewModel,
-                            IRogueEventAggregator eventAggregator)
+                            ConsumableItemGridViewModel consumableViewModel)
         {
-            this.EquipmentRegion.DataContext = equipmentViewModel;
-            this.ConsumablesRegion.DataContext = consumableViewModel;
+            if ((equipmentViewModel.SelectionMode != consumableViewModel.SelectionMode) ||
+                (equipmentViewModel.IntendedAction != consumableViewModel.IntendedAction))
+                throw new Exception("Improper use of selection mode / intended action (DualItemGrid)");
 
             InitializeComponent();
+
+            this.EquipmentGrid.DataContext = equipmentViewModel;
+            this.ConsumablesGrid.DataContext = consumableViewModel;
+
+            // Event for listening for selection during single selection mode
+            equipmentViewModel.SingleDialogSelectionEvent += OnEquipmentSingleDialogEvent;
+            consumableViewModel.SingleDialogSelectionEvent += OnConsumableSingleDialogEvent;
 
             // PRIMARY EVENT FOR MULTIPLE SELECTION MODE
             this.OkMultiSelectionButton.Click += (sender, e) =>
             {
-                switch (equipmentViewModel.IntendedAction)
-                {
-                    default:
-                        throw new Exception("Unknown Mulitple Selection Intended Grid Action");
-                }
+                // This will only fire when there is at LEAST ONE ITEM SELECTED
+                if (this.DialogViewFinishedEvent != null)
+                    this.DialogViewFinishedEvent(this);
             };
 
             // Clean up event aggregator handles
@@ -47,6 +50,35 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
                 if (consumableViewModel != null)
                     consumableViewModel.Dispose();
             };
+        }
+
+        public IEnumerable<string> GetSelectedItemIds()
+        {
+            var equipmentViewModel = this.EquipmentGrid.DataContext as EquipmentItemGridViewModel;
+            var consumableViewModel = this.ConsumablesGrid.DataContext as ConsumableItemGridViewModel;
+
+            return equipmentViewModel
+                    .Items
+                    .Where(x => x.IsSelected)
+                    .Select(x => x.Id)
+                    .Union(consumableViewModel
+                            .Items
+                            .Where(x => x.IsSelected)
+                            .Select(x => x.Id))
+                            .Actualize();
+        }
+
+        private void OnEquipmentSingleDialogEvent(ItemGridRowViewModel<Equipment> sender)
+        {
+            // An item has been selected in single selection mode
+            if (this.DialogViewFinishedEvent != null)
+                this.DialogViewFinishedEvent(this);
+        }
+        private void OnConsumableSingleDialogEvent(ItemGridRowViewModel<Consumable> sender)
+        {
+            // An item has been selected in single selection mode
+            if (this.DialogViewFinishedEvent != null)
+                this.DialogViewFinishedEvent(this);
         }
     }
 }

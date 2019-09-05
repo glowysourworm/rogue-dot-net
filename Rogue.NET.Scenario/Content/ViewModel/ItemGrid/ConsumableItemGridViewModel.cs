@@ -14,8 +14,9 @@ using Equipment = Rogue.NET.Core.Model.Scenario.Content.Item.Equipment;
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 {
     /// <summary>
-    /// View Model component for the primary consumables item grid. Updates are collected using
-    /// the event aggregator
+    /// View Model component for the consumables item grid. updates from the backend are
+    /// subscribed to for updating individual items; and two constructors are provided for
+    /// injection / manual use.
     /// </summary>
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
@@ -28,10 +29,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         {
             // Initializing Intended Action Here
             //
-            // NOTE*** The data cycle for the item grid and the view model depends on this;
-            //         and it has to be initialized somewhere. Exporting this creates an
-            //         issue of where to "Import" the proper value. So, setting here until
-            //         some other pattern makes more sense.
+            // NOTE*** This is for the primary use of this view model - which is to
+            //         provide data binding for the primary consumables grid.
             this.IntendedAction = ItemGridIntendedAction.Consume;
             this.SelectionMode = ItemGridSelectionMode.Single;
         }
@@ -74,6 +73,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                 case ItemGridIntendedAction.Throw:
                     return item.HasProjectileAlteration;
 
+                case ItemGridIntendedAction.Transmute:
+                    return !modelService.ScenarioEncyclopedia[item.RogueName].IsObjective;
+
                 default:
                     throw new Exception("Unhandled Consumable Item Grid View Model Intended Action");
             }
@@ -81,7 +83,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 
         protected override void Update(IModelService modelService)
         {
-            var consumables = modelService.Player.Consumables.Values;
+            // Filter out items for identify function
+            var consumables = this.IntendedAction == ItemGridIntendedAction.Identify ? 
+                                          modelService.Player.Consumables.Values.Where(x => !modelService.ScenarioEncyclopedia[x.RogueName].IsIdentified)
+                                        : modelService.Player.Consumables.Values;
 
             // Call Unhook to remove item events before synchronizing
             UnHookItems();
@@ -90,7 +95,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             this.Items.SynchronizeFrom(
 
                 // Source (Select first of each group by name)
-                consumables.GroupBy(x => x.RogueName).Select(x => x.First()),
+                consumables.GroupBy(x => x.RogueName)
+                           .Select(x => x.First())
+                           .OrderBy(x => x.SubType.ToString())
+                           .ThenBy(x => x.RogueName),
 
                 // Comparer
                 (model, viewModel) => model.Id == viewModel.Id,

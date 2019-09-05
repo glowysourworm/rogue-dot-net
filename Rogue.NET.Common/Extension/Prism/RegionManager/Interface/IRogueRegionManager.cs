@@ -33,10 +33,10 @@ namespace Rogue.NET.Common.Extension.Prism.RegionManager.Interface
     public interface IRogueRegionManager
     {
         /// <summary>
-        /// Returns a collection of RogueRegion instances that have been loaded into the 
-        /// IRogueRegionManager
+        /// Returns a RogueRegion instance that has been loaded into the IRogueRegionManager by using
+        /// the RegionName attached property
         /// </summary>
-        IEnumerable<RogueRegion> GetRegions();
+        RogueRegion GetRegion(string regionName);
 
         /// <summary>
         /// Creates a view instance of the specified type in memory and assigns it to

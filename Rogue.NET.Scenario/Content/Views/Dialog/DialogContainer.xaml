@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.Dialog.DialogContainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent" Width="Auto" Height="Auto"
+             HorizontalAlignment="Center" VerticalAlignment="Center">
+    
+    <!-- Border for the "Dialog Window" -->
+    <Border x:Name="DialogContentBorder" 
+            CornerRadius="10" 
+            Background="Black" 
+            BorderBrush="White" 
+            BorderThickness="0.75">
+    </Border>
+    
+</UserControl>

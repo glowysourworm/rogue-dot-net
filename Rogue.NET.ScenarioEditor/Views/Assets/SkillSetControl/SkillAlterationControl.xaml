@@ -30,7 +30,7 @@
                                              EnumValue="{Binding AnimationGroup.TargetType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Block Type">
-            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationAttackAttributeCombatType}"
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationBlockType}"
                                              EnumValue="{Binding BlockType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Cost">

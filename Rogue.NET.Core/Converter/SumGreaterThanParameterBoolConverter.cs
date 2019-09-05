@@ -17,9 +17,10 @@ namespace Rogue.NET.Core.Converter
                 values.Any(x => x == DependencyProperty.UnsetValue) ||
                 parameter == null)
                 return Binding.DoNothing;
-            
-            var sum = values.Sum(x => (double)x);
-            var limit = (double)parameter;
+
+            // Using System.Convert - TypeConverter (?)
+            var sum = values.Sum(x => System.Convert.ToDouble(x));
+            var limit = System.Convert.ToDouble(parameter);
 
             return sum > limit;
         }
