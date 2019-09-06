@@ -1952,5 +1952,23 @@ IMMEDIATE TODO'S:
 	
 			 How about - having a mediator thread that catches all events and schedules them?
 			   
-			   
+	- TODO: Try and figure out if we can remove the TemplateViewModel namespace (!!!) Then, if it works out, create a mapper
+			that replaces all the "generators" by a type-specific mapping:
+			
+			Example:  EnemyTemplate -> (mapper) -> Enemy
+						- Range<double> StrengthRange -> (Range<double> mapper) -> double Strength
+						- etc...
+						
+			So, that the templates could be mapped directly to model objects without the need for hand written code, these
+			type generators would be created for complex types that had no mapping.
+			
+			Example:  EnemyTemplate.Name -> Enemy.RogueName  BECAUSE string -> string (may need configuration to specify mis-matching names)
+				
+					  But EnemyTemplate.StrengthRange does not map to Enemy.Strength BECAUSE  Range<double> does not map to double
+					  without a mapping adapter specific by type.
+					  
+			I'd think that the AgileMapper COULD work for this; but I'm wary to try it because I can't see that it's doing what is needed.
+					  
+			
+			
 				

@@ -76,7 +76,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                                          GetIsEnabled(modelService, item));
             };
         }
-        protected override Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator)
+        protected override Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator, string itemId)
         {
             throw new Exception("Should be overridden in child class");
         }

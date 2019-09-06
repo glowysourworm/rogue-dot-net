@@ -12,7 +12,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
     [Export]
     public partial class CommandsDialogView : UserControl, IDialogView
     {
-        public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
+        public event SimpleEventHandler<IDialogView, object> DialogViewFinishedEvent;
 
         [ImportingConstructor]
         public CommandsDialogView()
@@ -22,11 +22,11 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             this.OkButton.Click += (sender, e) =>
             {
                 if (this.DialogViewFinishedEvent != null)
-                    this.DialogViewFinishedEvent(this);
+                    this.DialogViewFinishedEvent(this, null);
             };
         }
 
-        public IEnumerable<string> GetSelectedItemIds()
+        public IEnumerable<string> GetMultipleSelectionModeSelectedItemIds()
         {
             return new List<string>();
         }

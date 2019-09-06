@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using System.Collections.Generic;
 
 namespace Rogue.NET.Scenario.Content.Views.Dialog.Interface
@@ -10,13 +11,8 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog.Interface
     public interface IDialogView
     {
         /// <summary>
-        /// Fires event to notify listener that the dialog has finished
+        /// Fires event to notify listener that the dialog has finished - object represents dialog view data
         /// </summary>
-        event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
-
-        /// <summary>
-        /// Returns RogueBase.Id property of selected objects
-        /// </summary>
-        IEnumerable<string> GetSelectedItemIds();
+        event SimpleEventHandler<IDialogView, object> DialogViewFinishedEvent;
     }
 }

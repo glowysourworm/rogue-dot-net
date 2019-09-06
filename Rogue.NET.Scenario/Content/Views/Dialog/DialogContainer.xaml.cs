@@ -49,11 +49,11 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             this.DialogContentBorder.Child = view as FrameworkElement;
         }
 
-        private void OnDialogFinished(IDialogView view)
+        private void OnDialogFinished(IDialogView view, object data)
         {
             // Unhook event to complete cycle
             view.DialogViewFinishedEvent -= OnDialogFinished;
-
+            
             UserCommandEventArgs args = null;
 
             // Prepare User Command Event (args)
@@ -70,39 +70,24 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 // Create User Command with single item id
                 case DialogEventType.Identify:
                     {
-                        var itemIds = view.GetSelectedItemIds();
-
-                        if (itemIds.Count() != 1)
-                            throw new Exception("Improper use of identify view (selection mode must be single)");
-
-                        args = new PlayerCommandEventArgs(PlayerActionType.Identify, itemIds.First());
+                        args = new PlayerCommandEventArgs(PlayerActionType.Identify, (string)data);
                     }
                     break;
                 case DialogEventType.Uncurse:
                     {
-                        var itemIds = view.GetSelectedItemIds();
-
-                        if (itemIds.Count() != 1)
-                            throw new Exception("Improper use of identify view (selection mode must be single)");
-
-                        args = new PlayerCommandEventArgs(PlayerActionType.Uncurse, itemIds.First());
+                        args = new PlayerCommandEventArgs(PlayerActionType.Uncurse, (string)data);
                     }
                     break;
                 case DialogEventType.AlterationEffect:
                     {
-                        var itemIds = view.GetSelectedItemIds();
-
                         var effect = (_dialogUpdate as IDialogAlterationEffectUpdate).Effect;
                         if (effect is EquipmentEnhanceAlterationEffect)
                         {
-                            if (itemIds.Count() != 1)
-                                throw new Exception("Improper use of identify view (selection mode must be single)");
-
-                            args = new PlayerAlterationEffectCommandEventArgs(effect, PlayerActionType.AlterationEffect, itemIds.First());
+                            args = new PlayerAlterationEffectCommandEventArgs(effect, PlayerActionType.AlterationEffect, (string)data);
                         }
                         else if (effect is TransmuteAlterationEffect)
                         {
-                            args = new PlayerAlterationEffectMultiItemCommandEventArgs(effect, PlayerMultiItemActionType.AlterationEffect, itemIds.ToArray());
+                            args = new PlayerAlterationEffectMultiItemCommandEventArgs(effect, PlayerMultiItemActionType.AlterationEffect, (string[])data);
                         }
                         else
                             throw new Exception("Unhandled IAlterationEffect Type");
@@ -125,7 +110,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 default:
                     throw new Exception("Unknwon Dialog Event Type");
             }
-
+            
             // Fire event to listeners
             if (this.DialogFinishedEvent != null)
                 this.DialogFinishedEvent(this, args);

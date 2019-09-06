@@ -14,7 +14,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
     [Export]
     public partial class EquipmentItemGrid : UserControl, IDialogView
     {
-        public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
+        public event SimpleEventHandler<IDialogView, object> DialogViewFinishedEvent;
 
         /// <summary>
         /// Importing Constructor - (single item selection default mode)
@@ -52,21 +52,11 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
             };
         }
 
-        public IEnumerable<string> GetSelectedItemIds()
-        {
-            var viewModel = this.DataContext as EquipmentItemGridViewModelBase;
-            if (viewModel != null)
-                return viewModel.GetSelectedItemIds();
-
-            else
-                throw new Exception("Miss-handled view-model EquipmentItemGrid");
-        }
-
         private void OnSingleDialogSelectionEvent(EquipmentItemGridRowViewModel item)
         {
             // Fire Dialog Finished Event
             if (this.DialogViewFinishedEvent != null)
-                this.DialogViewFinishedEvent(this);
+                this.DialogViewFinishedEvent(this, item.Id);
         }
     }
 }

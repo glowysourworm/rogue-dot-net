@@ -15,7 +15,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
     [Export]
     public partial class PlayerAdvancementDialogView : UserControl, IDialogView
     {
-        public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
+        public event SimpleEventHandler<IDialogView, object> DialogViewFinishedEvent;
 
         [ImportingConstructor]
         public PlayerAdvancementDialogView(IRogueEventAggregator eventAggregator)
@@ -25,7 +25,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             this.AcceptButton.Click += (sender, e) =>
             {
                 if (this.DialogViewFinishedEvent != null)
-                    this.DialogViewFinishedEvent(this);
+                    this.DialogViewFinishedEvent(this, this.DataContext as PlayerAdvancementViewModel);
             };
 
             // + / - Buttons
@@ -140,7 +140,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             };
         }
 
-        public IEnumerable<string> GetSelectedItemIds()
+        public IEnumerable<string> GetMultipleSelectionModeSelectedItemIds()
         {
             return new List<string>();
         }

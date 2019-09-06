@@ -54,19 +54,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         public abstract Brush HeaderBrush { get; }
         public ObservableCollection<TViewModel> Items { get; set; }
 
-        /// <summary>
-        /// Gets an aggregate of selected item id's for the entire collection
-        /// </summary>
-        public IEnumerable<string> GetSelectedItemIds()
-        {
-            return this.Items.Aggregate(new List<string>(), (aggreagate, item) =>
-            {
-                aggreagate.AddRange(item.GetSelectedItemIds());
-
-                return aggreagate;
-            });
-        }
-
         protected abstract IEnumerable<TModel> GetCollection(IModelService modelService);
         protected abstract Func<TModel, TViewModel> GetItemConstructor(IModelService modelService);
         protected abstract Action<TModel, TViewModel> GetItemUpdater(IModelService modelService);
@@ -116,12 +103,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         /// <summary>
         /// Method to process a non-dialog mode single item event (using the event aggregator)
         /// </summary>
-        protected abstract Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator);
+        protected abstract Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator, string itemId);
         protected virtual Task ProcessSingleItem(ItemGridRowViewModelBase<TModel> item)
         {
-            // MUST SET TO SELECTED BECAUSE OF THE WAY THE EVENT IS PROPAGATED BACK
-            item.IsSelected = true;
-
             // First, handle dialog mode events - these will process event aggregator publish
             // tasks in the IDialogContainer
             //
@@ -136,7 +120,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                     throw new Exception("Improper use of dialog mode / single-selection ItemGridViewModel");
             }
             else
-                return ProcessSingleItemNonDialog(_eventAggregator);
+                return ProcessSingleItemNonDialog(_eventAggregator, item.Id);
         }
         protected virtual void Update()
         {
@@ -180,6 +164,19 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
                 item.ProcessSingleItemEvent -= ProcessSingleItem;
                 item.SelectionChangedEvent -= OnSelectionChanged;
             }
+        }
+
+        /// <summary>
+        /// Gets an aggregate of selected item id's for the entire collection
+        /// </summary>
+        public IEnumerable<string> GetSelectedItemIds()
+        {
+            return this.Items.Aggregate(new List<string>(), (aggreagate, item) =>
+            {
+                aggreagate.AddRange(item.GetSelectedItemIds());
+
+                return aggreagate;
+            });
         }
 
         private void OnSelectionChanged(ItemGridRowViewModelBase<TModel> sender)

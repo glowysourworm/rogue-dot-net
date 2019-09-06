@@ -16,7 +16,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
     /// </summary>
     public partial class DualItemGrid : UserControl, IDialogView
     {
-        public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
+        public event SimpleEventHandler<IDialogView, object> DialogViewFinishedEvent;
 
         public DualItemGrid(EquipmentItemGridViewModelBase equipmentViewModel,
                             ConsumableItemGridViewModelBase consumableViewModel)
@@ -35,11 +35,11 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
             {
                 // This will only fire when there is at LEAST ONE ITEM SELECTED
                 if (this.DialogViewFinishedEvent != null)
-                    this.DialogViewFinishedEvent(this);
+                    this.DialogViewFinishedEvent(this, GetMultipleSelectionModeSelectedItemIds());
             };
         }
 
-        public IEnumerable<string> GetSelectedItemIds()
+        public IEnumerable<string> GetMultipleSelectionModeSelectedItemIds()
         {
             var equipmentViewModel = this.EquipmentGrid.DataContext as EquipmentItemGridViewModelBase;
             var consumableViewModel = this.ConsumablesGrid.DataContext as ConsumableItemGridViewModelBase;
@@ -59,13 +59,13 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
         {
             // An item has been selected in single selection mode
             if (this.DialogViewFinishedEvent != null)
-                this.DialogViewFinishedEvent(this);
+                this.DialogViewFinishedEvent(this, sender.Id);
         }
         private void OnConsumableSingleDialogEvent(ConsumableItemGridRowViewModel sender)
         {
             // An item has been selected in single selection mode
             if (this.DialogViewFinishedEvent != null)
-                this.DialogViewFinishedEvent(this);
+                this.DialogViewFinishedEvent(this, sender.Id);
         }
     }
 }

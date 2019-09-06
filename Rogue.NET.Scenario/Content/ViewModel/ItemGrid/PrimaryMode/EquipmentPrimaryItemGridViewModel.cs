@@ -67,21 +67,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
                 }
             }
         }
-        protected override Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator)
+        protected override Task ProcessSingleItemNonDialog(IRogueEventAggregator eventAggregator, string itemId)
         {
-            var itemIds = GetSelectedItemIds();
-
-            if (itemIds.Count() > 1)
-                throw new Exception("Improper use of single selection non-dialog mode");
-
             switch (this.PrimaryMode)
             {
                 case EquipmentPrimaryMode.Equip:
                     return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Equip, Compass.Null, itemIds.First()));
+                                          .Publish(new LevelCommandEventArgs(LevelActionType.Equip, Compass.Null, itemId));
                 case EquipmentPrimaryMode.Drop:
                     return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Drop, Compass.Null, itemIds.First()));
+                                          .Publish(new LevelCommandEventArgs(LevelActionType.Drop, Compass.Null, itemId));
                 default:
                     throw new Exception("Unhandled EquipmentPrimaryMode");
             }
