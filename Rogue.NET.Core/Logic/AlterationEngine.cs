@@ -706,10 +706,10 @@ namespace Rogue.NET.Core.Logic
 
             // Add product item to the actor's inventory
             if (productItem.IsConsumableProduct)
-                player.Consumables.Add(productItem.Id, productItem.ConsumableProduct);
+                player.Consumables.Add(productItem.ConsumableProduct.Id, productItem.ConsumableProduct);
 
             else if (productItem.IsEquipmentProduct)
-                player.Equipment.Add(productItem.Id, productItem.EquipmentProduct);
+                player.Equipment.Add(productItem.EquipmentProduct.Id, productItem.EquipmentProduct);
 
             var itemBase = productItem.IsConsumableProduct ? (ItemBase)productItem.ConsumableProduct 
                                                            : (ItemBase)productItem.EquipmentProduct;

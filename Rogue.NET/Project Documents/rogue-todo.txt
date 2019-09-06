@@ -1968,6 +1968,8 @@ IMMEDIATE TODO'S:
 					  without a mapping adapter specific by type.
 					  
 			I'd think that the AgileMapper COULD work for this; but I'm wary to try it because I can't see that it's doing what is needed.
+			
+	- IDEA: Make all the Smiley's in the game the different character classes ("ROGUE STORIES") - Randomized by DateTime.Now :) :) :) :)
 					  
 			
 			

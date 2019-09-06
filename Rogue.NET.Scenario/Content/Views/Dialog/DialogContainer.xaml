@@ -9,7 +9,9 @@
             CornerRadius="10" 
             Background="Black" 
             BorderBrush="White" 
-            BorderThickness="0.75">
+            BorderThickness="0.75"
+            Height="500"
+            Width="700">
     </Border>
     
 </UserControl>

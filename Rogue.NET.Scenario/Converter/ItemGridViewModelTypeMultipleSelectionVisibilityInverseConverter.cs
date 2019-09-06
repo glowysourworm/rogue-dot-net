@@ -16,7 +16,8 @@ namespace Rogue.NET.Scenario.Converter
                 value == DependencyProperty.UnsetValue)
                 return Binding.DoNothing;
 
-            if (value is EquipmentTransmuteItemGridViewModel)
+            if (value is EquipmentTransmuteItemGridViewModel ||
+                value is ConsumableTransmuteItemGridViewModel)
                 return Visibility.Collapsed;
 
             return Visibility.Visible;

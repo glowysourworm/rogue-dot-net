@@ -1,9 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.Dialog.HelpDialogView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="Transparent"
-             Height="450"
-             Width="700">
+             Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

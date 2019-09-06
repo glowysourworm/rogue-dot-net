@@ -39,7 +39,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
             };
         }
 
-        public IEnumerable<string> GetMultipleSelectionModeSelectedItemIds()
+        public string[] GetMultipleSelectionModeSelectedItemIds()
         {
             var equipmentViewModel = this.EquipmentGrid.DataContext as EquipmentItemGridViewModelBase;
             var consumableViewModel = this.ConsumablesGrid.DataContext as ConsumableItemGridViewModelBase;
@@ -52,7 +52,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
                             .Items
                             .Where(x => x.IsSelected)
                             .Select(x => x.Id))
-                            .Actualize();
+                            .ToArray();
         }
 
         private void OnEquipmentSingleDialogEvent(EquipmentItemGridRowViewModel sender)
