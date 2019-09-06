@@ -203,101 +203,13 @@
       <DependentUpon>RogueApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="RogueModule.cs" />
-    <Compile Include="ViewModel\PlayerAdvancementViewModel.cs" />
-    <Compile Include="View\CommandsView.xaml.cs">
-      <DependentUpon>CommandsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EnhanceArmorView.xaml.cs">
-      <DependentUpon>EnhanceArmorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EnhanceWeaponView.xaml.cs">
-      <DependentUpon>EnhanceWeaponView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EnchantWeaponView.xaml.cs">
-      <DependentUpon>EnchantWeaponView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EnchantArmorView.xaml.cs">
-      <DependentUpon>EnchantArmorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\NoteView.xaml.cs">
-      <DependentUpon>NoteView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\HelpView.xaml.cs">
-      <DependentUpon>HelpView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\IdentifyView.xaml.cs">
-      <DependentUpon>IdentifyView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ImbueWeaponView.xaml.cs">
-      <DependentUpon>ImbueWeaponView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ImbueArmorView.xaml.cs">
-      <DependentUpon>ImbueArmorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ObjectiveView.xaml.cs">
-      <DependentUpon>ObjectiveView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PlayerAdvancementView.xaml.cs">
-      <DependentUpon>PlayerAdvancementView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\LoadingView.xaml.cs">
       <DependentUpon>LoadingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\UncurseView.xaml.cs">
-      <DependentUpon>UncurseView.xaml</DependentUpon>
-    </Compile>
     <Page Include="RogueApplication.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\CommandsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\EnhanceArmorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\EnhanceWeaponView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\EnchantWeaponView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\EnchantArmorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\NoteView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\HelpView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\IdentifyView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ImbueWeaponView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ImbueArmorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ObjectiveView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PlayerAdvancementView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -334,10 +246,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\LoadingView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\UncurseView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

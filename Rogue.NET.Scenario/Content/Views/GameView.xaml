@@ -78,24 +78,10 @@
                 </Grid>
             </Border>
 
+            <!-- Primary Game Region -->
             <Border Margin="0, 10, 0, 0" Grid.Row="1" Background="Transparent" ScrollViewer.CanContentScroll="True">
-                <!-- Show / Hide Dialog Region to create a pseudo-dialog event sequence -->
-                <Grid>
-                    <!-- Primary Game Region -->
-                    <region:RogueRegion x:Name="GameRegion"
+                <region:RogueRegion x:Name="GameRegion"
                                         region:RogueRegionManager.RegionName="GameRegion" />
-
-                    <!-- Dialog Region (Collapse by default) -->
-                    <region:RogueRegion x:Name="DialogRegion"
-                                        Visibility="Collapsed"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        Background="Transparent"
-                                        region:RogueRegionManager.RegionName="DialogRegion"
-                                        region:RogueRegionManager.DefaultViewType="{x:Type dialog:DialogContainer}" />
-                </Grid>
             </Border>
 		</Grid>
 	</Border>

@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Common.Events;
+﻿using Rogue.NET.Common.Events;
 using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Utility;
@@ -7,16 +6,10 @@ using Rogue.NET.Core.Event.Scenario.Level.Command;
 using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Model.Events;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
-using Rogue.NET.Scenario.Content.Views.ItemGrid;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using Rogue.NET.Scenario.Service.Interface;
-using Rogue.NET.ViewModel;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
@@ -99,16 +92,33 @@ namespace Rogue.NET.View
 
             });
 
-            // TODO:DIALOG
-            //_eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
-            //{
-            //    var window = CreatePopupWindow();
-            //    // NOTE*** THIS IS SET BY ANOTHER PART OF THE APPLICATION. THIS WAS NECESSARY.....
-            //    Application.Current.MainWindow.Tag = window;
+            // *** DIALOG MODE
+            //
+            //     1) Handle Mouse Events using Routed Event Preview
+            //
+            //     2) Block user inputs for keyboard level commands
+            //
+            //     3) Listen for dialog finished event to unblock
+            //
 
-            //    window.Content = CreateDialogView(update);
-            //    window.ShowDialog();
-            //});
+            // If routed event bubbles to main region during dialog mode
+            this.MainRegion.PreviewMouseDown += (sender, e) =>
+            {
+                if (_blockUserInput)
+                    e.Handled = true;
+            };
+
+            // Block user inputs during dialog event
+            _eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
+            {
+                _blockUserInput = true;
+            });
+
+            // Resume user inputs after dialog event finished
+            _eventAggregator.GetEvent<DialogEventFinished>().Subscribe(() =>
+            {
+                _blockUserInput = false;
+            });
         }
         private void FullScreenButton_Click(object sender, RoutedEventArgs e)
         {

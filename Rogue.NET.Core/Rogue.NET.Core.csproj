@@ -192,6 +192,7 @@
     <Compile Include="Event\Scenario\Level\Event\ScenarioUpdateEvent.cs" />
     <Compile Include="Event\Splash\CreatingScenarioEvent.cs" />
     <Compile Include="Event\Splash\DialogEvent.cs" />
+    <Compile Include="Event\Splash\DialogEventFinished.cs" />
     <Compile Include="Event\Splash\MessageBoxEvent.cs" />
     <Compile Include="Event\Splash\SplashEvent.cs" />
     <Compile Include="Event\Scenario\Level\Event\AnimationStartEvent.cs" />

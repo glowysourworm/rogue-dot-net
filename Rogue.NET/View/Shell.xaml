@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
         xmlns:scenarioIntro="clr-namespace:Rogue.NET.Scenario.Intro.Views;assembly=Rogue.NET.Scenario"
+        xmlns:dialog="clr-namespace:Rogue.NET.Scenario.Content.Views.Dialog;assembly=Rogue.NET.Scenario"
         Background="Black"
         WindowState="Maximized"
         WindowStyle="None"        
@@ -36,6 +37,8 @@
             <RowDefinition Height="Auto"  />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <!-- Main Toolbar -->
         <Grid x:Name="ToolbarGrid" Grid.Row="0" Visibility="Collapsed" Background="#0FFFFFFF">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -61,11 +64,24 @@
             
         </Grid>
 
+        <!-- Main Region: Primary Content Control -->
         <region:RogueRegion x:Name="MainRegion" 
                             Grid.Row="1" 
                             region:RogueRegionManager.RegionName="MainRegion"
                             region:RogueRegionManager.DefaultViewType="{x:Type scenarioIntro:IntroView}">
         </region:RogueRegion>
+
+        <!-- Dialog Region (Collapse by default) -->
+        <region:RogueRegion x:Name="DialogRegion"
+                            Grid.Row="1"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="Transparent"
+                            region:RogueRegionManager.RegionName="DialogRegion"
+                            region:RogueRegionManager.DefaultViewType="{x:Type dialog:DialogContainer}" />
     </Grid>
 </Window>
 

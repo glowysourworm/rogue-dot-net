@@ -227,11 +227,11 @@ namespace Rogue.NET.Scenario
                             .Subscribe(dialogUpdate =>
                             {
                                 // Get regions involved with the dialog sequence
-                                var gameRegion = _regionManager.GetRegion(RegionName.GameRegion);
+                                var mainRegion = _regionManager.GetRegion(RegionName.MainRegion);
                                 var dialogRegion = _regionManager.GetRegion(RegionName.DialogRegion);
 
                                 // Set opacity to dim the background
-                                gameRegion.Opacity = 0.5;
+                                mainRegion.Opacity = 0.5;
 
                                 // Show the dialog region
                                 dialogRegion.Visibility = Visibility.Visible;
@@ -264,17 +264,21 @@ namespace Rogue.NET.Scenario
         private async void OnDialogFinished(IDialogContainer dialogContainer, UserCommandEventArgs eventArgs)
         {
             // Get regions involved with the dialog sequence
-            var gameRegion = _regionManager.GetRegion(RegionName.GameRegion);
+            var mainRegion = _regionManager.GetRegion(RegionName.MainRegion);
             var dialogRegion = _regionManager.GetRegion(RegionName.DialogRegion);
 
             // Set opacity to dim the background
-            gameRegion.Opacity = 1;
+            mainRegion.Opacity = 1;
 
             // Show the dialog region
             dialogRegion.Visibility = Visibility.Collapsed;
 
             // Unhook event to complete the sequence
             dialogContainer.DialogFinishedEvent -= OnDialogFinished;
+
+            // Fire event to signal the end of the dialog sequence
+            _eventAggregator.GetEvent<DialogEventFinished>()
+                            .Publish();
 
             // Fire event to backend ONLY IF event args is non-null (there's an event to be processed)
             if (eventArgs != null)

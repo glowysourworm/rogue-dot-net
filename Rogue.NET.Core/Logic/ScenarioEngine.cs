@@ -289,12 +289,6 @@ namespace Rogue.NET.Core.Logic
         }
         public LevelContinuationAction Consume(string itemId)
         {
-            // NO IDEA WHY THIS IS HAPPENING
-            if (string.IsNullOrEmpty(itemId))
-            {
-                int foo = 3;
-            }
-
             var player = _modelService.Player;
             var consumable = player.Consumables[itemId];
             var alteration = consumable.HasAlteration ? _alterationGenerator.GenerateAlteration(consumable.Alteration) : null;

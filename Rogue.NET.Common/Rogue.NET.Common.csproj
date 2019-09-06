@@ -186,7 +186,6 @@
   <ItemGroup>
     <Compile Include="Control\EditableTextBlock.cs" />
     <Compile Include="Extension\ButtonExtension.cs" />
-    <Compile Include="Extension\CustomDialogResultTrigger.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />
     <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="Extension\NumberExtension.cs" />
@@ -223,9 +222,6 @@
     <Compile Include="Utility\Taskbar.cs" />
     <Compile Include="Utility\ZipEncoder.cs" />
     <Compile Include="ViewModel\PagedObservableCollection.cs" />
-    <Compile Include="View\DisappearingButton.xaml.cs">
-      <DependentUpon>DisappearingButton.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\EnumComboBox.xaml.cs">
       <DependentUpon>EnumComboBox.xaml</DependentUpon>
     </Compile>
@@ -302,10 +298,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="Resource\Dictionaries\ToggleSwitch.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\DisappearingButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
