@@ -1884,4 +1884,73 @@ IMMEDIATE TODO'S:
 				  
 				  What if it recurses through the scenario configuration object graph and creates a stack overflow?
 				  (Use the reference dictionary idea...)
+				  
+	- TODO: Selection Dialog should probably head towards something like "Select One" or "Select Many" instead of
+			"Uncurse", "Identify", etc...
+			
+			The effect should be understood from the context and displayed another way. The header of the dialog 
+			selection grid doesn't have to be specific to the "intended action".. and, the "intended action" should
+			be decoupled from the selection.
+			
+	- UPDATE:  Refactoring item grid - changed model to be abstract with child classes implementing abstract delegates
+			   whose only purpose is to tell the base class how to update the item collection.
+			   
+			   INTENDED ACTION:  This has been removed along with the Item Grid Mode - in favor of building several 
+								 child classes to specify the intended action. 
+								 
+			   This looked to be a better pattern - with the exception of a couple things. 
+			   
+					1) Repeated class structure for several of the child classes
+					
+					2) Imperative collection structure (ordering, group by, etc..) so that the UI looks the same
+					   for several modes.
+					   
+			   These could be avoided with another layer:
+			   
+					Layer 0) ItemGridViewModel
+				
+					Layer 1) ConsumablePrimaryItemGridViewModel, EquipmentPrimaryItemGridViewModel, ConsumableDialogItemGridViewModel, etc...
+					
+					Layer 2) ConsumableDropItemGridViewModel, ConsumableTransmuteDialogItemGridViewModel etc...
+					
+			   This might get a little verbose; but the class size should be really small - with Layer 1 handling most common 
+			   methods / members. Could also use the namespace to help remove some of the specifiers (Dialog -> ConsumableTransmuteItemGridViewModel)
+			   
+			   So, the main issue was using these view models for two separate functions:  "Primary Mode", and "Dialog Mode".
+			   
+			   There are now two separate folders (namespaces) for these child classes - which will be injected where they're needed.
+					
+	- DISCUSS: Understand what it would mean to do something like "IRogueRegionManager.SetDataContext([RogueRegion], [object])"
+
+			   USE CASE:  Item Grid View Models have been broken out by type to get rid of overlapping functions. This helps spread
+						  out the methods dealing with the item grids by type.
+						  
+						  THE ONLY PROBLEM IS:  Now, changing item grid modes means CHANGING THE DATA CONTEXT!
+						  
+			   A couple ideas on how to deal with this:
+			   
+			       1) Just have the event aggregator fire an event back to change it right on the UI control
+					  by accessing "RogueRegion.Content.DataContext"
+					  
+				   2) Have the IRogueRegionManager have a method to set data context
+				   
+				   3) Have something like a "View-Model Locator" to do it automatically; and trigger it using
+					  the event aggregator.
+					  
+			   So, what's #3? It COULD be just another static component to connect views with view-models. It could be registered by
+			   hand, or markup - similar to the region manager.
+			   
+			   But, that's similar to the region manager that's there - aside from dealing with things like data context Type (?)
+			   
+			   FOR NOW: The Player Subpanel can handle setting the new data context on the RogueRegion - which is NOT the
+						right method. It SHOULD set it on the RogueRegion.Content.DataContext property.
+						
+						It might be a good idea to read up on things like view-model locators; but it would be easy to design
+						something like that.
+						
+	- IDEA:  How to "decouple" application using an "event aggregator" (?)
+	
+			 How about - having a mediator thread that catches all events and schedules them?
+			   
+			   
 				

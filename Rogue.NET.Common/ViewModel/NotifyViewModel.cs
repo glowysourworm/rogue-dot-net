@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.Common.ViewModel
@@ -10,6 +12,17 @@ namespace Rogue.NET.Common.ViewModel
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+
+        protected void OnPropertyChanged<T>(Expression<Func<T>> expression)
+        {
+            var memberExpression = expression.Body as MemberExpression;
+
+            if (memberExpression != null)
+                OnPropertyChanged(memberExpression.Member.Name);
+
+            else
+                throw new Exception("Invalid Member Expression OnPropertyChanged<T>");
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace Rogue.NET.Common.Extension.Event
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute();
+            return _canExecute != null ? _canExecute() : true;
         }
 
         public void Execute(object parameter)

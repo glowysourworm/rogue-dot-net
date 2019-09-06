@@ -684,6 +684,13 @@ namespace Rogue.NET.Core.Logic
             // Possible Product Items
             var possibleProductItems = requirementsMetConsumables.Intersect(requirementsMetEquipment).Actualize();
 
+            // Nothing Happens
+            if (possibleProductItems.None())
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Nothing Happens...");
+                return;
+            }
+
             // Draw weighted random item from the possible products
             var productItem = _randomSequenceGenerator.GetWeightedRandom(possibleProductItems, x => x.Weighting);
 
@@ -703,6 +710,17 @@ namespace Rogue.NET.Core.Logic
 
             else if (productItem.IsEquipmentProduct)
                 player.Equipment.Add(productItem.Id, productItem.EquipmentProduct);
+
+            var itemBase = productItem.IsConsumableProduct ? (ItemBase)productItem.ConsumableProduct 
+                                                           : (ItemBase)productItem.EquipmentProduct;
+
+            _scenarioMessageService.Publish(
+                ScenarioMessagePriority.Good,
+                "{0} has produced a(n) {1}",
+                _modelService.Player.RogueName,
+                _modelService.GetDisplayName(itemBase));
+
+            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
         }
 
         private GridLocation GetRandomLocation(AlterationRandomPlacementType placementType, GridLocation sourceLocation, int sourceRange)

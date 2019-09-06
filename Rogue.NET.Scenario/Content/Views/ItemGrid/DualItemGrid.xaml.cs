@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,9 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
     {
         public event SimpleEventHandler<IDialogView> DialogViewFinishedEvent;
 
-        public DualItemGrid(EquipmentItemGridViewModel equipmentViewModel,
-                            ConsumableItemGridViewModel consumableViewModel)
+        public DualItemGrid(EquipmentItemGridViewModelBase equipmentViewModel,
+                            ConsumableItemGridViewModelBase consumableViewModel)
         {
-            if ((equipmentViewModel.SelectionMode != consumableViewModel.SelectionMode) ||
-                (equipmentViewModel.IntendedAction != consumableViewModel.IntendedAction))
-                throw new Exception("Improper use of selection mode / intended action (DualItemGrid)");
-
             InitializeComponent();
 
             this.EquipmentGrid.DataContext = equipmentViewModel;
@@ -40,22 +37,12 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
                 if (this.DialogViewFinishedEvent != null)
                     this.DialogViewFinishedEvent(this);
             };
-
-            // Clean up event aggregator handles
-            this.Unloaded += (sender, e) =>
-            {
-                if (equipmentViewModel != null)
-                    equipmentViewModel.Dispose();
-
-                if (consumableViewModel != null)
-                    consumableViewModel.Dispose();
-            };
         }
 
         public IEnumerable<string> GetSelectedItemIds()
         {
-            var equipmentViewModel = this.EquipmentGrid.DataContext as EquipmentItemGridViewModel;
-            var consumableViewModel = this.ConsumablesGrid.DataContext as ConsumableItemGridViewModel;
+            var equipmentViewModel = this.EquipmentGrid.DataContext as EquipmentItemGridViewModelBase;
+            var consumableViewModel = this.ConsumablesGrid.DataContext as ConsumableItemGridViewModelBase;
 
             return equipmentViewModel
                     .Items
@@ -68,13 +55,13 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
                             .Actualize();
         }
 
-        private void OnEquipmentSingleDialogEvent(ItemGridRowViewModel<Equipment> sender)
+        private void OnEquipmentSingleDialogEvent(EquipmentItemGridRowViewModel sender)
         {
             // An item has been selected in single selection mode
             if (this.DialogViewFinishedEvent != null)
                 this.DialogViewFinishedEvent(this);
         }
-        private void OnConsumableSingleDialogEvent(ItemGridRowViewModel<Consumable> sender)
+        private void OnConsumableSingleDialogEvent(ConsumableItemGridRowViewModel sender)
         {
             // An item has been selected in single selection mode
             if (this.DialogViewFinishedEvent != null)

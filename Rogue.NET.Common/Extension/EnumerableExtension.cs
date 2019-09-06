@@ -163,6 +163,11 @@ namespace Rogue.NET.Common.Extension
             return result;
         }
 
+        public static bool None<T>(this IEnumerable<T> collection)
+        {
+            return !collection.Any();
+        }
+
         /// <summary>
         /// Returns elements that have a non-unique property
         /// </summary>

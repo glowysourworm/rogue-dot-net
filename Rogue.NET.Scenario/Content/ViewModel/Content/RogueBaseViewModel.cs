@@ -1,7 +1,9 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
+using System;
 using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -47,6 +49,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+        protected void OnPropertyChanged<T>(Expression<Func<T>> expression)
+        {
+            var memberExpression = expression.Body as MemberExpression;
+
+            if (memberExpression != null)
+                OnPropertyChanged(memberExpression.Member.Name);
+
+            else
+                throw new Exception("Improper expression type RogueBaseViewModel.OnPropertyChanged<T>");
         }
 
         /// <summary>

@@ -7,7 +7,6 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Scenario.Content.ViewModel.Dialog;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using Rogue.NET.Scenario.Content.Views.ItemGrid;
 using System;
@@ -16,6 +15,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.DialogMode;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
 
 namespace Rogue.NET.Scenario.Content.Views.Dialog
 {
@@ -154,64 +155,39 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 case DialogEventType.Identify:
                     {
                         // Get instance of each view model
-                        var consumableViewModel = GetConsumablesViewModel(ItemGridIntendedAction.Identify, ItemGridSelectionMode.Single);
-                        var equipmentViewModel = GetEquipmentViewModel(ItemGridIntendedAction.Identify, ItemGridSelectionMode.Single);
+                        var consumableViewModel = GetConsumablesViewModel(update);
+                        var equipmentViewModel = GetEquipmentViewModel(update);
 
                         // Get injected dual item grid to do a single select
                         return new DualItemGrid(equipmentViewModel, consumableViewModel);
                     }
                 case DialogEventType.Uncurse:
                     {
-                        var equipmentViewModel = GetEquipmentViewModel(ItemGridIntendedAction.Uncurse, ItemGridSelectionMode.Single);
+                        // Get manually setup view / view-model
+                        var view = new EquipmentItemGrid();
+                        var equipmentViewModel = GetEquipmentViewModel(update);
 
-                        equipmentViewModel.IntendedAction = ItemGridIntendedAction.Uncurse;
-
-                        // Get injected dual item grid to do a single select
-                        return new EquipmentItemGrid(equipmentViewModel);
+                        view.DataContext = equipmentViewModel;
+                        return view;
                     }
                 case DialogEventType.AlterationEffect:
                     {
                         var effect = (update as IDialogAlterationEffectUpdate).Effect;
+
                         if (effect is EquipmentEnhanceAlterationEffect)
                         {
-                            // Calculate the intended action
-                            ItemGridIntendedAction intendedAction;
+                            // Get manually setup view / view-model
+                            var view = new EquipmentItemGrid();
+                            var equipmentViewModel = GetEquipmentViewModel(update);
 
-                            // Set up the intended action
-                            switch ((effect as EquipmentEnhanceAlterationEffect).Type)
-                            {
-                                case AlterationModifyEquipmentType.ArmorClass:
-                                    intendedAction = ItemGridIntendedAction.EnchantArmor;
-                                    break;
-                                case AlterationModifyEquipmentType.ArmorImbue:
-                                    intendedAction = ItemGridIntendedAction.ImbueArmor;
-                                    break;
-                                case AlterationModifyEquipmentType.ArmorQuality:
-                                    intendedAction = ItemGridIntendedAction.EnhanceArmor;
-                                    break;
-                                case AlterationModifyEquipmentType.WeaponClass:
-                                    intendedAction = ItemGridIntendedAction.EnchantWeapon;
-                                    break;
-                                case AlterationModifyEquipmentType.WeaponImbue:
-                                    intendedAction = ItemGridIntendedAction.ImbueWeapon;
-                                    break;
-                                case AlterationModifyEquipmentType.WeaponQuality:
-                                    intendedAction = ItemGridIntendedAction.EnhanceWeapon;
-                                    break;
-                                default:
-                                    throw new Exception("Unhandled Alteration Equipment Modify Type");
-                            }
-
-                            // Get instance of the item grid
-                            var viewModel = GetEquipmentViewModel(intendedAction, ItemGridSelectionMode.Single);
-
-                            return new EquipmentItemGrid(viewModel);
+                            view.DataContext = equipmentViewModel;
+                            return view;
                         }
                         else if (effect is TransmuteAlterationEffect)
                         {
                             // Construct view models for transmute - also set selection mode
-                            var consumableViewModel = GetConsumablesViewModel(ItemGridIntendedAction.Transmute, ItemGridSelectionMode.Multiple);
-                            var equipmentViewModel = GetEquipmentViewModel(ItemGridIntendedAction.Transmute, ItemGridSelectionMode.Multiple);
+                            var consumableViewModel = GetConsumablesViewModel(update);
+                            var equipmentViewModel = GetEquipmentViewModel(update);
 
                             // Get injected dual item grid to do a single select
                             return new DualItemGrid(equipmentViewModel, consumableViewModel);
@@ -280,27 +256,97 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
         //        managing the events / regions with this context? etc...
         //
 
-        private ConsumableItemGridViewModel GetConsumablesViewModel(
-                    ItemGridIntendedAction intendedAction, 
-                    ItemGridSelectionMode selectionMode)
+        private ConsumableItemGridViewModelBase GetConsumablesViewModel(IDialogUpdate update)
         {
-            var viewModel = GetInstance<ConsumableItemGridViewModel>();
+            ConsumableItemGridViewModelBase viewModel = null;
 
-            viewModel.IntendedAction = intendedAction;
-            viewModel.SelectionMode = selectionMode;
+            switch (update.Type)
+            {
+                case DialogEventType.AlterationEffect:
+                    {
+                        var effect = (update as IDialogAlterationEffectUpdate).Effect;
+
+                        if (effect is TransmuteAlterationEffect)
+                            viewModel = GetInstance<ConsumableTransmuteItemGridViewModel>();
+                        else
+                            throw new Exception("Unhandled IAlterationEffect Type");
+                    }
+                    break;
+                case DialogEventType.Identify:
+                    viewModel = GetInstance<ConsumableIdentifyItemGridViewModel>();
+                    break;
+                case DialogEventType.Uncurse:
+                case DialogEventType.Help:
+                case DialogEventType.Commands:
+                case DialogEventType.Objective:
+                case DialogEventType.Note:
+                case DialogEventType.PlayerAdvancement:
+                default:
+                    throw new Exception("Improper use of Consumable Item Grid View Model (dialog mode)");
+            }
+
             viewModel.IsDialog = true;
 
             return viewModel;
         }
 
-        private EquipmentItemGridViewModel GetEquipmentViewModel(
-            ItemGridIntendedAction intendedAction,
-            ItemGridSelectionMode selectionMode)
+        private EquipmentItemGridViewModelBase GetEquipmentViewModel(IDialogUpdate update)
         {
-            var viewModel = GetInstance<EquipmentItemGridViewModel>();
+            EquipmentItemGridViewModelBase viewModel = null;
 
-            viewModel.IntendedAction = intendedAction;
-            viewModel.SelectionMode = selectionMode;
+            switch (update.Type)
+            {
+                case DialogEventType.AlterationEffect:
+                    {
+                        var effect = (update as IDialogAlterationEffectUpdate).Effect;
+
+                        if (effect is EquipmentEnhanceAlterationEffect)
+                        {
+                            switch ((effect as EquipmentEnhanceAlterationEffect).Type)
+                            {
+                                case AlterationModifyEquipmentType.ArmorClass:
+                                    viewModel = GetInstance<EquipmentEnchantArmorItemGridViewModel>();
+                                    break;
+                                case AlterationModifyEquipmentType.ArmorImbue:
+                                    viewModel = GetInstance<EquipmentImbueArmorItemGridViewModel>();
+                                    break;
+                                case AlterationModifyEquipmentType.ArmorQuality:
+                                    viewModel = GetInstance<EquipmentEnhanceArmorItemGridViewModel>();
+                                    break;
+                                case AlterationModifyEquipmentType.WeaponClass:
+                                    viewModel = GetInstance<EquipmentEnchantWeaponItemGridViewModel>();
+                                    break;
+                                case AlterationModifyEquipmentType.WeaponImbue:
+                                    viewModel = GetInstance<EquipmentImbueWeaponItemGridViewModel>();
+                                    break;
+                                case AlterationModifyEquipmentType.WeaponQuality:
+                                    viewModel = GetInstance<EquipmentEnhanceWeaponItemGridViewModel>();
+                                    break;
+                                default:
+                                    throw new Exception("Unhandled Alteration Equipment Modify Type");
+                            }
+                        }
+                        else if (effect is TransmuteAlterationEffect)
+                            viewModel = GetInstance<EquipmentTransmuteItemGridViewModel>();
+                        else
+                            throw new Exception("Unhandled IAlterationEffect Type");
+                    }
+                    break;
+                case DialogEventType.Identify:
+                    viewModel = GetInstance<EquipmentIdentifyItemGridViewModel>();
+                    break;
+                case DialogEventType.Uncurse:
+                    viewModel = GetInstance<EquipmentUncurseItemGridViewModel>();
+                    break;
+                case DialogEventType.Help:
+                case DialogEventType.Commands:
+                case DialogEventType.Objective:
+                case DialogEventType.Note:
+                case DialogEventType.PlayerAdvancement:
+                default:
+                    throw new Exception("Improper use of Consumable Item Grid View Model (dialog mode)");
+            }
+
             viewModel.IsDialog = true;
 
             return viewModel;

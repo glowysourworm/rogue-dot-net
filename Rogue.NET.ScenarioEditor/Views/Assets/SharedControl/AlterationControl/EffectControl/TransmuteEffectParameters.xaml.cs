@@ -3,6 +3,7 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -70,6 +71,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
                 var item = this.TransmuteItemsListBox.SelectedItem as TransmuteAlterationEffectItemTemplateViewModel;
                 if (item != null)
                     viewModel.TransmuteItems.Remove(item);
+            }
+        }
+
+        private void ConsumableRequirementsLB_RemoveEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as TransmuteAlterationEffectTemplateViewModel;
+            if (viewModel != null)
+            {
+                var item = this.TransmuteItemsListBox.SelectedItem as TransmuteAlterationEffectItemTemplateViewModel;
+                if (item != null)
+                    item.ConsumableRequirements.Remove(e as ConsumableTemplateViewModel);
+            }
+        }
+
+        private void EquipmentRequirementsLB_RemoveEvent(object sender, object e)
+        {
+            var viewModel = this.DataContext as TransmuteAlterationEffectTemplateViewModel;
+            if (viewModel != null)
+            {
+                var item = this.TransmuteItemsListBox.SelectedItem as TransmuteAlterationEffectItemTemplateViewModel;
+                if (item != null)
+                    item.EquipmentRequirements.Remove(e as EquipmentTemplateViewModel);
             }
         }
     }

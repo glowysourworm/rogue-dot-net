@@ -16,7 +16,8 @@ namespace Rogue.NET.Core.Converter
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            // TODO: Might need to return a default value for the parameter type for two-way binding
+            return parameter;
         }
     }
 }

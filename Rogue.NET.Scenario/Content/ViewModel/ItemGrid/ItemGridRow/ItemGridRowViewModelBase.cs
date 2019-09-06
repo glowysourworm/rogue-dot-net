@@ -4,24 +4,34 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Windows.Input;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
+namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
 {
-    public abstract class ItemGridRowViewModel<T> : ScenarioImageViewModel where T : ScenarioImage
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
+    public abstract class ItemGridRowViewModelBase<T> : ScenarioImageViewModel where T : ScenarioImage
     {
+        /// <summary>
+        /// Event that notifies container class about single item selection
+        /// </summary>
+        public event SimpleAsyncEventHandler<ItemGridRowViewModelBase<T>> ProcessSingleItemEvent;
+
+        /// <summary>
+        /// Occurs when number of selected items changes to notify collection holder to increment a
+        /// total counter
+        /// </summary>
+        public abstract event SimpleEventHandler<ItemGridRowViewModelBase<T>> SelectionChangedEvent;
+
         ICommand _processSingleItemCommand;
 
-        bool _isSelected;
         bool _isEnabled;
         bool _isObjective;
         bool _isUnique;
 
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set { this.RaiseAndSetIfChanged(ref _isSelected, value); OnSelectionChanged(); }
-        }
+        public abstract bool IsSelected { get; set; }
+        public abstract IEnumerable<string> GetSelectedItemIds();
 
         /// <summary>
         /// Gets / Sets a value to say whether item grid row should be allowed to show its button
@@ -52,15 +62,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             set { this.RaiseAndSetIfChanged(ref _processSingleItemCommand, value); }
         }
 
-        public event SimpleAsyncEventHandler<ItemGridRowViewModel<T>> ProcessSingleItemEvent;
-        public event SimpleEventHandler SelectionChanged;
-
         /// <summary>
         /// Constructor for item grid row that takes the item + similar items (having the same RogueBase.RogueName)
         /// which means that they stack on top of each other in the item grid. Certain properties may then be
         /// aggregate (such as weight). BY CONVENTION SIMILAR ITEMS INCLUDES THE ITEM
         /// </summary>
-        public ItemGridRowViewModel(T item, ScenarioMetaData metaData, string displayName, bool isEnabled) : base(item, displayName)
+        public ItemGridRowViewModelBase(T item, ScenarioMetaData metaData, string displayName, bool isEnabled) : base(item, displayName)
         {
             this.IsEnabled = isEnabled;
             this.IsObjective = metaData.IsObjective;
@@ -77,24 +84,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         /// <summary>
         /// Specifies how to update the instance of ItemGridRowViewModel from its source object
         /// </summary>
-        public virtual void Update(T scenarioImage, ScenarioMetaData metaData, string displayName, IEnumerable<T> similarItems, bool isEnabled)
+        public virtual void Update(T scenarioImage, ScenarioMetaData metaData, string displayName, bool isEnabled)
         {
             this.IsEnabled = isEnabled;
-
-            // Go ahead and reset "IsSelected" because update typically follows some kind of model update
-            // action (which means the use for the grid is "over")
-            this.IsSelected = false;
-
             this.DisplayName = displayName;
-        }
 
-        /// <summary>
-        /// Fires an event to update the total selected quantity
-        /// </summary>
-        protected void OnSelectionChanged()
-        {
-            if (this.SelectionChanged != null)
-                this.SelectionChanged();
+            this.IsUnique = metaData.IsUnique;
+            this.IsObjective = metaData.IsObjective;
         }
     }
 }

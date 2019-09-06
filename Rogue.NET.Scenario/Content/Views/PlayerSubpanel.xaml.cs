@@ -1,5 +1,8 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Microsoft.Practices.ServiceLocation;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
 using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using System;
 using System.Collections.Generic;

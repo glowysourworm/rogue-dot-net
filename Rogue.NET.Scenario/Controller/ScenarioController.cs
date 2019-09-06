@@ -11,6 +11,7 @@ using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
 using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Controller
@@ -78,6 +79,18 @@ namespace Rogue.NET.Scenario.Controller
                 _scenarioService.IssuePlayerCommand(new PlayerAlterationEffectCommandAction()
                 {
                     Id = args.Id,
+                    Type = args.Type,
+                    Effect = args.Effect
+                });
+            }
+
+            else if (e is PlayerAlterationEffectMultiItemCommandEventArgs)
+            {
+                var args = e as PlayerAlterationEffectMultiItemCommandEventArgs;
+
+                _scenarioService.IssuePlayerMultiItemCommand(new PlayerAlterationEffectMultiItemCommandAction()
+                {
+                    ItemIds = args.ItemIds.ToArray(),
                     Type = args.Type,
                     Effect = args.Effect
                 });

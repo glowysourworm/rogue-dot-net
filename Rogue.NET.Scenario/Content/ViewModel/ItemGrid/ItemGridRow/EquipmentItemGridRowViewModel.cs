@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
@@ -8,8 +9,10 @@ using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
-namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
+namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
 {
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
     public class EquipmentItemGridRowViewModel : ItemGridRowViewModel<Equipment>
     {
         #region Backing Fields
@@ -88,13 +91,12 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
 
-            Update(equipment, metaData, displayName, new Equipment[] { equipment }, isEnabled);
+            Update(equipment, metaData, displayName, isEnabled);
         }
 
-        public override void Update(Equipment equipment, ScenarioMetaData metaData, string displayName, IEnumerable<Equipment> similarItems, bool isEnabled)
+        public override void Update(Equipment equipment, ScenarioMetaData metaData, string displayName, bool isEnabled)
         {
-            // SIMILAR ITEMS NOT SUPPORTED CURRENTLY
-            base.Update(equipment, metaData, displayName, similarItems, isEnabled);
+            base.Update(equipment, metaData, displayName, isEnabled);
 
             this.IsEquipped = equipment.IsEquipped;
             this.IsCursed = equipment.IsCursed;

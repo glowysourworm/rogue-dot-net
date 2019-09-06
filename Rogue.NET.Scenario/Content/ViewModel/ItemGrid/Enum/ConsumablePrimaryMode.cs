@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum
 {
-    public enum ItemGridSelectionMode
+    /// <summary>
+    /// Specifies Consumable Mode for Item Grid "Primary Mode" (Non-Dialog)
+    /// </summary>
+    public enum ConsumablePrimaryMode
     {
-        Single,
-        Multiple
+        Consume,
+        Throw,
+        Drop
     }
 }

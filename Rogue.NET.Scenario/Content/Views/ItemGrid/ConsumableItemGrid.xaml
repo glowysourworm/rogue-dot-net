@@ -17,43 +17,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Item Grid Header -->
+        <!-- Item Grid Header (PRIMARY MODE) -->
         <TextBlock x:Name="ModeTB"  
                     Text="{Binding Header}"
                     Foreground="{Binding HeaderBrush}"                                          
                     VerticalAlignment="Center"                    
                     HorizontalAlignment="Left"
                     FontSize="20"
-                    Margin="8">
-            
-            <!-- BLOCK ACTIONS FOR OTHER MODES (Facilitates Dialog Modes) -->
-            <!-- TODO: COMBINE THESE INTO A SINGLE CALCULATED BOOL -->
-            <TextBlock.Visibility>
-                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Consume}" />
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Throw}" />
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Drop}" />
-                </MultiBinding>
-            </TextBlock.Visibility>
-            
+                    Margin="8"
+                    Visibility="{Binding IsDialog, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
         </TextBlock>
-        
-        <!-- Item Grid Functions -->
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8">
-            
-            <!-- BLOCK ACTIONS FOR OTHER MODES (Facilitates Dialog Modes) -->
-            <!-- TODO: COMBINE THESE INTO A SINGLE CALCULATED BOOL -->
-            <StackPanel.Visibility>
-                <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Consume}" />
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Throw}" />
-                    <Binding Path="IntendedAction" Converter="{StaticResource ParameterEqualityBoolConverter}" ConverterParameter="{x:Static itemGridEnum:ItemGridIntendedAction.Drop}" />
-                </MultiBinding>
-            </StackPanel.Visibility>
-            
-            <RadioButton x:Name="Consume" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Consume}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
-            <RadioButton x:Name="Throw" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Throw}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
-            <RadioButton x:Name="Drop" IsChecked="{Binding IntendedAction, Mode=TwoWay, Converter={StaticResource RadioButtonEnumConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridIntendedAction.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+
+        <!-- Item Grid Functions (PRIMARY MODE) -->
+        <StackPanel Orientation="Horizontal" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Margin="8"
+                    Visibility="{Binding IsDialog, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+            <RadioButton x:Name="Consume" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Consume}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
+            <RadioButton x:Name="Throw" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Throw}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
+            <RadioButton x:Name="Drop" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
         </StackPanel>
 
         <!-- Item Grid (Single Selection Mode) -->
@@ -62,7 +45,7 @@
                   Style="{StaticResource ItemGridStyle}"                
                   RowStyle="{DynamicResource ItemGridControlRowStyle}" 
                   CellStyle="{StaticResource ItemGridControlCellStyle}"
-                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Single}}">
+                  Visibility="{Binding Converter={StaticResource ItemGridViewModelTypeMultipleSelectionVisibilityInverseConverter}}">
             <DataGrid.Columns>
 
                 <!-- Button / Action -->
@@ -86,7 +69,7 @@
                   Style="{StaticResource ItemGridStyle}"                
                   RowStyle="{DynamicResource ItemGridControlRowStyle}" 
                   CellStyle="{StaticResource ItemGridControlCellStyle}"
-                  Visibility="{Binding SelectionMode, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static itemGridEnum:ItemGridSelectionMode.Multiple}}">
+                  Visibility="{Binding Converter={StaticResource ItemGridViewModelTypeMultipleSelectionVisibilityConverter}}">
             <DataGrid.Columns>
 
                 <!-- Up-Down Selection Button -->

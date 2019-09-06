@@ -23,13 +23,13 @@
         <StackPanel>
             
             <!-- Probability of Success -->
-            <Grid Margin="10">
+            <Grid Margin="5">
                 <TextBlock Text="Probability of Success" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
-                <toolkit:DoubleUpDown Value="{Binding ProbabilityOfSuccess}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" />
+                <toolkit:DoubleUpDown Value="{Binding ProbabilityOfSuccess}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" Width="60" />
             </Grid>
 
             <!-- Add / Remove Transmute Item -->
-            <Grid Margin="10">
+            <Grid Margin="5">
                 <TextBlock Text="Add / Remove" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="AddButton" ToolTip="Add Transmute Item" Click="AddButton_Click" Content="&#xf067;" FontFamily="{StaticResource FontAwesome}" Height="24" Width="24" Margin="0, 0, 4, 0" />
@@ -42,25 +42,26 @@
                      ItemsSource="{Binding TransmuteItems}" 
                      DisplayMemberPath="Name"
                      Width="200"
-                     Margin="10, 0, 10, 10" />
+                     Height="200"
+                     Margin="5, 0, 5, 5" />
         </StackPanel>
 
         <!-- Transmute Item Parameters -->
         <StackPanel Grid.Column="1" 
                     DataContext="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem}">
-            <Grid Margin="10">
+            <Grid Margin="5">
                 <TextBlock Text="Is Consumable Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
                 <CheckBox IsChecked="{Binding IsConsumableProduct}" HorizontalAlignment="Right" />
             </Grid>
-            <Grid Margin="10">
+            <Grid Margin="5">
                 <TextBlock Text="Is Equipment Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
                 <CheckBox IsChecked="{Binding IsEquipmentProduct}" HorizontalAlignment="Right" />
             </Grid>
-            <Grid Margin="10">
+            <Grid Margin="5">
                 <TextBlock Text="Relative Weighting" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
-                <toolkit:DoubleUpDown Value="{Binding Weighting}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" />
+                <toolkit:DoubleUpDown Value="{Binding Weighting}" Minimum="0" Maximum="1" Increment="0.05" HorizontalAlignment="Right" Width="60" />
             </Grid>
-            <Grid Margin="10"
+            <Grid Margin="5"
                   Visibility="{Binding IsConsumableProduct, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Text="Consumable Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
                 <ComboBox x:Name="ConsumableCB"
@@ -69,7 +70,7 @@
                           Width="200"
                           HorizontalAlignment="Right" />
             </Grid>
-            <Grid Margin="10"
+            <Grid Margin="5"
                   Visibility="{Binding IsEquipmentProduct, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <TextBlock Text="Equipment Product" FontSize="16" Foreground="White" HorizontalAlignment="Left" />
                 <ComboBox x:Name="EquipmentCB"
@@ -87,16 +88,18 @@
             <TextBlock Text="Select requirement item(s) for the above product" Margin="10" />
 
             <!-- Consumable Requirements -->
-            <controls:ListBuilder x:Name="ConsumableRequirementsLB"        
+            <controls:ListBuilder x:Name="ConsumableRequirementsLB"    
+                                  RemoveEvent="ConsumableRequirementsLB_RemoveEvent"
                                   DestinationItemsSource="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem.ConsumableRequirements}" 
                                   Height="200"
-                                  Margin="10,0,10,10" />
+                                  Margin="5,0,5,5" />
 
             <!-- Equipment Requirements -->
             <controls:ListBuilder x:Name="EquipmentRequirementsLB"
+                                  RemoveEvent="EquipmentRequirementsLB_RemoveEvent"
                                   DestinationItemsSource="{Binding ElementName=TransmuteItemsListBox, Path=SelectedItem.EquipmentRequirements}"
                                   Height="200"
-                                  Margin="10,0,10,10" />
+                                  Margin="5,0,5,5" />
         </StackPanel>
     </Grid>
 </UserControl>

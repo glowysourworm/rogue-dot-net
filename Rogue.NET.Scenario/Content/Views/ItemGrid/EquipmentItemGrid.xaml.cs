@@ -1,12 +1,11 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
+﻿using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Content.Views.ItemGrid
@@ -21,19 +20,11 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
         /// Importing Constructor - (single item selection default mode)
         /// </summary>
         [ImportingConstructor]
-        public EquipmentItemGrid(EquipmentItemGridViewModel viewModel)
+        public EquipmentItemGrid(EquipmentPrimaryItemGridViewModel viewModel)
         {
             this.DataContext = viewModel;
 
             InitializeComponent();
-
-            // Implement IDisposable to be good about event aggregator hooks
-            // and cleaning up memory for observable collections
-            this.Unloaded += (sender, e) =>
-            {
-                if (viewModel != null)
-                    viewModel.Dispose();
-            };
         }
 
         /// <summary>
@@ -45,7 +36,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
 
             this.DataContextChanged += (sender, e) =>
             {
-                var viewModel = e.NewValue as EquipmentItemGridViewModel;
+                var viewModel = e.NewValue as EquipmentItemGridViewModelBase;
                 if (viewModel != null)
                     viewModel.SingleDialogSelectionEvent += OnSingleDialogSelectionEvent;
             };
@@ -54,30 +45,24 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
             // and cleaning up memory for observable collections
             this.Unloaded += (sender, e) =>
             {
-                var viewModel = this.DataContext as EquipmentItemGridViewModel;
+                var viewModel = this.DataContext as EquipmentItemGridViewModelBase;
 
                 if (viewModel != null)
-                {
                     viewModel.SingleDialogSelectionEvent -= OnSingleDialogSelectionEvent;
-                    viewModel.Dispose();
-                }
             };
         }
 
         public IEnumerable<string> GetSelectedItemIds()
         {
-            var viewModel = this.DataContext as EquipmentItemGridViewModel;
+            var viewModel = this.DataContext as EquipmentItemGridViewModelBase;
             if (viewModel != null)
-                return viewModel.Items
-                                .Where(x => x.IsSelected)
-                                .Select(x => x.Id)
-                                .Actualize();
+                return viewModel.GetSelectedItemIds();
 
             else
                 throw new Exception("Miss-handled view-model EquipmentItemGrid");
         }
 
-        private void OnSingleDialogSelectionEvent(ItemGridRowViewModel<Equipment> item)
+        private void OnSingleDialogSelectionEvent(EquipmentItemGridRowViewModel item)
         {
             // Fire Dialog Finished Event
             if (this.DialogViewFinishedEvent != null)

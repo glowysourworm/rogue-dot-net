@@ -1,14 +1,14 @@
 ﻿using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
+using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
+
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using System.Linq;
-using Rogue.NET.Common.Extension;
 using System;
-using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
+
 
 namespace Rogue.NET.Scenario.Content.Views.ItemGrid
 {
@@ -22,19 +22,11 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
         /// Importing Constructor - (single item selection default mode)
         /// </summary>
         [ImportingConstructor]
-        public ConsumableItemGrid(ConsumableItemGridViewModel viewModel)
+        public ConsumableItemGrid(ConsumablePrimaryItemGridViewModel viewModel)
         {
             this.DataContext = viewModel;
 
             InitializeComponent();
-
-            // Implement IDisposable to be good about event aggregator hooks
-            // and cleaning up memory for observable collections
-            this.Unloaded += (sender, e) =>
-            {
-                if (viewModel != null)
-                    viewModel.Dispose();
-            };
         }
         
         /// <summary>
@@ -46,7 +38,9 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
 
             this.DataContextChanged += (sender, e) =>
             {
-                var viewModel = e.NewValue as ConsumableItemGridViewModel;
+                var viewModel = e.NewValue as ConsumableItemGridViewModelBase;
+
+                // Hook dialog selection event
                 if (viewModel != null)
                     viewModel.SingleDialogSelectionEvent += OnSingleDialogSelectionEvent;
             };
@@ -55,30 +49,24 @@ namespace Rogue.NET.Scenario.Content.Views.ItemGrid
             // and cleaning up memory for observable collections
             this.Unloaded += (sender, e) =>
             {
-                var viewModel = this.DataContext as ConsumableItemGridViewModel;
+                var viewModel = this.DataContext as ConsumableItemGridViewModelBase;
 
                 if (viewModel != null)
-                {
                     viewModel.SingleDialogSelectionEvent -= OnSingleDialogSelectionEvent;
-                    viewModel.Dispose();
-                }
             };
         }
 
         public IEnumerable<string> GetSelectedItemIds()
         {
-            var viewModel = this.DataContext as ConsumableItemGridViewModel;
+            var viewModel = this.DataContext as ConsumableItemGridViewModelBase;
             if (viewModel != null)
-                return viewModel.Items
-                                .Where(x => x.IsSelected)
-                                .Select(x => x.Id)
-                                .Actualize();
+                return viewModel.GetSelectedItemIds();
 
             else
                 throw new Exception("Miss-handled view-model ConsumableItemGrid");
         }
 
-        private void OnSingleDialogSelectionEvent(ItemGridRowViewModel<Consumable> item)
+        private void OnSingleDialogSelectionEvent(ConsumableItemGridRowViewModel item)
         {
             // Fire Dialog Finished Event
             if (this.DialogViewFinishedEvent != null)

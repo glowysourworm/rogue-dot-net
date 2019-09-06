@@ -66,6 +66,10 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         private void SetName(IAlterationEffectTemplateViewModel effect, string name)
         {
+            // NOT LIKED! BUT, THERE'S NO DEFAULT EFFECT IMPLEMENTATION
+            if (effect == null)
+                return;
+
             if (effect is AttackAttributeAuraAlterationEffectTemplateViewModel)
                 (effect as AttackAttributeAuraAlterationEffectTemplateViewModel).Name = name;
 

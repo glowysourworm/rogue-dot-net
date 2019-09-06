@@ -225,13 +225,13 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
                     Visibility="{Binding IsEnabled, Converter={StaticResource BoolVisibilityCollapseConverter}}">
             <Button Style="{StaticResource ShinyTextRectangleButtonStyle}"
-                    Command="{Binding IncreaseSelectedQuantityCommand}"
+                    Command="{Binding DecreaseSelectedQuantityCommand}"
                     Height="16"
                     Width="16"
                     FontFamily="{StaticResource FontAwesome}" 
                     Content="&#xf068;" />
             <Button Style="{StaticResource ShinyTextRectangleButtonStyle}"
-                    Command="{Binding DecreaseSelectedQuantityCommand}"
+                    Command="{Binding IncreaseSelectedQuantityCommand}"
                     Height="16"
                     Width="16"
                     FontFamily="{StaticResource FontAwesome}" 
