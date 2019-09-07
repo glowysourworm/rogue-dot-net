@@ -2090,5 +2090,7 @@ IMMEDIATE TODO'S:
 						  HOW TO FIX THIS? Have to make sure to block things IMMEDIATELY BEFORE issuing the event to the backend.
 						  
 						  Search TODO:DEBOUNCE in the code - need to debounce the commands. So, probably a simple model for that.
+						  
+	- TODO: Transmute has a bug with the equipment grid
 		
 				
