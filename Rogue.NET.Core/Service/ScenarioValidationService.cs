@@ -196,11 +196,17 @@ namespace Rogue.NET.Core.Service
                                                                  behavior.EnemyAlteration == null))
                                                      .Actualize();
 
+                    var skillsNotSet = configuration.SkillTemplates
+                                                    .Where(x => x.Skills.Any(z => z.SkillAlteration == null ||
+                                                                                  z.SkillAlteration.Effect == null))
+                                                    .Actualize();
+
                     return consumablesNotSet
                                 .Cast<DungeonObjectTemplate>()
                                 .Union(equipmentNotSet)
                                 .Union(doodadsNotSet)
                                 .Union(enemiesNotSet)
+                                .Union(skillsNotSet)
                                 .Select(x =>
                                 {
                                     return new ScenarioValidationResult()

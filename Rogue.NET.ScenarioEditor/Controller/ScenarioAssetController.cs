@@ -76,15 +76,23 @@ namespace Rogue.NET.ScenarioEditor.Controller
             // Restore Undo Service
             _undoService.UnBlock();
         }
+
+        // TODO:SERIALIZATION - ABANDON GUID'S ENTIRELY. LET OBJECT REFERENCES DO THE WORK FOR EQUALS / HASH CODES.
+        //                      GET RID OF ANYTHING IN THE NAMESPACES THAT OVERRIDES THESE THAT DERIVES FROM TEMPLATE.
         public void CopyAsset(string assetName, string assetNewName, string assetType)
         {
+            return;
+
             var asset = GetAsset(assetName, assetType);
+
+            // Creating a clone will recreate the object with the same guids; but there's a problem
+            // in that it won't match references down the asset graph. SO, THIS DOESN'T WORK 100% OF THE TIME!
             var assetCopy = asset.DeepClone();
 
             // Have to give new identity to asset copy
             assetCopy.Guid = Guid.NewGuid().ToString();
             assetCopy.Name = assetNewName;
-
+            
             switch (assetType)
             {
                 case AssetType.Layout:
@@ -112,9 +120,8 @@ namespace Rogue.NET.ScenarioEditor.Controller
             // NOTE*** HAVE TO BLOCK CHANGES TO THE UNDO STACK TO UPDATE THESE REFERENCES
             _undoService.Block();
 
-            // Fix Asset References - Uses the ScenarioConfigurationMapper to match by Name
-            //                        NOTE*** Abandoned GUID approach for various reasons.
-            _scenarioConfigurationMapper.FixReferences(_scenarioEditorController.CurrentConfig);
+            // Fix Asset References - Uses the ScenarioConfigurationMapper 
+            // _scenarioConfigurationMapper.MapObject(_scenarioEditorController.CurrentConfig);
 
             // Restore Undo Service
             _undoService.UnBlock();
