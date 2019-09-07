@@ -26,6 +26,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             set { this.RaiseAndSetIfChanged(ref _guid, value); }
         }
 
+        // Using these to match the Scenario namespace - this must work with 
+        // mapping the namespaces  Template <--> TemplateViewModel
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return _guid.GetHashCode();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public event PropertyChangingEventHandler PropertyChanging;
 

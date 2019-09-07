@@ -2081,5 +2081,14 @@ IMMEDIATE TODO'S:
 					 
 	- TODO: May want to consider a versioning system for Scenarios. (games and configurations) So that it becomes systematic to
 			deal with them versioned. (maybe also it would follow a build version - like tac it onto the ScenarioFile / Scenario Configuration files)
+			
+	- TODO: Been having trouble with my mouse..... HMMM.. It has been "double-clicking" so that UI events get processed twice.
+	
+			BUGS HAPPEN:  Consume is an example. Click on item - sends two events with the same item id. This is causing a crash
+						  because the first one removes the item from the dictionary!
+						  
+						  HOW TO FIX THIS? Have to make sure to block things IMMEDIATELY BEFORE issuing the event to the backend.
+						  
+						  Search TODO:DEBOUNCE in the code - need to debounce the commands. So, probably a simple model for that.
 		
 				

@@ -44,6 +44,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
         private static readonly IDictionary<Type, Type> _forwardTypeMap;
         private static readonly IDictionary<Type, Type> _reverseTypeMap;
 
+        // Reference map used to track duplicate references in the source and
+        // replicate them in the destination.
+        private IDictionary<Template, TemplateViewModel> _forwardReferenceMap;
+        private IDictionary<TemplateViewModel, Template> _reverseReferenceMap;
+
         static ScenarioConfigurationMapper()
         {
             _forwardTypeMap = new Dictionary<Type, Type>();
@@ -71,32 +76,96 @@ namespace Rogue.NET.ScenarioEditor.Utility
             }
         }
 
+        public ScenarioConfigurationMapper()
+        {
+            _forwardReferenceMap = new Dictionary<Template, TemplateViewModel>();
+            _reverseReferenceMap = new Dictionary<TemplateViewModel, Template>();
+        }
+
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
         {
+            // Clear out reference maps to prepare for next mapping
+            _forwardReferenceMap.Clear();
+            _reverseReferenceMap.Clear();
+
             var result = MapObject<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, false);
 
-            return FixReferences(result);
+            //return FixReferences(result);
+
+            return result;
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)
         {
+            // Clear out reference maps to prepare for next mapping
+            _forwardReferenceMap.Clear();
+            _reverseReferenceMap.Clear();
+
             var result = MapObject<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel, true);
 
-            var configuration = FixReferences(result);
+            //var configuration = FixReferences(result);
 
             // Sort collections 
-            configuration.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            configuration.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            result.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            result.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            result.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            result.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
+            result.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-            return configuration;
+            //return configuration;
+
+            return result;
         }
         
-        public TDest MapObject<TSource, TDest>(TSource source, bool reverse)
+        public TDest MapObject<TSource, TDest>(TSource source, bool reverse) where TSource : class
+                                                                             where TDest : class
         {
-            // Map base ignoring collections
-            var dest = Construct<TDest>();
+            // ***Reference Tracking
+            //
+            //    Store references as a hash to track them to recreate the source
+            //    object graph. 
+            //
+            //    When there's a duplicate source found - terminate recursion and
+            //    return the mapped destination object.
+            //
+
+            var referenceFound = false;
+
+            // Search for Forward Reference 
+            if (!reverse && source is Template)
+            {
+                var template = source as Template;
+
+                // No Reference Found - Store a new destination object with this source object
+                if (!_forwardReferenceMap.ContainsKey(template))
+                    _forwardReferenceMap.Add(template, Construct<TDest>() as TemplateViewModel);
+
+                // Reference Found - Return the previously mapped destination object
+                else
+                    return _forwardReferenceMap[template] as TDest;
+
+                referenceFound = true;
+            }
+
+            // Search for Reverse Reference
+            else if (reverse && source is TemplateViewModel)
+            {
+                var templateViewModel = source as TemplateViewModel;
+
+                // No Reference Found - Store a new destination object with this source object
+                if (!_reverseReferenceMap.ContainsKey(templateViewModel))
+                    _reverseReferenceMap.Add(templateViewModel, Construct<TDest>() as Template);
+
+                // Reference Found - Return the previously mapped destination object
+                else
+                    return _reverseReferenceMap[templateViewModel] as TDest;
+
+                referenceFound = true;
+            }
+
+            // Fetch the newly created destination object (OR) Create new destination object - continue recursion
+            var dest = referenceFound ? (!reverse ? _forwardReferenceMap[source as Template] as TDest :
+                                                   _reverseReferenceMap[source as TemplateViewModel] as TDest)
+                                      : Construct<TDest>();
 
             // Map collection properties separately
             var destProperties = typeof(TDest).GetProperties()

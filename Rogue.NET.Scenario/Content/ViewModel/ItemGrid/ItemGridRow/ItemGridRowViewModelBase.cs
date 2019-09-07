@@ -73,6 +73,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow
             this.IsObjective = metaData.IsObjective;
             this.IsUnique = metaData.IsUnique;
 
+            // TODO:DEBOUNCE
             this.ProcessSingleItemCommand = new SimpleAsyncCommand(async () =>
             {
                 if (this.ProcessSingleItemEvent != null)
