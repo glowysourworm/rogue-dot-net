@@ -1972,5 +1972,114 @@ IMMEDIATE TODO'S:
 	- IDEA: Make all the Smiley's in the game the different character classes ("ROGUE STORIES") - Randomized by DateTime.Now :) :) :) :)
 					  
 			
+	- NECROMANCER:
+	
+		Friendly Unit:  (Derives from Character) (NEW ASSET TYPE)
+		
+			Behavior: Would like a way to SHARE classes for Behavior Details with Enemy assets. So, may require:
 			
+					  - Target Type:  Nearest Opposing Character; Player (For friendly alterations, or enemy alterations)
+					  
+			Alteration: Going to require some new parameters - mostly for targeting:
+			
+					  - All In Range:  All Friendly Units In Range; All Opposing Units In RANGE
+					  - All In Range Except Source:  (Same)
+					  
+					    Obviously, would need to expand on Create Monster: Create Friendly (OR) Create Enemy
+						
+					  - CreateFriendlyCharacter: SELECTS FROM FRIENDLY ASSETS ONLY
+					  
+						 + New Interface Type:  IFriendlyAlterationEffect
+						 
+						 + This Alteration would get support from:  ISkillAlterationEffect, IFriendlyAlterationEffect, IConsumableAlterationEffect, etc...
+					  
+					  - CreateEnemyCharacter:    SELECTS FROM ENEMY ASSETS ONLY
+	
+					     + Enemies do NOT support CreateFriendlyCharacter. Friendlies do NOT support CreateEnemyCharacter.
+						 
+					  - CreateFriendlyCharacterGroup:  This would be a special case for creating hordes at once (kind of fun) :)
+					  
+		    Targeting:  May want to expand targeting to include SELECTION of Friendly OR Enemy:
+			
+						enum TargetType
+						{
+							Source:  - The Player, Friendly, or Enemy
+							
+							Target:  - Expand to let Player select Friendly OR Enemy
+									 - Friendly selects Player OR Enemy via Behavior target type (Nearest Opposing Character; or Player)
+									 - Enemy selects Player OR Friendly via Behavior (SAME ENUM)
+									 
+							All In Range:  ALL CHARACTERS (in range)
+							
+							All In Range Except Source:  ALL CHARACTER (in range) EXCEPT SOURCE
+									 
+							All Allies In Range: For Player -> Means Player + Friendlies
+												 For Friendly -> Means Friendlies + Player
+												 For Enemy -> Means Enemies
+									
+							All Opposing Characters In Range:  For Player -> Enemies
+															   For Friendly -> Enemies
+															   For Enemy -> Player + Friendlies
+							
+							All Allies In Range Except Source,
+							All Opposing Characters In Range Except Source
+						}
+						
+						Expand Targeting UI to allow Player to target Friendly units; and (while we're at it) also support targeting
+						random cells :) :) :)
+						
+						BUT, need to review Alteration namespace to see what the impact would be for allowing Friendly targeting.
+						
+			Inventory:  Would be nicer NOT to support Friendly inventory. However, having friendly aura's or passives might be nice
+						at some point.
+						
+						Favoring NOT supporting Friendly inventory.
+						
+			Movement:   Would like to share behaviors with Enemy type characters. However, there are a few things that may be different.
+			
+						1) Must allow Friendlies to swap places with Player when the Player tries to move.
+						
+						2) Have to have something to specify how they move WITH the Player. Maybe a range to maintain (?)
+						
+							- "Standoffish" character behavior still needs to be fixed to have a range to maintain before
+							  attempting to attack
+						
+						3) Have to figure out how to keep the "Party" of Friendlies + Player together
+						
+							- Would REALLY want to support movement from level to level
+							
+							Basically, this means we'd have to have two levels open to remove / add assets in some sort of 
+							"Safe" space between loading the UI.
+							
+							Also, when starting a new level, would need to group ALL party units on a single cell - with 
+							the Player up front. 
+							
+							I'm a little afraid this will cause some unintended issues; but it should be ok with the layout
+							processing: finding un-occupied cells, Enemies targteing the group's cell right off the bat, etc...
+							
+							Solve things one-by-one.
+							
+							- Also, would want to allow Friendlies to be supported as level units that you could "Find"
+
+							So, to support this, there would have to be some parameters on how a Friendly "Be-friends" the 
+							Player. I'd favor leaving this out (maybe for now)
+							
+							So, probably just add Friendlies as Assets; but only allow them to be created by the Player; and
+							automatically put them in the Player's party.
+							
+							- Want to specify how Friendlies move WITH the Player. May want some extra parameters for this 
+							  like "Distance Kept From Player" or "Distance Kept From Other Friendlies"; but this could 
+							  easily adapt as we learn about Friendlies (by trying...)
+							  
+							  
+			Objective:  Why not allow Player to "Be-friend" a special unit (?)  And, if the unit dies, the scenario ends (?)
+			
+						Would make for a really interesting STORY - which could be useful for some people who want to do it.
+						
+			Unique:  May have unique friendlies; but, for now, there's no support for generating friendlies in the level. However,
+					 if we do Objectives as friendlies, then there'd have to be. So, Uniqueness is important for this purpose.
+					 
+	- TODO: May want to consider a versioning system for Scenarios. (games and configurations) So that it becomes systematic to
+			deal with them versioned. (maybe also it would follow a build version - like tac it onto the ScenarioFile / Scenario Configuration files)
+		
 				
