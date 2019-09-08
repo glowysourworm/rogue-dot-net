@@ -1,8 +1,6 @@
 ﻿using Prism.Commands;
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Command;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
@@ -10,6 +8,8 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.Core.Processing.Command.Backend;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Scenario.Events.Content;
@@ -121,8 +121,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
             // Hook-up commands
             this.ActivateSkillCommand = new SimpleAsyncCommand(async () =>
             {
-                await eventAggregator.GetEvent<UserCommandEvent>().Publish(
-                    new PlayerCommandEventArgs(PlayerActionType.ActivateSkillSet, this.Id));
+                await eventAggregator.GetEvent<PlayerCommand>().Publish(
+                    new PlayerCommandData(PlayerCommandType.ActivateSkillSet, this.Id));
 
             }, () => this.HasLearnedSkills);
 

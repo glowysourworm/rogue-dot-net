@@ -5,11 +5,11 @@ using System.Windows.Input;
 using System.ComponentModel.Composition;
 
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Scenario.Events.Content;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -71,9 +71,9 @@ namespace Rogue.NET.Scenario.Content.Views
             });
             
             // subscribe to event to update RenderTransform on player move
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
-                if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
+                if (update.LevelUpdateType == LevelEventType.PlayerLocation)
                     CenterOnLocation(viewModel.PlayerLocation);
 
             });

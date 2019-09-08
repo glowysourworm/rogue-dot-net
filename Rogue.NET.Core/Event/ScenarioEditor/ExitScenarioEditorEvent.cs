@@ -1,7 +1,6 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
-namespace Rogue.NET.Common.Events.ScenarioEditor
+namespace Rogue.NET.Core.Event.ScenarioEditor
 {
     public class ExitScenarioEditorEvent : RogueEvent
     {

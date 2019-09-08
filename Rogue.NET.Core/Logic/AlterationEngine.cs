@@ -1,8 +1,5 @@
 ﻿using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Consumable;
@@ -13,26 +10,31 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
-using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Processing.Action;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
+using Rogue.NET.Core.Processing.Action.Enum;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAlterationEngine))]
-    public class AlterationEngine : IAlterationEngine
+    public class AlterationEngine : RogueEngine, IAlterationEngine
     {
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
@@ -41,10 +43,7 @@ namespace Rogue.NET.Core.Logic
         readonly IInteractionProcessor _interactionProcessor;        
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
-        readonly IRogueUpdateFactory _rogueUpdateFactory;
-
-        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
+        readonly IBackendEventDataFactory _backendEventDataFactory;
 
         [ImportingConstructor]
         public AlterationEngine(IModelService modelService,
@@ -54,7 +53,7 @@ namespace Rogue.NET.Core.Logic
                                 IInteractionProcessor interactionProcessor,
                                 IScenarioMessageService scenarioMessageService,
                                 IRandomSequenceGenerator randomSequenceGenerator,
-                                IRogueUpdateFactory rogueUpdateFactory)
+                                IBackendEventDataFactory backendEventDataFactory)
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
@@ -63,7 +62,7 @@ namespace Rogue.NET.Core.Logic
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
             _randomSequenceGenerator = randomSequenceGenerator;
-            _rogueUpdateFactory = rogueUpdateFactory;
+            _backendEventDataFactory = backendEventDataFactory;
         }
 
         public bool Validate(Character actor, AlterationContainer alteration)
@@ -118,7 +117,7 @@ namespace Rogue.NET.Core.Logic
 
                 if (!animationIssueDetected)
                 {
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Animation(
+                    OnAnimationEvent(_backendEventDataFactory.Animation(
                                                 alteration.AnimationGroup.Animations,
                                                 actor.Location,
                                                 affectedCharacters.Select(x => x.Location).Actualize()));
@@ -126,7 +125,7 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Apply Effect on Queue
-            LevelProcessingActionEvent(this, new LevelProcessingAction()
+            OnLevelProcessingEvent(new LevelProcessingAction()
             {
                 Type = LevelProcessingActionType.CharacterAlteration,
                 Actor = actor,
@@ -191,7 +190,7 @@ namespace Rogue.NET.Core.Logic
                 //
                 // NOTE*** Player is treated SEPARATELY from level content. This should be refactored on the UI side
                 //         to make processing easier. (TODO)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentUpdate, affectedCharacter.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentUpdate, affectedCharacter.Id));
 
                 // TODO: REMOVE THIS!!!  And just use the above affectedCharacter.Id
                 //                       THE DESIGN NEEDS TO SUPPORT THIS!
@@ -199,15 +198,10 @@ namespace Rogue.NET.Core.Logic
                 // Update Player Symbol (REMOVE THIS!)
                 if (affectedCharacter is Player)
                 {
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, _modelService.Player.Id));
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, _modelService.Player.Id));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
                 }
             }
-        }
-
-        public void ApplyEndOfTurn(bool regenerate)
-        {
-            
         }
 
         #region (private) Alteration Apply Methods
@@ -254,10 +248,10 @@ namespace Rogue.NET.Core.Logic
                 switch ((alteration.Effect as OtherAlterationEffect).Type)
                 {
                     case AlterationOtherEffectType.Identify:
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Identify));
+                        OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Identify));
                         break;
                     case AlterationOtherEffectType.Uncurse:
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Dialog(DialogEventType.Uncurse));
+                        OnDialogEvent(_backendEventDataFactory.Dialog(DialogEventType.Uncurse));
                         break;
                     default:
                         break;
@@ -289,7 +283,7 @@ namespace Rogue.NET.Core.Logic
                 affectedCharacter.Alteration.Apply(alteration);
 
             else if (alteration.Effect is TransmuteAlterationEffect)
-                RogueUpdateEvent(this, _rogueUpdateFactory.DialogAlterationEffect(alteration.Effect));
+                OnDialogEvent(_backendEventDataFactory.DialogAlterationEffect(alteration.Effect));
 
             else
                 throw new Exception("Unhandled Alteration Effect Type IAlterationEngine.ApplyAlteration");
@@ -353,20 +347,23 @@ namespace Rogue.NET.Core.Logic
         }
         private IEnumerable<Character> CalculateAffectedCharacters(AlterationTargetType targetType, Character actor)
         {
-            switch (targetType)
-            {
-                case AlterationTargetType.Source:
-                    return new List<Character>() { actor };
-                case AlterationTargetType.Target:
-                    return (actor is Player) ? _modelService.GetTargetedEnemies()
-                                                            .Cast<Character>() : new List<Character>() { _modelService.Player };
-                case AlterationTargetType.AllInRange:
-                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius());
-                case AlterationTargetType.AllInRangeExceptSource:
-                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius()).Except(new Character[] { actor });
-                default:
-                    throw new Exception("Unknown Attack Attribute Target Type");
-            }
+            throw new Exception();
+
+            // TODO:ROUTER
+            //switch (targetType)
+            //{
+            //    case AlterationTargetType.Source:
+            //        return new List<Character>() { actor };
+            //    case AlterationTargetType.Target:
+            //        return (actor is Player) ? _modelService.GetTargetedEnemies()
+            //                                                .Cast<Character>() : new List<Character>() { _modelService.Player };
+            //    case AlterationTargetType.AllInRange:
+            //        return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius());
+            //    case AlterationTargetType.AllInRangeExceptSource:
+            //        return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius()).Except(new Character[] { actor });
+            //    default:
+            //        throw new Exception("Unknown Attack Attribute Target Type");
+            //}
         }
         private IEnumerable<Character> CalculateCharactersInRange(GridLocation location, int cellRange)
         {
@@ -424,10 +421,10 @@ namespace Rogue.NET.Core.Logic
 
                     // Update UI
                     if (actor is Player)
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, itemStolen.Key));
 
                     else
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentRemove, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentRemove, itemStolen.Key));
                 }
                 // For consumables - nothing to do except to remove / add
                 else
@@ -440,10 +437,10 @@ namespace Rogue.NET.Core.Logic
 
                     // Update UI
                     if (actor is Player)
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableAddOrUpdate, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableAddOrUpdate, itemStolen.Key));
 
                     else
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, itemStolen.Key));
                 }
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal, 
@@ -466,7 +463,7 @@ namespace Rogue.NET.Core.Logic
                                                 _modelService.GetDisplayName(actor));
 
                 // Update UI
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, actor.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, actor.Id));
             }
             else
                 throw new Exception("Player trying to invoke RunAway Alteration Effect");
@@ -495,7 +492,7 @@ namespace Rogue.NET.Core.Logic
                 RevealStairs();
 
             // Update the UI (TODO:ALTERATION - figure out more systematic updating)
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentReveal, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentReveal, ""));
         }
         private void ProcessTeleport(TeleportAlterationEffect effect, Character character)
         {
@@ -532,13 +529,13 @@ namespace Rogue.NET.Core.Logic
             // Actual Level clipped by the min / max
             var actualLevel = desiredLevel.Clip(1, numberOfLevels);
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(actualLevel, PlayerStartLocation.Random));
+            OnScenarioEvent(_backendEventDataFactory.LevelChange(actualLevel, PlayerStartLocation.Random));
         }
         private void ProcessCreateMonster(CreateMonsterAlterationEffect effect, Character actor)
         {
             var location = GetRandomLocation(effect.RandomPlacementType, actor.Location, effect.Range);
 
-            // TODO:ALTERATION
+            // TODO:ALTERATION (Handle Exception ?)
             if (location == GridLocation.Empty)
                 return;
 
@@ -578,7 +575,7 @@ namespace Rogue.NET.Core.Logic
                 }
 
                 // Notify UI
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAdd, enemy.Id));
             }
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
@@ -594,7 +591,7 @@ namespace Rogue.NET.Core.Logic
 
             // Use the dialog to select an item
             if (effect.UseDialog)
-                RogueUpdateEvent(this, _rogueUpdateFactory.DialogAlterationEffect(effect));
+                OnDialogEvent(_backendEventDataFactory.DialogAlterationEffect(effect));
 
             // Select a random equipped item
             else
@@ -620,7 +617,7 @@ namespace Rogue.NET.Core.Logic
                     _alterationProcessor.ApplyEquipmentEnhanceEffect(affectedCharacter as Player, effect, randomEquippedItem);
 
                     // Queue update
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
                 }
                 else
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Enhance");
@@ -654,7 +651,7 @@ namespace Rogue.NET.Core.Logic
 
                 // Queue update if Player is affected
                 if (affectedCharacter is Player)
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Damage");
@@ -720,7 +717,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Player.RogueName,
                 _modelService.GetDisplayName(itemBase));
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
         }
 
         private GridLocation GetRandomLocation(AlterationRandomPlacementType placementType, GridLocation sourceLocation, int sourceRange)
@@ -741,7 +738,8 @@ namespace Rogue.NET.Core.Logic
                                                 .PickRandom();
                     break;
                 case AlterationRandomPlacementType.InPlayerVisibleRange:
-                    openLocation = _modelService.GetVisibleLocations(player)
+                    openLocation = _modelService.CharacterLayoutInformation
+                                                .GetVisibleLocations(player)
                                                 .Where(x => !level.IsCellOccupied(x, player.Location))
                                                 .PickRandom();
                     break;

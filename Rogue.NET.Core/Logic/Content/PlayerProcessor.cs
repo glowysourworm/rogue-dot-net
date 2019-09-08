@@ -5,7 +5,6 @@ using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
-using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Static;
@@ -17,6 +16,7 @@ using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 
 namespace Rogue.NET.Core.Logic.Content
 {
@@ -218,7 +218,9 @@ namespace Rogue.NET.Core.Logic.Content
             {
                 var enemyAuras = enemy.Alteration
                                       .GetAuras()
-                                      .Where(x => _modelService.GetAuraLocations(enemy, x.Item1.Id).Contains(player.Location))
+                                      .Where(x => _modelService.CharacterLayoutInformation
+                                                               .GetAuraAffectedLocations(enemy, x.Item1.Id)
+                                                               .Contains(player.Location))
                                       .Select(x => x.Item1)
                                       .GroupBy(x => x.GetType());
 

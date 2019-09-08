@@ -1,8 +1,5 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Scenario.Content.ViewModel.Dialog;
@@ -10,13 +7,13 @@ using Rogue.NET.Scenario.Content.ViewModel.ItemGrid;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using Rogue.NET.Scenario.Content.Views.ItemGrid;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.DialogMode;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 
 namespace Rogue.NET.Scenario.Content.Views.Dialog
 {
@@ -25,20 +22,20 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
     public partial class DialogContainer : UserControl, IDialogContainer
     {
         // This is the only saved state for this container - which must be managed.
-        IDialogUpdate _dialogUpdate;
+        DialogEventData _dialogData;
 
         // Use this event to notify listener that dialog has completed
-        public event SimpleEventHandler<IDialogContainer, UserCommandEventArgs> DialogFinishedEvent;
+        public event SimpleEventHandler<IDialogContainer, object> DialogFinishedEvent;
 
         public DialogContainer()
         {
             InitializeComponent();
         }
 
-        public void Initialize(IDialogUpdate update)
+        public void Initialize(DialogEventData update)
         {
             // Set state here to retrieve when finished
-            _dialogUpdate = update;
+            _dialogData = update;
 
             var view = CreateView(update);
 
@@ -54,11 +51,11 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             // Unhook event to complete cycle
             view.DialogViewFinishedEvent -= OnDialogFinished;
             
-            UserCommandEventArgs args = null;
+            object commandData = null;
 
             // Prepare User Command Event (args)
             // Setup the proper dialog UI here
-            switch (_dialogUpdate.Type)
+            switch (_dialogData.Type)
             {
                 // No User Command to fire
                 case DialogEventType.Help:
@@ -70,24 +67,25 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 // Create User Command with single item id
                 case DialogEventType.Identify:
                     {
-                        args = new PlayerCommandEventArgs(PlayerActionType.Identify, (string)data);
+                        commandData = new PlayerCommandData(PlayerCommandType.Identify, (string)data);
                     }
                     break;
                 case DialogEventType.Uncurse:
                     {
-                        args = new PlayerCommandEventArgs(PlayerActionType.Uncurse, (string)data);
+                        commandData = new PlayerCommandData(PlayerCommandType.Uncurse, (string)data);
                     }
                     break;
                 case DialogEventType.AlterationEffect:
                     {
-                        var effect = (_dialogUpdate as IDialogAlterationEffectUpdate).Effect;
+                        var effect = (_dialogData as DialogAlterationEffectEventData).Effect;
+
                         if (effect is EquipmentEnhanceAlterationEffect)
                         {
-                            args = new PlayerAlterationEffectCommandEventArgs(effect, PlayerActionType.AlterationEffect, (string)data);
+                            commandData = new PlayerAlterationEffectCommandData(effect, PlayerCommandType.AlterationEffect, (string)data);
                         }
                         else if (effect is TransmuteAlterationEffect)
                         {
-                            args = new PlayerAlterationEffectMultiItemCommandEventArgs(effect, PlayerMultiItemActionType.AlterationEffect, (string[])data);
+                            commandData = new PlayerAlterationEffectMultiItemCommandData(effect, PlayerMultiItemActionType.AlterationEffect, (string[])data);
                         }
                         else
                             throw new Exception("Unhandled IAlterationEffect Type");
@@ -97,13 +95,13 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     {
                         var viewModel = (view as FrameworkElement).DataContext as PlayerAdvancementViewModel;
 
-                        args = new PlayerAdvancementCommandEventArgs()
+                        commandData = new PlayerAdvancementCommandData()
                         {
                             Agility = viewModel.NewAgility,
                             Intelligence = viewModel.NewIntelligence,
                             SkillPoints = viewModel.NewSkillPoints,
                             Strength = viewModel.NewStrength,
-                            Type = PlayerActionType.PlayerAdvancement
+                            Type = PlayerCommandType.PlayerAdvancement
                         };
                     }
                     break;
@@ -113,14 +111,14 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             
             // Fire event to listeners
             if (this.DialogFinishedEvent != null)
-                this.DialogFinishedEvent(this, args);
+                this.DialogFinishedEvent(this, commandData);
         }
 
         #region View / View Model Creation
-        private IDialogView CreateView(IDialogUpdate update)
+        private IDialogView CreateView(DialogEventData eventData)
         {
             // Setup the proper dialog UI here
-            switch (update.Type)
+            switch (eventData.Type)
             {
                 case DialogEventType.Help:
                     return GetInstance<HelpDialogView>() as IDialogView;
@@ -132,16 +130,16 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     {
                         // TODO: Use Binding Somehow...
                         var view = GetInstance<NoteDialogView>() as IDialogView;
-                        (view as NoteDialogView).TitleTB.Text = (update as IDialogNoteUpdate).NoteTitle;
-                        (view as NoteDialogView).MessageTB.Text = (update as IDialogNoteUpdate).NoteMessage;
+                        (view as NoteDialogView).TitleTB.Text = (eventData as DialogNoteEventData).NoteTitle;
+                        (view as NoteDialogView).MessageTB.Text = (eventData as DialogNoteEventData).NoteMessage;
 
                         return view;
                     }
                 case DialogEventType.Identify:
                     {
                         // Get instance of each view model
-                        var consumableViewModel = GetConsumablesViewModel(update);
-                        var equipmentViewModel = GetEquipmentViewModel(update);
+                        var consumableViewModel = GetConsumablesViewModel(eventData);
+                        var equipmentViewModel = GetEquipmentViewModel(eventData);
 
                         // Get injected dual item grid to do a single select
                         return new DualItemGrid(equipmentViewModel, consumableViewModel);
@@ -150,20 +148,20 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                     {
                         // Get manually setup view / view-model
                         var view = new EquipmentItemGrid();
-                        var equipmentViewModel = GetEquipmentViewModel(update);
+                        var equipmentViewModel = GetEquipmentViewModel(eventData);
 
                         view.DataContext = equipmentViewModel;
                         return view;
                     }
                 case DialogEventType.AlterationEffect:
                     {
-                        var effect = (update as IDialogAlterationEffectUpdate).Effect;
+                        var effect = (eventData as DialogAlterationEffectEventData).Effect;
 
                         if (effect is EquipmentEnhanceAlterationEffect)
                         {
                             // Get manually setup view / view-model
                             var view = new EquipmentItemGrid();
-                            var equipmentViewModel = GetEquipmentViewModel(update);
+                            var equipmentViewModel = GetEquipmentViewModel(eventData);
 
                             view.DataContext = equipmentViewModel;
                             return view;
@@ -171,8 +169,8 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                         else if (effect is TransmuteAlterationEffect)
                         {
                             // Construct view models for transmute - also set selection mode
-                            var consumableViewModel = GetConsumablesViewModel(update);
-                            var equipmentViewModel = GetEquipmentViewModel(update);
+                            var consumableViewModel = GetConsumablesViewModel(eventData);
+                            var equipmentViewModel = GetEquipmentViewModel(eventData);
 
                             // Get injected dual item grid to do a single select
                             return new DualItemGrid(equipmentViewModel, consumableViewModel);
@@ -184,7 +182,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
                 case DialogEventType.PlayerAdvancement:
                     {
                         var view = GetInstance<PlayerAdvancementDialogView>() as IDialogView;
-                        var playerUpdate = update as IDialogPlayerAdvancementUpdate;
+                        var playerUpdate = eventData as DialogPlayerAdvancementEventData;
 
                         (view as UserControl).DataContext = new PlayerAdvancementViewModel()
                         {
@@ -241,7 +239,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
         //        managing the events / regions with this context? etc...
         //
 
-        private ConsumableItemGridViewModelBase GetConsumablesViewModel(IDialogUpdate update)
+        private ConsumableItemGridViewModelBase GetConsumablesViewModel(DialogEventData update)
         {
             ConsumableItemGridViewModelBase viewModel = null;
 
@@ -249,7 +247,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             {
                 case DialogEventType.AlterationEffect:
                     {
-                        var effect = (update as IDialogAlterationEffectUpdate).Effect;
+                        var effect = (update as DialogAlterationEffectEventData).Effect;
 
                         if (effect is TransmuteAlterationEffect)
                             viewModel = GetInstance<ConsumableTransmuteItemGridViewModel>();
@@ -275,7 +273,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             return viewModel;
         }
 
-        private EquipmentItemGridViewModelBase GetEquipmentViewModel(IDialogUpdate update)
+        private EquipmentItemGridViewModelBase GetEquipmentViewModel(DialogEventData update)
         {
             EquipmentItemGridViewModelBase viewModel = null;
 
@@ -283,7 +281,7 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog
             {
                 case DialogEventType.AlterationEffect:
                     {
-                        var effect = (update as IDialogAlterationEffectUpdate).Effect;
+                        var effect = (update as DialogAlterationEffectEventData).Effect;
 
                         if (effect is EquipmentEnhanceAlterationEffect)
                         {

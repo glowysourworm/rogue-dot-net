@@ -196,6 +196,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Router\GameRouter.cs" />
+    <Compile Include="Router\Interface\IGameRouter.cs" />
     <Compile Include="PrismExtension\RogueBootstrapper.cs" />
     <Compile Include="PrismExtension\BorderRegionAdapter.cs" />
     <Compile Include="Program.cs" />

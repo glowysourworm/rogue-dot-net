@@ -1,12 +1,11 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Enum;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Service.Interface;
@@ -45,9 +44,9 @@ namespace Rogue.NET.Scenario.Views
                 Update(modelService, scenarioUIGeometryService);
             });
 
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
-                if (update.LevelUpdateType == LevelUpdateType.PlayerLocation)
+                if (update.LevelUpdateType == LevelEventType.PlayerLocation)
                     Update(modelService, scenarioUIGeometryService);
             });
         }

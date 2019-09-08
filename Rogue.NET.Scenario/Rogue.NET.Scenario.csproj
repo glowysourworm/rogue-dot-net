@@ -370,6 +370,7 @@
     <Compile Include="Content\Views\SkillTree.xaml.cs">
       <DependentUpon>SkillTree.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controller\Enum\GameCommandMode.cs" />
     <Compile Include="Controller\Interface\IFrontEndController.cs" />
     <Compile Include="Controller\Interface\IGameController.cs" />
     <Compile Include="Controller\Interface\IScenarioController.cs" />
@@ -385,11 +386,6 @@
     <Compile Include="Converter\ItemGridViewModelTypeMultipleSelectionVisibilityConverter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelAlterationsEvent.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelStatsEvent.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelSkillsEvent.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelConsumablesEvent.cs" />
-    <Compile Include="Events\Content\PlayerSubpanel\ShowPlayerSubpanelEquipmentEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
     <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />

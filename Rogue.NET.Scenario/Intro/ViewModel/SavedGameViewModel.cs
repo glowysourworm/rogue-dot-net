@@ -1,7 +1,7 @@
 ﻿using Prism.Commands;
-using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Event.Scenario;
 using Rogue.NET.Core.Model.Enums;
 using System.Windows.Input;
 using System.Windows.Media;

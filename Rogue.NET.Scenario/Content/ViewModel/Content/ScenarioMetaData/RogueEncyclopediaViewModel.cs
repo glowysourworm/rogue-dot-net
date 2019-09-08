@@ -1,9 +1,6 @@
 ﻿using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Common.ViewModel;
 
 using System;
@@ -12,6 +9,9 @@ using System.ComponentModel.Composition;
 
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -43,13 +43,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             });
 
             // Update event
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
                 switch (update.LevelUpdateType)
                 {
-                    case LevelUpdateType.EncyclopediaCurseIdentify:
-                    case LevelUpdateType.EncyclopediaIdentify:
-                    case LevelUpdateType.PlayerSkillSetAdd:
+                    case LevelEventType.EncyclopediaCurseIdentify:
+                    case LevelEventType.EncyclopediaIdentify:
+                    case LevelEventType.PlayerSkillSetAdd:
                         UpdateOrAdd(modelService, scenarioResourceService);
                         break;
                 }

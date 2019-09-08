@@ -9,23 +9,20 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
-using System.Windows;
 using LiveCharts;
 using LiveCharts.Wpf;
 using LiveCharts.Defaults;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Prism.Commands;
-using Rogue.NET.Common.Extension;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Validation.Interface;
-using Prism.Events;
-using Rogue.NET.Core.Event.Splash;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {
@@ -161,7 +158,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         private void Validate()
         {
             // Show loading screen because of validation
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
@@ -182,7 +179,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             (this.CalculateCommand as DelegateCommand).RaiseCanExecuteChanged();
 
             // Hide loading screen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading

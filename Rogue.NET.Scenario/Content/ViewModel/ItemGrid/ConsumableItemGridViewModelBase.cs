@@ -1,16 +1,11 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
-using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
 
 using Consumable = Rogue.NET.Core.Model.Scenario.Content.Item.Consumable;

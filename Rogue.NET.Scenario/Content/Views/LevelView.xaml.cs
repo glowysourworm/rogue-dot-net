@@ -1,13 +1,13 @@
-﻿using Rogue.NET.Core.Event.Splash;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Events.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -78,7 +78,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void ObjectivesButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogEventData()
             {
                 Type = DialogEventType.Objective
             });
@@ -86,7 +86,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void HelpButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogEventData()
             {
                 Type = DialogEventType.Help
             });

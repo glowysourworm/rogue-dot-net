@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Command;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Processing.Command.Backend;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
 using System;
@@ -72,11 +72,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
             switch (this.PrimaryMode)
             {
                 case EquipmentPrimaryMode.Equip:
-                    return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Equip, Compass.Null, itemId));
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Equip, Compass.Null, itemId));
                 case EquipmentPrimaryMode.Drop:
-                    return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Drop, Compass.Null, itemId));
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Drop, Compass.Null, itemId));
                 default:
                     throw new Exception("Unhandled EquipmentPrimaryMode");
             }

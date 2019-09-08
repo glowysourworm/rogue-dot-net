@@ -1,6 +1,4 @@
 ﻿using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Scenario.Content.Views.Dialog.Interface
 {

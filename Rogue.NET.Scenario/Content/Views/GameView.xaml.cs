@@ -1,11 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Model.Events;
-using Rogue.NET.Core.Event.Splash;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Events;
@@ -13,6 +8,11 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Constant;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 
 namespace Rogue.NET.Scenario.Views
 {
@@ -153,7 +153,7 @@ namespace Rogue.NET.Scenario.Views
 
         private void CommandsButton_Click(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogUpdate()
+            _eventAggregator.GetEvent<DialogEvent>().Publish(new DialogEventData()
             {
                 Type = DialogEventType.Commands
             });

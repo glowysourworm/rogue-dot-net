@@ -1,7 +1,6 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 
-namespace Rogue.NET.Common.Events
+namespace Rogue.NET.Core.Event
 {
     /// <summary>
     /// Application exit event

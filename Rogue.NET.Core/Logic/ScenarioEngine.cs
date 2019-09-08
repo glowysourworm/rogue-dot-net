@@ -10,30 +10,23 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using System;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
-using Rogue.NET.Core.Logic.Processing.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Scenario.Character.Extension;
-using Rogue.NET.Core.Logic.Static;
 using System.Collections.Generic;
-using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Core.Logic.Content.Enum;
-using Rogue.NET.Core.Logic.Processing.Factory.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using System.Windows.Media;
-using Rogue.NET.Core.Model.Scenario.Alteration.Common;
-using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IScenarioEngine))]
-    public class ScenarioEngine : IScenarioEngine
+    public class ScenarioEngine : RogueEngine, IScenarioEngine
     {
         readonly ILayoutEngine _layoutEngine;
         readonly IContentEngine _contentEngine;
@@ -44,10 +37,7 @@ namespace Rogue.NET.Core.Logic
         readonly IPlayerProcessor _playerProcessor;        
         readonly IAlterationProcessor _alterationProcessor;
         readonly IAlterationGenerator _alterationGenerator;
-        readonly IRogueUpdateFactory _rogueUpdateFactory;
-
-        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
+        readonly IBackendEventDataFactory _backendEventDataFactory;
 
         [ImportingConstructor]
         public ScenarioEngine(
@@ -60,7 +50,7 @@ namespace Rogue.NET.Core.Logic
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,
             IAlterationGenerator alterationGenerator,
-            IRogueUpdateFactory rogueUpdateFactory)
+            IBackendEventDataFactory backendEventDataFactory)
         {
             _layoutEngine = layoutEngine;
             _contentEngine = contentEngine;
@@ -71,7 +61,7 @@ namespace Rogue.NET.Core.Logic
             _playerProcessor = playerProcessor;
             _alterationProcessor = alterationProcessor;
             _alterationGenerator = alterationGenerator;
-            _rogueUpdateFactory = rogueUpdateFactory;
+            _backendEventDataFactory = backendEventDataFactory;
         }
 
         // Pre-check player state before applying desired command
@@ -122,7 +112,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Player.Location = desiredLocation;
 
                 // Notify Listener queue
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id, RogueUpdatePriority.High));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
             }
 
             //See what the player stepped on... Prefer Items first
@@ -151,38 +141,38 @@ namespace Rogue.NET.Core.Logic
 
             // Player Advancement Event
             if (playerAdvancement)
-                RogueUpdateEvent(this, _rogueUpdateFactory.DialogPlayerAdvancement(player, 1));
+                OnDialogEvent(_backendEventDataFactory.DialogPlayerAdvancement(player, 1));
 
             // Update player stats
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerStats, _modelService.Player.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerStats, _modelService.Player.Id));
 
             //I'm Not DEEEAD!
             if (player.Hunger >= 100 || player.Hp <= 0.1)
             {
                 var killedBy = _modelService.GetKilledBy();
                 if (killedBy != null)
-                    RogueUpdateEvent(this, _rogueUpdateFactory.PlayerDeath("Killed by " + killedBy));
+                    OnScenarioEvent(_backendEventDataFactory.PlayerDeath("Killed by " + killedBy));
                 else
-                    RogueUpdateEvent(this, _rogueUpdateFactory.PlayerDeath("Had a rough day..."));
+                    OnScenarioEvent(_backendEventDataFactory.PlayerDeath("Had a rough day..."));
             }
 
             // Update Model Content: 0) End Targeting
             //                       1) Update visible contents
             //                       2) Calculate model delta to prepare for UI
 
-            foreach (var target in _modelService.GetTargetedEnemies())
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.TargetingEnd, target.Id));
+            // TODO:ROUTER
+            //foreach (var target in _modelService.GetTargetedEnemies())
+            //    OnScenarioEvent(this, _backendEventDataFactory.Update(LevelUpdateType.TargetingEnd, target.Id));
 
             _modelService.UpdateVisibility();
-            _modelService.ClearTargetedEnemies();
             
 
             // Queue Updates for level
             // QueueLevelUpdate(LevelUpdateType.LayoutVisible, string.Empty);
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentVisible, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentVisible, ""));
 
             // Fire a tick event to update level ticks
-            RogueUpdateEvent(this, _rogueUpdateFactory.Tick());
+            OnScenarioEvent(_backendEventDataFactory.Tick());
         }
 
         public void Attack(Compass direction)
@@ -233,59 +223,62 @@ namespace Rogue.NET.Core.Logic
         }
         public LevelContinuationAction Throw(string itemId)
         {
-            if (!_modelService.GetTargetedEnemies().Any())
-                return LevelContinuationAction.DoNothing;
+            throw new Exception();
 
-            var player = _modelService.Player;
-            var enemy = _modelService.GetTargetedEnemies()
-                                     .First();
+            // TODO:ROUTER
+            //if (!_modelService.GetTargetedEnemies().Any())
+            //    return LevelContinuationAction.DoNothing;
 
-            var thrownItem = player.Consumables[itemId];
+            //var player = _modelService.Player;
+            //var enemy = _modelService.GetTargetedEnemies()
+            //                         .First();
 
-            // Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
-            if (thrownItem.LevelRequired > player.Level)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
-                return LevelContinuationAction.DoNothing;
-            }
+            //var thrownItem = player.Consumables[itemId];
 
-            // Check Character Class Requirement
-            if (thrownItem.HasCharacterClassRequirement &&
-                player.Class != thrownItem.CharacterClass)
-            {
-                _scenarioMessageService.Publish(
-                    ScenarioMessagePriority.Normal,
-                    "Required Character Class Not Met!",
-                    thrownItem.CharacterClass);
+            //// Check that thrown item has level requirement met (ALSO DONE ON FRONT END)
+            //if (thrownItem.LevelRequired > player.Level)
+            //{
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Required Level {0} Not Met!", thrownItem.LevelRequired.ToString());
+            //    return LevelContinuationAction.DoNothing;
+            //}
 
-                return LevelContinuationAction.DoNothing;
-            }
+            //// Check Character Class Requirement
+            //if (thrownItem.HasCharacterClassRequirement &&
+            //    player.Class != thrownItem.CharacterClass)
+            //{
+            //    _scenarioMessageService.Publish(
+            //        ScenarioMessagePriority.Normal,
+            //        "Required Character Class Not Met!",
+            //        thrownItem.CharacterClass);
 
-            // TBD: Create general consumable for projectiles that has melee parameters
-            if (thrownItem.HasProjectileAlteration)
-            {
-                // Create Alteration 
-                var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
+            //    return LevelContinuationAction.DoNothing;
+            //}
 
-                // If Alteration Cost is Met (PUBLISHES MESSAGES)
-                if (_alterationEngine.Validate(_modelService.Player, alteration))
-                {
-                    // Queue the alteration and remove the item
-                    _alterationEngine.Queue(_modelService.Player, alteration);
+            //// TBD: Create general consumable for projectiles that has melee parameters
+            //if (thrownItem.HasProjectileAlteration)
+            //{
+            //    // Create Alteration 
+            //    var alteration = _alterationGenerator.GenerateAlteration(thrownItem.ProjectileAlteration);
 
-                    // Remove item from inventory
-                    player.Consumables.Remove(itemId);
+            //    // If Alteration Cost is Met (PUBLISHES MESSAGES)
+            //    if (_alterationEngine.Validate(_modelService.Player, alteration))
+            //    {
+            //        // Queue the alteration and remove the item
+            //        _alterationEngine.Queue(_modelService.Player, alteration);
 
-                    // Queue Level Update - Player Consumables Remove
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
+            //        // Remove item from inventory
+            //        player.Consumables.Remove(itemId);
 
-                    return LevelContinuationAction.ProcessTurnNoRegeneration;
-                }
-                else
-                    return LevelContinuationAction.ProcessTurnNoRegeneration;
-            }
+            //        // Queue Level Update - Player Consumables Remove
+            //        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, itemId));
 
-            return LevelContinuationAction.DoNothing;
+            //        return LevelContinuationAction.ProcessTurnNoRegeneration;
+            //    }
+            //    else
+            //        return LevelContinuationAction.ProcessTurnNoRegeneration;
+            //}
+
+            //return LevelContinuationAction.DoNothing;
         }
         public LevelContinuationAction Consume(string itemId)
         {
@@ -320,20 +313,22 @@ namespace Rogue.NET.Core.Logic
             // Check for targeting
             if (consumable.HasAlteration)
             {
-                var targetedEnemy = _modelService.GetTargetedEnemies()
-                                                 .FirstOrDefault();
+                // TODO:ROUTER
+                //var targetedEnemy = _modelService.GetTargetedEnemies()
+                //                                 .FirstOrDefault();
 
-                if (alteration.RequiresTarget() && targetedEnemy == null)
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
-                    return LevelContinuationAction.DoNothing;
-                }
+                //if (alteration.RequiresTarget() && targetedEnemy == null)
+                //{
+                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
+                //    return LevelContinuationAction.DoNothing;
+                //}
 
-                else if (alteration.RequiresCharacterInRange() && !_modelService.GetVisibleCharacters(player).Any())
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must have enemies in range");
-                    return LevelContinuationAction.DoNothing;
-                }
+                //else if (alteration.RequiresCharacterInRange() && 
+                //        !_modelService.CharacterContentInformation.GetVisibleCharacters(player).Any())
+                //{
+                //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must have enemies in range");
+                //    return LevelContinuationAction.DoNothing;
+                //}
             }
 
             // Proceeding with use - so check for identify on use
@@ -346,7 +341,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.ScenarioEncyclopedia[consumable.RogueName].IsCurseIdentified = true;
 
                 // Update UI
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, consumable.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, consumable.Id));
             }
 
             // Validate for the Alteration
@@ -364,7 +359,7 @@ namespace Rogue.NET.Core.Logic
                         player.Consumables.Remove(itemId);
 
                         // Queue an update
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, itemId));
                     }
                     break;
                 case ConsumableType.MultipleUses:
@@ -378,7 +373,7 @@ namespace Rogue.NET.Core.Logic
                             player.Consumables.Remove(itemId);
 
                             // Queue an update
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, itemId));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, itemId));
                         }
                     }
                     break;
@@ -399,8 +394,8 @@ namespace Rogue.NET.Core.Logic
                     _modelService.ScenarioEncyclopedia[consumable.LearnedSkill.RogueName].IsIdentified = true;
 
                     // Queue an update for the skill sets
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetAdd, ""));
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, consumable.LearnedSkill.Id));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetAdd, ""));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, consumable.LearnedSkill.Id));
 
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Good, player.RogueName + " has been granted a new skill!  \"" + consumable.LearnedSkill.RogueName + "\"");
                 }
@@ -412,7 +407,7 @@ namespace Rogue.NET.Core.Logic
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Reading " + displayName);
 
-                RogueUpdateEvent(this, _rogueUpdateFactory.DialogNote(consumable.NoteMessage, displayName));
+                OnDialogEvent(_backendEventDataFactory.DialogNote(consumable.NoteMessage, displayName));
 
                 return LevelContinuationAction.ProcessTurn;
             }
@@ -437,12 +432,12 @@ namespace Rogue.NET.Core.Logic
 
             // Queue an update
             if (item is Consumable)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableAddOrUpdate, itemId));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableAddOrUpdate, itemId));
             else if (item is Equipment)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemId));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, itemId));
 
             // Queue meta-data update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, itemId));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, itemId));
         }
         public void EnhanceEquipment(EquipmentEnhanceAlterationEffect effect, string itemId)
         {
@@ -453,7 +448,7 @@ namespace Rogue.NET.Core.Logic
             _alterationProcessor.ApplyEquipmentEnhanceEffect(_modelService.Player, effect, equipment);
 
             // Queue update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemId));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, itemId));
         }
         public void Uncurse(string itemId)
         {
@@ -469,7 +464,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Player.Alteration.Remove(equipment.CurseAlteration.Name);
 
             // Queue an update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, itemId));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, itemId));
         }
         public void Drop(string itemId)
         {
@@ -477,124 +472,129 @@ namespace Rogue.NET.Core.Logic
         }
         public LevelContinuationAction Fire()
         {
-            var rangeWeapon = _modelService.Player.Equipment.Values.FirstOrDefault(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
-            var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
+            throw new Exception("");
 
-            if (rangeWeapon == null)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Range Weapons are equipped");
+            // TODO:ROUTER
+            //var rangeWeapon = _modelService.Player.Equipment.Values.FirstOrDefault(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
+            //var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
 
-            else if (targetedEnemy == null)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
+            //if (rangeWeapon == null)
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Range Weapons are equipped");
 
-            else if (Calculator.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
+            //else if (targetedEnemy == null)
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Must first target an enemy");
 
-            else
-            {
-                //Should find a better way to identify ammo
-                var ammo = _modelService.Player.Consumables.Values.FirstOrDefault(z => z.RogueName == rangeWeapon.AmmoName);
-                if (ammo == null)
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Ammunition for your weapon");
-                    return LevelContinuationAction.ProcessTurn;
-                }
+            //else if (Calculator.RoguianDistance(_modelService.Player.Location, targetedEnemy.Location) <= ModelConstants.MinFiringDistance)
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Too close to fire your weapon");
 
-                // Check Character Class Requirement
-                if (ammo.HasCharacterClassRequirement &&
-                    _modelService.Player.Class != ammo.CharacterClass)
-                {
-                    _scenarioMessageService.Publish(
-                        ScenarioMessagePriority.Normal,
-                        "Required Character Class Not Met!",
-                        ammo.CharacterClass);
+            //else
+            //{
+            //    //Should find a better way to identify ammo
+            //    var ammo = _modelService.Player.Consumables.Values.FirstOrDefault(z => z.RogueName == rangeWeapon.AmmoName);
+            //    if (ammo == null)
+            //    {
+            //        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Ammunition for your weapon");
+            //        return LevelContinuationAction.ProcessTurn;
+            //    }
 
-                    return LevelContinuationAction.ProcessTurn;
-                }
+            //    // Check Character Class Requirement
+            //    if (ammo.HasCharacterClassRequirement &&
+            //        _modelService.Player.Class != ammo.CharacterClass)
+            //    {
+            //        _scenarioMessageService.Publish(
+            //            ScenarioMessagePriority.Normal,
+            //            "Required Character Class Not Met!",
+            //            ammo.CharacterClass);
 
-                // Remove ammo from inventory
-                _modelService.Player.Consumables.Remove(ammo.Id);
+            //        return LevelContinuationAction.ProcessTurn;
+            //    }
 
-                // Queue update
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, ammo.Id));
+            //    // Remove ammo from inventory
+            //    _modelService.Player.Consumables.Remove(ammo.Id);
 
-                // Calculate hit - if enemy hit then queue ammunition alteration
-                var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
+            //    // Queue update
+            //    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, ammo.Id));
 
-                // Process the animation
-                if (ammo.AmmoAnimationGroup.Animations.Any())
-                {
-                    RogueUpdateEvent(this, 
-                        _rogueUpdateFactory.Animation(
-                            ammo.AmmoAnimationGroup.Animations, 
-                            _modelService.Player.Location, 
-                            new GridLocation[] { targetedEnemy.Location }));
-                }
-            }
-            return LevelContinuationAction.ProcessTurn;
+            //    // Calculate hit - if enemy hit then queue ammunition alteration
+            //    var enemyHit = _interactionProcessor.CalculateInteraction(_modelService.Player, targetedEnemy, PhysicalAttackType.Range);
+
+            //    // Process the animation
+            //    if (ammo.AmmoAnimationGroup.Animations.Any())
+            //    {
+            //        RogueUpdateEvent(this, 
+            //            _rogueUpdateFactory.Animation(
+            //                ammo.AmmoAnimationGroup.Animations, 
+            //                _modelService.Player.Location, 
+            //                new GridLocation[] { targetedEnemy.Location }));
+            //    }
+            //}
+            //return LevelContinuationAction.ProcessTurn;
         }
         public void Target(Compass direction)
         {
-            var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
-            var enemiesInRange = _modelService.GetVisibleCharacters(_modelService.Player)
-                                              .Cast<Enemy>()
-                                              .ToList();
+            throw new Exception();
+            // TODO:ROUTER
+            //var targetedEnemy = _modelService.GetTargetedEnemies().FirstOrDefault();
+            //var enemiesInRange = _modelService.GetVisibleCharacters(_modelService.Player)
+            //                                  .Cast<Enemy>()
+            //                                  .ToList();
 
-            // Filter out invisible enemies
-            if (!_modelService.Player.Alteration.CanSeeInvisible())
-            {
-                enemiesInRange = enemiesInRange.Where(x => !x.IsInvisible && !x.Is(CharacterStateType.Invisible))
-                                               .ToList();
-            }
+            //// Filter out invisible enemies
+            //if (!_modelService.Player.Alteration.CanSeeInvisible())
+            //{
+            //    enemiesInRange = enemiesInRange.Where(x => !x.IsInvisible && !x.Is(CharacterStateType.Invisible))
+            //                                   .ToList();
+            //}
 
-            Enemy target = null;
+            //Enemy target = null;
 
-            if (targetedEnemy != null)
-            {
-                // End targeting of current target
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.TargetingEnd, targetedEnemy.Id));
+            //if (targetedEnemy != null)
+            //{
+            //    // End targeting of current target
+            //    RogueUpdateEvent(this, _backendEventDataFactory.Update(LevelUpdateType.TargetingEnd, targetedEnemy.Id));
 
-                int targetedEnemyIndex = enemiesInRange.IndexOf(targetedEnemy);
-                switch (direction)
-                {
-                    case Compass.E:
-                        {
-                            if (targetedEnemyIndex + 1 == enemiesInRange.Count)
-                                target = enemiesInRange[0];
-                            else
-                                target = enemiesInRange[targetedEnemyIndex + 1];
-                        }
-                        break;
-                    case Compass.W:
-                        {
-                            if (targetedEnemyIndex - 1 == -1)
-                                target = enemiesInRange[enemiesInRange.Count - 1];
-                            else
-                                target = enemiesInRange[targetedEnemyIndex - 1];
-                        }
-                        break;
-                    default:
-                        target = enemiesInRange[0];
-                        break;
-                }
-            }
-            else
-            {
-                if (enemiesInRange.Count > 0)
-                    target = enemiesInRange[0];
-            }
+            //    int targetedEnemyIndex = enemiesInRange.IndexOf(targetedEnemy);
+            //    switch (direction)
+            //    {
+            //        case Compass.E:
+            //            {
+            //                if (targetedEnemyIndex + 1 == enemiesInRange.Count)
+            //                    target = enemiesInRange[0];
+            //                else
+            //                    target = enemiesInRange[targetedEnemyIndex + 1];
+            //            }
+            //            break;
+            //        case Compass.W:
+            //            {
+            //                if (targetedEnemyIndex - 1 == -1)
+            //                    target = enemiesInRange[enemiesInRange.Count - 1];
+            //                else
+            //                    target = enemiesInRange[targetedEnemyIndex - 1];
+            //            }
+            //            break;
+            //        default:
+            //            target = enemiesInRange[0];
+            //            break;
+            //    }
+            //}
+            //else
+            //{
+            //    if (enemiesInRange.Count > 0)
+            //        target = enemiesInRange[0];
+            //}
 
-            // Clear targeted Enemies regardless of next target
-            _modelService.ClearTargetedEnemies();
+            //// Clear targeted Enemies regardless of next target
+            //_modelService.ClearTargetedEnemies();
 
-            // Start targeting of Enemy
-            if (target != null)
-            {
-                // Set the targeted enemy
-                _modelService.SetTargetedEnemy(target);
+            //// Start targeting of Enemy
+            //if (target != null)
+            //{
+            //    // Set the targeted enemy
+            //    _modelService.SetTargetedEnemy(target);
 
-                // Queue update to level to show animation
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.TargetingStart, target.Id));
-            }
+            //    // Queue update to level to show animation
+            //    RogueUpdateEvent(this, _backendEventDataFactory.Update(LevelUpdateType.TargetingStart, target.Id));
+            //}
         }
         public void SelectSkill(string skillId)
         {
@@ -612,8 +612,8 @@ namespace Rogue.NET.Core.Logic
                 skillSet.SelectSkill(skillId);
 
                 // Update Player Symbol
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, player.Id));
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, player.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, player.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, player.Id));
             }
         }
         public void CycleActiveSkillSet()
@@ -685,8 +685,8 @@ namespace Rogue.NET.Core.Logic
             }
 
             // Queue update for all skill sets
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
         }
         public void UnlockSkill(string skillId)
         {
@@ -712,78 +712,80 @@ namespace Rogue.NET.Core.Logic
                     if (skillSet.SelectedSkill == null)
                         skillSet.SelectSkill(skillId);
 
-                    RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
+                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, ""));
                 }
             }
         }
         public LevelContinuationAction InvokePlayerSkill()
         {
-            var activeSkillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.IsActive == true);
+            throw new Exception();
+            // TODO:ROUTER
+            //var activeSkillSet = _modelService.Player.SkillSets.FirstOrDefault(z => z.IsActive == true);
 
-            // No Active Skill Set
-            if (activeSkillSet == null)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
-                return LevelContinuationAction.DoNothing;
-            }
+            //// No Active Skill Set
+            //if (activeSkillSet == null)
+            //{
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
+            //    return LevelContinuationAction.DoNothing;
+            //}
 
-            // No Current Skill (Could throw Exception)
-            var currentSkill = activeSkillSet.GetCurrentSkillAlteration();
-            if (currentSkill == null)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
-                return LevelContinuationAction.DoNothing;
-            }
+            //// No Current Skill (Could throw Exception)
+            //var currentSkill = activeSkillSet.GetCurrentSkillAlteration();
+            //if (currentSkill == null)
+            //{
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Active Skill - (See Skills Panel to Set)");
+            //    return LevelContinuationAction.DoNothing;
+            //}
 
-            var enemyTargeted = _modelService.GetTargetedEnemies().FirstOrDefault();
-            var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
+            //var enemyTargeted = _modelService.GetTargetedEnemies().FirstOrDefault();
+            //var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
 
-            // Requires Target
-            if (skillAlteration.RequiresTarget() && enemyTargeted == null)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, activeSkillSet.RogueName + " requires a targeted enemy");
-                return LevelContinuationAction.DoNothing;
-            }
+            //// Requires Target
+            //if (skillAlteration.RequiresTarget() && enemyTargeted == null)
+            //{
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, activeSkillSet.RogueName + " requires a targeted enemy");
+            //    return LevelContinuationAction.DoNothing;
+            //}
 
-            // Meets Alteration Cost?
-            if (!_alterationEngine.Validate(_modelService.Player, skillAlteration))
-                return LevelContinuationAction.DoNothing;
+            //// Meets Alteration Cost?
+            //if (!_alterationEngine.Validate(_modelService.Player, skillAlteration))
+            //    return LevelContinuationAction.DoNothing;
 
-            // For passives / auras - work with IsTurnedOn flag
-            if (skillAlteration.IsPassiveOrAura())
-            {
-                // Turn off passive if it's turned on
-                if (activeSkillSet.IsTurnedOn)
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skillAlteration.RogueName);
+            //// For passives / auras - work with IsTurnedOn flag
+            //if (skillAlteration.IsPassiveOrAura())
+            //{
+            //    // Turn off passive if it's turned on
+            //    if (activeSkillSet.IsTurnedOn)
+            //    {
+            //        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Deactivating - " + skillAlteration.RogueName);
 
-                    // Pass - through method is safe
-                    _modelService.Player.Alteration.Remove(currentSkill.Name);
+            //        // Pass - through method is safe
+            //        _modelService.Player.Alteration.Remove(currentSkill.Name);
 
-                    activeSkillSet.IsTurnedOn = false;
-                }
-                // Turn on the passive and queue processing
-                else
-                {
-                    activeSkillSet.IsTurnedOn = true;
+            //        activeSkillSet.IsTurnedOn = false;
+            //    }
+            //    // Turn on the passive and queue processing
+            //    else
+            //    {
+            //        activeSkillSet.IsTurnedOn = true;
 
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
+            //        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
 
-                    // Queue processing -> Animation -> Process parameters (backend)
-                    _alterationEngine.Queue(_modelService.Player, skillAlteration);
-                }
-            }
-            // All other skill types
-            else
-            {
-                // Publish message
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
+            //        // Queue processing -> Animation -> Process parameters (backend)
+            //        _alterationEngine.Queue(_modelService.Player, skillAlteration);
+            //    }
+            //}
+            //// All other skill types
+            //else
+            //{
+            //    // Publish message
+            //    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Invoking - " + skillAlteration.RogueName);
 
-                // Queue processing -> Animation -> Process parameters (backend)
-                _alterationEngine.Queue(_modelService.Player, skillAlteration);
-            }
+            //    // Queue processing -> Animation -> Process parameters (backend)
+            //    _alterationEngine.Queue(_modelService.Player, skillAlteration);
+            //}
 
-            return LevelContinuationAction.ProcessTurn;
+            //return LevelContinuationAction.ProcessTurn;
         }
         public LevelContinuationAction InvokeDoodad()
         {
@@ -800,10 +802,10 @@ namespace Rogue.NET.Core.Logic
             _modelService.ScenarioEncyclopedia[doodad.RogueName].IsIdentified = true;
 
             // Update meta-data UI
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, doodad.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, doodad.Id));
 
             // Update statistics
-            RogueUpdateEvent(this, _rogueUpdateFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsDoodadUsed, doodad.RogueName));
+            OnScenarioEvent(_backendEventDataFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsDoodadUsed, doodad.RogueName));
 
             switch (doodad.Type)
             {
@@ -841,13 +843,13 @@ namespace Rogue.NET.Core.Logic
                         switch (((DoodadNormal)doodad).NormalType)
                         {
                             case DoodadNormalType.SavePoint:
-                                RogueUpdateEvent(this, _rogueUpdateFactory.Save());
+                                OnScenarioEvent(_backendEventDataFactory.Save());
                                 break;
                             case DoodadNormalType.StairsDown:
-                                RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
+                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
                                 break;
                             case DoodadNormalType.StairsUp:
-                                RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(_modelService.Level.Number - 1, PlayerStartLocation.StairsDown));
+                                OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Number - 1, PlayerStartLocation.StairsDown));
                                 break;
                         }
                     }

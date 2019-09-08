@@ -1,10 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
 using Rogue.NET.Common.Extension;
@@ -15,8 +12,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.ComponentModel.Composition;
-using System.Linq.Expressions;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Event.Level;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
 {
@@ -67,18 +65,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid
             this.Items = new ObservableCollection<TViewModel>();
 
             // Player Events
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
                 // TODO: This could be refined by the inherited classes
                 switch (update.LevelUpdateType)
                 {
-                    case LevelUpdateType.PlayerConsumableRemove:
-                    case LevelUpdateType.PlayerConsumableAddOrUpdate:
-                    case LevelUpdateType.PlayerEquipmentRemove:
-                    case LevelUpdateType.PlayerEquipmentAddOrUpdate:
-                    case LevelUpdateType.PlayerAll:
-                    case LevelUpdateType.EncyclopediaCurseIdentify:
-                    case LevelUpdateType.EncyclopediaIdentify:
+                    case LevelEventType.PlayerConsumableRemove:
+                    case LevelEventType.PlayerConsumableAddOrUpdate:
+                    case LevelEventType.PlayerEquipmentRemove:
+                    case LevelEventType.PlayerEquipmentAddOrUpdate:
+                    case LevelEventType.PlayerAll:
+                    case LevelEventType.EncyclopediaCurseIdentify:
+                    case LevelEventType.EncyclopediaIdentify:
                         Update();
                         break;
                     default:

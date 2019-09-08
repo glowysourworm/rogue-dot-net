@@ -3,7 +3,8 @@ using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Content.Interface;
+using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using System.Collections.Generic;
 
@@ -40,6 +41,16 @@ namespace Rogue.NET.Core.Service.Interface
         Player Player { get; }
 
         /// <summary>
+        /// Exposes layout information per character [ visible locations, line-of-sight, explored, revealed ]
+        /// </summary>
+        ICharacterLayoutInformation CharacterLayoutInformation { get; }
+
+        /// <summary>
+        /// Exposes content information per character [ visible content, revealed content, line-of-sight content ]
+        /// </summary>
+        ICharacterContentInformation CharacterContentInformation { get; }
+
+        /// <summary>
         /// "Encyclopedia" Rogue-Tanica. Contains all the meta-data for the Scenario objects.
         /// </summary>
         IDictionary<string, ScenarioMetaData> ScenarioEncyclopedia { get; }
@@ -61,48 +72,6 @@ namespace Rogue.NET.Core.Service.Interface
         void UpdateVisibility();
 
         /// <summary>
-        /// Statefully maintained collection of locations visible to a Character
-        /// </summary>
-        IEnumerable<GridLocation> GetVisibleLocations(Character character);
-
-        /// <summary>
-        /// Statefully maintained collection of locations in the Player's line of sight
-        /// </summary>
-        IEnumerable<GridLocation> GetLineOfSightLocations(Character character);
-
-        /// <summary>
-        /// Statefully maintained collection of auras per character
-        /// </summary>
-        IEnumerable<GridLocation> GetAuraLocations(Character character, string alterationEffectId);
-
-        /// <summary>
-        /// Statefully maintained collection of locations that player has explored
-        /// </summary>
-        IEnumerable<GridLocation> GetExploredLocations();
-
-        /// <summary>
-        /// Statefully maintained collection of locations that are revealed
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<GridLocation> GetRevealedLocations();
-
-        /// <summary>
-        /// Statefully maintained collection of level contents visible to a Character. THIS DOES NOT INCLUDE
-        /// INVISIBILITY ALTERATION EFFECTS
-        /// </summary>
-        bool IsVisibleTo(Character sourceCharacter, ScenarioObject scenarioObject);
-
-        /// <summary>
-        /// Statefully maintained collection of enemies visible to a Character
-        /// </summary>
-        IEnumerable<Character> GetVisibleCharacters(Character character);
-
-        /// <summary>
-        /// Statefully maintained targeted enemy collection
-        /// </summary>
-        IEnumerable<Enemy> GetTargetedEnemies();
-
-        /// <summary>
         /// Returns enemy to have slain the Player
         /// </summary>
         string GetKilledBy();
@@ -111,16 +80,6 @@ namespace Rogue.NET.Core.Service.Interface
         /// Sets enemy or alteration to have slain the Player
         /// </summary>
         void SetKilledBy(string killedBy);
-
-        /// <summary>
-        /// Sets enemy targeted
-        /// </summary>
-        void SetTargetedEnemy(Enemy enemy);
-
-        /// <summary>
-        /// Clears targeted enemy list
-        /// </summary>
-        void ClearTargetedEnemies();
 
         /// <summary>
         /// Method to get display name for Scenario Object

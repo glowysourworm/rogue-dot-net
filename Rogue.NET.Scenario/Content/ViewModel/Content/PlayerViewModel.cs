@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
 
@@ -8,9 +7,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Collections.Generic;
 using System;
-using Rogue.NET.Core.Logic.Processing.Interface;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
@@ -22,6 +18,10 @@ using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Processing.Event.Backend;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -378,7 +378,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             this.MeleeAttackAttributes = new ObservableCollection<AttackAttributeViewModel>();
             this.Alterations = new ObservableCollection<AlterationListViewModel>();
 
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe(update =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
                 // Filtered based on update type
                 OnLevelUpdate(update);
@@ -391,18 +391,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             });
         }
 
-        private void OnLevelUpdate(ILevelUpdate update)
+        private void OnLevelUpdate(LevelEventData update)
         {
             switch (update.LevelUpdateType)
             {
-                case LevelUpdateType.PlayerEquipmentRemove:
-                case LevelUpdateType.PlayerEquipmentAddOrUpdate:
-                case LevelUpdateType.PlayerSkillSetAdd:
-                case LevelUpdateType.PlayerSkillSetRefresh:
-                case LevelUpdateType.PlayerStats:
-                case LevelUpdateType.PlayerAll:
-                case LevelUpdateType.EncyclopediaCurseIdentify:
-                case LevelUpdateType.EncyclopediaIdentify:
+                case LevelEventType.PlayerEquipmentRemove:
+                case LevelEventType.PlayerEquipmentAddOrUpdate:
+                case LevelEventType.PlayerSkillSetAdd:
+                case LevelEventType.PlayerSkillSetRefresh:
+                case LevelEventType.PlayerStats:
+                case LevelEventType.PlayerAll:
+                case LevelEventType.EncyclopediaCurseIdentify:
+                case LevelEventType.EncyclopediaIdentify:
                     ProcessUpdate();
                     break;
                 default:

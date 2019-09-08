@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.Events.ScenarioEditor;
-using Rogue.NET.ScenarioEditor.Events;
+﻿using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.Interface;
 
@@ -14,6 +13,7 @@ using Microsoft.Win32;
 using System.IO;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.ScenarioEditor;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {

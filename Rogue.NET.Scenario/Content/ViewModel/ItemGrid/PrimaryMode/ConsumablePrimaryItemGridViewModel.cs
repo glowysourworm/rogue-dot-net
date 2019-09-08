@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Command;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
+using Rogue.NET.Core.Processing.Command.Backend;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
 using System;
@@ -79,14 +79,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode
             switch (this.PrimaryMode)
             {
                 case ConsumablePrimaryMode.Consume:
-                    return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Consume, Compass.Null, itemId));
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Consume, Compass.Null, itemId));
                 case ConsumablePrimaryMode.Throw:
-                    return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Throw, Compass.Null, itemId));
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Throw, Compass.Null, itemId));
                 case ConsumablePrimaryMode.Drop:
-                    return eventAggregator.GetEvent<UserCommandEvent>()
-                                          .Publish(new LevelCommandEventArgs(LevelActionType.Drop, Compass.Null, itemId));
+                    return eventAggregator.GetEvent<LevelCommand>()
+                                          .Publish(new LevelCommandData(LevelCommandType.Drop, Compass.Null, itemId));
                 default:
                     throw new Exception("Unhandled ConsumablePrimaryMode");
             }

@@ -44,6 +44,9 @@ namespace Rogue.NET.Core.Service
         // Enemy to have slain the player
         string _killedBy;
 
+        public ICharacterLayoutInformation CharacterLayoutInformation { get { return _characterLayoutInformation; } }
+        public ICharacterContentInformation CharacterContentInformation { get { return _characterContentInformation; } }
+
         [ImportingConstructor]
         public ModelService(
                 IRayTracer rayTracer, 
@@ -183,62 +186,16 @@ namespace Rogue.NET.Core.Service
                         ModelConstants.UnIdentifiedDisplayName;
         }
 
-        public IEnumerable<Enemy> GetTargetedEnemies()
-        {
-            return _targetedEnemies;
-        }
-        public void ClearTargetedEnemies()
-        {
-            _targetedEnemies.Clear();
-        }
         public string GetKilledBy()
         {
             return _killedBy;
         }
+
         public void SetKilledBy(string killedBy)
         {
             _killedBy = killedBy;
         }
 
-        public bool IsVisibleTo(Character sourceCharacter, ScenarioObject scenarioObject)
-        {
-            return _characterContentInformation.GetVisibleContents(sourceCharacter)
-                                               .Contains(scenarioObject);
-        }
-
-        public IEnumerable<GridLocation> GetVisibleLocations(Character character)
-        {
-            return _characterLayoutInformation.GetVisibleLocations(character);
-        }
-
-        public IEnumerable<GridLocation> GetLineOfSightLocations(Character character)
-        {
-            return _characterLayoutInformation.GetLineOfSightLocations(character);
-        }
-
-        public IEnumerable<GridLocation> GetAuraLocations(Character character, string alterationEffectId)
-        {
-            return _characterLayoutInformation.GetAuraAffectedLocations(character, alterationEffectId);
-        }
-
-        public IEnumerable<Character> GetVisibleCharacters(Character character)
-        {
-            return _characterContentInformation.GetVisibleCharacters(character);
-        }
-        public IEnumerable<GridLocation> GetExploredLocations()
-        {
-            return _characterLayoutInformation.GetExploredLocations();
-        }
-        public IEnumerable<GridLocation> GetRevealedLocations()
-        {
-            return _characterLayoutInformation.GetRevealedLocations();
-        }
-
-        public void SetTargetedEnemy(Enemy enemy)
-        {
-            if (!_targetedEnemies.Contains(enemy))
-                _targetedEnemies.Add(enemy);
-        }
         public void UpdateVisibility()
         {
             // Apply blanket update for layout visibiltiy

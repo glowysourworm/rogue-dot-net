@@ -1,13 +1,12 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Command.View;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
-using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.PrimaryMode;
-using Rogue.NET.Scenario.Events.Content.PlayerSubpanel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -46,26 +45,32 @@ namespace Rogue.NET.Scenario.Content.Views
             });
 
             // Show Specific Control Events
-            eventAggregator.GetEvent<ShowPlayerSubpanelAlterationsEvent>().Subscribe(() =>
+            eventAggregator.GetEvent<ViewCommand>().Subscribe((eventData) =>
             {
-                ShowControl(this.AlterationsCtrl);
+                switch (eventData.ViewAction)
+                {
+                    case ViewActionType.ShowPlayerSubpanelEquipment:
+                        ShowControl(this.EquipmentCtrl);
+                        break;
+                    case ViewActionType.ShowPlayerSubpanelConsumables:
+                        ShowControl(this.ConsumablesCtrl);
+                        break;
+                    case ViewActionType.ShowPlayerSubpanelSkills:
+                        ShowControl(this.SkillCtrl);
+                        break;
+                    case ViewActionType.ShowPlayerSubpanelStats:
+                        ShowControl(this.StatsCtrl);
+                        break;
+                    case ViewActionType.ShowPlayerSubpanelAlterations:
+                        ShowControl(this.AlterationsCtrl);
+                        break;
+                    default:
+                        break;
+                }
+
+                return Task.Delay(1);
             });
-            eventAggregator.GetEvent<ShowPlayerSubpanelConsumablesEvent>().Subscribe(() =>
-            {
-                ShowControl(this.ConsumablesCtrl);
-            });
-            eventAggregator.GetEvent<ShowPlayerSubpanelEquipmentEvent>().Subscribe(() =>
-            {
-                ShowControl(this.EquipmentCtrl);
-            });
-            eventAggregator.GetEvent<ShowPlayerSubpanelSkillsEvent>().Subscribe(() =>
-            {
-                ShowControl(this.SkillCtrl);
-            });
-            eventAggregator.GetEvent<ShowPlayerSubpanelStatsEvent>().Subscribe(() =>
-            {
-                ShowControl(this.StatsCtrl);
-            });
+                
 
             _radioList[0].IsChecked = true;
             this.TitleTB.Text = _radioList[0].Tag.ToString();

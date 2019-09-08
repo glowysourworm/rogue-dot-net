@@ -1,6 +1,6 @@
-﻿using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Interface;
-using System;
+﻿using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Processing.Action;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
 
 namespace Rogue.NET.Core.Logic.Interface
 {
@@ -11,8 +11,11 @@ namespace Rogue.NET.Core.Logic.Interface
     /// </summary>
     public interface IRogueEngine
     {
-        event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
+        event SimpleEventHandler<AnimationEventData> AnimationEvent;
+        event SimpleEventHandler<DialogEventData> DialogEvent;
+        event SimpleEventHandler<LevelEventData> LevelEvent;
+        event SimpleEventHandler<ScenarioEventData> ScenarioEvent;
+        event SimpleEventHandler<LevelProcessingAction> LevelProcessingActionEvent;
 
         /// <summary>
         /// Method to run at "End of Turn": Defined as anything after enemy reactions are fully

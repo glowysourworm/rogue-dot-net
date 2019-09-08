@@ -48,7 +48,9 @@ namespace Rogue.NET.Core.Logic.Content
             // Get Player Active Auras (where Enemy is in an affected cell)
             var playerAuras = player.Alteration
                                     .GetAuras()
-                                    .Where(x => _modelService.GetAuraLocations(player, x.Item1.Id).Contains(enemy.Location))
+                                    .Where(x => _modelService.CharacterLayoutInformation
+                                                             .GetAuraAffectedLocations(player, x.Item1.Id)
+                                                             .Contains(enemy.Location))
                                     .Select(x => x.Item1)
                                     .GroupBy(x => x.GetType());
 

@@ -1,8 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Command;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
-using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Scenario.Content.ViewModel.Dialog;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using System.Collections.Generic;

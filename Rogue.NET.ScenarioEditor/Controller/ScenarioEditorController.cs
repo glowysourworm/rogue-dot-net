@@ -1,10 +1,9 @@
-﻿using Prism.Events;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Splash;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
@@ -13,7 +12,6 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using System;
 using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Rogue.NET.Controller.ScenarioEditor
@@ -108,7 +106,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
         public void Open(string name, bool builtIn)
         {
             // Show Splash Screen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
@@ -135,7 +133,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
 
             // Hide Splash Screen
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading
@@ -150,7 +148,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
         }
         public void Save(bool builtInScenario = false, ConfigResources builtInScenarioType = ConfigResources.Fighter)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
@@ -171,7 +169,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
                                  "Scenario Invalid",
                                  MessageBoxButton.YesNoCancel) != MessageBoxResult.Yes)
             {
-                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+                _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
                 {
                     SplashAction = SplashAction.Hide,
                     SplashType = SplashEventType.Loading
@@ -193,7 +191,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
             PublishOutputMessage("Save complete");
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading

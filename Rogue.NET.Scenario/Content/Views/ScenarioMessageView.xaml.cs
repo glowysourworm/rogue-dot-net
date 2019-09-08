@@ -1,14 +1,14 @@
-﻿using Rogue.NET.Core.Model.ScenarioMessage.Message;
-using Rogue.NET.Model.Events;
-using Rogue.NET.Scenario.Content.ViewModel.Message;
+﻿using Rogue.NET.Scenario.Content.ViewModel.Message;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Linq;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Common.Events.Scenario;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -46,27 +46,27 @@ namespace Rogue.NET.Scenario.Content.Views
 
             eventAggregator.GetEvent<ScenarioMessageEvent>().Subscribe((message) =>
             {
-                if (message is AlterationMessage)
-                    AddAlterationMessage(message as AlterationMessage);
+                if (message is AlterationMessageData)
+                    AddAlterationMessage(message as AlterationMessageData);
 
-                else if (message is EnemyAlterationMessage)
-                    AddEnemyAlterationMessage(message as EnemyAlterationMessage);
+                else if (message is EnemyAlterationMessageData)
+                    AddEnemyAlterationMessage(message as EnemyAlterationMessageData);
 
-                else if (message is MeleeMessage)
-                    AddMeleeMessage(message as MeleeMessage);
+                else if (message is MeleeMessageData)
+                    AddMeleeMessage(message as MeleeMessageData);
 
-                else if (message is NormalMessage)
-                    AddNormalMessage(message as NormalMessage);
+                else if (message is NormalMessageData)
+                    AddNormalMessage(message as NormalMessageData);
 
-                else if (message is PlayerAdvancementMessage)
-                    AddPlayerAdvancementMessage(message as PlayerAdvancementMessage);
+                else if (message is PlayerAdvancementMessageData)
+                    AddPlayerAdvancementMessage(message as PlayerAdvancementMessageData);
 
-                else if (message is SkillAdvancementMessage)
-                    AddSkillAdvancementMessage(message as SkillAdvancementMessage);
+                else if (message is SkillAdvancementMessageData)
+                    AddSkillAdvancementMessage(message as SkillAdvancementMessageData);
             });
         }
 
-        private void AddAlterationMessage(AlterationMessage message)
+        private void AddAlterationMessage(AlterationMessageData message)
         {
             var viewModel = new ScenarioAlterationMessageViewModel()
             {
@@ -93,7 +93,7 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddEnemyAlterationMessage(EnemyAlterationMessage message)
+        private void AddEnemyAlterationMessage(EnemyAlterationMessageData message)
         {
             var viewModel = new ScenarioEnemyAlterationMessageViewModel()
             {
@@ -105,7 +105,7 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddMeleeMessage(MeleeMessage message)
+        private void AddMeleeMessage(MeleeMessageData message)
         {
             var viewModel = new ScenarioMeleeMessageViewModel()
             {
@@ -133,7 +133,7 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddNormalMessage(NormalMessage message)
+        private void AddNormalMessage(NormalMessageData message)
         {
             var viewModel = new ScenarioNormalMessageViewModel()
             {
@@ -144,7 +144,7 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddPlayerAdvancementMessage(PlayerAdvancementMessage message)
+        private void AddPlayerAdvancementMessage(PlayerAdvancementMessageData message)
         {
             var viewModel = new ScenarioPlayerAdvancementMessageViewModel()
             {
@@ -162,7 +162,7 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddSkillAdvancementMessage(SkillAdvancementMessage message)
+        private void AddSkillAdvancementMessage(SkillAdvancementMessageData message)
         {
             var viewModel = new ScenarioSkillAdvancementMessageViewModel()
             {

@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Model.ScenarioMessage;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Message
 {

@@ -19,7 +19,7 @@ namespace Rogue.NET.Core.Model.Enums
         Ordinal = 0,
         Diagonal
     }
-    public enum LevelActionType
+    public enum LevelCommandType
     {
         None,
         Move,
@@ -47,7 +47,7 @@ namespace Rogue.NET.Core.Model.Enums
     /// These types of actions are initiated by the UI. (They originate from
     /// some kind of a UI or Dialog interaction)
     /// </summary>
-    public enum PlayerActionType
+    public enum PlayerCommandType
     {
         AlterationEffect,
         Uncurse,

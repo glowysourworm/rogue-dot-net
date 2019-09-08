@@ -1,12 +1,14 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Processing.Action;
+using Rogue.NET.Core.Processing.Action.Enum;
+using Rogue.NET.Core.Processing.Command.Backend;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -32,7 +34,7 @@ namespace Rogue.NET.Core.Service
         // These queues are processed with priority for the UI. Processing is called from
         // the UI to dequeue next work-item (Animations (then) UI (then) Data)
         //
-        // Example: 0) Player Moves (ILevelCommand issued)
+        // Example: 0) Player Moves (LevelCommand issued)
         //          1) Model is updated for player move
         //          2) UI update is queued
         //          3) Enemy Reactions are queued (events bubble up from IContentEngine)
@@ -44,10 +46,11 @@ namespace Rogue.NET.Core.Service
 
         // Update Have Priority:  Process depending on the priority - with backend processed
         //                        AFTER all updates have been processed
-        Queue<IRogueUpdate> _lowQueue;
-        Queue<IRogueUpdate> _highQueue;
-        Queue<IRogueUpdate> _criticalQueue;
-        Queue<ILevelProcessingAction> _dataQueue;
+        Queue<LevelEventData> _levelEventDataQueue;
+        Queue<DialogEventData> _dialogEventDataQueue;
+        Queue<AnimationEventData> _animationEventDataQueue;
+        Queue<ScenarioEventData> _scenarioEventDataQueue;
+        Queue<LevelProcessingAction> _backendQueue;
 
         [ImportingConstructor]
         public ScenarioService(
@@ -67,39 +70,38 @@ namespace Rogue.NET.Core.Service
 
             _rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _alterationEngine, _debugEngine };
 
-            _lowQueue = new Queue<IRogueUpdate>();
-            _highQueue = new Queue<IRogueUpdate>();
-            _criticalQueue = new Queue<IRogueUpdate>();
-            _dataQueue = new Queue<ILevelProcessingAction>();
+            _levelEventDataQueue = new Queue<LevelEventData>();
+            _dialogEventDataQueue = new Queue<DialogEventData>();
+            _animationEventDataQueue = new Queue<AnimationEventData>();
+            _scenarioEventDataQueue = new Queue<ScenarioEventData>();
+            _backendQueue = new Queue<LevelProcessingAction>();
             
             foreach (var engine in _rogueEngines)
             {
-                // Updates
-                engine.RogueUpdateEvent += (sender, args) =>
+                engine.AnimationEvent += (eventData) =>
                 {
-                    switch (args.Priority)
-                    {
-                        case RogueUpdatePriority.Low:
-                            _lowQueue.Enqueue(args.Update);
-                            break;
-                        case RogueUpdatePriority.High:
-                            _highQueue.Enqueue(args.Update);
-                            break;
-                        case RogueUpdatePriority.Critical:
-                            _criticalQueue.Enqueue(args.Update);
-                            break;
-                    }
+                    _animationEventDataQueue.Enqueue(eventData);
                 };
-
-                // Actions
-                engine.LevelProcessingActionEvent += (sender, action) =>
+                engine.DialogEvent += (eventData) =>
                 {
-                    _dataQueue.Enqueue(action);
+                    _dialogEventDataQueue.Enqueue(eventData);
+                };
+                engine.LevelEvent += (eventData) =>
+                {
+                    _levelEventDataQueue.Enqueue(eventData);
+                };
+                engine.LevelProcessingActionEvent += (eventData) =>
+                {
+                    _backendQueue.Enqueue(eventData);
+                };
+                engine.ScenarioEvent += (eventData) =>
+                {
+                    _scenarioEventDataQueue.Enqueue(eventData);
                 };
             }
         }
 
-        public void IssueCommand(ILevelCommandAction command)
+        public void IssueCommand(LevelCommandData commandData)
         {
             // Check for player altered states that cause automatic player actions
             var nextAction = _scenarioEngine.ProcessAlteredPlayerState();
@@ -115,28 +117,28 @@ namespace Rogue.NET.Core.Service
 
             nextAction = LevelContinuationAction.DoNothing;
 
-            switch (command.Action)
+            switch (commandData.LevelAction)
             {
-                case LevelActionType.Attack:
+                case LevelCommandType.Attack:
                     {
-                        _scenarioEngine.Attack(command.Direction);
+                        _scenarioEngine.Attack(commandData.Direction);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
-                case LevelActionType.Throw:
+                case LevelCommandType.Throw:
                     {
-                        nextAction = _scenarioEngine.Throw(command.Id);
+                        nextAction = _scenarioEngine.Throw(commandData.Id);
                     }
                     break;
-                case LevelActionType.ToggleDoor:
+                case LevelCommandType.ToggleDoor:
                     {
-                        _layoutEngine.ToggleDoor(_modelService.Level.Grid, command.Direction, player.Location);
+                        _layoutEngine.ToggleDoor(_modelService.Level.Grid, commandData.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
-                case LevelActionType.Move:
+                case LevelCommandType.Move:
                     {
-                        var obj = _scenarioEngine.Move(command.Direction);
+                        var obj = _scenarioEngine.Move(commandData.Direction);
                         if (obj is Consumable || obj is Equipment)
                             _contentEngine.StepOnItem(player, (ItemBase)obj);
                         else if (obj is DoodadBase)
@@ -144,77 +146,77 @@ namespace Rogue.NET.Core.Service
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelActionType.Search:
+                case LevelCommandType.Search:
                     {
                         _layoutEngine.Search(_modelService.Level.Grid, _modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelActionType.Target:
+                case LevelCommandType.Target:
                     {
-                        _scenarioEngine.Target(command.Direction);
+                        _scenarioEngine.Target(commandData.Direction);
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.InvokeSkill:
+                case LevelCommandType.InvokeSkill:
                     {
                         nextAction = _scenarioEngine.InvokePlayerSkill();
                     }
                     break;
-                case LevelActionType.InvokeDoodad:
+                case LevelCommandType.InvokeDoodad:
                     {
                         nextAction = _scenarioEngine.InvokeDoodad();
                     }
                     break;
-                case LevelActionType.Consume:
+                case LevelCommandType.Consume:
                     {
-                        nextAction = _scenarioEngine.Consume(command.Id);
+                        nextAction = _scenarioEngine.Consume(commandData.Id);
                     }
                     break;
-                case LevelActionType.Drop:
+                case LevelCommandType.Drop:
                     {
-                        _scenarioEngine.Drop(command.Id);
+                        _scenarioEngine.Drop(commandData.Id);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
-                case LevelActionType.Fire:
+                case LevelCommandType.Fire:
                     {
                         nextAction = _scenarioEngine.Fire();
                     }
                     break;
-                case LevelActionType.Equip:
+                case LevelCommandType.Equip:
                     {
-                        if (_contentEngine.Equip(command.Id))
+                        if (_contentEngine.Equip(commandData.Id))
                             nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
 
 #if DEBUG
-                case LevelActionType.DebugSimulateNext:
+                case LevelCommandType.DebugSimulateNext:
                     {
                         _debugEngine.SimulateAdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.DebugNext:
+                case LevelCommandType.DebugNext:
                     {
                         _debugEngine.AdvanceToNextLevel();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.DebugIdentifyAll:
+                case LevelCommandType.DebugIdentifyAll:
                     {
                         _debugEngine.IdentifyAll();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.DebugExperience:
+                case LevelCommandType.DebugExperience:
                     {
                         _debugEngine.GivePlayerExperience();
                         nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
-                case LevelActionType.DebugRevealAll:
+                case LevelCommandType.DebugRevealAll:
                     {
                         _debugEngine.RevealAll();
                         nextAction = LevelContinuationAction.ProcessTurn;
@@ -233,14 +235,15 @@ namespace Rogue.NET.Core.Service
                 EndOfTurn(nextAction == LevelContinuationAction.ProcessTurn);
         }
 
-        public void IssuePlayerCommand(IPlayerCommandAction command)
+        // PLAYER COMMAND: Something that typically originates from some UI action.
+        public void IssuePlayerCommand(PlayerCommandData command)
         {
             // Player commands don't involve level actions - so no need to check for altered states.
             switch (command.Type)
             {
-                case PlayerActionType.AlterationEffect:
+                case PlayerCommandType.AlterationEffect:
                     {
-                        var effectCommand = command as IPlayerAlterationEffectCommandAction;
+                        var effectCommand = command as PlayerAlterationEffectCommandData;
 
                         if (effectCommand.Effect is EquipmentEnhanceAlterationEffect)
                             _scenarioEngine.EnhanceEquipment(effectCommand.Effect as EquipmentEnhanceAlterationEffect, command.Id);
@@ -249,27 +252,27 @@ namespace Rogue.NET.Core.Service
                             throw new Exception("Unknonw IPlayerAlterationEffectCommandAction.Effect");
                     }
                     break;
-                case PlayerActionType.Uncurse:
+                case PlayerCommandType.Uncurse:
                     _scenarioEngine.Uncurse(command.Id);
                     break;
-                case PlayerActionType.Identify:
+                case PlayerCommandType.Identify:
                     _scenarioEngine.Identify(command.Id);
                     break;
-                case PlayerActionType.ActivateSkillSet:
+                case PlayerCommandType.ActivateSkillSet:
                     _scenarioEngine.ToggleActiveSkillSet(command.Id, true);
                     break;
-                case PlayerActionType.CycleSkillSet:
+                case PlayerCommandType.CycleSkillSet:
                     _scenarioEngine.CycleActiveSkillSet();
                     break;
-                case PlayerActionType.SelectSkill:
+                case PlayerCommandType.SelectSkill:
                     _scenarioEngine.SelectSkill(command.Id);
                     break;
-                case PlayerActionType.UnlockSkill:
+                case PlayerCommandType.UnlockSkill:
                     _scenarioEngine.UnlockSkill(command.Id);
                     break;
-                case PlayerActionType.PlayerAdvancement:
+                case PlayerCommandType.PlayerAdvancement:
                     {
-                        var advancementCommand = command as IPlayerAdvancementCommandAction;
+                        var advancementCommand = command as PlayerAdvancementCommandData;
 
                         _scenarioEngine.PlayerAdvancement(advancementCommand.Strength, 
                                                           advancementCommand.Agility,
@@ -282,14 +285,14 @@ namespace Rogue.NET.Core.Service
             }
         }
 
-        public void IssuePlayerMultiItemCommand(IPlayerMultiItemCommandAction command)
+        public void IssuePlayerMultiItemCommand(PlayerMultiItemCommandData command)
         {
             // Player commands don't involve level actions - so no need to check for altered states.
             switch (command.Type)
             {
                 case PlayerMultiItemActionType.AlterationEffect:
                     {
-                        var effectCommand = command as IPlayerAlterationEffectMultiItemCommandAction;
+                        var effectCommand = command as PlayerAlterationEffectMultiItemCommandData;
 
                         if (effectCommand.Effect is TransmuteAlterationEffect)
                             _alterationEngine.ProcessTransmute(effectCommand.Effect as TransmuteAlterationEffect, command.ItemIds);
@@ -309,7 +312,7 @@ namespace Rogue.NET.Core.Service
             _contentEngine.CalculateEnemyReactions();
 
 
-            _dataQueue.Enqueue(new LevelProcessingAction()
+            _backendQueue.Enqueue(new LevelProcessingAction()
             {
                 Type = regenerate ? LevelProcessingActionType.EndOfTurn  : 
                                     LevelProcessingActionType.EndOfTurnNoRegenerate
@@ -320,10 +323,10 @@ namespace Rogue.NET.Core.Service
 
         public bool ProcessBackend()
         {
-            if (!_dataQueue.Any())
+            if (!_backendQueue.Any())
                 return false;
 
-            var workItem = _dataQueue.Dequeue();
+            var workItem = _backendQueue.Dequeue();
             switch (workItem.Type)
             {
                 case LevelProcessingActionType.EndOfTurn:
@@ -355,40 +358,31 @@ namespace Rogue.NET.Core.Service
 
         public void ClearQueues()
         {
-            _lowQueue.Clear();
-            _highQueue.Clear();
-            _criticalQueue.Clear();
-            _dataQueue.Clear();
+            _animationEventDataQueue.Clear();
+            _backendQueue.Clear();
+            _dialogEventDataQueue.Clear();
+            _levelEventDataQueue.Clear();
+            _scenarioEventDataQueue.Clear();
         }
 
-        public bool AnyUpdates(RogueUpdatePriority priority)
+        public AnimationEventData DequeueAnimationEventData()
         {
-            switch (priority)
-            {
-                case RogueUpdatePriority.Low:
-                    return _lowQueue.Any();
-                case RogueUpdatePriority.High:
-                    return _highQueue.Any();
-                case RogueUpdatePriority.Critical:
-                    return _criticalQueue.Any();
-                default:
-                    throw new Exception("Unknown Rogue Priority");
-            }
+            return _animationEventDataQueue.Any() ? _animationEventDataQueue.Dequeue() : null;
         }
 
-        public IRogueUpdate DequeueUpdate(RogueUpdatePriority priority)
+        public LevelEventData DequeueLevelEventData()
         {
-            switch (priority)
-            {
-                case RogueUpdatePriority.Low:
-                    return _lowQueue.Dequeue();
-                case RogueUpdatePriority.High:
-                    return _highQueue.Dequeue();
-                case RogueUpdatePriority.Critical:
-                    return _criticalQueue.Dequeue();
-                default:
-                    throw new Exception("Unknown Rogue Priority");
-            }
+            return _levelEventDataQueue.Any() ? _levelEventDataQueue.Dequeue() : null;
+        }
+
+        public DialogEventData DequeueDialogEventData()
+        {
+            return _dialogEventDataQueue.Any() ? _dialogEventDataQueue.Dequeue() : null;
+        }
+
+        public ScenarioEventData DequeueScenarioEventData()
+        {
+            return _scenarioEventDataQueue.Any() ? _scenarioEventDataQueue.Dequeue() : null;
         }
         #endregion
     }

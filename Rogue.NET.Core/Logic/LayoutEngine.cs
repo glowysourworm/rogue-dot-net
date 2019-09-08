@@ -7,40 +7,35 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Logic.Processing.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Core.Model.ScenarioMessage;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Logic.Static;
-using Rogue.NET.Core.Logic.Processing.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
     [Export(typeof(ILayoutEngine))]
-    public class LayoutEngine : ILayoutEngine
+    public class LayoutEngine : RogueEngine, ILayoutEngine
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IModelService _modelService;
-        readonly IRogueUpdateFactory _rogueUpdateFactory;
-
-        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
+        readonly IBackendEventDataFactory _backendEventDataFactory;
 
         [ImportingConstructor]
         public LayoutEngine(IRandomSequenceGenerator randomSequenceGenerator, 
                             IScenarioMessageService scenarioMessageService,
                             IModelService modelService,
-                            IRogueUpdateFactory rogueUpdateFactory)
+                            IBackendEventDataFactory backendEventDataFactory)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
             _scenarioMessageService = scenarioMessageService;
             _modelService = modelService;
-            _rogueUpdateFactory = rogueUpdateFactory;
+            _backendEventDataFactory = backendEventDataFactory;
         }
 
         #region (public) Player Action Methods
@@ -74,7 +69,7 @@ namespace Rogue.NET.Core.Logic
 
                 _modelService.UpdateVisibility();
 
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutTopology, ""));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
@@ -101,7 +96,7 @@ namespace Rogue.NET.Core.Logic
                 _modelService.UpdateVisibility();
 
                 // Notify Front-End of a change in the layout
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutTopology, ""));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutTopology, ""));
             }
         }
         #endregion
@@ -405,11 +400,6 @@ namespace Rogue.NET.Core.Logic
             return result;
         }
         #endregion
-
-        public void ApplyEndOfTurn(bool regenerate)
-        {
-
-        }
 
         #region (private) Methods
         public void ApplyEndOfTurn()

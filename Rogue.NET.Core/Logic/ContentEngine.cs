@@ -1,9 +1,6 @@
 ﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
 using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -19,16 +16,18 @@ using System.Linq;
 using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Scenario.Content.Extension;
-using Rogue.NET.Core.Model.ScenarioMessage;
-using System.Collections.Generic;
 using Rogue.NET.Core.Logic.Content.Enum;
-using Rogue.NET.Core.Logic.Processing.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Action;
+using Rogue.NET.Core.Processing.Action.Enum;
 
 namespace Rogue.NET.Core.Logic
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IContentEngine))]
-    public class ContentEngine : IContentEngine
+    public class ContentEngine : RogueEngine, IContentEngine
     {
         readonly IModelService _modelService;
         readonly IPathFinder _pathFinder;
@@ -41,10 +40,7 @@ namespace Rogue.NET.Core.Logic
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IAlterationGenerator _alterationGenerator;
         readonly ICharacterGenerator _characterGenerator;
-        readonly IRogueUpdateFactory _rogueUpdateFactory;
-
-        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
+        readonly IBackendEventDataFactory _backendEventDataFactory;
 
         [ImportingConstructor]
         public ContentEngine(
@@ -59,7 +55,7 @@ namespace Rogue.NET.Core.Logic
             IRandomSequenceGenerator randomSequenceGenerator,
             IAlterationGenerator alterationGenerator,
             ICharacterGenerator characterGenerator,
-            IRogueUpdateFactory rogueUpdateFactory)
+            IBackendEventDataFactory backendEventDataFactory)
         {
             _modelService = modelService;
             _pathFinder = pathFinder;
@@ -72,7 +68,7 @@ namespace Rogue.NET.Core.Logic
             _randomSequenceGenerator = randomSequenceGenerator;
             _alterationGenerator = alterationGenerator;
             _characterGenerator = characterGenerator;
-            _rogueUpdateFactory = rogueUpdateFactory;
+            _backendEventDataFactory = backendEventDataFactory;
         }
 
         #region (public) Methods
@@ -95,7 +91,7 @@ namespace Rogue.NET.Core.Logic
                 level.RemoveContent(item);
 
                 // Queue level update event for removed item
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, item.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, item.Id));
 
                 if (character is Player)
                 {
@@ -103,12 +99,12 @@ namespace Rogue.NET.Core.Logic
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Found " + _modelService.GetDisplayName(item));
 
                     if (item is Consumable)
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableAddOrUpdate, item.Id));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableAddOrUpdate, item.Id));
                     else if (item is Equipment)
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, item.Id));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, item.Id));
 
                     //Update level statistics
-                    RogueUpdateEvent(this, _rogueUpdateFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsItemFound, item.RogueName));
+                    OnScenarioEvent(_backendEventDataFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsItemFound, item.RogueName));
                 }
             }
             else if (character is Player)
@@ -163,7 +159,7 @@ namespace Rogue.NET.Core.Logic
                 result = Equip(equipment);
 
             // Queue player update for this item
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentAddOrUpdate, equipId));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, equipId));
 
             return result;
         }
@@ -200,8 +196,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(equipment);
 
                 // Queue updates
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerEquipmentRemove, equipment.Id));
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentRemove, equipment.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
             }
             if (item is Consumable)
             {
@@ -217,8 +213,8 @@ namespace Rogue.NET.Core.Logic
                 _modelService.Level.AddContent(consumable);
 
                 // Queue updates
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerConsumableRemove, consumable.Id));
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, consumable.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
             }
 
             // Publish message
@@ -242,14 +238,14 @@ namespace Rogue.NET.Core.Logic
 
             // Queue Animation for enemy death
             if (enemy.DeathAnimation.Animations.Count > 0)
-                RogueUpdateEvent(this, _rogueUpdateFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new GridLocation[] { _modelService.Player.Location }));
+                OnAnimationEvent(_backendEventDataFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new GridLocation[] { _modelService.Player.Location }));
 
             // Calculate player gains
             _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
 
             // Update statistics / Player skills
-            RogueUpdateEvent(this, _rogueUpdateFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerSkillSetRefresh, ""));
+            OnScenarioEvent(_backendEventDataFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, ""));
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Slayed");
 
@@ -257,8 +253,8 @@ namespace Rogue.NET.Core.Logic
             _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
 
             // Publish Level update
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, enemy.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, enemy.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, enemy.Id));
         }
         public void CalculateEnemyReactions()
         {
@@ -274,7 +270,7 @@ namespace Rogue.NET.Core.Logic
                 if (enemy.Hp <= 0)
                     EnemyDeath(enemy);
                 else
-                    LevelProcessingActionEvent(this, new LevelProcessingAction()
+                    OnLevelProcessingEvent(new LevelProcessingAction()
                     {
                         Actor = enemy,
                         Type = LevelProcessingActionType.Reaction
@@ -327,7 +323,7 @@ namespace Rogue.NET.Core.Logic
             if (enemy.Hp <= 0)
                 EnemyDeath(enemy);
         }
-        public void ApplyEndOfTurn(bool regenerate)
+        public override void ApplyEndOfTurn(bool regenerate)
         {
             ProcessMonsterGeneration();
         }
@@ -345,7 +341,7 @@ namespace Rogue.NET.Core.Logic
                 doodad.IsHidden = false;
 
                 // Update metadata
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaIdentify, doodad.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaIdentify, doodad.Id));
             }
 
             switch (doodad.NormalType)
@@ -367,10 +363,10 @@ namespace Rogue.NET.Core.Logic
 
                         // Queue update to level 
                         if (character is Enemy)
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, character.Id));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentMove, character.Id));
 
                         else
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
                     }
                     break;
                 case DoodadNormalType.Teleport1:
@@ -390,7 +386,7 @@ namespace Rogue.NET.Core.Logic
                             level.RemoveContent(enemy);
 
                             // Queue update to the level
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, enemy.Id));
                         }
                         // Enemy is trying to teleport in where Player is
                         else if (character is Enemy && character.Location == _modelService.Player.Location)
@@ -404,10 +400,10 @@ namespace Rogue.NET.Core.Logic
 
                         // Queue update to level 
                         if (character is Enemy)
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, character.Id));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentMove, character.Id));
 
                         else
-                            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerLocation, _modelService.Player.Id));
+                            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
 
                         if (character is Player)
                             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Teleport!");
@@ -458,7 +454,7 @@ namespace Rogue.NET.Core.Logic
                 // Set Curse Identified
                 metaData.IsCurseIdentified = true;
 
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.EncyclopediaCurseIdentify, equipment.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.EncyclopediaCurseIdentify, equipment.Id));
 
                 return false;
             }
@@ -630,7 +626,7 @@ namespace Rogue.NET.Core.Logic
                             if (enemy.IsRangeMelee())
                             {
                                 // Check for line of sight and firing range
-                                var isLineOfSight = _modelService.GetLineOfSightLocations(enemy).Any(x => x == _modelService.Player.Location);
+                                var isLineOfSight = _modelService.CharacterLayoutInformation.GetLineOfSightLocations(enemy).Any(x => x == _modelService.Player.Location);
                                 var range = Calculator.RoguianDistance(enemy.Location, _modelService.Player.Location);
 
                                 // These are guaranteed by the enemy check IsRangeMelee()
@@ -647,7 +643,7 @@ namespace Rogue.NET.Core.Logic
 
                                     // Process the spell associated with the ammo
                                     if (ammo.AmmoAnimationGroup.Animations.Any())
-                                        RogueUpdateEvent(this, _rogueUpdateFactory.Animation(ammo.AmmoAnimationGroup.Animations, 
+                                        OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations, 
                                                                                              enemy.Location, 
                                                                                              new GridLocation[] { _modelService.Player.Location }));
 
@@ -687,7 +683,8 @@ namespace Rogue.NET.Core.Logic
                         if (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
                         {
                             // Must have line of sight to player
-                            var isLineOfSight = _modelService.GetLineOfSightLocations(enemy)
+                            var isLineOfSight = _modelService.CharacterLayoutInformation
+                                                             .GetLineOfSightLocations(enemy)
                                                              .Any(x => x == _modelService.Player.Location);
                             var isInRange = true;
 
@@ -805,7 +802,7 @@ namespace Rogue.NET.Core.Logic
                         enemy.Location = openingPosition1;
 
                         // Notify listener queue
-                        RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
+                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentMove, enemy.Id));
                     }
                 }
 
@@ -823,7 +820,7 @@ namespace Rogue.NET.Core.Logic
                 enemy.Location = moveLocation;
 
                 // Notify listener queue
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentMove, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentMove, enemy.Id));
             }
 
             // Check for items
@@ -865,7 +862,8 @@ namespace Rogue.NET.Core.Logic
             // Check to see that there is an empty cell available
             var availableLocation = 
                     _modelService.Level
-                                 .GetRandomLocation(_modelService.GetVisibleLocations(_modelService.Player),
+                                 .GetRandomLocation(_modelService.CharacterLayoutInformation
+                                                                 .GetVisibleLocations(_modelService.Player),
                                                     true,
                                                     _randomSequenceGenerator);
 
@@ -884,7 +882,7 @@ namespace Rogue.NET.Core.Logic
             _modelService.UpdateVisibility();
 
             // Queue level update for added content
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAdd, enemy.Id));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAdd, enemy.Id));
         }
         #endregion
     }

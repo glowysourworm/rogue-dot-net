@@ -1,16 +1,16 @@
-﻿using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Event.Splash;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.IO;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Generator.Interface;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Service.Interface;
@@ -75,7 +75,7 @@ namespace Rogue.NET.Scenario.Controller
             });
 
             // Level Change / Save Events / Statistics
-            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
+            _eventAggregator.GetEvent<ScenarioEvent>().Subscribe(update =>
             {
                 switch (update.ScenarioUpdateType)
                 {
@@ -116,8 +116,8 @@ namespace Rogue.NET.Scenario.Controller
 
         public void New(ScenarioConfigurationContainer configuration, string characterName, string characterClassName, int seed, bool survivorMode)
         {
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
-            {
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
+            {                
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
             });
@@ -150,7 +150,7 @@ namespace Rogue.NET.Scenario.Controller
             // Loads level and fires event to listeners
             LoadCurrentLevel();
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading
@@ -159,7 +159,7 @@ namespace Rogue.NET.Scenario.Controller
         public void Open(string playerName)
         {
             // Show Splash
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
@@ -184,7 +184,7 @@ namespace Rogue.NET.Scenario.Controller
             //Unpack bare minimum to dungeon object - get levels as needed
             _scenarioContainer = _scenarioFile.Unpack();
 
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading
@@ -195,7 +195,7 @@ namespace Rogue.NET.Scenario.Controller
         public void Save()
         {
             // Splash Show
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Show,
                 SplashType = SplashEventType.Loading
@@ -212,7 +212,7 @@ namespace Rogue.NET.Scenario.Controller
             _scenarioFileService.SaveScenarioFile(_scenarioFile, _scenarioContainer.Player.RogueName);
 
             // Hide Splash
-            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashUpdate()
+            _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
             {
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading
@@ -245,7 +245,7 @@ namespace Rogue.NET.Scenario.Controller
                 if (_scenarioObjectiveService.IsObjectiveAcheived(_scenarioContainer))
                 {
                     // Publish scenario completed event
-                    _eventAggregator.GetEvent<ScenarioUpdateEvent>().Publish(new ScenarioUpdate()
+                    _eventAggregator.GetEvent<ScenarioEvent>().Publish(new ScenarioEventData()
                     {
                         ScenarioUpdateType = ScenarioUpdateType.ScenarioCompleted
                     });

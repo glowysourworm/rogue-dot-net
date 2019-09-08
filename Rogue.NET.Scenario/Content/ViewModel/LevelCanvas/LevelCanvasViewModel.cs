@@ -1,12 +1,9 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Interface;
 
 using System.Linq;
 using System.ComponentModel.Composition;
@@ -16,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
 using Rogue.NET.Core.Model;
@@ -29,6 +25,10 @@ using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using System.Collections.ObjectModel;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -117,7 +117,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                 UpdateLayoutVisibility();
             });
 
-            eventAggregator.GetEvent<LevelUpdateEvent>().Subscribe((update) =>
+            eventAggregator.GetEvent<LevelEvent>().Subscribe((update) =>
             {
                 OnLevelUpdate(update);
             });
@@ -245,32 +245,32 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         }
         #endregion
 
-        private void OnLevelUpdate(ILevelUpdate levelUpdate)
+        private void OnLevelUpdate(LevelEventData levelUpdate)
         {
             switch (levelUpdate.LevelUpdateType)
             {
-                case LevelUpdateType.ContentAll:
+                case LevelEventType.ContentAll:
                     DrawContent();
                     UpdateLayoutVisibility(); // Opacity Mask for Light Radius
                     break;
-                case LevelUpdateType.ContentVisible:
+                case LevelEventType.ContentVisible:
                     DrawContent();
                     UpdateLayoutVisibility(); // Opacity Mask for Light Radius
                     break;
-                case LevelUpdateType.ContentReveal:
+                case LevelEventType.ContentReveal:
                     DrawContent();
                     break;
-                case LevelUpdateType.ContentRemove:
+                case LevelEventType.ContentRemove:
                     // Filter out contents with matching id's
                     this.Contents.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
                     this.LightRadii.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
                     this.Auras.Filter(x => levelUpdate.ContentIds.Contains(x.ScenarioObjectId));
                     break;
-                case LevelUpdateType.ContentAdd:
+                case LevelEventType.ContentAdd:
                     DrawContent();
                     break;
-                case LevelUpdateType.ContentMove:
-                case LevelUpdateType.ContentUpdate:
+                case LevelEventType.ContentMove:
+                case LevelEventType.ContentUpdate:
                     foreach (var contentId in levelUpdate.ContentIds)
                     {
                         // Performance Hit - Have to look up keys instead of use dictionaries for fast access...
@@ -283,21 +283,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                             UpdateContent(content, _modelService.Level.GetContent(contentId));
                     }
                     break;
-                case LevelUpdateType.LayoutAll:
+                case LevelEventType.LayoutAll:
                     DrawLayout();
                     UpdateLayoutVisibility();
                     break;
-                case LevelUpdateType.LayoutVisible:
+                case LevelEventType.LayoutVisible:
                     UpdateLayoutVisibility();
                     break;
-                case LevelUpdateType.LayoutReveal:
+                case LevelEventType.LayoutReveal:
                     UpdateLayoutVisibility();
                     break;
-                case LevelUpdateType.LayoutTopology:
+                case LevelEventType.LayoutTopology:
                     DrawLayout();
                     UpdateLayoutVisibility();
                     break;
-                case LevelUpdateType.PlayerLocation:
+                case LevelEventType.PlayerLocation:
                     {
                         var player = this.Contents.FirstOrDefault(x => x.ScenarioObjectId == _modelService.Player.Id);
 
@@ -308,10 +308,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                         //UpdateLayoutVisibility();
                     }
                     break;
-                case LevelUpdateType.TargetingStart:
+                case LevelEventType.TargetingStart:
                     PlayTargetAnimation();
                     break;
-                case LevelUpdateType.TargetingEnd:
+                case LevelEventType.TargetingEnd:
                     StopTargetAnimation();
                     break;
                 default:
@@ -459,9 +459,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// </summary>
         private void UpdateLayoutVisibility()
         {
-            var exploredLocations = _modelService.GetExploredLocations();
-            var visibleLocations = _modelService.GetVisibleLocations(_modelService.Player);
-            var revealedLocations = _modelService.GetRevealedLocations();
+            var exploredLocations = _modelService.CharacterLayoutInformation.GetExploredLocations();
+            var visibleLocations = _modelService.CharacterLayoutInformation.GetVisibleLocations(_modelService.Player);
+            var revealedLocations = _modelService.CharacterLayoutInformation.GetRevealedLocations();
 
             var exploredLocationsOpacityMask = new StreamGeometry();
             var visibleLocationsOpacityMask = new StreamGeometry();
@@ -596,7 +596,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
             var point = _scenarioUIGeometryService.Cell2UI(scenarioObject.Location);
 
-            content.Visibility = (_modelService.IsVisibleTo(_modelService.Player, scenarioObject) ||
+            content.Visibility = (_modelService.CharacterContentInformation
+                                               .GetVisibleContents(_modelService.Player)
+                                               .Contains(scenarioObject) ||
                                 scenarioObject == _modelService.Player ||
                                 scenarioObject.IsRevealed) && !isEnemyInvisible ? Visibility.Visible : Visibility.Hidden;
 
@@ -704,7 +706,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         /// Creates IRogue2TimedGraphic set for each of the animation templates and returns the
         /// last one as a handle
         /// </summary>
-        public async Task PlayAnimationSeries(IAnimationUpdate animationData)
+        public async Task PlayAnimationSeries(AnimationEventData animationData)
         {
             // Source / Target / Render bounds
             var source = _scenarioUIGeometryService.Cell2UI(animationData.SourceLocation, true);
@@ -750,27 +752,28 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 
         private void PlayTargetAnimation()
         {
-            if (_targetingAnimations.Count != 0)
-                StopTargetAnimation();
+            // TODO:ROUTER
+            //if (_targetingAnimations.Count != 0)
+            //    StopTargetAnimation();
 
-            var points = _modelService.GetTargetedEnemies()
-                                      .Select(x => _scenarioUIGeometryService.Cell2UI(x.Location))
-                                      .ToArray();
+            //var points = _modelService.GetTargetedEnemies()
+            //                          .Select(x => _scenarioUIGeometryService.Cell2UI(x.Location))
+            //                          .ToArray();
 
-            // Start the animation group
-            foreach (var animation in _animationCreator.CreateTargetingAnimation(points))
-            {
-                foreach (var graphic in animation.GetGraphics())
-                {
-                    Canvas.SetZIndex(graphic, 100);
-                    this.Animations.Add(graphic);
-                }
+            //// Start the animation group
+            //foreach (var animation in _animationCreator.CreateTargetingAnimation(points))
+            //{
+            //    foreach (var graphic in animation.GetGraphics())
+            //    {
+            //        Canvas.SetZIndex(graphic, 100);
+            //        this.Animations.Add(graphic);
+            //    }
 
-                animation.Start();
+            //    animation.Start();
 
-                // Add animation to list to clear it in a separate call and stop the animation
-                _targetingAnimations.Add(animation);
-            }
+            //    // Add animation to list to clear it in a separate call and stop the animation
+            //    _targetingAnimations.Add(animation);
+            //}
         }
         public void StopTargetAnimation()
         {

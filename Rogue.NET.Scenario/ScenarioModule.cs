@@ -5,12 +5,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Windows;
 
-using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Events.ScenarioEditor;
-using Rogue.NET.Core.Event.Scenario.Level.Event;
-using Rogue.NET.Core.Logic.Processing.Enum;
 using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Model.Events;
 using Rogue.NET.Scenario.Controller.Interface;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Events.Content;
@@ -25,10 +20,15 @@ using Rogue.NET.Scenario.Intro.Views;
 using Rogue.NET.Scenario.Events.Content.SkillTree;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect;
 using Rogue.NET.Scenario.Content.Views.Alteration;
-using Rogue.NET.Core.Event.Splash;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
-using Rogue.NET.Core.Event.Scenario.Level.Command;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
+using Rogue.NET.Core.Event.Level;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.Event.ScenarioEditor;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Event.Dialog;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
+using Rogue.NET.Core.Processing.Command.Backend;
 
 namespace Rogue.NET.Scenario
 {
@@ -63,7 +63,7 @@ namespace Rogue.NET.Scenario
                 _regionManager.LoadSingleInstance(RegionName.GameRegion, typeof(LevelView));
             });
 
-            _eventAggregator.GetEvent<ScenarioUpdateEvent>().Subscribe(update =>
+            _eventAggregator.GetEvent<ScenarioEvent>().Subscribe(update =>
             {
                 if (update.ScenarioUpdateType == ScenarioUpdateType.PlayerDeath)
                 {
@@ -261,7 +261,7 @@ namespace Rogue.NET.Scenario
         //         For null UserCommandEventArgs - there's no user command to fire. So, wasn't sure how to
         //         handle this case using the same dialog "cycle".
         //
-        private async void OnDialogFinished(IDialogContainer dialogContainer, UserCommandEventArgs eventArgs)
+        private async void OnDialogFinished(IDialogContainer dialogContainer, object eventData)
         {
             // Get regions involved with the dialog sequence
             var mainRegion = _regionManager.GetRegion(RegionName.MainRegion);
@@ -281,9 +281,17 @@ namespace Rogue.NET.Scenario
                             .Publish();
 
             // Fire event to backend ONLY IF event args is non-null (there's an event to be processed)
-            if (eventArgs != null)
-                await _eventAggregator.GetEvent<UserCommandEvent>()
-                                      .Publish(eventArgs);
+            if (eventData != null)
+            {
+                if (eventData is PlayerCommandData)
+                    await _eventAggregator.GetEvent<PlayerCommand>().Publish(eventData as PlayerCommandData);
+
+                else if (eventData is PlayerMultiItemCommandData)
+                    await _eventAggregator.GetEvent<PlayerMultiItemCommand>().Publish(eventData as PlayerMultiItemCommandData);
+
+                else
+                    throw new Exception("Unhandled Event Data Type ScenarioModule.OnDialogFinished");
+            }
         }
 
         private void RegisterViews()

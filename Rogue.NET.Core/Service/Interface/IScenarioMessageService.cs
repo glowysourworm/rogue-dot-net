@@ -1,6 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Alteration;
-using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.ScenarioMessage;
+﻿using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;

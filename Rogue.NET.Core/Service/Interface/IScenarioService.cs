@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Interface;
+﻿using Rogue.NET.Core.Processing.Command.Backend.CommandData;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
 
 namespace Rogue.NET.Core.Service.Interface
 {
@@ -24,23 +24,24 @@ namespace Rogue.NET.Core.Service.Interface
         /// <summary>
         /// Issues primary level command (commands involving level actions)
         /// </summary>
-        void IssueCommand(ILevelCommandAction levelCommand);
+        void IssueCommand(LevelCommandData levelCommand);
 
         /// <summary>
         /// Issues player commands (often returns data from dialog interactions)
         /// </summary>
         /// <param name="playerCommand"></param>
-        void IssuePlayerCommand(IPlayerCommandAction playerCommand);
+        void IssuePlayerCommand(PlayerCommandData playerCommand);
 
         /// <summary>
         /// Issues player commands that have multiple item id's (originating from dialog interaction)
         /// </summary>
         /// <param name="command"></param>
-        void IssuePlayerMultiItemCommand(IPlayerMultiItemCommandAction command);
+        void IssuePlayerMultiItemCommand(PlayerMultiItemCommandData command);
 
-        // Methods to show queue status
-        bool AnyUpdates(RogueUpdatePriority priority);
-
-        IRogueUpdate DequeueUpdate(RogueUpdatePriority priority);
+        // Methods to dequeue event data
+        AnimationEventData DequeueAnimationEventData();
+        LevelEventData DequeueLevelEventData();
+        DialogEventData DequeueDialogEventData();
+        ScenarioEventData DequeueScenarioEventData();
     }
 }

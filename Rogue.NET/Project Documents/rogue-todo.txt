@@ -2097,4 +2097,117 @@ IMMEDIATE TODO'S:
                            GET RID OF ANYTHING IN THE NAMESPACES THAT OVERRIDES THESE THAT DERIVES FROM TEMPLATE.	
 						   
 						   PUT COPY FUNCTION BACK ONLINE
+						   
+	TARGETING MODE:  For support for new types of targeting - going to need to new process for doing things that require a target.
+	
+					 - Fire:  "F" -> "Select a target..." -> (Movement) Arrow Keys -> Enter -> Commence Firing Range weapon
+					 
+					 - Skill:  "X" -> Skill Requires Target ? -> (True) "Select a target..." -> Arrow Keys -> Enter -> Commence using Skill
+					 
+					 - Consume:  (Same Process) - So, systematize for Alterations.
+					 
+					 - Doodad: (SHOULD NEVER REQUIRE TARGETING)
+					 
+					 So, need to have a "targeting mode" - but it will be more like: Fire / Skill / Consume -> Message<Backend Action> to UI -> 
+					 TARGETING MODE -> "Enter Selects Target" -> Return Message<Backend Action> -> Continue Processing
+					 
+					 Also, support doing the targeting FIRST - then selecting some action.
+					 
+					 TARGETING MODE -> Arrow Keys -> "F" -> Message<Fire Range Weapon>
+					 
+					 - Targeted Enemy / Friendly / Doodad (?) /Cell:  Send target from front end commands (no longer part of the IModelService)
+					 
+				     Future support could be developed for "switches" or doodads that fire when you throw something at them. 
+					 So, may "prepare" for allowing Doodad targets.
+					 
+					 ENTER TARGETING MODE:  "F" -> Need a Target ? -> (True) Shell component "Enters Targeting Mode" (With Fire as 
+											return command)
+											
+					 DIALOG MODE?:  Could expand this idea to having a "command router" in the shell. 
+					 
+						Command Router:  Responsible for managing "mode" during game play - [ Normal (Level Mode), Dialog, Targeting ]
+
+						Dialog mode could support other key commands for using the dialog (if we wanted to do that)
+						
+						
+	DEFINITIONS:   Backend - Processing unit consisting of services that operate and maintain the loaded scenario model
+	
+				   Frontend - Set of UI components that act to display scenario data
+				   
+				   Dialog - Set of UI components that display data for a specifc Backend request / response sequence.
+				   
+				   View - Set of UI components that are containers for Frontend components
+				   
+				   COMMAND: Any user input that originates from the View OR from the Keyboard
+				   
+						- Backend Command:  Command that is applied to the backend service controller directly
+						
+						- Frontend Command: Command that is applied to the frontend service controller directly
+						
+						- View Command: Command that is applied to the view directly
+						
+				   EVENT: Any event-aggregator issuance that bubbles up an event from a processing unit that carries some 
+						  instructions to the primary game router to issue other commands
+						  
+						- Backend Event: Bubbles up from the Backend
+						
+						- Frontend Event: Bubbles up from the Frontend
+						
+						- Dialog Event: Bubbles up from the Dialog
+						
+						Example:  DialogRequestBackendEvent -> Requests a Dialog be shown (with data stored as Event Args)
+
+				   EVENT ARGS:  Considering how to do this.. Maybe "Oneway" / "Twoway"?
+				   
+								Typically, stores the state of a command OR event. But, usually, we want something that 
+								will handle both the request and the response.
+								
+								So, possibly, define "Entities" as the data class that encompasses "this particular 'thing'".
+								
+								Example:  TargetingEventArgs
+								
+											- [ScenarioObject] TargetedContent
+											
+											- [RequestType] Type { Targeting Start, Fire, Consume, Targeting End, etc... }
+											
+								But, this gets a little messy and ambiguous. So, probably will want several types per 'thing'
+								and to create namespaces to support them intuitively.
+								
+				   COMMAND ARGS: (Same thing as Event Args; but with a better name to suit COMMAND entities).
+								
+				   
+				   The object is to build a IGameCommandRouter to handle all of these issuances; and to store / manage intermediate
+				   state during mode changes or "things". 
+											
+				   NEEDS A NEW NAME - Event / EventArgs / blah blah blah is all over-used. So, going to go with "Game" prefix.
+				   
+				   So, { GameCommand, GameEvent, GameEventArgs }, will be the new naming convention.
+				   
+				   
+	ROUTER:  To create a router - try "Sniffing" or "Intercepting" or "Route" Event Aggregator events.
+	
+			 Example:
+			 
+				eventAggregator.GetEvent<T>()
+							   .Intercept(Func<T, bool> (payload) => 
+							   {
+								   // Do some processing
+								   
+								   return true; // to continue processing other listeners
+								   
+								   or 
+								   
+								   return false; // to halt processing
+							   
+							   });
+							   
+				So, the event aggregator will keep your delegate and run it PRIOR to all other delegates. This 
+				will allow us to build a "Router". 
 				
+				The router will be used to intercept events from the Backend / Frontend to determine game mode
+				or proper course of action for each mode. (Targeting is the first one to try)
+						
+				ONLY SUPPORT A SINGLE INTERCEPTOR
+				
+	TODO:ALTERATION
+	TODO:ROUTER

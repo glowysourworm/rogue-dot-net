@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.ViewModel;
+﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Intro.ViewModel;
@@ -10,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
 using System.Linq;
+using Rogue.NET.Core.Event.Scenario;
 
 namespace Rogue.NET.Intro.ViewModel
 {

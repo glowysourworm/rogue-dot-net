@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Common.Events.Scenario;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Event.Scenario;
 using Rogue.NET.Intro.ViewModel;
 using Rogue.NET.Scenario.Events;
 using Rogue.NET.Scenario.Intro.Views.GameSetup.Parameters;

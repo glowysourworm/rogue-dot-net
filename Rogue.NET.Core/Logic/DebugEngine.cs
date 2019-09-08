@@ -1,11 +1,9 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
+﻿using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Core.Logic.Interface;
-using Rogue.NET.Core.Logic.Processing;
-using Rogue.NET.Core.Logic.Processing.Enum;
-using Rogue.NET.Core.Logic.Processing.Factory.Interface;
-using Rogue.NET.Core.Logic.Processing.Interface;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ScenarioMessage;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Service.Interface;
 using System;
 using System.ComponentModel.Composition;
@@ -18,13 +16,13 @@ namespace Rogue.NET.Core.Logic
     /// the scenario.
     /// </summary>
     [Export(typeof(IDebugEngine))]
-    public class DebugEngine : IDebugEngine
+    public class DebugEngine : RogueEngine, IDebugEngine
     {
         readonly IModelService _modelService;
         readonly IContentEngine _contentEngine;
         readonly IScenarioMessageService _scenarioMessageService;
         readonly IPlayerProcessor _playerProcessor;
-        readonly IRogueUpdateFactory _rogueUpdateFactory;
+        readonly IBackendEventDataFactory _backendEventDataFactory;
 
         [ImportingConstructor]
         public DebugEngine(
@@ -32,27 +30,20 @@ namespace Rogue.NET.Core.Logic
             IContentEngine contentEngine, 
             IScenarioMessageService scenarioMessageService,
             IPlayerProcessor playerProcessor,
-            IRogueUpdateFactory rogueUpdateFactory)
+            IBackendEventDataFactory backendEventDataFactory)
         {
             _modelService = modelService;
             _contentEngine = contentEngine;
             _scenarioMessageService = scenarioMessageService;
             _playerProcessor = playerProcessor;
-            _rogueUpdateFactory = rogueUpdateFactory;
-        }
-
-        public event EventHandler<RogueUpdateEventArgs> RogueUpdateEvent;
-        public event EventHandler<ILevelProcessingAction> LevelProcessingActionEvent;
-
-        public void ApplyEndOfTurn(bool regenerate)
-        {
+            _backendEventDataFactory = backendEventDataFactory;
         }
 
         public void GivePlayerExperience()
         {
             _modelService.Player.Experience += 10000;
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
         }
 
         public void IdentifyAll()
@@ -68,7 +59,7 @@ namespace Rogue.NET.Core.Logic
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
             }
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
         }
 
         public void RevealAll()
@@ -98,12 +89,12 @@ namespace Rogue.NET.Core.Logic
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
         }
 
         public void AdvanceToNextLevel()
         {
-            RogueUpdateEvent(this, _rogueUpdateFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
+            OnScenarioEvent(_backendEventDataFactory.LevelChange(_modelService.Level.Number + 1, PlayerStartLocation.StairsUp));
         }
 
         public void SimulateAdvanceToNextLevel()
@@ -160,7 +151,7 @@ namespace Rogue.NET.Core.Logic
                 var consumable = level.Consumables.ElementAt(i);
 
                 level.RemoveContent(consumable);
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, consumable.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, consumable.Id));
             }
 
             for (int i = level.Equipment.Count() - 1; i >= 0; i--)
@@ -168,7 +159,7 @@ namespace Rogue.NET.Core.Logic
                 var equipment = level.Equipment.ElementAt(i);
 
                 level.RemoveContent(equipment);
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, equipment.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, equipment.Id));
             }
 
             for (int i = level.Enemies.Count() - 1; i >= 0; i--)
@@ -176,7 +167,7 @@ namespace Rogue.NET.Core.Logic
                 var enemy = level.Enemies.ElementAt(i);
 
                 level.RemoveContent(enemy);
-                RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentRemove, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, enemy.Id));
             }
 
             if (level.HasStairsDown)
@@ -188,9 +179,9 @@ namespace Rogue.NET.Core.Logic
             // Queue update: TODO: Clean this up maybe? 
             _modelService.UpdateVisibility();
 
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.PlayerAll, ""));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.LayoutAll, ""));
-            RogueUpdateEvent(this, _rogueUpdateFactory.Update(LevelUpdateType.ContentAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
         }
     }
 }

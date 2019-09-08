@@ -1,6 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Event;
-using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
-using Rogue.NET.Core.Logic.Processing.Interface;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
 
 namespace Rogue.NET.Scenario.Content.Views.Dialog.Interface
 {
@@ -10,11 +9,11 @@ namespace Rogue.NET.Scenario.Content.Views.Dialog.Interface
     /// </summary>
     public interface IDialogContainer
     {
-        event SimpleEventHandler<IDialogContainer, UserCommandEventArgs> DialogFinishedEvent;
+        event SimpleEventHandler<IDialogContainer, object> DialogFinishedEvent;
 
         /// <summary>
         /// Initializes the control with a dialog update (from the backend)
         /// </summary>
-        void Initialize(IDialogUpdate update);
+        void Initialize(DialogEventData eventData);
     }
 }

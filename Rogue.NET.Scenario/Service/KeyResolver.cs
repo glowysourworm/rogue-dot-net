@@ -1,5 +1,7 @@
-﻿using Rogue.NET.Core.Event.Scenario.Level.EventArgs;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
+using Rogue.NET.Core.Processing.Command.Frontend.Data;
+using Rogue.NET.Core.Processing.Command.View.CommandData;
 using Rogue.NET.Model;
 using Rogue.NET.Scenario.Service.Interface;
 using System.ComponentModel.Composition;
@@ -11,7 +13,7 @@ namespace Rogue.NET.Scenario.Service
     [Export(typeof(IKeyResolver))]
     public class KeyResolver : IKeyResolver
     {
-        CommandPreferencesViewModel _preferences = null;
+        readonly CommandPreferencesViewModel _preferences;
 
         [ImportingConstructor]
         public KeyResolver()
@@ -19,127 +21,108 @@ namespace Rogue.NET.Scenario.Service
             _preferences = CommandPreferencesViewModel.GetDefaults();
         }
 
-        public Compass ResolveDirectionKey(Key k)
-        {
-            if (k == _preferences.NorthWest)
-                return Compass.NW;
-            else if (k == _preferences.North)
-                return Compass.N;
-            else if (k == _preferences.NorthEast)
-                return Compass.NE;
-            else if (k == _preferences.West)
-                return Compass.W;
-            else if (k == _preferences.East)
-                return Compass.E;
-            else if (k == _preferences.SouthWest)
-                return Compass.SW;
-            else if (k == _preferences.South)
-                return Compass.S;
-            else if (k == _preferences.SouthEast)
-                return Compass.SE;
-
-            return Compass.Null;
-        }
-        public Compass ResolveDirectionArrow(Key k)
-        {
-            switch (k)
-            {
-                case Key.Up:
-                    return Compass.N;
-                case Key.Down:
-                    return Compass.S;
-                case Key.Right:
-                    return Compass.E;
-                case Key.Left:
-                    return Compass.W;
-            }
-            return Compass.Null;
-        }
-        public UserCommandEventArgs ResolveKeys(Key key, bool shift, bool ctrl, bool alt)
+        public LevelCommandData ResolveLevelCommand(Key key, bool shift, bool ctrl, bool alt)
         {
             //Searching
             if (key == _preferences.Search)
-                return new LevelCommandEventArgs(LevelActionType.Search, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.Search, Compass.Null, "");
             //Target
             else if (key == _preferences.Target)
-                return new LevelCommandEventArgs(LevelActionType.Target, Compass.E, "");
-            //Cycle Skill
-            else if (key == _preferences.Skill && shift)
-                return new PlayerCommandEventArgs(PlayerActionType.CycleSkillSet, "");
+                return new LevelCommandData(LevelCommandType.Target, Compass.E, "");
             //Skill Usage
             else if (key == _preferences.Skill)
-                return new LevelCommandEventArgs(LevelActionType.InvokeSkill, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.InvokeSkill, Compass.Null, "");
             //Doodad Usage
             else if (key == _preferences.Doodad)
-                return new LevelCommandEventArgs(LevelActionType.InvokeDoodad, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.InvokeDoodad, Compass.Null, "");
             //Fire Range Weapon
             else if (key == _preferences.Fire)
-                return new LevelCommandEventArgs(LevelActionType.Fire, Compass.Null, "");
-
-            // Revolving Displays
-            //
-            // Equipment
-            else if (key == _preferences.ShowPlayerSubpanelEquipment && shift)
-                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelEquipment);
-
-            // Consumables
-            else if (key == _preferences.ShowPlayerSubpanelConsumables && shift)
-                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelConsumables);
-
-            // Skills
-            else if (key == _preferences.ShowPlayerSubpanelSkills && shift)
-                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelSkills);
-
-            // Stats
-            else if (key == _preferences.ShowPlayerSubpanelStats && shift)
-                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelStats);
-
-            // Alterations
-            else if (key == _preferences.ShowPlayerSubpanelAlterations && shift)
-                return new ViewCommandEventArgs(ViewActionType.ShowPlayerSubpanelAlterations);
+                return new LevelCommandData(LevelCommandType.Fire, Compass.Null, "");
 
             //Debug*******
 #if DEBUG
             else if (key == Key.N)
-                return shift ? new LevelCommandEventArgs(LevelActionType.DebugSimulateNext, Compass.Null, "") :
-                               new LevelCommandEventArgs(LevelActionType.DebugNext, Compass.Null, "");
+                return shift ? new LevelCommandData(LevelCommandType.DebugSimulateNext, Compass.Null, "") :
+                               new LevelCommandData(LevelCommandType.DebugNext, Compass.Null, "");
             else if (key == Key.W)
-                return new LevelCommandEventArgs(LevelActionType.DebugExperience, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.DebugExperience, Compass.Null, "");
             else if (key == Key.Q)
-                return new LevelCommandEventArgs(LevelActionType.DebugIdentifyAll, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.DebugIdentifyAll, Compass.Null, "");
             else if (key == Key.E)
-                return new LevelCommandEventArgs(LevelActionType.DebugRevealAll, Compass.Null, "");
+                return new LevelCommandData(LevelCommandType.DebugRevealAll, Compass.Null, "");
 #endif
             //Debug*******
 
             else
             {
                 if (shift)
-                    return ProcessCompassLevelAction(LevelActionType.ToggleDoor, key);
+                    return ResolveCompassLevelAction(LevelCommandType.ToggleDoor, key);
                 else if (ctrl)
-                    return ProcessCompassLevelAction(LevelActionType.Attack, key);
+                    return ResolveCompassLevelAction(LevelCommandType.Attack, key);
                 else
-                    return ProcessCompassLevelAction(LevelActionType.Move, key);
+                    return ResolveCompassLevelAction(LevelCommandType.Move, key);
             }
         }
-        private UserCommandEventArgs ProcessCompassLevelAction(LevelActionType action, Key key)
+
+        public PlayerCommandData ResolvePlayerCommand(Key key, bool shift, bool ctrl, bool alt)
+        {
+            //Cycle Skill
+            if (key == _preferences.Skill && shift)
+                return new PlayerCommandData(PlayerCommandType.CycleSkillSet, "");
+
+            return null;
+        }
+
+        public ViewCommandData ResolveViewCommand(Key key, bool shift, bool ctrl, bool alt)
+        {
+            // Revolving Displays
+            //
+            // Equipment
+            if (key == _preferences.ShowPlayerSubpanelEquipment && shift)
+                return new ViewCommandData(ViewActionType.ShowPlayerSubpanelEquipment);
+
+            // Consumables
+            else if (key == _preferences.ShowPlayerSubpanelConsumables && shift)
+                return new ViewCommandData(ViewActionType.ShowPlayerSubpanelConsumables);
+
+            // Skills
+            else if (key == _preferences.ShowPlayerSubpanelSkills && shift)
+                return new ViewCommandData(ViewActionType.ShowPlayerSubpanelSkills);
+
+            // Stats
+            else if (key == _preferences.ShowPlayerSubpanelStats && shift)
+                return new ViewCommandData(ViewActionType.ShowPlayerSubpanelStats);
+
+            // Alterations
+            else if (key == _preferences.ShowPlayerSubpanelAlterations && shift)
+                return new ViewCommandData(ViewActionType.ShowPlayerSubpanelAlterations);
+
+            return null;
+        }
+
+        public FrontendCommandData ResolveFrontendCommand(Key k, bool shift, bool ctrl, bool alt)
+        {
+            return null;
+        }
+
+        private LevelCommandData ResolveCompassLevelAction(LevelCommandType action, Key key)
         {
             if (key == _preferences.NorthWest)
-                return new LevelCommandEventArgs(action, Compass.NW, "");
+                return new LevelCommandData(action, Compass.NW, "");
             else if (key == _preferences.North)
-                return new LevelCommandEventArgs(action, Compass.N, "");
+                return new LevelCommandData(action, Compass.N, "");
             else if (key == _preferences.NorthEast)
-                return new LevelCommandEventArgs(action, Compass.NE, "");
+                return new LevelCommandData(action, Compass.NE, "");
             else if (key == _preferences.West)
-                return new LevelCommandEventArgs(action, Compass.W, "");
+                return new LevelCommandData(action, Compass.W, "");
             else if (key == _preferences.East)
-                return new LevelCommandEventArgs(action, Compass.E, "");
+                return new LevelCommandData(action, Compass.E, "");
             else if (key == _preferences.SouthWest)
-                return new LevelCommandEventArgs(action, Compass.SW, "");
+                return new LevelCommandData(action, Compass.SW, "");
             else if (key == _preferences.South)
-                return new LevelCommandEventArgs(action, Compass.S, "");
+                return new LevelCommandData(action, Compass.S, "");
             else if (key == _preferences.SouthEast)
-                return new LevelCommandEventArgs(action, Compass.SE, "");
+                return new LevelCommandData(action, Compass.SE, "");
 
             return null;
         }
