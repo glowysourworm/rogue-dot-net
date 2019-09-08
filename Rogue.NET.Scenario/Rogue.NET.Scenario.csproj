@@ -370,13 +370,12 @@
     <Compile Include="Content\Views\SkillTree.xaml.cs">
       <DependentUpon>SkillTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controller\Enum\GameCommandMode.cs" />
-    <Compile Include="Controller\Interface\IFrontEndController.cs" />
-    <Compile Include="Controller\Interface\IGameController.cs" />
-    <Compile Include="Controller\Interface\IScenarioController.cs" />
-    <Compile Include="Controller\GameController.cs" />
-    <Compile Include="Controller\RogueMessageQueue.cs" />
-    <Compile Include="Controller\ScenarioController.cs" />
+    <Compile Include="Processing\Controller\Enum\GameCommandMode.cs" />
+    <Compile Include="Processing\Controller\Interface\IFrontendController.cs" />
+    <Compile Include="Processing\Controller\Interface\IGameController.cs" />
+    <Compile Include="Processing\Controller\Interface\IBackendController.cs" />
+    <Compile Include="Processing\Controller\GameController.cs" />
+    <Compile Include="Processing\Controller\BackendController.cs" />
     <Compile Include="Control\EllipsePanel.cs" />
     <Compile Include="Control\EllipsePanelAnimation.cs" />
     <Compile Include="Converter\AttackAttributeCollectionNonEmptyVisibilityConverter.cs" />
@@ -386,18 +385,18 @@
     <Compile Include="Converter\ItemGridViewModelTypeMultipleSelectionVisibilityConverter.cs" />
     <Compile Include="Converter\ScenarioImageViewModelSourceConverter.cs" />
     <Compile Include="Converter\ScenarioObjectiveTypeCompletionConverter.cs" />
-    <Compile Include="Events\Content\RequestNavigateToEncyclopediaEvent.cs" />
-    <Compile Include="Events\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
-    <Compile Include="Events\Content\RequestNavigateToLevelViewEvent.cs" />
-    <Compile Include="Events\Content\RequestNavigateToSkillTreeEvent.cs" />
-    <Compile Include="Events\Content\ShiftDisplayEvent.cs" />
-    <Compile Include="Events\Content\GameUpdateEvent.cs" />
-    <Compile Include="Events\Content\SkillTree\SkillTreeLoadAlterationEffectRegionEvent.cs" />
-    <Compile Include="Events\GameSetupDisplayFinished.cs" />
-    <Compile Include="Events\IntroFinishedEvent.cs" />
-    <Compile Include="Events\RequestNaviateParametersDisplayEvent.cs" />
-    <Compile Include="Events\OutroFinishedEvent.cs" />
-    <Compile Include="Events\ToggleLevelViewControlsEvent.cs" />
+    <Compile Include="Processing\Event\Content\RequestNavigateToEncyclopediaEvent.cs" />
+    <Compile Include="Processing\Event\Content\RequestNavigateToEquipmentSelectionEvent.cs" />
+    <Compile Include="Processing\Event\Content\RequestNavigateToLevelViewEvent.cs" />
+    <Compile Include="Processing\Event\Content\RequestNavigateToSkillTreeEvent.cs" />
+    <Compile Include="Processing\Event\Content\ShiftDisplayEvent.cs" />
+    <Compile Include="Processing\Event\Content\GameUpdateEvent.cs" />
+    <Compile Include="Processing\Event\Content\SkillTree\SkillTreeLoadAlterationEffectRegionEvent.cs" />
+    <Compile Include="Processing\Event\GameSetupDisplayFinished.cs" />
+    <Compile Include="Processing\Event\IntroFinishedEvent.cs" />
+    <Compile Include="Processing\Event\RequestNaviateParametersDisplayEvent.cs" />
+    <Compile Include="Processing\Event\OutroFinishedEvent.cs" />
+    <Compile Include="Processing\Event\ToggleLevelViewControlsEvent.cs" />
     <Compile Include="Intro\ViewModel\CharacterClassSelectionViewModel.cs" />
     <Compile Include="Intro\ViewModel\SavedGameViewModel.cs" />
     <Compile Include="Intro\ViewModel\ScenarioViewModel.cs" />
@@ -419,6 +418,8 @@
     <Compile Include="Intro\Views\GameSetup\NewOpenEdit.xaml.cs">
       <DependentUpon>NewOpenEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Processing\Controller\GameRouter.cs" />
+    <Compile Include="Processing\Controller\Interface\IGameRouter.cs" />
     <Compile Include="ScenarioModule.cs" />
     <Compile Include="Intro\ViewModel\GameSetupViewModel.cs" />
     <Compile Include="Intro\Views\GameSetupView.xaml.cs">
@@ -427,11 +428,11 @@
     <Compile Include="Intro\Views\IntroView.xaml.cs">
       <DependentUpon>IntroView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Service\Interface\IKeyResolver.cs" />
-    <Compile Include="Service\Interface\IScenarioObjectiveService.cs" />
-    <Compile Include="Service\Interface\IScenarioStatisticsService.cs" />
-    <Compile Include="Service\Interface\IScenarioUIGeometryService.cs" />
-    <Compile Include="Service\KeyResolver.cs" />
+    <Compile Include="Processing\Service\Interface\IKeyResolver.cs" />
+    <Compile Include="Processing\Service\Interface\IScenarioObjectiveService.cs" />
+    <Compile Include="Processing\Service\Interface\IScenarioStatisticsService.cs" />
+    <Compile Include="Processing\Service\Interface\IScenarioUIGeometryService.cs" />
+    <Compile Include="Processing\Service\KeyResolver.cs" />
     <Compile Include="Outro\Views\Death.xaml.cs">
       <DependentUpon>Death.xaml</DependentUpon>
     </Compile>
@@ -466,9 +467,9 @@
     <Compile Include="Content\Views\Status.xaml.cs">
       <DependentUpon>Status.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Service\ScenarioObjectiveService.cs" />
-    <Compile Include="Service\ScenarioStatisticsService.cs" />
-    <Compile Include="Service\ScenarioUIGeometryService.cs" />
+    <Compile Include="Processing\Service\ScenarioObjectiveService.cs" />
+    <Compile Include="Processing\Service\ScenarioStatisticsService.cs" />
+    <Compile Include="Processing\Service\ScenarioUIGeometryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Views\AlterationCtrl.xaml">
@@ -781,6 +782,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

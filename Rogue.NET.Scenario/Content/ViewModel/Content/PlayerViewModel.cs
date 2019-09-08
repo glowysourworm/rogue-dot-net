@@ -1,6 +1,4 @@
-﻿using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Model.Scenario.Content;
+﻿using Rogue.NET.Core.Model.Scenario.Content;
 
 using System.Linq;
 using System.Collections.ObjectModel;
@@ -14,14 +12,16 @@ using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
-using Rogue.NET.Core.Event.Level;
 using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Core.Processing.Model.Static;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {

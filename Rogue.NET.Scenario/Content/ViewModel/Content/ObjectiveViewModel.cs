@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Core.Service.Interface;
+﻿using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;

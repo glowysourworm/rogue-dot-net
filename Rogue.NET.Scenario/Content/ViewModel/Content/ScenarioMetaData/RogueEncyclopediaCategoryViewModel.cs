@@ -1,14 +1,11 @@
 ﻿using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
-using System.Linq;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
-using Rogue.NET.Core.Service.Interface;
 using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {

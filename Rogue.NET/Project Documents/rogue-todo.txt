@@ -2211,3 +2211,24 @@ IMMEDIATE TODO'S:
 				
 	TODO:ALTERATION
 	TODO:ROUTER
+	
+	- Frontend Controller:
+	
+		The view-models have been doing their own updating using the IModelService; and are injected straight into the view with
+		the event aggregator hooked up directly.
+		
+		Moving this to the IFrontendController might be a nicer way to subscribe for fewer updates; but won't change the design
+		much - just shuffle code around.
+		
+		BUT, there needs to be a saved state somewhere; and I'm thinking about where to put it because it could sit on the frontend
+		or backend controllers; and they could expand their responsibilities some to do other things.	
+		
+	- Game Router: thinking of moving it to the Scenario project; and injecting the frontend / backend controllers instead of
+				   using the event aggreagator.
+				   
+				   The backend is going to have to specify when it needs a target; and what it was doing. So, it's going to be a little
+				   more than just intercepting event aggregator events.
+				   
+	- TODO: NEED A FEATURE TO START A SCENARIO FROM THE EDITOR
+				   
+				   

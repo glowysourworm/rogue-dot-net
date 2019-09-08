@@ -1,7 +1,8 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

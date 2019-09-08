@@ -1,6 +1,4 @@
 ﻿using Rogue.NET.Scenario.Content.ViewModel.Content;
-using Rogue.NET.Scenario.Events;
-using Rogue.NET.Scenario.Events.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows;
@@ -8,6 +6,8 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Scenario.Processing.Event;
+using Rogue.NET.Scenario.Processing.Event.Content;
 
 namespace Rogue.NET.Scenario.Views
 {

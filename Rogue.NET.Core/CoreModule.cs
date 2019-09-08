@@ -1,11 +1,11 @@
 ﻿using Prism.Mef.Modularity;
 using Prism.Modularity;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Core;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Event.Core;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System.ComponentModel.Composition;
 
 namespace Rogue.NET.Core

@@ -1,8 +1,4 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Generator;
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Service;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 
 using Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +6,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Threading.Tasks;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Service;
+using Rogue.NET.Core.Processing.Model.Generator;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 
 namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 {
@@ -63,7 +63,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
                 characterGenerator,
                 doodadGenerator,
                 itemGenerator);
-            var scenarioGenerator = new Rogue.NET.Core.Model.Generator.ScenarioGenerator(
+            var scenarioGenerator = new Rogue.NET.Core.Processing.Model.Generator.ScenarioGenerator(
                 _eventAggregatorMock.Object,
                 layoutGenerator,
                 contentGenerator,

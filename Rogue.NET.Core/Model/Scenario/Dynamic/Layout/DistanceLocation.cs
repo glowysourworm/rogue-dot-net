@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Static;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Static;
 
 namespace Rogue.NET.Core.Model.Scenario.Dynamic.Layout
 {

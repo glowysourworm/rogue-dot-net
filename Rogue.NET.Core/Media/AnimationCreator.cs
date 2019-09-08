@@ -11,7 +11,7 @@ using Rogue.NET.Core.Media.Interface;
 using System.ComponentModel.Composition;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Generator.Interface;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 
 namespace Rogue.NET.Core.Media
 {

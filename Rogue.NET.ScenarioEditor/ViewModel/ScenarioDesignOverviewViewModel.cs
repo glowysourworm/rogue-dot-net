@@ -16,13 +16,13 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using Prism.Commands;
 using Rogue.NET.ScenarioEditor.Utility;
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Model.Validation.Interface;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Core.Processing.Model.Validation.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {

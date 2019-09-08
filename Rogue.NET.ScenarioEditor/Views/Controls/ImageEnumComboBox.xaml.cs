@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls
 {

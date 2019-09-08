@@ -1,10 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Logic.Content.Enum;
-using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
+using Rogue.NET.Core.Processing.Model.Static;
 using System;
 using System.Collections.Generic;
 using System.Linq;

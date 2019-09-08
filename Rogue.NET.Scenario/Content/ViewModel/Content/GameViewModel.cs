@@ -1,9 +1,9 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Event.Level;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Scenario.Events.Content;
+using Rogue.NET.Scenario.Processing.Event.Content;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;

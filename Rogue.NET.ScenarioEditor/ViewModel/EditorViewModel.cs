@@ -13,7 +13,7 @@ using Microsoft.Win32;
 using System.IO;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.ScenarioEditor;
+using Rogue.NET.Core.Processing.Event.ScenarioEditor;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel
 {

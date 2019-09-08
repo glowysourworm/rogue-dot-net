@@ -11,6 +11,8 @@ Processing:
 	Event - An Event Aggregator issuance that is bubbled up FROM the Backend, Frontend, Dialog, or View
 			components
 
+	Service - A data service for the backend
+
 Game Router: This is the primary component to route in-game user commands and to store / manage state
 			 that is intermediate to the various components that issue / process these commands.
 

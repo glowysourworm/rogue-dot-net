@@ -12,7 +12,7 @@ using Rogue.NET.Core.Processing.Command.Backend;
 using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
-using Rogue.NET.Scenario.Events.Content;
+using Rogue.NET.Scenario.Processing.Event.Content;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

@@ -1,13 +1,9 @@
-﻿using Rogue.NET.Core.Logic.Static;
+﻿using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rogue.NET.ScenarioEditor.Service
 {

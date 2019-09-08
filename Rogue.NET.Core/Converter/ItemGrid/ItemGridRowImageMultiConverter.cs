@@ -5,8 +5,8 @@ using System.Windows.Data;
 using System.Windows;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Service.Interface;
 using Microsoft.Practices.ServiceLocation;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.Core.Converter.ItemGrid
 {

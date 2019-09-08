@@ -1,17 +1,17 @@
-﻿using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Common.ViewModel;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Processing.Event.Backend;
+using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 
 using System;
 using System.Linq;
 using System.ComponentModel.Composition;
 
 using ScenarioMetaDataClass = Rogue.NET.Core.Model.Scenario.ScenarioMetaData;
-using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Level;
-using Rogue.NET.Core.Processing.Event.Backend;
-using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {

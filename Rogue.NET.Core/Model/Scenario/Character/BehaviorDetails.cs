@@ -2,8 +2,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Rogue.NET.Core.Logic.Content.Interface;
 using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Processing.Model.Content.Interface;
 
 namespace Rogue.NET.Core.Model.Scenario.Character
 {

@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Logic.Static;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
+using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow

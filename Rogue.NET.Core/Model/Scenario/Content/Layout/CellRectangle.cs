@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Core.Logic.Static;
+﻿using Rogue.NET.Core.Processing.Model.Static;
 using System;
 
 using System.Linq;

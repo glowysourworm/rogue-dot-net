@@ -4,7 +4,7 @@ using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;

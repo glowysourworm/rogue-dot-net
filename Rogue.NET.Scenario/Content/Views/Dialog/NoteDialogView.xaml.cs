@@ -1,8 +1,4 @@
-﻿using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Scenario.Content.ViewModel.Content;
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
 using Rogue.NET.Common.Extension.Event;

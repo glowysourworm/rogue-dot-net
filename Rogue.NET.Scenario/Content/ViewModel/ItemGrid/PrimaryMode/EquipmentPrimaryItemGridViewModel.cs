@@ -3,11 +3,10 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Processing.Command.Backend;
 using Rogue.NET.Core.Processing.Command.Backend.CommandData;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum;
 using System;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 

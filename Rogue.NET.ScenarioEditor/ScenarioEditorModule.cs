@@ -3,7 +3,7 @@ using Prism.Modularity;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
-using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.ScenarioEditor.Controller.Interface;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;

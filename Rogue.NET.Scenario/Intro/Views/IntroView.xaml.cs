@@ -5,10 +5,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Timers;
 using System.Windows.Media.Animation;
-using Rogue.NET.Scenario.Events;
 using Rogue.NET.Core.Model.Enums;
 using System.ComponentModel.Composition;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Scenario.Processing.Event;
 
 namespace Rogue.NET.Scenario.Intro.Views
 {

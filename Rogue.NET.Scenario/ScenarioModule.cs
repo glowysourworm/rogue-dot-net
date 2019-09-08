@@ -5,10 +5,6 @@ using System;
 using System.ComponentModel.Composition;
 using System.Windows;
 
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Scenario.Controller.Interface;
-using Rogue.NET.Scenario.Events;
-using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Scenario.Intro.Views.GameSetup;
 using Rogue.NET.Scenario.Outro.Views;
 using Rogue.NET.Scenario.Views;
@@ -17,18 +13,22 @@ using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.Scenario.Constant;
 using Rogue.NET.Scenario.Intro.Views;
-using Rogue.NET.Scenario.Events.Content.SkillTree;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect;
 using Rogue.NET.Scenario.Content.Views.Alteration;
 using Rogue.NET.Scenario.Content.Views.Dialog.Interface;
-using Rogue.NET.Core.Event.Level;
 using Rogue.NET.Core.Processing.Event.Backend;
-using Rogue.NET.Core.Event.Scenario;
-using Rogue.NET.Core.Event.ScenarioEditor;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Dialog;
 using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Core.Processing.Command.Backend;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Scenario.Processing.Controller.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.ScenarioEditor;
+using Rogue.NET.Scenario.Processing.Event;
+using Rogue.NET.Scenario.Processing.Event.Content;
+using Rogue.NET.Scenario.Processing.Event.Content.SkillTree;
 
 namespace Rogue.NET.Scenario
 {

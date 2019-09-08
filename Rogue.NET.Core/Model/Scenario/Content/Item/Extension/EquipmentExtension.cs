@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Logic.Static;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Processing.Model.Static;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Content.Item.Extension

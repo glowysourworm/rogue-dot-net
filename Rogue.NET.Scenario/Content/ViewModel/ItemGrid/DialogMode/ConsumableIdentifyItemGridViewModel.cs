@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
 

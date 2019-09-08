@@ -1,6 +1,6 @@
 ﻿using Rogue.NET.Common.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.ItemGrid.ItemGridRow;
 using System;
 using System.Collections.Generic;

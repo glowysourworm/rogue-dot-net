@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration;
-using Rogue.NET.Scenario.Events.Content.SkillTree;
+using Rogue.NET.Scenario.Processing.Event.Content.SkillTree;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;

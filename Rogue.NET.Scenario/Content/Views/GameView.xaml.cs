@@ -1,18 +1,18 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
-using Rogue.NET.Scenario.Events.Content;
-using Rogue.NET.Core.Service.Interface;
-using Rogue.NET.Scenario.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Common.Extension.Prism.RegionManager.Interface;
 using Rogue.NET.Scenario.Content.Views;
 using Rogue.NET.Scenario.Constant;
-using Rogue.NET.Core.Event.Level;
-using Rogue.NET.Core.Event.Scenario;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Scenario.Processing.Event;
+using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Scenario.Processing.Event.Content;
 
 namespace Rogue.NET.Scenario.Views
 {

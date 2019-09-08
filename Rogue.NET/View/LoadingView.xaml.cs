@@ -1,11 +1,8 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Utility;
+﻿using Rogue.NET.Core.Utility;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 
 namespace Rogue.NET.View
 {

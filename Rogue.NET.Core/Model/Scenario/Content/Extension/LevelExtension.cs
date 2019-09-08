@@ -1,5 +1,5 @@
-﻿using Rogue.NET.Core.Model.Generator.Interface;
-using Rogue.NET.Core.Model.Scenario.Content.Layout;
+﻿using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System.Collections.Generic;
 using System.Linq;
 

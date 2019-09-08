@@ -1,10 +1,9 @@
-﻿using Rogue.NET.Core.Logic.Algorithm.Interface;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Model.Scenario.Dynamic.Layout.Interface;
-
+using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using System.Collections.Generic;
 using System.Linq;
 

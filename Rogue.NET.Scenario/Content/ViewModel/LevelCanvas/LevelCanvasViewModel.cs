@@ -1,6 +1,5 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
 using Rogue.NET.Core.Model.Scenario.Character;
@@ -19,16 +18,17 @@ using Rogue.NET.Core.Model;
 using System.Threading.Tasks;
 using System;
 using Rogue.NET.Core.Utility;
-using Rogue.NET.Core.Logic.Content.Interface;
-using Rogue.NET.Scenario.Service.Interface;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using System.Collections.ObjectModel;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Event.Level;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Scenario.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Event.Level;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {

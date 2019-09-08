@@ -6,9 +6,9 @@ using System.Linq;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Scenario;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage;
+using Rogue.NET.Core.Processing.Event.Scenario;
 
 namespace Rogue.NET.Scenario.Content.Views
 {

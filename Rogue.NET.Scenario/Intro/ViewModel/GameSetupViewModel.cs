@@ -1,15 +1,15 @@
 ﻿using Rogue.NET.Common.ViewModel;
-using Rogue.NET.Core.Event.Core;
-using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Intro.ViewModel;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Utility;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Media;
 using System.Linq;
-using Rogue.NET.Core.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Core.Processing.Event.Core;
 
 namespace Rogue.NET.Intro.ViewModel
 {

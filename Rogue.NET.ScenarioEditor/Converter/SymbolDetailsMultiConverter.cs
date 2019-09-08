@@ -1,13 +1,10 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 

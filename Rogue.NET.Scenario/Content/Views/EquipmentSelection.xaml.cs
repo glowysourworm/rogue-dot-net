@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using Rogue.NET.Core.Service.Interface;
 using Rogue.NET.Scenario.Content.ViewModel.Content;
 
 namespace Rogue.NET.Scenario.Views

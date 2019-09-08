@@ -5,11 +5,11 @@ using System.Windows.Input;
 using System.ComponentModel.Composition;
 
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
-using Rogue.NET.Scenario.Events.Content;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event.Level;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Processing.Event.Level;
+using Rogue.NET.Scenario.Processing.Event.Content;
 
 namespace Rogue.NET.Scenario.Content.Views
 {

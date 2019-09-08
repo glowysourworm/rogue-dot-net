@@ -1,9 +1,8 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Service.Interface;
+using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
 namespace Rogue.NET.Core.Converter

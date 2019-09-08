@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Event;
-using Rogue.NET.Core.Event.Scenario;
-using Rogue.NET.Scenario.Events;
+using Rogue.NET.Core.Processing.Event;
+using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.Scenario.Processing.Event;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
