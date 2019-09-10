@@ -324,7 +324,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         {
             _characterAlterationTypeValidator.Validate(alteration.Effect);
 
-            if (alteration.Effect.GetType() == typeof(RemedyAlterationEffect))
+            if (alteration.Effect is AttackAttributeTemporaryAlterationEffect)
+                this.AttackAttributeTemporaryCollector.Apply(alteration);
+
+            else if (alteration.Effect is RemedyAlterationEffect)
             {
                 this.AttackAttributeTemporaryCollector.ApplyRemedy(alteration.Effect as RemedyAlterationEffect);
                 this.TemporaryCollector.ApplyRemedy(alteration.Effect as RemedyAlterationEffect);
