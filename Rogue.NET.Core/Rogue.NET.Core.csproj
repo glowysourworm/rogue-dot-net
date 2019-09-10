@@ -167,9 +167,12 @@
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
+    <Compile Include="Processing\Event\Backend\Enum\TargetRequestType.cs" />
+    <Compile Include="Processing\Event\Backend\EventData\TargetRequestEventData.cs" />
     <Compile Include="Processing\Event\Core\ResourcesInitializedEvent.cs" />
     <Compile Include="Processing\Event\ExitEvent.cs" />
-    <Compile Include="Processing\Model\Content\RogueEngine.cs" />
+    <Compile Include="Processing\Model\Content\Enum\TargetType.cs" />
+    <Compile Include="Processing\Model\Content\BackendEngine.cs" />
     <Compile Include="Processing\Command\Backend\PlayerMultiItemCommand.cs" />
     <Compile Include="Processing\Command\View\ViewCommand.cs" />
     <Compile Include="Processing\Command\Backend\CommandData\BackendCommandData.cs" />
@@ -325,7 +328,6 @@
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="Processing\IO\ScenarioFile.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IRogueEngine.cs" />
     <Compile Include="Processing\Action\LevelProcessingAction.cs" />
     <Compile Include="Processing\Action\Enum\LevelProcessingActionType.cs" />
     <Compile Include="Processing\Event\Backend\Enum\ScenarioUpdateType.cs" />
@@ -496,6 +498,8 @@
     <Compile Include="Processing\Model\Validation\ScenarioValidationMessage.cs" />
     <Compile Include="Processing\Model\Validation\ScenarioValidationResult.cs" />
     <Compile Include="Processing\Model\Validation\ScenarioValidationRule.cs" />
+    <Compile Include="Processing\Service\Interface\ITargetingService.cs" />
+    <Compile Include="Processing\Service\TargetingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Processing\Service\Interface\IModelService.cs" />
     <Compile Include="Processing\Service\Interface\IScenarioFileService.cs" />

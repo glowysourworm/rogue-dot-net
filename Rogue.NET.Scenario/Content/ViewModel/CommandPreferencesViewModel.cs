@@ -22,6 +22,8 @@ namespace Rogue.NET.Model
         public static readonly DependencyProperty DoodadProperty = DependencyProperty.Register("Doodad", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty SkillProperty = DependencyProperty.Register("Skill", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty TargetProperty = DependencyProperty.Register("Target", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty SelectTargetProperty = DependencyProperty.Register("SelectTarget", typeof(Key), typeof(CommandPreferencesViewModel));
+        public static readonly DependencyProperty EndTargetingProperty = DependencyProperty.Register("EndTargeting", typeof(Key), typeof(CommandPreferencesViewModel));
         public static readonly DependencyProperty FireProperty = DependencyProperty.Register("Fire", typeof(Key), typeof(CommandPreferencesViewModel));
 
         public static readonly DependencyProperty ShowPlayerSubpanelEquipmentProperty = DependencyProperty.Register("ShowPlayerSubpanelEquipment", typeof(Key), typeof(CommandPreferencesViewModel));
@@ -96,6 +98,16 @@ namespace Rogue.NET.Model
             get { return (Key)GetValue(TargetProperty); }
             set { SetValue(TargetProperty, value); }
         }
+        public Key SelectTarget
+        {
+            get { return (Key)GetValue(SelectTargetProperty); }
+            set { SetValue(SelectTargetProperty, value); }
+        }
+        public Key EndTargeting
+        {
+            get { return (Key)GetValue(EndTargetingProperty); }
+            set { SetValue(EndTargetingProperty, value); }
+        }
         public Key Skill
         {
             get { return (Key)GetValue(SkillProperty); }
@@ -153,6 +165,8 @@ namespace Rogue.NET.Model
             OpenModifier = Key.LeftShift | Key.RightShift;;
             Search = Key.S;
             Target = Key.T;
+            SelectTarget = Key.Enter;
+            EndTargeting = Key.Escape;
             Skill = Key.X;
             Doodad = Key.D;
             Fire = Key.F;
@@ -181,6 +195,8 @@ namespace Rogue.NET.Model
 
                 Search = Key.S,
                 Target = Key.T,
+                SelectTarget = Key.Enter,
+                EndTargeting = Key.Escape,
                 Skill = Key.X,
                 Doodad = Key.D,
                 Fire = Key.F,

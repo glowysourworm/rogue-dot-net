@@ -1,15 +1,30 @@
-﻿using System;
+﻿using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
-    public class LevelCanvasElement : FrameworkElement
+    public class LevelCanvasElement : FrameworkElement, ILevelCanvasElement
     {
         public string Id { get; private set; }
+
+        public Point Location
+        {
+            get { return new Point(Canvas.GetLeft(this), Canvas.GetTop(this)); }
+            set
+            {
+                if (value != null)
+                {
+                    Canvas.SetLeft(this, value.X);
+                    Canvas.SetTop(this, value.Y);
+                }
+            }
+        }
 
         public LevelCanvasElement(string scenarioObjectId)
         {

@@ -19,7 +19,7 @@ using Rogue.NET.Core.Processing.Model.Static;
 namespace Rogue.NET.Core.Processing.Model.Content
 {
     [Export(typeof(ILayoutEngine))]
-    public class LayoutEngine : RogueEngine, ILayoutEngine
+    public class LayoutEngine : BackendEngine, ILayoutEngine
     {
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
         readonly IScenarioMessageService _scenarioMessageService;
@@ -69,7 +69,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 _modelService.UpdateVisibility();
 
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutTopology, ""));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.LayoutTopology, ""));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
@@ -96,7 +96,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _modelService.UpdateVisibility();
 
                 // Notify Front-End of a change in the layout
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutTopology, ""));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.LayoutTopology, ""));
             }
         }
         #endregion

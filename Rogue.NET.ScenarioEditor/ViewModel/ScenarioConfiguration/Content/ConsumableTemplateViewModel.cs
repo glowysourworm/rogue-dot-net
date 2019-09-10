@@ -113,7 +113,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.SubType = ConsumableSubType.Food;
             this.ConsumableAlteration = new ConsumableAlterationTemplateViewModel();
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplateViewModel();
-            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel();
+            this.AmmoAnimationGroup = new AnimationGroupTemplateViewModel()
+            {
+                TargetType = AlterationTargetType.Target
+            };
             this.LearnedSkill = new SkillSetTemplateViewModel();
             this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);
             this.IsObjectiveItem = false;

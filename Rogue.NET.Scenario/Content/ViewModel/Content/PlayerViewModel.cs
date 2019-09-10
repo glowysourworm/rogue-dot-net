@@ -22,6 +22,8 @@ using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Model.Static;
+using Rogue.NET.Scenario.Processing.Service.Interface;
+using System.Windows;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content
 {
@@ -32,6 +34,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         readonly IModelService _modelService;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IRogueEventAggregator _eventAggregator;
+        readonly IScenarioUIGeometryService _scenarioUIGeometryService;
 
         #region (private) Backing Fields
         int _level;
@@ -359,6 +362,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// </summary>
         public ObservableCollection<AlterationListViewModel> Alterations { get; set; }
 
+        // UI Property
+        public Point PlayerLocation
+        {
+            get
+            {
+                return _scenarioUIGeometryService.Cell2UI(_modelService.Player.Location);
+            }
+        }
+
         public string CharacterClass { get; set; }
 
         [ImportingConstructor]
@@ -367,11 +379,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
             IModelService modelService,
             IPlayerProcessor playerProcessor,
             IAlterationProcessor alterationProcessor,
-            IScenarioResourceService scenarioResourceService)
+            IScenarioResourceService scenarioResourceService,
+            IScenarioUIGeometryService scenarioUIGeometryService)
         {
             _modelService = modelService;
             _alterationProcessor = alterationProcessor;
             _eventAggregator = eventAggregator;
+            _scenarioUIGeometryService = scenarioUIGeometryService;
 
             this.SkillSets = new ObservableCollection<SkillSetViewModel>();
             this.SkillSetsLearned = new ObservableCollection<SkillSetViewModel>();
@@ -395,6 +409,9 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         {
             switch (update.LevelUpdateType)
             {
+                case LevelEventType.PlayerLocation:
+                    break;
+
                 case LevelEventType.PlayerEquipmentRemove:
                 case LevelEventType.PlayerEquipmentAddOrUpdate:
                 case LevelEventType.PlayerSkillSetAdd:

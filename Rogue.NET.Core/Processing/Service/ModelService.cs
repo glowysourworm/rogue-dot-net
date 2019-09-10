@@ -36,9 +36,6 @@ namespace Rogue.NET.Core.Processing.Service
         ICharacterLayoutInformation _characterLayoutInformation;
         ICharacterContentInformation _characterContentInformation;
 
-        // Collection of targeted enemies
-        IList<Enemy> _targetedEnemies;
-
         // Enemy to have slain the player
         string _killedBy;
 
@@ -54,8 +51,6 @@ namespace Rogue.NET.Core.Processing.Service
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
-
-            _targetedEnemies = new List<Enemy>();
         }
 
         public void Load(
@@ -123,8 +118,6 @@ namespace Rogue.NET.Core.Processing.Service
             this.ScenarioConfiguration = null;
             this.ScenarioEncyclopedia = null;
             this.CharacterClasses = null;
-
-            _targetedEnemies = new List<Enemy>();
         }
 
         public bool IsLoaded { get { return this.Level != null; } }

@@ -111,16 +111,6 @@
         /// <summary>
         /// Occurs when a curse has been identified
         /// </summary>
-        EncyclopediaCurseIdentify,
-
-        /// <summary>
-        /// Signals end of targeting animation
-        /// </summary>
-        TargetingEnd,
-
-        /// <summary>
-        /// Signals start of targeting animation
-        /// </summary>
-        TargetingStart
+        EncyclopediaCurseIdentify
     }
 }

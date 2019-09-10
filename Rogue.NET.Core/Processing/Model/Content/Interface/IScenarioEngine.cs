@@ -4,7 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 
 namespace Rogue.NET.Core.Processing.Model.Content.Interface
 {
-    public interface IScenarioEngine : IRogueEngine
+    public interface IScenarioEngine
     {
         /// <summary>
         /// Processes automatic player action
@@ -23,7 +23,6 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         void Uncurse(string itemId);
         void Drop(string itemId);
         LevelContinuationAction Fire();
-        void Target(Compass direction);
         void SelectSkill(string skillId);
         void CycleActiveSkillSet();
         void ToggleActiveSkillSet(string skillSetId, bool activate);

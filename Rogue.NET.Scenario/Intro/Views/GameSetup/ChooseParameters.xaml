@@ -52,7 +52,7 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                <Button x:Name="GoButton" Click="GoButton_Click" Height="54" Width="190" Cursor="Hand">
+                <Button x:Name="GoButton" Click="GoButton_Click" ClickMode="Release" Height="54" Width="190" Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="border" CornerRadius="0,10,10,0" Background="Transparent" BorderBrush="White" BorderThickness="1">

@@ -74,9 +74,9 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <!-- Contents -->
-        <ItemsControl x:Name="ContentItemsControl"
-                      ItemsSource="{Binding Contents}" 
+        <!-- Doodads -->
+        <ItemsControl x:Name="DoodadItemsControl"
+                      ItemsSource="{Binding Doodads}" 
                       BorderBrush="Transparent" 
                       BorderThickness="0"
                       HorizontalAlignment="Left"
@@ -89,6 +89,34 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+        
+        <!-- Characters (Except Player) -->
+        <ItemsControl x:Name="CharacterItemsControl"
+                      ItemsSource="{Binding Characters}" 
+                      BorderBrush="Transparent" 
+                      BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="{Binding LevelWidth, FallbackValue=500}" 
+                      Height="{Binding LevelHeight, FallbackValue=500}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        
+        <!-- Player -->
+        <Canvas   x:Name="PlayerCanvas"                  
+                  Background="Transparent"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Width="{Binding LevelWidth, FallbackValue=500}" 
+                  Height="{Binding LevelHeight, FallbackValue=500}">
+            <ContentPresenter Canvas.Left="{Binding Player.Location.X}"
+                              Canvas.Top="{Binding Player.Location.Y}"
+                              Content="{Binding Player}" />
+        </Canvas>
 
         <!-- Animations -->
         <!-- TODO: Split animations into two layers: one for screen blink, and one for opacity mask -->

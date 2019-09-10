@@ -3,6 +3,7 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
 using System.ComponentModel.Composition;
@@ -15,7 +16,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
     /// the scenario.
     /// </summary>
     [Export(typeof(IDebugEngine))]
-    public class DebugEngine : RogueEngine, IDebugEngine
+    public class DebugEngine : BackendEngine, IDebugEngine
     {
         readonly IModelService _modelService;
         readonly IContentEngine _contentEngine;
@@ -40,9 +41,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         public void GivePlayerExperience()
         {
-            _modelService.Player.Experience += 10000;
+            var experience = PlayerCalculator.CalculateExperienceNext(_modelService.Player.Level);
 
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
+            _modelService.Player.Experience = experience;
+
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
         }
 
         public void IdentifyAll()
@@ -58,7 +61,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Good, item.RogueName + " Identified");
             }
 
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
         }
 
         public void RevealAll()
@@ -88,7 +91,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             foreach (var consumable in _modelService.Level.Consumables.Where(x => x.SubType == ConsumableSubType.Food))
                 consumable.IsRevealed = true;
 
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAll, ""));
         }
 
         public void AdvanceToNextLevel()
@@ -150,7 +153,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var consumable = level.Consumables.ElementAt(i);
 
                 level.RemoveContent(consumable);
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, consumable.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, consumable.Id));
             }
 
             for (int i = level.Equipment.Count() - 1; i >= 0; i--)
@@ -158,7 +161,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var equipment = level.Equipment.ElementAt(i);
 
                 level.RemoveContent(equipment);
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, equipment.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, equipment.Id));
             }
 
             for (int i = level.Enemies.Count() - 1; i >= 0; i--)
@@ -166,7 +169,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 var enemy = level.Enemies.ElementAt(i);
 
                 level.RemoveContent(enemy);
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, enemy.Id));
             }
 
             if (level.HasStairsDown)
@@ -178,9 +181,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Queue update: TODO: Clean this up maybe? 
             _modelService.UpdateVisibility();
 
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.LayoutAll, ""));
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.LayoutAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAll, ""));
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
     /// <summary>
     /// Component that calculates debug operations
     /// </summary>
-    public interface IDebugEngine : IRogueEngine
+    public interface IDebugEngine
     {
         /// <summary>
         /// Operation that simulates a player going through the level. This will advance the

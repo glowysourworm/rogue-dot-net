@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
     /// Component responsible for processing events involved with creating a character alteration. This includes
     /// animation, and post-animation processing.
     /// </summary>
-    public interface IAlterationEngine : IRogueEngine
+    public interface IAlterationEngine
     {
         /// <summary>
         /// Validates the parameters involved with the alteration and returns true if they are met. Also, 

@@ -30,7 +30,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         readonly IScenarioObjectiveService _scenarioObjectiveService;
         readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioGenerator _scenarioGenerator;
-        readonly IBackendController _scenarioController;
+        readonly ICommandRouter _gameRouter;
         readonly IModelService _modelService;
 
         // PRIMARY MODEL STATE
@@ -45,7 +45,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             IScenarioObjectiveService scenarioObjectiveService,
             IRogueEventAggregator eventAggregator,
             IScenarioGenerator scenarioGenerator,
-            IBackendController scenarioController,
+            ICommandRouter gameRouter,
             IModelService modelService)
         {
             _statisticsService = scenarioStatisticsService;
@@ -54,7 +54,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             _scenarioResourceService = resourceService;
             _eventAggregator = eventAggregator;
             _scenarioGenerator = scenarioGenerator;
-            _scenarioController = scenarioController;
+            _gameRouter = gameRouter;
             _modelService = modelService;
         }
 
@@ -256,7 +256,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             else
             {
                 // First halt processing of backend
-                _scenarioController.Stop();
+                _gameRouter.Stop();
 
                 // Update the level number in the container
                 _scenarioContainer.CurrentLevel = levelNumber;
@@ -284,7 +284,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 _eventAggregator.GetEvent<LevelLoadedEvent>().Publish();
 
                 // Enable backend processing
-                _scenarioController.Start();
+                _gameRouter.Start();
 
                 PublishGameUpdate();
             }

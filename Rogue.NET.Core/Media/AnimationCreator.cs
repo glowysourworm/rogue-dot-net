@@ -216,33 +216,29 @@ namespace Rogue.NET.Core.Media
                     throw new Exception("Unhanded Projectile Animation Type");
             }
         }
-        
-        public IEnumerable<AnimationQueue> CreateTargetingAnimation(Point[] points)
+
+        public AnimationQueue CreateTargetingAnimation(Point point, Color fillColor, Color strokeColor)
         {
-            var result = new List<AnimationQueue>();
+            var length = 20;
+            var cellBounds = new Rect(point, new Size(10, 15));
+            var verticalSize = new Size(1, 8);
+            var pointSize = new Size(1, 1);
 
-            foreach (var point in points)
-            {
-                var length = 20;
-                var cellBounds = new Rect(point, new Size(10, 15));
-                var verticalSize = new Size(1, 8);
-                var pointSize = new Size(1, 1);
+            var stroke = new SolidColorBrush(strokeColor);
+            var fill = new SolidColorBrush(fillColor);
 
-                var northWest = new Point(point.X - length, point.Y - length);
-                var northEast = new Point(cellBounds.TopRight.X + length, cellBounds.TopRight.Y - length);
-                var southEast = new Point(cellBounds.BottomRight.X + length, cellBounds.BottomRight.Y + length);
-                var southWest = new Point(cellBounds.BottomLeft.X - length, cellBounds.BottomLeft.Y + length);
+            var northWest = new Point(point.X - length, point.Y - length);
+            var northEast = new Point(cellBounds.TopRight.X + length, cellBounds.TopRight.Y - length);
+            var southEast = new Point(cellBounds.BottomRight.X + length, cellBounds.BottomRight.Y + length);
+            var southWest = new Point(cellBounds.BottomLeft.X - length, cellBounds.BottomLeft.Y + length);
 
-                var animation1 = GenerateProjectilePath(new Point[] { northWest, cellBounds.TopLeft }, pointSize, verticalSize, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                var animation2 = GenerateProjectilePath(new Point[] { northEast, cellBounds.TopRight }, pointSize, verticalSize, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                var animation3 = GenerateProjectilePath(new Point[] { southEast, cellBounds.BottomRight }, pointSize, verticalSize, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                var animation4 = GenerateProjectilePath(new Point[] { southWest, cellBounds.BottomLeft }, pointSize, verticalSize, Brushes.Magenta, Brushes.Magenta, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
-                var animation5 = GenerateTimedFigure(new RectangleGeometry(cellBounds), Brushes.LimeGreen, Brushes.Magenta, 1, 0, 1, 1, 300, int.MaxValue, true);
+            var animation1 = GenerateProjectilePath(new Point[] { northWest, cellBounds.TopLeft }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+            var animation2 = GenerateProjectilePath(new Point[] { northEast, cellBounds.TopRight }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+            var animation3 = GenerateProjectilePath(new Point[] { southEast, cellBounds.BottomRight }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+            var animation4 = GenerateProjectilePath(new Point[] { southWest, cellBounds.BottomLeft }, pointSize, verticalSize, stroke, fill, 1, 0, 0, 0, 1, 300, 1, int.MaxValue, true, false);
+            var animation5 = GenerateTimedFigure(new RectangleGeometry(cellBounds), stroke, fill, 1, 0, 1, 1, 300, int.MaxValue, true);
 
-                result.Add(new AnimationQueue(new Animation[] { animation1, animation2, animation3, animation4, animation5 }));
-            }
-
-            return result;
+            return new AnimationQueue(new Animation[] { animation1, animation2, animation3, animation4, animation5 });
         }
 
         #region (private) Animation Methods

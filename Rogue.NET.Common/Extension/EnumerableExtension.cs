@@ -168,6 +168,11 @@ namespace Rogue.NET.Common.Extension
             return !collection.Any();
         }
 
+        public static bool None<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
+        {
+            return !collection.Any(x => predicate(x));
+        }
+
         /// <summary>
         /// Returns elements that have a non-unique property
         /// </summary>

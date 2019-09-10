@@ -200,7 +200,8 @@
     <!-- Item Grid Button Cell Template -->
     <DataTemplate x:Key="ItemGridButtonCellTemplate">
         <Button Style="{StaticResource ItemGridButtonCellStyle}"
-                Command="{Binding ProcessSingleItemCommand}"
+                Command="{Binding ProcessSingleItemCommand, Delay=300}"
+                Focusable="False"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 HorizontalContentAlignment="Stretch"

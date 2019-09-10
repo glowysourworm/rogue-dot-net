@@ -5,11 +5,12 @@ using Rogue.NET.Core.Processing.Model.Content.Interface;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
-    public abstract class RogueEngine : IRogueEngine
+    public abstract class BackendEngine
     {
         public event SimpleEventHandler<AnimationEventData> AnimationEvent;
         public event SimpleEventHandler<DialogEventData> DialogEvent;
         public event SimpleEventHandler<LevelEventData> LevelEvent;
+        public event SimpleEventHandler<TargetRequestEventData> TargetRequestEvent;
         public event SimpleEventHandler<ScenarioEventData> ScenarioEvent;
         public event SimpleEventHandler<LevelProcessingAction> LevelProcessingActionEvent;
 
@@ -34,6 +35,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             if (this.LevelEvent != null)
                 this.LevelEvent(eventData);
+        }
+
+        protected virtual void OnTargetingRequesetEvent(TargetRequestEventData eventData)
+        {
+            if (this.TargetRequestEvent != null)
+                this.TargetRequestEvent(eventData);
         }
 
         protected virtual void OnScenarioEvent(ScenarioEventData eventData)

@@ -308,7 +308,7 @@ namespace Rogue.NET.Core.Processing.Service
             var foregroundColor = (Color)ColorConverter.ConvertFromString(symbolColor);
 
             text.Foreground = new SolidColorBrush(foregroundColor);
-            text.Background = Brushes.Transparent;
+            text.Background = Brushes.Black;
             text.Text = symbol;
             text.FontSize = 12 * scale.Clip(1, 10);
             text.FontFamily = Application.Current.MainWindow.FontFamily;

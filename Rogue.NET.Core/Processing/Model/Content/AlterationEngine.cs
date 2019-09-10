@@ -18,9 +18,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Model.Scenario.Alteration.Extension;
 using Rogue.NET.Core.Model.Scenario.Content.Item.Extension;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
-using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Core.Processing.Action;
-using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Action.Enum;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
@@ -28,15 +26,17 @@ using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Model.Scenario.Character.Extension;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
     [PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAlterationEngine))]
-    public class AlterationEngine : RogueEngine, IAlterationEngine
+    public class AlterationEngine : BackendEngine, IAlterationEngine
     {
         readonly IModelService _modelService;
         readonly ILayoutEngine _layoutEngine;
+        readonly ITargetingService _targetingService;
         readonly ICharacterGenerator _characterGenerator;
         readonly IAlterationProcessor _alterationProcessor;
         readonly IInteractionProcessor _interactionProcessor;        
@@ -47,6 +47,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         [ImportingConstructor]
         public AlterationEngine(IModelService modelService,
                                 ILayoutEngine layoutEngine,
+                                ITargetingService targetingService,
                                 ICharacterGenerator characterGenerator,
                                 IAlterationProcessor alterationProcessor,
                                 IInteractionProcessor interactionProcessor,
@@ -56,6 +57,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             _modelService = modelService;
             _layoutEngine = layoutEngine;
+            _targetingService = targetingService;
             _characterGenerator = characterGenerator;
             _alterationProcessor = alterationProcessor;
             _interactionProcessor = interactionProcessor;
@@ -189,7 +191,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 //
                 // NOTE*** Player is treated SEPARATELY from level content. This should be refactored on the UI side
                 //         to make processing easier. (TODO)
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentUpdate, affectedCharacter.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentUpdate, affectedCharacter.Id));
 
                 // TODO: REMOVE THIS!!!  And just use the above affectedCharacter.Id
                 //                       THE DESIGN NEEDS TO SUPPORT THIS!
@@ -197,8 +199,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 // Update Player Symbol (REMOVE THIS!)
                 if (affectedCharacter is Player)
                 {
-                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerSkillSetRefresh, _modelService.Player.Id));
-                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerLocation, _modelService.Player.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerSkillSetRefresh, _modelService.Player.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
                 }
             }
         }
@@ -346,23 +348,32 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private IEnumerable<Character> CalculateAffectedCharacters(AlterationTargetType targetType, Character actor)
         {
-            throw new Exception();
+            var targetedCharacter = _targetingService.GetTargetedCharacter();
 
-            // TODO:ROUTER
-            //switch (targetType)
-            //{
-            //    case AlterationTargetType.Source:
-            //        return new List<Character>() { actor };
-            //    case AlterationTargetType.Target:
-            //        return (actor is Player) ? _modelService.GetTargetedEnemies()
-            //                                                .Cast<Character>() : new List<Character>() { _modelService.Player };
-            //    case AlterationTargetType.AllInRange:
-            //        return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius());
-            //    case AlterationTargetType.AllInRangeExceptSource:
-            //        return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius()).Except(new Character[] { actor });
-            //    default:
-            //        throw new Exception("Unknown Attack Attribute Target Type");
-            //}
+            // Clear the targeting service (TODO: BUILD BACKEND SEQUENCER!!!)
+            //
+            // Should go:  Player Action -> All Intermediate Events -> End of Turn (Player) { Does lots of things, Clears Targeting Service }
+            //
+            //             Then Enemy 1 Reaction -> ...
+            //
+
+            // This SHOULD be the last place that's required for the targeting service to get the
+            // stored character. 
+            _targetingService.Clear();
+
+            switch (targetType)
+            {
+                case AlterationTargetType.Source:
+                    return new List<Character>() { actor };
+                case AlterationTargetType.Target:
+                    return (actor is Player) ? new Character[] { targetedCharacter } : new Character[] { _modelService.Player };
+                case AlterationTargetType.AllInRange:
+                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius());
+                case AlterationTargetType.AllInRangeExceptSource:
+                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius()).Except(new Character[] { actor });
+                default:
+                    throw new Exception("Unknown Attack Attribute Target Type");
+            }
         }
         private IEnumerable<Character> CalculateCharactersInRange(GridLocation location, int cellRange)
         {
@@ -420,10 +431,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Update UI
                     if (actor is Player)
-                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, itemStolen.Key));
 
                     else
-                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentRemove, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentRemove, itemStolen.Key));
                 }
                 // For consumables - nothing to do except to remove / add
                 else
@@ -436,10 +447,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                     // Update UI
                     if (actor is Player)
-                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableAddOrUpdate, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableAddOrUpdate, itemStolen.Key));
 
                     else
-                        OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerConsumableRemove, itemStolen.Key));
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerConsumableRemove, itemStolen.Key));
                 }
                 _scenarioMessageService.Publish(
                     ScenarioMessagePriority.Normal, 
@@ -462,7 +473,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                 _modelService.GetDisplayName(actor));
 
                 // Update UI
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentRemove, actor.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, actor.Id));
             }
             else
                 throw new Exception("Player trying to invoke RunAway Alteration Effect");
@@ -491,7 +502,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 RevealStairs();
 
             // Update the UI (TODO:ALTERATION - figure out more systematic updating)
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentReveal, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
         private void ProcessTeleport(TeleportAlterationEffect effect, Character character)
         {
@@ -574,7 +585,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 }
 
                 // Notify UI
-                OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.ContentAdd, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
             }
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
@@ -616,7 +627,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _alterationProcessor.ApplyEquipmentEnhanceEffect(affectedCharacter as Player, effect, randomEquippedItem);
 
                     // Queue update
-                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
                 }
                 else
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Enhance");
@@ -650,7 +661,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
                 // Queue update if Player is affected
                 if (affectedCharacter is Player)
-                    OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerEquipmentAddOrUpdate, randomEquippedItem.Id));
             }
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "No Equipped Item to Damage");
@@ -716,7 +727,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _modelService.Player.RogueName,
                 _modelService.GetDisplayName(itemBase));
 
-            OnLevelEvent(_backendEventDataFactory.Update(LevelEventType.PlayerAll, ""));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerAll, ""));
         }
 
         private GridLocation GetRandomLocation(AlterationRandomPlacementType placementType, GridLocation sourceLocation, int sourceRange)

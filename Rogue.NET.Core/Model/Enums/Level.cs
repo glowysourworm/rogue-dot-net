@@ -26,7 +26,6 @@ namespace Rogue.NET.Core.Model.Enums
         Attack,
         ToggleDoor,
         Search,
-        Target,
         Throw,
         InvokeSkill,
         InvokeDoodad,

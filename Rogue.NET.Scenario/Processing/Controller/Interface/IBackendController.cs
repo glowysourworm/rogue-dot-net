@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Core.Processing.Command.Backend.CommandData;
+using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +15,28 @@ namespace Rogue.NET.Scenario.Processing.Controller.Interface
     public interface IBackendController
     {
         /// <summary>
-        /// Reset backend queues for loading new data model; and blocks user input events
+        /// Event signaling targeting mode request
         /// </summary>
-        void Stop();
+        event SimpleEventHandler<TargetRequestEventData> TargetingModeRequestEvent;
 
         /// <summary>
-        /// Enables user input events
+        /// Clears backend queues to prepare for loading new model
         /// </summary>
-        void Start();
+        void Clear();
+
+        /// <summary>
+        /// Publishes async level command data to the backend components
+        /// </summary>
+        Task PublishLevelCommand(LevelCommandData commandData);
+
+        /// <summary>
+        /// Publishes async player command data to the backend components
+        /// </summary>
+        Task PublishPlayerCommand(PlayerCommandData commandData);
+
+        /// <summary>
+        /// Publishes async player multi item command data to the backend components
+        /// </summary>
+        Task PublishPlayerMultiItemCommand(PlayerMultiItemCommandData commandData);
     }
 }

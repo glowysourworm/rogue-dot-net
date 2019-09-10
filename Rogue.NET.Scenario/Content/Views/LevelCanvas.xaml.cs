@@ -10,6 +10,8 @@ using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Scenario.Processing.Event.Content;
+using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
+using Rogue.NET.Scenario.Content.ViewModel.Content;
 
 namespace Rogue.NET.Scenario.Content.Views
 {
@@ -17,6 +19,8 @@ namespace Rogue.NET.Scenario.Content.Views
     [Export]
     public partial class LevelCanvas : UserControl
     {
+        readonly ILevelCanvasViewModel _viewModel;
+
         TranslateTransform _translateXform = new TranslateTransform(0,0);
         ScaleTransform _scaleXform = new ScaleTransform(1,1);
 
@@ -37,9 +41,11 @@ namespace Rogue.NET.Scenario.Content.Views
 
         [ImportingConstructor]
         public LevelCanvas(
-            LevelCanvasViewModel viewModel,
+            ILevelCanvasViewModel viewModel,
             IRogueEventAggregator eventAggregator)
         {
+            _viewModel = viewModel;
+
             this.DataContext = viewModel;
 
             InitializeComponent();
@@ -56,31 +62,33 @@ namespace Rogue.NET.Scenario.Content.Views
             this.RevealedCanvas.RenderTransform = transform;
             this.LightRadiiItemsControl.RenderTransform = transform;
             this.AuraItemsControl.RenderTransform = transform;
-            this.ContentItemsControl.RenderTransform = transform;
+            this.DoodadItemsControl.RenderTransform = transform;
+            this.CharacterItemsControl.RenderTransform = transform;
             this.AnimationItemsControl.RenderTransform = transform;
+            this.PlayerCanvas.RenderTransform = transform;
 
             this.Loaded += (sender, args) =>
             {
-                CenterOnLocation(viewModel.PlayerLocation);
+                CenterOnLocation(_viewModel.Player.Location);
             };
 
             // subscribe to event to center screen when level loaded
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                CenterOnLocation(viewModel.PlayerLocation);
+                CenterOnLocation(_viewModel.Player.Location);
             });
             
             // subscribe to event to update RenderTransform on player move
             eventAggregator.GetEvent<LevelEvent>().Subscribe(update =>
             {
                 if (update.LevelUpdateType == LevelEventType.PlayerLocation)
-                    CenterOnLocation(viewModel.PlayerLocation);
+                    CenterOnLocation(_viewModel.Player.Location);
 
             });
 
             eventAggregator.GetEvent<ShiftDisplayEvent>().Subscribe(type =>
             {
-                ShiftDisplay(type, viewModel);
+                ShiftDisplay(type);
             });
         }
         public void CenterOnLocation(Point location)
@@ -102,7 +110,7 @@ namespace Rogue.NET.Scenario.Content.Views
             _translateXform.Y = midpt.Y - (offsetLocation.Y);
         }
 
-        private void ShiftDisplay(ShiftDisplayType type, LevelCanvasViewModel viewModel)
+        private void ShiftDisplay(ShiftDisplayType type)
         {
             switch (type)
             {
@@ -119,7 +127,7 @@ namespace Rogue.NET.Scenario.Content.Views
                     _translateXform.Y += SHIFT_AMOUNT;
                     break;
                 case ShiftDisplayType.CenterOnPlayer:
-                    CenterOnLocation(viewModel.PlayerLocation);
+                    CenterOnLocation(_viewModel.Player.Location);
                     break;
                 default:
                     break;
@@ -173,7 +181,7 @@ namespace Rogue.NET.Scenario.Content.Views
             var viewModel = this.DataContext as LevelCanvasViewModel;
 
             if (viewModel != null)
-                CenterOnLocation(viewModel.PlayerLocation);
+                CenterOnLocation(_viewModel.Player.Location);
         }
     }
 }

@@ -13,6 +13,11 @@ namespace Rogue.NET.Scenario.Processing.Controller.Enum
     public enum GameCommandMode
     {
         /// <summary>
+        /// User inputs to the game modules are blocked
+        /// </summary>
+        Blocked,
+
+        /// <summary>
         /// User wishes to issue commands for UI specific things: [Targeting]
         /// </summary>
         FrontendCommand,
@@ -20,6 +25,11 @@ namespace Rogue.NET.Scenario.Processing.Controller.Enum
         /// <summary>
         /// User wishes to issue commands for the backend: [Level Commands / Player Commands]
         /// </summary>
-        BackendCommand
+        BackendCommand,
+
+        /// <summary>
+        /// User issues commands to work with a dialog window
+        /// </summary>
+        DialogCommand
     }
 }

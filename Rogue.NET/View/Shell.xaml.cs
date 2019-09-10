@@ -20,17 +20,12 @@ namespace Rogue.NET.View
     [Export]
     public partial class Shell : Window
     {
-        readonly IGameRouter _gameRouter;
+        readonly ICommandRouter _gameRouter;
 
         Window _splashWindow;
 
-        bool _blockUserInput = false;
-        bool _gameMode = false;
-
-        GameCommandMode _gameCommandMode;
-
         [ImportingConstructor]
-        public Shell(IRogueEventAggregator eventAggregator, IGameRouter gameRouter)
+        public Shell(IRogueEventAggregator eventAggregator, ICommandRouter gameRouter)
         {
             _gameRouter = gameRouter;
 
@@ -56,14 +51,13 @@ namespace Rogue.NET.View
             // User enters the game (level loaded)
             eventAggregator.GetEvent<LevelLoadedEvent>().Subscribe(() =>
             {
-                _gameMode = true;
-                _gameCommandMode = GameCommandMode.BackendCommand;
+                _gameRouter.CommandMode = GameCommandMode.BackendCommand;
             });
 
             // User exits the game
             eventAggregator.GetEvent<ExitScenarioEvent>().Subscribe(() =>
             {
-                _gameMode = false;
+                _gameRouter.CommandMode = GameCommandMode.Blocked;
             });
 
             eventAggregator.GetEvent<SplashEvent>().Subscribe((e) =>
@@ -92,20 +86,20 @@ namespace Rogue.NET.View
             // If routed event bubbles to main region during dialog mode
             this.MainRegion.PreviewMouseDown += (sender, e) =>
             {
-                if (_blockUserInput)
+                if (_gameRouter.CommandMode == GameCommandMode.DialogCommand)
                     e.Handled = true;
             };
 
             // Block user inputs during dialog event
             eventAggregator.GetEvent<DialogEvent>().Subscribe(update =>
             {
-                _blockUserInput = true;
+                _gameRouter.CommandMode = GameCommandMode.DialogCommand;
             });
 
             // Resume user inputs after dialog event finished
             eventAggregator.GetEvent<DialogEventFinished>().Subscribe(() =>
             {
-                _blockUserInput = false;
+                _gameRouter.CommandMode = GameCommandMode.BackendCommand;
             });
         }
 
@@ -118,13 +112,10 @@ namespace Rogue.NET.View
         {
             base.OnPreviewKeyDown(e);
 
-            if (_gameMode)
-            {
-                await _gameRouter.IssueCommand(e.Key,
-                            Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift),
-                            Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl),
-                            Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
-            }
+            await _gameRouter.IssueCommand(e.Key,
+                        Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift),
+                        Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl),
+                        Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt));
         }
 
         protected override void OnClosed(EventArgs e)

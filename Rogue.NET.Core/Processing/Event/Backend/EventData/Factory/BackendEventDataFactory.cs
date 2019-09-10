@@ -4,6 +4,7 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Animation;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
+using Rogue.NET.Core.Processing.Event.Backend.Enum;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 TargetLocations = targets
             };
         }
-        public LevelEventData Update(LevelEventType type, string contentId)
+        public LevelEventData Event(LevelEventType type, string contentId)
         {
             return new LevelEventData()
             {
@@ -32,7 +33,7 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 ContentIds = new string[] { contentId }
             };
         }
-        public LevelEventData Update(LevelEventType type, string[] contentIds)
+        public LevelEventData Event(LevelEventType type, string[] contentIds)
         {
             return new LevelEventData()
             {
@@ -71,6 +72,10 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.Factory
                 LevelUpdateType = LevelEventType.PlayerEquipmentRemove,
                 ContentIds = new string[] { equipmentId }
             };
+        }
+        public TargetRequestEventData TargetRequest(TargetRequestType type, string associatedId)
+        {
+            return new TargetRequestEventData(type, associatedId);
         }
         public ScenarioEventData LevelChange(int levelNumber, PlayerStartLocation playerStartLocation)
         {

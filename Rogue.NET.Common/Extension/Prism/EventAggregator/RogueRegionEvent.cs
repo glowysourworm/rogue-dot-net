@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.RegionManager;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {
@@ -69,7 +70,7 @@ namespace Rogue.NET.Common.Extension.Prism.EventAggregator
             var actions = _actions.Values.Copy();
 
             foreach (var action in actions)
-                action(region, payload);
+                action.Invoke(region, payload);
         }
 
         public void UnSubscribe(string token)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Rogue.NET.Common.Extension.Prism.EventAggregator
 {

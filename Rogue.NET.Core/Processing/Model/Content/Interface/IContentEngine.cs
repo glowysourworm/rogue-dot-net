@@ -6,7 +6,7 @@ using System;
 
 namespace Rogue.NET.Core.Processing.Model.Content.Interface
 {
-    public interface IContentEngine : IRogueEngine
+    public interface IContentEngine
     {
         /// <summary>
         /// Figures out what enemies to provide for processing. Fires events for

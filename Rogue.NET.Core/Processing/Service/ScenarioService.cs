@@ -7,6 +7,7 @@ using Rogue.NET.Core.Processing.Action;
 using Rogue.NET.Core.Processing.Action.Enum;
 using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
+using Rogue.NET.Core.Processing.Model.Content;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using System;
@@ -26,7 +27,7 @@ namespace Rogue.NET.Core.Processing.Service
         readonly ILayoutEngine _layoutEngine;
         readonly IDebugEngine _debugEngine;
 
-        readonly IRogueEngine[] _rogueEngines;
+        readonly BackendEngine[] _rogueEngines;
 
         readonly IModelService _modelService;
 
@@ -46,6 +47,7 @@ namespace Rogue.NET.Core.Processing.Service
         // Update Have Priority:  Process depending on the priority - with backend processed
         //                        AFTER all updates have been processed
         Queue<LevelEventData> _levelEventDataQueue;
+        Queue<TargetRequestEventData> _targetRequestEventDataQueue;
         Queue<DialogEventData> _dialogEventDataQueue;
         Queue<AnimationEventData> _animationEventDataQueue;
         Queue<ScenarioEventData> _scenarioEventDataQueue;
@@ -68,9 +70,14 @@ namespace Rogue.NET.Core.Processing.Service
             _debugEngine = debugEngine;
             _modelService = modelService;            
 
-            _rogueEngines = new IRogueEngine[] { _contentEngine, _layoutEngine, _scenarioEngine, _alterationEngine, _debugEngine };
+            _rogueEngines = new BackendEngine[] { _contentEngine as BackendEngine,
+                                                _layoutEngine as BackendEngine,
+                                                _scenarioEngine as BackendEngine,
+                                                _alterationEngine as BackendEngine,
+                                                _debugEngine as BackendEngine };
 
             _levelEventDataQueue = new Queue<LevelEventData>();
+            _targetRequestEventDataQueue = new Queue<TargetRequestEventData>();
             _dialogEventDataQueue = new Queue<DialogEventData>();
             _animationEventDataQueue = new Queue<AnimationEventData>();
             _scenarioEventDataQueue = new Queue<ScenarioEventData>();
@@ -89,6 +96,10 @@ namespace Rogue.NET.Core.Processing.Service
                 engine.LevelEvent += (eventData) =>
                 {
                     _levelEventDataQueue.Enqueue(eventData);
+                };
+                engine.TargetRequestEvent += (eventData) =>
+                {
+                    _targetRequestEventDataQueue.Enqueue(eventData);
                 };
                 engine.LevelProcessingActionEvent += (eventData) =>
                 {
@@ -150,12 +161,6 @@ namespace Rogue.NET.Core.Processing.Service
                     {
                         _layoutEngine.Search(_modelService.Level.Grid, _modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
-                    }
-                    break;
-                case LevelCommandType.Target:
-                    {
-                        _scenarioEngine.Target(commandData.Direction);
-                        nextAction = LevelContinuationAction.DoNothing;
                     }
                     break;
                 case LevelCommandType.InvokeSkill:
@@ -362,6 +367,7 @@ namespace Rogue.NET.Core.Processing.Service
             _backendQueue.Clear();
             _dialogEventDataQueue.Clear();
             _levelEventDataQueue.Clear();
+            _targetRequestEventDataQueue.Clear();
             _scenarioEventDataQueue.Clear();
         }
 
@@ -373,6 +379,11 @@ namespace Rogue.NET.Core.Processing.Service
         public LevelEventData DequeueLevelEventData()
         {
             return _levelEventDataQueue.Any() ? _levelEventDataQueue.Dequeue() : null;
+        }
+
+        public TargetRequestEventData DequeueTargetRequestEventData()
+        {
+            return _targetRequestEventDataQueue.Any() ? _targetRequestEventDataQueue.Dequeue() : null;
         }
 
         public DialogEventData DequeueDialogEventData()

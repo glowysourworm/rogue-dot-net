@@ -1,6 +1,6 @@
-﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+﻿using Rogue.NET.Common.Extension.Event;
+using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
-using Rogue.NET.Core.Processing.Command.Backend;
 using Rogue.NET.Core.Processing.Command.Backend.CommandData;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
@@ -17,8 +17,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         readonly IRogueEventAggregator _eventAggregator;
         readonly IScenarioService _scenarioService;
 
-        // Block inputs until Start() is called
-        bool _blockUserInput = true;
+        public event SimpleEventHandler<TargetRequestEventData> TargetingModeRequestEvent;
 
         [ImportingConstructor]
         public BackendController(
@@ -27,51 +26,31 @@ namespace Rogue.NET.Scenario.Processing.Controller
         {
             _eventAggregator = eventAggregator;
             _scenarioService = scenarioService;
-
-            // Subscribe to user input
-            _eventAggregator.GetEvent<LevelCommand>().Subscribe(async (e) => await OnLevelCommand(e));
-            _eventAggregator.GetEvent<PlayerCommand>().Subscribe(async (e) => await OnPlayerCommand(e));
-            _eventAggregator.GetEvent<PlayerMultiItemCommand>().Subscribe(async (e) => await OnPlayerMultiItemCommand(e));
         }
-        public void Stop()
-        {
-            _blockUserInput = true;
 
-            // Second, clear and unload all backend queues. (This is safe because backend thread is halted)
+        public void Clear()
+        {
             _scenarioService.ClearQueues();
         }
-        public void Start()
-        {
-            _blockUserInput = false;
-        }
 
-        private async Task OnLevelCommand(LevelCommandData e)
+        public async Task PublishLevelCommand(LevelCommandData e)
         {
-            if (_blockUserInput)
-                return;
-
             // First issue command
             _scenarioService.IssueCommand(e);
 
             await Work();
         }
 
-        private async Task OnPlayerCommand(PlayerCommandData e)
+        public async Task PublishPlayerCommand(PlayerCommandData e)
         {
-            if (_blockUserInput)
-                return;
-
             // First issue command
             _scenarioService.IssuePlayerCommand(e);
 
             await Work();
         }
 
-        private async Task OnPlayerMultiItemCommand(PlayerMultiItemCommandData e)
+        public async Task PublishPlayerMultiItemCommand(PlayerMultiItemCommandData e)
         {
-            if (_blockUserInput)
-                return;
-
             // First issue command
             _scenarioService.IssuePlayerMultiItemCommand(e);
 
@@ -147,16 +126,38 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 if (!_scenarioService.ProcessBackend() && processing)
                     processing = false;
             }
+
+            // CHECK FOR TARGETING MODE REQUEST
+            //
+            // NOTE** These should be queued with no other backend processing to do. But, 
+            //        the backend sequencing needs to be refactored anyway... For now, just
+            //        leave it here or wherever it works.
+            //
+            //        Have to halt processing - which means this can only be processed after
+            //        everything else has finished. So, clear the queues and publish the request.
+
+            // Target Request Event
+            var targetRequestEventData = _scenarioService.DequeueTargetRequestEventData();
+            if (targetRequestEventData != null)
+            {
+                // Have to halt processing - which means clear the queues to be sure no other
+                // target requests have been added (THIS NEEDS TO BE REFACTORED - CREATE THE BACKEND SEQUENCER!)
+                _scenarioService.ClearQueues();
+
+                // Process Level Update (await)
+                if (this.TargetingModeRequestEvent != null)
+                    this.TargetingModeRequestEvent(targetRequestEventData);
+            }
         }
 
         #region (private) Processing
-        private async Task ProcessAnimationEvent(AnimationEventData update)
+        private async Task ProcessAnimationEvent(AnimationEventData eventData)
         {
-            await _eventAggregator.GetEvent<AnimationStartEvent>().Publish(update);
+            await _eventAggregator.GetEvent<AnimationStartEvent>().Publish(eventData);
         }
-        private void ProcessLevelEvent(LevelEventData update)
+        private void ProcessLevelEvent(LevelEventData eventData)
         {
-            _eventAggregator.GetEvent<LevelEvent>().Publish(update);
+            _eventAggregator.GetEvent<LevelEvent>().Publish(eventData);
         }
         private bool ProcessScenarioEvent(ScenarioEventData update)
         {

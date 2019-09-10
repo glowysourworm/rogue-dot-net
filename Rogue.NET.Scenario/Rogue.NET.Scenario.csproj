@@ -240,6 +240,8 @@
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridRow\ItemGridRowViewModelBase.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\ItemGridViewModel.cs" />
     <Compile Include="Content\ViewModel\ItemGrid\PrimaryMode\EquipmentPrimaryItemGridViewModel.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\Inteface\ILevelCanvasElement.cs" />
+    <Compile Include="Content\ViewModel\LevelCanvas\Inteface\ILevelCanvasViewModel.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasElement.cs" />
     <Compile Include="Content\ViewModel\LevelCanvas\LevelCanvasShape.cs" />
     <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
@@ -371,6 +373,7 @@
       <DependentUpon>SkillTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Processing\Controller\Enum\GameCommandMode.cs" />
+    <Compile Include="Processing\Controller\FrontendController.cs" />
     <Compile Include="Processing\Controller\Interface\IFrontendController.cs" />
     <Compile Include="Processing\Controller\Interface\IGameController.cs" />
     <Compile Include="Processing\Controller\Interface\IBackendController.cs" />
@@ -418,8 +421,10 @@
     <Compile Include="Intro\Views\GameSetup\NewOpenEdit.xaml.cs">
       <DependentUpon>NewOpenEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Processing\Controller\GameRouter.cs" />
-    <Compile Include="Processing\Controller\Interface\IGameRouter.cs" />
+    <Compile Include="Processing\Controller\CommandRouter.cs" />
+    <Compile Include="Processing\Controller\Interface\ICommandRouter.cs" />
+    <Compile Include="Processing\Service\Interface\IScenarioUIService.cs" />
+    <Compile Include="Processing\Service\ScenarioUIService.cs" />
     <Compile Include="ScenarioModule.cs" />
     <Compile Include="Intro\ViewModel\GameSetupViewModel.cs" />
     <Compile Include="Intro\Views\GameSetupView.xaml.cs">

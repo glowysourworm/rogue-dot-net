@@ -2231,4 +2231,129 @@ IMMEDIATE TODO'S:
 				   
 	- TODO: NEED A FEATURE TO START A SCENARIO FROM THE EDITOR
 				   
-				   
+	- TODO: Get the IModelService OUT of: IGameController, maybe ALL the frontend ViewModel components, and anything else where it's 
+			shared between front / backend processing without being controlled by the IBackendController / IFrontendController or
+			maybe the IGameRouter
+			
+			Calculations for the view-model components need to be broken up into smaller pieces. I like the idea of having the 
+			view-model just be a simple data container so that the logic is more controlled
+			
+	- TODO: Move the dialog code to the RogueModule because it's closer to the shell. And, put the splash events on the dialog region
+			and maybe try animating the smiley during loading
+			
+	- TODO: Break up LevelCanvasViewModel into separate view-models. Maybe one for the layout, one for the content, and one for animations(?)
+	
+	- TODO: Make GridLocation a struct (value type) and figure out how equals works "=" for structs. Does it copy? Also, want to know
+			how much of a memory footprint the Level structure has - so, if we don't need the scenario file, then go ahead and remove it.
+			
+	- IDEA: Could EASILY build an injector service to replace the ServiceLocator. If it goes that way - would like to consider a way to 
+			place constraints on components - so that you can control what gets injected.
+			
+			Example: IModelService is an important model container - and should be injected only where it is supposed to be.
+			
+					 How to place constraints on injection?
+					 
+						Attributes? 
+						Bootstrapper? SimpleServiceLocator.Constrain(IModelService, typeof("The interface that allows injection"));
+						...
+						
+			But, building an injector should be pretty straight forward.
+			
+	- Backend Queue Design:
+	
+		Main Problem:  Having to know what's happening on the queues at any given time - espeically with removing / adding content
+					   creates a problem dealing with:
+					   
+					   IModelService - updating calculated variables
+					   
+					   Synchronization - Frontend gets out of sync with the backend
+					   
+		A Solution:    Ideally, everything should be queued in order of when it was issued; and the frontend / backend should be
+					   completely in sync.
+					   
+					   Also, "Apply End of Turn" and other things that happend after "A Turn" has commenced need to be systematized.
+					   
+					   To accomplish this we need to get a bigger picture on the happenings of when a command is issued:
+					   
+					   Player Does Something -> All Characters React (And Doodads if that's added) -> [End]
+					   
+					   For each action / reaction - MANY things happen - including communication with the Frontend / UI. So, to 
+					   sequence all of this, we really need a new queueing mechanism. The one in place doesn't always work. We also
+					   need a way to say when "UI should be synchronized" and "Calculated variables should be updated". So, something like:
+					   
+					   ----------- ("Backend Sequencer")
+					   Player Does Something -> moves location [UI Update Event Happens] -> [end of player action] 
+					   
+					   DO END OF PLAYER TURN -> [Calculate Player Visibility, Calculate Player Stats (Regeneration Only), Enemies Died (removed), etc...]
+					   
+					   THEN CONTINUE ().
+					   
+					   Enemy 1 Reacts -> attacks player [UI Animation, UI Character Update] -> [end of enemy action]
+					   
+					   DO END OF ENEMY TURN -> [Calculate Enemy Visibility, Calculate Enemy Stats (Regeneration), Calculate Player Death, etc...]
+					   
+					   THEN CONTINUE ().
+					   ------------
+					   
+					   The reason this is different is because it's going to publish all the frontend / UI updates at the appropriate time - which
+					   will be right after the reaction is calculated. AND, the new enemy visibility AND content removal AND synchronization with 
+					   the front end will be done IN BETWEEN reactions; but ALWAYS at the END of each sub-sequence.
+					   
+					   Enemy 1 Reacts -> Skill Alteration [Animation Event, 
+														   Process Alteration (Enemy)]
+														   
+									  -> End Enemy Turn()
+									  
+									  -> THEN, do these [Calculate Enemy Visibility, 
+														 Calculate Player Visibility (Maybe they moved?), 
+														 Calculate Player Death,
+														 Calculate Enemy Regen,
+														 Update UI Stats,
+														 Update UI Locations,
+														 etc...]
+									
+									  - END SUB-SEQUENCE ().
+									  
+					   So, using this idea, the queueing needs to be re-designed some with a new "Sequencer" to do something like:
+					   
+					   Queue:  Player -> Enemy 1 -> Enemy 2 -> .. -> Enemy N -> ()
+					   
+					   Then, for each character in the queue:
+					   
+					   Player -> Process() -> (signals many events which are loaded IN ORDER on a sub-queue)
+					   
+										   -> Process Sub-Queue() IN ORDER
+						
+					   Enemy 1 -> Process() -> ...
+					   
+					   This should cause all events to be sequenced properly.
+					   
+					   AND, IT WILL SYSTEMATIZE THE "END OF TURN" CALCULATIONS. Which will really really really help make the whole
+					   game more robust.
+					   
+					   
+	- TODO: DEBOUNCE BUTTONS! Mouse keeps double-firing. So, put a dispatcher invoke in the event aggregator to block incoming
+			requests after one has been made. Use Application.Idle or something to delay the delegate invoke.
+			
+			UPDATE:  DON'T DO THAT! It doesn't work nicely. Just debounce the UI.
+			
+	- TODO: BUILD A BACKEND SEQUENCER!!!  Could add a service to store "Things that will occur at the end of this character's turn"
+	
+			Like.. { DoNothing, NoRegeneration, Regenerate } becomes one parameter in the service. 
+			
+			The bigger picture is to have some SAFE services that keep calculated state. The IModelService needs to be carefully
+			handled. But, other things like the ITargetingService and maybe "I-Chararcter-Turn-Parameters-Service" also will have
+			to be SYSTEMATICALLY used, stored, monitored, cleared, etc...
+			
+			Player -> DoesSomething() -> All.. Stateful.. Services.. Loaded.. 
+									  -> EndOfTurn(Player) 
+									  -> All Stateful Services Used (Parameters Read)
+									  -> All Stateful Services (Cleared / Updated / etc..)
+									  -> [End]
+									  
+			So.. BUILD A BACKEND SEQUENCER!!!
+			
+			
+														 
+					   
+						
