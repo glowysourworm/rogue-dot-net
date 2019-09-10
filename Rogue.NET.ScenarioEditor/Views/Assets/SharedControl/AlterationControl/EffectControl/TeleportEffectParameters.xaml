@@ -4,23 +4,32 @@
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
-    <TabControl TabStripPlacement="Left" Background="Black">
-        <TabItem Header="Type">
-            <!-- Random Placement Type -->
-            <GroupBox Header="Random Placement Type">
-                <StackPanel>
-                    <TextBlock Text="Choose where to place created character (monster) relative to the source character" Foreground="White" FontSize="18" Margin="10" />
-                    <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationRandomPlacementType}"
-                                                         EnumValue="{Binding TeleportType, Mode=TwoWay}" />
-                </StackPanel>
-            </GroupBox>
-        </TabItem>
-        <TabItem Header="Parameters">
-            <!-- Range -->
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
-                <toolkit:IntegerUpDown Value="{Binding Range}" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
-            </Grid>
-        </TabItem>
-    </TabControl>
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+    </UserControl.Resources>
+    
+    <StackPanel>
+
+        <!-- Location Selection Type -->
+        <GroupBox Header="Location Selection Type" Margin="5">
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationLocationSelectionType}"
+                                                     EnumValue="{Binding LocationSelectionType, Mode=TwoWay}" />
+        </GroupBox>
+
+        <!-- Random Placement Type -->
+        <GroupBox Header="Random Placement Type" Margin="5"
+                  Visibility="{Binding LocationSelectionType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationLocationSelectionType.Random}}">
+            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationRandomPlacementType}"
+                                             EnumValue="{Binding TeleportType, Mode=TwoWay}" />
+        </GroupBox>
+
+        <!-- Range -->
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5"
+              Visibility="{Binding TeleportType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InRangeOfCharacter}}">
+            <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
+            <toolkit:IntegerUpDown Value="{Binding Range}" Height="28" Width="80" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
+        </Grid>
+
+    </StackPanel>
+
 </UserControl>

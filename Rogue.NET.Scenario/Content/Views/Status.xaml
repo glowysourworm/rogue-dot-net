@@ -85,7 +85,7 @@
 
                     <!-- Name / Selected Skill Name -->
                     <TextBlock FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="4,0,0,0" Foreground="White"
-                               Text="{Binding ActiveSkillSet.ActiveSkill.Alteration.DisplayName}" />
+                               Text="{Binding ActiveSkillSet.ActiveSkill.Alteration.RogueName}" />
                     
                 </StackPanel>
                

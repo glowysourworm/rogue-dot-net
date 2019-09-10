@@ -628,6 +628,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 Range = template.Range,
                 TeleportType = template.TeleportType,
+                LocationSelectionType = template.LocationSelectionType,
                 RogueName = template.Name
             };
         }

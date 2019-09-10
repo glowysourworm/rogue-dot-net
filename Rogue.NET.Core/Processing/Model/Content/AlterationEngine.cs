@@ -203,6 +203,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerLocation, _modelService.Player.Id));
                 }
             }
+
+            // Clear the targeting service (TODO: BUILD BACKEND SEQUENCER!!!)
+            //
+            // Should go:  Player Action -> All Intermediate Events -> End of Turn (Player) { Does lots of things, Clears Targeting Service }
+            //
+            //             Then Enemy 1 Reaction -> ...
+            //
+
+            // This SHOULD be the last place that's required for the targeting service to get the
+            // stored character. 
+            _targetingService.Clear();
         }
 
         #region (private) Alteration Apply Methods
@@ -350,17 +361,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var targetedCharacter = _targetingService.GetTargetedCharacter();
 
-            // Clear the targeting service (TODO: BUILD BACKEND SEQUENCER!!!)
-            //
-            // Should go:  Player Action -> All Intermediate Events -> End of Turn (Player) { Does lots of things, Clears Targeting Service }
-            //
-            //             Then Enemy 1 Reaction -> ...
-            //
-
-            // This SHOULD be the last place that's required for the targeting service to get the
-            // stored character. 
-            _targetingService.Clear();
-
             switch (targetType)
             {
                 case AlterationTargetType.Source:
@@ -506,8 +506,18 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessTeleport(TeleportAlterationEffect effect, Character character)
         {
-            // Calculate Teleport Location
-            var openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
+            GridLocation openLocation = GridLocation.Empty;
+
+            // Select location based on effect parameters
+            if (effect.LocationSelectionType == AlterationLocationSelectionType.ManualInVisibleRange)
+            {
+                openLocation = _targetingService.GetTargetLocation();
+            }
+            else
+            {
+                // Calculate Teleport Location
+                openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
+            }
 
             // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
             if (openLocation == null ||

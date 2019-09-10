@@ -18,9 +18,22 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                     IEnemyAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
+        AlterationLocationSelectionType _locationSelectionType;
         AlterationRandomPlacementType _teleportType;
         int _range;
 
+        public AlterationLocationSelectionType LocationSelectionType
+        {
+            get { return _locationSelectionType; }
+            set
+            {
+                if (_locationSelectionType != value)
+                {
+                    _locationSelectionType = value;
+                    OnPropertyChanged("LocationSelectionType");
+                }
+            }
+        }
         public AlterationRandomPlacementType TeleportType
         {
             get { return _teleportType; }

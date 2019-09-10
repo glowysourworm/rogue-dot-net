@@ -322,6 +322,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     return LevelContinuationAction.DoNothing;
                 }
 
+                else if (alteration.RequiresTargetLocation() && _targetingService.GetTargetLocation() == null)
+                {
+                    // Signal targeting start event
+                    OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.Consume, itemId));
+                    return LevelContinuationAction.DoNothing;
+                }
+
                 else if (alteration.RequiresCharacterInRange() &&
                         !_modelService.CharacterContentInformation.GetVisibleCharacters(player).Any())
                 {
@@ -673,8 +680,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var enemyTargeted = _targetingService.GetTargetedCharacter();
             var skillAlteration = _alterationGenerator.GenerateAlteration(currentSkill);
 
-            // Requires Target
+            // Requires Target Character
             if (skillAlteration.RequiresTarget() && enemyTargeted == null)
+            {
+                OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.InvokeSkill, ""));
+                return LevelContinuationAction.DoNothing;
+            }
+
+            // Requires Target Location
+            if (skillAlteration.RequiresTargetLocation() && _targetingService.GetTargetLocation() == null)
             {
                 OnTargetingRequesetEvent(_backendEventDataFactory.TargetRequest(TargetRequestType.InvokeSkill, ""));
                 return LevelContinuationAction.DoNothing;

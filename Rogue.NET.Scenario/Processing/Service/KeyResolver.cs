@@ -105,7 +105,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             if (key == _preferences.Target)
                 return new FrontendCommandData(FrontendCommandType.StartTargeting, Compass.Null);
 
-            else if (key == _preferences.Target && shift)
+            else if (IsDirectionKey(key) && shift)
                 return new FrontendCommandData(FrontendCommandType.CycleTarget, direction);
 
             else if (IsDirectionKey(key))

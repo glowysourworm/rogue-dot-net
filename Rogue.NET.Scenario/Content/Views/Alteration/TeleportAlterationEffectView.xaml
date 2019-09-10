@@ -19,8 +19,15 @@
             </TextBlock>
         </Grid>
 
+        <!-- Location Selection Type -->
+        <Grid Margin="5">
+            <TextBlock Text="Location Selection" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
+            <TextBlock Text="{Binding LocationSelectionType, Converter={StaticResource EnumDisplayAttributeNameConverter}}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />            
+        </Grid>
+
         <!-- Random Placement Type -->
-        <Grid Margin="4">
+        <Grid Margin="4"
+              Visibility="{Binding LocationSelectionType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationLocationSelectionType.Random}}">
             <TextBlock Text="Placement" Foreground="Tan" FontSize="18" HorizontalAlignment="Left" />
             <TextBlock Text="{Binding TeleportType, Converter={StaticResource EnumDisplayAttributeNameConverter}}" FontSize="18" Foreground="White" HorizontalAlignment="Right" />
         </Grid>

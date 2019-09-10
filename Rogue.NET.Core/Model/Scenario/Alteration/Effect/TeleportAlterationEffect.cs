@@ -17,6 +17,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IEnemyAlterationEffect,
                      ISkillAlterationEffect
     {
+        public AlterationLocationSelectionType LocationSelectionType { get; set; }
         public AlterationRandomPlacementType TeleportType { get; set; }
 
         /// <summary>

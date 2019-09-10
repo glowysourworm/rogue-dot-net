@@ -17,9 +17,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IEnemyAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
+        AlterationLocationSelectionType _locationSelectionType;
         AlterationRandomPlacementType _teleportType;
         int _range;
 
+        public AlterationLocationSelectionType LocationSelectionType
+        {
+            get { return _locationSelectionType; }
+            set { this.RaiseAndSetIfChanged(ref _locationSelectionType, value); }
+        }
         public AlterationRandomPlacementType TeleportType
         {
             get { return _teleportType; }

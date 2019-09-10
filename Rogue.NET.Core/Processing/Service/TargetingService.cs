@@ -21,6 +21,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         TargetType _targetType;
         GridLocation _targetLocation;
+        GridLocation _targetTrackerLocation;
         Character _targetCharacter;
 
         [ImportingConstructor]
@@ -35,20 +36,19 @@ namespace Rogue.NET.Core.Processing.Service
         {
             _targetType = TargetType.None;
             _targetLocation = null;
+            _targetTrackerLocation = null;
             _targetCharacter = null;
         }
 
         public void EndTargeting()
         {
-            if (IsValidTarget(_targetLocation))
+            if (IsValidTarget(_targetTrackerLocation))
             {
-                CaptureTarget(_targetLocation);
+                CaptureTarget(_targetTrackerLocation);
             }
             else
             {
-                _targetType = TargetType.None;
-                _targetLocation = null;
-                _targetCharacter = null;
+                Clear();
             }
         }
 
@@ -56,11 +56,11 @@ namespace Rogue.NET.Core.Processing.Service
         {
             var location = _modelService.Level
                 .Grid
-                .GetPointInDirection(_targetLocation, direction);
+                .GetPointInDirection(_targetTrackerLocation, direction);
 
             if (IsValidTarget(location))
             {
-                CaptureTarget(location);
+                _targetTrackerLocation = location;
                 return true;
             }
 
@@ -116,13 +116,13 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Set tracker on the selected enemy and update
             if (targetedEnemy != null)
-                CaptureTarget(targetedEnemy.Location);
+                _targetTrackerLocation = targetedEnemy.Location;
         }
 
         public void StartTargeting(GridLocation location)
         {
             if (IsValidTarget(location))
-                CaptureTarget(location);
+                _targetTrackerLocation = location;
 
             else
                 throw new Exception("Trying to start targeting from invalid location");
@@ -149,6 +149,9 @@ namespace Rogue.NET.Core.Processing.Service
             var character = _modelService.Level.GetAt<Character>(location);
             var gridCell = _modelService.Level.Grid[location.Column, location.Row];
 
+            // Clear target tracker
+            _targetTrackerLocation = null;
+
             if (gridCell == null)
             {
                 _targetType = TargetType.None;
@@ -159,7 +162,7 @@ namespace Rogue.NET.Core.Processing.Service
             else if (character != null)
             {
                 _targetType = TargetType.Character;
-                _targetLocation = location;
+                _targetLocation = null;
                 _targetCharacter = character;
             }
 
@@ -183,7 +186,39 @@ namespace Rogue.NET.Core.Processing.Service
             if (gridCell == null)
                 return false;
 
+            // Must be a visible location
+            if (!_modelService.CharacterLayoutInformation
+                              .GetVisibleLocations(_modelService.Player)
+                              .Contains(location))
+                return false;
+
             return true;
+        }
+
+        public TargetType GetTrackedTargetType()
+        {
+            if (_targetTrackerLocation == null ||
+                _targetTrackerLocation == GridLocation.Empty)
+                return TargetType.None;
+
+            var character = _modelService.Level.GetAt<Character>(_targetTrackerLocation);
+            var gridCell = _modelService.Level.Grid[_targetTrackerLocation.Column, _targetTrackerLocation.Row];
+
+            if (gridCell == null)
+                return TargetType.None;
+
+            else if (character != null)
+                return TargetType.Character;
+
+            else if (gridCell.Location != GridLocation.Empty)
+                return TargetType.Location;
+
+            return TargetType.None;
+        }
+
+        public GridLocation GetTrackedTargetLocation()
+        {
+            return _targetTrackerLocation ?? GridLocation.Empty;
         }
     }
 }

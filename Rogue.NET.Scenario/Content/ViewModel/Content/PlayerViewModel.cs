@@ -362,15 +362,6 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content
         /// </summary>
         public ObservableCollection<AlterationListViewModel> Alterations { get; set; }
 
-        // UI Property
-        public Point PlayerLocation
-        {
-            get
-            {
-                return _scenarioUIGeometryService.Cell2UI(_modelService.Player.Location);
-            }
-        }
-
         public string CharacterClass { get; set; }
 
         [ImportingConstructor]

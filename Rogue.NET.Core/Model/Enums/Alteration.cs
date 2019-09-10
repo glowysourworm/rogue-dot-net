@@ -26,6 +26,10 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Alteration must be blocked using the Agility attribute")]
         Physical = 2
     }
+
+    /// <summary>
+    /// This target type is specific to which characters are AFFECTED by the alteration
+    /// </summary>
     public enum AlterationTargetType : int
     {
         [Display(Name = "Source",
@@ -44,18 +48,33 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Effect applied to all characters in numeric range of source")]
         AllInRangeExceptSource = 3
     }
+
+    /// <summary>
+    /// Specifies how a location can be selected during an Alteration
+    /// </summary>
+    public enum AlterationLocationSelectionType : int
+    {
+        [Display(Name = "Random",
+                 Description = "Character placed at random open location")]
+        Random = 0,
+
+        [Display(Name = "Manual (In Visible Range)",
+                 Description = "Character placed at a manually selected open location in the Player's visible range")]
+        ManualInVisibleRange = 1
+    }
+    
     public enum AlterationRandomPlacementType : int
     {
         [Display(Name = "In Level",
-                 Description = "Character placed on random open tile in level")]
+                 Description = "Character placed at random open location in level")]
         InLevel = 0,
 
         [Display(Name = "In Range Of Character",
-                 Description = "Character placed on random open tile in numeric range of source character")]
+                 Description = "Character placed at random open location in numeric range of source character")]
         InRangeOfCharacter = 1,
 
         [Display(Name = "In Player Visible Range",
-                 Description = "Character placed on random open tile in visible range of player")]
+                 Description = "Character placed at random open location in visible range of player")]
         InPlayerVisibleRange = 2
     }
     public enum AlterationOtherEffectType : int

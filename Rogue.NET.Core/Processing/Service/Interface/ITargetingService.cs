@@ -31,6 +31,16 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         void EndTargeting();
 
         /// <summary>
+        /// Returns type of target beneath the tracker (during tracking)
+        /// </summary>
+        TargetType GetTrackedTargetType();
+
+        /// <summary>
+        /// Returns the location of the target tracker
+        /// </summary>
+        GridLocation GetTrackedTargetLocation();
+
+        /// <summary>
         /// Gets the type of target the user selected
         /// </summary>
         TargetType GetTargetType();

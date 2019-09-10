@@ -2352,8 +2352,60 @@ IMMEDIATE TODO'S:
 									  -> [End]
 									  
 			So.. BUILD A BACKEND SEQUENCER!!!
+	
+	- TODO: Make Speed an integer from 1 to 10. 
+	
+	- IDEA: If we BUILT A BACKEND SEQUENCER .. it might be possible to add a delay for character location changes.
+	
+			Like... The "Heavy Fighter" has a 200ms delay because his speed is set to 0.2. Whereas a Ranged fighter might have
+			a smaller delay because his speed is 0.6. (maybe 50ms). 
 			
+			But, we could probably do this easily if the SEQUENCER WAS BUILT.. because they'd all be in order. (only those
+			visible would be delayed)
 			
+			It would lend some kind of physical meaning to the characters.
+			
+	- TODO: We really HAVE to get rid of the TemplateViewModel namespace... It's too much work every time. 
+	
+			But, there's MANY UI features that require DependencyObject support.
+			
+			I'm leaning towards:
+			
+				1) MOVE the TemplateViewModel namespace to the Core project
+				
+				2) Build a CUSTOM SERIALIZATION ROUTINE 
+				
+					- DON'T DO IT ALL BY HAND
+					
+					- Build type serializers
+					
+					- Leverage reflection; BUT - VALIDATE THE NAMESPACE FOR PUBLIC PROPERITES AND Collections
+						
+						Validation:
+						
+							1) All public members must be a known type (kind of like the mapper that's already built in the editor)
+							
+								- public property [Type { Known Serializable Complex (reference) Type, IList Collection Type, or primitive CLR type }
+								
+								- Known Serializable Complex (reference) Type: Implies that we have a serializer for it - or it can be recursed to
+																			   serialize.
+																			   
+							2) All public members must be serializable (either by default OR using OUR CUSTOM SERIALIZABLE INTERFACE)
+							
+			Doing this, it should be pretty simple to serialize the namespace WHILE validating it each time there's a change to the 
+			namespace.
+			
+			Then, reflection should be pretty safe to use - something like the routine we already have. I'd actually just move that
+			one over.
+			
+			ALSO, IF THIS HAPPENS, NEED TO BUILD A MAPPING ROUTINE LEVERAGING REFLECTION FOR THE GENERATORS.
+			
+			*** WE COULD TRY USING EXPRESSIONS - WHICH COMPILE TO MAKE THINGS RUN FASTER.. IT MAY TAKE A LITTLE MORE WORK TO LEARN BUT 
+				WOULD BE WORTH IT AS AN EXERCISE TO KNOW.
+				
+				OR, MAYBE REFLECTION.EMIT
+							
+					
 														 
 					   
 						

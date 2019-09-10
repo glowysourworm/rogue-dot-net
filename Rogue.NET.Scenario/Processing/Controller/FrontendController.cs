@@ -263,19 +263,19 @@ namespace Rogue.NET.Scenario.Processing.Controller
             StopTargetAnimation();
 
             // Create a new targeting animation
-            switch (_targetingService.GetTargetType())
+            switch (_targetingService.GetTrackedTargetType())
             {
                 case TargetType.None:
                     break;
                 case TargetType.Location:
-                    PlayTargetAnimation(_targetingService.GetTargetLocation(),
-                                        Colors.Green,
+                    PlayTargetAnimation(_targetingService.GetTrackedTargetLocation(),
+                                        Colors.Blue,
                                         Colors.LightYellow);
                     break;
                 case TargetType.Character:
-                    PlayTargetAnimation(_targetingService.GetTargetLocation(),
-                                        Colors.Blue,
-                                        Colors.LightYellow);
+                    PlayTargetAnimation(_targetingService.GetTrackedTargetLocation(),
+                                        Colors.Magenta,
+                                        Colors.Magenta);
                     break;
                 default:
                     throw new Exception("Unhandled TargetType IFrontendController");

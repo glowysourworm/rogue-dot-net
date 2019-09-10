@@ -33,8 +33,6 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// </summary>
         public static bool RequiresTarget(this AlterationContainer alteration)
         {
-            // TODO:ALTERATION - Validate AlterationTargetType for each IAlterationEffect sub-type for
-            //                   each alteration container type. This should be done in the editor!
             if (alteration is ConsumableAlteration)
                 return (alteration as ConsumableAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
 
@@ -61,6 +59,18 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
 
             else
                 throw new Exception("Unknwon Alteration Type");
+        }
+
+        /// <summary>
+        /// Returns true if the alteration requires a target location has been selected (by the ITargetingService)
+        /// </summary>
+        public static bool RequiresTargetLocation(this AlterationContainer alteration)
+        {
+            if (alteration.Effect is TeleportAlterationEffect)
+                return (alteration.Effect as TeleportAlterationEffect).LocationSelectionType == AlterationLocationSelectionType.ManualInVisibleRange;
+
+            else
+                return false;
         }
 
         /// <summary>
