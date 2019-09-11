@@ -84,6 +84,9 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
         {
+            model.FriendlyTemplates = new List<FriendlyTemplate>();
+            model.TemporaryCharacterTemplates = new List<TemporaryCharacterTemplate>();
+
             // Clear out reference maps to prepare for next mapping
             _forwardReferenceMap.Clear();
             _reverseReferenceMap.Clear();

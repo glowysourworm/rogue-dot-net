@@ -14,6 +14,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public List<PlayerTemplate> PlayerTemplates { get; set; }
         public List<SkillSetTemplate> SkillTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
+        public List<FriendlyTemplate> FriendlyTemplates { get; set; }
+        public List<TemporaryCharacterTemplate> TemporaryCharacterTemplates { get; set; }
         public List<EquipmentTemplate> EquipmentTemplates { get; set; }
         public List<ConsumableTemplate> ConsumableTemplates { get; set; }
         public List<DoodadTemplate> DoodadTemplates { get; set; }
@@ -25,6 +27,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
             this.DungeonTemplate = new DungeonTemplate();
             this.PlayerTemplates = new List<PlayerTemplate>();
             this.EnemyTemplates = new List<EnemyTemplate>();
+            this.FriendlyTemplates = new List<FriendlyTemplate>();
+            this.TemporaryCharacterTemplates = new List<TemporaryCharacterTemplate>();
             this.EquipmentTemplates = new List<EquipmentTemplate>();
             this.ConsumableTemplates = new List<ConsumableTemplate>();
             this.SkillTemplates = new List<SkillSetTemplate>();

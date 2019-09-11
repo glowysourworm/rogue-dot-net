@@ -172,7 +172,9 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\TemporaryCharacter\TemporaryCharacterAlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\FriendlyTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\NonPlayerCharacterTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Content\TemporaryCharacterTemplate.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />

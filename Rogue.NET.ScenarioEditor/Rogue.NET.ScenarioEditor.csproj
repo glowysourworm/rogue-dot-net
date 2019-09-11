@@ -403,10 +403,12 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\DoodadTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\EnemyTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\EquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\FriendlyTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\NonPlayerCharacterTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\PlayerTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Content\TemporaryCharacterTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
