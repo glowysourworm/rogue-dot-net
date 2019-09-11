@@ -5,6 +5,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
 {
     public interface IBehaviorGenerator
     {
-        EnemyBehavior GenerateBehavior(BehaviorTemplate behaviorTemplate);
+        Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate);
     }
 }

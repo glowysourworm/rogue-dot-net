@@ -14,9 +14,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
         }
 
-        public EnemyBehavior GenerateBehavior(BehaviorTemplate behaviorTemplate)
+        public Behavior GenerateBehavior(BehaviorTemplate behaviorTemplate)
         {
-            EnemyBehavior behavior = new EnemyBehavior();
+            Behavior behavior = new Behavior();
             behavior.AttackType = behaviorTemplate.AttackType;
             behavior.BehaviorCondition = behaviorTemplate.BehaviorCondition;
             behavior.BehaviorExitCondition = behaviorTemplate.BehaviorExitCondition;

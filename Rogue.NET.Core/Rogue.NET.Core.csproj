@@ -177,12 +177,6 @@
     <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\ITemporaryCharacterAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\TemporaryCharacter\TemporaryCharacterAlteration.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\EnemyBehavior.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\EnemyBehaviorDetails.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\FriendlyBehavior.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\FriendlyBehaviorDetails.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\TemporaryCharacterBehavior.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior\TemporaryCharacterBehaviorDetails.cs" />
     <Compile Include="Model\Scenario\Character\Extension\NonPlayerCharacterExtension.cs" />
     <Compile Include="Model\Scenario\Character\Friendly.cs" />
     <Compile Include="Model\Scenario\Character\NonPlayerCharacter.cs" />

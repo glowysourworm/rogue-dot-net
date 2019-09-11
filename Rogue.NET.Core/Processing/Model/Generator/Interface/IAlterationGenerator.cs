@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
     {
         AlterationCost GenerateAlterationCost(AlterationCostTemplate template);
 
+        AlterationContainer GenerateAlteration(AlterationTemplate template);
         ConsumableAlteration GenerateAlteration(ConsumableAlterationTemplate template);
         ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template);
         DoodadAlteration GenerateAlteration(DoodadAlterationTemplate template);

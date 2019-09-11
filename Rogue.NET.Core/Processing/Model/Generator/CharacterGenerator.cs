@@ -150,7 +150,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
 
-            enemy.BehaviorDetails = new EnemyBehaviorDetails();
+            enemy.BehaviorDetails = new BehaviorDetails();
 
             // Create Behavior "State Machine"
             foreach (var behaviorTemplate in enemyTemplate.BehaviorDetails.Behaviors)

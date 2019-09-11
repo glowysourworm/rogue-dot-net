@@ -10,10 +10,10 @@ namespace Rogue.NET.Core.Model.Scenario.Character
     /// characters.
     /// </summary>
     [Serializable]
-    public abstract class NonPlayerCharacter : Character
+    public class NonPlayerCharacter : Character
     {
         public CharacterAlignmentType AlignmentType { get; set; }
-        public abstract BehaviorDetails BehaviorDetails { get; set; }
+        public BehaviorDetails BehaviorDetails { get; set; }
         public AnimationGroup DeathAnimation { get; set; }
         public double TurnCounter { get; set; }
 
@@ -24,6 +24,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public NonPlayerCharacter() : base()
         {
+            this.BehaviorDetails = new BehaviorDetails();
             this.DeathAnimation = new AnimationGroup();
             this.TurnCounter = 0;
         }

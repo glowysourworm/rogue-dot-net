@@ -15,11 +15,9 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         /// Counter that specifies when Summoned Unit will be removed from the level content
         /// </summary>
         public int LifetimeCounter { get; set; }
-        public override BehaviorDetails BehaviorDetails { get; set; }
 
         public TemporaryCharacter() : base()
         {
-            this.BehaviorDetails = new TemporaryCharacterBehaviorDetails();
         }
     }
 }

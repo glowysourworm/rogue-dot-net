@@ -8,20 +8,14 @@ using Rogue.NET.Core.Processing.Model.Content.Interface;
 namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
 {
     [Serializable]
-    public abstract class BehaviorDetails : RogueBase
+    public class BehaviorDetails : RogueBase
     {
-        /// <summary>
-        /// This is the default behavior for any Rogue.NET character. It can be used for when
-        /// a behavior is undefined or no behavior has entry conditions met. (Must be overridden in inherited class)
-        /// </summary>
-        public abstract Behavior DefaultBehavior { get; }
-
         private Behavior _currentBehavior;
 
         public List<Behavior> Behaviors { get; set; }
         public Behavior CurrentBehavior
         {
-            get { return _currentBehavior ?? DefaultBehavior; }
+            get { return _currentBehavior ?? Behavior.Default; }
         }
         public bool CanOpenDoors { get; set; }
         public bool UseRandomizer { get; set; }
@@ -59,7 +53,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                 if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
                    (behavior.AttackType == CharacterAttackType.Skill ||
                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.SkillAlterationCost))
+                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.SkillAlteration.Cost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior
@@ -82,20 +76,20 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                 return !entryConditionsFail && !exitConditionMet;
             });
 
-            var nextBehavior = this.DefaultBehavior;
+            var nextBehavior = Behavior.Default;
 
             // Check for Randomizer
             if (this.UseRandomizer && (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0))
                 nextBehavior = validBehaviors.Any() ?
                                validBehaviors.PickRandom() :
-                               this.DefaultBehavior;
+                               Behavior.Default;
 
             // Else, pick first or default (null -> Behavior.Default)
             else
                 nextBehavior = validBehaviors.FirstOrDefault();
 
             // Reset turn counter when appropriate
-            if (nextBehavior == this.DefaultBehavior ||
+            if (nextBehavior == Behavior.Default ||
                 nextBehavior != _currentBehavior)
                 this.BehaviorTurnCounter = 0;
 

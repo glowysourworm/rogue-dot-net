@@ -920,32 +920,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             AlterationContainer alteration;
 
-            if (character is Enemy)
-            {
-                // Cast the appropriate behavior
-                var template = ((character as Enemy).BehaviorDetails.CurrentBehavior as EnemyBehavior).SkillAlteration;
+            // Cast the appropriate behavior
+            var template = character.BehaviorDetails.CurrentBehavior.SkillAlteration;
 
-                // Create the alteration
-                alteration = _alterationGenerator.GenerateAlteration(template);
-            }
-            else if (character is Friendly)
-            {
-                // Cast the appropriate behavior
-                var template = ((character as Friendly).BehaviorDetails.CurrentBehavior as FriendlyBehavior).SkillAlteration;
-
-                // Create the alteration
-                alteration = _alterationGenerator.GenerateAlteration(template);
-            }
-            else if (character is TemporaryCharacter)
-            {
-                // Cast the appropriate behavior
-                var template = ((character as TemporaryCharacter).BehaviorDetails.CurrentBehavior as TemporaryCharacterBehavior).SkillAlteration;
-
-                // Create the alteration
-                alteration = _alterationGenerator.GenerateAlteration(template);
-            }
-            else
-                throw new Exception("Unhandled NonPlayerCharacter Type IContentEngine.ProcessCharacterSkillAttack");
+            // Create the alteration
+            alteration = _alterationGenerator.GenerateAlteration(template);
 
             // Post alteration message 
             _scenarioMessageService.PublishAlterationCombatMessage(

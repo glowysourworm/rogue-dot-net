@@ -71,6 +71,36 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
+        public AlterationContainer GenerateAlteration(AlterationTemplate template)
+        {
+            if (template is ConsumableProjectileAlterationTemplate)
+                return GenerateAlteration(template as ConsumableProjectileAlterationTemplate);
+
+            else if (template is ConsumableAlterationTemplate)
+                return GenerateAlteration(template as ConsumableAlterationTemplate);
+
+            else if (template is EnemyAlterationTemplate)
+                return GenerateAlteration(template as EnemyAlterationTemplate);
+
+            else if (template is EquipmentAttackAlterationTemplate)
+                return GenerateAlteration(template as EquipmentAttackAlterationTemplate);
+
+            else if (template is EquipmentEquipAlterationTemplate)
+                return GenerateAlteration(template as EquipmentEquipAlterationTemplate);
+
+            else if (template is EquipmentCurseAlterationTemplate)
+                return GenerateAlteration(template as EquipmentCurseAlterationTemplate);
+
+            else if (template is DoodadAlterationTemplate)
+                return GenerateAlteration(template as DoodadAlterationTemplate);
+
+            else if (template is SkillAlterationTemplate)
+                return GenerateAlteration(template as SkillAlterationTemplate);
+
+            else
+                throw new Exception("Unhandled AlterationTemplate Type");
+        }
+
         public ConsumableProjectileAlteration GenerateAlteration(ConsumableProjectileAlterationTemplate template)
         {
             return new ConsumableProjectileAlteration()
