@@ -2426,4 +2426,12 @@ IMMEDIATE TODO'S:
 			
 	- TODO: Removed "skill at close range" attack type for enemies. We need some parameters in the alteration space somewhere to specify
 			things like "range".
+			
+	- RENDERING ISSUE: Anything too large (100x100)ish - is slow (render transform). I don't know why but it's probably the number of 
+					   path figures.
+					   
+					   I'm thinking the best that can be done is to piece together all the walls from a single path figure (if it's possible).
+					   
+					   The "Outlined Path Geometry" didn't really work. So, may have to do it by hand.. but it would hopefully speed up
+					   rendering and allow for a larger layout dimension (for really really big levels)
 						

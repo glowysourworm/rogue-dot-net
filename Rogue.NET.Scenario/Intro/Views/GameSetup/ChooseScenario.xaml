@@ -59,8 +59,8 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <StackPanel Margin="10">
+                        <Grid Margin="5">
+                            <StackPanel Width="110">
                                 <coreView:Smiley Height="30" 
                                             Width="20" 
                                             HorizontalAlignment="Center"

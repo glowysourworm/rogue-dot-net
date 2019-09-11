@@ -5,7 +5,8 @@
         Fighter,
         Paladin,
         Witch,
-        Sorcerer
+        Sorcerer,
+        Necromancer
     }
     public enum ImageResources
     {

@@ -64,6 +64,7 @@ namespace Rogue.NET.Core.Processing.Service
             GetScenarioConfiguration(ConfigResources.Paladin);
             GetScenarioConfiguration(ConfigResources.Witch);
             GetScenarioConfiguration(ConfigResources.Sorcerer);
+            GetScenarioConfiguration(ConfigResources.Necromancer);
         }
         public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()
         {

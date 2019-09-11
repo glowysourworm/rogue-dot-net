@@ -944,6 +944,7 @@
     <EmbeddedResource Include="Resource\Configuration\Paladin.rdns" />
     <EmbeddedResource Include="Resource\Configuration\Sorcerer.rdns" />
     <EmbeddedResource Include="Resource\Configuration\Witch.rdns" />
+    <EmbeddedResource Include="Resource\Configuration\Necromancer.rdns" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\Images\ImbueArmor.png">
