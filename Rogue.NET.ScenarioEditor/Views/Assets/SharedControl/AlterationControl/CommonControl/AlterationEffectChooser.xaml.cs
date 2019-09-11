@@ -2,6 +2,7 @@
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
         #endregion
 
         public static readonly DependencyProperty AlterationProperty =
-            DependencyProperty.Register("Alteration", typeof(object), typeof(AlterationEffectChooser));
+            DependencyProperty.Register("Alteration", typeof(AlterationTemplateViewModel), typeof(AlterationEffectChooser));
 
         public static readonly DependencyProperty AlterationEffectProperty =
             DependencyProperty.Register("AlterationEffect", typeof(IAlterationEffectTemplateViewModel), typeof(AlterationEffectChooser), new PropertyMetadata(new PropertyChangedCallback(OnAlterationEffectChanged)));
@@ -36,9 +37,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
         public static readonly DependencyProperty AlterationEffectInterfaceTypeProperty =
             DependencyProperty.Register("AlterationEffectInterfaceType", typeof(Type), typeof(AlterationEffectChooser), new PropertyMetadata(new PropertyChangedCallback(OnAlterationEffectInterfaceTypeChanged)));
 
-        public object Alteration
+        public AlterationTemplateViewModel Alteration
         {
-            get { return GetValue(AlterationProperty); }
+            get { return (AlterationTemplateViewModel)GetValue(AlterationProperty); }
             set { SetValue(AlterationProperty, value); }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using System;
 
 namespace Rogue.NET.ScenarioEditor.Events
@@ -20,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.Events
         /// <summary>
         /// Alteration instance that contains the alteration effect
         /// </summary>
-        public object Alteration { get; set; }
+        public AlterationTemplateViewModel Alteration { get; set; }
 
         /// <summary>
         /// The view type associated with the region

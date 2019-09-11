@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Enemy;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using System.ComponentModel.Composition;
@@ -20,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl.B
             eventAggregator.GetEvent<AlterationEffectChangedEvent>()
                            .Subscribe(e =>
                            {
-                               var viewModel = this.DataContext as EnemyAlterationTemplateViewModel;
+                               var viewModel = this.DataContext as AlterationTemplateViewModel;
                                if (viewModel == null)
                                    return;
 
@@ -28,6 +29,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl.B
                                if (e.Effect is IEnemyAlterationEffectTemplateViewModel &&
                                    e.Alteration == viewModel)
                                    viewModel.Effect = (e.Effect as IEnemyAlterationEffectTemplateViewModel);
+
+                               else if (e.Effect is IFriendlyAlterationEffectTemplateViewModel &&
+                                   e.Alteration == viewModel)
+                                   viewModel.Effect = (e.Effect as IFriendlyAlterationEffectTemplateViewModel);
+
+                               else if (e.Effect is ITemporaryCharacterAlterationEffectTemplateViewModel &&
+                                   e.Alteration == viewModel)
+                                   viewModel.Effect = (e.Effect as ITemporaryCharacterAlterationEffectTemplateViewModel);
                            });
         }
     }
