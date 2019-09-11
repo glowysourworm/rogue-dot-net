@@ -8,10 +8,14 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
     [Serializable]
     [AlterationBlockable(typeof(IEnemyAlterationEffect),
                          typeof(IEquipmentAttackAlterationEffect),
+                         typeof(IFriendlyAlterationEffect),
+                         typeof(ITemporaryCharacterAlterationEffect),
                          typeof(ISkillAlterationEffect))]
     [AlterationCostSpecifier(AlterationCostType.OneTime,
                              typeof(IConsumableAlterationEffect),
                              typeof(IEnemyAlterationEffect),
+                             typeof(IFriendlyAlterationEffect),
+                             typeof(ITemporaryCharacterAlterationEffect),
                              typeof(IEquipmentAttackAlterationEffect),
                              typeof(ISkillAlterationEffect))]
     public class PermanentAlterationEffect
@@ -19,6 +23,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IConsumableProjectileAlterationEffect,
                      IDoodadAlterationEffect,
                      IEnemyAlterationEffect,
+                     IFriendlyAlterationEffect,
+                     ITemporaryCharacterAlterationEffect,
                      IEquipmentAttackAlterationEffect,
                      ISkillAlterationEffect
     {

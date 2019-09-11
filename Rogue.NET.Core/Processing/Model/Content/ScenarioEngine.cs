@@ -112,7 +112,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return null;
 
             //Look for road blocks - move player
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, _modelService.Player.Location, desiredLocation, true))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Player.Location, desiredLocation, true))
             {
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
@@ -128,7 +128,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, _modelService.Player.Location, true);
+            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Player.Location, true);
 
             // Get direction for random move -> Move()
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation);
@@ -190,21 +190,18 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, location, attackLocation, false);
+            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(location, attackLocation, false);
 
             // Get target for attack
-            var enemy = _modelService.Level.GetAt<Enemy>(attackLocation);
+            var character = _modelService.Level.GetAt<NonPlayerCharacter>(attackLocation);
 
-            if (enemy != null && !blocked)
+            if (character != null && !blocked)
             {
                 //Engage enemy if they're attacked
-                enemy.IsEngaged = true;
-
-                // Set flag to allow enemy to fight back if they're attacked (even if player is invisible)
-                enemy.WasAttackedByPlayer = true;
+                character.IsAlerted = true;
 
                 // Enemy gets hit OR dodges
-                var success = _interactionProcessor.CalculateInteraction(_modelService.Player, enemy, PhysicalAttackType.Melee);
+                var success = _interactionProcessor.CalculateInteraction(_modelService.Player, character, PhysicalAttackType.Melee);
 
                 // If hit was successful - then add on any additional equipment attack effects
                 if (success)
@@ -218,7 +215,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     {
                         // If player meets alteration cost, queue with affected enemy
                         if (_alterationEngine.Validate(player, alteration))
-                            _alterationEngine.Queue(player, new Character[] { enemy }, alteration);
+                            _alterationEngine.Queue(player, new Character[] { character }, alteration);
                     }
                 }
             }

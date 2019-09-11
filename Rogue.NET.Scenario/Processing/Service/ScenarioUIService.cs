@@ -134,7 +134,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                 // Calculate invisibility
                 var enemy = (scenarioObject as Enemy);
 
-                isEnemyInvisible = (enemy.IsInvisible || enemy.Is(CharacterStateType.Invisible)) && !_modelService.Player.Alteration.CanSeeInvisible();
+                isEnemyInvisible = enemy.Is(CharacterStateType.Invisible) && !_modelService.Player.Alteration.CanSeeInvisible();
                 effectiveSymbol = _alterationProcessor.CalculateEffectiveSymbol(scenarioObject as Enemy);
             }
 

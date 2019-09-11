@@ -243,9 +243,16 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
             return result;
         }
 
+        /// <summary>
+        /// Returns true if character has an altered state that matches the input altered state. Also,
+        /// HANDLES ENEMY.IsInvisible FLAG!
+        /// </summary>
         public static bool Is(this Character character, CharacterStateType characterStateType)
         {
-            return character.Alteration.GetStates().Any(x => x.BaseType == characterStateType);
+            // Altered States from Character.Alteration
+            return character.Alteration
+                            .GetStates()
+                            .Any(x => x.BaseType == characterStateType);
         }
     }
 }

@@ -6,25 +6,25 @@ namespace Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage
     /// <summary>
     /// Message calculated when an enemy has cast an alteration effect on the player
     /// </summary>
-    public class EnemyAlterationMessageData : ScenarioMessageData
+    public class CharacterAlterationMessageData : ScenarioMessageData
     {
-        public EnemyAlterationMessageData(ScenarioMessagePriority priority) : base(priority)
+        public CharacterAlterationMessageData(ScenarioMessagePriority priority) : base(priority)
         {
         }
 
         /// <summary>
-        /// Display name of the enemy (actor)
+        /// Name of attacker character
         /// </summary>
-        public string EnemyDisplayName { get; set; }
+        public string AtttackerName { get; set; }
 
         /// <summary>
-        /// Player RogueName
+        /// Name of defending character
         /// </summary>
-        public string PlayerName { get; set; }
+        public string DefenderName { get; set; }
 
         /// <summary>
         /// Display name of the alteration effect cast on the player
         /// </summary>
-        public string AlterationDisplayName { get; set; }
+        public string AlterationName { get; set; }
     }
 }

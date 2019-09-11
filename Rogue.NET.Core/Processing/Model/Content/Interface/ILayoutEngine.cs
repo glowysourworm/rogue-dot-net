@@ -8,14 +8,14 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
 {
     public interface ILayoutEngine 
     {
-        void Search(LevelGrid grid, GridLocation location);
-        void ToggleDoor(LevelGrid grid, Compass direction, GridLocation characterLocation);
-        bool IsPathToCellThroughDoor(LevelGrid grid, GridLocation location1, Compass openingDirection1, out GridLocation openingPosition1, out GridLocation openingPosition2, out Compass openingDirection2, out bool shouldMoveToOpeningPosition2);
-        bool IsPathToCellThroughWall(Level level, GridLocation point1, GridLocation point2, bool includeBlockedByEnemy);
-        bool IsPathToAdjacentCellBlocked(Level level, GridLocation point1, GridLocation point2, bool includeBlockedByEnemy);
-        GridLocation GetRandomAdjacentLocation(Level level, Player player, GridLocation location, bool excludeOccupiedCells);
-        IEnumerable<GridLocation> GetFreeAdjacentLocations(Level level, Player player, GridLocation location);
-        IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(Level level, Player player, GridLocation location);
-        IEnumerable<GridLocation> GetLocationsInRange(Level level, GridLocation location, int cellRange);
+        void Search(GridLocation location);
+        void ToggleDoor(Compass direction, GridLocation characterLocation);
+        bool IsPathToCellThroughDoor(GridLocation location1, Compass openingDirection1, out GridLocation openingPosition1, out GridLocation openingPosition2, out Compass openingDirection2, out bool shouldMoveToOpeningPosition2);
+        bool IsPathToCellThroughWall(GridLocation point1, GridLocation point2, bool includeBlockedByEnemy);
+        bool IsPathToAdjacentCellBlocked(GridLocation point1, GridLocation point2, bool includeBlockedByEnemy);
+        GridLocation GetRandomAdjacentLocation(GridLocation location, bool excludeOccupiedCells);
+        IEnumerable<GridLocation> GetFreeAdjacentLocations(GridLocation location);
+        IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location);
+        IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange);
     }
 }

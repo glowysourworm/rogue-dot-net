@@ -5,25 +5,27 @@ using System.Collections.Generic;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 
-namespace Rogue.NET.Core.Model.Scenario.Character
+namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
 {
     [Serializable]
-    public class BehaviorDetails : RogueBase
+    public abstract class BehaviorDetails : RogueBase
     {
+        /// <summary>
+        /// This is the default behavior for any Rogue.NET character. It can be used for when
+        /// a behavior is undefined or no behavior has entry conditions met. (Must be overridden in inherited class)
+        /// </summary>
+        public abstract Behavior DefaultBehavior { get; }
+
         private Behavior _currentBehavior;
 
         public List<Behavior> Behaviors { get; set; }
         public Behavior CurrentBehavior
         {
-            get { return _currentBehavior ?? Behavior.Default; }
+            get { return _currentBehavior ?? DefaultBehavior; }
         }
         public bool CanOpenDoors { get; set; }
         public bool UseRandomizer { get; set; }
         public int RandomizerTurnCount { get; set; }
-        public double EngageRadius { get; set; }
-        public double DisengageRadius { get; set; }
-        public double CriticalRatio { get; set; }
-        public double CounterAttackProbability { get; set; }
 
         /// <summary>
         /// Turn counter internal to the Behavior Details that is for use by the
@@ -41,7 +43,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
             this.Behaviors = new List<Behavior>();
         }
 
-        public void IncrementBehavior(Enemy enemy, IAlterationProcessor alterationProcessor, bool actionTaken, double randomNumber)
+        public void IncrementBehavior(NonPlayerCharacter character, IAlterationProcessor alterationProcessor, bool actionTaken, double randomNumber)
         {
             // Increment Turn Counters
             this.BehaviorTurnCounter++;
@@ -57,12 +59,12 @@ namespace Rogue.NET.Core.Model.Scenario.Character
                 if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
                    (behavior.AttackType == CharacterAttackType.Skill ||
                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                   !alterationProcessor.CalculateEnemyMeetsAlterationCost(enemy, behavior.EnemyAlteration.Cost))
+                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.SkillAlterationCost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior
                 if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.HpLow) &&
-                   ((enemy.Hp / enemy.HpMax) > ModelConstants.HpLowFraction))
+                   ((character.Hp / character.HpMax) > ModelConstants.HpLowFraction))
                     entryConditionsFail = true;
 
                 // Behavior turn counter exit condition
@@ -73,27 +75,27 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
                 // Enemy has Low (<= 10%) HP exit condition
                 if (behavior.BehaviorExitCondition.HasFlag(BehaviorExitCondition.HpLow) &&
-                    ((enemy.Hp / enemy.HpMax) <= ModelConstants.HpLowFraction))
+                    ((character.Hp / character.HpMax) <= ModelConstants.HpLowFraction))
                     exitConditionMet = true;
 
                 // Must have ALL Entry conditions met AND NO Exit conditions
                 return !entryConditionsFail && !exitConditionMet;
             });
 
-            var nextBehavior = Behavior.Default;
+            var nextBehavior = this.DefaultBehavior;
 
             // Check for Randomizer
             if (this.UseRandomizer && (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0))
                 nextBehavior = validBehaviors.Any() ?
                                validBehaviors.PickRandom() :
-                               Behavior.Default;
+                               this.DefaultBehavior;
 
             // Else, pick first or default (null -> Behavior.Default)
             else
                 nextBehavior = validBehaviors.FirstOrDefault();
 
             // Reset turn counter when appropriate
-            if (nextBehavior == Behavior.Default ||
+            if (nextBehavior == this.DefaultBehavior ||
                 nextBehavior != _currentBehavior)
                 this.BehaviorTurnCounter = 0;
 

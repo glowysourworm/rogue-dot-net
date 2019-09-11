@@ -183,14 +183,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             return true;
         }
-        public bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost)
+        public bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost)
         {
-            return (enemy.AgilityBase - cost.Agility) >= 0 &&
-                   (enemy.SpeedBase - cost.Speed) >= ModelConstants.MinSpeed &&
-                   (enemy.Hp - cost.Hp) >= 0 &&
-                   (enemy.IntelligenceBase - cost.Intelligence) >= 0 &&
-                   (enemy.Mp - cost.Mp) >= 0 &&
-                   (enemy.StrengthBase - cost.Strength) >= 0;
+            return (character.AgilityBase - cost.Agility) >= 0 &&
+                   (character.SpeedBase - cost.Speed) >= ModelConstants.MinSpeed &&
+                   (character.Hp - cost.Hp) >= 0 &&
+                   (character.IntelligenceBase - cost.Intelligence) >= 0 &&
+                   (character.Mp - cost.Mp) >= 0 &&
+                   (character.StrengthBase - cost.Strength) >= 0;
         }
         public bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost)
         {

@@ -143,7 +143,7 @@ namespace Rogue.NET.Core.Processing.Service
                     break;
                 case LevelCommandType.ToggleDoor:
                     {
-                        _layoutEngine.ToggleDoor(_modelService.Level.Grid, commandData.Direction, player.Location);
+                        _layoutEngine.ToggleDoor(commandData.Direction, player.Location);
                         nextAction = LevelContinuationAction.ProcessTurnNoRegeneration;
                     }
                     break;
@@ -159,7 +159,7 @@ namespace Rogue.NET.Core.Processing.Service
                     break;
                 case LevelCommandType.Search:
                     {
-                        _layoutEngine.Search(_modelService.Level.Grid, _modelService.Player.Location);
+                        _layoutEngine.Search(_modelService.Player.Location);
                         nextAction = LevelContinuationAction.ProcessTurn;
                     }
                     break;
@@ -314,7 +314,7 @@ namespace Rogue.NET.Core.Processing.Service
         private void EndOfTurn(bool regenerate)
         {
             // Queue Enemy Reactions
-            _contentEngine.CalculateEnemyReactions();
+            _contentEngine.CalculateCharacterReactions();
 
 
             _backendQueue.Enqueue(new LevelProcessingAction()
@@ -351,8 +351,8 @@ namespace Rogue.NET.Core.Processing.Service
 
                     // So, must check for the enemy to be available. The way to avoid this is
                     // to either do pruning of the queues; or to do full multi-threaded decoupling (lots of work).
-                    if (_modelService.Level.Enemies.Any(x => x.Id == workItem.Actor.Id))
-                        _contentEngine.ProcessEnemyReaction(_modelService.Level.Enemies.First(x => x.Id == workItem.Actor.Id));
+                    if (_modelService.Level.NonPlayerCharacters.Any(x => x.Id == workItem.Actor.Id))
+                        _contentEngine.ProcessCharacterReaction(_modelService.Level.NonPlayerCharacters.First(x => x.Id == workItem.Actor.Id));
                     break;
                 case LevelProcessingActionType.CharacterAlteration:
                     _alterationEngine.Process(workItem.Actor, workItem.AlterationAffectedCharacters, workItem.Alteration);

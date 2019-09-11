@@ -108,18 +108,7 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Behavior will not be available when Hp is below 10%")]
         HpLow = 2
     }
-    public enum SmileyMoods
-    {
-        None,
-        Happy,
-        Indifferent,
-        Sad,
-        Shocked,
-        Angry,
-        Drunk,
-        Scared,
-        Mischievous
-    }
+
     public enum SmileyExpression
     { 
         Happy = 0,
@@ -174,5 +163,19 @@ namespace Rogue.NET.Core.Model.Enums
         Strength,
         Agility,
         Intelligence
+    }
+
+    /// <summary>
+    /// Specifies what side units will fight for (Player / Enemy)
+    /// </summary>
+    public enum CharacterAlignmentType
+    {
+        [Display(Name = "Player Aligned",
+                 Description = "Character fights for Player")]
+        PlayerAligned = 0,
+
+        [Display(Name = "Enemy Aligned",
+                 Description = "Character fights for Enemies")]
+        EnemyAligned = 1
     }
 }

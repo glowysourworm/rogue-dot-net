@@ -49,8 +49,8 @@ namespace Rogue.NET.Scenario.Content.Views
                 if (message is AlterationMessageData)
                     AddAlterationMessage(message as AlterationMessageData);
 
-                else if (message is EnemyAlterationMessageData)
-                    AddEnemyAlterationMessage(message as EnemyAlterationMessageData);
+                else if (message is CharacterAlterationMessageData)
+                    AddCharacterAlterationMessage(message as CharacterAlterationMessageData);
 
                 else if (message is MeleeMessageData)
                     AddMeleeMessage(message as MeleeMessageData);
@@ -93,12 +93,13 @@ namespace Rogue.NET.Scenario.Content.Views
             InsertMessage(viewModel);
         }
 
-        private void AddEnemyAlterationMessage(EnemyAlterationMessageData message)
+        private void AddCharacterAlterationMessage(CharacterAlterationMessageData message)
         {
-            var viewModel = new ScenarioEnemyAlterationMessageViewModel()
+            var viewModel = new ScenarioCharacterAlterationMessageViewModel()
             {
-                AlterationDisplayName = message.AlterationDisplayName,
-                EnemyDisplayName = message.EnemyDisplayName,
+                AlterationName = message.AlterationName,
+                AttackerName = message.AtttackerName,
+                DefenderName = message.DefenderName,
                 Priority = message.Priority
             };
 

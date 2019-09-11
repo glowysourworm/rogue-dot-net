@@ -192,7 +192,7 @@ namespace Rogue.NET.Core.Processing.Service
             // Apply blanket update for layout visibiltiy
             _characterLayoutInformation
                 .ApplyUpdate(this.Level
-                                 .Enemies
+                                 .NonPlayerCharacters
                                  .Cast<Character>()
                                  .Union(new Character[] { this.Player }));
 

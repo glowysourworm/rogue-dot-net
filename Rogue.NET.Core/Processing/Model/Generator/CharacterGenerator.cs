@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Character;
+using Rogue.NET.Core.Model.Scenario.Character.Behavior;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
@@ -149,20 +150,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             enemy.SmileyLineColor = enemyTemplate.SymbolDetails.SmileyLineColor;
             enemy.SymbolType = enemyTemplate.SymbolDetails.Type;
 
-            // Permanent Invisibility Flag
-            enemy.IsInvisible = enemyTemplate.IsInvisible;
-
-            enemy.BehaviorDetails = new BehaviorDetails();
+            enemy.BehaviorDetails = new EnemyBehaviorDetails();
 
             // Create Behavior "State Machine"
             foreach (var behaviorTemplate in enemyTemplate.BehaviorDetails.Behaviors)
                 enemy.BehaviorDetails.Behaviors.Add(_behaviorGenerator.GenerateBehavior(behaviorTemplate));
 
             enemy.BehaviorDetails.CanOpenDoors = enemyTemplate.BehaviorDetails.CanOpenDoors;
-            enemy.BehaviorDetails.CounterAttackProbability = enemyTemplate.BehaviorDetails.CounterAttackProbability;
-            enemy.BehaviorDetails.CriticalRatio = enemyTemplate.BehaviorDetails.CriticalRatio;
-            enemy.BehaviorDetails.DisengageRadius = enemyTemplate.BehaviorDetails.DisengageRadius;
-            enemy.BehaviorDetails.EngageRadius = enemyTemplate.BehaviorDetails.EngageRadius;
             enemy.BehaviorDetails.RandomizerTurnCount = enemyTemplate.BehaviorDetails.RandomizerTurnCount;
             enemy.BehaviorDetails.UseRandomizer = enemyTemplate.BehaviorDetails.UseRandomizer;
 

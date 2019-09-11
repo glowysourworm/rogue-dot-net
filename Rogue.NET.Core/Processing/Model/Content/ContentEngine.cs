@@ -21,6 +21,10 @@ using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Processing.Model.Static;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
+using Rogue.NET.Common.Extension;
+using System.Collections.Generic;
+using Rogue.NET.Core.Model.Scenario.Alteration.Common;
+using Rogue.NET.Core.Model.Scenario.Character.Behavior;
 
 namespace Rogue.NET.Core.Processing.Model.Content
 {
@@ -32,7 +36,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         readonly IPathFinder _pathFinder;
         readonly ILayoutEngine _layoutEngine;
         readonly IAlterationEngine _alterationEngine;
-        readonly IEnemyProcessor _enemyProcessor;
+        readonly INonPlayerCharacterProcessor _nonPlayerCharacterProcessor;
         readonly IPlayerProcessor _playerProcessor;        
         readonly IInteractionProcessor _interactionProcessor;
         readonly IScenarioMessageService _scenarioMessageService;
@@ -47,7 +51,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             IPathFinder pathFinder,
             ILayoutEngine layoutEngine, 
             IAlterationEngine alterationEngine,
-            IEnemyProcessor enemyProcessor,
+            INonPlayerCharacterProcessor enemyProcessor,
             IPlayerProcessor playerProcessor,
             IInteractionProcessor interactionProcessor,
             IScenarioMessageService scenarioMessageService,
@@ -60,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             _pathFinder = pathFinder;
             _layoutEngine = layoutEngine;
             _alterationEngine = alterationEngine;
-            _enemyProcessor = enemyProcessor;
+            _nonPlayerCharacterProcessor = enemyProcessor;
             _playerProcessor = playerProcessor;
             _interactionProcessor = interactionProcessor;
             _scenarioMessageService = scenarioMessageService;
@@ -165,7 +169,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public void DropPlayerItem(string itemId)
         {
             var item = _modelService.Player.Inventory[itemId];
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Level, _modelService.Player, _modelService.Player.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Player.Location);
             var dropLocation = adjacentFreeLocations.FirstOrDefault();
 
             if (dropLocation == null)
@@ -219,108 +223,91 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Publish message
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, displayName + " Dropped");
         }
-        public void EnemyDeath(Enemy enemy)
+        public void CharacterDeath(NonPlayerCharacter character)
         {
-            for (int i = enemy.Equipment.Count - 1; i >= 0; i--)
+            for (int i = character.Equipment.Count - 1; i >= 0; i--)
             {
-                DropEnemyItem(enemy, enemy.Equipment.ElementAt(i).Value);
+                DropCharacterItem(character, character.Equipment.ElementAt(i).Value);
             }
-            for (int i = enemy.Consumables.Count - 1; i >= 0; i--)
+            for (int i = character.Consumables.Count - 1; i >= 0; i--)
             {
-                DropEnemyItem(enemy, enemy.Consumables.ElementAt(i).Value);
+                DropCharacterItem(character, character.Consumables.ElementAt(i).Value);
             }
 
             // Update level object
             var level = _modelService.Level;
 
-            level.RemoveContent(enemy);
+            level.RemoveContent(character);
 
             // Queue Animation for enemy death
-            if (enemy.DeathAnimation.Animations.Count > 0)
-                OnAnimationEvent(_backendEventDataFactory.Animation(enemy.DeathAnimation.Animations, enemy.Location, new GridLocation[] { _modelService.Player.Location }));
+            if (character.DeathAnimation.Animations.Count > 0)
+                OnAnimationEvent(_backendEventDataFactory.Animation(character.DeathAnimation.Animations, character.Location, new GridLocation[] { character.Location }));
 
-            // Calculate player gains
-            _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
+            // (ENEMY ONLY) Calculate player gains
+            if (character is Enemy)
+            {
+                _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, character as Enemy);
 
-            // Update statistics / Player skills
-            OnScenarioEvent(_backendEventDataFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, enemy.RogueName));
-            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerSkillSetRefresh, ""));
+                // Update statistics / Player skills
+                OnScenarioEvent(_backendEventDataFactory.StatisticsUpdate(ScenarioUpdateType.StatisticsEnemyDeath, character.RogueName));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.PlayerSkillSetRefresh, ""));                
+            }
 
-            _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " Slayed");
+            // Publish message depending on character alignment
+            if (character.AlignmentType == CharacterAlignmentType.EnemyAligned)
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, character.RogueName + " Slayed");
+            }
+            else
+            {
+                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, character.RogueName + " Died");
+            }
 
             //Set enemy identified
-            _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
+            _modelService.ScenarioEncyclopedia[character.RogueName].IsIdentified = true;
 
             // Publish Level update
-            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, enemy.Id));
-            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.EncyclopediaIdentify, enemy.Id));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, character.Id));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.EncyclopediaIdentify, character.Id));
         }
-        public void CalculateEnemyReactions()
+        public void CalculateCharacterReactions()
         {
-            var level = _modelService.Level;
-
-            // Enemy Reactions: 0) Check whether enemy is still alive 
-            //                  1) Process Enemy Reaction (Applies End-Of-Turn)
-            //                  2) Check for Enemy Death (After Enemy Reaction)
-            for (int i = level.Enemies.Count() - 1; i >= 0; i--)
+            // TODO: BUILD A BACKEND SEQUENCER!!!
+            //
+            // Character Reactions: 0) Check whether character is still alive 
+            //                      1) Process Enemy Reaction (Applies End-Of-Turn)
+            //                      2) Check for Enemy Death (After Enemy Reaction)
+            //
+            for (int i = _modelService.Level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var enemy = level.Enemies.ElementAt(i);
+                var character = _modelService.Level.NonPlayerCharacters.ElementAt(i);
 
-                if (enemy.Hp <= 0)
-                    EnemyDeath(enemy);
+                if (character.Hp <= 0)
+                    CharacterDeath(character);
                 else
                     OnLevelProcessingEvent(new LevelProcessingAction()
                     {
-                        Actor = enemy,
+                        Actor = character,
                         Type = LevelProcessingActionType.Reaction
                     });
             }
         }
-        public void ProcessEnemyReaction(Enemy enemy)
+        public void ProcessCharacterReaction(NonPlayerCharacter character)
         {
-            // Don't let Enemy get the last word. Check this here to prevent Enemy Death checks every where else.
-            if (enemy.Hp <= 0)
+            if (character.Hp <= 0)
             {
-                EnemyDeath(enemy);
+                CharacterDeath(character);
                 return;
             }
 
-            var level = _modelService.Level;
-            var player = _modelService.Player;
+            // All speed is calculated relative to the Player
+            character.TurnCounter += _interactionProcessor.CalculateCharacterTurnIncrement(_modelService.Player, character);
 
-            // Check for invisibility
-            if (player.Is(CharacterStateType.Invisible) &&
-               !enemy.Alteration.CanSeeInvisible() &&
-               !enemy.WasAttackedByPlayer)
-            {
-                enemy.IsEngaged = false;
-                return;
-            }
+            if (character.TurnCounter >= 1)
+                OnNonPlayerCharacterReaction(character);
 
-            var distance = Calculator.RoguianDistance(enemy.Location, player.Location);
-
-            // Check for engaged
-            if (distance < enemy.BehaviorDetails.EngageRadius)
-                enemy.IsEngaged = true;
-
-            if (distance > enemy.BehaviorDetails.DisengageRadius)
-            {
-                enemy.IsEngaged = false;
-
-                // Reset this flag here to allow them to dis-engage at long distances
-                enemy.WasAttackedByPlayer = false;
-            }
-
-            if (!enemy.IsEngaged)
-                return;
-
-            enemy.TurnCounter += _interactionProcessor.CalculateEnemyTurnIncrement(player, enemy);
-
-            if (enemy.TurnCounter >= 1)
-                OnEnemyReaction(enemy);
-
-            if (enemy.Hp <= 0)
-                EnemyDeath(enemy);
+            if (character.Hp <= 0)
+                CharacterDeath(character);
         }
         public override void ApplyEndOfTurn(bool regenerate)
         {
@@ -547,9 +534,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             return true;
         }
-        private void DropEnemyItem(Enemy enemy, ItemBase item)
+        private void DropCharacterItem(NonPlayerCharacter character, ItemBase item)
         {
-            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(_modelService.Level, _modelService.Player, enemy.Location);
+            var adjacentFreeLocations = _layoutEngine.GetFreeAdjacentLocations(character.Location);
             var location = adjacentFreeLocations.FirstOrDefault();
 
             if (location == null)
@@ -563,208 +550,166 @@ namespace Rogue.NET.Core.Processing.Model.Content
             {
                 var equipment = item as Equipment;
 
-                enemy.Equipment.Remove(item.Id);
+                character.Equipment.Remove(item.Id);
 
-                // This has a chance of happening if enemy steals something that is marked equiped
+                // Mark as non-equipped
                 equipment.IsEquipped = false;
 
-                // These cases should never happen; but want to cover them here to be sure.
                 if (equipment.HasEquipAlteration && equipment.IsEquipped)
-                    enemy.Alteration.Remove(equipment.EquipAlteration.Name);
+                    character.Alteration.Remove(equipment.EquipAlteration.Name);
 
                 if (equipment.HasCurseAlteration && equipment.IsEquipped)
-                    enemy.Alteration.Remove(equipment.CurseAlteration.Name);
+                    character.Alteration.Remove(equipment.CurseAlteration.Name);
             }
 
             if (item is Consumable)
-                enemy.Consumables.Remove(item.Id);
+                character.Consumables.Remove(item.Id);
 
             // Add to level
             _modelService.Level.AddContent(item);
         }
         #endregion
 
-        #region (private) Enemy Reactions
-        private void OnEnemyReaction(Enemy enemy)
+        #region (private) Non-Player Character Reactions
+        private void OnNonPlayerCharacterReaction(NonPlayerCharacter character)
         {
             // Sets turn counter 
-            int turns = (int)enemy.TurnCounter;
-            enemy.TurnCounter = enemy.TurnCounter % 1;
+            int turns = (int)character.TurnCounter;
+            character.TurnCounter = character.TurnCounter % 1;
 
-            for (int j = 0; j < turns && enemy.Hp > 0; j++)
+            for (int j = 0; j < turns && character.Hp > 0; j++)
             {
-                // Apply Beginning of Turn
-                _enemyProcessor.ApplyBeginningOfTurn(enemy);
+                // Procedure
+                //
+                // 1) Beginning of Turn:        Applies Start of Turn Process
+                // 2) Check Character Death:    Alterations may have affected character
+                // 3) Altered States:           Movement / turn taking may be impaired
+                // 4) Character Attack:         Attack (If Conditions Met)
+                // 5) Character Move:           Move (If No Attack) to desired location
+                // 6) End of Turn:              Applies end of turn Process
 
-                if (enemy.Hp < 0)
+                // Apply Beginning of Turn
+                _nonPlayerCharacterProcessor.ApplyBeginningOfTurn(character);
+
+                if (character.Hp < 0)
                     break;
 
                 //Check altered states
 
                 // Can't Move (Is sleeping, paralyzed, etc..)
-                if (enemy.Is(CharacterStateType.CantMove))
+                if (character.Is(CharacterStateType.CantMove))
                 {
                     // Apply end-of-turn behavior for enemy
-                    _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, false);
+                    _nonPlayerCharacterProcessor.ApplyEndOfTurn(character, _modelService.Player, false);
                     continue;
                 }
 
-                //Confused - check during calculate character move
-                var willRandomStrikeMelee = _randomSequenceGenerator.Get() <= ModelConstants.RandomStrikeProbability;
-
                 var actionTaken = false;
 
-                switch (enemy.BehaviorDetails.CurrentBehavior.AttackType)
+                // Calculate Attack if Requirements Met
+                Character targetCharacter;
+                bool anyCharactersInVisibleRange;
+                if (CalculateCharacterWillAttack(character, out targetCharacter, out anyCharactersInVisibleRange))
                 {
-                    case CharacterAttackType.Melee:
+                    switch (character.BehaviorDetails.CurrentBehavior.AttackType)
+                    {
+                        case CharacterAttackType.Melee:
+                            ProcessCharacterMeleeAttack(character, targetCharacter);
+                            break;
+                        case CharacterAttackType.Skill:
+                        case CharacterAttackType.SkillCloseRange:
+                            ProcessCharacterSkillAttack(character, targetCharacter);
+                            break;
+                        case CharacterAttackType.None:
+                        default:
+                            break;
+                    }
+                    actionTaken = true;
+
+                    // Set target character alerted
+                    if (targetCharacter is NonPlayerCharacter)
+                        (targetCharacter as NonPlayerCharacter).IsAlerted = true;
+                }
+                // If no attack taken calculate a move instead
+                else
+                {
+                    // Desired location is the ultimate destination for the character
+                    var desiredLocation = CalculateDesiredLocation(character);
+
+                    if (desiredLocation != null)
+                    {
+                        // Move location is the next location for the character
+                        var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
+                        if (moveLocation != null)
                         {
-                            var adjacentCells = _modelService.Level.Grid.GetAdjacentLocations(enemy.Location);
-                            var attackLocation = adjacentCells.FirstOrDefault(z => z == _modelService.Player.Location);
-
-                            // Check to see what kind of melee attack will happen - based on enemy equipment
-                            if (enemy.IsRangeMelee())
-                            {
-                                // Check for line of sight and firing range
-                                var isLineOfSight = _modelService.CharacterLayoutInformation.GetLineOfSightLocations(enemy).Any(x => x == _modelService.Player.Location);
-                                var range = Calculator.RoguianDistance(enemy.Location, _modelService.Player.Location);
-
-                                // These are guaranteed by the enemy check IsRangeMelee()
-                                var rangeWeapon = enemy.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
-                                var ammo = enemy.Consumables.Values.First(x => x.RogueName == rangeWeapon.AmmoName);
-
-                                if (range > ModelConstants.MinFiringDistance && isLineOfSight)
-                                {
-                                    // Remove ammo from enemy inventory
-                                    enemy.Consumables.Remove(ammo.Id);
-
-                                    // Calculate hit - if enemy hit then queue Ammunition spell
-                                    _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Range);
-
-                                    // Process the spell associated with the ammo
-                                    if (ammo.AmmoAnimationGroup.Animations.Any())
-                                        OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations, 
-                                                                                             enemy.Location, 
-                                                                                             new GridLocation[] { _modelService.Player.Location }));
-
-                                    actionTaken = true;
-                                }
-                            }
-
-                            // Attack Conditions: !actionTaken (no range attack), location is non-null; AND enemy is not confused; OR enemy is confused and can strike
-                            if (!actionTaken && 
-                                 attackLocation != null && 
-                                 (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) || 
-                                  (enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind) && willRandomStrikeMelee)))
-                            {
-                                if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, attackLocation, true))
-                                {
-                                    var success = _interactionProcessor.CalculateInteraction(enemy, _modelService.Player, PhysicalAttackType.Melee);
-
-                                    // If Successful, process Equipment Attack Alterations
-                                    foreach (var alteration in enemy.Equipment
-                                                                    .Values
-                                                                    .Where(x => x.IsEquipped)
-                                                                    .Where(x => x.HasAttackAlteration)
-                                                                    .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
-                                    {
-                                        // Validate -> Queue Equipment Attack Alteration
-                                        if (_alterationEngine.Validate(enemy, alteration))
-                                            _alterationEngine.Queue(enemy, new Character[] { _modelService.Player }, alteration);
-                                    }
-
-                                    actionTaken = true;
-                                }
-                            }
+                            ProcessCharacterMove(character, moveLocation);
+                            actionTaken = true;
                         }
-                        break;
-                    case CharacterAttackType.Skill:
-                    case CharacterAttackType.SkillCloseRange:
-                        if (!enemy.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
-                        {
-                            // Must have line of sight to player
-                            var isLineOfSight = _modelService.CharacterLayoutInformation
-                                                             .GetLineOfSightLocations(enemy)
-                                                             .Any(x => x == _modelService.Player.Location);
-                            var isInRange = true;
-
-                            // Add a check for close range skills
-                            if (enemy.BehaviorDetails.CurrentBehavior.AttackType == CharacterAttackType.SkillCloseRange)
-                            {
-                                isInRange = _modelService.Level
-                                                         .Grid
-                                                         .GetAdjacentLocations(enemy.Location)
-                                                         .Any(x => x == _modelService.Player.Location) && isLineOfSight;
-                            }
-
-                            // Queue Enemy Alteration -> Animation -> Post Animation Processing
-                            if (isLineOfSight && isInRange)
-                            {
-                                _scenarioMessageService.PublishEnemyAlterationMessage(
-                                    ScenarioMessagePriority.Normal,
-                                    _modelService.Player.RogueName,
-                                    _modelService.GetDisplayName(enemy),
-                                    enemy.BehaviorDetails.CurrentBehavior.EnemyAlteration.Name);
-
-                                // Create the alteration
-                                var alteration = _alterationGenerator.GenerateAlteration(enemy.BehaviorDetails.CurrentBehavior.EnemyAlteration);
-
-                                // Validate the cost and process
-                                if (_alterationEngine.Validate(enemy, alteration))
-                                    _alterationEngine.Queue(enemy, alteration);
-
-                                actionTaken = true;
-                            }
-                        }
-                        break;
-                    case CharacterAttackType.None:
-                    default:
-                        break;
+                    }
                 }
 
-                // Action Taken => enemy did some kind of attack
-                if (!actionTaken)
-                {
-                    var moveLocation = CalculateEnemyMoveLocation(enemy, _modelService.Player.Location);
-                    if (moveLocation != null)
-                        ProcessEnemyMove(enemy, moveLocation);
-                }
+                // Reset IsAlerted status if no opposing characters present
+                if (!anyCharactersInVisibleRange)
+                    character.IsAlerted = false;
 
                 // Apply end-of-turn behavior for enemy
-                _enemyProcessor.ApplyEndOfTurn(enemy, _modelService.Player, actionTaken);
+                _nonPlayerCharacterProcessor.ApplyEndOfTurn(character, _modelService.Player, actionTaken);
             }
         }
-        private GridLocation CalculateEnemyMoveLocation(Enemy enemy, GridLocation desiredLocation)
+        private GridLocation CalculateCharacterMoveLocation(NonPlayerCharacter character, GridLocation desiredLocation)
         {
             //Return random if confused
-            if (enemy.Is(CharacterStateType.MovesRandomly))
-                return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
+            if (character.Is(CharacterStateType.MovesRandomly))
+                return _layoutEngine.GetRandomAdjacentLocation(character.Location, true);
 
-            switch (enemy.BehaviorDetails.CurrentBehavior.MovementType)
+            switch (character.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocation(_modelService.Level, _modelService.Player, enemy.Location, true);
+                    return _layoutEngine.GetRandomAdjacentLocation(character.Location, true);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .FirstOrDefault();
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level, _modelService.Player, enemy.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault();
                 case CharacterMovementType.PathFinder:
-                    var nextLocation = _pathFinder.FindPath(enemy.Location, _modelService.Player.Location, enemy.BehaviorDetails.DisengageRadius, enemy.BehaviorDetails.CanOpenDoors);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(_modelService.Level,  _modelService.Player, enemy.Location)
+                    var nextLocation = _pathFinder.FindPath(character.Location, desiredLocation, character.GetLightRadius(), character.BehaviorDetails.CanOpenDoors);
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault();
                 default:
                     throw new Exception("Unknown Enemy Movement Type");
             }
         }
+        private GridLocation CalculateDesiredLocation(NonPlayerCharacter character)
+        {
+            // Desired Location
+            //
+            // 1) Player-Aligned:  Either nearest target character in range (or) towards Player
+            // 2) Enemy-Aligned:   Nearest target character in range
+            //
 
-        // Processes logic for found path point. This includes anything required for Enemy to
-        // relocate to point "moveLocation". This point has been calculated as the next point
-        // towards Player
-        private void ProcessEnemyMove(Enemy enemy, GridLocation moveLocation)
+            var opposingCharacters = CalculateOpposingCharactersInVisibleRange(character);
+
+            // Move into attack position
+            if (opposingCharacters.Any())
+            {
+                return opposingCharacters.MinBy(x => Calculator.RoguianDistance(character.Location, x.Location))
+                                         .Location;
+            }
+
+            // If Player-Aligned - Move with Player
+            else if (character.AlignmentType == CharacterAlignmentType.PlayerAligned)
+            {
+                // TODO: Need some other parameters like: "Keep a certain distance from Player"
+                return _modelService.Player.Location;
+            }
+            else
+                return null;
+        }
+        private void ProcessCharacterMove(NonPlayerCharacter character, GridLocation moveLocation)
         {
             // Case where path finding algorithm returns null; or heat seeking algorithm
             // returns null.
@@ -777,31 +722,30 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var openingDirection2 = Compass.Null;
             var shouldMoveToOpeningPosition1 = false;
 
-            var moveDirection = LevelGridExtension.GetDirectionBetweenAdjacentPoints(enemy.Location, moveLocation);
+            var moveDirection = LevelGridExtension.GetDirectionBetweenAdjacentPoints(character.Location, moveLocation);
 
             var throughDoor = moveDirection == Compass.Null ? false : _layoutEngine.IsPathToCellThroughDoor(
-                                _modelService.Level.Grid, 
-                                enemy.Location, 
-                                moveDirection, 
-                                out openingPosition1, 
-                                out openingPosition2, 
+                                character.Location,
+                                moveDirection,
+                                out openingPosition1,
+                                out openingPosition2,
                                 out openingDirection2,
                                 out shouldMoveToOpeningPosition1);
 
             // Behavior allows opening of doors
-            if (enemy.BehaviorDetails.CanOpenDoors && throughDoor)
+            if (character.BehaviorDetails.CanOpenDoors && throughDoor)
             {
                 // If have to move into position first then move
                 if (shouldMoveToOpeningPosition1)
                 {
                     // Have to move to opening position 1 first - which means the door is on one of the off-diagonal locations
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, openingPosition1, true))
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, openingPosition1, true))
                     {
                         // Update enemy location
-                        enemy.Location = openingPosition1;
+                        character.Location = openingPosition1;
 
                         // Notify listener queue
-                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, enemy.Id));
+                        OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
                     }
                 }
 
@@ -809,28 +753,210 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 else
                 {
                     // Open the door -> Notifies UI listeners
-                    _layoutEngine.ToggleDoor(_modelService.Level.Grid, moveDirection, enemy.Location);
+                    _layoutEngine.ToggleDoor(moveDirection, character.Location);
                 }
             }
             else if (!throughDoor &&
-                     !_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Level, enemy.Location, moveLocation, true))
+                     !_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, moveLocation, true))
             {
                 // Update enemy location
-                enemy.Location = moveLocation;
+                character.Location = moveLocation;
 
                 // Notify listener queue
-                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, enemy.Id));
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
             }
 
             // Check for items
-            var item = _modelService.Level.GetAt<ItemBase>(enemy.Location);
+            var item = _modelService.Level.GetAt<ItemBase>(character.Location);
             if (item != null)
-                StepOnItem(enemy, item);
+                StepOnItem(character, item);
 
             // Check for doodad
-            var doodad = _modelService.Level.GetAt<DoodadBase>(enemy.Location);
+            var doodad = _modelService.Level.GetAt<DoodadBase>(character.Location);
             if (doodad != null)
-                StepOnDoodad(enemy, doodad);
+                StepOnDoodad(character, doodad);
+        }
+        private IEnumerable<Character> CalculateOpposingCharactersInVisibleRange(NonPlayerCharacter character)
+        {
+            IEnumerable<Character> opposingCharactersInRange = null;
+
+            // Player Aligned
+            if (character.AlignmentType == CharacterAlignmentType.PlayerAligned)
+            {
+                opposingCharactersInRange = _modelService
+                                                .CharacterContentInformation
+                                                .GetVisibleCharacters(character)
+                                                .Where(x => x is NonPlayerCharacter)
+                                                .Cast<NonPlayerCharacter>()
+                                                .Where(x => x.AlignmentType == CharacterAlignmentType.EnemyAligned);
+            }
+
+            // Enemy Aligned
+            else
+            {
+                opposingCharactersInRange = _modelService
+                                                .CharacterContentInformation
+                                                .GetVisibleCharacters(character)
+                                                .Where(x => x is Friendly || x is Player);
+            }
+
+            return opposingCharactersInRange.Actualize();
+        }
+        private bool CalculateCharacterWillAttack(NonPlayerCharacter character, out Character targetCharacter, out bool anyCharactersInVisibleRange)
+        {
+            targetCharacter = null;
+            anyCharactersInVisibleRange = false;
+
+            // Check that character doens't have abnormal state that prevents attack
+            if (character.Is(CharacterStateType.MovesRandomly | CharacterStateType.Blind))
+                return false;
+
+            // Get all characters in sight range
+            var opposingCharactersInVisibleRange = CalculateOpposingCharactersInVisibleRange(character);
+
+            // Filter out cases where they're not "noticed" (use IsAlerted flag en-mas)
+            var opposingCharacterTargets = opposingCharactersInVisibleRange
+                                                .Where(x => character.IsAlerted || 
+                                                           !x.Is(CharacterStateType.Invisible) || 
+                                                          (!character.IsAlerted && x.Is(CharacterStateType.Invisible)));
+
+            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
+            var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Calculator.RoguianDistance(x.Location, character.Location));
+
+            // Set flag to notify any characters in sight range
+            anyCharactersInVisibleRange = opposingCharactersInVisibleRange.Any();
+
+            // Target character is nearest visible character
+            targetCharacter = nearestTargetCharacter;
+
+            if (targetCharacter == null)
+                return false;
+
+            // Check that target character isn't invisible
+            if (targetCharacter.Is(CharacterStateType.Invisible) &&
+               !character.IsAlerted)
+                return false;
+
+            // Figure out whether or not character will attack or move
+            switch (character.BehaviorDetails.CurrentBehavior.AttackType)
+            {
+                case CharacterAttackType.Melee:
+                    {
+                        if (character.IsEquippedRangeCombat())
+                            return opposingCharacterTargets.Any();
+                        else
+                        {
+                            return adjacentLocations.Any(x =>
+                            {
+                                return opposingCharacterTargets.Select(z => z.Location).Contains(x);
+                            });
+                        }
+                    }
+                case CharacterAttackType.SkillCloseRange:
+                    return adjacentLocations.Any(x =>
+                    {
+                        return opposingCharacterTargets.Select(z => z.Location).Contains(x);
+                    });
+
+                // This should depend on the alteration details
+                case CharacterAttackType.Skill:
+                    return opposingCharacterTargets.Any();
+                case CharacterAttackType.None:
+                    return false;
+                default:
+                    throw new Exception("Unhandled Character Attack Type");
+            }
+        }
+        private void ProcessCharacterMeleeAttack(NonPlayerCharacter character, Character targetCharacter)
+        {
+            var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
+            var isTargetAdjacent = adjacentLocations.Contains(targetCharacter.Location);
+
+            // If Adjacent Opposing Character
+            if (isTargetAdjacent)
+            {
+                var success = _interactionProcessor.CalculateInteraction(targetCharacter, _modelService.Player, PhysicalAttackType.Melee);
+
+                // If Successful, process Equipment Attack Alterations
+                foreach (var alteration in character.Equipment
+                                                    .Values
+                                                    .Where(x => x.IsEquipped)
+                                                    .Where(x => x.HasAttackAlteration)
+                                                    .Select(x => _alterationGenerator.GenerateAlteration(x.AttackAlteration)))
+                {
+                    // Validate -> Queue Equipment Attack Alteration
+                    if (_alterationEngine.Validate(character, alteration))
+                        _alterationEngine.Queue(character, new Character[] { targetCharacter }, alteration);
+                }
+            }
+
+            // Otherwise, check for range combat
+            else if (character.IsEquippedRangeCombat())
+            {
+                // Check for line of sight and firing range
+                var range = Calculator.RoguianDistance(character.Location, targetCharacter.Location);
+
+                // These are guaranteed by the enemy check IsRangeMelee()
+                var rangeWeapon = character.Equipment.Values.First(x => x.IsEquipped && x.Type == EquipmentType.RangeWeapon);
+                var ammo = character.Consumables.Values.First(x => x.RogueName == rangeWeapon.AmmoName);
+
+                if (range > ModelConstants.MinFiringDistance)
+                {
+                    // Remove ammo from enemy inventory
+                    character.Consumables.Remove(ammo.Id);
+
+                    // Calculate hit - if enemy hit then queue Ammunition spell
+                    _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Range);
+
+                    // Process the spell associated with the ammo
+                    if (ammo.AmmoAnimationGroup.Animations.Any())
+                        OnAnimationEvent(_backendEventDataFactory.Animation(ammo.AmmoAnimationGroup.Animations,
+                                                                             character.Location,
+                                                                             new GridLocation[] { _modelService.Player.Location }));
+                }
+            }
+        }
+        private void ProcessCharacterSkillAttack(NonPlayerCharacter character, Character targetCharacter)
+        {
+            AlterationContainer alteration;
+
+            if (character is Enemy)
+            {
+                // Cast the appropriate behavior
+                var template = ((character as Enemy).BehaviorDetails.CurrentBehavior as EnemyBehavior).SkillAlteration;
+
+                // Create the alteration
+                alteration = _alterationGenerator.GenerateAlteration(template);
+            }
+            else if (character is Friendly)
+            {
+                // Cast the appropriate behavior
+                var template = ((character as Friendly).BehaviorDetails.CurrentBehavior as FriendlyBehavior).SkillAlteration;
+
+                // Create the alteration
+                alteration = _alterationGenerator.GenerateAlteration(template);
+            }
+            else if (character is TemporaryCharacter)
+            {
+                // Cast the appropriate behavior
+                var template = ((character as TemporaryCharacter).BehaviorDetails.CurrentBehavior as TemporaryCharacterBehavior).SkillAlteration;
+
+                // Create the alteration
+                alteration = _alterationGenerator.GenerateAlteration(template);
+            }
+            else
+                throw new Exception("Unhandled NonPlayerCharacter Type IContentEngine.ProcessCharacterSkillAttack");
+
+            // Post alteration message 
+            _scenarioMessageService.PublishAlterationCombatMessage(
+                character.AlignmentType,
+                _modelService.GetDisplayName(character),
+                _modelService.GetDisplayName(targetCharacter),
+                alteration.RogueName);
+
+            // Validate the cost and process
+            if (_alterationEngine.Validate(character, alteration))
+                _alterationEngine.Queue(character, alteration);
         }
         #endregion
 

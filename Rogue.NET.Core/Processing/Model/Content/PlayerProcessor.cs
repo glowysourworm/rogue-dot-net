@@ -214,18 +214,18 @@ namespace Rogue.NET.Core.Processing.Model.Content
             player.Alteration.ApplyTargetAuraEffects(new AuraAlterationEffect[] { });
 
             // Apply Enemy Auras (where Player is in an affected cell)
-            foreach (var enemy in _modelService.Level.Enemies)
+            foreach (var character in _modelService.Level.NonPlayerCharacters)
             {
-                var enemyAuras = enemy.Alteration
-                                      .GetAuras()
-                                      .Where(x => _modelService.CharacterLayoutInformation
-                                                               .GetAuraAffectedLocations(enemy, x.Item1.Id)
-                                                               .Contains(player.Location))
-                                      .Select(x => x.Item1)
-                                      .GroupBy(x => x.GetType());
+                var characterAuras = character.Alteration
+                                              .GetAuras()
+                                              .Where(x => _modelService.CharacterLayoutInformation
+                                                                       .GetAuraAffectedLocations(character, x.Item1.Id)
+                                                                       .Contains(player.Location))
+                                              .Select(x => x.Item1)
+                                              .GroupBy(x => x.GetType());
 
                 // Set Effect to Enemies
-                foreach (var auraGroup in enemyAuras)
+                foreach (var auraGroup in characterAuras)
                 {
                     if (auraGroup.Key == typeof(AttackAttributeAuraAlterationEffect))
                         player.Alteration.ApplyTargetAuraEffects(auraGroup.Cast<AttackAttributeAuraAlterationEffect>());

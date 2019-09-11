@@ -14,7 +14,7 @@ namespace Rogue.NET.Scenario.Content.Views.ItemTemplateSelector
             if (item is ScenarioAlterationMessageViewModel)
                 return itemsControlElement.FindResource("AlterationMessageDataTemplate") as DataTemplate;
 
-            else if (item is ScenarioEnemyAlterationMessageViewModel)
+            else if (item is ScenarioCharacterAlterationMessageViewModel)
                 return itemsControlElement.FindResource("EnemyAlterationMessageDataTemplate") as DataTemplate;
 
             else if (item is ScenarioMeleeMessageViewModel)

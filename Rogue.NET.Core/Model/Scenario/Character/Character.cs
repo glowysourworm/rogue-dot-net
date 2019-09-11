@@ -46,16 +46,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
 
         public Dictionary<string, AttackAttribute> AttackAttributes { get; set; }
 
-        public Character() : base() 
-        {
-            Initialize();
-        }
-        public Character(string name, string symbol)
-            : base(name, symbol, "#FFFFFFFF")
-        {
-            Initialize();
-        }
-        private void Initialize()
+        public Character()
         {
             this.Alteration = new CharacterAlteration();
             this.Equipment = new Dictionary<string, Equipment>();

@@ -247,7 +247,7 @@
     <Compile Include="Content\ViewModel\Message\AttackAttributeHitViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\AttributeChangeViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioAlterationMessageViewModel.cs" />
-    <Compile Include="Content\ViewModel\Message\ScenarioEnemyAlterationMessageViewModel.cs" />
+    <Compile Include="Content\ViewModel\Message\ScenarioCharacterAlterationMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioMeleeMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\Message\ScenarioMessageViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\PlayerViewModel.cs" />

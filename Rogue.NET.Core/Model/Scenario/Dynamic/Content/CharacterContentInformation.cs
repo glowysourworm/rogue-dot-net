@@ -79,20 +79,28 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Content
                 _visibleContent[player].AddRange(level.GetManyAt<ScenarioObject>(location));
             }
 
-            // Enemy -> Contents
-            foreach (var character in level.Enemies)
+            // Character -> Contents
+            foreach (var character in level.NonPlayerCharacters)
             {
-                // Enemy Entry
+                // Character Entry
                 _lineOfSightContent.Add(character, new List<ScenarioObject>());
                 _visibleContent.Add(character, new List<ScenarioObject>());
 
                 foreach (var location in _characterLayoutInformation.GetLineOfSightLocations(character))
                 {
                     _lineOfSightContent[character].AddRange(level.GetManyAt<ScenarioObject>(location));
+
+                    // Add Player if applicable
+                    if (player.Location == location)
+                        _lineOfSightContent[character].Add(player);
                 }
                 foreach (var location in _characterLayoutInformation.GetVisibleLocations(character))
                 {
                     _visibleContent[character].AddRange(level.GetManyAt<ScenarioObject>(location));
+
+                    // Add Player if applicable
+                    if (player.Location == location)
+                        _visibleContent[character].Add(player);
                 }
 
                 // Be sure not to add the actual character (maybe clean this up)

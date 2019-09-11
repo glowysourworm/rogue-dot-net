@@ -11,12 +11,16 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
     /// This attack attribute type is used for a one-time melee hit
     /// </summary>
     [Serializable]
-    [AlterationBlockable(typeof(IEnemyAlterationEffect),         
+    [AlterationBlockable(typeof(IEnemyAlterationEffect),                                  
+                         typeof(IFriendlyAlterationEffect),
+                         typeof(ITemporaryCharacterAlterationEffect),
                          typeof(IEquipmentAttackAlterationEffect),
                          typeof(ISkillAlterationEffect))]
     [AlterationCostSpecifier(AlterationCostType.OneTime,         
                              typeof(IConsumableAlterationEffect),
                              typeof(IEnemyAlterationEffect),
+                             typeof(IFriendlyAlterationEffect),
+                             typeof(ITemporaryCharacterAlterationEffect),
                              typeof(IEquipmentAttackAlterationEffect),
                              typeof(ISkillAlterationEffect))]
     public class AttackAttributeMeleeAlterationEffect
@@ -24,6 +28,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IConsumableProjectileAlterationEffect,
                      IDoodadAlterationEffect,
                      IEnemyAlterationEffect,
+                     IFriendlyAlterationEffect,
+                     ITemporaryCharacterAlterationEffect,
                      IEquipmentAttackAlterationEffect,
                      ISkillAlterationEffect
     {

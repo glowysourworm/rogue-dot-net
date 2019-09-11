@@ -77,7 +77,7 @@ namespace Rogue.NET.Core.Processing.Service
             // Filter out invisible enemies
             if (!_modelService.Player.Alteration.CanSeeInvisible())
             {
-                enemiesInRange = enemiesInRange.Where(x => !x.IsInvisible && !x.Is(CharacterStateType.Invisible)).ToList();
+                enemiesInRange = enemiesInRange.Where(x => !x.Is(CharacterStateType.Invisible)).ToList();
             }
 
             var targetedEnemy = _targetCharacter as Enemy;

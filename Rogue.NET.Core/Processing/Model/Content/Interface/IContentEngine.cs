@@ -12,17 +12,17 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         /// Figures out what enemies to provide for processing. Fires events for
         /// each enemy involved.
         /// </summary>
-        void CalculateEnemyReactions();
+        void CalculateCharacterReactions();
 
         /// <summary>
         /// Processes an enemy reaction. Fires events for animations.
         /// </summary>
-        void ProcessEnemyReaction(Enemy enemy);
+        void ProcessCharacterReaction(NonPlayerCharacter character);
 
         void DropPlayerItem(string itemId);
         void StepOnItem(Character character, ItemBase item);
         void StepOnDoodad(Character character, DoodadBase doodad);
         bool Equip(string equipId);
-        void EnemyDeath(Enemy enemy);
+        void CharacterDeath(NonPlayerCharacter character);
     }
 }

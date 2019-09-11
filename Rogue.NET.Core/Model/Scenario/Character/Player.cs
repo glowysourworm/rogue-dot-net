@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character
         public double Hunger { get; set; }
         public double FoodUsagePerTurnBase { get; set; }
 
-        public Player()
+        public Player() : base()
         {
             this.SkillSets = new List<SkillSet>();
         }

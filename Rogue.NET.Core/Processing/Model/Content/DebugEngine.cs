@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.Factory.Interface;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
@@ -125,11 +126,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             foreach (var equipment in level.Equipment)
                 player.Equipment.Add(equipment.Id, equipment);
 
-            for (int i = level.Enemies.Count() - 1; i >= 0; i--)
+            for (int i = level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var enemy = level.Enemies.ElementAt(i);
+                var character = level.NonPlayerCharacters.ElementAt(i);
 
-                foreach (var equipment in enemy.Equipment)
+                foreach (var equipment in character.Equipment)
                 {
                     // Un-equip item before giving to the player
                     equipment.Value.IsEquipped = false;
@@ -137,14 +138,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     player.Equipment.Add(equipment.Key, equipment.Value);
                 }
 
-                foreach (var consumable in enemy.Consumables)
+                foreach (var consumable in character.Consumables)
                     player.Consumables.Add(consumable.Key, consumable.Value);
 
                 // Calculate player gains
-                _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, enemy);
+                if (character is Enemy)
+                    _playerProcessor.CalculateEnemyDeathGains(_modelService.Player, character as Enemy);
 
                 //Set enemy identified
-                _modelService.ScenarioEncyclopedia[enemy.RogueName].IsIdentified = true;
+                _modelService.ScenarioEncyclopedia[character.RogueName].IsIdentified = true;
             }
 
             // REMOVE ALL CONTENTS
@@ -164,12 +166,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, equipment.Id));
             }
 
-            for (int i = level.Enemies.Count() - 1; i >= 0; i--)
+            for (int i = level.NonPlayerCharacters.Count() - 1; i >= 0; i--)
             {
-                var enemy = level.Enemies.ElementAt(i);
+                var character = level.NonPlayerCharacters.ElementAt(i);
 
-                level.RemoveContent(enemy);
-                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, enemy.Id));
+                level.RemoveContent(character);
+                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentRemove, character.Id));
             }
 
             if (level.HasStairsDown)

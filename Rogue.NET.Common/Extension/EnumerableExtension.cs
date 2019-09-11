@@ -205,6 +205,14 @@ namespace Rogue.NET.Common.Extension
         }
 
         /// <summary>
+        /// Returns minimum of a collection by a given selector
+        /// </summary>
+        public static T MinBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable
+        {
+            return MoreEnumerable.MinBy(collection, selector).Min();
+        }
+
+        /// <summary>
         /// Synchronizes a souce collection with a destination collection using the provided: equality comparer,
         /// constructor, and updater Func's. This will also apply a hard-constraint on ordering (using the source
         /// ordering as a guide)

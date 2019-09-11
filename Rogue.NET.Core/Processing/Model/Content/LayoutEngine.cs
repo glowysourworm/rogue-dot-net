@@ -39,8 +39,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
 
         #region (public) Player Action Methods
-        public void Search(LevelGrid grid, GridLocation location)
+        public void Search(GridLocation location)
         {
+            var grid = _modelService.Level.Grid;
+
             Cell c = grid[location.Column, location.Row];
             Cell n = grid[location.Column, location.Row - 1];
             Cell s = grid[location.Column, location.Row + 1];
@@ -74,14 +76,16 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Search " + Enumerable.Range(1, _randomSequenceGenerator.Get(2, 5)).Aggregate<int,string>("", (accum, x) => accum + "."));
         }
-        public void ToggleDoor(LevelGrid grid, Compass direction, GridLocation characterLocation)
+        public void ToggleDoor(Compass direction, GridLocation characterLocation)
         {
+            var grid = _modelService.Level.Grid;
+
             var openingPosition1 = GridLocation.Empty;
             var openingPosition2 = GridLocation.Empty;
             var openingDirection2 = Compass.Null;
             var shouldMoveToOpeningPosition1 = false;
 
-            if (IsPathToCellThroughDoor(grid, characterLocation, direction, out openingPosition1, out openingPosition2, out openingDirection2, out shouldMoveToOpeningPosition1))
+            if (IsPathToCellThroughDoor(characterLocation, direction, out openingPosition1, out openingPosition2, out openingDirection2, out shouldMoveToOpeningPosition1))
             {
                 // Have to move into position first
                 if (shouldMoveToOpeningPosition1)
@@ -103,7 +107,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         #region (public) Query Methods
         public bool IsPathToCellThroughDoor(
-            LevelGrid grid, 
             GridLocation location1, 
             Compass openingDirection1,              // Represents the Door for location1
             out GridLocation openingPosition1,         // Represents the opening position for the door
@@ -111,6 +114,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             out Compass openingDirection2,          // Represents the Door for location2
             out bool shouldMoveToOpeningPosition1)  // Should move into position for opening the door before opening
         {
+            var grid = _modelService.Level.Grid;
+
             openingPosition1 = GridLocation.Empty;
             openingPosition2 = GridLocation.Empty;
             openingDirection2 = Compass.Null;
@@ -217,8 +222,9 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
             return false;
         }
-        public bool IsPathToCellThroughWall(Level level, GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
+        public bool IsPathToCellThroughWall(GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
         {
+            var level = _modelService.Level;
             var grid = level.Grid;
             var cell1 = grid[location1.Column, location1.Row];
             var cell2 = grid[location2.Column, location2.Row];
@@ -276,8 +282,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
             return false;
         }
-        public bool IsPathToAdjacentCellBlocked(Level level, GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
+        public bool IsPathToAdjacentCellBlocked(GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
         {
+            var level = _modelService.Level;
+
             var cell1 = level.Grid[location1.Column, location1.Row];
             var cell2 = level.Grid[location2.Column, location2.Row];
 
@@ -343,8 +351,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #endregion
 
         #region (public) Get Methods
-        public GridLocation GetRandomAdjacentLocation(Level level, Player player, GridLocation location, bool excludeOccupiedCells)
+        public GridLocation GetRandomAdjacentLocation(GridLocation location, bool excludeOccupiedCells)
         {
+            var level = _modelService.Level;
+            var player = _modelService.Player;
+
             var adjacentLocations = level.
                                     Grid.
                                     GetAdjacentLocations(location).
@@ -354,20 +365,28 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                            : GridLocation.Empty;
 
         }
-        public IEnumerable<GridLocation> GetFreeAdjacentLocations(Level level, Player player, GridLocation location)
+        public IEnumerable<GridLocation> GetFreeAdjacentLocations(GridLocation location)
         {
+            var level = _modelService.Level;
+            var player = _modelService.Player;
+
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x, player.Location));
         }
-        public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(Level level, Player player, GridLocation location)
+        public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location)
         {
+            var level = _modelService.Level;
+            var player = _modelService.Player;
+
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
         }
-        public IEnumerable<GridLocation> GetLocationsInRange(Level level, GridLocation location, int cellRange)
+        public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange)
         {
+            var level = _modelService.Level;
+
             // Calculate locations within a cell-range using a "pseudo-euclidean" measure to make
             // an elliptical shape. (not roguian - which would make a rectangular shape)
 

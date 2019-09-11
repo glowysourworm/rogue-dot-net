@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         ScenarioImage CalculateEffectiveSymbol(Character character);
 
         bool CalculateMeetsAlterationCost(Character character, AlterationCost cost);
-        bool CalculateEnemyMeetsAlterationCost(Enemy enemy, AlterationCostTemplate cost);
+        bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost);
         bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost);
 
         void ApplyOneTimeAlterationCost(Character character, AlterationCost alterationCost);

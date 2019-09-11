@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model.Scenario.Content;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,10 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 bool isCausedByAttackAttributes = false,
                 IDictionary<ScenarioImage, double> attackAttributeEffect = null);
 
-        void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string playerName, string enemyDisplayName, string alterationDisplayName);
+        void PublishAlterationCombatMessage(CharacterAlignmentType alignmentType,
+                                            string attackerName, 
+                                            string defenderName, 
+                                            string alterationName);
 
         void PublishMeleeMessage(
                 ScenarioMessagePriority priority,

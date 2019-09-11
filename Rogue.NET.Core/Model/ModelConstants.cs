@@ -19,8 +19,6 @@
         public const double MinFiringDistance = 2.0D;
         public const double HpLowFraction = 0.1D;
 
-        public const double RandomStrikeProbability = 0.1;
-
         public const double SkillLowProgressIncrement = 0.001;
         public const double SkillMediumProgressIncrement = 0.005;
         public const double SkillHighProgressIncrement = 0.01;

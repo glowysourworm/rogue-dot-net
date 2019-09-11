@@ -16,9 +16,9 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         void CalculateAttackAttributeHit(string alterationDisplayName, Character defender, IEnumerable<AttackAttribute> offenseAttributes);
 
         /// <summary>
-        /// Calculates increment to enemy turn counter based on relative speed of characters
+        /// Calculates increment to character turn counter based on relative speed of characters
         /// </summary>
-        double CalculateEnemyTurnIncrement(Player player, Enemy enemy);
+        double CalculateCharacterTurnIncrement(Player player, Character enemy);
 
         /// <summary>
         /// Calculates a combat interaction between an attacker and defender. This could be any type described

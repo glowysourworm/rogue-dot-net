@@ -152,13 +152,13 @@
         </Border>
     </DataTemplate>
 
-    <DataTemplate x:Key="EnemyAlterationMessageDataTemplate">
+    <DataTemplate x:Key="CharacterAlterationMessageDataTemplate">
         <TextBlock Style="{StaticResource ScenarioMessageTextBlockStyle}" Padding="2">
-            <Run Text="{Binding EnemyDisplayName}" />
+            <Run Text="{Binding AttackerName}" />
             <Run Text=" has used " />
-            <Run Text="{Binding AlterationDisplayName}" />
+            <Run Text="{Binding AlterationName}" />
             <Run Text=" on " />
-            <Run Text="{Binding PlayerName}" />
+            <Run Text="{Binding DefenderName}" />
         </TextBlock>
     </DataTemplate>
 

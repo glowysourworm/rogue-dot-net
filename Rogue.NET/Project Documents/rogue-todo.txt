@@ -2079,6 +2079,10 @@ IMMEDIATE TODO'S:
 			Unique:  May have unique friendlies; but, for now, there's no support for generating friendlies in the level. However,
 					 if we do Objectives as friendlies, then there'd have to be. So, Uniqueness is important for this purpose.
 					 
+			Auras:   Need to grow up the aura calculations based on the new target type:  Opposing In Range, etc...
+			
+					 So, end-of-turn processing has to have an IModelService dependency to add auras from all sides.
+					 
 	- TODO: May want to consider a versioning system for Scenarios. (games and configurations) So that it becomes systematic to
 			deal with them versioned. (maybe also it would follow a build version - like tac it onto the ScenarioFile / Scenario Configuration files)
 			
@@ -2404,8 +2408,18 @@ IMMEDIATE TODO'S:
 				WOULD BE WORTH IT AS AN EXERCISE TO KNOW.
 				
 				OR, MAYBE REFLECTION.EMIT
-							
-					
+				
+	- IDEA: For the telepathic sorcerer - She might need a "Neo blows up the agent" effect for "Teleporting into a character".. So, maybe
+			a cute effect for that one. (projectile -> aura at affected character -> blows up and dies 
+			
+	- TODO: Take ALL ATTRIBUTES, INTERFACE SUPPORT, STATIC METHODS, EXTENSION METHODS, ETC.. FOR ALTERATIONS AND MOVE THEM INTO A STATIC
+			CONTAINER.
+			
+			There's too much GUNK around those that really should be moved.
+			
+	- TODO: Problem in Teleport effect - have to separate out manual selection by using a new effect type.
+
+	- TODO: MAKE ENEMY DEATH ANIMATIONS SOURCE ONLY
 														 
 					   
 						

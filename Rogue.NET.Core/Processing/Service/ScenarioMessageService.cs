@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage;
@@ -57,13 +58,16 @@ namespace Rogue.NET.Core.Processing.Service
             });
         }
 
-        public void PublishEnemyAlterationMessage(ScenarioMessagePriority priority, string playerName, string enemyDisplayName, string alterationDisplayName)
+        public void PublishAlterationCombatMessage(CharacterAlignmentType alignmentType,
+                                                   string attackerName,
+                                                   string defenderName,
+                                                   string alterationName)
         {
-            _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new EnemyAlterationMessageData(priority)
+            _eventAggregator.GetEvent<ScenarioMessageEvent>().Publish(new CharacterAlterationMessageData(alignmentType == CharacterAlignmentType.PlayerAligned ? ScenarioMessagePriority.Normal : ScenarioMessagePriority.Bad)
             {
-                PlayerName = playerName,
-                AlterationDisplayName = alterationDisplayName,
-                EnemyDisplayName = enemyDisplayName                
+                AlterationName = alterationName,
+                DefenderName = defenderName,
+                AtttackerName = attackerName
             });
         }
 

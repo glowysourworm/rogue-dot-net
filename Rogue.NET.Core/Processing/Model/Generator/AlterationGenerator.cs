@@ -4,16 +4,20 @@ using Rogue.NET.Core.Model.Scenario.Alteration.Doodad;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Enemy;
 using Rogue.NET.Core.Model.Scenario.Alteration.Equipment;
+using Rogue.NET.Core.Model.Scenario.Alteration.Friendly;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.Scenario.Alteration.Skill;
+using Rogue.NET.Core.Model.Scenario.Alteration.TemporaryCharacter;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Friendly;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.TemporaryCharacter;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using System;
 using System.ComponentModel.Composition;
@@ -97,7 +101,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             return new EnemyAlteration()
             {
-                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),                
                 Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect),
                 RogueName = template.Name
@@ -138,6 +142,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraColor = template.AuraParameters.AuraColor,
                     AuraRange = template.AuraParameters.AuraRange
                 },
+                Effect = GenerateAlterationEffect(template.Effect),
+                RogueName = template.Name
+            };
+        }
+
+        public FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template)
+        {
+            return new FriendlyAlteration()
+            {
+                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+                Cost = GenerateAlterationCost(template.Cost),
+                Effect = GenerateAlterationEffect(template.Effect),
+                RogueName = template.Name
+            };
+        }
+
+        public TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template)
+        {
+            return new TemporaryCharacterAlteration()
+            {
+                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+                Cost = GenerateAlterationCost(template.Cost),
                 Effect = GenerateAlterationEffect(template.Effect),
                 RogueName = template.Name
             };
@@ -304,6 +330,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 throw new Exception("Unhandled IEnemyAlterationEffectTemplate Type");
         }
 
+        protected IFriendlyAlterationEffect GenerateAlterationEffect(IFriendlyAlterationEffectTemplate template)
+        {
+            if (template is AttackAttributeMeleeAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
+
+            else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as AttackAttributeTemporaryAlterationEffectTemplate);
+
+            else if (template is PermanentAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
+
+            else if (template is TemporaryAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
+
+            else
+                throw new Exception("Unhandled IFriendlyAlterationEffectTemplate Type");
+        }
+
         protected IEquipmentAttackAlterationEffect GenerateAlterationEffect(IEquipmentAttackAlterationEffectTemplate template)
         {
             if (template is AttackAttributeMeleeAlterationEffectTemplate)
@@ -356,6 +400,24 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else
                 throw new Exception("Unhandled IEquipmentEquipAlterationEffectTemplate Type");
+        }
+
+        protected ITemporaryCharacterAlterationEffect GenerateAlterationEffect(ITemporaryCharacterAlterationEffectTemplate template)
+        {
+            if (template is AttackAttributeMeleeAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as AttackAttributeMeleeAlterationEffectTemplate);
+
+            else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as AttackAttributeTemporaryAlterationEffectTemplate);
+
+            else if (template is PermanentAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
+
+            else if (template is TemporaryAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
+
+            else
+                throw new Exception("Unhandled ITemporaryCharacterAlterationEffectTemplate Type");
         }
 
         protected ISkillAlterationEffect GenerateAlterationEffect(ISkillAlterationEffectTemplate template)

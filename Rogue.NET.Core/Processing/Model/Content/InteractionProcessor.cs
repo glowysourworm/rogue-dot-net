@@ -68,10 +68,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, alterationDisplayName + " misses");
         }
 
-        public double CalculateEnemyTurnIncrement(Player player, Enemy enemy)
+        public double CalculateCharacterTurnIncrement(Player player, Character character)
         {
             // Check for divide by zero and apply min speed to return a guaranteed turn for the enemy.
-            return player.GetSpeed() <= ModelConstants.MinSpeed ? 1.0D : enemy.GetSpeed() / player.GetSpeed();
+            return player.GetSpeed() <= ModelConstants.MinSpeed ? 1.0D : character.GetSpeed() / player.GetSpeed();
         }
 
         public bool CalculateInteraction(Character attacker, Character defender, PhysicalAttackType attackType)
@@ -123,20 +123,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     specializedHits);
 
                 result = true;
-            }
-
-            // Check for Enemy Counter-attack
-            var enemy = defender as Enemy;
-
-            if (enemy != null && attackType == PhysicalAttackType.Melee)
-            {
-                if (_randomSequenceGenerator.Get() < enemy.BehaviorDetails.CounterAttackProbability)
-                {
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, enemy.RogueName + " counter attacks!");
-
-                    // Calculate and publish counter attack
-                    CalculateInteraction(defender, attacker, attackType);
-                }
             }
 
             return result;

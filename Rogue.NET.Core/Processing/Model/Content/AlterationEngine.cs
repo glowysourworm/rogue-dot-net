@@ -171,12 +171,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 //         This should simplify thinking about both processing the effect and animation.
                 ApplyAlteration(alteration, affectedCharacter, actor);
 
-                // Alteration engages enemies
-                if (affectedCharacter is Enemy)
+                // Alteration engages characters
+                if (affectedCharacter is NonPlayerCharacter)
                 {
                     // Flags for engagement and provocation
-                    (affectedCharacter as Enemy).IsEngaged = true;
-                    (affectedCharacter as Enemy).WasAttackedByPlayer = true;
+                    (affectedCharacter as NonPlayerCharacter).IsAlerted = true;
                 }
 
                 // DESIGN ISSUE - THIS CALL UPDATES ALL AFFECTED DATA FOR VISIBILITY, AND AURA ALTERATIONS
@@ -368,33 +367,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 case AlterationTargetType.Target:
                     return (actor is Player) ? new Character[] { targetedCharacter } : new Character[] { _modelService.Player };
                 case AlterationTargetType.AllInRange:
-                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius());
+                    return _modelService.CharacterContentInformation.GetVisibleCharacters(actor).Union(new Character[] { actor });
                 case AlterationTargetType.AllInRangeExceptSource:
-                    return CalculateCharactersInRange(actor.Location, (int)actor.GetLightRadius()).Except(new Character[] { actor });
+                    return _modelService.CharacterContentInformation.GetVisibleCharacters(actor);
                 default:
                     throw new Exception("Unknown Attack Attribute Target Type");
             }
-        }
-        private IEnumerable<Character> CalculateCharactersInRange(GridLocation location, int cellRange)
-        {
-            // TODO:ALTERATION - LINE OF SIGHT! Consider calculating line-of-sight characters for each enemy on end of turn
-            //                   and storing them on the character (or creating a new component to store them)
-
-            var result = new List<Character>();
-            var locationsInRange = _layoutEngine.GetLocationsInRange(_modelService.Level, location, cellRange);
-
-            // Create a list of characters in range
-            foreach (var enemy in _modelService.Level.Enemies)
-            {
-                if (locationsInRange.Any(x => x.Equals(enemy.Location)))
-                    result.Add(enemy);
-            }
-
-            // Check the player
-            if (locationsInRange.Any(x => x.Equals(_modelService.Player.Location)))
-                result.Add(_modelService.Player);
-
-            return result;
         }
         #endregion
 
@@ -533,9 +511,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, _modelService.GetDisplayName(character) + " was teleported!");
-
-                // Set Enemy Engaged
-                (character as Enemy).IsEngaged = true;
             }
         }
         private void ProcessChangeLevel(ChangeLevelAlterationEffect effect)
@@ -753,7 +728,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     openLocation = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
                     break;
                 case AlterationRandomPlacementType.InRangeOfCharacter:
-                    openLocation = _layoutEngine.GetLocationsInRange(level, sourceLocation, sourceRange)
+                    openLocation = _layoutEngine.GetLocationsInRange(sourceLocation, sourceRange)
                                                 .Where(x => !level.IsCellOccupied(x, player.Location))
                                                 .PickRandom();
                     break;
@@ -781,8 +756,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void RevealMonsters()
         {
-            foreach (var enemy in _modelService.Level.Enemies)
-                enemy.IsRevealed = true;
+            foreach (var character in _modelService.Level.NonPlayerCharacters)
+                character.IsRevealed = true;
 
             _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance...");
         }

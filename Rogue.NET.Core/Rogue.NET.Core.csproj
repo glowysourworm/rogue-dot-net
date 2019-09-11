@@ -167,6 +167,23 @@
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\TemporaryCharacter\TemporaryCharacterAlterationTemplate.cs" />
+    <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
+    <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Interface\ITemporaryCharacterAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\TemporaryCharacter\TemporaryCharacterAlteration.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\EnemyBehavior.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\EnemyBehaviorDetails.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\FriendlyBehavior.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\FriendlyBehaviorDetails.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\TemporaryCharacterBehavior.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\TemporaryCharacterBehaviorDetails.cs" />
+    <Compile Include="Model\Scenario\Character\Extension\NonPlayerCharacterExtension.cs" />
+    <Compile Include="Model\Scenario\Character\Friendly.cs" />
+    <Compile Include="Model\Scenario\Character\NonPlayerCharacter.cs" />
+    <Compile Include="Model\Scenario\Character\TemporaryCharacter.cs" />
     <Compile Include="Processing\Event\Backend\Enum\TargetRequestType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\TargetRequestEventData.cs" />
     <Compile Include="Processing\Event\Core\ResourcesInitializedEvent.cs" />
@@ -346,10 +363,10 @@
     <Compile Include="Processing\Event\Backend\LevelEvent.cs" />
     <Compile Include="Processing\Event\Backend\Enum\LevelEventType.cs" />
     <Compile Include="Processing\Model\Content\AlterationProcessor.cs" />
-    <Compile Include="Processing\Model\Content\EnemyProcessor.cs" />
+    <Compile Include="Processing\Model\Content\NonPlayerCharacterProcessor.cs" />
     <Compile Include="Processing\Model\Content\InteractionProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IAlterationProcessor.cs" />
-    <Compile Include="Processing\Model\Content\Interface\IEnemyProcessor.cs" />
+    <Compile Include="Processing\Model\Content\Interface\INonPlayerCharacterProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IInteractionProcessor.cs" />
     <Compile Include="Processing\Model\Content\Interface\IPlayerProcessor.cs" />
     <Compile Include="Processing\Model\Content\PlayerProcessor.cs" />
@@ -424,7 +441,7 @@
     <Compile Include="Model\ScenarioConfiguration\Layout\LayoutTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\ScenarioConfigurationContainer.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\AlterationMessageData.cs" />
-    <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\EnemyAlterationMessageData.cs" />
+    <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\CharacterAlterationMessageData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\MeleeMessageData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\NormalMessageData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ScenarioMessage\PlayerAdvancementMessageData.cs" />
@@ -437,11 +454,10 @@
     <Compile Include="Model\Scenario\Alteration\Common\AttackAttribute.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationCostExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
-    <Compile Include="Model\Scenario\Character\Behavior.cs" />
-    <Compile Include="Model\Scenario\Character\BehaviorDetails.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\Behavior.cs" />
+    <Compile Include="Model\Scenario\Character\Behavior\BehaviorDetails.cs" />
     <Compile Include="Model\Scenario\Character\Character.cs" />
     <Compile Include="Model\Scenario\Character\Extension\CharacterExtension.cs" />
-    <Compile Include="Model\Scenario\Character\Extension\EnemyExtension.cs" />
     <Compile Include="Model\Scenario\Character\Extension\PlayerExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelExtension.cs" />
     <Compile Include="Model\Scenario\Content\Extension\LevelGridExtension.cs" />
@@ -520,6 +536,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IFriendlyAlterationEffectTemplate.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

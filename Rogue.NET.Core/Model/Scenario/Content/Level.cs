@@ -39,7 +39,7 @@ namespace Rogue.NET.Core.Model.Scenario
         public string WallColor { get; protected set; }
         public string DoorColor { get; protected set; }
 
-        IList<Enemy> _enemies;
+        IList<NonPlayerCharacter> _nonPlayerCharacters;
         IList<Equipment> _equipment;
         IList<Consumable> _consumables;
         IList<DoodadMagic> _doodadMagics;
@@ -58,10 +58,10 @@ namespace Rogue.NET.Core.Model.Scenario
         // Gives the contents as a dictionary
         IDictionary<string, ScenarioObject> _levelContentDict;
 
-        public IEnumerable<Enemy> Enemies
+        public IEnumerable<NonPlayerCharacter> NonPlayerCharacters
         {
-            get { return _enemies; }
-            protected set { _enemies = new List<Enemy>(value); }
+            get { return _nonPlayerCharacters; }
+            protected set { _nonPlayerCharacters = new List<NonPlayerCharacter>(value); }
         }
         public IEnumerable<Equipment> Equipment
         {
@@ -107,7 +107,7 @@ namespace Rogue.NET.Core.Model.Scenario
             this.StairsUp = null;
             this.SavePoint = null;
 
-            this.Enemies = new List<Enemy>();
+            this.NonPlayerCharacters = new List<NonPlayerCharacter>();
             this.Doodads = new List<DoodadMagic>();
             this.Equipment = new List<Equipment>();
             this.DoodadsNormal = new List<DoodadNormal>();
@@ -144,8 +144,8 @@ namespace Rogue.NET.Core.Model.Scenario
             if (_levelContent.Contains(scenarioObject))
                 throw new Exception("Trying to add duplicate Scenario Object to Level");
 
-            if (scenarioObject is Enemy)
-                _enemies.Add(scenarioObject as Enemy);
+            if (scenarioObject is NonPlayerCharacter)
+                _nonPlayerCharacters.Add(scenarioObject as NonPlayerCharacter);
 
             else if (scenarioObject is Consumable)
                 _consumables.Add(scenarioObject as Consumable);
@@ -179,8 +179,8 @@ namespace Rogue.NET.Core.Model.Scenario
             if (!_levelContent.Contains(scenarioObject))
                 throw new Exception("Trying to remove non-existent Scenario Object from Level");
 
-            if (scenarioObject is Enemy)
-                _enemies.Remove(scenarioObject as Enemy);
+            if (scenarioObject is NonPlayerCharacter)
+                _nonPlayerCharacters.Remove(scenarioObject as NonPlayerCharacter);
 
             else if (scenarioObject is Consumable)
                 _consumables.Remove(scenarioObject as Consumable);
