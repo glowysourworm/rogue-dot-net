@@ -11,7 +11,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public List<AnimationTemplate> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
-        private bool _isInvisible;
         private Range<double> _experienceGiven;
         private BehaviorDetailsTemplate _behaviorDetails;
         private AnimationGroupTemplate _deathAnimationGroup;
@@ -25,18 +24,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 {
                     _generateOnStep = value;
                     OnPropertyChanged("GenerateOnStep");
-                }
-            }
-        }
-        public bool IsInvisible
-        {
-            get { return _isInvisible; }
-            set
-            {
-                if (_isInvisible != value)
-                {
-                    _isInvisible = value;
-                    OnPropertyChanged("IsInvisible");
                 }
             }
         }

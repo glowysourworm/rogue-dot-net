@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             behavior.BehaviorCondition = behaviorTemplate.BehaviorCondition;
             behavior.BehaviorExitCondition = behaviorTemplate.BehaviorExitCondition;
             behavior.BehaviorTurnCounter = behaviorTemplate.BehaviorTurnCounter;
-            behavior.SkillAlteration = behaviorTemplate.EnemyAlteration;
+            behavior.Alteration = behaviorTemplate.Alteration;
             behavior.MovementType = behaviorTemplate.MovementType;
             return behavior;
         }

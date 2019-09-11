@@ -16,7 +16,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
         {
             var attackType = (CharacterAttackType)value;
 
-            return attackType == CharacterAttackType.Melee ? Visibility.Visible : Visibility.Collapsed;
+            return attackType == CharacterAttackType.PhysicalCombat ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -12,8 +12,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
         {
             var attackType = (CharacterAttackType)value;
 
-            return (attackType == CharacterAttackType.Skill || attackType == CharacterAttackType.SkillCloseRange) ? 
-                        Visibility.Visible : Visibility.Collapsed;
+            return (attackType == CharacterAttackType.Alteration) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

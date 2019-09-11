@@ -69,22 +69,20 @@ namespace Rogue.NET.Core.Model.Enums
     }
     public enum CharacterAttackType
     {
-        Melee = 0,
+        /// <summary>
+        /// Attack type is physical combat that is calculated from the character's stats / equipment
+        /// </summary>
+        PhysicalCombat = 0,
 
         /// <summary>
-        /// This should cover Range attacks for enemies
+        /// Attack type is some kind of alteration
         /// </summary>
-        Skill = 1,
+        Alteration = 1,
 
         /// <summary>
-        /// Skill that can only be used at very close (radius=1) range
+        /// No Attack
         /// </summary>
-        SkillCloseRange = 2,
-
-        /// <summary>
-        /// no attack
-        /// </summary>
-        None = 3
+        None = 2
     }
     [Flags]
     public enum BehaviorCondition : int

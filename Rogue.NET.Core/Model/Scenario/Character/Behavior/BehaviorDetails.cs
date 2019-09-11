@@ -51,9 +51,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
 
                 // Enemy must be able to use Skill
                 if (behavior.BehaviorCondition.HasFlag(BehaviorCondition.AttackConditionsMet) &&
-                   (behavior.AttackType == CharacterAttackType.Skill ||
-                    behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.SkillAlteration.Cost))
+                   (behavior.AttackType == CharacterAttackType.Alteration) &&
+                   !alterationProcessor.CalculateCharacterMeetsAlterationCost(character, behavior.Alteration.Cost))
                     entryConditionsFail = true;
 
                 // Enemy must have Low (<= 10%) HP for this behavior

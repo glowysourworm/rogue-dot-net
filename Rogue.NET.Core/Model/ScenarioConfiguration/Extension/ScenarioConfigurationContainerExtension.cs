@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -56,9 +57,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Extension
 
                         configuration.EnemyTemplates
                                      .SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => new { Asset = x, Behavior = z}))
-                                     .Where(x => x.Behavior.AttackType == Enums.CharacterAttackType.Skill ||
-                                                 x.Behavior.AttackType == Enums.CharacterAttackType.SkillCloseRange)
-                                     .Select(x => new AlterationProcessingContainer(x.Asset.Name, x.Behavior.EnemyAlteration))
+                                     .Where(x => x.Behavior.AttackType == CharacterAttackType.Alteration)
+                                     .Select(x => new AlterationProcessingContainer(x.Asset.Name, x.Behavior.Alteration))
                                      .Actualize(),
 
                         configuration.SkillTemplates

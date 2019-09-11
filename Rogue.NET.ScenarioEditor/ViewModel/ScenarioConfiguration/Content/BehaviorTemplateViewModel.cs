@@ -14,7 +14,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         private CharacterMovementType _movementType;
         private CharacterAttackType _attackType;
-        private EnemyAlterationTemplateViewModel _enemyAlteration;
+        private AlterationTemplateViewModel _alteration;
 
         public BehaviorCondition BehaviorCondition
         {
@@ -41,15 +41,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             get { return _attackType; }
             set { this.RaiseAndSetIfChanged(ref _attackType, value); }
         }
-        public EnemyAlterationTemplateViewModel EnemyAlteration
+        public AlterationTemplateViewModel Alteration
         {
-            get { return _enemyAlteration; }
-            set { this.RaiseAndSetIfChanged(ref _enemyAlteration, value); }
+            get { return _alteration; }
+            set { this.RaiseAndSetIfChanged(ref _alteration, value); }
         }
 
         public BehaviorTemplateViewModel()
         {
-            this.EnemyAlteration = new EnemyAlterationTemplateViewModel();
+            this.Alteration = new AlterationTemplateViewModel();
             this.BehaviorCondition = BehaviorCondition.AttackConditionsMet;
             this.BehaviorExitCondition = BehaviorExitCondition.BehaviorCounterExpired;
             this.BehaviorTurnCounter = 1;

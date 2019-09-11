@@ -189,9 +189,8 @@ namespace Rogue.NET.Core.Processing.Service
                     var enemiesNotSet = configuration.EnemyTemplates
                                                      .Where(x =>
                                                             x.BehaviorDetails.Behaviors.Any(behavior =>
-                                                                (behavior.AttackType == CharacterAttackType.Skill ||
-                                                                 behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                                                                 behavior.EnemyAlteration == null))
+                                                                (behavior.AttackType == CharacterAttackType.Alteration) &&
+                                                                 behavior.Alteration == null))
                                                      .Actualize();
 
                     var skillsNotSet = configuration.SkillTemplates
@@ -697,19 +696,18 @@ namespace Rogue.NET.Core.Processing.Service
 
             foreach (var behavior in template.BehaviorDetails.Behaviors)
             {
-                if ((behavior.AttackType == CharacterAttackType.Skill ||
-                     behavior.AttackType == CharacterAttackType.SkillCloseRange) &&
-                     behavior.EnemyAlteration != null)
+                if ((behavior.AttackType == CharacterAttackType.Alteration) &&
+                     behavior.Alteration != null)
                 {
-                    if (behavior.EnemyAlteration.Effect is CreateMonsterAlterationEffectTemplate)
+                    if (behavior.Alteration.Effect is CreateMonsterAlterationEffectTemplate)
                     {
-                        var effect = behavior.EnemyAlteration.Effect as CreateMonsterAlterationEffectTemplate;
+                        var effect = behavior.Alteration.Effect as CreateMonsterAlterationEffectTemplate;
 
                         if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
                             result.Add("Create Monster Enemy not set for enemy behavior:  " + template.Name);
                     }
 
-                    if (behavior.EnemyAlteration.Effect is OtherAlterationEffectTemplate)
+                    if (behavior.Alteration.Effect is OtherAlterationEffectTemplate)
                         result.Add("Enemy OtherAlterationEffect is deprecated and has to be removed");
                 }
             }

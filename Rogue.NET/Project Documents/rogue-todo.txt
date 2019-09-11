@@ -2421,5 +2421,9 @@ IMMEDIATE TODO'S:
 
 	- TODO: MAKE ENEMY DEATH ANIMATIONS SOURCE ONLY
 														 
-					   
+	- TODO: Decide how to handle Validation "Critical" errors - ones that will result in a crashed application. (probably should just fix
+			the model)
+			
+	- TODO: Removed "skill at close range" attack type for enemies. We need some parameters in the alteration space somewhere to specify
+			things like "range".
 						

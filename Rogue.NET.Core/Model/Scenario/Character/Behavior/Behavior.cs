@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
         /// </summary>
         public static Behavior Default = new Behavior()
         {
-            AttackType = CharacterAttackType.Melee,
+            AttackType = CharacterAttackType.PhysicalCombat,
             BehaviorCondition = BehaviorCondition.AttackConditionsMet,
             BehaviorExitCondition = BehaviorExitCondition.BehaviorCounterExpired,
             BehaviorTurnCounter = 1,
@@ -32,7 +32,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
         public CharacterMovementType MovementType { get; set; }
         public CharacterAttackType AttackType { get; set; }
 
-        public AlterationTemplate SkillAlteration { get; set; }
+        public AlterationTemplate Alteration { get; set; }
 
         public Behavior()
         {

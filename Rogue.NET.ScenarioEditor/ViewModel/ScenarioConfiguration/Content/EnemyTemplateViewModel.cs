@@ -10,7 +10,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public ObservableCollection<AnimationTemplateViewModel> DeathAnimations { get; set; }
 
         private bool _generateOnStep;
-        private bool _isInvisible;
         private RangeViewModel<double> _experienceGiven;
         private BehaviorDetailsTemplateViewModel _behaviorDetails;
         private AnimationGroupTemplateViewModel _deathAnimationGroup;
@@ -19,11 +18,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             get { return _generateOnStep; }
             set { this.RaiseAndSetIfChanged(ref _generateOnStep, value); }
-        }
-        public bool IsInvisible
-        {
-            get { return _isInvisible; }
-            set { this.RaiseAndSetIfChanged(ref _isInvisible, value); }
         }
         public RangeViewModel<double> ExperienceGiven
         {

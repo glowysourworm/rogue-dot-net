@@ -16,7 +16,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         private CharacterMovementType _movementType;
         private CharacterAttackType _attackType;
-        private EnemyAlterationTemplate _enemyAlteration;
+        private AlterationTemplate _alteration;
 
         /// <summary>
         /// Treated as flags (many)
@@ -87,22 +87,22 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public EnemyAlterationTemplate EnemyAlteration
+        public AlterationTemplate Alteration
         {
-            get { return _enemyAlteration; }
+            get { return _alteration; }
             set
             {
-                if (_enemyAlteration != value)
+                if (_alteration != value)
                 {
-                    _enemyAlteration = value;
-                    OnPropertyChanged("EnemySpell");
+                    _alteration = value;
+                    OnPropertyChanged("Alteration");
                 }
             }
         }
 
         public BehaviorTemplate()
         {
-            this.EnemyAlteration = new EnemyAlterationTemplate();
+            this.Alteration = new AlterationTemplate();
             this.BehaviorCondition = BehaviorCondition.AttackConditionsMet;
             this.BehaviorExitCondition = BehaviorExitCondition.BehaviorCounterExpired;
         }

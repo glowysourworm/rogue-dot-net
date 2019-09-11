@@ -1,4 +1,5 @@
-﻿using Rogue.NET.ScenarioEditor.Service.Interface;
+﻿using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
@@ -37,9 +38,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 foreach (var behavior in template.BehaviorDetails.Behaviors)
                 {
-                    if (behavior.AttackType == Core.Model.Enums.CharacterAttackType.Skill ||
-                        behavior.AttackType == Core.Model.Enums.CharacterAttackType.SkillCloseRange)
-                        SetName(behavior.EnemyAlteration.Effect, behavior.EnemyAlteration.Name);
+                    if (behavior.AttackType == CharacterAttackType.Alteration)
+                        SetName(behavior.Alteration.Effect, behavior.Alteration.Name);
                 }
             }
 
@@ -66,7 +66,6 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         private void SetName(IAlterationEffectTemplateViewModel effect, string name)
         {
-            // REMOVPE THIS
             if (effect == null)
                 return;
 

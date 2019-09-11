@@ -251,7 +251,7 @@ namespace Rogue.NET.ScenarioEditor.Service
                 configuration.EquipmentTemplates.SelectMany(x => equipmentFunc(x)),
                 configuration.DoodadTemplates.Select(x => x.AutomaticAlteration.Effect),
                 configuration.DoodadTemplates.Select(x => x.InvokedAlteration.Effect),
-                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.EnemyAlteration.Effect)),
+                configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),

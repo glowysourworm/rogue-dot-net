@@ -613,12 +613,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 {
                     switch (character.BehaviorDetails.CurrentBehavior.AttackType)
                     {
-                        case CharacterAttackType.Melee:
-                            ProcessCharacterMeleeAttack(character, targetCharacter);
+                        case CharacterAttackType.PhysicalCombat:
+                            ProcessCharacterAttack(character, targetCharacter);
                             break;
-                        case CharacterAttackType.Skill:
-                        case CharacterAttackType.SkillCloseRange:
-                            ProcessCharacterSkillAttack(character, targetCharacter);
+                        case CharacterAttackType.Alteration:
+                            ProcessCharacterAlterationAttack(character, targetCharacter);
                             break;
                         case CharacterAttackType.None:
                         default:
@@ -840,7 +839,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Figure out whether or not character will attack or move
             switch (character.BehaviorDetails.CurrentBehavior.AttackType)
             {
-                case CharacterAttackType.Melee:
+                case CharacterAttackType.PhysicalCombat:
                     {
                         if (character.IsEquippedRangeCombat())
                             return opposingCharacterTargets.Any();
@@ -852,14 +851,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             });
                         }
                     }
-                case CharacterAttackType.SkillCloseRange:
-                    return adjacentLocations.Any(x =>
-                    {
-                        return opposingCharacterTargets.Select(z => z.Location).Contains(x);
-                    });
-
                 // This should depend on the alteration details
-                case CharacterAttackType.Skill:
+                case CharacterAttackType.Alteration:
                     return opposingCharacterTargets.Any();
                 case CharacterAttackType.None:
                     return false;
@@ -867,7 +860,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     throw new Exception("Unhandled Character Attack Type");
             }
         }
-        private void ProcessCharacterMeleeAttack(NonPlayerCharacter character, Character targetCharacter)
+        private void ProcessCharacterAttack(NonPlayerCharacter character, Character targetCharacter)
         {
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
             var isTargetAdjacent = adjacentLocations.Contains(targetCharacter.Location);
@@ -916,12 +909,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 }
             }
         }
-        private void ProcessCharacterSkillAttack(NonPlayerCharacter character, Character targetCharacter)
+        private void ProcessCharacterAlterationAttack(NonPlayerCharacter character, Character targetCharacter)
         {
             AlterationContainer alteration;
 
             // Cast the appropriate behavior
-            var template = character.BehaviorDetails.CurrentBehavior.SkillAlteration;
+            var template = character.BehaviorDetails.CurrentBehavior.Alteration;
 
             // Create the alteration
             alteration = _alterationGenerator.GenerateAlteration(template);

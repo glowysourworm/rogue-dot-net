@@ -20,6 +20,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
         public AnimationGroupTemplate AnimationGroup { get; private set; }
         public bool HasAnimation { get; private set; }
 
+        public AlterationProcessingContainer(string assetName, AlterationTemplate template)
+        {
+            this.AssetName = assetName;
+            this.AlterationName = template.Name;
+            this.Effect = template.Effect;
+            this.AnimationGroup = template.AnimationGroup;
+            this.HasAnimation = template.AnimationGroup.Animations.Count > 0;
+        }
+
         public AlterationProcessingContainer(string assetName, ConsumableAlterationTemplate template)
         {
             this.AssetName = assetName;
