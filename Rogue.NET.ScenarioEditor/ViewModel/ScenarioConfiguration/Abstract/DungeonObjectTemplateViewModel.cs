@@ -63,7 +63,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         public DungeonObjectTemplateViewModel()
         {
             this.SymbolDetails = new SymbolDetailsTemplateViewModel();
-            this.Level = new RangeViewModel<int>(1, 1, 100, 200);
+            this.Level = new RangeViewModel<int>(1, 100);
 
             this.ShortDescription = "";
             this.LongDescription = "";

@@ -36,7 +36,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public EnemyTemplate()
         {
-            this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
+            this.ExperienceGiven = new Range<double>(0, 100);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
             this.AlignmentType = CharacterAlignmentType.EnemyAligned;
         }

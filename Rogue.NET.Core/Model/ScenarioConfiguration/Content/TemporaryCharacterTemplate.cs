@@ -22,7 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public TemporaryCharacterTemplate()
         {
-            this.LifetimeCounter = new Range<int>(0, 100, 100, 1000);
+            this.LifetimeCounter = new Range<int>(100, 150);
         }
     }
 }

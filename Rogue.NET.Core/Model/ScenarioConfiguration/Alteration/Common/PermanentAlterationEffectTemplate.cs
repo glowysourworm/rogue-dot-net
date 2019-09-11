@@ -135,15 +135,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public PermanentAlterationEffectTemplate()
         {
-            this.AgilityRange = new Range<double>(-100, 0, 0, 100);
-            this.SpeedRange = new Range<double>(-1, 0, 0, 1);
-            this.LightRadiusRange = new Range<double>(-25, 0, 0, 25);
-            this.ExperienceRange = new Range<double>(-100000, 0, 0, 100000);
-            this.HpRange = new Range<double>(-1000, 0, 0, 1000);
-            this.HungerRange = new Range<double>(-100, 0, 0, 100);
-            this.IntelligenceRange = new Range<double>(-100, 0, 0, 100);
-            this.MpRange = new Range<double>(-100, 0, 0, 100);
-            this.StrengthRange = new Range<double>(-100, 0, 0, 100);
+            this.AgilityRange = new Range<double>(0, 0);
+            this.SpeedRange = new Range<double>(0, 0);
+            this.LightRadiusRange = new Range<double>(0, 0);
+            this.ExperienceRange = new Range<double>(0, 0);
+            this.HpRange = new Range<double>(0, 0);
+            this.HungerRange = new Range<double>(0, 0);
+            this.IntelligenceRange = new Range<double>(0, 0);
+            this.MpRange = new Range<double>(0, 0);
+            this.StrengthRange = new Range<double>(0, 0);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         /// <summary>
         /// Updates Create Monster Alteration Effects
         /// </summary>
-        void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration);
+        void UpdateNonPlayerCharacters(ScenarioConfigurationContainerViewModel configuration);
 
         /// <summary>
         /// Updates Item references on Enemies, and Player

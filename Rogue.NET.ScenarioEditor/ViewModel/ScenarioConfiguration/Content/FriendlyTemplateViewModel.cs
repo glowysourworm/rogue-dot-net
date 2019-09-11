@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
     {
         public FriendlyTemplateViewModel()
         {
-
+            this.AlignmentType = CharacterAlignmentType.PlayerAligned;
         }
     }
 }

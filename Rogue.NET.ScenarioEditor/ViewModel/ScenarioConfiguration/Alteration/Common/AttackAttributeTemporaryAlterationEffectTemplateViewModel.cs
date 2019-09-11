@@ -67,7 +67,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();
-            this.EventTime = new RangeViewModel<int>(1, 20, 30, 1000);
+            this.EventTime = new RangeViewModel<int>(20, 30);
             this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
         }
     }

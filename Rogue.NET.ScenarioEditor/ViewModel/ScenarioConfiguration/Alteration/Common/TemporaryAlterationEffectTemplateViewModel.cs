@@ -163,26 +163,26 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         public TemporaryAlterationEffectTemplateViewModel()
         {
             this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
-            this.EventTime = new RangeViewModel<int>(0, 20, 30, 1000);
+            this.EventTime = new RangeViewModel<int>(20, 30);
 
-            this.AgilityRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.AttackRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.LightRadiusRange = new RangeViewModel<double>(-25, 0, 0, 25);
-            this.DefenseRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.DodgeProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.ExperienceRange = new RangeViewModel<double>(-100000, 0, 0, 100000);
-            this.FoodUsagePerTurnRange = new RangeViewModel<double>(-10, 0, 0, 10);
-            this.HpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.HpRange = new RangeViewModel<double>(-1000, 0, 0, 1000);
-            this.HungerRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MentalBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.StrengthRange = new RangeViewModel<double>(-100, 0, 0, 100);
+            this.AgilityRange = new RangeViewModel<double>(0, 0);
+            this.AttackRange = new RangeViewModel<double>(0, 0);
+            this.LightRadiusRange = new RangeViewModel<double>(0, 0);
+            this.DefenseRange = new RangeViewModel<double>(0, 0);
+            this.DodgeProbabilityRange = new RangeViewModel<double>(0, 0);
+            this.ExperienceRange = new RangeViewModel<double>(0, 0);
+            this.FoodUsagePerTurnRange = new RangeViewModel<double>(0, 0);
+            this.HpPerStepRange = new RangeViewModel<double>(0, 0);
+            this.HpRange = new RangeViewModel<double>(0, 0);
+            this.HungerRange = new RangeViewModel<double>(0, 0);
+            this.IntelligenceRange = new RangeViewModel<double>(0, 0);
+            this.MentalBlockProbabilityRange = new RangeViewModel<double>(0, 0);
+            this.MpPerStepRange = new RangeViewModel<double>(0, 0);
+            this.MpRange = new RangeViewModel<double>(0, 0);
+            this.SpeedRange = new RangeViewModel<double>(0, 0);
+            this.StrengthRange = new RangeViewModel<double>(0, 0);
 
-            this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
+            this.CriticalHit = new RangeViewModel<double>(0, 0);
 
             this.AlteredState = new AlteredCharacterStateTemplateViewModel();
         }

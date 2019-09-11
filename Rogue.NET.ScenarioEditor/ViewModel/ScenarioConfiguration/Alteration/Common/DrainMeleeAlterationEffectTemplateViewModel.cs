@@ -29,8 +29,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public DrainMeleeAlterationEffectTemplateViewModel()
         {
-            this.Hp = new RangeViewModel<double>(0, 0, 0, 100);
-            this.Mp = new RangeViewModel<double>(0, 0, 0, 100);
+            this.Hp = new RangeViewModel<double>(0, 0);
+            this.Mp = new RangeViewModel<double>(0, 0);
         }
     }
 }

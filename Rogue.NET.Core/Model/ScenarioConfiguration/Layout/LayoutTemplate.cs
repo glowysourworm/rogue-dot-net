@@ -329,7 +329,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Layout
             this.Type = LayoutType.ConnectedRectangularRooms;
             this.RoomPlacementType = LayoutRoomPlacementType.RectangularGrid;
             this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
-            this.Level = new Range<int>(1, 1, 100, 100);
+            this.Level = new Range<int>(1, 100);
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
             this.NumberExtraWallRemovals = 200;

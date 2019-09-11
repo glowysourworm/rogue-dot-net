@@ -25,7 +25,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public ChangeLevelAlterationEffectTemplateViewModel()
         {
-            this.LevelChange = new RangeViewModel<int>(-50, 0, 0, 50);
+            this.LevelChange = new RangeViewModel<int>(0, 0);
         }
     }
 }

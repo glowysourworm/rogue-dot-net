@@ -1,7 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.Constant;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Rogue.NET.ScenarioEditor.Utility

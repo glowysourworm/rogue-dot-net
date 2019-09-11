@@ -161,7 +161,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout
             this.ConnectionType = LayoutConnectionType.CorridorWithDoors;
             this.ConnectionGeometryType = LayoutConnectionGeometryType.Rectilinear;
             this.CorridorGeometryType = LayoutCorridorGeometryType.Linear;
-            this.Level = new RangeViewModel<int>(1, 1, 100, 100);
+            this.Level = new RangeViewModel<int>(1, 100);
             this.NumberRoomRows = 3;
             this.NumberRoomCols = 3;
             this.NumberExtraWallRemovals = 200;

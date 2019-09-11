@@ -30,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public PlayerTemplateViewModel()
         {
             this.Skills = new ObservableCollection<SkillSetTemplateViewModel>();
-            this.FoodUsage = new RangeViewModel<double>(0.0001, 0.005, 0.01, 1);
+            this.FoodUsage = new RangeViewModel<double>(0.005, 0.01);
             this.Class = "Fighter";
             this.SymbolDetails.Type = SymbolTypes.Smiley;
         }

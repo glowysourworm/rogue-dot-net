@@ -42,8 +42,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public DrainMeleeAlterationEffectTemplate()
         {
-            this.Hp = new Range<double>(0, 0, 0, 100);
-            this.Mp = new Range<double>(0, 0, 0, 100);
+            this.Hp = new Range<double>(0, 0);
+            this.Mp = new Range<double>(0, 0);
         }
     }
 }

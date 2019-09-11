@@ -111,20 +111,20 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
 
-            this.AgilityRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.AttackRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.LightRadiusRange = new RangeViewModel<double>(-25, 0, 0, 25);
-            this.DefenseRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.DodgeProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.FoodUsagePerTurnRange = new RangeViewModel<double>(-10, 0, 0, 10);
-            this.HpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MagicBlockProbabilityRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.MpPerStepRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.StrengthRange = new RangeViewModel<double>(-100, 0, 0, 100);
+            this.AgilityRange = new RangeViewModel<double>(0, 0);
+            this.SpeedRange = new RangeViewModel<double>(0, 0);
+            this.AttackRange = new RangeViewModel<double>(0, 0);
+            this.LightRadiusRange = new RangeViewModel<double>(0, 0);
+            this.DefenseRange = new RangeViewModel<double>(0, 0);
+            this.DodgeProbabilityRange = new RangeViewModel<double>(0, 0);
+            this.FoodUsagePerTurnRange = new RangeViewModel<double>(0, 0);
+            this.HpPerStepRange = new RangeViewModel<double>(0, 0);
+            this.IntelligenceRange = new RangeViewModel<double>(0, 0);
+            this.MagicBlockProbabilityRange = new RangeViewModel<double>(0, 0);
+            this.MpPerStepRange = new RangeViewModel<double>(0, 0);
+            this.StrengthRange = new RangeViewModel<double>(0, 0);
 
-            this.CriticalHit = new RangeViewModel<double>(-1, 0, 0, 1);
+            this.CriticalHit = new RangeViewModel<double>(0, 0);
         }
     }
 }

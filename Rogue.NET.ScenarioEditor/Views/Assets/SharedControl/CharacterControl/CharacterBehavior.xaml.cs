@@ -4,13 +4,13 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
     [Export]
-    public partial class EnemyBehavior : UserControl
+    public partial class CharacterBehavior : UserControl
     {
         [ImportingConstructor]
-        public EnemyBehavior()
+        public CharacterBehavior()
         {
             InitializeComponent();
 

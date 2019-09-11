@@ -5,13 +5,13 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
     [Export]
-    public partial class EnemyParameters : UserControl
+    public partial class CharacterParameters : UserControl
     {
         [ImportingConstructor]
-        public EnemyParameters(IRogueEventAggregator eventAggregator)
+        public CharacterParameters(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
         }

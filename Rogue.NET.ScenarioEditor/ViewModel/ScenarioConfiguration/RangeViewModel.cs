@@ -9,8 +9,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
     {
         T _low = default(T);
         T _high = default(T);
-        T _lowlim = default(T);
-        T _highlim = default(T);
 
         public T Low
         {
@@ -22,38 +20,17 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             get { return _high; }
             set { this.RaiseAndSetIfChanged(ref _high, value); }
         }
-        public T LowLimit
-        {
-            get { return _lowlim; }
-            set { this.RaiseAndSetIfChanged(ref _lowlim, value); }
-        }
-        public T HighLimit
-        {
-            get { return _highlim; }
-            set { this.RaiseAndSetIfChanged(ref _highlim, value); }
-        }
 
         public RangeViewModel() { }
         public RangeViewModel(RangeViewModel<T> copy)
         {
             this.Low = copy.Low;
             this.High = copy.High;
-            this.LowLimit = copy.LowLimit;
-            this.HighLimit = copy.HighLimit;
         }
         public RangeViewModel(T low, T high)
         {
-            this.LowLimit = low;
-            this.HighLimit = high;
             this.Low = low;
             this.High = high;
-        }
-        public RangeViewModel(T lowlim, T low, T high, T highlim)
-        {
-            this.LowLimit = lowlim;
-            this.Low = low;
-            this.High = high;
-            this.HighLimit = highlim;
         }
         public T GetAverage()
         {
@@ -73,42 +50,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
                 return (low >= 0) && (high <= 0);
             }
             return false;
-        }
-        public bool Validate()
-        {
-            if (this.LowLimit.CompareTo(this.HighLimit) > 1)
-                return false;
-
-            if (this.Low.CompareTo(this.LowLimit) < 0)
-                return false;
-
-            if (this.High.CompareTo(this.HighLimit) > 0)
-                return false;
-
-            if (this.Low.CompareTo(this.High) > 0)
-                return false;
-
-            return true;
-        }
-        public bool ValidateLow()
-        {
-            if (this.Low.CompareTo(this.LowLimit) < 0)
-                return false;
-
-            if (this.Low.CompareTo(this.High) > 0)
-                return false;
-
-            return true;
-        }
-        public bool ValidateHigh()
-        {
-            if (this.High.CompareTo(this.HighLimit) > 0)
-                return false;
-
-            if (this.Low.CompareTo(this.High) > 0)
-                return false;
-
-            return true;
         }
         public override string ToString()
         {

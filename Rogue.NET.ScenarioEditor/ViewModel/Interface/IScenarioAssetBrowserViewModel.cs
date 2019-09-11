@@ -6,6 +6,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Interface
     {
         IScenarioAssetGroupViewModel LayoutGroup { get; set; }
         IScenarioAssetGroupViewModel EnemyGroup { get; set; }
+        IScenarioAssetGroupViewModel FriendlyGroup { get; set; }
+        IScenarioAssetGroupViewModel TemporaryCharacterGroup { get; set; }
         IScenarioAssetGroupViewModel EquipmentGroup { get; set; }
         IScenarioAssetGroupViewModel ConsumableGroup { get; set; }
         IScenarioAssetGroupViewModel DoodadGroup { get; set; }

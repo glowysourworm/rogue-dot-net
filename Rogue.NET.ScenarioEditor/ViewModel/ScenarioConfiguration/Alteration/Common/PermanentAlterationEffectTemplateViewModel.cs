@@ -78,15 +78,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public PermanentAlterationEffectTemplateViewModel()
         {
-            this.AgilityRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.SpeedRange = new RangeViewModel<double>(-1, 0, 0, 1);
-            this.LightRadiusRange = new RangeViewModel<double>(-25, 0, 0, 25);
-            this.ExperienceRange = new RangeViewModel<double>(-100000, 0, 0, 100000);
-            this.HpRange = new RangeViewModel<double>(-1000, 0, 0, 1000);
-            this.HungerRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.IntelligenceRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.MpRange = new RangeViewModel<double>(-100, 0, 0, 100);
-            this.StrengthRange = new RangeViewModel<double>(-100, 0, 0, 100);
+            this.AgilityRange = new RangeViewModel<double>(0, 0);
+            this.SpeedRange = new RangeViewModel<double>(0, 0);
+            this.LightRadiusRange = new RangeViewModel<double>(0, 0);
+            this.ExperienceRange = new RangeViewModel<double>(0, 0);
+            this.HpRange = new RangeViewModel<double>(0, 0);
+            this.HungerRange = new RangeViewModel<double>(0, 0);
+            this.IntelligenceRange = new RangeViewModel<double>(0, 0);
+            this.MpRange = new RangeViewModel<double>(0, 0);
+            this.StrengthRange = new RangeViewModel<double>(0, 0);
         }
     }
 }

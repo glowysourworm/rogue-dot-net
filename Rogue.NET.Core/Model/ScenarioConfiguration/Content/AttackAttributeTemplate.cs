@@ -49,9 +49,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 
         public AttackAttributeTemplate()
         {
-            this.Attack = new Range<double>(0, 0, 0, 5000);
-            this.Resistance = new Range<double>(0, 0, 0, 5000);
-            this.Weakness = new Range<int>(0, 0, 0, 10);
+            this.Attack = new Range<double>(0, 0);
+            this.Resistance = new Range<double>(0, 0);
+            this.Weakness = new Range<int>(0, 0);
         }
     }
 }

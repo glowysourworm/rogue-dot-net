@@ -21,7 +21,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         public EnemyTemplateViewModel() : base()
         {
             this.GenerateOnStep = true;
-            this.ExperienceGiven = new RangeViewModel<double>(0, 0, 100, 100000);
+            this.ExperienceGiven = new RangeViewModel<double>(0, 100);
             this.AlignmentType = CharacterAlignmentType.EnemyAligned;
         }
     }

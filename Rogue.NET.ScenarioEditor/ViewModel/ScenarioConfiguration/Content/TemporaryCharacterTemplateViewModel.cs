@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rogue.NET.Core.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public TemporaryCharacterTemplateViewModel()
         {
-            this.LifetimeCounter = new RangeViewModel<int>(0, 100, 100, 1000);
+            this.LifetimeCounter = new RangeViewModel<int>(100, 150);
+            this.AlignmentType = CharacterAlignmentType.PlayerAligned;
         }
     }
 }

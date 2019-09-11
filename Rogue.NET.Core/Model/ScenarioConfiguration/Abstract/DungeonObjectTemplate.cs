@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         public DungeonObjectTemplate()
         {
             this.SymbolDetails = new SymbolDetailsTemplate();
-            this.Level = new Range<int>(1, 1, 100, 200);
+            this.Level = new Range<int>(1, 100);
 
             this.ShortDescription = "";
             this.LongDescription = "";

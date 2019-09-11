@@ -230,7 +230,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
             this.ConsumableProjectileAlteration = new ConsumableProjectileAlterationTemplate();
             this.AmmoAnimationGroup = new AnimationGroupTemplate();
             this.LearnedSkill = new SkillSetTemplate();
-            this.UseCount = new Range<int>(0, 0, 0, 20);
+            this.UseCount = new Range<int>(0, 0);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IdentifyOnUse = false;

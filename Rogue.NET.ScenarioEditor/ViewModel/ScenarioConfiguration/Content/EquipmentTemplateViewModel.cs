@@ -107,7 +107,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             this.Class = new RangeViewModel<int>(0, 10);
             this.Type = EquipmentType.Ring;
-            this.Quality = new RangeViewModel<double>(0, 0, 100, 100);
+            this.Quality = new RangeViewModel<double>(0, 100);
             this.AmmoTemplate = new ConsumableTemplateViewModel();
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
             this.HasCharacterClassRequirement = false;

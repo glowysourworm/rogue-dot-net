@@ -57,13 +57,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public CharacterTemplateViewModel()
         {
-            this.Strength = new RangeViewModel<double>(1, 3, 5, 100);
-            this.Agility = new RangeViewModel<double>(1, 4, 5, 100);
-            this.Intelligence = new RangeViewModel<double>(1, 2, 3, 100);
-            this.Speed = new RangeViewModel<double>(0.1, 0.5, 0.5, 1);
-            this.Hp = new RangeViewModel<double>(1, 10, 20, 10000);
-            this.Mp = new RangeViewModel<double>(1, 2, 5, 10000);
-            this.LightRadius = new RangeViewModel<int>(1, 5, 5, 20);
+            this.Strength = new RangeViewModel<double>(3, 5);
+            this.Agility = new RangeViewModel<double>(4, 5);
+            this.Intelligence = new RangeViewModel<double>(2, 3);
+            this.Speed = new RangeViewModel<double>(0.5, 0.5);
+            this.Hp = new RangeViewModel<double>(10, 20);
+            this.Mp = new RangeViewModel<double>(2, 5);
+            this.LightRadius = new RangeViewModel<int>(5, 5);
 
             this.StartingConsumables = new ObservableCollection<ProbabilityConsumableTemplateViewModel>();
             this.StartingEquipment = new ObservableCollection<ProbabilityEquipmentTemplateViewModel>();

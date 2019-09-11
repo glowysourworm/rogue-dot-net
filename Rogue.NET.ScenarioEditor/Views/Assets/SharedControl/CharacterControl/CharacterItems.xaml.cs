@@ -5,13 +5,13 @@ using System.Windows.Controls;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
     [Export]
-    public partial class EnemyItems : UserControl
+    public partial class CharacterItems : UserControl
     {
         [ImportingConstructor]
-        public EnemyItems(IRogueEventAggregator eventAggregator, IScenarioCollectionProvider scenarioCollectionProvider)
+        public CharacterItems(IRogueEventAggregator eventAggregator, IScenarioCollectionProvider scenarioCollectionProvider)
         {
             InitializeComponent();
             Initialize(scenarioCollectionProvider);

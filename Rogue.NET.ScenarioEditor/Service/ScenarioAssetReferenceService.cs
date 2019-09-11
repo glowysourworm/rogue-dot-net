@@ -38,6 +38,14 @@ namespace Rogue.NET.ScenarioEditor.Service
             foreach (var enemy in configuration.EnemyTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, enemy.AttackAttributes);
 
+            // Friendlies
+            foreach (var friendly in configuration.FriendlyTemplates)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, friendly.AttackAttributes);
+
+            // Temporary Character
+            foreach (var character in configuration.TemporaryCharacterTemplates)
+                UpdateAttackAttributeCollection(configuration.AttackAttributes, character.AttackAttributes);
+
             // Player Template
             foreach (var player in configuration.PlayerTemplates)
                 UpdateAttackAttributeCollection(configuration.AttackAttributes, player.AttackAttributes);
@@ -75,7 +83,7 @@ namespace Rogue.NET.ScenarioEditor.Service
             }
         }
 
-        public void UpdateEnemies(ScenarioConfigurationContainerViewModel configuration)
+        public void UpdateNonPlayerCharacters(ScenarioConfigurationContainerViewModel configuration)
         {
             // Alteration Effects - Update Create Monster 
             foreach (var alterationEffect in GetAllAlterationEffects(configuration))
@@ -101,6 +109,20 @@ namespace Rogue.NET.ScenarioEditor.Service
             {
                 UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, enemy.StartingConsumables);
                 UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, enemy.StartingEquipment);
+            }
+
+            // Friendlies
+            foreach (var friendly in configuration.FriendlyTemplates)
+            {
+                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, friendly.StartingConsumables);
+                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, friendly.StartingEquipment);
+            }
+
+            // Temporary Character
+            foreach (var character in configuration.TemporaryCharacterTemplates)
+            {
+                UpdateStartingConsumablesCollection(configuration.ConsumableTemplates, character.StartingConsumables);
+                UpdateStartingEquipmentCollection(configuration.EquipmentTemplates, character.StartingEquipment);
             }
 
             // Player
@@ -254,6 +276,12 @@ namespace Rogue.NET.ScenarioEditor.Service
                 configuration.EnemyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
                 configuration.EnemyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                configuration.FriendlyTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
+                configuration.FriendlyTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                configuration.FriendlyTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
+                configuration.TemporaryCharacterTemplates.SelectMany(x => x.BehaviorDetails.Behaviors.Select(z => z.Alteration.Effect)),
+                configuration.TemporaryCharacterTemplates.SelectMany(x => x.StartingConsumables.SelectMany(z => consumableFunc(z.TheTemplate))),
+                configuration.TemporaryCharacterTemplates.SelectMany(x => x.StartingEquipment.SelectMany(z => equipmentFunc(z.TheTemplate))),
                 configuration.SkillTemplates.SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
                 configuration.PlayerTemplates.SelectMany(q => q.Skills).SelectMany(x => x.Skills.Select(z => z.SkillAlteration.Effect)),
                 configuration.PlayerTemplates.SelectMany(q => q.StartingConsumables).SelectMany(x => consumableFunc(x.TheTemplate)),

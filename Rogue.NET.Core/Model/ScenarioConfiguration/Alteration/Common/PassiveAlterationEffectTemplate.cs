@@ -212,20 +212,20 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         {
             this.SymbolAlteration = new SymbolDeltaTemplate();
 
-            this.AgilityRange = new Range<double>(-100, 0, 0, 100);
-            this.SpeedRange = new Range<double>(-1, 0, 0, 1);
-            this.AttackRange = new Range<double>(-100, 0, 0, 100);
-            this.LightRadiusRange = new Range<double>(-25, 0, 0, 25);
-            this.DefenseRange = new Range<double>(-100, 0, 0, 100);
-            this.DodgeProbabilityRange = new Range<double>(-1, 0, 0, 1);
-            this.FoodUsagePerTurnRange = new Range<double>(-10, 0, 0, 10);
-            this.HpPerStepRange = new Range<double>(-100, 0, 0, 100);
-            this.IntelligenceRange = new Range<double>(-100, 0, 0, 100);
-            this.MagicBlockProbabilityRange = new Range<double>(-1, 0, 0, 1);
-            this.MpPerStepRange = new Range<double>(-100, 0, 0, 100);
-            this.StrengthRange = new Range<double>(-100, 0, 0, 100);
+            this.AgilityRange = new Range<double>(0, 0);
+            this.SpeedRange = new Range<double>(0, 0);
+            this.AttackRange = new Range<double>(0, 0);
+            this.LightRadiusRange = new Range<double>(0, 0);
+            this.DefenseRange = new Range<double>(0, 0);
+            this.DodgeProbabilityRange = new Range<double>(0, 0);
+            this.FoodUsagePerTurnRange = new Range<double>(0, 0);
+            this.HpPerStepRange = new Range<double>(0, 0);
+            this.IntelligenceRange = new Range<double>(0, 0);
+            this.MagicBlockProbabilityRange = new Range<double>(0, 0);
+            this.MpPerStepRange = new Range<double>(0, 0);
+            this.StrengthRange = new Range<double>(0, 0);
 
-            this.CriticalHit = new Range<double>(-1, 0, 0, 1);
+            this.CriticalHit = new Range<double>(0, 0);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public ChangeLevelAlterationEffectTemplate()
         {
-            this.LevelChange = new Range<int>(-50, 0, 0, 50);
+            this.LevelChange = new Range<int>(0, 0);
         }
     }
 }

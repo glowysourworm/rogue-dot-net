@@ -26,9 +26,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 
         public AttackAttributeTemplateViewModel()
         {
-            this.Attack = new RangeViewModel<double>(0, 0, 0, 5000);
-            this.Resistance = new RangeViewModel<double>(0, 0, 0, 5000);
-            this.Weakness = new RangeViewModel<int>(0, 0, 0, 10);
+            this.Attack = new RangeViewModel<double>(0, 0);
+            this.Resistance = new RangeViewModel<double>(0, 0);
+            this.Weakness = new RangeViewModel<int>(0, 0);
         }
     }
 }

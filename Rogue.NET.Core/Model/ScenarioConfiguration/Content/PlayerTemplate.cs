@@ -52,7 +52,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         public PlayerTemplate()
         {
             this.Skills = new List<SkillSetTemplate>();
-            this.FoodUsage = new Range<double>(0.0001, 0.005, 0.01, 1);
+            this.FoodUsage = new Range<double>(0.005, 0.01);
             this.Class = "Fighter";
             this.SymbolDetails.Type = SymbolTypes.Smiley;
         }

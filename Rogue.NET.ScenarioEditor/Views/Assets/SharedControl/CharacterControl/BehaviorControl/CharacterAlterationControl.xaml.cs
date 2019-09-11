@@ -5,13 +5,13 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interf
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
-namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
+namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl.BehaviorControl
 {
     [Export]
-    public partial class EnemyAlterationControl : UserControl
+    public partial class CharacterAlterationControl : UserControl
     {
         [ImportingConstructor]
-        public EnemyAlterationControl(IRogueEventAggregator eventAggregator)
+        public CharacterAlterationControl(IRogueEventAggregator eventAggregator)
         {
             InitializeComponent();
 

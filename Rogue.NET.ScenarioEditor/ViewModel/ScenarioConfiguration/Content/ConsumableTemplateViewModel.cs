@@ -118,7 +118,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
                 TargetType = AlterationTargetType.Target
             };
             this.LearnedSkill = new SkillSetTemplateViewModel();
-            this.UseCount = new RangeViewModel<int>(0, 0, 0, 20);
+            this.UseCount = new RangeViewModel<int>(0, 0);
             this.IsObjectiveItem = false;
             this.IsUnique = false;
             this.IdentifyOnUse = false;

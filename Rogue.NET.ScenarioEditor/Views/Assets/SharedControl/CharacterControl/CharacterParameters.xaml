@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl.EnemyParameters"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl.CharacterParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -56,18 +56,6 @@
         <Grid>
             <TextBlock Foreground="White" Text="Mp" VerticalAlignment="Center" />
             <controls:Range DataContext="{Binding Mp}" />
-        </Grid>
-        <Grid>
-            <TextBlock Foreground="White" Text="Experience Given (On Death)" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding ExperienceGiven}" />
-        </Grid>
-        <Grid>
-            <TextBlock Foreground="White" Text="Is Invisible" VerticalAlignment="Center" />
-            <CheckBox IsChecked="{Binding IsInvisible}" HorizontalAlignment="Center" />
-        </Grid>
-        <Grid>
-            <TextBlock Foreground="White" Text="Generate On Step" VerticalAlignment="Center" />
-            <CheckBox IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Center" />
         </Grid>
     </StackPanel>
 </UserControl>
