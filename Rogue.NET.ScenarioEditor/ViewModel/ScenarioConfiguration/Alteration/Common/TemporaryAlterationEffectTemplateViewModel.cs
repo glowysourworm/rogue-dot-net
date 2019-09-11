@@ -15,6 +15,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IConsumableProjectileAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,
                              IEnemyAlterationEffectTemplateViewModel,
+                             IFriendlyAlterationEffectTemplateViewModel,
+                             ITemporaryCharacterAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
         private SymbolDeltaTemplateViewModel _symbolAlteration;

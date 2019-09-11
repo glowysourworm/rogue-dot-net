@@ -7,7 +7,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Consumable
 {
     [Serializable]
-    public class ConsumableAlteration : AlterationContainer
+    public class ConsumableAlteration : Common.AlterationContainer
     {        
         public ConsumableAlteration()
         {

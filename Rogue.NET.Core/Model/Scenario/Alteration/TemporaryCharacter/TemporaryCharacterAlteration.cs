@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.TemporaryCharacter
 {
     [Serializable]
-    public class TemporaryCharacterAlteration : AlterationContainer
+    public class TemporaryCharacterAlteration : Common.AlterationContainer
     {
         public override Type EffectInterfaceType { get { return typeof(ITemporaryCharacterAlterationEffect); } }
 

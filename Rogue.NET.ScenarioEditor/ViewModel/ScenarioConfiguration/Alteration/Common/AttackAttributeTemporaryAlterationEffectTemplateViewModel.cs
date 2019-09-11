@@ -18,6 +18,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IConsumableProjectileAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,
                              IEnemyAlterationEffectTemplateViewModel,
+                             IFriendlyAlterationEffectTemplateViewModel,
+                             ITemporaryCharacterAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
         AlterationAttackAttributeCombatType _combatType;

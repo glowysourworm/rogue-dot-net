@@ -1,8 +1,8 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Attribute;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.Core.Model.Static;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +23,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
         /// alteration type.
         /// </summary>
         /// <returns>True if the alteration should support blocking</returns>
-        public static bool GetSupportsBlocking(this IAlterationEffectTemplate template, Type alterationType)
+        public static bool GetSupportsBlocking(this IAlterationEffectTemplate template, AlterationTemplate alteration)
         {
-            // Must look up the interface type using the first or default interface for the alteration type
-            var interfaceType = alterationType.GetInterfaces().FirstOrDefault();
-
-            return interfaceType != null ? template.GetAttribute<AlterationBlockableAttribute>()
-                                                   .GetSupportsBlocking(interfaceType)
-                                         : false;
+            return AlterationSpecificationContainer.GetSupportsBlocking(alteration, template);
         }
 
         /// <summary>
@@ -38,14 +33,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Extension
         /// alteration type.
         /// </summary>
         /// <returns>True if the alteration should support blocking</returns>
-        public static AlterationCostType GetCostType(this IAlterationEffectTemplate template, Type alterationType)
+        public static AlterationCostType GetCostType(this IAlterationEffectTemplate template, AlterationTemplate alteration)
         {
-            // Must look up the interface type using the first or default interface for the alteration type
-            var interfaceType = alterationType.GetInterfaces().FirstOrDefault();
-
-            return interfaceType != null ? template.GetAttribute<AlterationCostSpecifierAttribute>()
-                                                   .GetCostType(interfaceType)
-                                         : AlterationCostType.None;
+            return AlterationSpecificationContainer.GetCostType(alteration, template);
         }
         #endregion
     }

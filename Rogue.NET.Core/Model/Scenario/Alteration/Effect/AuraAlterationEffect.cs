@@ -1,20 +1,13 @@
-﻿using Rogue.NET.Core.Model.Attribute;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 {
     [Serializable]
-    [AlterationBlockable]
-    [AlterationCostSpecifier(AlterationCostType.PerStep,
-                             typeof(IEquipmentEquipAlterationEffect),
-                             typeof(ISkillAlterationEffect))]
-    public class AuraAlterationEffect
-        : RogueBase, IEquipmentCurseAlterationEffect,
-                     IEquipmentEquipAlterationEffect,
-                     ISkillAlterationEffect
+    public class AuraAlterationEffect : RogueBase, IEquipmentCurseAlterationEffect,
+                                                   IEquipmentEquipAlterationEffect,
+                                                   ISkillAlterationEffect
     {
         public SymbolDeltaTemplate SymbolAlteration { get; set; }
         public double Strength { get; set; }

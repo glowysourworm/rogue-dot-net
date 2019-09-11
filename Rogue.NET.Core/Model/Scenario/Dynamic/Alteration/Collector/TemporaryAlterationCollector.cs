@@ -36,14 +36,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return true;
         }
 
-        public IEnumerable<AlterationContainer> Filter(string alterationName)
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName)
         {
             return this.Alterations.Filter(x => x.RogueName == alterationName).Actualize();
         }
 
-        public IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
         {
-            var curedAlterations = new List<AlterationContainer>();
+            var curedAlterations = new List<Scenario.Alteration.Common.AlterationContainer>();
 
             for (int i = this.Alterations.Count - 1; i >= 0; i--)
             {

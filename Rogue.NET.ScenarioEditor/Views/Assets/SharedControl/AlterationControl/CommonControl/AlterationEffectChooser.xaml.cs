@@ -65,6 +65,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
             typeof(IEquipmentAttackAlterationEffectTemplateViewModel),
             typeof(IEquipmentCurseAlterationEffectTemplateViewModel),
             typeof(IEquipmentEquipAlterationEffectTemplateViewModel),
+            typeof(IFriendlyAlterationEffectTemplateViewModel),
+            typeof(ITemporaryCharacterAlterationEffectTemplateViewModel),
             typeof(ISkillAlterationEffectTemplateViewModel)
         };
 

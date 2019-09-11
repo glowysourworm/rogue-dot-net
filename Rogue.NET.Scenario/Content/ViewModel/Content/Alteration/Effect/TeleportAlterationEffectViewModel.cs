@@ -25,13 +25,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public TeleportAlterationEffectViewModel(TeleportAlterationEffect effect) : base(effect)
+        public TeleportAlterationEffectViewModel(TeleportRandomAlterationEffect effect) : base(effect)
         {
             this.TeleportType = effect.TeleportType;
             this.Range = effect.Range.ToString("N0");
         }
 
-        public TeleportAlterationEffectViewModel(TeleportAlterationEffectTemplate template) : base(template)
+        public TeleportAlterationEffectViewModel(TeleportRandomAlterationEffectTemplate template) : base(template)
         {
             this.TeleportType = template.TeleportType;
             this.Range = template.Range.ToString("N0");

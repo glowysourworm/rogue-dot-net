@@ -88,8 +88,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is StealAlterationEffect)
                 return new StealAlterationEffectViewModel(effect as StealAlterationEffect);
 
-            else if (effect is TeleportAlterationEffect)
-                return new TeleportAlterationEffectViewModel(effect as TeleportAlterationEffect);
+            else if (effect is TeleportRandomAlterationEffect)
+                return new TeleportAlterationEffectViewModel(effect as TeleportRandomAlterationEffect);
 
             else if (effect is TemporaryAlterationEffect)
                 return new TemporaryAlterationEffectViewModel(effect as TemporaryAlterationEffect);
@@ -157,8 +157,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is StealAlterationEffectTemplate)
                 return new StealAlterationEffectViewModel(effect as StealAlterationEffectTemplate);
 
-            else if (effect is TeleportAlterationEffectTemplate)
-                return new TeleportAlterationEffectViewModel(effect as TeleportAlterationEffectTemplate);
+            else if (effect is TeleportRandomAlterationEffectTemplate)
+                return new TeleportAlterationEffectViewModel(effect as TeleportRandomAlterationEffectTemplate);
 
             else if (effect is TemporaryAlterationEffectTemplate)
                 return new TemporaryAlterationEffectViewModel(effect as TemporaryAlterationEffectTemplate);

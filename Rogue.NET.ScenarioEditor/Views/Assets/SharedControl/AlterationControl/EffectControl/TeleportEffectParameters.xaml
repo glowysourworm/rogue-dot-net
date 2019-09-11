@@ -10,15 +10,8 @@
     
     <StackPanel>
 
-        <!-- Location Selection Type -->
-        <GroupBox Header="Location Selection Type" Margin="5">
-            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationLocationSelectionType}"
-                                                     EnumValue="{Binding LocationSelectionType, Mode=TwoWay}" />
-        </GroupBox>
-
         <!-- Random Placement Type -->
-        <GroupBox Header="Random Placement Type" Margin="5"
-                  Visibility="{Binding LocationSelectionType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationLocationSelectionType.Random}}">
+        <GroupBox Header="Random Placement Type" Margin="5">
             <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationRandomPlacementType}"
                                              EnumValue="{Binding TeleportType, Mode=TwoWay}" />
         </GroupBox>

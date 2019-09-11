@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentAttackAlteration : AlterationContainer
+    public class EquipmentAttackAlteration : Common.AlterationContainer
     {
         public EquipmentAttackAlteration()
         {

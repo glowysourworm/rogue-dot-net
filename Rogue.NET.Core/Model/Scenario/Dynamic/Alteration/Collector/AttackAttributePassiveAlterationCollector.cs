@@ -20,13 +20,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                       IAlterationEffectCollector,
                       IAttackAttributeAlterationCollector
     {
-        protected IDictionary<string, AlterationContainer> Alterations { get; set; }
+        protected IDictionary<string, Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
 
         public AttackAttributePassiveAlterationCollector()
         {
-            this.Alterations = new Dictionary<string, AlterationContainer>();
+            this.Alterations = new Dictionary<string, Scenario.Alteration.Common.AlterationContainer>();
         }
-        public bool Apply(AlterationContainer alteration)
+        public bool Apply(Scenario.Alteration.Common.AlterationContainer alteration)
         {
             if (!this.Alterations.ContainsKey(alteration.RogueName))
                 this.Alterations.Add(alteration.RogueName, alteration);
@@ -37,7 +37,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return true;
         }
 
-        public IEnumerable<AlterationContainer> Filter(string alterationName)
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName)
         {
             return this.Alterations.Filter(x => x.Key == alterationName).Values.Actualize();
         }

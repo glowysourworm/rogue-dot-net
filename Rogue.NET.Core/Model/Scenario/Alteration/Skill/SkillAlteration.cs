@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Skill
 {
     [Serializable]
-    public class SkillAlteration : AlterationContainer
+    public class SkillAlteration : Common.AlterationContainer
     {
         public AuraSourceParameters AuraParameters { get; set; }
 

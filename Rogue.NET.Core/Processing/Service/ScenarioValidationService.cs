@@ -841,7 +841,7 @@ namespace Rogue.NET.Core.Processing.Service
             else if (template is StealAlterationEffectTemplate)
                 return null;
 
-            else if (template is TeleportAlterationEffectTemplate)
+            else if (template is TeleportRandomAlterationEffectTemplate)
                 return null;
 
             else if (template is TemporaryAlterationEffectTemplate)

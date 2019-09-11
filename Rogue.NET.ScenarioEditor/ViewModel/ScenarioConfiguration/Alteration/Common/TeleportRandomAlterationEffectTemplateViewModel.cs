@@ -11,21 +11,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [UIType(DisplayName = "Teleport",
             Description = "Transports a source / target (affected) character to a random location",
             ViewType = typeof(TeleportEffectParameters))]
-    public class TeleportAlterationEffectTemplateViewModel 
+    public class TeleportRandomAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,
                              IEnemyAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
-        AlterationLocationSelectionType _locationSelectionType;
         AlterationRandomPlacementType _teleportType;
         int _range;
 
-        public AlterationLocationSelectionType LocationSelectionType
-        {
-            get { return _locationSelectionType; }
-            set { this.RaiseAndSetIfChanged(ref _locationSelectionType, value); }
-        }
         public AlterationRandomPlacementType TeleportType
         {
             get { return _teleportType; }
@@ -37,7 +31,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public TeleportAlterationEffectTemplateViewModel()
+        public TeleportRandomAlterationEffectTemplateViewModel()
         {
 
         }

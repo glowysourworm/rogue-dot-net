@@ -1,32 +1,17 @@
-﻿using Rogue.NET.Core.Model.Attribute;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+﻿using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 {
     [Serializable]
-    [AlterationBlockable(typeof(IEnemyAlterationEffect),
-                         typeof(IEquipmentAttackAlterationEffect),
-                         typeof(IFriendlyAlterationEffect),
-                         typeof(ITemporaryCharacterAlterationEffect),
-                         typeof(ISkillAlterationEffect))]
-    [AlterationCostSpecifier(AlterationCostType.OneTime,
-                             typeof(IConsumableAlterationEffect),
-                             typeof(IEnemyAlterationEffect),
-                             typeof(IFriendlyAlterationEffect),
-                             typeof(ITemporaryCharacterAlterationEffect),
-                             typeof(IEquipmentAttackAlterationEffect),
-                             typeof(ISkillAlterationEffect))]
-    public class PermanentAlterationEffect
-        : RogueBase, IConsumableAlterationEffect,
-                     IConsumableProjectileAlterationEffect,
-                     IDoodadAlterationEffect,
-                     IEnemyAlterationEffect,
-                     IFriendlyAlterationEffect,
-                     ITemporaryCharacterAlterationEffect,
-                     IEquipmentAttackAlterationEffect,
-                     ISkillAlterationEffect
+    public class PermanentAlterationEffect : RogueBase, IConsumableAlterationEffect,
+                                                        IConsumableProjectileAlterationEffect,
+                                                        IDoodadAlterationEffect,
+                                                        IEnemyAlterationEffect,
+                                                        IFriendlyAlterationEffect,
+                                                        ITemporaryCharacterAlterationEffect,
+                                                        IEquipmentAttackAlterationEffect,
+                                                        ISkillAlterationEffect
     {
         public double Strength { get; set; }
         public double Intelligence { get; set; }

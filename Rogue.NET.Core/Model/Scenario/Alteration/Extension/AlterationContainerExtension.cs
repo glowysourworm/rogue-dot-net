@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Calculated support for animations based on alteration type
         /// </summary>
-        public static bool SupportsAnimations(this AlterationContainer alteration)
+        public static bool SupportsAnimations(this Common.AlterationContainer alteration)
         {
             // If it's supported, then what about un-equipping? Or overlapping
             // animations with cursed equipment? Or un-equipping-but-cursed?
@@ -31,7 +31,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Calculated requirement for a target (EXCLUDES EQUIPMENT ATTACK ALTERATIONS)
         /// </summary>
-        public static bool RequiresTarget(this AlterationContainer alteration)
+        public static bool RequiresTarget(this Common.AlterationContainer alteration)
         {
             if (alteration is ConsumableAlteration)
                 return (alteration as ConsumableAlteration).AnimationGroup.TargetType == AlterationTargetType.Target;
@@ -64,10 +64,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Returns true if the alteration requires a target location has been selected (by the ITargetingService)
         /// </summary>
-        public static bool RequiresTargetLocation(this AlterationContainer alteration)
+        public static bool RequiresTargetLocation(this Common.AlterationContainer alteration)
         {
-            if (alteration.Effect is TeleportAlterationEffect)
-                return (alteration.Effect as TeleportAlterationEffect).LocationSelectionType == AlterationLocationSelectionType.ManualInVisibleRange;
+            if (alteration.Effect is TeleportManualAlterationEffect)
+                return true;
 
             else
                 return false;
@@ -76,7 +76,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Calculated requirement for using an alteration (EXCLUDES EQUIPMENT ATTACK ALTERATIONS)
         /// </summary>
-        public static bool RequiresCharacterInRange(this AlterationContainer alteration)
+        public static bool RequiresCharacterInRange(this Common.AlterationContainer alteration)
         {
             // TODO:ALTERATION - Validate AlterationTargetType for each IAlterationEffect sub-type for
             //                   each alteration container type. This should be done in the editor!
@@ -111,7 +111,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Calculated Player Passive / Aura
         /// </summary>
-        public static bool IsPlayerPassiveOrAura(this AlterationContainer alteration)
+        public static bool IsPlayerPassiveOrAura(this Common.AlterationContainer alteration)
         {
             if (alteration is SkillAlteration)
             {
@@ -129,7 +129,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <summary>
         /// Calculated Player Passive / Aura
         /// </summary>
-        public static bool IsPassiveOrAura(this AlterationContainer alteration)
+        public static bool IsPassiveOrAura(this Common.AlterationContainer alteration)
         {
             return alteration.Effect is AttackAttributePassiveAlterationEffect ||
                    alteration.Effect is PassiveAlterationEffect ||

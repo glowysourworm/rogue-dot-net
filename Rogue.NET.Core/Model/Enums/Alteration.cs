@@ -48,20 +48,6 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Effect applied to all characters in numeric range of source")]
         AllInRangeExceptSource = 3
     }
-
-    /// <summary>
-    /// Specifies how a location can be selected during an Alteration
-    /// </summary>
-    public enum AlterationLocationSelectionType : int
-    {
-        [Display(Name = "Random",
-                 Description = "Character placed at random open location")]
-        Random = 0,
-
-        [Display(Name = "Manual (In Visible Range)",
-                 Description = "Character placed at a manually selected open location in the Player's visible range")]
-        ManualInVisibleRange = 1
-    }
     
     public enum AlterationRandomPlacementType : int
     {

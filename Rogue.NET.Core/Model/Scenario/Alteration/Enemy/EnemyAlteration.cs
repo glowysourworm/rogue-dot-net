@@ -6,7 +6,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Enemy
 {
     [Serializable]
-    public class EnemyAlteration : AlterationContainer
+    public class EnemyAlteration : Common.AlterationContainer
     {
         public EnemyAlteration()
         {

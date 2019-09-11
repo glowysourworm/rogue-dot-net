@@ -6,23 +6,10 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentEquipAlterationTemplate : Template
+    public class EquipmentEquipAlterationTemplate : AlterationTemplate
     {
-        private IEquipmentEquipAlterationEffectTemplate _effect;
         private AuraSourceParametersTemplate _auraParameters;
 
-        public IEquipmentEquipAlterationEffectTemplate Effect
-        {
-            get { return _effect; }
-            set
-            {
-                if (_effect != value)
-                {
-                    _effect = value;
-                    OnPropertyChanged("Effect");
-                }
-            }
-        }
         public AuraSourceParametersTemplate AuraParameters
         {
             get { return _auraParameters; }

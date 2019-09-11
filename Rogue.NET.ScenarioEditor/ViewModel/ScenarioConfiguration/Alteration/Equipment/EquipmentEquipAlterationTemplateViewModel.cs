@@ -7,16 +7,10 @@ using System;
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentEquipAlterationTemplateViewModel : TemplateViewModel
+    public class EquipmentEquipAlterationTemplateViewModel : AlterationTemplateViewModel
     {
-        private IEquipmentEquipAlterationEffectTemplateViewModel _effect;
         private AuraSourceParametersTemplateViewModel _auraParameters;
 
-        public IEquipmentEquipAlterationEffectTemplateViewModel Effect
-        {
-            get { return _effect; }
-            set { this.RaiseAndSetIfChanged(ref _effect, value); }
-        }
         public AuraSourceParametersTemplateViewModel AuraParameters
         {
             get { return _auraParameters; }

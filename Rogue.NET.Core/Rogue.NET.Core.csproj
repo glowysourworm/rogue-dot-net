@@ -167,9 +167,12 @@
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportManualAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\TemporaryCharacter\TemporaryCharacterAlterationTemplate.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\ITemporaryCharacterAlterationEffect.cs" />
@@ -184,6 +187,7 @@
     <Compile Include="Model\Scenario\Character\Friendly.cs" />
     <Compile Include="Model\Scenario\Character\NonPlayerCharacter.cs" />
     <Compile Include="Model\Scenario\Character\TemporaryCharacter.cs" />
+    <Compile Include="Model\Static\AlterationSpecificationContainer.cs" />
     <Compile Include="Processing\Event\Backend\Enum\TargetRequestType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\TargetRequestEventData.cs" />
     <Compile Include="Processing\Event\Core\ResourcesInitializedEvent.cs" />
@@ -232,8 +236,6 @@
     <Compile Include="Processing\Command\Frontend\Enum\FrontendCommandType.cs" />
     <Compile Include="Processing\Command\Backend\PlayerCommand.cs" />
     <Compile Include="Processing\Command\Frontend\FrontendCommand.cs" />
-    <Compile Include="Model\Attribute\AlterationBlockableAttribute.cs" />
-    <Compile Include="Model\Attribute\AlterationCostSpecifierAttribute.cs" />
     <Compile Include="Model\Enums\Alteration.cs" />
     <Compile Include="Processing\Model\Generator\AnimationGenerator.cs" />
     <Compile Include="Processing\Model\Generator\Interface\IAnimationGenerator.cs" />
@@ -255,7 +257,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\RevealAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\RunAwayAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\StealAlterationEffectTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportRandomAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TemporaryAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectItemTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TransmuteAlterationEffectTemplate.cs" />
@@ -304,7 +306,7 @@
     <Compile Include="Model\Scenario\Alteration\Effect\PermanentAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RemedyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\RevealAlterationEffect.cs" />
-    <Compile Include="Model\Scenario\Alteration\Effect\TeleportAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\TeleportRandomAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TemporaryAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Consumable\ConsumableAlteration.cs" />
     <Compile Include="Model\Scenario\Alteration\Consumable\ConsumableProjectileAlteration.cs" />
@@ -419,7 +421,6 @@
     <Compile Include="Model\ScenarioConfiguration\Abstract\Template.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationCostTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlteredCharacterStateTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationCostTemplateExtension.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Extension\AlterationEffectTemplateExtension.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillSetTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\SkillTemplate.cs" />
@@ -452,7 +453,6 @@
     <Compile Include="Model\Scenario\Alteration\Common\AlterationCost.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlteredCharacterState.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AttackAttribute.cs" />
-    <Compile Include="Model\Scenario\Alteration\Extension\AlterationCostExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Extension\AlterationEffectExtension.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\Behavior.cs" />
     <Compile Include="Model\Scenario\Character\Behavior\BehaviorDetails.cs" />

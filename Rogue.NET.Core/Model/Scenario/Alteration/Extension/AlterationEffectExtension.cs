@@ -1,9 +1,9 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model.Attribute;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
 using Rogue.NET.Core.Model.Scenario.Alteration.Interface;
+using Rogue.NET.Core.Model.Static;
 using System;
 
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
@@ -259,8 +259,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <returns>True if the alteration should support blocking</returns>
         public static bool GetSupportsBlocking(this IAlterationEffect effect, AlterationContainer alteration)
         {
-            return effect.GetAttribute<AlterationBlockableAttribute>()
-                         .GetSupportsBlocking(alteration.EffectInterfaceType);
+            return AlterationSpecificationContainer.GetSupportsBlocking(alteration, effect);
         }
 
         /// <summary>
@@ -270,11 +269,8 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Extension
         /// <returns>True if the alteration should support blocking</returns>
         public static AlterationCostType GetCostType(this IAlterationEffect effect, AlterationContainer alteration)
         {
-            return effect.GetAttribute<AlterationCostSpecifierAttribute>()
-                         .GetCostType(alteration.EffectInterfaceType);
+            return AlterationSpecificationContainer.GetCostType(alteration, effect);
         }
         #endregion
-
-
     }
 }

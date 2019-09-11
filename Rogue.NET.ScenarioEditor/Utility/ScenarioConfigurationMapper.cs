@@ -36,7 +36,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
     /// generics and collections easily. So, configuration would have been less-feasible. I figured it would take
     /// just about as long to write it by hand...
     /// 
-    /// So, here we are........ (I'm using AgileMapper here to help out!)
+    /// So, here we are........ (I'm using AgileMapper here to help out!) (Nope.. AgileMapper also abandoned)
     /// </summary>
     public class ScenarioConfigurationMapper
     {
@@ -84,6 +84,50 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
         {
+            //// Remove Alterations
+            //foreach (var consumable in model.ConsumableTemplates)
+            //{
+            //    consumable.HasAlteration = false;
+            //    consumable.HasProjectileAlteration = false;
+            //    consumable.ConsumableAlteration = null;
+            //    consumable.ConsumableProjectileAlteration = null;
+            //}
+            //foreach (var doodad in model.DoodadTemplates)
+            //{
+            //    doodad.IsAutomatic = false;
+            //    doodad.IsInvoked = false;
+            //    doodad.AutomaticAlteration = null;
+            //    doodad.InvokedAlteration = null;
+            //}
+            //foreach (var enemy in model.EnemyTemplates)
+            //{
+            //    foreach (var behavior in enemy.BehaviorDetails.Behaviors)
+            //        behavior.EnemyAlteration = null;
+
+            //    enemy.StartingConsumables.Clear();
+            //    enemy.StartingEquipment.Clear();
+            //}
+            //foreach (var equipment in model.EquipmentTemplates)
+            //{
+            //    equipment.HasAttackAlteration = false;
+            //    equipment.HasCurseAlteration = false;
+            //    equipment.HasEquipAlteration = false;
+            //    equipment.EquipmentAttackAlteration = null;
+            //    equipment.EquipmentCurseAlteration = null;
+            //    equipment.EquipmentEquipAlteration = null;
+            //}
+            //foreach (var skillSet in model.SkillTemplates)
+            //{
+            //    foreach (var skill in skillSet.Skills)
+            //        skill.SkillAlteration = null;
+            //}
+            //foreach (var player in model.PlayerTemplates)
+            //{
+            //    player.Skills.Clear();
+            //    player.StartingConsumables.Clear();
+            //    player.StartingEquipment.Clear();
+            //}
+
             // Clear out reference maps to prepare for next mapping
             _forwardReferenceMap.Clear();
             _reverseReferenceMap.Clear();

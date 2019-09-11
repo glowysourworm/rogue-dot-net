@@ -6,7 +6,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Doodad
 {
     [Serializable]
-    public class DoodadAlteration : AlterationContainer
+    public class DoodadAlteration : Common.AlterationContainer
     {
         public DoodadAlteration()
         {

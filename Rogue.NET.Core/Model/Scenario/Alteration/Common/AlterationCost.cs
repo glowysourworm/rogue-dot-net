@@ -6,16 +6,10 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Common
     [Serializable]
     public class AlterationCost : RogueBase
     {
-        public double Strength { get; set; }
-        public double Intelligence { get; set; }
-        public virtual double Agility { get; set; }
-        public virtual double Speed { get; set; }
-        public virtual double FoodUsagePerTurn { get; set; }
-        public virtual double LightRadius { get; set; }
-        public virtual double Experience { get; set; }
-        public virtual double Hunger { get; set; }
-        public virtual double Hp { get; set; }
-        public virtual double Mp { get; set; }
+        public double Experience { get; set; }
+        public double Hunger { get; set; }
+        public double Hp { get; set; }
+        public double Mp { get; set; }
 
         public AlterationCost() { }
     }

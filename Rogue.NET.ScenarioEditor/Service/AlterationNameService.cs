@@ -66,6 +66,10 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         private void SetName(IAlterationEffectTemplateViewModel effect, string name)
         {
+            // REMOVPE THIS
+            if (effect == null)
+                return;
+
             if (effect is AttackAttributeAuraAlterationEffectTemplateViewModel)
                 (effect as AttackAttributeAuraAlterationEffectTemplateViewModel).Name = name;
 
@@ -117,8 +121,8 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is StealAlterationEffectTemplateViewModel)
                 (effect as StealAlterationEffectTemplateViewModel).Name = name;
 
-            else if (effect is TeleportAlterationEffectTemplateViewModel)
-                (effect as TeleportAlterationEffectTemplateViewModel).Name = name;
+            else if (effect is TeleportRandomAlterationEffectTemplateViewModel)
+                (effect as TeleportRandomAlterationEffectTemplateViewModel).Name = name;
 
             else if (effect is TemporaryAlterationEffectTemplateViewModel)
                 (effect as TemporaryAlterationEffectTemplateViewModel).Name = name;

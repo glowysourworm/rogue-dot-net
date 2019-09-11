@@ -53,16 +53,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         {
             return new AlterationCost()
             {
-                Agility = template.Agility,
-                Speed = template.Speed,
-                LightRadius = template.AuraRadius,
                 Experience = template.Experience,
-                FoodUsagePerTurn = template.FoodUsagePerTurn,
                 Hp = template.Hp,
                 Hunger = template.Hunger,
-                Intelligence = template.Intelligence,
-                Mp = template.Mp,
-                Strength = template.Strength
+                Mp = template.Mp
             };
         }
 
@@ -72,7 +66,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IConsumableAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -82,7 +76,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new ConsumableProjectileAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IConsumableProjectileAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -92,7 +86,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new DoodadAlteration()
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IDoodadAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -103,7 +97,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),                
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IEnemyAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -114,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IEquipmentAttackAlterationEffectTemplate),
                 RogueName = template.Name                
             };
         }
@@ -128,7 +122,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraColor = template.AuraParameters.AuraColor,
                     AuraRange = template.AuraParameters.AuraRange
                 },
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IEquipmentCurseAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -142,7 +136,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraColor = template.AuraParameters.AuraColor,
                     AuraRange = template.AuraParameters.AuraRange
                 },
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IEquipmentEquipAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -153,7 +147,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as IFriendlyAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -180,7 +174,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     AuraRange = template.AuraParameters.AuraRange
                 },
                 Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
+                Effect = GenerateAlterationEffect(template.Effect as ISkillAlterationEffectTemplate),
                 RogueName = template.Name
             };
         }
@@ -218,8 +212,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is RevealAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as RevealAlterationEffectTemplate);
 
-            else if (template is TeleportAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as TeleportAlterationEffectTemplate);
+            else if (template is TeleportRandomAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TeleportRandomAlterationEffectTemplate);
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
@@ -238,9 +232,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeTemporaryAlterationEffectTemplate);
-
-            else if (template is EquipmentDamageAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -284,8 +275,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is RevealAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as RevealAlterationEffectTemplate);
 
-            else if (template is TeleportAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as TeleportAlterationEffectTemplate);
+            else if (template is TeleportRandomAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TeleportRandomAlterationEffectTemplate);
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
@@ -320,8 +311,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is StealAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as StealAlterationEffectTemplate);
 
-            else if (template is TeleportAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as TeleportAlterationEffectTemplate);
+            else if (template is TeleportRandomAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TeleportRandomAlterationEffectTemplate);
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
@@ -355,9 +346,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is DrainMeleeAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as DrainMeleeAlterationEffectTemplate);
-
-            else if (template is EquipmentDamageAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
             else if (template is PermanentAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as PermanentAlterationEffectTemplate);
@@ -446,9 +434,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
-            else if (template is EquipmentDamageAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
-
             else if (template is OtherAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as OtherAlterationEffectTemplate);
 
@@ -467,8 +452,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is StealAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as StealAlterationEffectTemplate);
 
-            else if (template is TeleportAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as TeleportAlterationEffectTemplate);
+            else if (template is TeleportRandomAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as TeleportRandomAlterationEffectTemplate);
 
             else if (template is TemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as TemporaryAlterationEffectTemplate);
@@ -684,13 +669,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        protected TeleportAlterationEffect GenerateAlterationEffect(TeleportAlterationEffectTemplate template)
+        protected TeleportRandomAlterationEffect GenerateAlterationEffect(TeleportRandomAlterationEffectTemplate template)
         {
-            return new TeleportAlterationEffect()
+            return new TeleportRandomAlterationEffect()
             {
                 Range = template.Range,
                 TeleportType = template.TeleportType,
-                LocationSelectionType = template.LocationSelectionType,
                 RogueName = template.Name
             };
         }

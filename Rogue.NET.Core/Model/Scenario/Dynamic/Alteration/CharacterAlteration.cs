@@ -236,7 +236,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Applies alteration based on type inspection
         /// </summary>
-        public void Apply(AlterationContainer alteration)
+        public void Apply(Scenario.Alteration.Common.AlterationContainer alteration)
         {
             if (alteration is ConsumableAlteration)
                 ApplyAlteration(alteration as ConsumableAlteration);
@@ -266,7 +266,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
                 throw new Exception("Unhandled Alteration type");
         }
 
-        public IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect) 
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect) 
         {
             return this.AttackAttributeTemporaryCollector
                        .ApplyRemedy(remedyEffect)

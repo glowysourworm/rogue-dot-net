@@ -49,13 +49,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
         /// Applies Alteration based on type
         /// </summary>
         /// <returns>False if effect didn't stack, or True if the effect was applied.</returns>
-        bool Apply(AlterationContainer alteration);
+        bool Apply(Scenario.Alteration.Common.AlterationContainer alteration);
 
         /// <summary>
         /// (Pass-through method) Removes and returns the specified alteration(s) from the IAlterationCollector if it exists
         /// based on the RogueBase.RogueName of the Alteration
         /// </summary>
-        IEnumerable<AlterationContainer> Filter(string alterationName);
+        IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName);
 
         /// <summary>
         /// Returns all per-step AlterationCosts by Alteration name (NOTE*** This is the only cost type that

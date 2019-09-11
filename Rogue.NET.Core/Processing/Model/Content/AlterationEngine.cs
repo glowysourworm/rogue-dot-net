@@ -287,8 +287,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is StealAlterationEffect)
                 ProcessSteal(actor, affectedCharacter);
 
-            else if (alteration.Effect is TeleportAlterationEffect)
-                ProcessTeleport(alteration.Effect as TeleportAlterationEffect, actor);
+            else if (alteration.Effect is TeleportRandomAlterationEffect)
+                ProcessTeleport(alteration.Effect as TeleportRandomAlterationEffect, actor);
 
             else if (alteration.Effect is TemporaryAlterationEffect)
                 affectedCharacter.Alteration.Apply(alteration);
@@ -482,20 +482,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // Update the UI (TODO:ALTERATION - figure out more systematic updating)
             OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentReveal, ""));
         }
-        private void ProcessTeleport(TeleportAlterationEffect effect, Character character)
+        private void ProcessTeleport(TeleportRandomAlterationEffect effect, Character character)
         {
             GridLocation openLocation = GridLocation.Empty;
 
-            // Select location based on effect parameters
-            if (effect.LocationSelectionType == AlterationLocationSelectionType.ManualInVisibleRange)
-            {
-                openLocation = _targetingService.GetTargetLocation();
-            }
-            else
-            {
-                // Calculate Teleport Location
-                openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
-            }
+            // Calculate Teleport Location
+            openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
 
             // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
             if (openLocation == null ||

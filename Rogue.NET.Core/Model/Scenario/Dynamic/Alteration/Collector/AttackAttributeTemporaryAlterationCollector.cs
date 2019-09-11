@@ -22,14 +22,14 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                       IAttackAttributeAlterationCollector, 
                       ITemporaryAlterationCollector
     {
-        protected IList<AlterationContainer> Alterations { get; set; }
+        protected IList<Scenario.Alteration.Common.AlterationContainer> Alterations { get; set; }
 
         public AttackAttributeTemporaryAlterationCollector()
         {
-            this.Alterations = new List<AlterationContainer>();
+            this.Alterations = new List<Scenario.Alteration.Common.AlterationContainer>();
         }
 
-        public bool Apply(AlterationContainer alteration)
+        public bool Apply(Scenario.Alteration.Common.AlterationContainer alteration)
         {
             if (!alteration.Effect.IsStackable() &&
                 this.Alterations.Any(x => x.RogueName == alteration.RogueName))
@@ -40,16 +40,16 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return true;
         }
 
-        public IEnumerable<AlterationContainer> Filter(string alterationName)
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> Filter(string alterationName)
         {
             return this.Alterations
                        .Filter(x => x.RogueName == alterationName)
                        .Actualize();
         }
 
-        public IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
+        public IEnumerable<Scenario.Alteration.Common.AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect)
         {
-            var curedAlterations = new List<AlterationContainer>();
+            var curedAlterations = new List<Scenario.Alteration.Common.AlterationContainer>();
 
             for (int i = this.Alterations.Count - 1; i >= 0; i--)
             {

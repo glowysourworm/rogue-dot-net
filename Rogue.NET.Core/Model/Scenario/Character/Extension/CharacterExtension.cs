@@ -112,19 +112,31 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
 
         public static double GetAttack(this Character character)
         {
+            
             var attack = 0D;
 
-            foreach (var equipment in character.Equipment
-                                               .Values
-                                               .Where(x => x.IsEquipped && x.IsWeaponType()))
-            {
-                // Get the character attribute for calculating the attack value
-                var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
-                                              equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
-                                              character.GetIntelligence();
+            var equippedWeapons = character.Equipment
+                                           .Values
+                                           .Where(x => x.IsEquipped && x.IsWeaponType());
 
-                // Calculate strength * equipment base attack value
-                attack += MeleeCalculator.GetAttackValue(equipment.GetAttackValue(), characterAttributeValue);
+            // No Weapons Equipped
+            if (equippedWeapons.None())
+            {
+                // Base Attack is Strength with no Equipment Modifier
+                attack = MeleeCalculator.GetAttackValue(0D, character.GetStrength());
+            }
+            else
+            {
+                foreach (var equipment in equippedWeapons)
+                {
+                    // Get the character attribute for calculating the attack value
+                    var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
+                                                  equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
+                                                  character.GetIntelligence();
+
+                    // Calculate strength * equipment base attack value
+                    attack += MeleeCalculator.GetAttackValue(equipment.GetAttackValue(), characterAttributeValue);
+                }
             }
 
             // Add on alteration contributions
@@ -136,17 +148,28 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Extension
         {
             var defense = 0D;
 
-            foreach (var equipment in character.Equipment
-                                               .Values
-                                               .Where(x => x.IsEquipped && x.IsArmorType()))
-            {
-                // Get the character attribute for calculating the attack value
-                var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
-                                              equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
-                                              character.GetIntelligence();
+            var equippedArmor = character.Equipment
+                                           .Values
+                                           .Where(x => x.IsEquipped && x.IsArmorType());
 
-                // Calculate strength * equipment base defense value
-                defense += MeleeCalculator.GetDefenseValue(equipment.GetDefenseValue(), characterAttributeValue);
+            // No Armor Equipped
+            if (equippedArmor.None())
+            {
+                // Base Defense is Strength with no Equipment Modifier
+                defense = MeleeCalculator.GetDefenseValue(0D, character.GetStrength());
+            }
+            else
+            {
+                foreach (var equipment in equippedArmor)
+                {
+                    // Get the character attribute for calculating the attack value
+                    var characterAttributeValue = equipment.CombatType == CharacterBaseAttribute.Strength ? character.GetStrength() :
+                                                  equipment.CombatType == CharacterBaseAttribute.Agility ? character.GetAgility() :
+                                                  character.GetIntelligence();
+
+                    // Calculate strength * equipment base attack value
+                    defense += MeleeCalculator.GetDefenseValue(equipment.GetDefenseValue(), characterAttributeValue);
+                }
             }
 
             // Add on alteration contributions

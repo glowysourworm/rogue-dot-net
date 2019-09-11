@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Friendly
 {
     [Serializable]
-    public class FriendlyAlteration : AlterationContainer
+    public class FriendlyAlteration : Common.AlterationContainer
     {
         public override Type EffectInterfaceType { get { return typeof(IFriendlyAlterationEffect); } }
 

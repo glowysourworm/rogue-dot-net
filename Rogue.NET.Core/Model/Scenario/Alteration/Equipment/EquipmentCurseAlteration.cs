@@ -5,7 +5,7 @@ using System;
 namespace Rogue.NET.Core.Model.Scenario.Alteration.Equipment
 {
     [Serializable]
-    public class EquipmentCurseAlteration : AlterationContainer
+    public class EquipmentCurseAlteration : Common.AlterationContainer
     {
         public AuraSourceParameters AuraParameters { get; set; }
 

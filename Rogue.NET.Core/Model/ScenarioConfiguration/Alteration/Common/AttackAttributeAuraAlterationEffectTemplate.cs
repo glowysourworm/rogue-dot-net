@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Attribute;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
@@ -9,14 +8,9 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [AlterationBlockable]
-    [AlterationCostSpecifier(AlterationCostType.PerStep,
-                             typeof(IEquipmentEquipAlterationEffectTemplate),
-                             typeof(ISkillAlterationEffectTemplate))]
-    public class AttackAttributeAuraAlterationEffectTemplate 
-        : Template, IEquipmentCurseAlterationEffectTemplate,
-                    IEquipmentEquipAlterationEffectTemplate,
-                    ISkillAlterationEffectTemplate
+    public class AttackAttributeAuraAlterationEffectTemplate : Template, IEquipmentCurseAlterationEffectTemplate,
+                                                                         IEquipmentEquipAlterationEffectTemplate,
+                                                                         ISkillAlterationEffectTemplate
     {
         AlterationAttackAttributeCombatType _combatType;
         SymbolDeltaTemplate _symbolAlteration;

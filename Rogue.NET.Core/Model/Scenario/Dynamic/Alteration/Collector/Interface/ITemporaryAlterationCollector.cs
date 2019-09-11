@@ -19,6 +19,6 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
         /// (Any Temporary Effect supports remedies) Applies the remedy alteration effect to the alterations 
         /// in the collector, removes, and returns the names of those effects.
         /// </summary>
-        IEnumerable<AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect);
+        IEnumerable<Scenario.Alteration.Common.AlterationContainer> ApplyRemedy(RemedyAlterationEffect remedyEffect);
     }
 }

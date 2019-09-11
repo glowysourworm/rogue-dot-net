@@ -91,8 +91,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration
                 {
                     Alteration = new AlterationViewModel(x.Alteration.Effect as IAlterationEffectTemplate, 
                                                          x.Alteration.Cost, 
-                                                         x.Alteration.Effect.GetSupportsBlocking(x.Alteration.GetType()), 
-                                                         x.Alteration.Effect.GetCostType(x.Alteration.GetType()),
+                                                         x.Alteration.Effect.GetSupportsBlocking(x.Alteration), 
+                                                         x.Alteration.Effect.GetCostType(x.Alteration),
                                                          x.Alteration.BlockType),
                     AttributeRequirement = x.AttributeRequirement,
                     AttributeLevelRequirement = x.AttributeLevelRequirement,

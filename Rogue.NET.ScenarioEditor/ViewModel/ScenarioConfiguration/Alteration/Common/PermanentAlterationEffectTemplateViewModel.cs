@@ -15,6 +15,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                     IConsumableProjectileAlterationEffectTemplateViewModel,
                     IDoodadAlterationEffectTemplateViewModel,
                     IEnemyAlterationEffectTemplateViewModel,
+                    IFriendlyAlterationEffectTemplateViewModel,
+                    ITemporaryCharacterAlterationEffectTemplateViewModel,
                     IEquipmentAttackAlterationEffectTemplateViewModel,
                     ISkillAlterationEffectTemplateViewModel
     {

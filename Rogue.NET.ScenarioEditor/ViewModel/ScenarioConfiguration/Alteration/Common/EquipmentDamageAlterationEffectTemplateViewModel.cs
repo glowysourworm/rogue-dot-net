@@ -16,11 +16,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             ViewType = typeof(EquipmentDamageEffectParameters))]
     public class EquipmentDamageAlterationEffectTemplateViewModel
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                             IConsumableProjectileAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,
-                             IEnemyAlterationEffectTemplateViewModel,
-                             IEquipmentAttackAlterationEffectTemplateViewModel,
-                             ISkillAlterationEffectTemplateViewModel
+                             IEnemyAlterationEffectTemplateViewModel
     {
         AlterationModifyEquipmentType _type;
         int _classChange;

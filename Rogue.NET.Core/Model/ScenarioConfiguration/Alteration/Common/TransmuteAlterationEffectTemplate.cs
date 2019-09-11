@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Attribute;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using System;
@@ -8,11 +7,6 @@ using System.Collections.Generic;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [AlterationCostSpecifier(AlterationCostType.OneTime,
-                             typeof(IConsumableAlterationEffectTemplate),
-                             typeof(IDoodadAlterationEffectTemplate),
-                             typeof(ISkillAlterationEffectTemplate))]
-    [AlterationBlockable]
     public class TransmuteAlterationEffectTemplate
         : Template, IConsumableAlterationEffectTemplate,
                     IDoodadAlterationEffectTemplate,

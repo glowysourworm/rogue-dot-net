@@ -179,15 +179,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
             //Apply per step alteration costs
             foreach (var alterationCost in player.Alteration.GetAlterationCosts())
             {
-                player.AgilityBase -= alterationCost.Value.Agility;
-                player.LightRadiusBase -= alterationCost.Value.LightRadius;
-                player.Experience -= alterationCost.Value.Experience;
-                player.FoodUsagePerTurnBase += alterationCost.Value.FoodUsagePerTurn;
                 player.Hp -= alterationCost.Value.Hp;
-                player.Hunger += alterationCost.Value.Hunger;
-                player.IntelligenceBase -= alterationCost.Value.Intelligence;
                 player.Mp -= alterationCost.Value.Mp;
-                player.StrengthBase -= alterationCost.Value.Strength;
+                player.Hunger += alterationCost.Value.Hunger;
+                player.Experience -= alterationCost.Value.Experience;
             }
 
             //Maintain Passive Effects

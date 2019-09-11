@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Model.Attribute;
-using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
 using System;
@@ -7,33 +6,15 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [AlterationBlockable]
-    [AlterationCostSpecifier(AlterationCostType.OneTime,
-                             typeof(IConsumableAlterationEffectTemplate),
-                             typeof(IEnemyAlterationEffectTemplate),
-                             typeof(ISkillAlterationEffectTemplate))]
-    public class TeleportAlterationEffectTemplate 
+    public class TeleportRandomAlterationEffectTemplate 
         : Template, IConsumableAlterationEffectTemplate,
                     IDoodadAlterationEffectTemplate,
                     IEnemyAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
-        AlterationLocationSelectionType _locationSelectionType;
         AlterationRandomPlacementType _teleportType;
         int _range;
 
-        public AlterationLocationSelectionType LocationSelectionType
-        {
-            get { return _locationSelectionType; }
-            set
-            {
-                if (_locationSelectionType != value)
-                {
-                    _locationSelectionType = value;
-                    OnPropertyChanged("LocationSelectionType");
-                }
-            }
-        }
         public AlterationRandomPlacementType TeleportType
         {
             get { return _teleportType; }
@@ -59,7 +40,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             }
         }
 
-        public TeleportAlterationEffectTemplate()
+        public TeleportRandomAlterationEffectTemplate()
         {
 
         }

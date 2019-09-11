@@ -107,22 +107,6 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             var isPlayer = character is Player;
 
-            if (character.AgilityBase - cost.Agility < 0)
-            {
-                if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Agility");
-
-                return false;
-            }
-
-            if (character.SpeedBase - cost.Speed < ModelConstants.MinSpeed)
-            {
-                if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Speed");
-
-                return false;
-            }
-
             if (character.Hp - cost.Hp < 0)
             {
                 if (isPlayer)
@@ -131,34 +115,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return false;
             }
 
-            if (character.IntelligenceBase - cost.Intelligence < 0)
-            {
-                if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Intelligence");
-
-                return false;
-            }
-
             if (character.Mp - cost.Mp < 0)
             {
                 if (isPlayer)
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
-
-                return false;
-            }
-
-            if (character.StrengthBase - cost.Strength < 0)
-            {
-                if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Strength");
-
-                return false;
-            }
-
-            if (character.LightRadiusBase - cost.LightRadius < 0)
-            {
-                if (isPlayer)
-                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Will go Blind!");
 
                 return false;
             }
@@ -185,54 +145,20 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public bool CalculateCharacterMeetsAlterationCost(Character character, AlterationCostTemplate cost)
         {
-            return (character.AgilityBase - cost.Agility) >= 0 &&
-                   (character.SpeedBase - cost.Speed) >= ModelConstants.MinSpeed &&
-                   (character.Hp - cost.Hp) >= 0 &&
-                   (character.IntelligenceBase - cost.Intelligence) >= 0 &&
-                   (character.Mp - cost.Mp) >= 0 &&
-                   (character.StrengthBase - cost.Strength) >= 0;
+            return (character.Hp - cost.Hp) >= 0 &&
+                   (character.Mp - cost.Mp) >= 0;
         }
         public bool CalculatePlayerMeetsAlterationCost(Player player, AlterationCostTemplate cost)
         {
-            if (player.AgilityBase - cost.Agility < 0)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Agility");
-                return false;
-            }
-
-            if (player.SpeedBase - cost.Speed < ModelConstants.MinSpeed)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Speed");
-                return false;
-            }
-
             if (player.Hp - cost.Hp < 0)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough HP");
                 return false;
             }
 
-            if (player.IntelligenceBase - cost.Intelligence < 0)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Intelligence");
-                return false;
-            }
-
             if (player.Mp - cost.Mp < 0)
             {
                 _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough MP");
-                return false;
-            }
-
-            if (player.StrengthBase - cost.Strength < 0)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Not enough Strength");
-                return false;
-            }
-
-            if (player.LightRadiusBase - cost.AuraRadius < 0)
-            {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "Will go Blind!");
                 return false;
             }
 
@@ -558,26 +484,15 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         protected void ApplyOneTimeAlterationCost(Player player, AlterationCost alterationCost)
         {
-            player.AgilityBase -= alterationCost.Agility;
-            player.LightRadiusBase -= alterationCost.LightRadius;
             player.Experience -= alterationCost.Experience;
-            player.FoodUsagePerTurnBase += alterationCost.FoodUsagePerTurn;
             player.Hp -= alterationCost.Hp;
             player.Hunger += alterationCost.Hunger;
-            player.IntelligenceBase -= alterationCost.Intelligence;
             player.Mp -= alterationCost.Mp;
-            player.SpeedBase -= alterationCost.Speed;
-            player.StrengthBase -= alterationCost.Strength;
         }
-        protected void ApplyOneTimeAlterationCost(Enemy enemy, AlterationCost alterationCost)
+        protected void ApplyOneTimeAlterationCost(NonPlayerCharacter character, AlterationCost alterationCost)
         {
-            enemy.AgilityBase -= alterationCost.Agility;
-            enemy.LightRadiusBase -= alterationCost.LightRadius;
-            enemy.SpeedBase -= alterationCost.Speed;
-            enemy.Hp -= alterationCost.Hp;
-            enemy.IntelligenceBase -= alterationCost.Intelligence;
-            enemy.Mp -= alterationCost.Mp;
-            enemy.StrengthBase -= alterationCost.Strength;
+            character.Hp -= alterationCost.Hp;
+            character.Mp -= alterationCost.Mp;
         }
     }
 }
