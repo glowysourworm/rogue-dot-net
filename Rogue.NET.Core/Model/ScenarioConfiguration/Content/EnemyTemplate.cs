@@ -1,19 +1,13 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
+﻿using Rogue.NET.Core.Model.Enums;
 using System;
-using System.Collections.Generic;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
 {
     [Serializable]
-    public class EnemyTemplate : CharacterTemplate
+    public class EnemyTemplate : NonPlayerCharacterTemplate
     {
-        public List<AnimationTemplate> DeathAnimations { get; set; }
-
         private bool _generateOnStep;
         private Range<double> _experienceGiven;
-        private BehaviorDetailsTemplate _behaviorDetails;
-        private AnimationGroupTemplate _deathAnimationGroup;
 
         public bool GenerateOnStep
         {
@@ -39,37 +33,12 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
                 }
             }
         }
-        public BehaviorDetailsTemplate BehaviorDetails
-        {
-            get { return _behaviorDetails; }
-            set
-            {
-                if (_behaviorDetails != value)
-                {
-                    _behaviorDetails = value;
-                    OnPropertyChanged("BehaviorDetails");
-                }
-            }
-        }
-        public AnimationGroupTemplate DeathAnimationGroup
-        {
-            get { return _deathAnimationGroup; }
-            set
-            {
-                if (_deathAnimationGroup != value)
-                {
-                    _deathAnimationGroup = value;
-                    OnPropertyChanged("DeathAnimationGroup");
-                }
-            }
-        }
 
         public EnemyTemplate()
         {
             this.ExperienceGiven = new Range<double>(0, 0, 100, 100000);
             this.BehaviorDetails = new BehaviorDetailsTemplate();
-            this.DeathAnimations = new List<AnimationTemplate>();
-            this.DeathAnimationGroup = new AnimationGroupTemplate();
+            this.AlignmentType = CharacterAlignmentType.EnemyAligned;
         }
     }
 }

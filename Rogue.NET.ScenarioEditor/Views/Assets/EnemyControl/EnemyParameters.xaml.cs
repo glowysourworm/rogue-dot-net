@@ -1,5 +1,4 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 
@@ -21,14 +20,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EnemyControl
         {
             var viewModel = this.DataContext as EnemyTemplateViewModel;
             if (viewModel != null)
-                viewModel.DeathAnimations.Add(e as AnimationTemplateViewModel);
+                viewModel.DeathAnimation.Animations.Add(e as AnimationTemplateViewModel);
         }
 
         private void DeathAnimationsLB_RemoveEvent(object sender, object e)
         {
             var viewModel = this.DataContext as EnemyTemplateViewModel;
             if (viewModel != null)
-                viewModel.DeathAnimations.Remove(e as AnimationTemplateViewModel);
+                viewModel.DeathAnimation.Animations.Remove(e as AnimationTemplateViewModel);
         }
     }
 }

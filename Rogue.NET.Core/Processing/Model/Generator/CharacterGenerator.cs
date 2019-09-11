@@ -163,7 +163,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                                    .ToDictionary(x => x.RogueName);
 
-            enemy.DeathAnimation = _animationGenerator.GenerateAnimationGroup(enemyTemplate.DeathAnimationGroup);
+            enemy.DeathAnimation = _animationGenerator.GenerateAnimationGroup(enemyTemplate.DeathAnimation);
 
             //Starting Consumables
             foreach (var consumableTemplate in enemyTemplate.StartingConsumables)
