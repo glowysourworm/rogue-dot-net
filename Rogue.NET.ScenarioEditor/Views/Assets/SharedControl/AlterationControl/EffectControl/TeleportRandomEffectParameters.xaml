@@ -18,7 +18,7 @@
 
         <!-- Range -->
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5"
-              Visibility="{Binding TeleportType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InRangeOfCharacter}}">
+              Visibility="{Binding TeleportType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:AlterationRandomPlacementType.InRangeOfSourceCharacter}}">
             <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
             <toolkit:IntegerUpDown Value="{Binding Range}" Height="28" Width="80" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
         </Grid>

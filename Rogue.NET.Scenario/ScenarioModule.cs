@@ -147,8 +147,14 @@ namespace Rogue.NET.Scenario
                 else if (payload is ChangeLevelAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(ChangeLevelAlterationEffectView));
 
-                else if (payload is CreateMonsterAlterationEffectViewModel)
-                    _regionManager.Load(region, typeof(CreateMonsterAlterationEffectView));
+                else if (payload is CreateEnemyAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(CreateEnemyAlterationEffectView));
+
+                else if (payload is CreateFriendlyAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(CreateFriendlyAlterationEffectView));
+
+                else if (payload is CreateTemporaryCharacterAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(CreateTemporaryCharacterAlterationEffectView));
 
                 else if (payload is DrainMeleeAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(DrainMeleeAlterationEffectView));
@@ -177,8 +183,11 @@ namespace Rogue.NET.Scenario
                 else if (payload is StealAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(StealAlterationEffectView));
 
-                else if (payload is TeleportAlterationEffectViewModel)
-                    _regionManager.Load(region, typeof(TeleportAlterationEffectView));
+                else if (payload is TeleportManualAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(TeleportManualAlterationEffectView));
+
+                else if (payload is TeleportRandomAlterationEffectViewModel)
+                    _regionManager.Load(region, typeof(TeleportRandomAlterationEffectView));
 
                 else if (payload is TemporaryAlterationEffectViewModel)
                     _regionManager.Load(region, typeof(TemporaryAlterationEffectView));

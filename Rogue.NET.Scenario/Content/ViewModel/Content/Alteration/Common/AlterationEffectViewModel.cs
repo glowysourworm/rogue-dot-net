@@ -55,8 +55,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is ChangeLevelAlterationEffect)
                 return new ChangeLevelAlterationEffectViewModel(effect as ChangeLevelAlterationEffect);
 
-            else if (effect is CreateMonsterAlterationEffect)
-                return new CreateMonsterAlterationEffectViewModel(effect as CreateMonsterAlterationEffect);
+            else if (effect is CreateEnemyAlterationEffect)
+                return new CreateEnemyAlterationEffectViewModel(effect as CreateEnemyAlterationEffect);
+
+            else if (effect is CreateFriendlyAlterationEffect)
+                return new CreateFriendlyAlterationEffectViewModel(effect as CreateFriendlyAlterationEffect);
+
+            else if (effect is CreateTemporaryCharacterAlterationEffect)
+                return new CreateTemporaryCharacterAlterationEffectViewModel(effect as CreateTemporaryCharacterAlterationEffect);
 
             else if (effect is DrainMeleeAlterationEffect)
                 return new DrainMeleeAlterationEffectViewModel(effect as DrainMeleeAlterationEffect);
@@ -89,7 +95,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
                 return new StealAlterationEffectViewModel(effect as StealAlterationEffect);
 
             else if (effect is TeleportRandomAlterationEffect)
-                return new TeleportAlterationEffectViewModel(effect as TeleportRandomAlterationEffect);
+                return new TeleportRandomAlterationEffectViewModel(effect as TeleportRandomAlterationEffect);
 
             else if (effect is TemporaryAlterationEffect)
                 return new TemporaryAlterationEffectViewModel(effect as TemporaryAlterationEffect);
@@ -124,8 +130,14 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
             else if (effect is ChangeLevelAlterationEffectTemplate)
                 return new ChangeLevelAlterationEffectViewModel(effect as ChangeLevelAlterationEffectTemplate);
 
-            else if (effect is CreateMonsterAlterationEffectTemplate)
-                return new CreateMonsterAlterationEffectViewModel(effect as CreateMonsterAlterationEffectTemplate);
+            else if (effect is CreateEnemyAlterationEffectTemplate)
+                return new CreateEnemyAlterationEffectViewModel(effect as CreateEnemyAlterationEffectTemplate);
+
+            else if (effect is CreateFriendlyAlterationEffectTemplate)
+                return new CreateFriendlyAlterationEffectViewModel(effect as CreateFriendlyAlterationEffectTemplate);
+
+            else if (effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                return new CreateTemporaryCharacterAlterationEffectViewModel(effect as CreateTemporaryCharacterAlterationEffectTemplate);
 
             else if (effect is DrainMeleeAlterationEffectTemplate)
                 return new DrainMeleeAlterationEffectViewModel(effect as DrainMeleeAlterationEffectTemplate);
@@ -158,7 +170,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common
                 return new StealAlterationEffectViewModel(effect as StealAlterationEffectTemplate);
 
             else if (effect is TeleportRandomAlterationEffectTemplate)
-                return new TeleportAlterationEffectViewModel(effect as TeleportRandomAlterationEffectTemplate);
+                return new TeleportRandomAlterationEffectViewModel(effect as TeleportRandomAlterationEffectTemplate);
 
             else if (effect is TemporaryAlterationEffectTemplate)
                 return new TemporaryAlterationEffectViewModel(effect as TemporaryAlterationEffectTemplate);

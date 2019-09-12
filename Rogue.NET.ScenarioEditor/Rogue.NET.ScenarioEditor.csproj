@@ -351,7 +351,9 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AuraAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\CreateEnemyAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplateViewModel.cs" />

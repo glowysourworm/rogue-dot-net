@@ -190,7 +190,9 @@
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\AttackAttributeTemporaryAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\AuraAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\ChangeLevelAlterationEffectViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateMonsterAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateTemporaryCharacterAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateFriendlyAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\CreateEnemyAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\DrainMeleeAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentDamageAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\EquipmentEnhanceAlterationEffectViewModel.cs" />
@@ -201,7 +203,8 @@
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\RevealAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\RunAwayAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\StealAlterationEffectViewModel.cs" />
-    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TeleportAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TeleportManualAlterationEffectViewModel.cs" />
+    <Compile Include="Content\ViewModel\Content\Alteration\Effect\TeleportRandomAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\TemporaryAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\Alteration\Effect\TransmuteAlterationEffectViewModel.cs" />
     <Compile Include="Content\ViewModel\Content\EquipmentViewModel.cs" />
@@ -260,11 +263,20 @@
     <Compile Include="Content\Views\AlterationCtrl.xaml.cs">
       <DependentUpon>AlterationCtrl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Views\Alteration\CreateTemporaryCharacterAlterationEffectView.xaml.cs">
+      <DependentUpon>CreateTemporaryCharacterAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\CreateFriendlyAlterationEffectView.xaml.cs">
+      <DependentUpon>CreateFriendlyAlterationEffectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Content\Views\Alteration\TeleportManualAlterationEffectView.xaml.cs">
+      <DependentUpon>TeleportManualAlterationEffectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Content\Views\Alteration\TemporaryAlterationEffectView.xaml.cs">
       <DependentUpon>TemporaryAlterationEffectView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\Alteration\TeleportAlterationEffectView.xaml.cs">
-      <DependentUpon>TeleportAlterationEffectView.xaml</DependentUpon>
+    <Compile Include="Content\Views\Alteration\TeleportRandomAlterationEffectView.xaml.cs">
+      <DependentUpon>TeleportRandomAlterationEffectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\Alteration\StealAlterationEffectView.xaml.cs">
       <DependentUpon>StealAlterationEffectView.xaml</DependentUpon>
@@ -305,8 +317,8 @@
     <Compile Include="Content\Views\Alteration\DrainMeleeAlterationEffectView.xaml.cs">
       <DependentUpon>DrainMeleeAlterationEffectView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Content\Views\Alteration\CreateMonsterAlterationEffectView.xaml.cs">
-      <DependentUpon>CreateMonsterAlterationEffectView.xaml</DependentUpon>
+    <Compile Include="Content\Views\Alteration\CreateEnemyAlterationEffectView.xaml.cs">
+      <DependentUpon>CreateEnemyAlterationEffectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Content\Views\Alteration\ChangeLevelAlterationEffectView.xaml.cs">
       <DependentUpon>ChangeLevelAlterationEffectView.xaml</DependentUpon>
@@ -481,11 +493,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Content\Views\Alteration\CreateTemporaryCharacterAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\CreateFriendlyAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Content\Views\Alteration\TeleportManualAlterationEffectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Content\Views\Alteration\TemporaryAlterationEffectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Content\Views\Alteration\TeleportAlterationEffectView.xaml">
+    <Page Include="Content\Views\Alteration\TeleportRandomAlterationEffectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -541,7 +565,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Content\Views\Alteration\CreateMonsterAlterationEffectView.xaml">
+    <Page Include="Content\Views\Alteration\CreateEnemyAlterationEffectView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

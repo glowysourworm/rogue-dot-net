@@ -221,8 +221,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is ChangeLevelAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as ChangeLevelAlterationEffectTemplate);
 
-            else if (template is CreateMonsterAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
+            else if (template is CreateEnemyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
@@ -284,8 +284,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is ChangeLevelAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as ChangeLevelAlterationEffectTemplate);
 
-            else if (template is CreateMonsterAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
+            else if (template is CreateEnemyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
@@ -326,8 +326,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is AttackAttributeTemporaryAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as AttackAttributeTemporaryAlterationEffectTemplate);
 
-            else if (template is CreateMonsterAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
+            else if (template is CreateEnemyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
@@ -458,8 +458,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is ChangeLevelAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as ChangeLevelAlterationEffectTemplate);
 
-            else if (template is CreateMonsterAlterationEffectTemplate)
-                return GenerateAlterationEffect(template as CreateMonsterAlterationEffectTemplate);
+            else if (template is CreateEnemyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
@@ -571,11 +571,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        protected CreateMonsterAlterationEffect GenerateAlterationEffect(CreateMonsterAlterationEffectTemplate template)
+        protected CreateEnemyAlterationEffect GenerateAlterationEffect(CreateEnemyAlterationEffectTemplate template)
         {
-            return new CreateMonsterAlterationEffect()
+            return new CreateEnemyAlterationEffect()
             {
-                CreateMonsterEnemy = template.CreateMonsterEnemy,
+                Enemy = template.Enemy,
                 RandomPlacementType = template.RandomPlacementType,
                 Range = template.Range,
                 RogueName = template.Name

@@ -705,12 +705,12 @@ namespace Rogue.NET.Core.Processing.Service
                 if ((behavior.AttackType == CharacterAttackType.Alteration) &&
                      behavior.Alteration != null)
                 {
-                    if (behavior.Alteration.Effect is CreateMonsterAlterationEffectTemplate)
+                    if (behavior.Alteration.Effect is CreateEnemyAlterationEffectTemplate)
                     {
-                        var effect = behavior.Alteration.Effect as CreateMonsterAlterationEffectTemplate;
+                        var effect = behavior.Alteration.Effect as CreateEnemyAlterationEffectTemplate;
 
-                        if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
-                            result.Add("Create Monster Enemy not set for enemy behavior:  " + template.Name);
+                        if (effect.Enemy == null)
+                            result.Add("Create Enemy not set for enemy behavior:  " + template.Name);
                     }
 
                     if (behavior.Alteration.Effect is OtherAlterationEffectTemplate)
@@ -752,12 +752,12 @@ namespace Rogue.NET.Core.Processing.Service
                     return effect.Name + " has an invalid Level Change parameter";
             }
 
-            else if (template is CreateMonsterAlterationEffectTemplate)
+            else if (template is CreateEnemyAlterationEffectTemplate)
             {
-                var effect = template as CreateMonsterAlterationEffectTemplate;
+                var effect = template as CreateEnemyAlterationEffectTemplate;
 
-                if (string.IsNullOrEmpty(effect.CreateMonsterEnemy))
-                    return effect.Name + " has no Create Monster Enemy set";
+                if (effect.Enemy == null)
+                    return effect.Name + " has no Enemy set";
             }
 
             else if (template is DrainMeleeAlterationEffectTemplate)

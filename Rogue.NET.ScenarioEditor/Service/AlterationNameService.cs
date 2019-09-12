@@ -87,8 +87,14 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is ChangeLevelAlterationEffectTemplateViewModel)
                 (effect as ChangeLevelAlterationEffectTemplateViewModel).Name = name;
 
-            else if (effect is CreateMonsterAlterationEffectTemplateViewModel)
-                (effect as CreateMonsterAlterationEffectTemplateViewModel).Name = name;
+            else if (effect is CreateEnemyAlterationEffectTemplateViewModel)
+                (effect as CreateEnemyAlterationEffectTemplateViewModel).Name = name;
+
+            else if (effect is CreateFriendlyAlterationEffectTemplateViewModel)
+                (effect as CreateFriendlyAlterationEffectTemplateViewModel).Name = name;
+
+            else if (effect is CreateTemporaryCharacterAlterationEffectTemplateViewModel)
+                (effect as CreateTemporaryCharacterAlterationEffectTemplateViewModel).Name = name;
 
             else if (effect is DrainMeleeAlterationEffectTemplateViewModel)
                 (effect as DrainMeleeAlterationEffectTemplateViewModel).Name = name;

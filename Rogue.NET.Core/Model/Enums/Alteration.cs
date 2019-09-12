@@ -55,13 +55,9 @@ namespace Rogue.NET.Core.Model.Enums
                  Description = "Character placed at random open location in level")]
         InLevel = 0,
 
-        [Display(Name = "In Range Of Character",
+        [Display(Name = "In Range Of Source Character",
                  Description = "Character placed at random open location in numeric range of source character")]
-        InRangeOfCharacter = 1,
-
-        [Display(Name = "In Player Visible Range",
-                 Description = "Character placed at random open location in visible range of player")]
-        InPlayerVisibleRange = 2
+        InRangeOfSourceCharacter = 1
     }
     public enum AlterationOtherEffectType : int
     {

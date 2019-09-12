@@ -168,6 +168,8 @@
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportManualAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="Model\ScenarioConfiguration\Content\FriendlyTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\NonPlayerCharacterTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\TemporaryCharacterTemplate.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\CreateFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />
     <Compile Include="Model\Scenario\Alteration\Interface\IFriendlyAlterationEffect.cs" />
@@ -242,7 +245,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AttackAttributeMeleeAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\AuraSourceParametersTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\ChangeLevelAlterationEffectTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateMonsterAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateEnemyAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\DrainMeleeAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentEnhanceAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\EquipmentDamageAlterationEffectTemplate.cs" />
@@ -296,7 +299,7 @@
     <Compile Include="Model\Scenario\Alteration\Effect\AttackAttributeTemporaryAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\AuraAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\ChangeLevelAlterationEffect.cs" />
-    <Compile Include="Model\Scenario\Alteration\Effect\CreateMonsterAlterationEffect.cs" />
+    <Compile Include="Model\Scenario\Alteration\Effect\CreateEnemyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\EquipmentDamageAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\OtherAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\PassiveAlterationEffect.cs" />
@@ -547,6 +550,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Scenario\Alteration\Effect\CreateTemporaryCharacterAlterationEffect.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
     <Page Include="Resource\Converter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

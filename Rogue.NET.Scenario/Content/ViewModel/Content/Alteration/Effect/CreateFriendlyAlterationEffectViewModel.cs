@@ -6,12 +6,12 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 {
-    [UIDisplay(Name = "Create Monster",
-               Description = "Creates an Enemy Character")]
-    public class CreateMonsterAlterationEffectViewModel : AlterationEffectViewModel
+    [UIDisplay(Name = "Create Friendly",
+               Description = "Creates an Friendly Character")]
+    public class CreateFriendlyAlterationEffectViewModel : AlterationEffectViewModel
     {
         AlterationRandomPlacementType _randomPlacementType;
-        string _createMonsterEnemy;
+        string _friendlyName;
         string _range;
 
         public AlterationRandomPlacementType RandomPlacementType
@@ -19,10 +19,10 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             get { return _randomPlacementType; }
             set { this.RaiseAndSetIfChanged(ref _randomPlacementType, value); }
         }
-        public string CreateMonsterEnemy
+        public string FriendlyName
         {
-            get { return _createMonsterEnemy; }
-            set { this.RaiseAndSetIfChanged(ref _createMonsterEnemy, value); }
+            get { return _friendlyName; }
+            set { this.RaiseAndSetIfChanged(ref _friendlyName, value); }
         }
         public string Range
         {
@@ -30,17 +30,17 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public CreateMonsterAlterationEffectViewModel(CreateMonsterAlterationEffect effect) : base(effect)
+        public CreateFriendlyAlterationEffectViewModel(CreateFriendlyAlterationEffect effect) : base(effect)
         {
             this.RandomPlacementType = effect.RandomPlacementType;
-            this.CreateMonsterEnemy = effect.CreateMonsterEnemy;
+            this.FriendlyName = effect.Friendly.Name;
             this.Range = effect.Range.ToString();
         }
 
-        public CreateMonsterAlterationEffectViewModel(CreateMonsterAlterationEffectTemplate template) : base(template)
+        public CreateFriendlyAlterationEffectViewModel(CreateFriendlyAlterationEffectTemplate template) : base(template)
         {
             this.RandomPlacementType = template.RandomPlacementType;
-            this.CreateMonsterEnemy = template.CreateMonsterEnemy;
+            this.FriendlyName = template.Friendly.Name;
             this.Range = template.Range.ToString();
         }
     }

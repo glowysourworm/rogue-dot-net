@@ -1,19 +1,19 @@
 ﻿using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using System;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    public class CreateMonsterAlterationEffectTemplate 
-        : Template, IConsumableAlterationEffectTemplate,
-                    IDoodadAlterationEffectTemplate,
-                    IEnemyAlterationEffectTemplate,
-                    ISkillAlterationEffectTemplate
+    public class CreateTemporaryCharacterAlterationEffectTemplate : Template, IConsumableAlterationEffectTemplate,
+                                                                              IDoodadAlterationEffectTemplate,
+                                                                              IEnemyAlterationEffectTemplate,
+                                                                              ISkillAlterationEffectTemplate
     {
         AlterationRandomPlacementType _randomPlacementType;
-        string _createMonsterEnemy;
+        TemporaryCharacterTemplate _temporaryCharacter;
         int _range;
 
         public AlterationRandomPlacementType RandomPlacementType
@@ -28,15 +28,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public string CreateMonsterEnemy
+        public TemporaryCharacterTemplate TemporaryCharacter
         {
-            get { return _createMonsterEnemy; }
+            get { return _temporaryCharacter; }
             set
             {
-                if (_createMonsterEnemy != value)
+                if (_temporaryCharacter != value)
                 {
-                    _createMonsterEnemy = value;
-                    OnPropertyChanged("CreateMonsterEnemy");
+                    _temporaryCharacter = value;
+                    OnPropertyChanged("TemporaryCharacter");
                 }
             }
         }
@@ -53,6 +53,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             }
         }
 
-        public CreateMonsterAlterationEffectTemplate() { }
+        public CreateTemporaryCharacterAlterationEffectTemplate() { }
     }
 }

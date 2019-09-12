@@ -2,23 +2,23 @@
 using Rogue.NET.ScenarioEditor.ViewModel.Attribute;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl;
 using System;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    [UIType(DisplayName = "Create Monster",
+    [UIType(DisplayName = "Create Enemy",
             Description = "Creates an Enemy Character",
             ViewType = typeof(CreateMonsterEffectParameters))]
-    public class CreateMonsterAlterationEffectTemplateViewModel 
-        : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
-                             IDoodadAlterationEffectTemplateViewModel,
-                             IEnemyAlterationEffectTemplateViewModel,
-                             ISkillAlterationEffectTemplateViewModel
+    public class CreateEnemyAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
+                                                                                   IDoodadAlterationEffectTemplateViewModel,
+                                                                                   IEnemyAlterationEffectTemplateViewModel,
+                                                                                   ISkillAlterationEffectTemplateViewModel
     {
         AlterationRandomPlacementType _randomPlacementType;
-        string _createMonsterEnemy;
+        EnemyTemplateViewModel _enemy;
         int _range;
 
         public AlterationRandomPlacementType RandomPlacementType
@@ -26,10 +26,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _randomPlacementType; }
             set { this.RaiseAndSetIfChanged(ref _randomPlacementType, value); }
         }
-        public string CreateMonsterEnemy
+        public EnemyTemplateViewModel Enemy
         {
-            get { return _createMonsterEnemy; }
-            set { this.RaiseAndSetIfChanged(ref _createMonsterEnemy, value); }
+            get { return _enemy; }
+            set { this.RaiseAndSetIfChanged(ref _enemy, value); }
         }
         public int Range
         {
@@ -37,6 +37,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public CreateMonsterAlterationEffectTemplateViewModel() { }
+        public CreateEnemyAlterationEffectTemplateViewModel() { }
     }
 }

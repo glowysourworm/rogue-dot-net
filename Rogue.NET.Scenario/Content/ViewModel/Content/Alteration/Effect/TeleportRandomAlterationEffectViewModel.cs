@@ -7,8 +7,8 @@ using Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Common;
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
 {
     [UIDisplay(Name = "Teleport",
-               Description = "Transports a source / target (affected) character to a random location")]
-    public class TeleportAlterationEffectViewModel : AlterationEffectViewModel
+               Description = "Transports a source character to a random location")]
+    public class TeleportRandomAlterationEffectViewModel : AlterationEffectViewModel
     {
         AlterationRandomPlacementType _teleportType;
         string _range;
@@ -25,13 +25,13 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.Alteration.Effect
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public TeleportAlterationEffectViewModel(TeleportRandomAlterationEffect effect) : base(effect)
+        public TeleportRandomAlterationEffectViewModel(TeleportRandomAlterationEffect effect) : base(effect)
         {
             this.TeleportType = effect.TeleportType;
             this.Range = effect.Range.ToString("N0");
         }
 
-        public TeleportAlterationEffectViewModel(TeleportRandomAlterationEffectTemplate template) : base(template)
+        public TeleportRandomAlterationEffectViewModel(TeleportRandomAlterationEffectTemplate template) : base(template)
         {
             this.TeleportType = template.TeleportType;
             this.Range = template.Range.ToString("N0");

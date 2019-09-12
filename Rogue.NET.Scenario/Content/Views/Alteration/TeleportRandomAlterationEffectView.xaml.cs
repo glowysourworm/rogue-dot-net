@@ -18,9 +18,9 @@ namespace Rogue.NET.Scenario.Content.Views.Alteration
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public partial class CreateMonsterAlterationEffectView : UserControl
+    public partial class TeleportRandomAlterationEffectView : UserControl
     {
-        public CreateMonsterAlterationEffectView()
+        public TeleportRandomAlterationEffectView()
         {
             InitializeComponent();
         }

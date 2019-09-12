@@ -85,21 +85,7 @@ namespace Rogue.NET.ScenarioEditor.Service
 
         public void UpdateNonPlayerCharacters(ScenarioConfigurationContainerViewModel configuration)
         {
-            // Alteration Effects - Update Create Monster 
-            foreach (var alterationEffect in GetAllAlterationEffects(configuration))
-            {
-                if (alterationEffect is CreateMonsterAlterationEffectTemplateViewModel)
-                {
-                    var effect = alterationEffect as CreateMonsterAlterationEffectTemplateViewModel;
-
-                    // Enemy no longer exists in the scenario
-                    if (!configuration.EnemyTemplates.Any(x => x.Name == effect.CreateMonsterEnemy))
-                    {
-                        // TODO:ALTERATION Then, have to validate this in the validator
-                        effect.CreateMonsterEnemy = null;
-                    }
-                }
-            }
+            // TODO ?  => Non Player Character Asset Collections Changed: {Friendly, Enemy}
         }
 
         public void UpdateItems(ScenarioConfigurationContainerViewModel configuration)

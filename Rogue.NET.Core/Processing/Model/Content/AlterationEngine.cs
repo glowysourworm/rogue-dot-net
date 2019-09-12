@@ -242,8 +242,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is ChangeLevelAlterationEffect)
                 ProcessChangeLevel(alteration.Effect as ChangeLevelAlterationEffect);
 
-            else if (alteration.Effect is CreateMonsterAlterationEffect)
-                ProcessCreateMonster(alteration.Effect as CreateMonsterAlterationEffect, actor);
+            else if (alteration.Effect is CreateEnemyAlterationEffect)
+                ProcessCreateEnemy(alteration.Effect as CreateEnemyAlterationEffect, actor);
 
             else if (alteration.Effect is DrainMeleeAlterationEffect)
                 _alterationProcessor.ApplyDrainMeleeEffect(actor, affectedCharacter, alteration.Effect as DrainMeleeAlterationEffect);
@@ -518,7 +518,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             OnScenarioEvent(_backendEventDataFactory.LevelChange(actualLevel, PlayerStartLocation.Random));
         }
-        private void ProcessCreateMonster(CreateMonsterAlterationEffect effect, Character actor)
+        private void ProcessCreateEnemy(CreateEnemyAlterationEffect effect, Character actor)
         {
             var location = GetRandomLocation(effect.RandomPlacementType, actor.Location, effect.Range);
 
@@ -526,44 +526,35 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (location == GridLocation.Empty)
                 return;
 
-            // Get the enemy template
-            var enemyTemplate = _modelService.ScenarioConfiguration
-                                             .EnemyTemplates
-                                             .FirstOrDefault(x => x.Name == effect.CreateMonsterEnemy);
+            // Create Enemy
+            var enemy = _characterGenerator.GenerateEnemy(effect.Enemy, _modelService.AttackAttributes);
 
-            if (enemyTemplate != null)
+            // Set Enemy Location
+            enemy.Location = location;
+
+            // Add Content to Level -> Update Visibility
+            _modelService.Level.AddContent(enemy);
+            _modelService.UpdateVisibility();
+
+            // Publish Message
+            switch (effect.RandomPlacementType)
             {
-                // Create Enemy
-                var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, _modelService.AttackAttributes);
-
-                // Set Enemy Location
-                enemy.Location = location;
-
-                // Add Content to Level -> Update Visibility
-                _modelService.Level.AddContent(enemy);
-                _modelService.UpdateVisibility();
-
-                // Publish Message
-                switch (effect.RandomPlacementType)
-                {
-                    case AlterationRandomPlacementType.InLevel:
-                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
-                        break;
-                    case AlterationRandomPlacementType.InRangeOfCharacter:
-                    case AlterationRandomPlacementType.InPlayerVisibleRange:
-                        _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, 
-                                                        (actor is Player) ? "{0} has created a(n) {1}" :
-                                                                            "The {0} has created a(n) {1}",
-                                                         _modelService.GetDisplayName(actor),
-                                                         _modelService.GetDisplayName(enemy));
-                        break;
-                    default:
-                        throw new Exception("Unhandled AlterationRandomPlacementType");
-                }
-
-                // Notify UI
-                OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
+                case AlterationRandomPlacementType.InLevel:
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
+                    break;
+                case AlterationRandomPlacementType.InRangeOfSourceCharacter:
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal,
+                                                    (actor is Player) ? "{0} has created a(n) {1}" :
+                                                                        "The {0} has created a(n) {1}",
+                                                     _modelService.GetDisplayName(actor),
+                                                     _modelService.GetDisplayName(enemy));
+                    break;
+                default:
+                    throw new Exception("Unhandled AlterationRandomPlacementType");
             }
+
+            // Notify UI
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
         {
@@ -719,14 +710,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 case AlterationRandomPlacementType.InLevel:
                     openLocation = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
                     break;
-                case AlterationRandomPlacementType.InRangeOfCharacter:
+                case AlterationRandomPlacementType.InRangeOfSourceCharacter:
                     openLocation = _layoutEngine.GetLocationsInRange(sourceLocation, sourceRange)
-                                                .Where(x => !level.IsCellOccupied(x, player.Location))
-                                                .PickRandom();
-                    break;
-                case AlterationRandomPlacementType.InPlayerVisibleRange:
-                    openLocation = _modelService.CharacterLayoutInformation
-                                                .GetVisibleLocations(player)
                                                 .Where(x => !level.IsCellOccupied(x, player.Location))
                                                 .PickRandom();
                     break;
