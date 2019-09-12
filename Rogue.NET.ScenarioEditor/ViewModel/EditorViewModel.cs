@@ -35,6 +35,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
         public ICommand ExitCommand { get; private set; }
         public ICommand LoadBuiltInCommand { get; private set; }
         public ICommand SaveBuiltInCommand { get; private set; }
+        public ICommand RunBuiltInSaveCycleCommand { get; private set; }
         public ICommand NewCommand { get; private set; }
         public ICommand ShowDifficultyCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
@@ -91,13 +92,24 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             });
             this.LoadBuiltInCommand = new DelegateCommand<string>((scenarioName) =>
             {
-                _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(scenarioName);
+                var configResource = (ConfigResources)Enum.Parse(typeof(ConfigResources), scenarioName);
+
+                _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish(configResource);
             });
             this.SaveBuiltInCommand = new DelegateCommand<string>((scenarioName) =>
             {
                 var configResource = (ConfigResources)Enum.Parse(typeof(ConfigResources), scenarioName);
 
                 _eventAggregator.GetEvent<SaveBuiltInScenarioEvent>().Publish(configResource);
+            });
+            this.RunBuiltInSaveCycleCommand = new DelegateCommand(() =>
+            {
+                // Runs an open / save for all built in scenarios
+                foreach (var configResource in Enum.GetValues(typeof(ConfigResources)))
+                {
+                    _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Publish((ConfigResources)configResource);
+                    _eventAggregator.GetEvent<SaveBuiltInScenarioEvent>().Publish((ConfigResources)configResource);
+                }
             });
             this.ExitCommand = new DelegateCommand(() =>
             {

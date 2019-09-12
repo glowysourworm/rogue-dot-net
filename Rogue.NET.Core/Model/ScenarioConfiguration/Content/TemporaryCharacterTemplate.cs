@@ -5,24 +5,14 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
     [Serializable]
     public class TemporaryCharacterTemplate : NonPlayerCharacterTemplate
     {
-        Range<int> _lifetimeCounter;
-
-        public Range<int> LifetimeCounter
-        {
-            get { return _lifetimeCounter; }
-            set
-            {
-                if (_lifetimeCounter != value)
-                {
-                    _lifetimeCounter = value;
-                    OnPropertyChanged("LifetimeCounter");
-                }
-            }
-        }
+        // NOTE*** The purpose of a temporary character is to be created in 
+        //         the level with some specified life time. So, there's no
+        //         lifetime counter here; but there will be alteration effects
+        //         that have one.
+        //
 
         public TemporaryCharacterTemplate()
         {
-            this.LifetimeCounter = new Range<int>(100, 150);
         }
     }
 }

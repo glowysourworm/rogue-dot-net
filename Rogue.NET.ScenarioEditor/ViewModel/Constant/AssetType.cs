@@ -16,7 +16,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
         public const string Doodad = "Doodad";
         public const string Enemy = "Enemy";
         public const string Friendly = "Friendly";
-        public const string TemporaryCharacter = "TemporaryCharacter";
         public const string Equipment = "Equipment";
         public const string Layout = "Layout";
         public const string SkillSet = "SkillSet";
@@ -76,7 +75,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Doodad, typeof(Doodad) },
             { Enemy, typeof(Enemy) },
             { Friendly, typeof(Friendly) },
-            { TemporaryCharacter , typeof(TemporaryCharacter) },
             { Equipment, typeof(Equipment) },
             { Layout, typeof(Layout) },
             { SkillSet, typeof(SkillSet) }
@@ -91,7 +89,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Constant
             { Doodad, typeof(ObservableCollection<DoodadTemplateViewModel>) },
             { Enemy, typeof(ObservableCollection<EnemyTemplateViewModel>) },
             { Friendly, typeof(ObservableCollection<FriendlyTemplateViewModel>) },
-            { TemporaryCharacter, typeof(ObservableCollection<TemporaryCharacterTemplateViewModel>) },
             { Equipment, typeof(ObservableCollection<EquipmentTemplateViewModel>) },
             { Layout, typeof(ObservableCollection<LayoutTemplateViewModel>) },
             { SkillSet, typeof(ObservableCollection<SkillSetTemplateViewModel>) }

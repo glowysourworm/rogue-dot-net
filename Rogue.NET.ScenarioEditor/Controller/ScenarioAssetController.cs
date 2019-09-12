@@ -54,9 +54,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                 case AssetType.Friendly:
                     _scenarioEditorController.CurrentConfig.FriendlyTemplates.Add(new FriendlyTemplateViewModel() { Name = uniqueName });
                     break;
-                case AssetType.TemporaryCharacter:
-                    _scenarioEditorController.CurrentConfig.TemporaryCharacterTemplates.Add(new TemporaryCharacterTemplateViewModel() { Name = uniqueName });
-                    break;
                 case AssetType.Equipment:
                     _scenarioEditorController.CurrentConfig.EquipmentTemplates.Add(new EquipmentTemplateViewModel() { Name = uniqueName });
                     break;
@@ -153,7 +150,6 @@ namespace Rogue.NET.ScenarioEditor.Controller
                     break;
                 case AssetType.Enemy:
                 case AssetType.Friendly:
-                case AssetType.TemporaryCharacter:
                     _scenarioAssetReferenceService.UpdateNonPlayerCharacters(_scenarioEditorController.CurrentConfig);
                     break;
                 case AssetType.Equipment:

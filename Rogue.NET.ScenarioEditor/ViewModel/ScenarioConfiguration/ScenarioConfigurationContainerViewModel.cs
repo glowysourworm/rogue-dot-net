@@ -20,7 +20,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ObservableCollection<PlayerTemplateViewModel> PlayerTemplates { get; set; }
         public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
         public ObservableCollection<FriendlyTemplateViewModel> FriendlyTemplates { get; set; }
-        public ObservableCollection<TemporaryCharacterTemplateViewModel> TemporaryCharacterTemplates { get; set; }
         public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
         public ObservableCollection<ConsumableTemplateViewModel> ConsumableTemplates { get; set; }
         public ObservableCollection<DoodadTemplateViewModel> DoodadTemplates { get; set; }
@@ -36,7 +35,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
             this.PlayerTemplates = new ObservableCollection<PlayerTemplateViewModel>();
             this.EnemyTemplates = new ObservableCollection<EnemyTemplateViewModel>();
             this.FriendlyTemplates = new ObservableCollection<FriendlyTemplateViewModel>();
-            this.TemporaryCharacterTemplates = new ObservableCollection<TemporaryCharacterTemplateViewModel>();
             this.EquipmentTemplates = new ObservableCollection<EquipmentTemplateViewModel>();
             this.ConsumableTemplates = new ObservableCollection<ConsumableTemplateViewModel>();
             this.SkillTemplates = new ObservableCollection<SkillSetTemplateViewModel>();

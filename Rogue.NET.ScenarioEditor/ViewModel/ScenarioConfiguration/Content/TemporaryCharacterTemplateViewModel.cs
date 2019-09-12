@@ -9,17 +9,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
 {
     public class TemporaryCharacterTemplateViewModel : NonPlayerCharacterTemplateViewModel
     {
-        RangeViewModel<int> _lifetimeCounter;
-
-        public RangeViewModel<int> LifetimeCounter
-        {
-            get { return _lifetimeCounter; }
-            set { this.RaiseAndSetIfChanged(ref _lifetimeCounter, value); }
-        }
+        // NOTE*** The purpose of a temporary character is to be created in 
+        //         the level with some specified life time. So, there's no
+        //         lifetime counter here; but there will be alteration effects
+        //         that have one.
+        //
 
         public TemporaryCharacterTemplateViewModel()
         {
-            this.LifetimeCounter = new RangeViewModel<int>(100, 150);
             this.AlignmentType = CharacterAlignmentType.PlayerAligned;
         }
     }

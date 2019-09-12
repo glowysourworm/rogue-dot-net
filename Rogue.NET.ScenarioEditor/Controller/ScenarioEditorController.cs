@@ -59,9 +59,9 @@ namespace Rogue.NET.Controller.ScenarioEditor
 
         private void Initialize()
         {
-            _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Subscribe((scenarioName) =>
+            _eventAggregator.GetEvent<LoadBuiltInScenarioEvent>().Subscribe((configResource) =>
             {
-                Open(scenarioName, true);
+                Open(configResource.ToString(), true);
             });
 
             _eventAggregator.GetEvent<LoadScenarioEvent>().Subscribe((scenarioName) =>
