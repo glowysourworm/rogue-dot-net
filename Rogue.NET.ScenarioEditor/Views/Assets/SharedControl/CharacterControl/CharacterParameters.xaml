@@ -29,33 +29,33 @@
         </StackPanel.Resources>
         <Grid>
             <TextBlock Foreground="White" Text="Strength" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Strength}" />
+            <controls:Range DataContext="{Binding Strength}" LowLimit="1" HighLimit="50" />
         </Grid>
 
         <Grid>
             <TextBlock Foreground="White" Text="Agility" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Agility}" />
+            <controls:Range DataContext="{Binding Agility}" LowLimit="1" HighLimit="50" />
         </Grid>
 
         <Grid>
             <TextBlock Foreground="White" Text="Intelligence" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Intelligence}" />
+            <controls:Range DataContext="{Binding Intelligence}" LowLimit="1" HighLimit="50" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Speed" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Speed}" />
+            <controls:Range DataContext="{Binding Speed}" LowLimit="0.1" HighLimit="1" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Light Radius" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding LightRadius}" />
+            <controls:Range DataContext="{Binding LightRadius}" LowLimit="1" HighLimit="20" />
         </Grid>        
         <Grid>
             <TextBlock Foreground="White" Text="Hp" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Hp}" />
+            <controls:Range DataContext="{Binding Hp}" LowLimit="1" HighLimit="10000" />
         </Grid>
         <Grid>
             <TextBlock Foreground="White" Text="Mp" VerticalAlignment="Center" />
-            <controls:Range DataContext="{Binding Mp}" />
+            <controls:Range DataContext="{Binding Mp}" LowLimit="1" HighLimit="10000" />
         </Grid>
     </StackPanel>
 </UserControl>

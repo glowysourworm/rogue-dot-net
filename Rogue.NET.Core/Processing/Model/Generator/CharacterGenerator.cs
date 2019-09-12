@@ -160,6 +160,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             enemy.BehaviorDetails.RandomizerTurnCount = enemyTemplate.BehaviorDetails.RandomizerTurnCount;
             enemy.BehaviorDetails.UseRandomizer = enemyTemplate.BehaviorDetails.UseRandomizer;
 
+
+            // Attack Attributes
             enemy.AttackAttributes = enemyTemplate.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))
                                                                    .ToDictionary(x => x.RogueName);
 

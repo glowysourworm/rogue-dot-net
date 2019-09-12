@@ -9,6 +9,23 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
     [Export]
     public partial class Range : UserControl
     {
+        public static readonly DependencyProperty HighLimitProperty =
+            DependencyProperty.Register("HighLimit", typeof(double), typeof(Range));
+
+        public static readonly DependencyProperty LowLimitProperty =
+            DependencyProperty.Register("LowLimit", typeof(double), typeof(Range));
+
+        public double HighLimit
+        {
+            get { return (int)GetValue(HighLimitProperty); }
+            set { SetValue(HighLimitProperty, value); }
+        }
+        public double LowLimit
+        {
+            get { return (int)GetValue(LowLimitProperty); }
+            set { SetValue(LowLimitProperty, value); }
+        }
+
         [ImportingConstructor]
         public Range()
         {
@@ -26,30 +43,14 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls
 
                 this.LowUD.FormatString = "N0";
                 this.HighUD.FormatString = "N0";
-
-                /*
-                var lowBE = this.LowText.GetBindingExpression(TextBlock.TextProperty);
-                lowBE.ParentBinding.StringFormat = "N0";
-
-                var highBE = this.HighText.GetBindingExpression(TextBlock.TextProperty);
-                highBE.ParentBinding.StringFormat = "N0";
-                 */
             }
             else
             {
                 this.LowUD.Increment = 0.1;
                 this.HighUD.Increment = 0.1;
 
-                this.LowUD.FormatString = "F2";
-                this.HighUD.FormatString = "F2";
-
-                /*
-                var lowBE = this.LowText.GetBindingExpression(TextBlock.TextProperty);
-                lowBE.ParentBinding.StringFormat = "F2";
-
-                var highBE = this.HighText.GetBindingExpression(TextBlock.TextProperty);
-                highBE.ParentBinding.StringFormat = "F2";
-                 */ 
+                this.LowUD.FormatString = "F1";
+                this.HighUD.FormatString = "F1";
             }
         }
     }

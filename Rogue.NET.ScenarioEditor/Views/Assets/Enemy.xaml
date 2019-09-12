@@ -20,7 +20,7 @@
                 <StackPanel>
                     <Grid>
                         <TextBlock Foreground="White" Text="Experience Given (On Death)" VerticalAlignment="Center" />
-                        <controls:Range DataContext="{Binding ExperienceGiven}" />
+                        <controls:Range DataContext="{Binding ExperienceGiven}" LowLimit="1" HighLimit="10000" />
                     </Grid>
                     <Grid>
                         <TextBlock Foreground="White" Text="Generate On Step" VerticalAlignment="Center" />

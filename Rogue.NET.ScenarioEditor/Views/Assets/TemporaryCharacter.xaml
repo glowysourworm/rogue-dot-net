@@ -20,7 +20,7 @@
                 <StackPanel>
                     <Grid>
                         <TextBlock Foreground="White" Text="Character Lifetime" VerticalAlignment="Center" />
-                        <controls:Range DataContext="{Binding LifetimeCounter}" />
+                        <controls:Range DataContext="{Binding LifetimeCounter}" LowLimit="5" HighLimit="10000" />
                     </Grid>
                 </StackPanel>
             </TabItem>

@@ -309,15 +309,21 @@ namespace Rogue.NET.Core.Processing.Service
 
                         }).Actualize();
                 })),
-                new ScenarioValidationRule("Enemies must have a Light Radius > 0", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
+                new ScenarioValidationRule("Enemies must have Parameters > 0", ValidationMessageSeverity.Error, new Func<ScenarioConfigurationContainer, IEnumerable<IScenarioValidationResult>>(configuration =>
                 {
                     return configuration.EnemyTemplates
-                                        .Where(x => x.LightRadius.High <= 0 || x.LightRadius.Low <= 0)
+                                        .Where(x => x.Hp.High <= 0 || x.Hp.Low <= 0 ||
+                                                    x.Mp.High <= 0 || x.Mp.Low <= 0 ||
+                                                    x.Agility.High <= 0 || x.Agility.Low <= 0 ||
+                                                    x.Intelligence.High <= 0 || x.Intelligence.Low <= 0 ||
+                                                    x.LightRadius.High <= 0 || x.LightRadius.Low <= 0 ||
+                                                    x.Speed.High <= 0 || x.Speed.Low <= 0 ||
+                                                    x.Strength.High <= 0 || x.Strength.Low <= 0)
                                         .Select(x =>
                         new ScenarioValidationResult()
                         {
                             Passed = false,
-                            InnerMessage = x.Name + " must have a Light Radius > 0"
+                            InnerMessage = x.Name + " must have parameters > 0"
 
                         }).Actualize();
                 })),
@@ -837,6 +843,9 @@ namespace Rogue.NET.Core.Processing.Service
                 return null;
 
             else if (template is StealAlterationEffectTemplate)
+                return null;
+
+            else if (template is TeleportManualAlterationEffectTemplate)
                 return null;
 
             else if (template is TeleportRandomAlterationEffectTemplate)

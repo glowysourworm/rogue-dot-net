@@ -35,6 +35,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
         public BehaviorDetails()
         {
             this.Behaviors = new List<Behavior>();
+            this.RandomizerTurnCount = 1;
         }
 
         public void IncrementBehavior(NonPlayerCharacter character, IAlterationProcessor alterationProcessor, bool actionTaken, double randomNumber)
@@ -85,7 +86,7 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
 
             // Else, pick first or default (null -> Behavior.Default)
             else
-                nextBehavior = validBehaviors.FirstOrDefault();
+                nextBehavior = validBehaviors.FirstOrDefault() ?? Behavior.Default;
 
             // Reset turn counter when appropriate
             if (nextBehavior == Behavior.Default ||
@@ -93,7 +94,8 @@ namespace Rogue.NET.Core.Model.Scenario.Character.Behavior
                 this.BehaviorTurnCounter = 0;
 
             // Reset randomizer turn counter if expired
-            if (this.RandomizerTurnCounter % this.RandomizerTurnCount == 0)
+            if (this.UseRandomizer &&
+                this.RandomizerTurnCounter % this.RandomizerTurnCount == 0)
                 this.RandomizerTurnCounter = 0;
 
             // Finally, set current behavior

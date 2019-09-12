@@ -30,7 +30,7 @@
                 <CheckBox IsChecked="{Binding BehaviorDetails.UseRandomizer, Mode=TwoWay}" HorizontalAlignment="Right" Width="200" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
             </Grid>
             <Grid Visibility="{Binding BehaviorDetails.UseRandomizer, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Foreground="White" Text="Randomizer Turn Counter" VerticalAlignment="Center" Margin="10" />
+                <TextBlock Foreground="White" Text="Randomizer Turn Count" VerticalAlignment="Center" Margin="10" />
                 <toolkit:IntegerUpDown Minimum="1" Maximum="1000" Value="{Binding BehaviorDetails.RandomizerTurnCount, Mode=TwoWay}" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Height="24" Width="200" />
             </Grid>
         </StackPanel>

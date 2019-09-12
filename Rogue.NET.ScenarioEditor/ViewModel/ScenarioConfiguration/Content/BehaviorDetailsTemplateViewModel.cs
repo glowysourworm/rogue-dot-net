@@ -32,6 +32,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
         {
             this.Behaviors = new ObservableCollection<BehaviorTemplateViewModel>();
             this.UseRandomizer = false;
+            this.RandomizerTurnCount = 1;   // Set to prevent % arithmatic issues
         }
     }
 }

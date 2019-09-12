@@ -120,6 +120,9 @@ namespace Rogue.NET.ScenarioEditor.Service
             else if (effect is StealAlterationEffectTemplateViewModel)
                 (effect as StealAlterationEffectTemplateViewModel).Name = name;
 
+            else if (effect is TeleportManualAlterationEffectTemplateViewModel)
+                (effect as TeleportManualAlterationEffectTemplateViewModel).Name = name;
+
             else if (effect is TeleportRandomAlterationEffectTemplateViewModel)
                 (effect as TeleportRandomAlterationEffectTemplateViewModel).Name = name;
 

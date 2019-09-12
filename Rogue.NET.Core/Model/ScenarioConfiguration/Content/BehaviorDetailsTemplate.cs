@@ -67,7 +67,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Content
         {
             this.Behaviors = new List<BehaviorTemplate>();
             this.UseRandomizer = false;
-            this.RandomizerTurnCount = 10;
+            this.RandomizerTurnCount = 1;   // Set to prevent % arithmatic issues
         }
     }
 }

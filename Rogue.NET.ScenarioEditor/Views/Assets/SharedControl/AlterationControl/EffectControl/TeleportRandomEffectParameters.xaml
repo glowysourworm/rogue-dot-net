@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.TeleportEffectParameters"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.TeleportRandomEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"

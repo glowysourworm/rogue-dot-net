@@ -84,6 +84,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
 
         public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
         {
+            foreach (var enemy in model.EnemyTemplates)
+            {
+                enemy.BehaviorDetails.RandomizerTurnCount = 1;
+            }
+
             // Clear out reference maps to prepare for next mapping
             _forwardReferenceMap.Clear();
             _reverseReferenceMap.Clear();

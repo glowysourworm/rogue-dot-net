@@ -10,7 +10,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Teleport (Manual)",
             Description = "Transports a source character to a selected location",
-            ViewType = typeof(TeleportEffectParameters))]
+            ViewType = typeof(TeleportManualEffectParameters))]
     public class TeleportManualAlterationEffectTemplateViewModel 
         : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                              IDoodadAlterationEffectTemplateViewModel,

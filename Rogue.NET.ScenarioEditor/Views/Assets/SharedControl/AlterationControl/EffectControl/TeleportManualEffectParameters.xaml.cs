@@ -5,9 +5,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public partial class TeleportEffectParameters : UserControl
+    public partial class TeleportManualEffectParameters : UserControl
     {
-        public TeleportEffectParameters()
+        public TeleportManualEffectParameters()
         {
             InitializeComponent();
         }

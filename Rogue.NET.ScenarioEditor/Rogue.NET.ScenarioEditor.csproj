@@ -417,6 +417,9 @@
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml.cs">
+      <DependentUpon>TeleportManualEffectParameters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\CharacterControl\CharacterBehaviorList.xaml.cs">
       <DependentUpon>CharacterBehaviorList.xaml</DependentUpon>
     </Compile>
@@ -495,8 +498,8 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\StealEffectParameters.xaml.cs">
       <DependentUpon>StealEffectParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportEffectParameters.xaml.cs">
-      <DependentUpon>TeleportEffectParameters.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportRandomEffectParameters.xaml.cs">
+      <DependentUpon>TeleportRandomEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TemporaryEffectParameters.xaml.cs">
       <DependentUpon>TemporaryEffectParameters.xaml</DependentUpon>
@@ -691,6 +694,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Assets\SharedControl\CharacterControl\CharacterBehaviorList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -795,7 +802,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportEffectParameters.xaml">
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportRandomEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
