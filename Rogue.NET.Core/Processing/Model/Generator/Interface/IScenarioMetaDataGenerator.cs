@@ -10,6 +10,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator.Interface
         ScenarioMetaData CreateScenarioMetaData(ConsumableTemplate template);
         ScenarioMetaData CreateScenarioMetaData(EquipmentTemplate template);
         ScenarioMetaData CreateScenarioMetaData(EnemyTemplate template);
+        ScenarioMetaData CreateScenarioMetaData(FriendlyTemplate template);
+        ScenarioMetaData CreateScenarioMetaData(TemporaryCharacterTemplate template);
         ScenarioMetaData CreateScenarioMetaData(DoodadTemplate template);
         ScenarioMetaData CreateScenarioMetaData(SkillSetTemplate template);
         ScenarioMetaData CreateScenarioMetaData(DoodadNormalType doodadNormalType);

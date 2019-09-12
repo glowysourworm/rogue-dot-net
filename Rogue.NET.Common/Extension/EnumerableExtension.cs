@@ -209,7 +209,13 @@ namespace Rogue.NET.Common.Extension
         /// </summary>
         public static T MinBy<T, V>(this IEnumerable<T> collection, Func<T, V> selector) where V : IComparable
         {
-            return MoreEnumerable.MinBy(collection, selector).Min();
+
+            return collection.Select(x => new { Item = x, Value = selector(x) })
+                             .OrderBy(x => x.Value)
+                             .Select(x => x.Item)
+                             .FirstOrDefault();
+
+            //return MoreEnumerable.MinBy(collection, selector).Min();
         }
 
         /// <summary>

@@ -82,6 +82,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is EnemyAlterationTemplate)
                 return GenerateAlteration(template as EnemyAlterationTemplate);
 
+            else if (template is FriendlyAlterationTemplate)
+                return GenerateAlteration(template as FriendlyAlterationTemplate);
+
+            else if (template is TemporaryCharacterAlterationTemplate)
+                return GenerateAlteration(template as TemporaryCharacterAlterationTemplate);
+
             else if (template is EquipmentAttackAlterationTemplate)
                 return GenerateAlteration(template as EquipmentAttackAlterationTemplate);
 
@@ -132,6 +138,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
+        public FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template)
+        {
+            return new FriendlyAlteration()
+            {
+                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+                Cost = GenerateAlterationCost(template.Cost),
+                Effect = GenerateAlterationEffect(template.Effect as IFriendlyAlterationEffectTemplate),
+                RogueName = template.Name
+            };
+        }
+
+        public TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template)
+        {
+            return new TemporaryCharacterAlteration()
+            {
+                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
+                Cost = GenerateAlterationCost(template.Cost),
+                Effect = GenerateAlterationEffect(template.Effect as ITemporaryCharacterAlterationEffectTemplate),
+                RogueName = template.Name
+            };
+        }
+
         public EquipmentAttackAlteration GenerateAlteration(EquipmentAttackAlterationTemplate template)
         {
             return new EquipmentAttackAlteration()
@@ -171,28 +199,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             };
         }
 
-        public FriendlyAlteration GenerateAlteration(FriendlyAlterationTemplate template)
-        {
-            return new FriendlyAlteration()
-            {
-                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
-                Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect as IFriendlyAlterationEffectTemplate),
-                RogueName = template.Name
-            };
-        }
-
-        public TemporaryCharacterAlteration GenerateAlteration(TemporaryCharacterAlterationTemplate template)
-        {
-            return new TemporaryCharacterAlteration()
-            {
-                AnimationGroup = _animationGenerator.GenerateAnimationGroup(template.AnimationGroup),
-                Cost = GenerateAlterationCost(template.Cost),
-                Effect = GenerateAlterationEffect(template.Effect),
-                RogueName = template.Name
-            };
-        }
-
         public SkillAlteration GenerateAlteration(SkillAlterationTemplate template)
         {
             return new SkillAlteration()
@@ -223,6 +229,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is CreateEnemyAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
+
+            else if (template is CreateFriendlyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateFriendlyAlterationEffectTemplate);
+
+            else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
 
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
@@ -287,6 +299,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is CreateEnemyAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
+            else if (template is CreateFriendlyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateFriendlyAlterationEffectTemplate);
+
+            else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
+
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
 
@@ -328,6 +346,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             else if (template is CreateEnemyAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
+
+            else if (template is CreateFriendlyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateFriendlyAlterationEffectTemplate);
+
+            else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
 
             else if (template is EquipmentDamageAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentDamageAlterationEffectTemplate);
@@ -461,6 +485,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             else if (template is CreateEnemyAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as CreateEnemyAlterationEffectTemplate);
 
+            else if (template is CreateFriendlyAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateFriendlyAlterationEffectTemplate);
+
+            else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
+                return GenerateAlterationEffect(template as CreateTemporaryCharacterAlterationEffectTemplate);
+
             else if (template is EquipmentEnhanceAlterationEffectTemplate)
                 return GenerateAlterationEffect(template as EquipmentEnhanceAlterationEffectTemplate);
 
@@ -576,6 +606,28 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             return new CreateEnemyAlterationEffect()
             {
                 Enemy = template.Enemy,
+                RandomPlacementType = template.RandomPlacementType,
+                Range = template.Range,
+                RogueName = template.Name
+            };
+        }
+
+        protected CreateFriendlyAlterationEffect GenerateAlterationEffect(CreateFriendlyAlterationEffectTemplate template)
+        {
+            return new CreateFriendlyAlterationEffect()
+            {
+                Friendly = template.Friendly,
+                RandomPlacementType = template.RandomPlacementType,
+                Range = template.Range,
+                RogueName = template.Name
+            };
+        }
+
+        protected CreateTemporaryCharacterAlterationEffect GenerateAlterationEffect(CreateTemporaryCharacterAlterationEffectTemplate template)
+        {
+            return new CreateTemporaryCharacterAlterationEffect()
+            {
+                TemporaryCharacter = template.TemporaryCharacter,
                 RandomPlacementType = template.RandomPlacementType,
                 Range = template.Range,
                 RogueName = template.Name

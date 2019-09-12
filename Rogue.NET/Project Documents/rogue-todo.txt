@@ -2434,4 +2434,104 @@ IMMEDIATE TODO'S:
 					   
 					   The "Outlined Path Geometry" didn't really work. So, may have to do it by hand.. but it would hopefully speed up
 					   rendering and allow for a larger layout dimension (for really really big levels)
+					   
+	LEVEL CREATION:
+	
+		The editor has something like "placements" for each of the scenario assets. It might be nicer for people to use if it just layed out
+		the levels one-by-one; but with a list of weighted assets to build:
+		
+		Scenario Template:
+		
+			LevelTemplate[] Levels
+			
+				LevelTemplate
+				
+					"Layout Array with a weight"[]
+					"Enemy Array with a weight"[]
+					etc...
+					
+					int NumberOfEnemies = "Total number of draws from the enemy array with a weighting"
+					etc...
+		
+		So, it'd be a lot more intuitive to do that way; and there could even be a separate tab for the asset tree: [Scenario Assets, Level Assets]
+				
+		Also, adding an asset to a level could draw from a saved "Template" -> Example: New Enemy (for Level 1) -> (Choose) { Easy, Medium, Hard }
+		
+		Then, it could add one with nothing special, then attack attributes, then maybe something like a skill behavior (for Hard). The same could
+		go for creating a new level, or any asset; but it would be easy for people to do and see what they made right away.
+		
+	LEVEL OBJECTIVES:
+	
+		Could have objectives for each level that are something like scenario objectives; but they could be "required" or "optional" for completing a 
+		level.
+		
+			- Defeat all enemies
+			- Pull a series of levers
+			- Find a special item
+			- Defeat a special enemy
+			- Push a block onto a switch
+			- etc...
+			
+		Thought of having two-state doodads.. which could be simple to have. Or, collections of doodads for different purposes.. Or also room connectors
+		that are stair-wells.. but something to have a goal for the level would be good.
+		
+	LEVEL BRANCHING:
+	
+		So, if the levels were setup like the above - as a definite list of templates - then, it would be straight-forward to actually have each level
+		have multiple randomly chosen branches. THIS WOULD RANDOMIZE THE STORYLINE. 
+	
+			- Just have weights for each branch; and if it contains a scenario objective that hasn't been generated - then generate it absolutely.
+			
+		Example: The 7 princes of Hell
+		
+			- Some 10 levels (near the end) of the Paladin scenario have branched levels:
+			
+				- Branch 1:  Abbadon (Level Objective) (So, it would be either required or optional to defeat Abbadon on this level)
+				- Branch 2:  Mephisto (Level Objective)
+				- Branch 3:  ...
+				- Branch 10: Normal Level
+				All except for Lucifer and King William.
+				
+			This would give random opportunities to fight the 7 princes and, perhaps, have scenario "Interludes" to show more of the storyline
+			if it's configured. (Interlude being another screen with some text)
+			
+			- Last 3 levels would just have King William and Lucifer; but with an optional side-quest: "Gwenyver"
+			
+				(Levels 48, 49)
+				- Branch 1: King William (Scenario Objective) (MANDATORY ONCE)
+				- Branch 2: Gwenyver (Level Objective) (You find her mirror and manifest her ghost to get more of the story)
+				- Branch 3: Normal Level
+				
+				(Level 50)
+				- Branch 1: Lucifer
 						
+		It would be a lot more fun if there were random parts to the story that you could discover.
+		
+	Friendlies / Temporary Characters:
+	
+		- Following the Player: Going to set desired location as Player.Location and let them move how they're configured { HeatSeeker, PathFinder, Random, etc..}
+		
+		- Managing Player Party: This is going to be KEPT SIMPLE.
+		
+			Friendlies: They become part of the Player's "Party" when they have the Player in their visible range.
+			
+			Temporary Characters:  They either follow the Player or just attack Player-Aligned units during combat.
+								   THEY DON'T FOLLOW THE SOURCE ENEMY.
+								   
+			Player "Party": All friendlies become part of the Player's "Party" and are marked to be removed and added to
+							the next level along with the player. 
+							
+							Their paths will overlap on the staircase until they move around.
+							
+			Temporary Characters:  These will dis-appear when the Player leaves the level.
+			
+	- TODO: Need to think about a better design for keeping objects to prevent exposing dictionaries. It's efficient; but exceptions may need
+			to be kept a little better so that the collection can be managed internally and have more verbose exception handling.
+			
+			Scenario Encyclopedia, Consumables, Equipment, Inventory, etc...
+			
+			Also, might be nice to have a reflection based search to fill the "Encyclopedia Rouge-Tanica"
+			
+	- TODO: Change "Magic" Doodad to some other name.. And expand definition to form a base for new types
+	
+	- TODO: Force GridLocation to be a struct and use GridLocation.Empty

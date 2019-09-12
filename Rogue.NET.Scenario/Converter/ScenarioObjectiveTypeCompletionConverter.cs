@@ -24,7 +24,7 @@ namespace Rogue.NET.Scenario.Converter
                 case DungeonMetaDataObjectTypes.Doodad:
                     return string.Format("Seek Out and Use \"{0}\" Once...", viewModel.RogueName);
 
-                case DungeonMetaDataObjectTypes.Enemy:
+                case DungeonMetaDataObjectTypes.Character:
                     return string.Format("Find and Destroy this Enemy \"{0}\"...", viewModel.RogueName);
 
                 case DungeonMetaDataObjectTypes.Item:

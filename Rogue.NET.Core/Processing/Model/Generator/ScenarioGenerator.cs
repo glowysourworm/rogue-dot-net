@@ -9,6 +9,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Skill.Extension;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
 using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
 
 namespace Rogue.NET.Core.Processing.Model.Generator
 {
@@ -57,8 +58,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Generate Player
             scenario.Player = _characterGenerator
                                 .GeneratePlayer(configuration.PlayerTemplates
-                                                             .First(x => x.Name == characterClassName), 
-                                                scenario.AttackAttributes.Values);
+                                                             .First(x => x.Name == characterClassName));
 
             var levels = _layoutGenerator.CreateDungeonLayouts(configuration);
 
@@ -74,6 +74,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
             //Load Encyclopedia Rogue-Tanica (Enemies)
             foreach (var template in configuration.EnemyTemplates)
+                scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+            //Load Encyclopedia Rogue-Tanica (Friendlies)
+            foreach (var template in configuration.FriendlyTemplates)
                 scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
 
             //Load Encyclopedia Rogue-Tanica (Doodads)
@@ -112,6 +116,68 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 scenario.ScenarioEncyclopedia[consumable.RogueName].IsIdentified = true;
                 consumable.IsIdentified = true;
+            }
+
+            // Load Encyclopedia Rogue-Tanica (Temporary Characters) (A little more to do here to get all alterations)
+            foreach (var skillSet in configuration.SkillTemplates)
+            {
+                foreach (var skill in skillSet.Skills)
+                {
+                    if (skill.SkillAlteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (skill.SkillAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                    }
+                }
+            }
+            foreach (var enemy in configuration.EnemyTemplates)
+            {
+                // Search for Create Temporary Character Alteration Effect
+                foreach (var behavior in enemy.BehaviorDetails.Behaviors.Where(x => x.AttackType == CharacterAttackType.Alteration))
+                {
+                    if (behavior.Alteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (behavior.Alteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                    }
+                }
+            }
+            foreach (var doodad in configuration.DoodadTemplates)
+            {
+                // Search for Create Temporary Character Alteration Effect
+                if (doodad.IsAutomatic)
+                {
+                    if (doodad.AutomaticAlteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (doodad.AutomaticAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                    }
+                }
+                if (doodad.IsInvoked)
+                {
+                    if (doodad.InvokedAlteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (doodad.InvokedAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                    }
+                }
+            }
+            foreach (var consumable in configuration.ConsumableTemplates)
+            {
+                // Search for Create Temporary Character Alteration Effect
+                if (consumable.HasAlteration)
+                {
+                    if (consumable.ConsumableAlteration.Effect is CreateTemporaryCharacterAlterationEffectTemplate)
+                    {
+                        // Add the Temporary Character Template Meta-data
+                        var template = (consumable.ConsumableAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
+                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+                    }
+                }
             }
 
             return scenario;

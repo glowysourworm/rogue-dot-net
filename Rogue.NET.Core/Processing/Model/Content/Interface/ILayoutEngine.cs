@@ -16,6 +16,6 @@ namespace Rogue.NET.Core.Processing.Model.Content.Interface
         GridLocation GetRandomAdjacentLocation(GridLocation location, bool excludeOccupiedCells);
         IEnumerable<GridLocation> GetFreeAdjacentLocations(GridLocation location);
         IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location);
-        IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange);
+        IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange, bool includeSourceLocation);
     }
 }

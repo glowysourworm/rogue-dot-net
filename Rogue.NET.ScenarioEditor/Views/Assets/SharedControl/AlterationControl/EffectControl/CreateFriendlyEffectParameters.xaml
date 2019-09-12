@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.CreateMonsterEffectParameters"
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.CreateFriendlyEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -6,14 +6,14 @@
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
 
     <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <!-- Create Monster -->
+        
+        <!-- Friendly -->
         <Grid Margin="10">
             <TextBlock Text="Create Monster Enemy" Foreground="White" FontSize="18" HorizontalAlignment="Left" />
-            <ComboBox x:Name="CreateMonsterCB" 
-                                SelectedValue="{Binding CreateMonsterEnemy}"
-                                DisplayMemberPath="Name"
-                                SelectedValuePath="Name"
-                                Width="150" HorizontalAlignment="Right"/>
+            <ComboBox x:Name="FriendlyCB" 
+                        SelectedItem="{Binding Friendly}"
+                        DisplayMemberPath="Name"
+                        Width="150" HorizontalAlignment="Right"/>
 
         </Grid>
 

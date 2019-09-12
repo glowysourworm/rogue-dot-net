@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.CreateTemporaryCharacterEffectParameters"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core">
+
+    <TabControl Background="Black" TabStripPlacement="Top">
+        <TabItem Header="Parameters">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch">
+
+                <!-- Random Placement Type -->
+                <Grid Margin="10">
+                    <GroupBox Header="Random Placement Type">
+                        <StackPanel>
+                            <TextBlock Text="Choose where to place created character (monster) relative to the source character" Foreground="White" FontSize="18" Margin="10" />
+                            <controls:RadioButtonEnumControl EnumType="{x:Type coreModelEnums:AlterationRandomPlacementType}"
+                                                             EnumValue="{Binding RandomPlacementType, Mode=TwoWay}" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+
+                <!-- Range -->
+                <Grid Margin="10">
+                    <TextBlock Text="Range (From Source Character)" Foreground="White" FontSize="18" Margin="10" HorizontalAlignment="Left" />
+                    <toolkit:IntegerUpDown Value="{Binding Range}" Minimum="1" Maximum="20" HorizontalAlignment="Right"/>
+                </Grid>
+
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Temporary Character">
+            <assets:TemporaryCharacter DataContext="{Binding TemporaryCharacter}" />
+        </TabItem>
+    </TabControl>
+</UserControl>

@@ -53,6 +53,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             }
         }
 
-        public CreateTemporaryCharacterAlterationEffectTemplate() { }
+        public CreateTemporaryCharacterAlterationEffectTemplate()
+        {
+            this.TemporaryCharacter = new TemporaryCharacterTemplate();
+        }
     }
 }

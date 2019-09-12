@@ -8,10 +8,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 {
     [PartCreationPolicy(CreationPolicy.NonShared)]
     [Export]
-    public partial class CreateMonsterEffectParameters : UserControl
+    public partial class CreateFriendlyEffectParameters : UserControl
     {
         [ImportingConstructor]
-        public CreateMonsterEffectParameters(
+        public CreateFriendlyEffectParameters(
                 IRogueEventAggregator eventAggregator,
                 IScenarioCollectionProvider scenarioCollectionProvider)
         {
@@ -27,7 +27,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.CreateMonsterCB.ItemsSource = provider.Enemies;
+            this.FriendlyCB.ItemsSource = provider.Friendlies;
         }
     }
 }

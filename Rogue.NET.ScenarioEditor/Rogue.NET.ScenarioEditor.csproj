@@ -419,6 +419,12 @@
     </Compile>
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
+      <DependentUpon>CreateTemporaryCharacterEffectParameters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateFriendlyEffectParameters.xaml.cs">
+      <DependentUpon>CreateFriendlyEffectParameters.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml.cs">
       <DependentUpon>TeleportManualEffectParameters.xaml</DependentUpon>
     </Compile>
@@ -467,8 +473,8 @@
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\ChangeLevelEffectParameters.xaml.cs">
       <DependentUpon>ChangeLevelEffectParameters.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml.cs">
-      <DependentUpon>CreateMonsterEffectParameters.xaml</DependentUpon>
+    <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateEnemyEffectParameters.xaml.cs">
+      <DependentUpon>CreateEnemyEffectParameters.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\DrainMeleeEffectParameters.xaml.cs">
       <DependentUpon>DrainMeleeEffectParameters.xaml</DependentUpon>
@@ -696,6 +702,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateFriendlyEffectParameters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\TeleportManualEffectParameters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -760,7 +774,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateMonsterEffectParameters.xaml">
+    <Page Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateEnemyEffectParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

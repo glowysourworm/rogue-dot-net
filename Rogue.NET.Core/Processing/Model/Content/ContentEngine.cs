@@ -364,7 +364,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         otherTeleporter.IsHidden = false;
 
                         // Have to boot enemy if it's sitting on other teleporter
-                        if (character is Player && level.IsCellOccupiedByEnemy(otherTeleporter.Location))
+                        if (character is Player && level.IsCellOccupiedByCharacter(otherTeleporter.Location, _modelService.Player.Location))
                         {
                             var enemy = level.GetAt<Enemy>(otherTeleporter.Location);
 
@@ -633,13 +633,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 else
                 {
                     // Desired location is the ultimate destination for the character
-                    var desiredLocation = CalculateDesiredLocation(character);
+                    var desiredLocation = CalculateDesiredLocationInRange(character);
 
-                    if (desiredLocation != null)
+                    if (desiredLocation != GridLocation.Empty)
                     {
                         // Move location is the next location for the character
                         var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
-                        if (moveLocation != null)
+                        if (moveLocation != null &&
+                            moveLocation != GridLocation.Empty)
                         {
                             ProcessCharacterMove(character, moveLocation);
                             actionTaken = true;
@@ -659,7 +660,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         {
             //Return random if confused
             if (character.Is(CharacterStateType.MovesRandomly))
-                return _layoutEngine.GetRandomAdjacentLocation(character.Location, true);
+                return _layoutEngine.GetRandomAdjacentLocation(character.Location, true) ?? GridLocation.Empty;
 
             switch (character.BehaviorDetails.CurrentBehavior.MovementType)
             {
@@ -667,22 +668,21 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     return _layoutEngine.GetRandomAdjacentLocation(character.Location, true);
                 case CharacterMovementType.HeatSeeker:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
-                                        .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
-                                        .FirstOrDefault();
+                                        .MinBy(x => Calculator.RoguianDistance(x, desiredLocation)) ?? GridLocation.Empty;
                 case CharacterMovementType.StandOffIsh:
                     return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
-                                        .LastOrDefault();
+                                        .LastOrDefault() ?? GridLocation.Empty;
                 case CharacterMovementType.PathFinder:
                     var nextLocation = _pathFinder.FindPath(character.Location, desiredLocation, character.GetLightRadius(), character.BehaviorDetails.CanOpenDoors);
                     return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
-                                                        .FirstOrDefault();
+                                                        .FirstOrDefault() ?? GridLocation.Empty;
                 default:
                     throw new Exception("Unknown Enemy Movement Type");
             }
         }
-        private GridLocation CalculateDesiredLocation(NonPlayerCharacter character)
+        private GridLocation CalculateDesiredLocationInRange(NonPlayerCharacter character)
         {
             // Desired Location
             //
@@ -699,14 +699,17 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                          .Location;
             }
 
-            // If Player-Aligned - Move with Player
-            else if (character.AlignmentType == CharacterAlignmentType.PlayerAligned)
+            // If Player-Aligned - Move with Player (if they're in range)
+            else if (character.AlignmentType == CharacterAlignmentType.PlayerAligned &&
+                     _modelService.CharacterContentInformation
+                                  .GetVisibleCharacters(character)
+                                  .Contains(_modelService.Player))
             {
                 // TODO: Need some other parameters like: "Keep a certain distance from Player"
                 return _modelService.Player.Location;
             }
             else
-                return null;
+                return GridLocation.Empty;
         }
         private void ProcessCharacterMove(NonPlayerCharacter character, GridLocation moveLocation)
         {
@@ -787,16 +790,20 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                 .GetVisibleCharacters(character)
                                                 .Where(x => x is NonPlayerCharacter)
                                                 .Cast<NonPlayerCharacter>()
-                                                .Where(x => x.AlignmentType == CharacterAlignmentType.EnemyAligned);
+                                                .Where(x => x.AlignmentType == CharacterAlignmentType.EnemyAligned)
+                                                .Actualize();
             }
 
             // Enemy Aligned
             else
             {
+                // Adding a cast to provide a way to see IComparable (see MoreLinq MinBy)
                 opposingCharactersInRange = _modelService
                                                 .CharacterContentInformation
                                                 .GetVisibleCharacters(character)
-                                                .Where(x => x is Friendly || x is Player);
+                                                .Where(x => x is Friendly || x is Player)
+                                                .Cast<Character>()
+                                                .Actualize();
             }
 
             return opposingCharactersInRange.Actualize();
@@ -817,7 +824,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var opposingCharacterTargets = opposingCharactersInVisibleRange
                                                 .Where(x => character.IsAlerted || 
                                                            !x.Is(CharacterStateType.Invisible) || 
-                                                          (!character.IsAlerted && x.Is(CharacterStateType.Invisible)));
+                                                          (!character.IsAlerted && x.Is(CharacterStateType.Invisible))).Actualize();
 
             var adjacentLocations = _modelService.Level.Grid.GetAdjacentLocations(character.Location);
             var nearestTargetCharacter = opposingCharacterTargets.MinBy(x => Calculator.RoguianDistance(x.Location, character.Location));
@@ -868,7 +875,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // If Adjacent Opposing Character
             if (isTargetAdjacent)
             {
-                var success = _interactionProcessor.CalculateInteraction(targetCharacter, _modelService.Player, PhysicalAttackType.Melee);
+                var success = _interactionProcessor.CalculateInteraction(character, targetCharacter, PhysicalAttackType.Melee);
 
                 // If Successful, process Equipment Attack Alterations
                 foreach (var alteration in character.Equipment
@@ -969,7 +976,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Create enemy from template
             var template = enemyTemplates[_randomSequenceGenerator.Get(0, enemyTemplates.Count)];
-            var enemy = _characterGenerator.GenerateEnemy(template, _modelService.AttackAttributes);
+            var enemy = _characterGenerator.GenerateEnemy(template);
             
             // Map enemy location to level
             enemy.Location = availableLocation;

@@ -11,7 +11,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [Serializable]
     [UIType(DisplayName = "Create Temporary Character",
             Description = "Creates an Temporary Character",
-            ViewType = typeof(CreateMonsterEffectParameters))]
+            ViewType = typeof(CreateTemporaryCharacterEffectParameters))]
     public class CreateTemporaryCharacterAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel,
                                                                                                 IDoodadAlterationEffectTemplateViewModel,
                                                                                                 IEnemyAlterationEffectTemplateViewModel,
@@ -37,6 +37,9 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             set { this.RaiseAndSetIfChanged(ref _range, value); }
         }
 
-        public CreateTemporaryCharacterAlterationEffectTemplateViewModel() { }
+        public CreateTemporaryCharacterAlterationEffectTemplateViewModel()
+        {
+            this.TemporaryCharacter = new TemporaryCharacterTemplateViewModel();
+        }
     }
 }

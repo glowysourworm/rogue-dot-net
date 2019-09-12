@@ -11,6 +11,7 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
     {
         // Assets
         ObservableCollection<EnemyTemplateViewModel> Enemies { get; }
+        ObservableCollection<FriendlyTemplateViewModel> Friendlies { get; }
         ObservableCollection<EquipmentTemplateViewModel> Equipment { get; }
         ObservableCollection<ConsumableTemplateViewModel> Consumables { get; }
         ObservableCollection<SkillSetTemplateViewModel> SkillSets { get; }

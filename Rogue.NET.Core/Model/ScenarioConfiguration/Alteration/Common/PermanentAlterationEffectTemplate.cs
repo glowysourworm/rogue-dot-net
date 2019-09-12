@@ -6,13 +6,14 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    public class PermanentAlterationEffectTemplate 
-        : Template, IConsumableAlterationEffectTemplate,
-                    IConsumableProjectileAlterationEffectTemplate,
-                    IDoodadAlterationEffectTemplate,
-                    IEnemyAlterationEffectTemplate,
-                    IEquipmentAttackAlterationEffectTemplate,
-                    ISkillAlterationEffectTemplate
+    public class PermanentAlterationEffectTemplate : Template, IConsumableAlterationEffectTemplate,
+                                                               IConsumableProjectileAlterationEffectTemplate,
+                                                               IDoodadAlterationEffectTemplate,
+                                                               IEnemyAlterationEffectTemplate,
+                                                               IFriendlyAlterationEffectTemplate,
+                                                               ITemporaryCharacterAlterationEffectTemplate,
+                                                               IEquipmentAttackAlterationEffectTemplate,
+                                                               ISkillAlterationEffectTemplate
     {
         private Range<double> _strengthRange;
         private Range<double> _intelligenceRange;

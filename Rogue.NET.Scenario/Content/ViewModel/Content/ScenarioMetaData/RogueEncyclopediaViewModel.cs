@@ -98,6 +98,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
                 constructor(DoodadType.Normal.ToString(), "Normal Scenario Objects", "Objects that aid you on your way"),
                 constructor(DoodadType.Magic.ToString(), "Magic Scenario Objects", "Objects that have special effects"),
                 constructor("Enemy", "Enemy", "Characters that will likely try and hurt you"),
+                constructor("Friendly", "Friendly", "Characters that will try and be your buddy"),
+                constructor("Temporary Character", "Temporary Character", "Characters that are manifest in-game"),
                 constructor("Skill", "Skill", "Skill sets that you can learn"),
                 constructor(OBJECTIVE_NAME, OBJECTIVE_NAME, "Enemies, Items, or Objects that are your mission objective")
 

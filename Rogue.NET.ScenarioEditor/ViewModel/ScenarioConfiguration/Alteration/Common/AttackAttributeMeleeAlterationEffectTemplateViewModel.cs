@@ -12,15 +12,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
     [UIType(DisplayName = "Attack Attribute (Combat)", 
             Description = "Creates a one-time hit towards the affected character(s)",
             ViewType = typeof(AttackAttributeMeleeEffectParameters))]
-    public class AttackAttributeMeleeAlterationEffectTemplateViewModel 
-        : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
-                             IConsumableProjectileAlterationEffectTemplateViewModel,
-                             IDoodadAlterationEffectTemplateViewModel,
-                             IEnemyAlterationEffectTemplateViewModel,
-                             IFriendlyAlterationEffectTemplateViewModel,
-                             ITemporaryCharacterAlterationEffectTemplateViewModel,
-                             IEquipmentAttackAlterationEffectTemplateViewModel,
-                             ISkillAlterationEffectTemplateViewModel
+    public class AttackAttributeMeleeAlterationEffectTemplateViewModel : TemplateViewModel, IConsumableAlterationEffectTemplateViewModel, 
+                                                                                            IConsumableProjectileAlterationEffectTemplateViewModel,
+                                                                                            IDoodadAlterationEffectTemplateViewModel,
+                                                                                            IEnemyAlterationEffectTemplateViewModel,
+                                                                                            IFriendlyAlterationEffectTemplateViewModel,
+                                                                                            ITemporaryCharacterAlterationEffectTemplateViewModel,
+                                                                                            IEquipmentAttackAlterationEffectTemplateViewModel,
+                                                                                            ISkillAlterationEffectTemplateViewModel
     {
         public ObservableCollection<AttackAttributeTemplateViewModel> AttackAttributes { get; set; }
 

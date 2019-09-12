@@ -84,6 +84,22 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TeleportRandomAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffect), AlterationCostType.OneTime }
                 });
+            // IFriendlyAlterationEffect -> AlterationCostType
+            _alterationCostTypes.Add(
+                typeof(IFriendlyAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                    { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
+                    { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
+                    { typeof(PermanentAlterationEffect), AlterationCostType.None },
+                    { typeof(TemporaryAlterationEffect), AlterationCostType.None }
+                });
+            // ITemporaryCharacterAlterationEffect -> AlterationCostType
+            _alterationCostTypes.Add(
+                typeof(ITemporaryCharacterAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                    { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
+                    { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
+                    { typeof(PermanentAlterationEffect), AlterationCostType.None },
+                    { typeof(TemporaryAlterationEffect), AlterationCostType.None }
+                });
             // IEquipmentAttackAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
                 typeof(IEquipmentAttackAlterationEffect), new Dictionary<Type, AlterationCostType>(){
@@ -145,9 +161,10 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(TemporaryAlterationEffect), AlterationCostType.OneTime },
                     { typeof(TransmuteAlterationEffect), AlterationCostType.OneTime }
                 });
+
             // IConsumableProjectileAlterationEffect -> AlterationCostType
             _alterationCostTypes.Add(
-                typeof(ISkillAlterationEffect), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableProjectileAlterationEffect), new Dictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffect), AlterationCostType.None },
                     { typeof(PermanentAlterationEffect), AlterationCostType.None },
@@ -192,6 +209,22 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(StealAlterationEffect), true },
                     { typeof(RunAwayAlterationEffect), false },
                     { typeof(TeleportRandomAlterationEffect), false },
+                    { typeof(TemporaryAlterationEffect), true }
+                });
+            // IFriendlyAlterationEffect -> Block Support
+            _alterationBlockingSupport.Add(
+                typeof(IFriendlyAlterationEffect), new Dictionary<Type, bool>(){
+                    { typeof(AttackAttributeMeleeAlterationEffect), true },
+                    { typeof(AttackAttributeTemporaryAlterationEffect), true },
+                    { typeof(PermanentAlterationEffect), true },
+                    { typeof(TemporaryAlterationEffect), true }
+                });
+            // ITemporaryCharacterAlterationEffect -> Block Support
+            _alterationBlockingSupport.Add(
+                typeof(ITemporaryCharacterAlterationEffect), new Dictionary<Type, bool>(){
+                    { typeof(AttackAttributeMeleeAlterationEffect), true },
+                    { typeof(AttackAttributeTemporaryAlterationEffect), true },
+                    { typeof(PermanentAlterationEffect), true },
                     { typeof(TemporaryAlterationEffect), true }
                 });
             // IEquipmentAttackAlterationEffect -> Block Support
@@ -257,7 +290,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffect -> Block Support (NONE FOR PROJECTILES)
             _alterationBlockingSupport.Add(
-                typeof(ISkillAlterationEffect), new Dictionary<Type, bool>(){
+                typeof(IConsumableProjectileAlterationEffect), new Dictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffect), false },
                     { typeof(AttackAttributeTemporaryAlterationEffect), false },
                     { typeof(PermanentAlterationEffect), false },
@@ -303,6 +336,22 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(StealAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(RunAwayAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TeleportRandomAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime }
+                });
+            // IFriendlyAlterationEffect -> AlterationCostType
+            _alterationTemplateCostTypes.Add(
+                typeof(IFriendlyAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                    { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime }
+                });
+            // ITemporaryCharacterAlterationEffect -> AlterationCostType
+            _alterationTemplateCostTypes.Add(
+                typeof(ITemporaryCharacterAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                    { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.OneTime },
+                    { typeof(PermanentAlterationEffectTemplate), AlterationCostType.OneTime },
                     { typeof(TemporaryAlterationEffectTemplate), AlterationCostType.OneTime }
                 });
             // IEquipmentAttackAlterationEffectTemplate -> AlterationCostType
@@ -368,7 +417,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffectTemplate -> AlterationCostType
             _alterationTemplateCostTypes.Add(
-                typeof(ISkillAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
+                typeof(IConsumableProjectileAlterationEffectTemplate), new Dictionary<Type, AlterationCostType>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), AlterationCostType.None },
                     { typeof(PermanentAlterationEffectTemplate), AlterationCostType.None },
@@ -413,6 +462,22 @@ namespace Rogue.NET.Core.Model.Static
                     { typeof(StealAlterationEffectTemplate), true },
                     { typeof(RunAwayAlterationEffectTemplate), false },
                     { typeof(TeleportRandomAlterationEffectTemplate), false },
+                    { typeof(TemporaryAlterationEffectTemplate), true }
+                });
+            // IFriendlyAlterationEffect -> Block Support
+            _alterationTemplateBlockingSupport.Add(
+                typeof(IFriendlyAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                    { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
+                    { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
+                    { typeof(PermanentAlterationEffectTemplate), true },
+                    { typeof(TemporaryAlterationEffectTemplate), true }
+                });
+            // ITemporaryCharacterAlterationEffect -> Block Support
+            _alterationTemplateBlockingSupport.Add(
+                typeof(ITemporaryCharacterAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                    { typeof(AttackAttributeMeleeAlterationEffectTemplate), true },
+                    { typeof(AttackAttributeTemporaryAlterationEffectTemplate), true },
+                    { typeof(PermanentAlterationEffectTemplate), true },
                     { typeof(TemporaryAlterationEffectTemplate), true }
                 });
             // IEquipmentAttackAlterationEffectTemplate -> Block Support
@@ -478,7 +543,7 @@ namespace Rogue.NET.Core.Model.Static
                 });
             // IConsumableProjectileAlterationEffectTemplate -> Block Support (NONE FOR PROJECTILES)
             _alterationTemplateBlockingSupport.Add(
-                typeof(ISkillAlterationEffectTemplate), new Dictionary<Type, bool>(){
+                typeof(IConsumableProjectileAlterationEffectTemplate), new Dictionary<Type, bool>(){
                     { typeof(AttackAttributeMeleeAlterationEffectTemplate), false },
                     { typeof(AttackAttributeTemporaryAlterationEffectTemplate), false },
                     { typeof(PermanentAlterationEffectTemplate), false },
@@ -491,7 +556,7 @@ namespace Rogue.NET.Core.Model.Static
         // Ensures that all alteration effect types are accounted for; and that the dictionaries are ready
         private static void Validate()
         {
-            var alterationEffectTypes = 
+            var alterationEffectTypes =
                 typeof(AlterationSpecificationContainer).Assembly
                                                         .GetTypes()
                                                         .Where(x => typeof(IAlterationEffect).IsAssignableFrom(x));
@@ -507,6 +572,14 @@ namespace Rogue.NET.Core.Model.Static
                 // Check for interface inheritance
                 foreach(var interfaceType in alterationEffectType.GetInterfaces())
                 {
+                    // Have to filter out this inherited member
+                    if (interfaceType == typeof(IAlterationEffect))
+                        continue;
+
+                    // Have to filter out anything that DOESN'T inherit from IAlterationEffect
+                    if (!typeof(IAlterationEffect).IsAssignableFrom(interfaceType))
+                        continue;
+
                     if (!_alterationCostTypes.ContainsKey(interfaceType))
                         throw new Exception("Unhandled IAlterationEffect Interface Type (Cost Type):  " + interfaceType.Name + " for " + alterationEffectType.Name);
 
@@ -527,16 +600,24 @@ namespace Rogue.NET.Core.Model.Static
                 // Check for interface inheritance
                 foreach (var interfaceType in alterationTemplateEffectType.GetInterfaces())
                 {
-                    if (!_alterationCostTypes.ContainsKey(interfaceType))
+                    // Have to filter out this inherited member
+                    if (interfaceType == typeof(IAlterationEffectTemplate))
+                        continue;
+
+                    // Have to filter out anything that DOESN'T inherit from IAlterationEffectTemplate
+                    if (!typeof(IAlterationEffectTemplate).IsAssignableFrom(interfaceType))
+                        continue;
+
+                    if (!_alterationTemplateCostTypes.ContainsKey(interfaceType))
                         throw new Exception("Unhandled IAlterationEffectTemplate Interface Type (Cost Type):  " + interfaceType.Name + " for " + alterationTemplateEffectType.Name);
 
-                    if (!_alterationBlockingSupport.ContainsKey(interfaceType))
+                    if (!_alterationTemplateBlockingSupport.ContainsKey(interfaceType))
                         throw new Exception("Unhandled IAlterationEffectTemplate Interface Type (Blocking Support):  " + interfaceType.Name + " for " + alterationTemplateEffectType.Name);
 
-                    if (!_alterationCostTypes[interfaceType].ContainsKey(alterationTemplateEffectType))
+                    if (!_alterationTemplateCostTypes[interfaceType].ContainsKey(alterationTemplateEffectType))
                         throw new Exception("Unhandled Alteration Effect Template Implementation Type Type (Cost Type):  " + interfaceType.Name + " for " + alterationTemplateEffectType.Name);
 
-                    if (!_alterationBlockingSupport[interfaceType].ContainsKey(alterationTemplateEffectType))
+                    if (!_alterationTemplateBlockingSupport[interfaceType].ContainsKey(alterationTemplateEffectType))
                         throw new Exception("Unhandled Alteration Effect Template Implementation Type Type (Cost Type):  " + interfaceType.Name + " for " + alterationTemplateEffectType.Name);
                 }
             }
@@ -614,28 +695,28 @@ namespace Rogue.NET.Core.Model.Static
             var alterationEffectType = alterationEffect.GetType();
 
             if (alteration is ConsumableAlterationTemplate)
-                return _alterationCostTypes[typeof(IConsumableAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IConsumableAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is ConsumableProjectileAlterationTemplate)
-                return _alterationCostTypes[typeof(IConsumableProjectileAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IConsumableProjectileAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is DoodadAlterationTemplate)
-                return _alterationCostTypes[typeof(IDoodadAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IDoodadAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EnemyAlterationTemplate)
-                return _alterationCostTypes[typeof(IEnemyAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IEnemyAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentAttackAlterationTemplate)
-                return _alterationCostTypes[typeof(IEquipmentAttackAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IEquipmentAttackAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentCurseAlterationTemplate)
-                return _alterationCostTypes[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentEquipAlterationTemplate)
-                return _alterationCostTypes[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is SkillAlterationTemplate)
-                return _alterationCostTypes[typeof(ISkillAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateCostTypes[typeof(ISkillAlterationEffectTemplate)][alterationEffectType];
 
             else
                 throw new Exception("Unhandled IAlterationEffect Type");
@@ -647,28 +728,28 @@ namespace Rogue.NET.Core.Model.Static
             var alterationEffectType = alterationEffect.GetType();
 
             if (alteration is ConsumableAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IConsumableAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IConsumableAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is ConsumableProjectileAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IConsumableProjectileAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IConsumableProjectileAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is DoodadAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IDoodadAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IDoodadAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EnemyAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IEnemyAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IEnemyAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentAttackAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IEquipmentAttackAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IEquipmentAttackAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentCurseAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is EquipmentEquipAlterationTemplate)
-                return _alterationBlockingSupport[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(IEquipmentCurseAlterationEffectTemplate)][alterationEffectType];
 
             else if (alteration is SkillAlterationTemplate)
-                return _alterationBlockingSupport[typeof(ISkillAlterationEffectTemplate)][alterationEffectType];
+                return _alterationTemplateBlockingSupport[typeof(ISkillAlterationEffectTemplate)][alterationEffectType];
 
             else
                 throw new Exception("Unhandled IAlterationEffect Type");

@@ -10,6 +10,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
+
 namespace Rogue.NET.Core.Model.Scenario
 {
     [Serializable]
@@ -236,14 +238,13 @@ namespace Rogue.NET.Core.Model.Scenario
         /// </summary>
         /// <param name="cellPoint">point in question</param>
         /// <param name="playerLocation">player location (not provided by Level)</param>
-        /// <returns></returns>
-        public bool IsCellOccupied(GridLocation cellPoint, GridLocation playerLocation)
+        public bool IsCellOccupied(GridLocation location, GridLocation playerLocation)
         {
-            return (_levelContentGrid[cellPoint.Column, cellPoint.Row].Count > 0) || (cellPoint == playerLocation);
+            return (_levelContentGrid[location.Column, location.Row].Count > 0) || (location == playerLocation);
         }
-        public bool IsCellOccupiedByEnemy(GridLocation cellPoint)
+        public bool IsCellOccupiedByCharacter(GridLocation location, GridLocation playerLocation)
         {
-            return _levelContentGrid[cellPoint.Column, cellPoint.Row].Any(x => x is Enemy);
+            return _levelContentGrid[location.Column, location.Row].Any(x => x is CharacterBase) || (location == playerLocation);
         }        
 
         /// <summary>

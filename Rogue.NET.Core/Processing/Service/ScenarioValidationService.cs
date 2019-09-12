@@ -760,6 +760,22 @@ namespace Rogue.NET.Core.Processing.Service
                     return effect.Name + " has no Enemy set";
             }
 
+            else if (template is CreateFriendlyAlterationEffectTemplate)
+            {
+                var effect = template as CreateFriendlyAlterationEffectTemplate;
+
+                if (effect.Friendly == null)
+                    return effect.Name + " has no Friendly set";
+            }
+
+            else if (template is CreateTemporaryCharacterAlterationEffectTemplate)
+            {
+                var effect = template as CreateTemporaryCharacterAlterationEffectTemplate;
+
+                if (effect.TemporaryCharacter == null)
+                    return effect.Name + " has no Temporary Character set";
+            }
+
             else if (template is DrainMeleeAlterationEffectTemplate)
                 return null;
 

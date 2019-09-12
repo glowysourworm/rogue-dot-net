@@ -135,7 +135,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 for (int i = 0; (i < number || (enemyTemplate.IsObjectiveItem && !enemyTemplate.HasBeenGenerated))
                                             && !(enemyTemplate.IsUnique && enemyTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate, scenarioAttributes));
+                    level.AddContent(_characterGenerator.GenerateEnemy(enemyTemplate));
                 }
             }
         }
@@ -335,7 +335,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     var location = GetRandomCell(true, partyRoom, freeCells, freeRoomCells);
                     if (location != GridLocation.Empty)
                     { 
-                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate, scenarioAttributes);
+                        var enemy = _characterGenerator.GenerateEnemy(enemyTemplate);
                         enemy.Location = location;
                         level.AddContent(enemy);
                     }

@@ -12,8 +12,9 @@ namespace Rogue.NET.ScenarioEditor.Service
 {
     [Export(typeof(IScenarioCollectionProvider))]
     public class ScenarioCollectionProvider : IScenarioCollectionProvider
-    {
+    {        
         public ObservableCollection<EnemyTemplateViewModel> Enemies { get; private set; }
+        public ObservableCollection<FriendlyTemplateViewModel> Friendlies { get; private set; }
         public ObservableCollection<EquipmentTemplateViewModel> Equipment { get; private set; }
         public ObservableCollection<ConsumableTemplateViewModel> Consumables { get; private set; }
         public ObservableCollection<SkillSetTemplateViewModel> SkillSets { get; private set; }
@@ -39,6 +40,7 @@ namespace Rogue.NET.ScenarioEditor.Service
         private void Set(ScenarioConfigurationContainerViewModel configuration, IRogueEventAggregator eventAggregator)
         {
             this.Enemies = configuration.EnemyTemplates;
+            this.Friendlies = configuration.FriendlyTemplates;
             this.Equipment = configuration.EquipmentTemplates;
             this.Consumables = configuration.ConsumableTemplates;
             this.SkillSets = configuration.SkillTemplates;

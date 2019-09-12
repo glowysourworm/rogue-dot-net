@@ -44,7 +44,7 @@ namespace Rogue.NET.Scenario.Processing.Service
                     return scenarioContainer.Statistics.DoodadStatistics.Any(doodad => doodad.RogueName == metaData.RogueName);
 
                 // Must have slain one enemy
-                case DungeonMetaDataObjectTypes.Enemy:
+                case DungeonMetaDataObjectTypes.Character:
                     return scenarioContainer.Statistics.EnemyStatistics.Any(enemy => enemy.RogueName == metaData.RogueName);
 
                 // Must have one in Player inventory

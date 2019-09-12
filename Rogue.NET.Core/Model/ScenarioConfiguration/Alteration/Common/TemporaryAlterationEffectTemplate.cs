@@ -6,12 +6,13 @@ using System;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    public class TemporaryAlterationEffectTemplate 
-        : Template, IConsumableAlterationEffectTemplate, 
-                    IConsumableProjectileAlterationEffectTemplate,
-                    IDoodadAlterationEffectTemplate,
-                    IEnemyAlterationEffectTemplate,
-                    ISkillAlterationEffectTemplate
+    public class TemporaryAlterationEffectTemplate : Template, IConsumableAlterationEffectTemplate, 
+                                                               IConsumableProjectileAlterationEffectTemplate,
+                                                               IDoodadAlterationEffectTemplate,
+                                                               IEnemyAlterationEffectTemplate,
+                                                               IFriendlyAlterationEffectTemplate,
+                                                               ITemporaryCharacterAlterationEffectTemplate,
+                                                               ISkillAlterationEffectTemplate
     {
         private SymbolDeltaTemplate _symbolAlteration;
         private bool _canSeeInvisibleCharacters;

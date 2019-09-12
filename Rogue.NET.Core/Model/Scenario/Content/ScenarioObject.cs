@@ -73,7 +73,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
         public override string ToString()
         {
-            return this.RogueName;
+            return this.RogueName + (this.Location ?? GridLocation.Empty).ToString();
         }
     }
 }

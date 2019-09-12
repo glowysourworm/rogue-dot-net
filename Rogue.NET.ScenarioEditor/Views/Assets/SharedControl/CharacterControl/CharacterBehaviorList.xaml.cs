@@ -29,7 +29,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 
         private void RemoveBehaviorButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = this.DataContext as EnemyTemplateViewModel;
+            var viewModel = this.DataContext as NonPlayerCharacterTemplateViewModel;
             var behaviorViewModel = (sender as Button).DataContext as BehaviorTemplateViewModel;
             if (viewModel != null)
                 viewModel.BehaviorDetails.Behaviors.Remove(behaviorViewModel);
@@ -37,7 +37,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 
         private void AddBehaviorButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = this.DataContext as EnemyTemplateViewModel;
+            var viewModel = this.DataContext as NonPlayerCharacterTemplateViewModel;
             if (viewModel != null)
                 viewModel.BehaviorDetails.Behaviors.Add(new BehaviorTemplateViewModel()
                 {

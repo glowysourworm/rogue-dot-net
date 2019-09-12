@@ -3,7 +3,7 @@
     public enum DungeonMetaDataObjectTypes
     {
         Doodad,
-        Enemy,
+        Character,
         Item,
         Skill
     }

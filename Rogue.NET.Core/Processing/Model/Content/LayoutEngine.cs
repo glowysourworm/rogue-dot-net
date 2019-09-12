@@ -232,7 +232,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (cell1 == null || cell2 == null)
                 return false;
 
-            if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
+            if (level.IsCellOccupiedByCharacter(cell2.Location, _modelService.Player.Location) && includeBlockedByEnemy)
                 return true;
 
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
@@ -269,13 +269,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         {
                             b1 |= (diag1.Walls & oppositeCardinal1) != 0;
                             b1 |= (cell2.Walls & oppositeCardinal2) != 0;
-                            b1 |= (level.IsCellOccupiedByEnemy(diag1.Location) && includeBlockedByEnemy);
+                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByEnemy);
                         }
                         if (diag2 != null)
                         {
                             b2 |= (diag2.Walls & oppositeCardinal2) != 0;
                             b2 |= (cell2.Walls & oppositeCardinal1) != 0;
-                            b2 |= (level.IsCellOccupiedByEnemy(diag2.Location) && includeBlockedByEnemy);
+                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByEnemy);
                         }
                         return b1 && b2;
                     }
@@ -292,7 +292,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (cell1 == null || cell2 == null)
                 return true;
 
-            if (level.IsCellOccupiedByEnemy(cell2.Location) && includeBlockedByEnemy)
+            if (level.IsCellOccupiedByCharacter(cell2.Location, _modelService.Player.Location) && includeBlockedByEnemy)
                 return true;
 
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
@@ -331,7 +331,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             b1 |= (cell2.Doors & oppositeCardinal2) != 0;
                             b1 |= (diag1.Walls & oppositeCardinal1) != 0;
                             b1 |= (cell2.Walls & oppositeCardinal2) != 0;
-                            b1 |= (level.IsCellOccupiedByEnemy(diag1.Location) && includeBlockedByEnemy);
+                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByEnemy);
                         }
                         if (diag2 != null)
                         {
@@ -339,7 +339,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             b2 |= (cell2.Doors & oppositeCardinal1) != 0;
                             b2 |= (diag2.Walls & oppositeCardinal2) != 0;
                             b2 |= (cell2.Walls & oppositeCardinal1) != 0;
-                            b2 |= (level.IsCellOccupiedByEnemy(diag2.Location) && includeBlockedByEnemy);
+                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByEnemy);
                         }
 
                         // Both paths are blocked
@@ -381,9 +381,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             var adjacentLocations = level.Grid.GetAdjacentLocations(location);
 
-            return adjacentLocations.Where(x => x != null && !level.IsCellOccupiedByEnemy(x) && !(player.Location == location));
+            return adjacentLocations.Where(x => x != null && 
+                                                !level.IsCellOccupiedByCharacter(x, player.Location));
         }
-        public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange)
+        public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange, bool includeSourceLocation)
         {
             var level = _modelService.Level;
 
@@ -397,12 +398,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             // Iterate from the top left corner to the bottom right - respecting grid boundaries
             for (int i = Math.Max(location.Column - cellRange, 0); 
-                    (i < location.Column + cellRange) && 
+                    (i <= location.Column + cellRange) && 
                     (i < level.Grid.Bounds.Right); 
                     i++)
             {
                 for (int j = Math.Max(location.Row - cellRange, 0); 
-                        (j < location.Row + cellRange) && 
+                        (j <= location.Row + cellRange) && 
                         (j < level.Grid.Bounds.Bottom); 
                         j++)
                 {
@@ -410,8 +411,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     if (level.Grid[i, j] == null)
                         continue;
 
+                    // Check for source location
+                    if (level.Grid[i, j].Location == location &&
+                       !includeSourceLocation)
+                        continue;
+
                     // Check the range
-                    if (Calculator.EuclideanDistance(level.Grid[i, j].Location, location) < cellRange)
+                    if (Calculator.RoguianDistance(level.Grid[i, j].Location, location) <= cellRange)
                         result.Add(level.Grid[i, j].Location);
                 }
             }

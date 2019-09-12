@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
@@ -17,143 +19,105 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         public ScenarioMetaData CreateScenarioMetaData(ConsumableTemplate template)
         {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.ShortDescription,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = template.IsCursed,
-                IsCurseIdentified = false,
-                IsIdentified = template.IsObjectiveItem,           // Identify all objectives immediately
-                IsObjective = template.IsObjectiveItem,
-                IsUnique = template.IsUnique,
-                LongDescription = template.LongDescription,
-                ObjectType = DungeonMetaDataObjectTypes.Item,
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                SymbolType = template.SymbolDetails.Type,
+            var metaData = new ScenarioMetaData();
 
-                // Designation for Scenario Meta Data
-                Type = template.SubType.ToString()
-            };
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.AttackAttributes = new List<AttackAttributeTemplate>();
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Item;
+
+            // Designation for Scenario Meta Data
+            metaData.Type = template.SubType.ToString();
+
+            return metaData;
         }
 
         public ScenarioMetaData CreateScenarioMetaData(EquipmentTemplate template)
         {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.ShortDescription,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = template.IsCursed,
-                IsCurseIdentified = false,
-                IsIdentified = template.IsObjectiveItem,
-                IsObjective = template.IsObjectiveItem,
-                IsUnique = template.IsUnique,
-                LongDescription = template.LongDescription,
-                ObjectType = DungeonMetaDataObjectTypes.Item,
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                SymbolType = template.SymbolDetails.Type,
+            var metaData = new ScenarioMetaData();
 
-                // Designation for Scenario Meta Data
-                Type = template.Type.ToString()
-            };
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes);
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Item;
+
+            // Designation for Scenario Meta Data (Equipment)
+            metaData.Type = template.Type.ToString();
+
+            return metaData;
         }
 
         public ScenarioMetaData CreateScenarioMetaData(EnemyTemplate template)
         {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.ShortDescription,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = template.IsCursed,
-                IsCurseIdentified = false,
-                IsIdentified = template.IsObjectiveItem,
-                IsObjective = template.IsObjectiveItem,
-                IsUnique = template.IsUnique,
-                LongDescription = template.LongDescription,
-                ObjectType = DungeonMetaDataObjectTypes.Enemy,
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                SymbolType = template.SymbolDetails.Type,
+            var metaData = new ScenarioMetaData();
 
-                // Designation for Scenario Meta Data
-                Type = "Enemy"
-            };
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes);
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Character;
+
+            // Designation for Scenario Meta Data (Enemy)
+            metaData.Type = "Enemy";
+
+            return metaData;
+        }
+
+        public ScenarioMetaData CreateScenarioMetaData(FriendlyTemplate template)
+        {
+            var metaData = new ScenarioMetaData();
+
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes);
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Character;
+
+            // Designation for Scenario Meta Data (Friendly)
+            metaData.Type = "Friendly";
+
+            return metaData;
+        }
+
+        public ScenarioMetaData CreateScenarioMetaData(TemporaryCharacterTemplate template)
+        {
+            var metaData = new ScenarioMetaData();
+
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.AttackAttributes = new List<AttackAttributeTemplate>(template.AttackAttributes);
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Character;
+
+            // Designation for Scenario Meta Data (Temporary Character)
+            metaData.Type = "Temporary Character";
+
+            return metaData;
         }
 
         public ScenarioMetaData CreateScenarioMetaData(DoodadTemplate template)
         {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.ShortDescription,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = template.IsCursed,
-                IsCurseIdentified = false,
-                IsIdentified = template.IsObjectiveItem,
-                IsObjective = template.IsObjectiveItem,
-                IsUnique = template.IsUnique,
-                LongDescription = template.LongDescription,
-                ObjectType = DungeonMetaDataObjectTypes.Doodad,
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                SymbolType = template.SymbolDetails.Type,
+            var metaData = new ScenarioMetaData();
 
-                // Designation for Scenario Meta Data
-                Type = DoodadType.Magic.ToString()
-            };
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Doodad;
+
+            // Designation for Scenario Meta Data (Magic Doodads)
+            metaData.Type = DoodadType.Magic.ToString();
+
+            return metaData;
         }
 
         public ScenarioMetaData CreateScenarioMetaData(SkillSetTemplate template)
         {
-            return new ScenarioMetaData()
-            {
-                AttackAttributes = new List<AttackAttributeTemplate>(),
-                CharacterColor = template.SymbolDetails.CharacterColor,
-                CharacterSymbol = template.SymbolDetails.CharacterSymbol,
-                Description = template.ShortDescription,
-                DisplayIcon = template.SymbolDetails.DisplayIcon,
-                Icon = template.SymbolDetails.Icon,
-                IsCursed = template.IsCursed,
-                IsCurseIdentified = false,
-                IsIdentified = template.IsObjectiveItem,
-                IsObjective = template.IsObjectiveItem,
-                IsUnique = template.IsUnique,
-                LongDescription = template.LongDescription,
-                ObjectType = DungeonMetaDataObjectTypes.Skill,
-                RogueName = template.Name,
-                SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = template.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = template.SymbolDetails.SmileyLineColor,
-                SmileyExpression = template.SymbolDetails.SmileyExpression,
-                SymbolType = template.SymbolDetails.Type,
+            var metaData = new ScenarioMetaData();
 
-                // Designation for Scenario Meta Data
-                Type = "Skill"
-            };
+            SetScenarioObjectProperties(metaData, template);
+
+            metaData.ObjectType = DungeonMetaDataObjectTypes.Skill;
+
+            // Designation for Scenario Meta Data (Magic Doodads)
+            metaData.Type = "Skill";
+
+            return metaData;
         }
 
         public ScenarioMetaData CreateScenarioMetaData(DoodadNormalType doodadNormalType)
@@ -254,6 +218,27 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     throw new Exception("Trying to create unknown Normal Doodad type");
             }
 
+        }
+
+        protected void SetScenarioObjectProperties(ScenarioMetaData metaData, DungeonObjectTemplate template)
+        {
+            metaData.CharacterColor = template.SymbolDetails.CharacterColor;
+            metaData.CharacterSymbol = template.SymbolDetails.CharacterSymbol;
+            metaData.Description = template.ShortDescription;
+            metaData.DisplayIcon = template.SymbolDetails.DisplayIcon;
+            metaData.Icon = template.SymbolDetails.Icon;
+            metaData.IsCursed = template.IsCursed;
+            metaData.IsCurseIdentified = false;
+            metaData.IsIdentified = template.IsObjectiveItem;
+            metaData.IsObjective = template.IsObjectiveItem;
+            metaData.IsUnique = template.IsUnique;
+            metaData.LongDescription = template.LongDescription;
+            metaData.RogueName = template.Name;
+            metaData.SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor;
+            metaData.SmileyBodyColor = template.SymbolDetails.SmileyBodyColor;
+            metaData.SmileyLineColor = template.SymbolDetails.SmileyLineColor;
+            metaData.SmileyExpression = template.SymbolDetails.SmileyExpression;
+            metaData.SymbolType = template.SymbolDetails.Type;
         }
     }
 }

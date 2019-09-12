@@ -11,6 +11,8 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                           IConsumableProjectileAlterationEffectTemplate,
                                                                           IDoodadAlterationEffectTemplate,
                                                                           IEnemyAlterationEffectTemplate,
+                                                                          IFriendlyAlterationEffectTemplate,
+                                                                          ITemporaryCharacterAlterationEffectTemplate,
                                                                           IEquipmentAttackAlterationEffectTemplate,
                                                                           ISkillAlterationEffectTemplate
     {

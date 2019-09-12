@@ -36,11 +36,11 @@
                 </GroupBox.Visibility>
                 <StackPanel>
                     <Grid Margin="5">
-                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" Height="24" Grid.Column="1" Grid.Row="5" />
+                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Class}" LowLimit="0" HighLimit="10" Height="24" Grid.Column="1" Grid.Row="5" />
                         <TextBlock Grid.Row="5" Foreground="White" Text="Class" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="5">
-                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" Height="24" Grid.Column="1" Grid.Row="8" />
+                        <controls:Range HorizontalAlignment="Right" MinWidth="400" DataContext="{Binding Quality}" LowLimit="0" HighLimit="50" Height="24" Grid.Column="1" Grid.Row="8" />
                         <TextBlock Grid.Row="7" Foreground="White" Text="Quality" VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="5">

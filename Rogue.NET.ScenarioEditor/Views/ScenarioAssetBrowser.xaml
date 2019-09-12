@@ -23,11 +23,6 @@
                             <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
                         </CollectionViewSource.SortDescriptions>
                     </CollectionViewSource>
-                    <CollectionViewSource x:Key="TemporaryCharacterAssetViewSource" Source="{Binding TemporaryCharacterGroup.Assets}">
-                        <CollectionViewSource.SortDescriptions>
-                            <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
-                        </CollectionViewSource.SortDescriptions>
-                    </CollectionViewSource>
                     <CollectionViewSource x:Key="ConsumableAssetViewSource" Source="{Binding ConsumableGroup.Assets}">
                         <CollectionViewSource.SortDescriptions>
                             <componentModel:SortDescription PropertyName="Name" Direction="Ascending" />
@@ -73,7 +68,6 @@
             <TreeViewItem x:Name="LayoutItem" ItemsSource="{Binding Source={StaticResource LayoutAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding LayoutGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Layout" Header="Layouts" />
             <TreeViewItem x:Name="EnemiesItem" ItemsSource="{Binding Source={StaticResource EnemyAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}"  DataContext="{Binding EnemyGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Enemy" Header="Enemies" />
             <TreeViewItem x:Name="FriendliesItem" ItemsSource="{Binding Source={StaticResource FriendlyAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}"  DataContext="{Binding FriendlyGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Friendly" Header="Friendlies" />
-            <TreeViewItem x:Name="TemporaryCharactersItem" ItemsSource="{Binding Source={StaticResource TemporaryCharacterAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}"  DataContext="{Binding TemporaryCharacterGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="TemporaryCharacter" Header="Temporary Characters" />
             <TreeViewItem x:Name="EquipmentItem" ItemsSource="{Binding Source={StaticResource EquipmentAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding EquipmentGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Equipment"  Header="Equipment" />
             <TreeViewItem x:Name="ConsumablesItem" ItemsSource="{Binding Source={StaticResource ConsumableAssetViewSource}}" ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding ConsumableGroup}"  Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Consumable" Header="Consumables" />
             <TreeViewItem x:Name="DoodadsItem" ItemsSource="{Binding Source={StaticResource DoodadAssetViewSource}}"  ItemContainerStyle="{DynamicResource AssetBrowserRemoveButtonStyle}" DataContext="{Binding DoodadGroup}" Style="{DynamicResource AssetBrowserAddButtonStyle}" Tag="Doodad" Header="Scenario Objects" />

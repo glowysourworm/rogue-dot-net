@@ -245,6 +245,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             else if (alteration.Effect is CreateEnemyAlterationEffect)
                 ProcessCreateEnemy(alteration.Effect as CreateEnemyAlterationEffect, actor);
 
+            else if (alteration.Effect is CreateFriendlyAlterationEffect)
+                ProcessCreateFriendly(alteration.Effect as CreateFriendlyAlterationEffect, actor);
+
+            else if (alteration.Effect is CreateTemporaryCharacterAlterationEffect)
+                ProcessCreateTemporaryCharacter(alteration.Effect as CreateTemporaryCharacterAlterationEffect, actor);
+
             else if (alteration.Effect is DrainMeleeAlterationEffect)
                 _alterationProcessor.ApplyDrainMeleeEffect(actor, affectedCharacter, alteration.Effect as DrainMeleeAlterationEffect);
 
@@ -490,8 +496,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
             openLocation = GetRandomLocation(effect.TeleportType, character.Location, effect.Range);
 
             // TODO:  Centralize handling of "Find a random cell" and deal with "no open locations"
-            if (openLocation == null ||
-                openLocation == GridLocation.Empty)
+            if (openLocation == GridLocation.Empty)
                 return;
 
             character.Location = openLocation;
@@ -520,24 +525,44 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private void ProcessCreateEnemy(CreateEnemyAlterationEffect effect, Character actor)
         {
-            var location = GetRandomLocation(effect.RandomPlacementType, actor.Location, effect.Range);
+            // Create Enemy
+            var enemy = _characterGenerator.GenerateEnemy(effect.Enemy);
+
+            ProcessCreateNonPlayerCharacter(enemy, effect.RandomPlacementType, effect.Range, actor);
+        }
+        private void ProcessCreateFriendly(CreateFriendlyAlterationEffect effect, Character actor)
+        {
+            // Create Friendly
+            var friendly = _characterGenerator.GenerateFriendly(effect.Friendly);
+
+            ProcessCreateNonPlayerCharacter(friendly, effect.RandomPlacementType, effect.Range, actor);
+        }
+        private void ProcessCreateTemporaryCharacter(CreateTemporaryCharacterAlterationEffect effect, Character actor)
+        {
+            // Create Temporary Character
+            var temporaryCharacter = _characterGenerator.GenerateTemporaryCharacter(effect.TemporaryCharacter);
+
+            ProcessCreateNonPlayerCharacter(temporaryCharacter, effect.RandomPlacementType, effect.Range, actor);
+        }
+        private void ProcessCreateNonPlayerCharacter(NonPlayerCharacter character, AlterationRandomPlacementType randomPlacementType, int range, Character actor)
+        {
+            // Method that shares code paths for creating { Enemy, Friendly, TemporaryCharacter }
+            //
+
+            var location = GetRandomLocation(randomPlacementType, actor.Location, range);
 
             // TODO:ALTERATION (Handle Exception ?)
             if (location == GridLocation.Empty)
                 return;
 
-            // Create Enemy
-            var enemy = _characterGenerator.GenerateEnemy(effect.Enemy, _modelService.AttackAttributes);
-
-            // Set Enemy Location
-            enemy.Location = location;
+            character.Location = location;
 
             // Add Content to Level -> Update Visibility
-            _modelService.Level.AddContent(enemy);
+            _modelService.Level.AddContent(character);
             _modelService.UpdateVisibility();
 
             // Publish Message
-            switch (effect.RandomPlacementType)
+            switch (randomPlacementType)
             {
                 case AlterationRandomPlacementType.InLevel:
                     _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, "You hear growling in the distance");
@@ -547,14 +572,14 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                                     (actor is Player) ? "{0} has created a(n) {1}" :
                                                                         "The {0} has created a(n) {1}",
                                                      _modelService.GetDisplayName(actor),
-                                                     _modelService.GetDisplayName(enemy));
+                                                     _modelService.GetDisplayName(character));
                     break;
                 default:
                     throw new Exception("Unhandled AlterationRandomPlacementType");
             }
 
             // Notify UI
-            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, enemy.Id));
+            OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentAdd, character.Id));
         }
         private void ProcessEquipmentEnhance(EquipmentEnhanceAlterationEffect effect, Character affectedCharacter)
         {
@@ -711,15 +736,18 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     openLocation = _modelService.Level.GetRandomLocation(true, _randomSequenceGenerator);
                     break;
                 case AlterationRandomPlacementType.InRangeOfSourceCharacter:
-                    openLocation = _layoutEngine.GetLocationsInRange(sourceLocation, sourceRange)
-                                                .Where(x => !level.IsCellOccupied(x, player.Location))
-                                                .PickRandom();
+                    {
+                        var locationsInRange = _layoutEngine.GetLocationsInRange(sourceLocation, sourceRange, false);
+                        var unOccupiedLocations = locationsInRange.Where(x => !level.IsCellOccupied(x, player.Location));
+
+                        openLocation = unOccupiedLocations.Any() ? unOccupiedLocations.PickRandom() : GridLocation.Empty;
+                    }
                     break;
                 default:
                     throw new Exception("Unhandled AlterationRandomPlacementType");
             }
 
-            return openLocation ?? (openLocation == GridLocation.Empty ? sourceLocation : openLocation);
+            return openLocation ?? GridLocation.Empty;
         }
         #endregion
 
