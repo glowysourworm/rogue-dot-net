@@ -63,6 +63,7 @@ namespace Rogue.NET.Scenario.Content.Views
             this.LightRadiiItemsControl.RenderTransform = transform;
             this.AuraItemsControl.RenderTransform = transform;
             this.DoodadItemsControl.RenderTransform = transform;
+            this.ItemItemsControl.RenderTransform = transform;
             this.CharacterItemsControl.RenderTransform = transform;
             this.AnimationItemsControl.RenderTransform = transform;
             this.PlayerCanvas.RenderTransform = transform;

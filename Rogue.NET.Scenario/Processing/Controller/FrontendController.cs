@@ -60,6 +60,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
                 // Clear Animations and Contents
                 _levelCanvasViewModel.Animations.Clear();
                 _levelCanvasViewModel.Doodads.Clear();
+                _levelCanvasViewModel.Items.Clear();
                 _levelCanvasViewModel.Characters.Clear();
 
                 // Clear Targeting Animation
@@ -225,6 +226,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
         {
             // Filter out contents with matching id's
             _levelCanvasViewModel.Doodads.Filter(x => contentIds.Contains(x.ScenarioObjectId));
+            _levelCanvasViewModel.Items.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Characters.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.LightRadii.Filter(x => contentIds.Contains(x.ScenarioObjectId));
             _levelCanvasViewModel.Auras.Filter(x => contentIds.Contains(x.ScenarioObjectId));
@@ -233,12 +235,16 @@ namespace Rogue.NET.Scenario.Processing.Controller
         {
             foreach (var contentId in contentIds)
             {
+                var item = _levelCanvasViewModel.Items.FirstOrDefault(x => x.ScenarioObjectId == contentId);
                 var doodad = _levelCanvasViewModel.Doodads.FirstOrDefault(x => x.ScenarioObjectId == contentId);
                 var character = _levelCanvasViewModel.Characters.FirstOrDefault(x => x.ScenarioObjectId == contentId);
 
                 // SHOULDN'T HAVE TO CHECK HERE; BUT THERE'S QUEUEING ISSUES THAT NEED TO BE SOLVED
                 if (_modelService.Level.HasContent(contentId) && doodad != null)
                     _scenarioUIService.UpdateContent(doodad, _modelService.Level.GetContent(contentId));
+
+                if (_modelService.Level.HasContent(contentId) && item != null)
+                    _scenarioUIService.UpdateContent(item, _modelService.Level.GetContent(contentId));
 
                 if (_modelService.Level.HasContent(contentId) && character != null)
                     _scenarioUIService.UpdateContent(character, _modelService.Level.GetContent(contentId));

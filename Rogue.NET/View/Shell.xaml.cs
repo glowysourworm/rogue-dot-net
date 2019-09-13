@@ -6,14 +6,13 @@ using Rogue.NET.Core.Processing.Event.Dialog;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Event.Scenario;
+using Rogue.NET.ModalDialog;
 using Rogue.NET.Scenario.Processing.Controller.Enum;
 using Rogue.NET.Scenario.Processing.Controller.Interface;
 using System;
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace Rogue.NET.View
 {
@@ -29,7 +28,7 @@ namespace Rogue.NET.View
         {
             _gameRouter = gameRouter;
 
-            _splashWindow = CreatePopupWindow();
+            _splashWindow = SplashWindowFactory.CreatePopupWindow(SplashEventType.Loading);
 
             // Hook window event request
             _gameRouter.RequestMaximizedWindowEvent += () =>
@@ -69,7 +68,7 @@ namespace Rogue.NET.View
                 if (e.SplashAction == SplashAction.Hide)
                     HideSplash();
                 else
-                    ShowSplash(e.SplashType);
+                    ShowSplash();
 #endif
 
             });
@@ -148,41 +147,9 @@ namespace Rogue.NET.View
             _splashWindow.Hide();
         }
 
-        private void ShowSplash(SplashEventType type)
+        private void ShowSplash()
         {
-            _splashWindow.Content = CreateSplashView(type);
             _splashWindow.Show();
-        }
-
-        private Window CreatePopupWindow()
-        {
-            return new Window()
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                AllowsTransparency = true,
-                WindowStyle = WindowStyle.None,
-                ResizeMode = ResizeMode.NoResize,
-                Background = Brushes.Transparent,
-                BorderBrush = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Margin = new Thickness(0),
-                FontFamily = new FontFamily(new Uri(@"pack://application:,,,/Rogue.NET.Common;Component/Resource/Fonts/CENTAUR.TTF#Centaur"), "Centaur"),
-                Topmost = true
-            };
-        }
-
-        private UserControl CreateSplashView(SplashEventType type)
-        {
-            // Passing these in to take care of dependency injection. Another way is to create
-            // multiple region managers and have a separate Shell window.
-            switch (type)
-            {
-                case SplashEventType.Loading:
-                    return new LoadingView();
-                default:
-                    throw new Exception("Unknwon Splash View Type");
-            }
         }
     }
 }

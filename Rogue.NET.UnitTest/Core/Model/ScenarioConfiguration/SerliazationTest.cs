@@ -10,6 +10,7 @@ using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Service;
 using Rogue.NET.Core.Processing.Model.Generator;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using Rogue.NET.Core.Model.ResourceCache.Interface;
 
 namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
 {
@@ -19,6 +20,7 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         IScenarioResourceService _scenarioResourceService;
 
         Mock<IScenarioFileService> _scenarioFileServiceMock;
+        Mock<IScenarioConfigurationCache> _scenarioConfigurationCacheMock;
         Mock<IRogueEventAggregator> _eventAggregatorMock;
 
         [TestInitialize]
@@ -26,14 +28,15 @@ namespace Rogue.NET.UnitTest.Core.Model.ScenarioConfiguration
         {
             _eventAggregatorMock = new Mock<IRogueEventAggregator>();
             _scenarioFileServiceMock = new Mock<IScenarioFileService>();
-            _scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
+            _scenarioConfigurationCacheMock = new Mock<IScenarioConfigurationCache>();
+            _scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object, _scenarioConfigurationCacheMock.Object);
         }
 
         private IScenarioGenerator CreateScenarioGenerator(int seed)
         {
 
             var animationGenerator = new AnimationGenerator();
-            var scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object);
+            var scenarioResourceService = new ScenarioResourceService(_scenarioFileServiceMock.Object, _scenarioConfigurationCacheMock.Object);
             var randomSequenceGenerator = new RandomSequenceGenerator();
             randomSequenceGenerator.Reseed(seed);
             var layoutGenerator = new LayoutGenerator(randomSequenceGenerator);

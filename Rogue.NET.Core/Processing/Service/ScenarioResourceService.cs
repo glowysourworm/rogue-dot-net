@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Core.Model.ResourceCache.Interface;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -37,17 +38,21 @@ namespace Rogue.NET.Core.Processing.Service
         IEnumerable<ColorViewModel> _colors;
 
         [ImportingConstructor]
-        public ScenarioResourceService(IScenarioFileService scenarioFileService)
+        public ScenarioResourceService(
+                IScenarioFileService scenarioFileService,
+                IScenarioConfigurationCache scenarioConfigurationCache)
         {
             _scenarioFileService = scenarioFileService;
 
-            _scenarioConfigurations = new Dictionary<string, ScenarioConfigurationContainer>();
+            _scenarioConfigurations = scenarioConfigurationCache.EmbeddedConfigurations
+                                                                .ToDictionary(x => x.DungeonTemplate.Name, x => x);
+
             _scenarioImageCache = new Dictionary<string, object>();
             _colors = ColorUtility.CreateColors();
         }
 
         #region (public) Methods
-        public void LoadAllConfigurations()
+        public void LoadCustomConfigurations()
         {
             var customScenarioConfigurationFiles = Directory.GetFiles(ResourceConstants.ScenarioDirectory, "*." + ResourceConstants.ScenarioConfigurationExtension, SearchOption.TopDirectoryOnly);
 
@@ -58,13 +63,6 @@ namespace Rogue.NET.Core.Processing.Service
                 if (configuration != null)
                     _scenarioConfigurations.Add(scenarioConfigurationName, configuration);
             }
-
-            // Load Built-In Scenario Configurations
-            GetScenarioConfiguration(ConfigResources.Fighter);
-            GetScenarioConfiguration(ConfigResources.Paladin);
-            GetScenarioConfiguration(ConfigResources.Witch);
-            GetScenarioConfiguration(ConfigResources.Sorcerer);
-            GetScenarioConfiguration(ConfigResources.Necromancer);
         }
         public IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations()
         {

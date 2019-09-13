@@ -21,12 +21,17 @@ using System.Windows.Threading;
 using System;
 using Prism.Modularity;
 using System.Collections.Generic;
-
+using Rogue.NET.Core.Model.ScenarioConfiguration;
+using Rogue.NET.Core.Processing.Service.Interface;
 
 namespace Rogue.NET.PrismExtension
 {
     public class RogueBootstrapper : MefBootstrapper
     {
+        public RogueBootstrapper()
+        {
+        }
+
         protected override DependencyObject CreateShell()
         {
             return ServiceLocator.Current.GetInstance<Shell>();

@@ -167,6 +167,8 @@
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
+    <Compile Include="Model\ResourceCache\Interface\IScenarioConfigurationCache.cs" />
+    <Compile Include="Model\ResourceCache\ScenarioConfigurationCache.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplate.cs" />

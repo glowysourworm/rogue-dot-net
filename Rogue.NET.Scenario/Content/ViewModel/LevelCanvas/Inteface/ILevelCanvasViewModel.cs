@@ -62,6 +62,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface
         ObservableCollection<LevelCanvasImage> Characters { get; set; }
 
         /// <summary>
+        /// Layer of Visuals for the Items
+        /// </summary>
+        ObservableCollection<LevelCanvasImage> Items { get; set; }
+
+        /// <summary>
         /// Layer of Visuals for the Doodads
         /// </summary>
         ObservableCollection<LevelCanvasImage> Doodads { get; set; }

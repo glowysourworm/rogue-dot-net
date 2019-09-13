@@ -1,6 +1,8 @@
 ﻿using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.PrismExtension;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
 
@@ -8,6 +10,10 @@ namespace Rogue.NET
 {
     public partial class RogueApplication : Application
     {
+        public RogueApplication()
+        {
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

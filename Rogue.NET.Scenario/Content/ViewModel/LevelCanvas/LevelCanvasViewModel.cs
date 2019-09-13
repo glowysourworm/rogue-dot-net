@@ -22,6 +22,7 @@ using System;
 using System.Collections.ObjectModel;
 using Rogue.NET.Core.View;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
+using Rogue.NET.Core.Model.Scenario.Content.Item;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -65,6 +66,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             this.Animations = new ObservableCollection<FrameworkElement>();
             this.Auras = new ObservableCollection<LevelCanvasShape>();
             this.Doodads = new ObservableCollection<LevelCanvasImage>();
+            this.Items = new ObservableCollection<LevelCanvasImage>();
             this.Characters = new ObservableCollection<LevelCanvasImage>();
             this.LightRadii = new ObservableCollection<LevelCanvasShape>();
 
@@ -119,6 +121,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         public ObservableCollection<LevelCanvasShape> LightRadii { get; set; }
         public ObservableCollection<LevelCanvasShape> Auras { get; set; }
         public ObservableCollection<LevelCanvasImage> Doodads { get; set; }
+        public ObservableCollection<LevelCanvasImage> Items { get; set; }
         public ObservableCollection<LevelCanvasImage> Characters { get; set; }
         public ObservableCollection<FrameworkElement> Animations { get; set; }
         public LevelCanvasImage Player
@@ -197,6 +200,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
             // Remove (Filter out anything that isn't in the level)
             this.Doodads.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
             this.Characters.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
+            this.Items.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId));
             this.LightRadii.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
             this.Auras.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
 
@@ -237,6 +241,20 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
                     //                 equipment removed
                     this.Auras.Filter(x => x.ScenarioObjectId == character.Id &&
                                            !characterAuras.Any(z => z.Item1 == x.Id));
+                }
+
+                // Items
+                if (scenarioObject is ItemBase)
+                {
+                    var item = scenarioObject as ItemBase;
+                    var itemViewModel = this.Items.FirstOrDefault(x => x.ScenarioObjectId == item.Id);
+
+                    // Update Content
+                    if (itemViewModel != null)
+                        _scenarioUIService.UpdateContent(itemViewModel, scenarioObject);
+
+                    else
+                        this.Items.Add(CreateContent(scenarioObject));
                 }
 
                 // Doodads

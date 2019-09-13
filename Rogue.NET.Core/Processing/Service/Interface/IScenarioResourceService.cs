@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Processing.Service.Interface
 {
     public interface IScenarioResourceService
     {
-        void LoadAllConfigurations();
+        void LoadCustomConfigurations();
         IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations();
         ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource);
         ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);

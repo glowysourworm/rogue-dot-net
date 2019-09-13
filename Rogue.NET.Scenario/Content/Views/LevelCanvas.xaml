@@ -89,6 +89,22 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+
+        <!-- Items -->
+        <ItemsControl x:Name="ItemItemsControl"
+                      ItemsSource="{Binding Items}" 
+                      BorderBrush="Transparent" 
+                      BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Width="{Binding LevelWidth, FallbackValue=500}" 
+                      Height="{Binding LevelHeight, FallbackValue=500}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas ClipToBounds="False" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>        
         
         <!-- Characters (Except Player) -->
         <ItemsControl x:Name="CharacterItemsControl"

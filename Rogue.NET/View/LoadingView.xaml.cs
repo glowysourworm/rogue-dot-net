@@ -12,20 +12,7 @@ namespace Rogue.NET.View
         [ImportingConstructor]
         public LoadingView()
         {
-            var colors = ColorUtility.CreateColors().ToList();
-
             InitializeComponent();
-
-            this.Loaded += (sender, e) =>
-            {
-                var random = new Random(DateTime.Now.Millisecond);
-
-                var next = random.Next(0, colors.Count);
-                var randomColor = colors[next].Color;
-
-                this.SmileyCtrl.SmileyColor = randomColor;
-                this.SmileyCtrl.SmileyLineColor = ColorUtility.Inverse(randomColor);
-            };
         }
     }
 }

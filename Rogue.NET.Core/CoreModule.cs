@@ -34,7 +34,7 @@ namespace Rogue.NET.Core
                 SplashType = SplashEventType.Loading
             });
 
-            _scenarioResourceService.LoadAllConfigurations();
+            _scenarioResourceService.LoadCustomConfigurations();
 
             // Hide the Splash Sceen
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
