@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
     x:Class="Rogue.NET.Scenario.Intro.Views.IntroView"
+    xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
     Width="574" Height="429.659">
 	<UserControl.Resources>
 		<Storyboard x:Key="RabbitHopLeftStoryboard">
@@ -89,37 +90,51 @@
 	</UserControl.Resources>
     <Grid Margin="0" Background="Black">
 
-        <coreView:Smiley x:Name="Smiley1_Copy1" HorizontalAlignment="Right" Margin="0,109.794,41.493,0" Width="21.014" Height="31.412" SmileyColor="#FF00FF2B" SmileyLineColor="Black" SmileyExpression="Dead" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
+        <coreView:RandomScenarioSmiley x:Name="Smiley1_Copy1" 
+                                         HorizontalAlignment="Right" 
+                                         Margin="0,109.794,41.493,0" 
+                                         Width="20" 
+                                         Height="30" 
+                                         SmileyExpression="Dead" 
+                                         VerticalAlignment="Top" 
+                                         Opacity="0.66" 
+                                         RenderTransformOrigin="0.5,0.5">
+            <coreView:RandomScenarioSmiley.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="55.308"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </coreView:RandomScenarioSmiley.RenderTransform>
+        </coreView:RandomScenarioSmiley>
+        <coreView:RandomScenarioSmiley x:Name="Smiley1_Copy" 
+                                       HorizontalAlignment="Right" 
+                                       Margin="0,86,131.5,0" 
+                                       Width="34" 
+                                       Height="55" 
+                                       SmileyExpression="Dead" 
+                                       VerticalAlignment="Top" 
+                                       Opacity="0.66" 
+                                       RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
-    			<TransformGroup>
-    				<ScaleTransform/>
-    				<SkewTransform/>
-    				<RotateTransform Angle="55.308"/>
-    				<TranslateTransform/>
-    			</TransformGroup>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-56.707"/>
+                    <TranslateTransform/>
+                </TransformGroup>
             </coreView:Smiley.RenderTransform>
-                </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley1_Copy" HorizontalAlignment="Right" Margin="0,86,131.5,0" Width="34" Height="55" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyExpression="Dead" VerticalAlignment="Top" Opacity="0.66" RenderTransformOrigin="0.5,0.5">
-            <coreView:Smiley.RenderTransform>
-    			<TransformGroup>
-    				<ScaleTransform/>
-    				<SkewTransform/>
-    				<RotateTransform Angle="-56.707"/>
-    				<TranslateTransform/>
-    			</TransformGroup>
-                </coreView:Smiley.RenderTransform>
-                </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley1" HorizontalAlignment="Left" Margin="201.5,178.829,0,138.829" Width="75" Height="112" SmileyColor="#FFEFFF00" SmileyLineColor="Black" SmileyExpression="Happy" RenderTransformOrigin="0.5,0.5">
-            <coreView:Smiley.RenderTransform>
-    			<TransformGroup>
-    				<ScaleTransform/>
-    				<SkewTransform/>
-    				<RotateTransform/>
-    				<TranslateTransform/>
-    			</TransformGroup>
-                </coreView:Smiley.RenderTransform>
-                </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley4" HorizontalAlignment="Left" Margin="104.5,0,0,34.5" Width="75" SmileyColor="#FF0400FF" SmileyLineColor="#FFE4FF00" SmileyExpression="Unsure" VerticalAlignment="Bottom" Height="112" RenderTransformOrigin="0.5,0.5">
+        </coreView:RandomScenarioSmiley>
+        <coreView:Smiley x:Name="Smiley1" 
+                                       HorizontalAlignment="Left" 
+                                       Margin="201.5,178.829,0,138.829" 
+                                       Width="75" 
+                                       Height="112" 
+                                       SmileyColor="#FFEFFF00" 
+                                       SmileyLineColor="Black" 
+                                       SmileyExpression="Happy" 
+                                       RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -129,6 +144,22 @@
     			</TransformGroup>
                 </coreView:Smiley.RenderTransform>
                 </coreView:Smiley>
+        <coreView:RandomScenarioSmiley x:Name="Smiley4" 
+                         HorizontalAlignment="Left" 
+                         Margin="104.5,0,0,34.5" 
+                         Width="75" 
+                         VerticalAlignment="Bottom" 
+                         Height="112" 
+                         RenderTransformOrigin="0.5,0.5">
+            <coreView:Smiley.RenderTransform>
+    			<TransformGroup>
+    				<ScaleTransform/>
+    				<SkewTransform/>
+    				<RotateTransform/>
+    				<TranslateTransform/>
+    			</TransformGroup>
+                </coreView:Smiley.RenderTransform>
+                </coreView:RandomScenarioSmiley>
     	<Path Stretch="Fill" Stroke="#FF049400" StrokeThickness="5" HorizontalAlignment="Right" Margin="0,68.5,128,0" VerticalAlignment="Top" Width="48.5" Height="76.5" Data="M403,146 C403,146 400.5,104.5 355.5,70.5"/>
     	<Path Stretch="Fill" Stroke="#FF049400" StrokeThickness="5" HorizontalAlignment="Right" Margin="0,108.5,128,0" VerticalAlignment="Top" Width="48.5" Height="46.5" Data="M403,146 C403,146 400.5,104.5 355.5,70.5"/>
     	<Path Stretch="Fill" Stroke="#FF049400" StrokeThickness="5" HorizontalAlignment="Right" Margin="0,38.5,60,0" VerticalAlignment="Top" Width="48.5" Height="96.5" Data="M403,146 C403,146 400.5,104.5 355.5,70.5" RenderTransformOrigin="0.5,0.5">
@@ -173,7 +204,12 @@
     			</TransformGroup>
     		</Path.RenderTransform>
     	</Path>
-        <coreView:Smiley x:Name="Smiley2" HorizontalAlignment="Left" Margin="63,157.159,0,160.5" Width="75" SmileyColor="#FF9D9D9D" SmileyLineColor="Black" SmileyExpression="Unsure" Height="112" RenderTransformOrigin="0.5,0.5">
+        <coreView:RandomScenarioSmiley x:Name="Smiley2" 
+                                       HorizontalAlignment="Left" 
+                                       Margin="63,157.159,0,160.5" 
+                                       Width="75" 
+                                       Height="112" 
+                                       RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -182,8 +218,14 @@
     				<TranslateTransform/>
     			</TransformGroup>
                 </coreView:Smiley.RenderTransform>
-                </coreView:Smiley>
-        <coreView:Smiley x:Name="Smiley3" HorizontalAlignment="Left" Margin="25.5,0,0,77.5" Width="75" SmileyColor="#FFA900FF" SmileyLineColor="Black" SmileyExpression="Unsure" VerticalAlignment="Bottom" Height="112.5" RenderTransformOrigin="0.5,0.5">
+                </coreView:RandomScenarioSmiley>
+        <coreView:RandomScenarioSmiley x:Name="Smiley3" 
+                                       HorizontalAlignment="Left" 
+                                       Margin="25.5,0,0,77.5" 
+                                       Width="75" 
+                                       VerticalAlignment="Bottom" 
+                                       Height="112.5" 
+                                       RenderTransformOrigin="0.5,0.5">
             <coreView:Smiley.RenderTransform>
     			<TransformGroup>
     				<ScaleTransform/>
@@ -192,7 +234,7 @@
     				<TranslateTransform/>
     			</TransformGroup>
             </coreView:Smiley.RenderTransform>
-        </coreView:Smiley>
+        </coreView:RandomScenarioSmiley>
     	<Path Stretch="Fill" Stroke="#FF049400" StrokeThickness="5" HorizontalAlignment="Right" Margin="0,21.5,114,0" VerticalAlignment="Top" Width="48.5" Height="96.5" Data="M403,146 C403,146 400.5,104.5 355.5,70.5"/>
     	<Border HorizontalAlignment="Left" Margin="80.673,52.124,0,0" VerticalAlignment="Top" Width="132.456" Height="70.98" RenderTransformOrigin="0.5,0.5" BorderBrush="White" BorderThickness="3" CornerRadius="6">
     		<Border.RenderTransform>

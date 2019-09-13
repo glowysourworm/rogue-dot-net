@@ -198,9 +198,7 @@
                 <ControlTemplate>
                     <Border x:Name="border" CornerRadius="10,10,10,10" Background="Transparent" BorderBrush="White" BorderThickness="1">
                         <Grid>
-                            <coreView:Smiley SmileyColor="#FF00008F" 
-                                                    SmileyExpression="Happy" 
-                                                    SmileyLineColor="Yellow"
+                            <coreView:RandomScenarioSmiley
                                                     HorizontalAlignment="Right"
                                                     Margin="0,0,8,0"
                                                     Height="30"

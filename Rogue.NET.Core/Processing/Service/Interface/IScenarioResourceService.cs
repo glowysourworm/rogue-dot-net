@@ -20,5 +20,8 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
         FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
         IEnumerable<ColorViewModel> GetColors();
+
+        // Returns a random character smiley face from the collection of combined characters from all scenario configurations
+        ScenarioImage GetRandomSmileyCharacter();
     }
 }

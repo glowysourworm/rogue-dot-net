@@ -530,6 +530,7 @@
     <Compile Include="Processing\Service\ScenarioService.cs" />
     <Compile Include="Processing\Service\ScenarioValidationService.cs" />
     <Compile Include="Utility\TextUtility.cs" />
+    <Compile Include="View\RandomScenarioSmiley.cs" />
     <Compile Include="View\Smiley.xaml.cs">
       <DependentUpon>Smiley.xaml</DependentUpon>
     </Compile>

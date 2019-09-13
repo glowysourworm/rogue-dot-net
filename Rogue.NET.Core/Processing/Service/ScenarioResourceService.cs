@@ -334,6 +334,20 @@ namespace Rogue.NET.Core.Processing.Service
 
             return ctrl;
         }
+
+        public ScenarioImage GetRandomSmileyCharacter()
+        {
+            var characterSymbols = _scenarioConfigurations.Values
+                                                          .SelectMany(x => x.PlayerTemplates.Select(z => z.SymbolDetails));
+
+            return characterSymbols.Any() ? new ScenarioImage(characterSymbols.PickRandom()) : new ScenarioImage()
+            {
+                SymbolType = SymbolTypes.Smiley,
+                SmileyBodyColor = Colors.Yellow.ToString(),
+                SmileyLineColor = Colors.Black.ToString(),
+                SmileyExpression = SmileyExpression.Happy
+            };
+        }
         #endregion
     }
 }
