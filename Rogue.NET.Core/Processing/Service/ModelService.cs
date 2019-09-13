@@ -18,6 +18,7 @@ using System.Text;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Model.Generator.Interface;
+using System;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -57,6 +58,7 @@ namespace Rogue.NET.Core.Processing.Service
             Player player, 
             PlayerStartLocation startLocation,
             Level level, 
+            IEnumerable<ScenarioObject> injectedContents,
             IDictionary<string, ScenarioMetaData> encyclopedia, 
             ScenarioConfigurationContainer configuration)
         {
@@ -99,16 +101,36 @@ namespace Rogue.NET.Core.Processing.Service
                     break;
             }
 
+            // Have to provide locations for the injected contents
+            foreach (var content in injectedContents)
+            {
+                // TODO: This doesn't currently have any specification other than 
+                //       type:
+                //      
+                //       Friendly:  starts at Player location
+                if (content is Friendly)
+                {
+                    // Set Friendly Location
+                    content.Location = player.Location;
+
+                    // Add Friendly to Level
+                    level.AddContent(content);
+                }
+
+                else
+                    throw new Exception("Unhandled injected content type");
+            }
+
             _characterLayoutInformation = new CharacterLayoutInformation(this.Level.Grid, _rayTracer);
             _characterContentInformation = new CharacterContentInformation(_characterLayoutInformation);
 
             UpdateVisibility();
         }
 
-        public void Unload()
+        public IEnumerable<ScenarioObject> Unload()
         {
-            if (this.Level != null)
-                this.Level.Dispose();
+            // Run Level Unload Process (Removes Temporary Characters / Returns Extractable Content)
+            IEnumerable<ScenarioObject> extractedContent = this.Level.Unload();
 
             _characterContentInformation = null;
             _characterLayoutInformation = null;
@@ -118,6 +140,8 @@ namespace Rogue.NET.Core.Processing.Service
             this.ScenarioConfiguration = null;
             this.ScenarioEncyclopedia = null;
             this.CharacterClasses = null;
+
+            return extractedContent;
         }
 
         public bool IsLoaded { get { return this.Level != null; } }

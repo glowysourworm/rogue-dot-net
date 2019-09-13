@@ -26,7 +26,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
             get { return _randomPlacementType; }
             set { this.RaiseAndSetIfChanged(ref _randomPlacementType, value); }
         }
-        public FriendlyTemplateViewModel CreateMonsterEnemy
+        public FriendlyTemplateViewModel Friendly
         {
             get { return _friendly; }
             set { this.RaiseAndSetIfChanged(ref _friendly, value); }

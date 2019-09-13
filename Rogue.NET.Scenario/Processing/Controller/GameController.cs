@@ -2,6 +2,7 @@
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
+using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Processing.Event.Backend;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
@@ -15,6 +16,7 @@ using Rogue.NET.Scenario.Processing.Controller.Interface;
 using Rogue.NET.Scenario.Processing.Event.Content;
 using Rogue.NET.Scenario.Processing.Service.Interface;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 
@@ -255,7 +257,7 @@ namespace Rogue.NET.Scenario.Processing.Controller
             // Level number is valid
             else
             {
-                // First halt processing of backend
+                // First halt processing of messages
                 _gameRouter.Stop();
 
                 // Update the level number in the container
@@ -269,15 +271,18 @@ namespace Rogue.NET.Scenario.Processing.Controller
                     _scenarioContainer.LoadedLevels.Add(nextLevel);
                 }
 
-                // Unload current model
-                _modelService.Unload();
+                // Unload current model - pass extractable contents to next level with Player
+                IEnumerable<ScenarioObject> extractedContent = null;
+                if (_modelService.IsLoaded)
+                    extractedContent = _modelService.Unload();
 
                 // Register next level data with the model service
                 _modelService.Load(
                     _scenarioContainer.Player,
                     location,
-                    nextLevel, 
-                    _scenarioContainer.ScenarioEncyclopedia, 
+                    nextLevel,
+                    extractedContent ?? new ScenarioObject[] { },
+                    _scenarioContainer.ScenarioEncyclopedia,
                     _scenarioContainer.Configuration);
 
                 // Notify Listeners - Level Loaded -> Game Update

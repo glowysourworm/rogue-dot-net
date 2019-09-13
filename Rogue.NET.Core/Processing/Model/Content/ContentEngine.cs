@@ -298,11 +298,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         public void ProcessCharacterReaction(NonPlayerCharacter character)
         {
-            if (character.Hp <= 0)
-            {
-                CharacterDeath(character);
-                return;
-            }
+            //if (character.Hp <= 0)
+            //{
+            //    CharacterDeath(character);
+            //    return;
+            //}
 
             // All speed is calculated relative to the Player
             character.TurnCounter += _interactionProcessor.CalculateCharacterTurnIncrement(_modelService.Player, character);
@@ -311,7 +311,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 OnNonPlayerCharacterReaction(character);
 
             if (character.Hp <= 0)
+            {
                 CharacterDeath(character);
+                return;
+            }
 
             // Check for temporary character expiration - TODO: MOVE TO A "END OF TURN" METHOD OF SOME KIND
             if (character is TemporaryCharacter)
@@ -726,6 +729,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                                   .GetVisibleCharacters(character)
                                   .Contains(_modelService.Player))
             {
+                // For friendlies - have to set flag to notify that they're now in the player "party"
+                // which will move them from level to level
+                if (character is Friendly)
+                    (character as Friendly).InPlayerParty = true;
+
                 // TODO: Need some other parameters like: "Keep a certain distance from Player"
                 return _modelService.Player.Location;
             }

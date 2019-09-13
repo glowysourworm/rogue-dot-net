@@ -11,11 +11,12 @@ using System.Linq;
 using System.Collections.Generic;
 
 using CharacterBase = Rogue.NET.Core.Model.Scenario.Character.Character;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Model.Scenario
 {
     [Serializable]
-    public class Level : IDisposable
+    public class Level
     {
         public LevelGrid Grid { get; protected set; }
         public LayoutType Type { get; protected set; }
@@ -86,13 +87,30 @@ namespace Rogue.NET.Core.Model.Scenario
             protected set { _doodadNormals = new List<DoodadNormal>(value); }
         }
 
-        public Level() { } 
-        public Level(string layoutName, 
-                     LevelGrid grid, 
-                     LayoutType layoutType, 
-                     LayoutConnectionType layoutConnectionType, 
-                     int number, 
-                     string wallColor, 
+        public Level(string layoutName,
+                     LevelGrid grid,
+                     LayoutType layoutType,
+                     LayoutConnectionType layoutConnectionType,
+                     int number,
+                     string wallColor,
+                     string doorColor)
+        {
+            Initialize(layoutName, 
+                       grid, 
+                       layoutType, 
+                       layoutConnectionType, 
+                       number, 
+                       wallColor, 
+                       doorColor);
+        }
+
+        private void Initialize(
+                     string layoutName,
+                     LevelGrid grid,
+                     LayoutType layoutType,
+                     LayoutConnectionType layoutConnectionType,
+                     int number,
+                     string wallColor,
                      string doorColor)
         {
             // Stored to support Debug function
@@ -213,6 +231,33 @@ namespace Rogue.NET.Core.Model.Scenario
             MaintainLevelContentsArray();
         }
 
+        /// <summary>
+        /// Unloads data and returns extracted content to be moved with the Player
+        /// </summary>
+        public IEnumerable<ScenarioObject> Unload()
+        {
+            //foreach (var scenarioObject in _levelContent)
+            //{
+            //    scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
+            //}
+
+            // Remove Temporary Characters
+            var temporaryCharacters = _nonPlayerCharacters.Where(x => x is TemporaryCharacter).ToList();
+            foreach (var character in temporaryCharacters)
+                RemoveContent(character);
+
+            // Remove Friendlies in Player Party
+            var friendlies = _levelContent.Where(x => x is Friendly)
+                                          .Cast<Friendly>()
+                                          .Where(x => x.InPlayerParty)
+                                          .Actualize();
+
+            foreach (var friendly in friendlies)
+                RemoveContent(friendly);
+
+            return friendlies;
+        }
+
         private void MaintainLevelContentsArray()
         {
             _levelContentArray = _levelContent.ToArray();
@@ -281,17 +326,5 @@ namespace Rogue.NET.Core.Model.Scenario
             if (e.NewLocation != GridLocation.Empty)
                 _levelContentGrid[e.NewLocation.Column, e.NewLocation.Row].Add(e.ScenarioObject);
         }
-
-        #region IDisposable
-        public void Dispose()
-        {
-            foreach (var scenarioObject in _levelContent)
-            {
-                scenarioObject.LocationChangedEvent -= OnScenarioObjectLocationChanged;
-            }
-
-            _levelContent.Clear();
-        }
-        #endregion
     }
 }

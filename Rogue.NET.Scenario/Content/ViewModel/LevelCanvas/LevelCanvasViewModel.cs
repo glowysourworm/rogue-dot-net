@@ -198,7 +198,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         public void UpdateContent(IEnumerable<ScenarioObject> contents, Player player)
         {
             // Remove (Filter out anything that isn't in the level)
-            this.Doodads.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
+            this.Doodads.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId));
             this.Characters.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);
             this.Items.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId));
             this.LightRadii.Filter(x => contents.None(z => z.Id == x.ScenarioObjectId) && x.ScenarioObjectId != player.Id);

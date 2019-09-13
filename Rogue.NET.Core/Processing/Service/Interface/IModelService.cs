@@ -20,10 +20,16 @@ namespace Rogue.NET.Core.Processing.Service.Interface
                 Player player,
                 PlayerStartLocation startLocation,
                 Level level,
+                IEnumerable<ScenarioObject> previousLevelContent,
                 IDictionary<string, ScenarioMetaData> encyclopedia,
                 ScenarioConfigurationContainer configuration);
 
-        void Unload();
+        /// <summary>
+        /// Unloads content of current Level and associated objects. Returns extracted level content to be 
+        /// moved with the Player to the next level.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<ScenarioObject> Unload();
 
         /// <summary>
         /// Gets a value saying whether or not the IModelService is loaded (Load(...) has beed called)
