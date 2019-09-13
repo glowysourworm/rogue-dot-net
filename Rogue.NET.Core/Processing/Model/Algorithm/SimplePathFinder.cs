@@ -7,6 +7,7 @@ using Rogue.NET.Core.Model.Scenario.Content.Extension;
 using Rogue.NET.Core.Processing.Model.Algorithm.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
+using Rogue.NET.Core.Model.Enums;
 
 namespace Rogue.NET.Core.Processing.Model.Algorithm
 {
@@ -26,14 +27,15 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             _layoutEngine = layoutEngine;
         }
 
-        public GridLocation FindPath(GridLocation point1, GridLocation point2, double maxRadius, bool canOpenDoors)
+        public GridLocation FindPath(GridLocation point1, GridLocation point2, double maxRadius, bool canOpenDoors, CharacterAlignmentType alignmentType)
         {
             // Initialize recurse A* algorithm with pathIdx = 1; and start point added to history
-            return FindPath(maxRadius, canOpenDoors, new Dictionary<GridLocation, int>() { { point1, 0 } }, point1, point2, 1);
+            return FindPath(maxRadius, canOpenDoors, alignmentType, new Dictionary<GridLocation, int>() { { point1, 0 } }, point1, point2, 1);
         }
 
         private GridLocation FindPath(double maxSeparation,
                                    bool canOpenDoors,
+                                   CharacterAlignmentType alignmentType,
                                    Dictionary<GridLocation, int> pathDictionary, 
                                    GridLocation start, 
                                    GridLocation end, 
@@ -58,8 +60,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
 
                 // Gets a set of adjacent locations that aren't blocked
                 var adjacentPathLocations = grid.GetAdjacentLocations(pathElement.Key)
-                                                .Where(x => canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(pathElement.Key, x, true)
-                                                                         : !_layoutEngine.IsPathToAdjacentCellBlocked(pathElement.Key, x, true));
+                                                .Where(x => canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(pathElement.Key, x, true, alignmentType)
+                                                                         : !_layoutEngine.IsPathToAdjacentCellBlocked(pathElement.Key, x, true, alignmentType));
 
                 // First, Add ALL cells not in the path history
                 foreach (var nextLocation in adjacentPathLocations)
@@ -77,8 +79,8 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
                             var nextBackTrackLocation = grid.GetAdjacentLocations(backtrackLocation)
                                                             .Where(x => pathDictionary.ContainsKey(x) &&
                                                                         pathDictionary[x] == backtrackPathIdx - 1 &&
-                                                                        (canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(backtrackLocation, x, backtrackPathIdx - 1 != 0)
-                                                                                      : !_layoutEngine.IsPathToAdjacentCellBlocked(backtrackLocation, x, backtrackPathIdx - 1 != 0)))
+                                                                        (canOpenDoors ? !_layoutEngine.IsPathToCellThroughWall(backtrackLocation, x, backtrackPathIdx - 1 != 0, alignmentType)
+                                                                                      : !_layoutEngine.IsPathToAdjacentCellBlocked(backtrackLocation, x, backtrackPathIdx - 1 != 0, alignmentType)))
                                                             .FirstOrDefault();
 
                             // This catch should not happen; but have here as a safety clause
@@ -104,7 +106,7 @@ namespace Rogue.NET.Core.Processing.Model.Algorithm
             }
 
             // Iterate to collect path information to backtrack with - incrementing path index
-            return FindPath(maxSeparation, canOpenDoors, pathDictionary, start, end, pathIdx + 1);
+            return FindPath(maxSeparation, canOpenDoors, alignmentType, pathDictionary, start, end, pathIdx + 1);
         }
     }
 }

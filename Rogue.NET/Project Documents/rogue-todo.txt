@@ -2535,3 +2535,54 @@ IMMEDIATE TODO'S:
 	- TODO: Change "Magic" Doodad to some other name.. And expand definition to form a base for new types
 	
 	- TODO: Force GridLocation to be a struct and use GridLocation.Empty
+	
+	- TODO: Get the ILayoutEngine to return EVERYTHING you want / need / will ever need to calculate 
+	
+			1) Free locations in level (non-occupied)
+			2) Free locations in level (for character movement BY ALIGNMENT TYPE)
+			3) Free locations in Range (non-occupied)
+			4) Free locations in Range (for character movement BY ALIGNMENT TYPE)
+			5) Free adjacent locations (SAME)
+		
+			"How do i get to my desired location" (method) (returns) enum { Passable, Impassable, PassableThroughDoor, PassableThroughOpposingCharacter }
+			
+				This would take TWO POINTS (Source, Destination) and calculate a path to get there. It would return the
+				desired parameters to get there.
+				
+				"Character Next Move Parameters" CalculateCharacterMove( Source Location, Destination Location, Character Alignment, Can Open Doors )
+				
+				Which would tell you what to do next:
+				
+					"Character Next Move Parameters" : struct
+					{
+						PathObstacleType { Passable, 
+										   Impassable, 
+										   PassableThroughDoor, 
+										   PassableThroughOpposingCharacter }
+						
+						GridLocation NextPathLocation;
+						
+						GridLocation DoorPosition1;
+						GridLocation DoorPosition2;
+						Compass OpeningDirection1;
+						Compass OpeningDirection2;											
+					}
+					
+				So, based on this struct, we could easily see what to do next. This should be used as a one-shot method for
+				dealing with path finding and character movement.
+					
+				If we wanted to we could even return information on whether there's other obstacles in the way.. like a teleporter or something.. (not necessary)				
+				
+			
+			6) Is Path to adjacent location blocked (for movement)
+			...
+			...
+			...
+			
+		Pathfinding:
+		
+			To solve this problem more generally - we'd need a much more efficient algorithm. Brogue has a mouse-over path finder. Pretty sure
+			we could get that to happen .. maybe by studying how heuristics work (?) But, it should be basically our go-to for doing anything with
+			character movement and planning.
+			
+			But, it would be something to show the path on the UI. Don't think the creator Brogue would mind if we did that :)

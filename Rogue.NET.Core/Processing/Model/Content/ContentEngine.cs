@@ -260,7 +260,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
             else
             {
-                _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, character.RogueName + " Died");
+                if (character is TemporaryCharacter)
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, character.RogueName + " Vanished");
+
+                else
+                    _scenarioMessageService.Publish(ScenarioMessagePriority.Normal, character.RogueName + " Died");
             }
 
             //Set enemy identified
@@ -308,6 +312,19 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             if (character.Hp <= 0)
                 CharacterDeath(character);
+
+            // Check for temporary character expiration - TODO: MOVE TO A "END OF TURN" METHOD OF SOME KIND
+            if (character is TemporaryCharacter)
+            {
+                var temporaryCharacter = character as TemporaryCharacter;
+
+                // Decrement Lifetime Counter
+                temporaryCharacter.LifetimeCounter--;
+
+                // Check for timer expiration
+                if (temporaryCharacter.LifetimeCounter <= 0)
+                    CharacterDeath(character);
+            }
         }
         public override void ApplyEndOfTurn(bool regenerate)
         {
@@ -640,7 +657,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         // Move location is the next location for the character
                         var moveLocation = CalculateCharacterMoveLocation(character, desiredLocation);
                         if (moveLocation != null &&
-                            moveLocation != GridLocation.Empty)
+                            moveLocation != GridLocation.Empty &&
+                            moveLocation != _modelService.Player.Location) // TODO: MAKE THIS PART OF THE LAYOUT ENGINE METHODS
                         {
                             ProcessCharacterMove(character, moveLocation);
                             actionTaken = true;
@@ -658,24 +676,27 @@ namespace Rogue.NET.Core.Processing.Model.Content
         }
         private GridLocation CalculateCharacterMoveLocation(NonPlayerCharacter character, GridLocation desiredLocation)
         {
+            // NOTE*** Reserving character-character swapping for the Player ONLY
+            //
+
             //Return random if confused
             if (character.Is(CharacterStateType.MovesRandomly))
-                return _layoutEngine.GetRandomAdjacentLocation(character.Location, true) ?? GridLocation.Empty;
+                return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, CharacterAlignmentType.None) ?? GridLocation.Empty;
 
             switch (character.BehaviorDetails.CurrentBehavior.MovementType)
             {
                 case CharacterMovementType.Random:
-                    return _layoutEngine.GetRandomAdjacentLocation(character.Location, true);
+                    return _layoutEngine.GetRandomAdjacentLocationForMovement(character.Location, CharacterAlignmentType.None);
                 case CharacterMovementType.HeatSeeker:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
                                         .MinBy(x => Calculator.RoguianDistance(x, desiredLocation)) ?? GridLocation.Empty;
                 case CharacterMovementType.StandOffIsh:
-                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
+                    return _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                         .LastOrDefault() ?? GridLocation.Empty;
                 case CharacterMovementType.PathFinder:
-                    var nextLocation = _pathFinder.FindPath(character.Location, desiredLocation, character.GetLightRadius(), character.BehaviorDetails.CanOpenDoors);
-                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location)
+                    var nextLocation = _pathFinder.FindPath(character.Location, desiredLocation, character.GetLightRadius(), character.BehaviorDetails.CanOpenDoors, CharacterAlignmentType.None);
+                    return nextLocation ?? _layoutEngine.GetFreeAdjacentLocationsForMovement(character.Location, CharacterAlignmentType.None)
                                                         .OrderBy(x => Calculator.RoguianDistance(x, desiredLocation))
                                                         .FirstOrDefault() ?? GridLocation.Empty;
                 default:
@@ -741,7 +762,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 if (shouldMoveToOpeningPosition1)
                 {
                     // Have to move to opening position 1 first - which means the door is on one of the off-diagonal locations
-                    if (_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, openingPosition1, true))
+                    if (_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, openingPosition1, true, character.AlignmentType))
                     {
                         // Update enemy location
                         character.Location = openingPosition1;
@@ -758,8 +779,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     _layoutEngine.ToggleDoor(moveDirection, character.Location);
                 }
             }
+
+            // GOING TO EXCLUDE CHARACTER / CHARACTER SWAP FOR THE SAME ALIGNMENT (reserved for Player only)
+            //
             else if (!throughDoor &&
-                     !_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, moveLocation, true))
+                     !_layoutEngine.IsPathToAdjacentCellBlocked(character.Location, moveLocation, true, CharacterAlignmentType.None))
             {
                 // Update enemy location
                 character.Location = moveLocation;
@@ -768,9 +792,10 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, character.Id));
             }
 
-            // Check for items
+            // Check for items - DON'T ALLOW TEMPORARY CHARACTERS / FRIENDLIES TO PICK UP ITEMS
             var item = _modelService.Level.GetAt<ItemBase>(character.Location);
-            if (item != null)
+            if (item != null &&
+                character is Enemy)
                 StepOnItem(character, item);
 
             // Check for doodad

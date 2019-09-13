@@ -174,6 +174,10 @@ namespace Rogue.NET.Core.Model.Enums
 
         [Display(Name = "Enemy Aligned",
                  Description = "Character fights for Enemies")]
-        EnemyAligned = 1
+        EnemyAligned = 1,
+
+        [Display(Name = "None",
+                 Description = "(This setting is not allowed - TODO)")]
+        None = 2
     }
 }

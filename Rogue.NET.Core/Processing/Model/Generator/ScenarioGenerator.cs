@@ -127,7 +127,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     {
                         // Add the Temporary Character Template Meta-data
                         var template = (skill.SkillAlteration.Effect as CreateTemporaryCharacterAlterationEffectTemplate).TemporaryCharacter;
-                        scenario.ScenarioEncyclopedia.Add(template.Name, _scenarioMetaDataGenerator.CreateScenarioMetaData(template));
+
+                        // Create Scenario Meta Data
+                        var metaData = _scenarioMetaDataGenerator.CreateScenarioMetaData(template);
+
+                        // Identify Temporary Characters involved with player skill set
+                        if (scenario.Player.SkillSets.Any(x => x.RogueName == skillSet.Name))
+                            metaData.IsIdentified = true;
+
+                        scenario.ScenarioEncyclopedia.Add(template.Name, metaData);
                     }
                 }
             }

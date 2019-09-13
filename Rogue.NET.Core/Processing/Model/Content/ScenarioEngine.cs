@@ -112,8 +112,20 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return null;
 
             //Look for road blocks - move player
-            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Player.Location, desiredLocation, true))
+            if (!_layoutEngine.IsPathToAdjacentCellBlocked(_modelService.Player.Location, desiredLocation, true, CharacterAlignmentType.PlayerAligned))
             {
+                // Check for character swaps
+                var swapCharacter = _modelService.Level.GetAt<NonPlayerCharacter>(desiredLocation);
+
+                // Swap the charcter's location
+                if (swapCharacter != null &&
+                    swapCharacter.AlignmentType == CharacterAlignmentType.PlayerAligned)
+                {
+                    swapCharacter.Location = _modelService.Player.Location;
+
+                    OnLevelEvent(_backendEventDataFactory.Event(LevelEventType.ContentMove, swapCharacter.Id));
+                }
+
                 // Update player location
                 _modelService.Player.Location = desiredLocation;
 
@@ -128,7 +140,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public ScenarioObject MoveRandom()
         {
             // Get random adjacent location
-            var desiredLocation = _layoutEngine.GetRandomAdjacentLocation(_modelService.Player.Location, true);
+            var desiredLocation = _layoutEngine.GetRandomAdjacentLocationForMovement(_modelService.Player.Location, CharacterAlignmentType.PlayerAligned);
 
             // Get direction for random move -> Move()
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(_modelService.Player.Location, desiredLocation);
@@ -190,7 +202,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 return;
 
             // Check to see whether path is clear to attack
-            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(location, attackLocation, false);
+            var blocked = _layoutEngine.IsPathToAdjacentCellBlocked(location, attackLocation, false, CharacterAlignmentType.PlayerAligned);
 
             // Get target for attack
             var character = _modelService.Level.GetAt<NonPlayerCharacter>(attackLocation);

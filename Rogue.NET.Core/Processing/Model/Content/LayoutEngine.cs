@@ -108,11 +108,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #region (public) Query Methods
         public bool IsPathToCellThroughDoor(
             GridLocation location1, 
-            Compass openingDirection1,              // Represents the Door for location1
+            Compass openingDirection1,                 // Represents the Door for location1
             out GridLocation openingPosition1,         // Represents the opening position for the door
             out GridLocation openingPosition2,         // Represents the same door opposite cell
-            out Compass openingDirection2,          // Represents the Door for location2
-            out bool shouldMoveToOpeningPosition1)  // Should move into position for opening the door before opening
+            out Compass openingDirection2,             // Represents the Door for location2
+            out bool shouldMoveToOpeningPosition1)     // Should move into position for opening the door before opening
         {
             var grid = _modelService.Level.Grid;
 
@@ -222,7 +222,11 @@ namespace Rogue.NET.Core.Processing.Model.Content
             }
             return false;
         }
-        public bool IsPathToCellThroughWall(GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
+
+        public bool IsPathToCellThroughWall(GridLocation location1, 
+                                            GridLocation location2, 
+                                            bool includeBlockedByCharacters,
+                                            CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None)
         {
             var level = _modelService.Level;
             var grid = level.Grid;
@@ -232,7 +236,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (cell1 == null || cell2 == null)
                 return false;
 
-            if (level.IsCellOccupiedByCharacter(cell2.Location, _modelService.Player.Location) && includeBlockedByEnemy)
+            // Check that the cell is occupied by a character of the other faction
+            var character = level.GetAt<NonPlayerCharacter>(cell2.Location);
+
+            if (character != null && 
+                includeBlockedByCharacters &&
+                character.AlignmentType != excludedAlignmentType)
                 return true;
 
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
@@ -269,20 +278,24 @@ namespace Rogue.NET.Core.Processing.Model.Content
                         {
                             b1 |= (diag1.Walls & oppositeCardinal1) != 0;
                             b1 |= (cell2.Walls & oppositeCardinal2) != 0;
-                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByEnemy);
+                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByCharacters);
                         }
                         if (diag2 != null)
                         {
                             b2 |= (diag2.Walls & oppositeCardinal2) != 0;
                             b2 |= (cell2.Walls & oppositeCardinal1) != 0;
-                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByEnemy);
+                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByCharacters);
                         }
                         return b1 && b2;
                     }
             }
             return false;
         }
-        public bool IsPathToAdjacentCellBlocked(GridLocation location1, GridLocation location2, bool includeBlockedByEnemy)
+
+        public bool IsPathToAdjacentCellBlocked(GridLocation location1, 
+                                                GridLocation location2, 
+                                                bool includeBlockedByCharacters,
+                                                CharacterAlignmentType excludedAlignmentType = CharacterAlignmentType.None)
         {
             var level = _modelService.Level;
 
@@ -292,7 +305,12 @@ namespace Rogue.NET.Core.Processing.Model.Content
             if (cell1 == null || cell2 == null)
                 return true;
 
-            if (level.IsCellOccupiedByCharacter(cell2.Location, _modelService.Player.Location) && includeBlockedByEnemy)
+            // Check that the cell is occupied by a character of the other faction
+            var character = level.GetAt<NonPlayerCharacter>(cell2.Location);
+
+            if (character != null &&
+                includeBlockedByCharacters &&
+                character.AlignmentType != excludedAlignmentType)
                 return true;
 
             var direction = LevelGridExtension.GetDirectionBetweenAdjacentPoints(location1, location2);
@@ -331,7 +349,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             b1 |= (cell2.Doors & oppositeCardinal2) != 0;
                             b1 |= (diag1.Walls & oppositeCardinal1) != 0;
                             b1 |= (cell2.Walls & oppositeCardinal2) != 0;
-                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByEnemy);
+                            b1 |= (level.IsCellOccupiedByCharacter(diag1.Location, _modelService.Player.Location) && includeBlockedByCharacters);
                         }
                         if (diag2 != null)
                         {
@@ -339,7 +357,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
                             b2 |= (cell2.Doors & oppositeCardinal1) != 0;
                             b2 |= (diag2.Walls & oppositeCardinal2) != 0;
                             b2 |= (cell2.Walls & oppositeCardinal1) != 0;
-                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByEnemy);
+                            b2 |= (level.IsCellOccupiedByCharacter(diag2.Location, _modelService.Player.Location) && includeBlockedByCharacters);
                         }
 
                         // Both paths are blocked
@@ -351,7 +369,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         #endregion
 
         #region (public) Get Methods
-        public GridLocation GetRandomAdjacentLocation(GridLocation location, bool excludeOccupiedCells)
+        public GridLocation GetRandomAdjacentLocationForMovement(GridLocation location, CharacterAlignmentType swappableAlignmentType = CharacterAlignmentType.None)
         {
             var level = _modelService.Level;
             var player = _modelService.Player;
@@ -359,7 +377,13 @@ namespace Rogue.NET.Core.Processing.Model.Content
             var adjacentLocations = level.
                                     Grid.
                                     GetAdjacentLocations(location).
-                                    Where(x => !(excludeOccupiedCells && level.IsCellOccupied(x, player.Location)));
+                                    Where(x =>
+                                    {
+                                        var character = level.GetAt<NonPlayerCharacter>(x);
+
+                                        // No Character (OR) Alignment Type Matches
+                                        return character == null ? true : character.AlignmentType == swappableAlignmentType;
+                                    });
 
             return adjacentLocations.Any() ? adjacentLocations.ElementAt(_randomSequenceGenerator.Get(0, adjacentLocations.Count()))
                                            : GridLocation.Empty;
@@ -374,15 +398,20 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
             return adjacentLocations.Where(x => x != null && !level.IsCellOccupied(x, player.Location));
         }
-        public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location)
+        public IEnumerable<GridLocation> GetFreeAdjacentLocationsForMovement(GridLocation location, CharacterAlignmentType swappableAlignmentType = CharacterAlignmentType.None)
         {
             var level = _modelService.Level;
-            var player = _modelService.Player;
 
-            var adjacentLocations = level.Grid.GetAdjacentLocations(location);
+            return  level.
+                    Grid.
+                    GetAdjacentLocations(location).
+                    Where(x =>
+                    {
+                        var character = level.GetAt<NonPlayerCharacter>(x);
 
-            return adjacentLocations.Where(x => x != null && 
-                                                !level.IsCellOccupiedByCharacter(x, player.Location));
+                        // No Character (OR) Alignment Type Matches
+                        return character == null ? true : character.AlignmentType == swappableAlignmentType;
+                    });
         }
         public IEnumerable<GridLocation> GetLocationsInRange(GridLocation location, int cellRange, bool includeSourceLocation)
         {
