@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.BrushEditorControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:commonView="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
@@ -8,6 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml">
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ButtonSpinner.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET;component/Themes/ExpressionDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -20,11 +22,25 @@
         </Grid.ColumnDefinitions>
 
         <Border BorderBrush="#AFFFFFFF" BorderThickness="1" Width="150" Height="150" Margin="10" VerticalAlignment="Top">
-            <Canvas x:Name="PreviewCanvas"  VerticalAlignment="Center" HorizontalAlignment="Center" Width="150" Height="150" />
+            <controls:BrushPreviewCanvas x:Name="PreviewCanvas"  
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Width="150" Height="150"
+                    Background="{Binding Converter={StaticResource BrushViewModelToBrushConverter}}">
+            </controls:BrushPreviewCanvas>
         </Border>
         
         <StackPanel Grid.Column="1">
-            <commonView:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}" Margin="10" EnumType="{x:Type brushEnum:BrushType}" />
+
+            <TextBlock Margin="8" Text="Scenario Brushes" Foreground="White" FontSize="16" HorizontalAlignment="Left" />
+            
+            <Grid Margin="8" HorizontalAlignment="Stretch">
+
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type controls:BrushSelectorControl}"
+                                    HorizontalAlignment="Stretch" />
+            </Grid>
+            
+            <commonView:EnumComboBox EnumValue="{Binding Type, Mode=TwoWay}" Margin="8" EnumType="{x:Type brushEnum:BrushType}" />
 
             <Grid Margin="8" Visibility="{Binding Type, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static brushEnum:BrushType.Solid}}">
                 <TextBlock Text="Solid Color" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" />

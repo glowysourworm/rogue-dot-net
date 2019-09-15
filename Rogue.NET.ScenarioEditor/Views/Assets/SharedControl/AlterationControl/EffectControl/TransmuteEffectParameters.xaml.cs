@@ -4,6 +4,7 @@ using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -43,10 +44,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.EquipmentCB.ItemsSource = provider.Equipment;
-            this.ConsumableCB.ItemsSource = provider.Consumables;
-            this.EquipmentRequirementsLB.SourceItemsSource = provider.Equipment;
-            this.ConsumableRequirementsLB.SourceItemsSource = provider.Consumables;
+            this.EquipmentCB.ItemsSource = provider.Equipment.CreateDefaultView();
+            this.ConsumableCB.ItemsSource = provider.Consumables.CreateDefaultView();
+            this.EquipmentRequirementsLB.SourceItemsSource = provider.Equipment.CreateDefaultView();
+            this.ConsumableRequirementsLB.SourceItemsSource = provider.Consumables.CreateDefaultView();
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)

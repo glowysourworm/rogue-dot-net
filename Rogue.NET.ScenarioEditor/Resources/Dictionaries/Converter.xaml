@@ -3,6 +3,7 @@
                     xmlns:scenarioEditorConverter="clr-namespace:Rogue.NET.ScenarioEditor.Converter">
     <scenarioEditorConverter:AlterationEffectAuraVisibilityConverter x:Key="AlterationEffectAuraVisibilityConverter" />
     <scenarioEditorConverter:BehaviorHeaderConverter x:Key="BehaviorHeaderConverter" />
+    <scenarioEditorConverter:BrushViewModelToBrushConverter x:Key="BrushViewModelToBrushConverter" x:Shared="True" />
     <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
     <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />
     <scenarioEditorConverter:LayoutConnectionGeometryVisibilityConverter x:Key="LayoutConnectionGeometryVisibilityConverter" />

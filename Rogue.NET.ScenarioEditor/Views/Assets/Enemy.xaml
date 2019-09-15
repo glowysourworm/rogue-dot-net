@@ -18,11 +18,11 @@
             </TabItem>
             <TabItem Header="Enemy Parameters">
                 <StackPanel>
-                    <Grid>
-                        <TextBlock Foreground="White" Text="Experience Given (On Death)" VerticalAlignment="Center" />
-                        <controls:Range DataContext="{Binding ExperienceGiven}" LowLimit="1" HighLimit="10000" />
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" Text="Experience Given (On Death)" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        <controls:Range DataContext="{Binding ExperienceGiven}" LowLimit="1" HighLimit="10000" HorizontalAlignment="Right" Width="400" />
                     </Grid>
-                    <Grid>
+                    <Grid Margin="10">
                         <TextBlock Foreground="White" Text="Generate On Step" VerticalAlignment="Center" />
                         <CheckBox IsChecked="{Binding GenerateOnStep}" HorizontalAlignment="Center" />
                     </Grid>

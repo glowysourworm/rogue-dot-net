@@ -47,7 +47,8 @@
             </TabItem>
             <TabItem Header="Ammo Animation"
                      Visibility="{Binding SubType, Converter={StaticResource ParameterVisibilityCollapsedConverter}, ConverterParameter={x:Static coreModelEnums:ConsumableSubType.Ammo}}">
-                <sharedControl:Animation DataContext="{Binding AmmoAnimationGroup}" />
+                <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}"
+                                    DataContext="{Binding AmmoAnimationGroup}" />
             </TabItem>
         </TabControl>
     </Grid>

@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 {
@@ -31,8 +32,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.CharacterControl
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.ConsumablesLB.SourceItemsSource = provider.Consumables;
-            this.EquipmentLB.SourceItemsSource = provider.Equipment;
+            this.ConsumablesLB.SourceItemsSource = provider.Consumables.CreateDefaultView();
+            this.EquipmentLB.SourceItemsSource = provider.Equipment.CreateDefaultView();
         }
 
         private void OnAddConsumable(object sender, object consumable)

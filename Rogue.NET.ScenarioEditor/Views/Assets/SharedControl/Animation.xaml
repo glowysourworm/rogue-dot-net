@@ -67,7 +67,8 @@
                                                              EnumValue="{Binding PointTargetType, Mode=TwoWay}" />
                         </TabItem>                        
                         <TabItem Header="Brush">
-                            <controls:BrushEditorControl DataContext="{Binding FillTemplate}" />
+                            <region:RogueRegion DataContext="{Binding FillTemplate}" 
+                                                region:RogueRegionManager.DefaultViewType="{x:Type controls:BrushEditorControl}" />
                         </TabItem>
                         <TabItem Header="Parameters">
                             <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type animation:AnimationParameters}" />

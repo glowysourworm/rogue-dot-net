@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -27,7 +28,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.EnemyCB.ItemsSource = provider.Enemies;
+            this.EnemyCB.ItemsSource = provider.Enemies.CreateDefaultView();
         }
     }
 }

@@ -7,6 +7,7 @@ using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {
@@ -34,7 +35,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses.CreateDefaultView();
         }
 
         private void CreateSymbol_Click(object sender, RoutedEventArgs e)

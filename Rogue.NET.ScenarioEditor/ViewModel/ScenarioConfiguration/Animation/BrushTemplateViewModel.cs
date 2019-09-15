@@ -5,12 +5,26 @@ using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows;
 using System;
+using System.Linq;
+using Rogue.NET.Common.Extension;
+using Rogue.NET.Common.ViewModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Windows.Data;
+using Rogue.NET.Common.Extension.Event;
 
 namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
 {
     public class BrushTemplateViewModel : TemplateViewModel
     {
-        public ObservableCollection<GradientStopTemplateViewModel> GradientStops { get; set; }
+        /// <summary>
+        /// Event to deal with the combined updates for all public properties and collections for the
+        /// BrushTemplateViewModel. This solves the issue of multibinding (wasn't updating the brush)
+        /// and the failed attempt at creating a MarkupExtension to issue a custom binding for brushes.
+        /// </summary>
+        public event SimpleEventHandler BrushUpdatedEvent;
+
+        public NotifyingObservableCollection<GradientStopTemplateViewModel> GradientStops { get; set; }
 
         private BrushType _type;
         private double _opacity;
@@ -23,92 +37,91 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation
         public BrushType Type
         {
             get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
+            set { this.RaiseAndSetIfChanged(ref _type, value); OnBrushUpdateEvent(); }
         }
         public double Opacity
         {
             get { return _opacity; }
-            set { this.RaiseAndSetIfChanged(ref _opacity, value); }
+            set { this.RaiseAndSetIfChanged(ref _opacity, value); OnBrushUpdateEvent(); }
         }
         public string SolidColor
         {
             get { return _solidColor; }
-            set { this.RaiseAndSetIfChanged(ref _solidColor, value); }
+            set { this.RaiseAndSetIfChanged(ref _solidColor, value); OnBrushUpdateEvent(); }
         }
         public double GradientStartX
         {
             get { return _gradientStartX; }
-            set { this.RaiseAndSetIfChanged(ref _gradientStartX, value); }
+            set { this.RaiseAndSetIfChanged(ref _gradientStartX, value); OnBrushUpdateEvent(); }
         }
         public double GradientStartY
         {
             get { return _gradientStartY; }
-            set { this.RaiseAndSetIfChanged(ref _gradientStartY, value); }
+            set { this.RaiseAndSetIfChanged(ref _gradientStartY, value); OnBrushUpdateEvent(); }
         }
         public double GradientEndX
         {
             get { return _gradientEndX; }
-            set { this.RaiseAndSetIfChanged(ref _gradientEndX, value); }
+            set { this.RaiseAndSetIfChanged(ref _gradientEndX, value); OnBrushUpdateEvent(); }
         }
         public double GradientEndY
         {
             get { return _gradientEndY; }
-            set { this.RaiseAndSetIfChanged(ref _gradientEndY, value); }
+            set { this.RaiseAndSetIfChanged(ref _gradientEndY, value); OnBrushUpdateEvent(); }
         }
 
         public BrushTemplateViewModel()
         {
-            this.GradientStops = new ObservableCollection<GradientStopTemplateViewModel>();
+            this.GradientStops = new NotifyingObservableCollection<GradientStopTemplateViewModel>();
             this.Opacity = 1;
             this.SolidColor = Colors.White.ToString();
+
+            this.GradientStops.CollectionChanged += OnGradientStopsChanged;
+            this.GradientStops.ItemPropertyChanged += OnGradientStopsItemChanged;
         }
         public BrushTemplateViewModel(string name)
         {
-            this.GradientStops = new ObservableCollection<GradientStopTemplateViewModel>();
+            this.GradientStops = new NotifyingObservableCollection<GradientStopTemplateViewModel>();
             this.Name = name;
             this.Opacity = 1;
             this.SolidColor = Colors.White.ToString();
+
+            this.GradientStops.CollectionChanged += OnGradientStopsChanged;
+            this.GradientStops.ItemPropertyChanged += OnGradientStopsItemChanged;
+        }
+        public BrushTemplateViewModel(string name, BrushTemplateViewModel copy)
+        {
+            this.Name = name;
+            this.GradientEndX = copy.GradientEndX;
+            this.GradientEndY = copy.GradientEndY;
+            this.GradientStartX = copy.GradientStartX;
+            this.GradientStartY = copy.GradientStartY;
+            this.GradientStops = new NotifyingObservableCollection<GradientStopTemplateViewModel>(copy.GradientStops
+                                                                                                      .Select(x => new GradientStopTemplateViewModel(x.GradientOffset, x.GradientColor))
+                                                                                                      .Actualize());
+
+            this.Opacity = copy.Opacity;
+            this.SolidColor = copy.SolidColor;
+            this.Type = copy.Type;
+
+            this.GradientStops.CollectionChanged += OnGradientStopsChanged;
+            this.GradientStops.ItemPropertyChanged += OnGradientStopsItemChanged;
         }
 
-        // TODO: MOVE THIS
-        public Brush GenerateBrush()
+        private void OnGradientStopsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (this.Type)
-            {
-                case BrushType.Solid:
-                    {
-                        SolidColorBrush b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(this.SolidColor));
-                        //b.Opacity = this.Opacity;
-                        return b;
-                    }
-                case BrushType.Linear:
-                    {
-                        LinearGradientBrush b = new LinearGradientBrush();
-                        //b.Opacity = this.Opacity;
-                        b.StartPoint = new Point(this.GradientStartX, this.GradientStartY);
-                        b.EndPoint = new Point(this.GradientEndX, this.GradientEndY);
-                        foreach (GradientStopTemplateViewModel t in this.GradientStops)
-                            b.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(t.GradientColor), t.GradientOffset));
+            OnBrushUpdateEvent();
+        }
 
-                        return b;
-                    }
-                case BrushType.Radial:
-                    {
-                        RadialGradientBrush b = new RadialGradientBrush();
-                        //b.Opacity = this.Opacity;
-                        b.GradientOrigin = new Point(this.GradientStartX, this.GradientStartY);
-                        double x = this.GradientEndX - this.GradientStartX;
-                        double y = this.GradientEndY - this.GradientStartY;
-                        b.RadiusX = Math.Abs(x);
-                        b.RadiusY = Math.Abs(y);
-                        foreach (GradientStopTemplateViewModel t in this.GradientStops)
-                            b.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString(t.GradientColor), t.GradientOffset));
-                        return b;
-                    }
-            }
+        private void OnGradientStopsItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnBrushUpdateEvent();
+        }
 
-            return null;
-
+        private void OnBrushUpdateEvent()
+        {
+            if (this.BrushUpdatedEvent != null)
+                this.BrushUpdatedEvent();
         }
     }
 }

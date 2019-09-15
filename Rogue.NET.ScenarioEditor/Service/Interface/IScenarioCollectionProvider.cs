@@ -1,4 +1,5 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System.Collections.ObjectModel;
 
@@ -19,5 +20,12 @@ namespace Rogue.NET.ScenarioEditor.Service.Interface
         // Shared General Assets
         ObservableCollection<AlteredCharacterStateTemplateViewModel> AlteredCharacterStates { get; }
         ObservableCollection<PlayerTemplateViewModel> CharacterClasses { get; }
+
+        // Shared Calculated Assets
+        ObservableCollection<BrushTemplateViewModel> Brushes { get; }
+
+        // Methods to update Calculated Assets
+        void AddBrush(BrushTemplateViewModel brush);
+        void RemoveBrush(BrushTemplateViewModel brush);
     }
 }

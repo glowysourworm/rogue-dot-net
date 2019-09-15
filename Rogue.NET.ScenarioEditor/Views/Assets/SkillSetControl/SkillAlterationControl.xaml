@@ -50,7 +50,8 @@
             <commonControl:AlterationAuraSourceParameters DataContext="{Binding AuraParameters}" />
         </TabItem>
         <TabItem Header="Animation">
-            <sharedControl:Animation DataContext="{Binding AnimationGroup}" />
+            <region:RogueRegion region:RogueRegionManager.DefaultViewType="{x:Type sharedControl:Animation}"
+                                    DataContext="{Binding AnimationGroup}" />
         </TabItem>
     </TabControl>
 </UserControl>

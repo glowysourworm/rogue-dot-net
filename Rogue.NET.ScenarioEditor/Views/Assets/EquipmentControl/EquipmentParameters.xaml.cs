@@ -2,6 +2,7 @@
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
@@ -28,8 +29,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.EquipmentControl
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.AmmoTemplateCB.ItemsSource = provider.Consumables.Where(a => a.SubType == ConsumableSubType.Ammo);
-            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            this.AmmoTemplateCB.ItemsSource = provider.Consumables.CreateView(a => a.SubType == ConsumableSubType.Ammo);
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses.CreateDefaultView();
         }
     }
 }

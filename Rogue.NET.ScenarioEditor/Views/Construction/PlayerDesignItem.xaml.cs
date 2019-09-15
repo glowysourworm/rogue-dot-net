@@ -4,6 +4,7 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -38,9 +39,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.ConsumablesLB.SourceItemsSource = provider.Consumables;
-            this.EquipmentLB.SourceItemsSource = provider.Equipment;
-            this.SkillsLB.SourceItemsSource = provider.SkillSets;
+            this.ConsumablesLB.SourceItemsSource = provider.Consumables.CreateDefaultView();
+            this.EquipmentLB.SourceItemsSource = provider.Equipment.CreateDefaultView();
+            this.SkillsLB.SourceItemsSource = provider.SkillSets.CreateDefaultView();
         }
 
         private void OnAddConsumable(object sender, object consumable)

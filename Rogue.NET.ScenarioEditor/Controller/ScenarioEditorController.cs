@@ -10,7 +10,9 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
 
@@ -98,7 +100,7 @@ namespace Rogue.NET.Controller.ScenarioEditor
             _rogueUndoService.Register(_config);
 
             // Publish the Scenario Configuration
-            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(new ScenarioConfigurationData(_config, new BrushTemplateViewModel[] { }));
 
             PublishOutputMessage("Created Scenario " + _config.DungeonTemplate.Name);
         }
@@ -123,14 +125,17 @@ namespace Rogue.NET.Controller.ScenarioEditor
             else
                 config = _scenarioFileService.OpenConfiguration(name);
 
+            // Collection of brushes from mapping the configuration
+            IEnumerable<BrushTemplateViewModel> scenarioBrushes;
+
             // Map to the view model
-            _config = _configurationMapper.Map(config);
+            _config = _configurationMapper.Map(config, out scenarioBrushes);
 
             // Register with the Undo Service
             _rogueUndoService.Register(_config);
 
             // Publish configuration
-            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(new ScenarioConfigurationData(_config, scenarioBrushes));
 
             // Hide Splash Screen
             _eventAggregator.GetEvent<SplashEvent>().Publish(new SplashEventData()
@@ -196,8 +201,6 @@ namespace Rogue.NET.Controller.ScenarioEditor
                 SplashAction = SplashAction.Hide,
                 SplashType = SplashEventType.Loading
             });
-
-            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Publish(_config);
         }
 
         private void PublishOutputMessage(string msg)

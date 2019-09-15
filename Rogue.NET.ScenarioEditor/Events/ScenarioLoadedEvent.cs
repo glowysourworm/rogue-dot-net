@@ -5,7 +5,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 namespace Rogue.NET.ScenarioEditor.Events
 {
 
-    public class ScenarioLoadedEvent : RogueEvent<ScenarioConfigurationContainerViewModel>
+    public class ScenarioLoadedEvent : RogueEvent<ScenarioConfigurationData>
     {
     }
 }

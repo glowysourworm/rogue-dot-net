@@ -2586,3 +2586,71 @@ IMMEDIATE TODO'S:
 			character movement and planning.
 			
 			But, it would be something to show the path on the UI. Don't think the creator Brogue would mind if we did that :)
+			
+			
+		Versioning:
+		
+			If it came to it - the game could be versioned by:  [major release].[minor release].[patch number]
+			
+			Major Release:  Updates to the model and configuration that may not be backwards compatible
+			
+			Minor Release:  ???
+			
+			Patch Number:  Bug fixes only
+			
+			So, if the model and configuration were versioned, it could be made to be forward / backwards compatible with some work on serialization.
+			
+			If it were ever online - maybe using Web Assembly (?) all versions could be online. So, if a player wants to play their saved games - it
+			would be the old version - and it would notify them of the update after their games are finished (maybe because of perma-death)
+			
+		Web Assembly:  
+		
+			There's a few frameworks out that build WPF for WebAssembly:  Uno, Ooui (uses Xamarin.Forms), and Frogui (ones that i found quickly)
+			
+			These would have to be researched; but it's promising to see that people are planning for WPF -> Web Assembly.
+			
+		WPF DataGrid:
+		
+			Performance for the item grid is very slow when changing the source collection. Maybe consider replacing it with a list box of some kind.
+			
+		INotifyPropertyChanged Design Issue:
+		
+			Need a way to send an INotifyPropertyChanged.PropertyChanged event when a collection ITEM is modified. 
+			
+				Example:  Brush Editor - needs to bind to the GradientStops collection using a Multi-Binding - which requires
+					      that an event be sent when a gradient stop is altered.
+						  
+						  Sending the event just requires a simple inherit -> extend of the ObservableCollection to notify its
+						  parent.
+						  
+						  However, sending a PropertyChanged event from the BrushTemplateViewModel for the GradientStops results
+						  in an issue with the undo service trying to read it as a model change - which overlaps the actual
+						  Gradient Stop property change (probably already registered by the time this happens).
+						  
+				UPDATE:   Looking into the BindingBase - it looks like the whole thing is built on:
+				
+						  1) MarkupExtension
+						  2) Expression   <-- THIS COULD BE THE CAUSE OF THE PERFORMANCE ISSUE. The "Lag" during loading.
+						  
+						  That's pretty easy to handle! It might mean that you can pretty much build your own binding classes
+						  from scratch! GOOD TO KNOW!
+						  
+				So, going to try to build one to listen for a custom collection changed event. I'll bet you could even use 
+				Reflection to build up a binding mechanism that may perform better than Expressions; but just on the initial load
+				while they're compiling.
+				
+				UPDATE:   BindingExpression instances can be passed to DependencyObject.SetValue(DependencyProperty, [object]) as
+						  the [object] to set up a binding - which is what happens when you declare the Binding MarkupExtension.
+						  
+						  Also, A MarkupExtension that returns a BindingExpression will behave "like we know" - according to how
+						  those work. 
+						  
+						  The convention for return values from MarkupExtension.ProvideValue is:
+						  
+							1) Return "this" when there's no target dependency property / object to see
+							   (my understanding is that the extension will be re-evaluated if you return "this") (maybe not...)
+							   
+							2) Return BindingExpression (BindingOperations.SetBinding) to behave like the Binding "we know".
+							
+				ALSO:     This idea is how bindings work for item / data templates because they have to be "evaluated later"
+						  

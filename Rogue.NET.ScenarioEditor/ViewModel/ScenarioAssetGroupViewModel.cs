@@ -36,12 +36,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel
             this.Assets = new ObservableCollection<IScenarioAssetViewModel>();
 
             // Scenario loaded
-            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configuration) =>
+            _eventAggregator.GetEvent<ScenarioLoadedEvent>().Subscribe((configurationData) =>
             {
                 _hasSymbol = AssetTypeConst.HasSymbol(this.AssetType);
 
                 // Obtain INotifyCollectionChanged reference
-                var notifyCollectionChanged = (INotifyCollectionChanged)ConfigurationCollectionResolver.GetAssetCollection(configuration, this.AssetType);
+                var notifyCollectionChanged = (INotifyCollectionChanged)ConfigurationCollectionResolver.GetAssetCollection(configurationData.Configuration, this.AssetType);
 
                 // Clear out assets
                 this.Assets.Clear();

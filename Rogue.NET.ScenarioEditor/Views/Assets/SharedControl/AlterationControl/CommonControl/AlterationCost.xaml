@@ -13,44 +13,20 @@
     </UserControl.Resources>
     <StackPanel>
         <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Strength" />
-            <toolkit:DoubleUpDown Value="{Binding Strength, Mode=TwoWay}" Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Agility" />
-            <toolkit:DoubleUpDown Value="{Binding Agility, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Intelligence" />
-            <toolkit:DoubleUpDown Value="{Binding Intelligence}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Speed" />
-            <toolkit:DoubleUpDown Value="{Binding Speed}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>        
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Food Usage (per turn)" />
-            <toolkit:DoubleUpDown Value="{Binding FoodUsagePerTurn, Mode=TwoWay}" Increment="0.01"  AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Aura Radius" />
-            <toolkit:DoubleUpDown Value="{Binding AuraRadius, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Experience" />
-            <toolkit:DoubleUpDown Value="{Binding Experience, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
-            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hunger" />
-            <toolkit:DoubleUpDown Value="{Binding Hunger, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
-        </Grid>
-        <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hp" />
             <toolkit:DoubleUpDown Value="{Binding Hp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
         <Grid Margin="10,5,10,5">
             <TextBlock Foreground="White" VerticalAlignment="Center" Text="Mp" />
             <toolkit:DoubleUpDown Value="{Binding Mp, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
+        </Grid>
+        <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Hunger" />
+            <toolkit:DoubleUpDown Value="{Binding Hunger, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
+        </Grid>        
+        <Grid Margin="10,5,10,5">
+            <TextBlock Foreground="White" VerticalAlignment="Center" Text="Experience" />
+            <toolkit:DoubleUpDown Value="{Binding Experience, Mode=TwoWay}"  Increment="0.01" AllowTextInput="True" AllowSpin="True" HorizontalAlignment="Right" Width="150" />
         </Grid>
     </StackPanel>
 </UserControl>

@@ -1,6 +1,7 @@
 ﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Service.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
@@ -26,8 +27,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.ConsumableControl
 
         private void Initialize(IScenarioCollectionProvider provider)
         {
-            this.LearnedSkillCB.ItemsSource = provider.SkillSets;
-            this.CharacterClassCB.ItemsSource = provider.CharacterClasses;
+            this.LearnedSkillCB.ItemsSource = provider.SkillSets.CreateDefaultView();
+            this.CharacterClassCB.ItemsSource = provider.CharacterClasses.CreateDefaultView();
         }
     }
 }

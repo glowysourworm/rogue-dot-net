@@ -1,4 +1,6 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension.Prism.EventAggregator;
+using Rogue.NET.Core.Model.Enums;
+using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.ScenarioEditor.Utility;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System.ComponentModel.Composition;
@@ -12,9 +14,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl
     [Export]
     public partial class Animation : UserControl
     {
+        readonly IRogueEventAggregator _eventAggregator;
+
         [ImportingConstructor]
-        public Animation()
+        public Animation(IRogueEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
+
             InitializeComponent();
 
             this.DataContextChanged += (sender, e) =>
@@ -34,10 +40,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl
             var viewModel = this.DataContext as AnimationGroupTemplateViewModel;
             if (viewModel != null)
             {
-                viewModel.Animations.Add(new AnimationTemplateViewModel()
+                var animation = new AnimationTemplateViewModel()
                 {
                     Name = NameGenerator.Get(viewModel.Animations.Select(x => x.Name), "Animation")
-                });
+                };
+
+                viewModel.Animations.Add(animation);
+
+                // Publish event to notify listeners about brushes
+                _eventAggregator.GetEvent<BrushAddedEvent>()
+                                .Publish(animation.FillTemplate);
             }
         }
 
@@ -50,6 +62,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Assets.SharedControl
                 selectedItem != null)
             {
                 viewModel.Animations.Remove(selectedItem);
+
+                // Publish event to notify listeners about brushes
+                _eventAggregator.GetEvent<BrushRemovedEvent>()
+                                .Publish(selectedItem.FillTemplate);
             }
         }
     }

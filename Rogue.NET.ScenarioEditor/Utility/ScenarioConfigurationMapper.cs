@@ -18,6 +18,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
 using System;
 using System.Collections;
@@ -82,13 +83,22 @@ namespace Rogue.NET.ScenarioEditor.Utility
             _reverseReferenceMap = new Dictionary<TemplateViewModel, Template>();
         }
 
-        public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model)
+        public ScenarioConfigurationContainerViewModel Map(ScenarioConfigurationContainer model, out IEnumerable<BrushTemplateViewModel> scenarioBrushes)
         {
             // Clear out reference maps to prepare for next mapping
             _forwardReferenceMap.Clear();
             _reverseReferenceMap.Clear();
 
-            return MapObject<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, false);
+            // Map configuration
+            var configuration = MapObject<ScenarioConfigurationContainer, ScenarioConfigurationContainerViewModel>(model, false);
+
+            // Collect brushes from forward reference map
+            scenarioBrushes = _forwardReferenceMap.Values
+                                                  .Where(x => x is BrushTemplateViewModel)
+                                                  .Select(x => x as BrushTemplateViewModel)
+                                                  .ToList();
+
+            return configuration;
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)
         {
@@ -97,13 +107,6 @@ namespace Rogue.NET.ScenarioEditor.Utility
             _reverseReferenceMap.Clear();
 
             var result = MapObject<ScenarioConfigurationContainerViewModel, ScenarioConfigurationContainer>(viewModel, true);
-
-            // Sort collections 
-            result.ConsumableTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            result.DoodadTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            result.EnemyTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            result.EquipmentTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
-            result.SkillTemplates.Sort((x, y) => x.Name.CompareTo(y.Name));
 
             return result;
         }

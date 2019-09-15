@@ -258,6 +258,7 @@
     <Compile Include="Controller\ScenarioAssetController.cs" />
     <Compile Include="Converter\AlterationEffectAuraVisibilityConverter.cs" />
     <Compile Include="Converter\BehaviorHeaderConverter.cs" />
+    <Compile Include="Converter\BrushViewModelToBrushConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
@@ -268,6 +269,9 @@
     <Compile Include="Events\AddAssetEvent.cs" />
     <Compile Include="Events\AddGeneralAssetEvent.cs" />
     <Compile Include="Events\AlterationEffectChangedEvent.cs" />
+    <Compile Include="Events\BrushCopyEvent.cs" />
+    <Compile Include="Events\BrushRemovedEvent.cs" />
+    <Compile Include="Events\BrushAddedEvent.cs" />
     <Compile Include="Events\CollapseAssetTreeEvent.cs" />
     <Compile Include="Events\CopyAssetEvent.cs" />
     <Compile Include="Events\LoadDefaultRegionViewEvent.cs" />
@@ -411,12 +415,14 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\TemporaryCharacterTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Extension\ObservableCollectionExtension.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\RangeViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationContainerViewModel.cs">
       <LastGenOutput>ScenarioConfigurationContainer.Designer.cs</LastGenOutput>
     </Compile>
+    <Compile Include="ViewModel\ScenarioConfiguration\ScenarioConfigurationData.cs" />
     <Compile Include="ViewModel\ScenarioConstructionViewModel.cs" />
     <Compile Include="ViewModel\ScenarioDesignOverviewViewModel.cs" />
     <Compile Include="Views\Assets\SharedControl\AlterationControl\EffectControl\CreateTemporaryCharacterEffectParameters.xaml.cs">
@@ -626,6 +632,10 @@
     </Compile>
     <Compile Include="Views\Controls\BrushEditorControl.xaml.cs">
       <DependentUpon>BrushEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\BrushPreviewCanvas.cs" />
+    <Compile Include="Views\Controls\BrushSelectorControl.xaml.cs">
+      <DependentUpon>BrushSelectorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\CharacterMap.xaml.cs">
       <DependentUpon>CharacterMap.xaml</DependentUpon>
@@ -975,6 +985,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\BrushEditorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\BrushSelectorControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

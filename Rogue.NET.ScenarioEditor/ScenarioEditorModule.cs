@@ -294,6 +294,16 @@ namespace Rogue.NET.ScenarioEditor
                 var view = _regionManager.Load(container, e.AlterationEffectViewType);
             });
 
+            // Brush Events
+            _eventAggregator.GetEvent<BrushAddedEvent>().Subscribe(brush =>
+            {
+                _scenarioCollectionProvider.AddBrush(brush);
+            });
+            _eventAggregator.GetEvent<BrushRemovedEvent>().Subscribe(brush =>
+            {
+                _scenarioCollectionProvider.RemoveBrush(brush);
+            });
+
             // Region Events
             _eventAggregator.GetEvent<LoadDefaultRegionViewEvent>().Subscribe(region =>
             {

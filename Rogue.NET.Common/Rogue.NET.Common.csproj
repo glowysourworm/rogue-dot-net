@@ -216,6 +216,7 @@
     <Compile Include="Utility\ResourceConstants.cs" />
     <Compile Include="Utility\RogueVisualTreeHelper.cs" />
     <Compile Include="ViewModel\ColorViewModel.cs" />
+    <Compile Include="ViewModel\NotifyingObservableCollection.cs" />
     <Compile Include="ViewModel\NotifyViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\EventBehaviorFactory.cs" />
