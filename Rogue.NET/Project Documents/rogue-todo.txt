@@ -2653,4 +2653,48 @@ IMMEDIATE TODO'S:
 							2) Return BindingExpression (BindingOperations.SetBinding) to behave like the Binding "we know".
 							
 				ALSO:     This idea is how bindings work for item / data templates because they have to be "evaluated later"
+				
+	Simulation:
+	
+		Probably the most important tool to help build scenarios more easily. Thought of a way to use game attempts to build a
+		"database" of "average tries":
+		
+			- Each time a user defeats a level -> in a scenario -> as a particular character class
+			
+				1) Aggregate the user's results with those of previous results (in a moving-average fashion)
+				2) Store the result as "the result" - which is an "average" of "how well" the player usually does by
+				   Level "X". 
+				   
+			- The calculation is as follows:
+			
+				1) Total # of Character Points (1-per level unless alteration is added for giving extra)
+				2) Get the total # of points spent on [ Strength, Agility, Intelligence, and Skills ]
+				3) Create a vector with the total # of attempts for a given point "purchase"
+				
+					- Strength:  	Total number of points spent by Level "X" On Average
+					- Agility:   	Total number of points spent by Level "X" on average
+					- Intelligence: (same)
+					- Skills[]
+						Skill 1:    Number of times player had Skill 1 by Level "X" (weighted by the point cost)
+						Skill 2:    Number of times player had Skill 2 by Level "X" (weighted by the point cost)
+						...
+					
+					Such that the "total expendature" by Level "X" is (on average) constant (average). So, then,
+					the simulated strength, agility, intelligence, and skills are chosen from this vector in a
+					"top-down" fashion. 
+					
+					Example:  Strength has a weighted expendature of "4.5 points by Level X" - which is the highest
+							  (on average). So, the simulator would spend the first 4.5 points on Strength - and so
+							  on "down the histogram" until the total number of points (on average by Level "X") is
+							  reached.
+							  
+					IN SHORT, THE SIMULATOR IS SPENDING IT'S POINTS IN THE WAY THAT THE USER DOES (ON AVERAGE).
+					
+					The same should be done for items in the player's inventory; and other statistics COULD be
+					averaged out - WITH SOME LIKELY NOISE.. I don't know if that will be a problem or not (food is
+					an obvious issue; but I think it'll be ok.. The total number of player steps could also be 
+					averaged, etc... to provide some decent calculations).
+					
+			This design would solve a problem of trying to figure out how the simulator should operate.
+			
 						  
