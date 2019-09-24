@@ -2697,4 +2697,10 @@ IMMEDIATE TODO'S:
 					
 			This design would solve a problem of trying to figure out how the simulator should operate.
 			
+	- TODO: Make alteration effect type that "Refills HP, MP, Hunger" (so, no limits required it always refills the meters)
+	
+	7 Virtues:
+	
+		
+			
 						  

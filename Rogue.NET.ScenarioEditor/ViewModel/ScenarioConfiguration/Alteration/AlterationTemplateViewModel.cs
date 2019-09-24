@@ -35,7 +35,8 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration
 
         public AlterationTemplateViewModel()
         {
-
+            this.AnimationGroup = new AnimationGroupTemplateViewModel();
+            this.Cost = new AlterationCostTemplateViewModel();
         }
     }
 }

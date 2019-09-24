@@ -288,8 +288,8 @@
                                     <ContentPresenter Margin="4" Visibility="{Binding Converter={StaticResource AttackAttributeIsSetVisibilityConverter}}">
                                         <ContentPresenter.Content>
                                             <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
-                                                <Binding Path="CharacterSymbol" />
                                                 <Binding Path="CharacterColor" />
+                                                <Binding Path="CharacterSymbol" />
                                                 <Binding Path="Icon" />
                                                 <Binding Path="DisplayIcon" />
                                                 <Binding Path="SmileyExpression" />
