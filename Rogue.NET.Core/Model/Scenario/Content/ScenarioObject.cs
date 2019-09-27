@@ -50,8 +50,8 @@ namespace Rogue.NET.Core.Model.Scenario.Content
 
             this.Location = GridLocation.Empty;
         }
-        public ScenarioObject(string name, string characterSymbol, string characterSymbolCategory, string color)
-            : base(name, characterSymbol, characterSymbolCategory, color)
+        public ScenarioObject(string name, string characterSymbol, string characterSymbolCategory, string characterColor, double characterScale)
+            : base(name, characterSymbol, characterSymbolCategory, characterColor, characterScale)
         {
             this.Location = GridLocation.Empty;
         }

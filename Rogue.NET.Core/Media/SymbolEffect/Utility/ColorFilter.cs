@@ -59,31 +59,13 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             });
         }
 
-        /// <summary>
-        /// Shifts hue through the specified angle and returns the resulting color.
-        /// </summary>
-        public static Color ShiftHue(Color color, double radians)
+        public static Color ShiftHSL(Color color, double hueRadians, double saturation, double lightness)
         {
-            // Compute RGB in [0, 1]
-            var a = color.A / 255.0D;
+            var huePrime = CalculateHue(color) + hueRadians;
+            var saturationPrime = CalculateSaturation(color) + saturation;
+            var lightnessPrime = CalculateLightness(color) + lightness;
 
-            // Shift hue through an angle
-            var huePrime = (CalculateHue(color) + radians) % (2.0 * Math.PI);
-
-            return FromHSL(a, huePrime, CalculateSaturation(color), CalculateLightness(color));
-        }
-        /// <summary>
-        /// Calculates a new color with the provided saturation [0, 1]
-        /// </summary>
-        public static Color Saturate(Color color, double saturation)
-        {
-            // Compute RGB in [0, 1]
-            var a = color.A / 255.0D;
-
-            var hue = CalculateHue(color);
-            var lightness = CalculateLightness(color);
-
-            return FromHSL(a, hue, saturation, lightness);
+            return FromHSL(color.A / 255.0, huePrime, saturationPrime, lightnessPrime);
         }
 
         // https://en.wikipedia.org/wiki/HSL_and_HSV

@@ -4,6 +4,7 @@ using Rogue.NET.Common.Utility;
 using Rogue.NET.Core.Model.ResourceCache;
 using Rogue.NET.ModalDialog;
 using Rogue.NET.Core.Processing.Event.Dialog.Enum;
+using Rogue.NET.Core.Processing.Symbol;
 
 namespace Rogue.NET
 {
@@ -26,6 +27,9 @@ namespace Rogue.NET
 
             // Load all configurations prior to running application
             ScenarioConfigurationCache.Load();
+
+            // Load SVG Resources
+            SvgCache.Load();
 
             // Hide loading window
             loadingWindow.Hide();

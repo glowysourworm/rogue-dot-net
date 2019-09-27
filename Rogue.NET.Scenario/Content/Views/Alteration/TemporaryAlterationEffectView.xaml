@@ -48,10 +48,14 @@
                         <Binding Path="AlteredState.CharacterColor" />
                         <Binding Path="AlteredState.CharacterSymbol" />
                         <Binding Path="AlteredState.CharacterSymbolCategory" />
+                        <Binding Path="AlteredState.CharacterScale" />
                         <Binding Path="AlteredState.Symbol" />
                         <Binding Path="AlteredState.SymbolHue" />
                         <Binding Path="AlteredState.SymbolSaturation" />
                         <Binding Path="AlteredState.SymbolLightness" />
+                        <Binding Path="AlteredState.SymbolScale" />
+                        <Binding Path="AlteredState.SymbolColorMapFrom" />
+                        <Binding Path="AlteredState.SymbolColorMapTo" />
                         <Binding Path="AlteredState.SmileyExpression" />
                         <Binding Path="AlteredState.SmileyAuraColor" />
                         <Binding Path="AlteredState.SmileyBodyColor" />

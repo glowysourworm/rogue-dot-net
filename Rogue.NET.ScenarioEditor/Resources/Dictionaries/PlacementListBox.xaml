@@ -24,10 +24,14 @@
                         <Binding Path="SymbolDetails.CharacterColor" />
                         <Binding Path="SymbolDetails.CharacterSymbol" />
                         <Binding Path="SymbolDetails.CharacterSymbolCategory" />
+                        <Binding Path="SymbolDetails.CharacterScale" />
                         <Binding Path="SymbolDetails.Symbol" />
                         <Binding Path="SymbolDetails.SymbolHue" />
                         <Binding Path="SymbolDetails.SymbolSaturation" />
                         <Binding Path="SymbolDetails.SymbolLightness" />
+                        <Binding Path="SymbolDetails.SymbolScale" />
+                        <Binding Path="SymbolDetails.SymbolColorMapFrom" />
+                        <Binding Path="SymbolDetails.SymbolColorMapTo" />
                         <Binding Path="SymbolDetails.SmileyExpression" />
                         <Binding Path="SymbolDetails.SmileyAuraColor" />
                         <Binding Path="SymbolDetails.SmileyBodyColor" />

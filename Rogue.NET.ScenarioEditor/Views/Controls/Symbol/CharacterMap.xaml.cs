@@ -11,6 +11,7 @@ using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel;
+using Rogue.NET.Core.Processing.Symbol.Interface;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -18,11 +19,13 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
     public partial class CharacterMap : UserControl
     {
         readonly IScenarioResourceService _scenarioResourceService;
+        readonly ISvgCache _svgCache;
         public string SelectedCharacter { get; private set; }
         public string SelectedCategory { get; private set; }
         public CharacterMap()
         {
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
+            _svgCache = ServiceLocator.Current.GetInstance<ISvgCache>();
             
             InitializeComponent();
 
@@ -80,65 +83,22 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
         private void LoadCategories()
         {
-            var assembly = typeof(IRogueEventAggregator).Assembly;
-
-            // For now, just parse the names like the folder structure (figure out more robust way later)
-            //
-            var prefix = "Rogue.NET.Common.Resource.Svg.Scenario.Character.";
-
-            // Get resources from the character folder -> Parse out category names
-            var categories = assembly.GetManifestResourceNames()
-                                        .Where(x => x.Contains("Svg.Scenario.Character"))
-                                        .Select(x => x.Replace(prefix, ""))
-                                        .Select(x =>
-                                        {
-                                            var pieces = x.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-                                            if (pieces.Length != 3)
-                                                throw new Exception("Resource file-name format differs from expected");
-
-                                            // [Category].[FileName].svg
-
-                                            return pieces[0];
-                                        })
-                                        .Distinct()
-                                        .Actualize();
-
-            this.CategoryLB.ItemsSource = categories;
+            this.CategoryLB.ItemsSource = _svgCache.GetCharacterCategories();
         }
         private void LoadCharacters(string category)
         {
-            var assembly = typeof(IRogueEventAggregator).Assembly;
+            // Create symbols for the specified category
+            this.SymbolLB.ItemsSource = _svgCache.GetCharacterResourceNames(category).Select(characterName =>
+            {
+                // Load Image Source
+                var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(characterName,
+                                                                                            characterName,
+                                                                                            category,
+                                                                                            Colors.White.ToString(),
+                                                                                            1.0), 1.0);
 
-            // For now, just parse the names like the folder structure (figure out more robust way later)
-            //
-            var prefix = "Rogue.NET.Common.Resource.Svg.Scenario.Character.";
-
-            // Get resources from the character folder -> Parse out category names
-            var items = assembly.GetManifestResourceNames()
-                                .Where(x => x.Contains("Svg.Scenario.Character"))
-                                .Where(x => x.Contains("." + category + "."))
-                                .Select(x => x.Replace(prefix, ""))
-                                .Select(x =>
-                                {
-                                    var pieces = x.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-                                    if (pieces.Length != 3)
-                                        throw new Exception("Resource file-name format differs from expected");
-
-                                    // [Category].[FileName].svg
-
-                                    // Load Image Source
-                                    var imageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(pieces[1], 
-                                                                                                                pieces[1], 
-                                                                                                                pieces[0], 
-                                                                                                                Colors.White.ToString()), 1.0);
-
-                                    return new SvgSymbolViewModel(imageSource, pieces[0], pieces[1]);
-                                })
-                                .Actualize();
-
-            this.SymbolLB.ItemsSource = items;
+                return new SvgSymbolViewModel(imageSource, category, characterName);
+            });
         }
     }
 }

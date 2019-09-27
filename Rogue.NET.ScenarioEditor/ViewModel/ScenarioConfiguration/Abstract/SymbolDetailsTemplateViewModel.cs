@@ -15,10 +15,14 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         private string _characterSymbol;
         private string _characterSymbolCategory;
         private string _characterColor;
+        private double _characterScale;
         private string _symbol;
         private double _symbolHue;
         private double _symbolSaturation;
         private double _symbolLightness;
+        private double _symbolScale;
+        private string _symbolColorMapFrom;
+        private string _symbolColorMapTo;
         private string _gameSymbol;
 
         public SymbolType SymbolType
@@ -61,6 +65,11 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             get { return _characterColor; }
             set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
         }
+        public double CharacterScale
+        {
+            get { return _characterScale; }
+            set { this.RaiseAndSetIfChanged(ref _characterScale, value); }
+        }
         public string Symbol
         {
             get { return _symbol; }
@@ -81,6 +90,21 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             get { return _symbolLightness; }
             set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
         }
+        public double SymbolScale
+        {
+            get { return _symbolScale; }
+            set { this.RaiseAndSetIfChanged(ref _symbolScale, value); }
+        }
+        public string SymbolColorMapFrom
+        {
+            get { return _symbolColorMapFrom; }
+            set { this.RaiseAndSetIfChanged(ref _symbolColorMapFrom, value); }
+        }
+        public string SymbolColorMapTo
+        {
+            get { return _symbolColorMapTo; }
+            set { this.RaiseAndSetIfChanged(ref _symbolColorMapTo, value); }
+        }
         public string GameSymbol
         {
             get { return _gameSymbol; }
@@ -95,6 +119,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();
+
+            this.CharacterColor = Colors.White.ToString();
+            this.CharacterScale = 1;
+
+            this.SymbolHue = 0;
+            this.SymbolLightness = 0;
+            this.SymbolSaturation = 0;
+            this.SymbolScale = 1;
+            this.SymbolColorMapFrom = Colors.White.ToString();
+            this.SymbolColorMapTo = Colors.White.ToString();
         }
     }
 }

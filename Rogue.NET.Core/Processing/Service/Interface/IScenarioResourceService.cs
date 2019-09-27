@@ -16,10 +16,10 @@ namespace Rogue.NET.Core.Processing.Service.Interface
         IEnumerable<ScenarioConfigurationContainer> GetScenarioConfigurations();
         ScenarioConfigurationContainer GetScenarioConfiguration(ConfigResources configResource);
         ScenarioConfigurationContainer GetScenarioConfiguration(string configurationName);
-        ImageSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, bool bypassCache = false);
-        ImageSource GetImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
-        ImageSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
-        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, bool bypassCache = false);
+        ImageSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale);
+        ImageSource GetImageSource(ScenarioImage scenarioImage, double scale);
+        ImageSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale);
+        FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale);
         IEnumerable<ColorViewModel> GetColors();
 
         // Returns a random character smiley face from the collection of combined characters from all scenario configurations

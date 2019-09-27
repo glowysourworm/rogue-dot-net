@@ -6,76 +6,26 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
     public static class BrushFilter
     {
         /// <summary>
-        /// Shifts hue through the specified angle and returns the resulting brush.
+        /// Applies HSL filter to the specified brush - HSL(0,0,0) being the neutral position - shifting positive
+        /// or negative.
         /// </summary>
-        /// <param name="brush">Input Brush</param>
-        /// <param name="radians">Angle in radians [0, 2 * pi)</param>
-        public static Brush ShiftHue(Brush brush, double radians)
+        public static Brush ShiftHSL(Brush brush, double hueRadians, double saturation, double lightness)
         {
-            if (brush is SolidColorBrush)
-            {
-                var solidColorBrush = brush as SolidColorBrush;
-
-                solidColorBrush.Color = ColorFilter.ShiftHue(solidColorBrush.Color, radians);
-
-                return solidColorBrush;
-            }
-            else if (brush is LinearGradientBrush)
-            {
-                var linearBrush = brush as LinearGradientBrush;
-
-                foreach (var stop in linearBrush.GradientStops)
-                    stop.Color = ColorFilter.ShiftHue(stop.Color, radians);
-
-                return linearBrush;
-            }
-            else if (brush is RadialGradientBrush)
-            {
-                var radialBrush = brush as RadialGradientBrush;
-
-                foreach (var stop in radialBrush.GradientStops)
-                    stop.Color = ColorFilter.ShiftHue(stop.Color, radians);
-
-                return radialBrush;
-            }
-            else
-                throw new Exception("Unknown Brush Type");
+            return ApplyFilter(brush, color => ColorFilter.ShiftHSL(color, hueRadians, saturation, lightness));
         }
 
         /// <summary>
-        /// Applies a desaturation effect to the brush
+        /// Maps input color from brush to the specified output color
         /// </summary>
-        /// <param name="brush">Input Brush</param>
-        public static Brush Saturate(Brush brush, double saturation)
+        public static Brush MapColor(Brush brush, Color inputColor, Color outputColor)
         {
-            if (brush is SolidColorBrush)
+            return ApplyFilter(brush, color =>
             {
-                var solidColorBrush = brush as SolidColorBrush;
+                if (color == inputColor)
+                    return outputColor;
 
-                solidColorBrush.Color = ColorFilter.Saturate(solidColorBrush.Color, saturation);
-
-                return solidColorBrush;
-            }
-            else if (brush is LinearGradientBrush)
-            {
-                var linearBrush = brush as LinearGradientBrush;
-
-                foreach (var stop in linearBrush.GradientStops)
-                    stop.Color = ColorFilter.Saturate(stop.Color, saturation);
-
-                return linearBrush;
-            }
-            else if (brush is RadialGradientBrush)
-            {
-                var radialBrush = brush as RadialGradientBrush;
-
-                foreach (var stop in radialBrush.GradientStops)
-                    stop.Color = ColorFilter.Saturate(stop.Color, saturation);
-
-                return radialBrush;
-            }
-            else
-                throw new Exception("Unknown Brush Type");
+                return color;
+            });
         }
 
         /// <summary>
@@ -84,11 +34,16 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
         /// <param name="brush">Input Brush</param>
         public static Brush Clamp(Brush brush, Color color)
         {
+            return ApplyFilter(brush, inputColor => color);
+        }
+
+        private static Brush ApplyFilter(Brush brush, Func<Color, Color> filter)
+        {
             if (brush is SolidColorBrush)
             {
                 var solidColorBrush = brush as SolidColorBrush;
 
-                solidColorBrush.Color = color;
+                solidColorBrush.Color = filter(solidColorBrush.Color);
 
                 return solidColorBrush;
             }
@@ -97,7 +52,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
                 var linearBrush = brush as LinearGradientBrush;
 
                 foreach (var stop in linearBrush.GradientStops)
-                    stop.Color = color;
+                    stop.Color = filter(stop.Color);
 
                 return linearBrush;
             }
@@ -106,7 +61,7 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
                 var radialBrush = brush as RadialGradientBrush;
 
                 foreach (var stop in radialBrush.GradientStops)
-                    stop.Color = color;
+                    stop.Color = filter(stop.Color);
 
                 return radialBrush;
             }

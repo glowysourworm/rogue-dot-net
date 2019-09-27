@@ -50,10 +50,14 @@
                                 <Binding Path="CharacterColor" />
                                 <Binding Path="CharacterSymbol" />
                                 <Binding Path="CharacterSymbolCategory" />
+                                <Binding Path="CharacterScale" />
                                 <Binding Path="Symbol" />
                                 <Binding Path="SymbolHue" />
                                 <Binding Path="SymbolSaturation" />
                                 <Binding Path="SymbolLightness" />
+                                <Binding Path="SymbolScale" />
+                                <Binding Path="SymbolColorMapFrom" />
+                                <Binding Path="SymbolColorMapTo" />
                                 <Binding Path="SmileyExpression" />
                                 <Binding Path="SmileyAuraColor" />
                                 <Binding Path="SmileyBodyColor" />

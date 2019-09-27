@@ -1,5 +1,4 @@
-﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
-using System;
+﻿using System;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
@@ -8,13 +7,13 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
     {
         public static void ApplyEffect(DrawingGroup drawing, SymbolEffectBase effect)
         {
-            if (effect is HueShiftEffect)
+            if (effect is HSLEffect)
             {
-                RecursiveHueShift(drawing, effect as HueShiftEffect);
+                RecursiveHSL(drawing, effect as HSLEffect);
             }
-            else if (effect is SaturationEffect)
+            else if (effect is ColorMapEffect)
             {
-                RecursiveDesaturate(drawing, effect as SaturationEffect);
+                RecursiveColorMap(drawing, effect as ColorMapEffect);
             }
             else if (effect is ClampEffect)
             {
@@ -23,29 +22,29 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             else
                 throw new Exception("Unhandled Symbol Effect Type");
         }
-        private static void RecursiveHueShift(DrawingGroup group, HueShiftEffect effect)
+        private static void RecursiveHSL(DrawingGroup group, HSLEffect effect)
         {
             foreach (var child in group.Children)
             {
                 if (child is DrawingGroup)
-                    RecursiveHueShift(child as DrawingGroup, effect);
+                    RecursiveHSL(child as DrawingGroup, effect);
 
                 else if (child is Drawing)
-                    (child as GeometryDrawing).Brush = BrushFilter.ShiftHue((child as GeometryDrawing).Brush, effect.Radians);
+                    (child as GeometryDrawing).Brush = BrushFilter.ShiftHSL((child as GeometryDrawing).Brush, effect.Hue, effect.Saturation, effect.Lightness);
 
                 else
                     throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");
             }
         }
-        private static void RecursiveDesaturate(DrawingGroup group, SaturationEffect effect)
+        private static void RecursiveColorMap(DrawingGroup group, ColorMapEffect effect)
         {
             foreach (var child in group.Children)
             {
                 if (child is DrawingGroup)
-                    RecursiveDesaturate(child as DrawingGroup, effect);
+                    RecursiveColorMap(child as DrawingGroup, effect);
 
                 else if (child is Drawing)
-                    (child as GeometryDrawing).Brush = BrushFilter.Saturate((child as GeometryDrawing).Brush, effect.Saturation);
+                    (child as GeometryDrawing).Brush = BrushFilter.MapColor((child as GeometryDrawing).Brush, effect.FromColor, effect.ToColor);
 
                 else
                     throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");

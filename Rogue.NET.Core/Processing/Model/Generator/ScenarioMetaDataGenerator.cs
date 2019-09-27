@@ -143,10 +143,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsUpRogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.StairsUp,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.StairsUp,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -162,10 +158,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsDownRogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.StairsDown,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.StairsDown,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -181,10 +173,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadSavePointRogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.SavePoint,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.SavePoint,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -200,10 +188,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterARogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.Teleport1,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.Teleport1,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -219,10 +203,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterBRogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.Teleport2,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.Teleport2,
                         Type = DoodadType.Normal.ToString()
                     };
@@ -238,10 +218,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterRandomRogueName,
                         SymbolType = SymbolType.Game,
-                        Symbol = GameSymbol.TeleportRandom,
-                        SymbolHue = 0,
-                        SymbolLightness = 1,
-                        SymbolSaturation = 1,
                         GameSymbol = GameSymbol.TeleportRandom,
                         Type = DoodadType.Normal.ToString()
                     };

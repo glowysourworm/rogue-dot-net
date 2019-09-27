@@ -73,10 +73,14 @@
                                 <Binding Path="ActiveSkillSet.CharacterColor" />
                                 <Binding Path="ActiveSkillSet.CharacterSymbol" />
                                 <Binding Path="ActiveSkillSet.CharacterSymbolCategory" />
+                                <Binding Path="ActiveSkillSet.CharacterScale" />
                                 <Binding Path="ActiveSkillSet.Symbol" />
                                 <Binding Path="ActiveSkillSet.SymbolHue" />
                                 <Binding Path="ActiveSkillSet.SymbolSaturation" />
                                 <Binding Path="ActiveSkillSet.SymbolLightness" />
+                                <Binding Path="ActiveSkillSet.SymbolScale" />
+                                <Binding Path="ActiveSkillSet.SymbolColorMapFrom" />
+                                <Binding Path="ActiveSkillSet.SymbolColorMapTo" />
                                 <Binding Path="ActiveSkillSet.SmileyExpression" />
                                 <Binding Path="ActiveSkillSet.SmileyAuraColor" />
                                 <Binding Path="ActiveSkillSet.SmileyBodyColor" />

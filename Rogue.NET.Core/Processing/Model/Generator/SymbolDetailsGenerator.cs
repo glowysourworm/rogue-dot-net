@@ -14,6 +14,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             dest.CharacterColor = source.CharacterColor;
             dest.CharacterSymbol = source.CharacterSymbol;
             dest.CharacterSymbolCategory = source.CharacterSymbolCategory;
+            dest.CharacterScale = source.CharacterScale;
             dest.SmileyLightRadiusColor = source.SmileyAuraColor;
             dest.SmileyBodyColor = source.SmileyBodyColor;
             dest.SmileyLineColor = source.SmileyLineColor;
@@ -22,6 +23,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             dest.SymbolHue = source.SymbolHue;
             dest.SymbolLightness = source.SymbolLightness;
             dest.SymbolSaturation = source.SymbolSaturation;
+            dest.SymbolScale = source.SymbolScale;
+            dest.SymbolColorMapFrom = source.SymbolColorMapFrom;
+            dest.SymbolColorMapTo = source.SymbolColorMapTo;
             dest.GameSymbol = source.GameSymbol;
             dest.SymbolType = source.SymbolType;
         }

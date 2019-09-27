@@ -188,10 +188,10 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
+    <Compile Include="Media\SymbolEffect\ColorMapEffect.cs" />
     <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
+    <Compile Include="Media\SymbolEffect\HSLEffect.cs" />
     <Compile Include="Media\SymbolEffect\Utility\DrawingFilter.cs" />
-    <Compile Include="Media\SymbolEffect\HueShiftEffect.cs" />
-    <Compile Include="Media\SymbolEffect\SaturationEffect.cs" />
     <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
     <Compile Include="Media\SymbolEffect\Utility\BrushFilter.cs" />
     <Compile Include="Media\SymbolEffect\Utility\ColorFilter.cs" />
@@ -377,7 +377,6 @@
     <Compile Include="Processing\Model\Generator\Interface\ISkillGenerator.cs" />
     <Compile Include="Processing\Model\Generator\SkillGenerator.cs" />
     <Compile Include="Model\ResourceCache\ScenarioCacheImage.cs" />
-    <Compile Include="Model\ResourceCache\ScenarioCacheImageType.cs" />
     <Compile Include="Processing\IO\ScenarioFile.cs" />
     <Compile Include="Processing\Action\LevelProcessingAction.cs" />
     <Compile Include="Processing\Action\Enum\LevelProcessingActionType.cs" />
@@ -546,7 +545,11 @@
     <Compile Include="Processing\Model\Validation\ScenarioValidationMessage.cs" />
     <Compile Include="Processing\Model\Validation\ScenarioValidationResult.cs" />
     <Compile Include="Processing\Model\Validation\ScenarioValidationRule.cs" />
+    <Compile Include="Processing\Symbol\Interface\IScenarioImageSourceFactory.cs" />
+    <Compile Include="Processing\Symbol\Interface\ISvgCache.cs" />
     <Compile Include="Processing\Service\Interface\ITargetingService.cs" />
+    <Compile Include="Processing\Symbol\ScenarioImageSourceFactory.cs" />
+    <Compile Include="Processing\Symbol\SvgCache.cs" />
     <Compile Include="Processing\Service\TargetingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Processing\Service\Interface\IModelService.cs" />

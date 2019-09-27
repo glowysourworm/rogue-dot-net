@@ -18,19 +18,20 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public string CharacterSymbol { get; set; }
         public string CharacterSymbolCategory { get; set; }
         public string CharacterColor { get; set; }
+        public double CharacterScale { get; set; }
         public string Symbol { get; set; }
         public double SymbolHue { get; set; }
         public double SymbolSaturation { get; set; }
         public double SymbolLightness { get; set; }
+        public double SymbolScale { get; set; }
+        public string SymbolColorMapFrom { get; set; }
+        public string SymbolColorMapTo { get; set; }
         public string GameSymbol { get; set; }
 
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
 
-        // Output Format
-        public ScenarioCacheImageType OutputType { get; set; }
-
-        public ScenarioCacheImage(ScenarioImage scenarioImage, ScenarioCacheImageType outputType, bool isGrayScale, double scale)
+        public ScenarioCacheImage(ScenarioImage scenarioImage, bool isGrayScale, double scale)
         {
             this.Scale = scale;
 
@@ -42,15 +43,17 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
             this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
+            this.CharacterScale = scenarioImage.CharacterScale;
             this.Symbol = scenarioImage.Symbol;
             this.SymbolHue = scenarioImage.SymbolHue;
             this.SymbolLightness = scenarioImage.SymbolLightness;
             this.SymbolSaturation = scenarioImage.SymbolSaturation;
+            this.SymbolScale = scenarioImage.SymbolScale;
+            this.SymbolColorMapFrom = scenarioImage.SymbolColorMapFrom;
+            this.SymbolColorMapTo = scenarioImage.SymbolColorMapTo;
             this.GameSymbol = scenarioImage.GameSymbol;
 
             this.IsGrayScale = isGrayScale;
-
-            this.OutputType = outputType;
         }
 
         /// <summary>
@@ -68,14 +71,17 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
             this.CharacterSymbolCategory = symbolDetails.CharacterSymbolCategory;
+            this.CharacterScale = symbolDetails.CharacterScale;
             this.Symbol = symbolDetails.Symbol;
             this.SymbolHue = symbolDetails.SymbolHue;
             this.SymbolLightness = symbolDetails.SymbolLightness;
             this.SymbolSaturation = symbolDetails.SymbolSaturation;
+            this.SymbolScale = symbolDetails.SymbolScale;
+            this.SymbolColorMapFrom = symbolDetails.SymbolColorMapFrom;
+            this.SymbolColorMapTo = symbolDetails.SymbolColorMapTo;
+            this.GameSymbol = symbolDetails.GameSymbol;
 
             this.IsGrayScale = grayScale;
-
-            this.OutputType = ScenarioCacheImageType.ImageSource;
         }
     }
 }

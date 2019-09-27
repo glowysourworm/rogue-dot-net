@@ -38,6 +38,7 @@ namespace Rogue.NET.Core.Processing.Model.Content
         public ScenarioImage CalculateEffectiveSymbol(Character character)
         {
             // TODO:SYMBOL
+            return character;
 
             var symbol = new ScenarioImage();
 
