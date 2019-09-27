@@ -8,25 +8,29 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
     [Serializable]
     public class SymbolDetailsTemplate : Template
     {
-        private SymbolTypes _type;
+        private SymbolType _symbolType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
         private string _characterSymbol;
+        private string _characterSymbolCategory;
         private string _characterColor;
-        private ImageResources _icon;
-        private DisplayImageResources _displayIcon;
+        private string _symbol;
+        private double _symbolHue;
+        private double _symbolSaturation;
+        private double _symbolLightness;
+        private string _gameSymbol;
 
-        public SymbolTypes Type
+        public SymbolType SymbolType
         {
-            get { return _type; }
+            get { return _symbolType; }
             set
             {
-                if (_type != value)
+                if (_symbolType != value)
                 {
-                    _type = value;
-                    OnPropertyChanged("Type");
+                    _symbolType = value;
+                    OnPropertyChanged("SymbolType");
                 }
             }
         }
@@ -90,6 +94,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
+        public string CharacterSymbolCategory
+        {
+            get { return _characterSymbolCategory; }
+            set
+            {
+                if (_characterSymbolCategory != value)
+                {
+                    _characterSymbolCategory = value;
+                    OnPropertyChanged("CharacterSymbolCategory");
+                }
+            }
+        }
         public string CharacterColor
         {
             get { return _characterColor; }
@@ -102,35 +118,69 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        public ImageResources Icon
+        public string Symbol
         {
-            get { return _icon; }
+            get { return _symbol; }
             set
             {
-                if (_icon != value)
+                if (_symbol != value)
                 {
-                    _icon = value;
-                    OnPropertyChanged("Icon");
+                    _symbol = value;
+                    OnPropertyChanged("Symbol");
                 }
             }
         }
-        public DisplayImageResources DisplayIcon
+        public double SymbolHue
         {
-            get { return _displayIcon; }
+            get { return _symbolHue; }
             set
             {
-                if (_displayIcon != value)
+                if (_symbolHue != value)
                 {
-                    _displayIcon = value;
-                    OnPropertyChanged("DisplayIcon");
+                    _symbolHue = value;
+                    OnPropertyChanged("SymbolHue");
                 }
             }
         }
-
+        public double SymbolSaturation
+        {
+            get { return _symbolSaturation; }
+            set
+            {
+                if (_symbolSaturation != value)
+                {
+                    _symbolSaturation = value;
+                    OnPropertyChanged("SymbolSaturation");
+                }
+            }
+        }
+        public double SymbolLightness
+        {
+            get { return _symbolLightness; }
+            set
+            {
+                if (_symbolLightness != value)
+                {
+                    _symbolLightness = value;
+                    OnPropertyChanged("SymbolLightness");
+                }
+            }
+        }
+        public string GameSymbol
+        {
+            get { return _gameSymbol; }
+            set
+            {
+                if (_gameSymbol != value)
+                {
+                    _gameSymbol = value;
+                    OnPropertyChanged("GameSymbol");
+                }
+            }
+        }
         public SymbolDetailsTemplate()
         {
-            this.Type = SymbolTypes.Image;
-            this.Icon = ImageResources.AmuletOrange;
+            this.SymbolType = SymbolType.Smiley;
 
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
@@ -138,15 +188,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 
             this.CharacterColor = Colors.White.ToString();
             this.CharacterSymbol = "T";
-        }
-        public SymbolDetailsTemplate(SymbolDetailsTemplate tmp)
-        {
-            this.Type = tmp.Type;
-            this.Icon = tmp.Icon;
-            this.SmileyAuraColor = tmp.SmileyAuraColor;
-            this.SmileyBodyColor = tmp.SmileyBodyColor;
-            this.SmileyLineColor = tmp.SmileyLineColor;
-            this.Type = tmp.Type;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.AttackAttributeAuraEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
@@ -13,7 +14,7 @@
             <StackPanel Background="Black">
                 <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
                            Text="This symbol change effects any character within the aura effect range" />
-                <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding SymbolAlteration}" />
+                <symbol:SymbolEditor DataContext="{Binding SymbolAlteration}" />
             </StackPanel>
         </TabItem>
         <TabItem Header="Attack Attributes">

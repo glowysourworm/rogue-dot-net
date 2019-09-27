@@ -163,26 +163,27 @@ namespace Rogue.NET.Core.Model.Enums
         Medium,
         High,
     }
-    public enum SymbolTypes
+
+    public enum SymbolType
     {
         /// <summary>
-        /// UTF-8 character set symbols
-        /// </summary>
-        Character,
-
-        /// <summary>
-        /// Smiley type wpf control
+        /// Image resources are drawn from the Smiley control
         /// </summary>
         Smiley,
 
         /// <summary>
-        /// Level grid cell sized image
+        /// Image resources are drawn from the Character sub-folder (see svg resources)
         /// </summary>
-        Image,
+        Character,
 
         /// <summary>
-        /// Larger (30x30) image used for other UI purposes
+        /// Image resources are drawn from the Symbol sub-folder (see svg resources)
         /// </summary>
-        DisplayImage
+        Symbol,
+
+        /// <summary>
+        /// Image resources are drawn from the Game sub-folder (see svg resources)
+        /// </summary>
+        Game
     }
 }

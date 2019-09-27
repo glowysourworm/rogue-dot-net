@@ -1,5 +1,5 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Alteration.Common;
 using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
@@ -11,7 +11,6 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Processing.Event.Backend.EventData.ScenarioMessage.Enum;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Utility;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -38,6 +37,8 @@ namespace Rogue.NET.Core.Processing.Model.Content
 
         public ScenarioImage CalculateEffectiveSymbol(Character character)
         {
+            // TODO:SYMBOL
+
             var symbol = new ScenarioImage();
 
             // Map properties onto the symbol
@@ -54,25 +55,24 @@ namespace Rogue.NET.Core.Processing.Model.Content
                     {
                         CharacterColor = symbolDelta.CharacterColor,
                         CharacterSymbol = symbolDelta.SmileyAuraColor,
-                        Icon = symbolDelta.Icon,
+                        
                         SmileyLightRadiusColor = symbolDelta.SmileyAuraColor,
                         SmileyBodyColor = symbolDelta.SmileyBodyColor,
                         SmileyLineColor = symbolDelta.SmileyLineColor,
-                        SmileyExpression = symbolDelta.SmileyExpression,
-                        SymbolType = symbolDelta.Type
+                        SmileyExpression = symbolDelta.SmileyExpression
                     };
 
                 //Aura
                 if (symbolDelta.IsAuraDelta)
                     symbol.SmileyLightRadiusColor = firstAlteration ?
                                                 symbolDelta.SmileyAuraColor :
-                                                ColorUtility.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
+                                                ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
 
                 //Body
                 if (symbolDelta.IsBodyDelta)
                     symbol.SmileyBodyColor = firstAlteration ?
                                                 symbolDelta.SmileyBodyColor :
-                                                ColorUtility.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
+                                                ColorFilter.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
 
                 //Character symbol
                 if (symbolDelta.IsCharacterDelta)
@@ -82,17 +82,19 @@ namespace Rogue.NET.Core.Processing.Model.Content
                 if (symbolDelta.IsColorDelta)
                     symbol.CharacterColor = firstAlteration ?
                                                 symbolDelta.CharacterColor :
-                                                ColorUtility.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
+                                                ColorFilter.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
+
+                // TODO:SYMBOL
 
                 //Image
-                if (symbolDelta.IsImageDelta)
-                    symbol.Icon = symbolDelta.Icon;
+                //if (symbolDelta.IsImageDelta)
+                //    symbol.Icon = symbolDelta.Icon;
 
                 //Line
                 if (symbolDelta.IsLineDelta)
                     symbol.SmileyLineColor = firstAlteration ?
                                                 symbolDelta.SmileyLineColor :
-                                                ColorUtility.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
+                                                ColorFilter.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
 
                 //Expression
                 if (symbolDelta.IsExpressionDelta)

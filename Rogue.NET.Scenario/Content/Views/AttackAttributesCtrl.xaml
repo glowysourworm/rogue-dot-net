@@ -12,7 +12,6 @@
                     <DataTemplate x:Key="AttackAttribCtrl" >
                         <local:DungeonEncyclopediaAttackAttributeCtrl  />
                     </DataTemplate>
-                    <converter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageSourceConverter" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

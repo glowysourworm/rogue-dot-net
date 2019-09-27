@@ -30,6 +30,7 @@ namespace Rogue.NET.Core.Processing.Service
 
         readonly IRayTracer _rayTracer;
         readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         readonly IAttackAttributeGenerator _attackAttributeGenerator;
 
         // Dynamic (non-serialized) data about line-of-sight / visible line-of-sight / aura line-of-sight
@@ -47,10 +48,12 @@ namespace Rogue.NET.Core.Processing.Service
         public ModelService(
                 IRayTracer rayTracer, 
                 IRandomSequenceGenerator randomSequenceGenerator, 
+                ISymbolDetailsGenerator symbolDetailsGenerator,
                 IAttackAttributeGenerator attackAttributeGenerator)
         {
             _rayTracer = rayTracer;
             _randomSequenceGenerator = randomSequenceGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
         }
 
@@ -66,19 +69,15 @@ namespace Rogue.NET.Core.Processing.Service
             this.Player = player;
             this.ScenarioEncyclopedia = encyclopedia;
             this.ScenarioConfiguration = configuration;
-            this.CharacterClasses = configuration.PlayerTemplates.Select(x => new ScenarioImage()
+            this.CharacterClasses = configuration.PlayerTemplates.Select(x =>
             {
-                // TODO: Set the Character Class to PlayerTemplate.Class
-                RogueName = x.Name,
-                CharacterColor = x.SymbolDetails.CharacterColor,
-                CharacterSymbol = x.SymbolDetails.CharacterSymbol,
-                DisplayIcon = x.SymbolDetails.DisplayIcon,
-                Icon = x.SymbolDetails.Icon,
-                SmileyLightRadiusColor = x.SymbolDetails.SmileyAuraColor,
-                SymbolType = x.SymbolDetails.Type,
-                SmileyBodyColor = x.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = x.SymbolDetails.SmileyLineColor,
-                SmileyExpression = x.SymbolDetails.SmileyExpression
+                var result = new ScenarioImage();
+
+                result.RogueName = x.Name;
+
+                _symbolDetailsGenerator.MapSymbolDetails(x.SymbolDetails, result);
+
+                return result;
 
             }).Actualize();
 

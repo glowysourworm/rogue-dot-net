@@ -1,10 +1,8 @@
-﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using Rogue.NET.Core.Utility;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
 using System;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -24,7 +22,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
             switch (viewModel.Type)
             {
                 case BrushType.Solid:
-                    return new SolidColorBrush(ColorUtility.Convert(viewModel.SolidColor));
+                    return new SolidColorBrush(ColorFilter.Convert(viewModel.SolidColor));
                 case BrushType.Linear:
                     {
                         var brush = new LinearGradientBrush();
@@ -32,7 +30,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
                         brush.EndPoint = new Point(viewModel.GradientEndX, viewModel.GradientEndY);
 
                         foreach (var gradientStop in viewModel.GradientStops)
-                            brush.GradientStops.Add(new GradientStop(ColorUtility.Convert(gradientStop.GradientColor), 
+                            brush.GradientStops.Add(new GradientStop(ColorFilter.Convert(gradientStop.GradientColor), 
                                                                      gradientStop.GradientOffset));
 
                         return brush;
@@ -48,7 +46,7 @@ namespace Rogue.NET.ScenarioEditor.Converter
                         brush.RadiusY = Math.Abs(radiusY);
 
                         foreach (var gradientStop in viewModel.GradientStops)
-                            brush.GradientStops.Add(new GradientStop(ColorUtility.Convert(gradientStop.GradientColor),
+                            brush.GradientStops.Add(new GradientStop(ColorFilter.Convert(gradientStop.GradientColor),
                                                                      gradientStop.GradientOffset));
 
                         return brush;

@@ -6,15 +6,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 {
     public class SymbolDeltaTemplateViewModel : TemplateViewModel
     {
-        private SymbolTypes _type;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
         private string _characterSymbol;
         private string _characterColor;
-        private ImageResources _icon;
-        private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
         private bool _isExpressionDelta;
@@ -24,11 +21,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private bool _isCharacterDelta;
         private bool _isColorDelta;
 
-        public SymbolTypes Type
-        {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
-        }
         public SmileyExpression SmileyExpression
         {
             get { return _smileyExpression; }
@@ -58,16 +50,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         {
             get { return _characterColor; }
             set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
-        }
-        public ImageResources Icon
-        {
-            get { return _icon; }
-            set { this.RaiseAndSetIfChanged(ref _icon, value); }
-        }
-        public DisplayImageResources DisplayIcon
-        {
-            get { return _displayIcon; }
-            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
         }
         public bool IsFullSymbolDelta
         {
@@ -112,10 +94,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public SymbolDeltaTemplateViewModel()
         {
-            this.Type = SymbolTypes.Image;
-            this.Icon = ImageResources.AmuletOrange;
-            this.DisplayIcon = DisplayImageResources.ChristianBlack;
-
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();

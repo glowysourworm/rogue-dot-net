@@ -1,0 +1,60 @@
+﻿using Rogue.NET.Common.ViewModel;
+
+using System.Windows.Media;
+
+namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
+{
+    public class SvgSymbolViewModel : NotifyViewModel
+    {
+        ImageSource _imageSource;
+        string _category;
+        string _symbol;
+        double _hue;
+        double _saturation;
+        double _lightness;
+        public ImageSource ImageSource
+        {
+            get { return _imageSource; }
+            set { this.RaiseAndSetIfChanged(ref _imageSource, value); }
+        }
+        public string Category
+        {
+            get { return _category; }
+            set { this.RaiseAndSetIfChanged(ref _category, value); }
+        }
+        public string Symbol
+        {
+            get { return _symbol; }
+            set { this.RaiseAndSetIfChanged(ref _symbol, value); }
+        }
+        public double Hue
+        {
+            get { return _hue; }
+            set { this.RaiseAndSetIfChanged(ref _hue, value); }
+        }
+        public double Saturation
+        {
+            get { return _saturation; }
+            set { this.RaiseAndSetIfChanged(ref _saturation, value); }
+        }
+        public double Lightness
+        {
+            get { return _lightness; }
+            set { this.RaiseAndSetIfChanged(ref _lightness, value); }
+        }
+        public SvgSymbolViewModel(ImageSource imageSource, string category, string symbol)
+        {
+            this.ImageSource = imageSource;
+            this.Category = category;
+            this.Symbol = symbol;
+        }
+        public SvgSymbolViewModel(ImageSource imageSource, string symbol, double hue, double saturation, double lightness)
+        {
+            this.ImageSource = imageSource;
+            this.Symbol = symbol;
+            this.Hue = hue;
+            this.Saturation = saturation;
+            this.Lightness = lightness;
+        }
+    }
+}

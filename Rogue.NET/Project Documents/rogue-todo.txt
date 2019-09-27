@@ -691,7 +691,7 @@ IMMEDIATE TODO'S:
 			
 	- IDEA: Could support "Detect Magic"
 	
-			- Design Problem: Purpose of "Detect Magic" is to reveal / identify (in your inventory) things that are "Bad" or "Good". 
+			- Design Problem: Purpose of "Detect Magic" is to reveal / identify (in your inventory AND on the map) things that are "Bad" or "Good". 
 			
 							  1) What does it mean to be "Bad" or "Good". Either calculate a value based on the alteration OR just
 								 add a flag to the Alteration and have the scenario editor set it. (probably that way)
@@ -701,7 +701,9 @@ IMMEDIATE TODO'S:
 								 
 									- Bad or Good? (Detec "Magic")
 									
-									- Type:  This is a "Dark Magic" Alteration (Used for identification to supply Blocking Alteration Effect)
+									- Type / Category:  
+									
+											 This is a "Dark Magic" Alteration (Used for identification to supply Blocking Alteration Effect)
 									
 											 (Also thought of an Amplification Alteration.. but that's tricky)
 											 
@@ -711,6 +713,13 @@ IMMEDIATE TODO'S:
 														a 100% block (immunity) for specific Alteration Effects.
 														
 														"Osiris casts Condemn" .. "Blocked by Player's Amulet"
+
+									So, design would be Alteration -> Effect -> [Effect MetaData] { Category, Alignment }
+
+									And, if we wanted to support blocking:  Alteration -> Block Alteration Category Effect
+
+									Then, "Detect Magic" would be "Detect Alteration Alignment" (effect). But, there could also
+									be "Detect Black Magic" would be "Detect Alteration Category".
 														
 									*** Attack Attributes:  Why not identify attack attributes using something like "reveal" or "Detect Fire".
 									
@@ -2699,8 +2708,92 @@ IMMEDIATE TODO'S:
 			
 	- TODO: Make alteration effect type that "Refills HP, MP, Hunger" (so, no limits required it always refills the meters)
 	
-	7 Virtues:
+	7 Deadly Sins / 7 Virtues / 7 Princes
 	
-		
+	Lust     / Chastity   / Asmodeus
+	Gluttony / Temperance / Beelzebub
+	Greed	 / Charity	  / Mammon
+	Sloth	 / Diligence  / Belphegor
+	Wrath	 / Forgiveness/ Satan
+	Envy	 / Kindness	  / Leviathan
+	Pride	 / Humility   / Lucifer
+
+	- TODO:SYMBOL
+
+		- Need a Default "UNKNOWN" symbol for catching exceptions
+
+		- Need a Default "?" symbol for the UI for the encyclopedia
+
+		- Map the configuration and remove old SymbolTypes enum
+
+		- Repair game buttons with the new SVG symbols
+
+		- Create new SymbolDelta parameters to work like we want (Maybe called SymbolEffect)
+
+		- Create new Symbol Editor - including Character Map
+
+		- Create DrawingImage source for the Smiley for "ImageSource" mode
+
+		- Apply coloring to SVG's
+
+		- Delete some empty symbols from the SVG character sets (just a few in there)
+
+		- IDEA:  Add color map to Symbol Details - but just for "Symbol" types. This would have a map of symbol colors (loaded
+				 when it's iterated before any hue effect is applied) it would be set by the user in the editor - each color can
+				 be mapped individually to a new one.
+
+				 So, the effect is that the user can select bulk color changes. For the most part, there's only several colors 
+				 per image - so this would likely be a simple one to do.
+
+				 Hue could also be used for selecting an image "color" - and ALSO used for randomizing the picture.
+
+		- Create another "Level" of caching in the resource service. It should be used to cache a "base symbol" for every loaded
+		  symbol. 
+
+		  Hopefully, can use "Cloning" to create new symbols from the base symbol. If not, figure out how to inject cloning somewhere
+		  in the chain so that it can function that way. Loading the SVG resources is expensive - and gets MORE expensive with the 
+		  level of SVG detail.
+
+		- IDEA:  Allow user to create symbol sets for randomization. This would prevent issues with weird looking hue shifted symbols.
+
+		- ANOTHER IDEA:  Prevent weird hue shifted symbols by making neutral mask colors. Example:  Potion could have a WHITE flask.
+
+		- FIX SCALING PROBLEM:  Currently, a transform group is applied when rendering the image source - which is an extra step that could
+								removed. 
+
+								The images should probably all be scaled / translated prior to using - according to our cell size scale.
+
+		- CENTRALIZE RESOURCE LOADING:  Make sure to put any / all resource combing in the resource service. This needs to be kept together.
+
+		- MARKUP EXTENSION:  Create a new markup extension to monitor the symbol details to update the symbol instead of the multi-binding
+
+	- IDEAS:
+
+		Doodad Pairs:      One Doodad turns on / off another Doodad. (like a teleporter that you can switch on / off)
+
+		Barriers:  	   	   Maybe a section of the level or a wall that is a "Barrier" to another room - switched on / off with a Doodad
+	
+		Zones:  	       Try creating sub-layouts in a grid. Each sub-layout would get a defined entry - exit point to connect the
+					       zones - each zone with exit criteria (relates to Level Objective)
+
+				    	   PROBLEM:  Zones would (likely) blow up the level size - and we'd have to deal with rendering
+
+		Layout Rendering:  Could try creating the level grid as a GRAPH. This may enhance rendering and searching - but would have 
+						   to rewrite the grid as a graph.
+
+						   Why a Graph?  Because, it would prevent iterating during the build phase. But, it may not be helpful during
+										 game-play. 
 			
+										 So, we might want both - the graph being the first one - during the build phase.
+
+						   Rendering?    Create a combined geometry and try rendering it without each individual cell. That probably has
+										 something to do with the performance
+
+										 ALONG WITH - the opacity mask. 
+
+										 OPACITY MASK - Needs to be replaced with a fading cell opacity - which will look more interesting
+														when we have some terrain.
+
+						   Static Layouts?  YES!  Let's build an editor
+	
 						  

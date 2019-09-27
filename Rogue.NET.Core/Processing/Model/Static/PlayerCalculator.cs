@@ -20,7 +20,7 @@ namespace Rogue.NET.Core.Processing.Model.Static
             //  avoid easy leveling during low levels
             //return (100 * Math.Exp(0.25*p.Level)) + (300 * p.Level);
 
-            return (level == 0) ? 100 : ((10 * Math.Pow(level + 1, 3)) + (300 + level));
+            return (level == 0) ? 100 : ((10 * Math.Pow(level + 1, 3)) + (300 * level));
         }
 
         public static double CalculateHpGain(double baseValue)

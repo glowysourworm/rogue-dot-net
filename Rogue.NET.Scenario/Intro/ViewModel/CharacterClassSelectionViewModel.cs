@@ -1,6 +1,6 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.View;
 using System.Windows.Controls;
 
@@ -15,8 +15,8 @@ namespace Rogue.NET.Scenario.Intro.ViewModel
         {
             var smiley = new Smiley();
 
-            smiley.SmileyColor = ColorUtility.Convert(template.SmileyBodyColor);
-            smiley.SmileyLineColor = ColorUtility.Convert(template.SmileyLineColor);
+            smiley.SmileyColor = ColorFilter.Convert(template.SmileyBodyColor);
+            smiley.SmileyLineColor = ColorFilter.Convert(template.SmileyLineColor);
             smiley.SmileyExpression = template.SmileyExpression;
             smiley.Height = ModelConstants.CellHeight * 2;
             smiley.Width = ModelConstants.CellWidth * 2;

@@ -77,13 +77,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 
             this.CharacterColor = template.SymbolDetails.CharacterColor;
             this.CharacterSymbol = template.SymbolDetails.CharacterSymbol;
-            this.Icon = template.SymbolDetails.Icon;
-            this.DisplayIcon = template.SymbolDetails.DisplayIcon;
+            this.CharacterSymbolCategory = template.SymbolDetails.CharacterSymbolCategory;
             this.SmileyAuraColor = template.SymbolDetails.SmileyAuraColor;
             this.SmileyBodyColor = template.SymbolDetails.SmileyBodyColor;
             this.SmileyLineColor = template.SymbolDetails.SmileyLineColor;
             this.SmileyExpression = template.SymbolDetails.SmileyExpression;
-            this.SymbolType = template.SymbolDetails.Type;
+            this.Symbol = template.SymbolDetails.Symbol;
+            this.SymbolHue = template.SymbolDetails.SymbolHue;
+            this.SymbolLightness = template.SymbolDetails.SymbolLightness;
+            this.SymbolSaturation = template.SymbolDetails.SymbolSaturation;
+            this.SymbolType = template.SymbolDetails.SymbolType;
         }
     }
 }

@@ -122,15 +122,19 @@
                 <!-- Altered State -->
                 <Image Height="15" Width="10" Margin="0,0,4,0" VerticalAlignment="Center">
                     <Image.Source>
-                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                            <Binding Path="Effect.AlteredState.CharacterSymbol" />
+                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                             <Binding Path="Effect.AlteredState.CharacterColor" />
-                            <Binding Path="Effect.AlteredState.Icon" />
-                            <Binding Path="Effect.AlteredState.DisplayIcon" />
+                            <Binding Path="Effect.AlteredState.CharacterSymbol" />
+                            <Binding Path="Effect.AlteredState.CharacterSymbolCategory" />
+                            <Binding Path="Effect.AlteredState.Symbol" />
+                            <Binding Path="Effect.AlteredState.SymbolHue" />
+                            <Binding Path="Effect.AlteredState.SymbolSaturation" />
+                            <Binding Path="Effect.AlteredState.SymbolLightness" />
                             <Binding Path="Effect.AlteredState.SmileyExpression" />
+                            <Binding Path="Effect.AlteredState.SmileyAuraColor" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />
                             <Binding Path="Effect.AlteredState.SmileyLineColor" />
-                            <Binding Path="Effect.AlteredState.SmileyAuraColor" />
+                            <Binding Path="Effect.AlteredState.GameSymbol" />
                             <Binding Path="Effect.AlteredState.SymbolType" />
                         </MultiBinding>
                     </Image.Source>
@@ -255,15 +259,19 @@
                 <!-- Altered State -->
                 <Image Height="15" Width="10" Margin="0,0,4,0" VerticalAlignment="Center">
                     <Image.Source>
-                        <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                            <Binding Path="Effect.AlteredState.CharacterSymbol" />
+                        <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                             <Binding Path="Effect.AlteredState.CharacterColor" />
-                            <Binding Path="Effect.AlteredState.Icon" />
-                            <Binding Path="Effect.AlteredState.DisplayIcon" />
+                            <Binding Path="Effect.AlteredState.CharacterSymbol" />
+                            <Binding Path="Effect.AlteredState.CharacterSymbolCategory" />
+                            <Binding Path="Effect.AlteredState.Symbol" />
+                            <Binding Path="Effect.AlteredState.SymbolHue" />
+                            <Binding Path="Effect.AlteredState.SymbolSaturation" />
+                            <Binding Path="Effect.AlteredState.SymbolLightness" />
                             <Binding Path="Effect.AlteredState.SmileyExpression" />
+                            <Binding Path="Effect.AlteredState.SmileyAuraColor" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />
                             <Binding Path="Effect.AlteredState.SmileyLineColor" />
-                            <Binding Path="Effect.AlteredState.SmileyAuraColor" />
+                            <Binding Path="Effect.AlteredState.GameSymbol" />
                             <Binding Path="Effect.AlteredState.SymbolType" />
                         </MultiBinding>
                     </Image.Source>

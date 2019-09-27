@@ -44,15 +44,19 @@
             <Image Height="15" Width="10" VerticalAlignment="Center" HorizontalAlignment="Left"
                        Visibility="{Binding HasAlteredState, Converter={StaticResource BoolVisibilityCollapseConverter}}">
                 <Image.Source>
-                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                        <Binding Path="AlteredState.CharacterSymbol" />
+                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                         <Binding Path="AlteredState.CharacterColor" />
-                        <Binding Path="AlteredState.Icon" />
-                        <Binding Path="AlteredState.DisplayIcon" />
+                        <Binding Path="AlteredState.CharacterSymbol" />
+                        <Binding Path="AlteredState.CharacterSymbolCategory" />
+                        <Binding Path="AlteredState.Symbol" />
+                        <Binding Path="AlteredState.SymbolHue" />
+                        <Binding Path="AlteredState.SymbolSaturation" />
+                        <Binding Path="AlteredState.SymbolLightness" />
                         <Binding Path="AlteredState.SmileyExpression" />
+                        <Binding Path="AlteredState.SmileyAuraColor" />
                         <Binding Path="AlteredState.SmileyBodyColor" />
                         <Binding Path="AlteredState.SmileyLineColor" />
-                        <Binding Path="AlteredState.SmileyAuraColor" />
+                        <Binding Path="AlteredState.GameSymbol" />
                         <Binding Path="AlteredState.SymbolType" />
                     </MultiBinding>
                 </Image.Source>

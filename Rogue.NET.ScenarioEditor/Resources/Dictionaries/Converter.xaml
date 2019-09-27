@@ -7,8 +7,6 @@
     <scenarioEditorConverter:EnemyAttackTypeMeleeVisibilityConverter x:Key="EnemyAttackTypeMeleeVisibilityConverter" />
     <scenarioEditorConverter:EnemyAttackTypeSkillVisibilityConverter x:Key="EnemyAttackTypeSkillVisibilityConverter" />
     <scenarioEditorConverter:LayoutConnectionGeometryVisibilityConverter x:Key="LayoutConnectionGeometryVisibilityConverter" />
-    <scenarioEditorConverter:SymbolDetailsImageSourceConverter x:Key="SymbolDetailsImageSourceConverter" />
     <scenarioEditorConverter:SymbolDetailsTemplateAuraToColorConverter x:Key="SymbolDetailsTemplateAuraToColorConverter" />
     <scenarioEditorConverter:SymbolEditorVisibilityConverter x:Key="SymbolEditorVisibilityConverter" />
-    <scenarioEditorConverter:SymbolDetailsMultiConverter x:Key="SymbolDetailsMultiConverter" />
 </ResourceDictionary>

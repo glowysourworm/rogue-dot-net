@@ -6,13 +6,7 @@
              xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml">
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <converter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">

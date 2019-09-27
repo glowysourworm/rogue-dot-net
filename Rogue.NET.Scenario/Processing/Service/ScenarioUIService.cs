@@ -1,23 +1,21 @@
 ﻿using Rogue.NET.Core.Media;
 using Rogue.NET.Core.Media.Interface;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Character;
 using Rogue.NET.Core.Model.Scenario.Character.Extension;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Model.Content.Interface;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas;
 using Rogue.NET.Scenario.Processing.Service.Interface;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Rogue.NET.Scenario.Processing.Service
@@ -171,7 +169,7 @@ namespace Rogue.NET.Scenario.Processing.Service
             (canvasShape.RenderedGeometry as RectangleGeometry).Rect = levelUIBounds;
 
             // Create Brush
-            var brush = new RadialGradientBrush(ColorUtility.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
+            var brush = new RadialGradientBrush(ColorFilter.Convert(effectiveSymbol.SmileyLightRadiusColor), Colors.Transparent);
             brush.RadiusX = 0.7 * (lightRadiusUI / levelUIBounds.Width);
             brush.RadiusY = 0.7 * (lightRadiusUI / levelUIBounds.Height);
             brush.Center = new Point(point.X / levelUIBounds.Width, point.Y / levelUIBounds.Height);
@@ -193,8 +191,8 @@ namespace Rogue.NET.Scenario.Processing.Service
             var brush = new RadialGradientBrush(new GradientStopCollection(new GradientStop[]
             {
                 new GradientStop(Colors.Transparent, 0),
-                new GradientStop(ColorUtility.Convert(auraColor), .8),
-                new GradientStop(ColorUtility.Convert(auraColor), .9),
+                new GradientStop(ColorFilter.Convert(auraColor), .8),
+                new GradientStop(ColorFilter.Convert(auraColor), .9),
                 new GradientStop(Colors.Transparent, 1)
             }));
 

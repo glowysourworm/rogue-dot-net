@@ -1,7 +1,6 @@
 ﻿using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Scenario.Intro.ViewModel;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.Processing.Service.Interface;
 
 using System.Collections.ObjectModel;
@@ -10,6 +9,7 @@ using System.Windows.Media;
 using System.Linq;
 using Rogue.NET.Core.Processing.Event.Scenario;
 using Rogue.NET.Core.Processing.Event.Core;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 
 namespace Rogue.NET.Intro.ViewModel
 {
@@ -120,8 +120,8 @@ namespace Rogue.NET.Intro.ViewModel
                     Name = config.DungeonTemplate.Name,
                     Description = config.DungeonTemplate.ObjectiveDescription,
                     SmileyExpression = config.PlayerTemplates.First().SymbolDetails.SmileyExpression,
-                    SmileyBodyColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
-                    SmileyLineColor = ColorUtility.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
+                    SmileyBodyColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyBodyColor),
+                    SmileyLineColor = ColorFilter.Convert(config.PlayerTemplates.First().SymbolDetails.SmileyLineColor),
                     CharacterClasses = new ObservableCollection<CharacterClassSelectionViewModel>(config.PlayerTemplates
                                                                                                         .Select(x =>
                     new CharacterClassSelectionViewModel(x.SymbolDetails)

@@ -2,12 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:assets="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl">
     <TabControl Background="Black" TabStripPlacement="Left">
 
         <!-- Player Symbol -->
         <TabItem Header="Player Symbol">
-            <controls:SymbolEditor  DataContext="{Binding SymbolDetails}" />
+            <symbol:SymbolEditor  DataContext="{Binding SymbolDetails}" />
         </TabItem>
 
         <!-- Player Class Description -->

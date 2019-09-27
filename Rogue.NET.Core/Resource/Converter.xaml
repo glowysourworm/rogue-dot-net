@@ -34,13 +34,12 @@
     <converter:ParameterVisibilityCollapsedConverter x:Key="ParameterVisibilityCollapsedConverter" />
     <converter:ParameterVisibilityVisibleConverter x:Key="ParameterVisibilityVisibleConverter" />
     <converter:RadioButtonEnumConverter x:Key="RadioButtonEnumConverter" />
-    <converter:ScenarioImageElementConverter x:Key="ScenarioImageElementConverter" />
-    <converter:ScenarioImageSourceConverter x:Key="ScenarioImageSourceConverter" />
-    <converter:ScenarioImageSourceMultiConverter x:Key="ScenarioImageSourceMultiConverter" />
     <converter:StringColorConverter x:Key="StringColorConverter" />
     <converter:StringNullOrEmptyVisibilityConverter x:Key="StringNullOrEmptyVisibilityConverter" />
     <converter:SumConverter x:Key="SumConverter" />
     <converter:SumGreaterThanParameterBoolConverter x:Key="SumGreaterThanParameterBoolConverter" />
+    <converter:SymbolImageConverter x:Key="SymbolImageConverter" />
+    <converter:SymbolImageSourceConverter x:Key="SymbolImageSourceConverter" />
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />
@@ -49,8 +48,6 @@
     <converterItemGrid:ItemGridRowDetailsVisibilityConverter x:Key="ItemGridRowDetailsVisibilityConverter" />
     <converterItemGrid:ItemGridSelectionColorConverter x:Key="ItemGridSelectionColorConverter" />
     <converterItemGrid:ItemGridTooltipForegroundConverter x:Key="ItemGridTooltipForegroundConverter" />
-    <converterItemGrid:ItemGridIconImageConverter x:Key="ItemGridIconImageConverter" />
-    <converterItemGrid:ItemGridRowImageMultiConverter x:Key="ItemGridRowImageMultiConverter" />
     <converterItemGrid:ItemGridZeroValueParameterConverter x:Key="ItemGridZeroValueParameterConverter" />
     <converterItemGrid:ItemGridCombatTypeConverter x:Key="ItemGridCombatTypeConverter" />
     <converterModelScenarioConfiguration:LayoutHeightConverter x:Key="LayoutHeightConverter" />

@@ -10,15 +10,19 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public double Scale { get; set; }
 
         // Symbol Details
-        public SymbolTypes SymbolType { get; set; }
+        public SymbolType Type { get; set; }
         public SmileyExpression SmileyExpression { get; set; }
         public string SmileyBodyColor { get; set; }
         public string SmileyLineColor { get; set; }
         public string SmileyAuraColor { get; set; }
         public string CharacterSymbol { get; set; }
+        public string CharacterSymbolCategory { get; set; }
         public string CharacterColor { get; set; }
-        public ImageResources Icon { get; set; }
-        public DisplayImageResources DisplayIcon { get; set; }
+        public string Symbol { get; set; }
+        public double SymbolHue { get; set; }
+        public double SymbolSaturation { get; set; }
+        public double SymbolLightness { get; set; }
+        public string GameSymbol { get; set; }
 
         // Gray-scale flag
         public bool IsGrayScale { get; set; }
@@ -30,15 +34,19 @@ namespace Rogue.NET.Core.Model.ResourceCache
         {
             this.Scale = scale;
 
-            this.SymbolType = scenarioImage.SymbolType;
+            this.Type = scenarioImage.SymbolType;
             this.SmileyExpression = scenarioImage.SmileyExpression;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
             this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
             this.CharacterColor = scenarioImage.CharacterColor;
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
-            this.Icon = scenarioImage.Icon;
-            this.DisplayIcon = scenarioImage.DisplayIcon;
+            this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
+            this.Symbol = scenarioImage.Symbol;
+            this.SymbolHue = scenarioImage.SymbolHue;
+            this.SymbolLightness = scenarioImage.SymbolLightness;
+            this.SymbolSaturation = scenarioImage.SymbolSaturation;
+            this.GameSymbol = scenarioImage.GameSymbol;
 
             this.IsGrayScale = isGrayScale;
 
@@ -52,15 +60,18 @@ namespace Rogue.NET.Core.Model.ResourceCache
         {
             this.Scale = scale;
 
-            this.SymbolType = symbolDetails.Type;
+            this.Type = symbolDetails.SymbolType;
             this.SmileyExpression = symbolDetails.SmileyExpression;
             this.SmileyBodyColor = symbolDetails.SmileyBodyColor;
             this.SmileyLineColor = symbolDetails.SmileyLineColor;
             this.SmileyAuraColor = symbolDetails.SmileyAuraColor;
             this.CharacterColor = symbolDetails.CharacterColor;
             this.CharacterSymbol = symbolDetails.CharacterSymbol;
-            this.DisplayIcon = symbolDetails.DisplayIcon;
-            this.Icon = symbolDetails.Icon;
+            this.CharacterSymbolCategory = symbolDetails.CharacterSymbolCategory;
+            this.Symbol = symbolDetails.Symbol;
+            this.SymbolHue = symbolDetails.SymbolHue;
+            this.SymbolLightness = symbolDetails.SymbolLightness;
+            this.SymbolSaturation = symbolDetails.SymbolSaturation;
 
             this.IsGrayScale = grayScale;
 

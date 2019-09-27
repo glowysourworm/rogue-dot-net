@@ -21,9 +21,9 @@ namespace Rogue.NET.ScenarioEditor.Converter
                 return Colors.Transparent;
 
             var color = (string)values[0];
-            var type = (SymbolTypes)values[1];
+            var type = (SymbolType)values[1];
 
-            return type != SymbolTypes.Smiley ? Colors.Transparent : ColorConverter.ConvertFromString(color);
+            return type != SymbolType.Smiley ? Colors.Transparent : ColorConverter.ConvertFromString(color);
         }
 
         public object[] ConvertBack(object value, Type[] targetType, object parameter, System.Globalization.CultureInfo culture)

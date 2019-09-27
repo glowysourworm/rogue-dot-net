@@ -53,12 +53,16 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.Difficulty
             {
                 CharacterColor = viewModel.SymbolDetails.CharacterColor,
                 CharacterSymbol = viewModel.SymbolDetails.CharacterSymbol,
-                Icon = viewModel.SymbolDetails.Icon,
+                CharacterSymbolCategory = viewModel.SymbolDetails.CharacterSymbolCategory,
+                Symbol = viewModel.SymbolDetails.Symbol,
+                SymbolHue = viewModel.SymbolDetails.SymbolHue,
+                SymbolLightness = viewModel.SymbolDetails.SymbolLightness,
+                SymbolSaturation = viewModel.SymbolDetails.SymbolSaturation,
+                SymbolType = viewModel.SymbolDetails.SymbolType,
                 SmileyAuraColor = viewModel.SymbolDetails.SmileyAuraColor,
                 SmileyBodyColor = viewModel.SymbolDetails.SmileyBodyColor,
                 SmileyLineColor = viewModel.SymbolDetails.SmileyLineColor,
-                SmileyExpression = viewModel.SymbolDetails.SmileyExpression,
-                Type = viewModel.SymbolDetails.Type
+                SmileyExpression = viewModel.SymbolDetails.SmileyExpression
             };
         }
         public DifficultyAssetViewModel(TemplateViewModel viewModel)

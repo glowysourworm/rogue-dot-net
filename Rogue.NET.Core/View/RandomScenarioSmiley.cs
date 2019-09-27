@@ -1,17 +1,11 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Utility;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.ResourceCache;
 using Rogue.NET.Core.Model.ResourceCache.Interface;
 using Rogue.NET.Core.Model.Scenario.Content;
-using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Utility;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.View
@@ -69,8 +63,8 @@ namespace Rogue.NET.Core.View
             
 
             // Set Traits from randomly picked character class
-            this.SmileyColor = ColorUtility.Convert(chosenSmileyFace.SmileyBodyColor);
-            this.SmileyLineColor = ColorUtility.Convert(chosenSmileyFace.SmileyLineColor);
+            this.SmileyColor = ColorFilter.Convert(chosenSmileyFace.SmileyBodyColor);
+            this.SmileyLineColor = ColorFilter.Convert(chosenSmileyFace.SmileyLineColor);
             this.SmileyExpression = chosenSmileyFace.SmileyExpression;
         }
     }

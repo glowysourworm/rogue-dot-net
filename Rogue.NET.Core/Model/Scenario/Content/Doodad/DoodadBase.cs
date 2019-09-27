@@ -13,9 +13,5 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Doodad
         public DoodadBase()
         {
         }
-        public DoodadBase(string name, ImageResources icon)
-            : base(name, icon)
-        {
-        }
     }
 }

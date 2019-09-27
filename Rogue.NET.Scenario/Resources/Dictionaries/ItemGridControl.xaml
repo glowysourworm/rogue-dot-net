@@ -245,15 +245,19 @@
         <ContentPresenter HorizontalAlignment="Center" 
                           VerticalAlignment="Center">
             <ContentPresenter.Content>
-                <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
+                <MultiBinding Converter="{StaticResource SymbolImageConverter}">
                     <Binding Path="CharacterColor" />
                     <Binding Path="CharacterSymbol" />
-                    <Binding Path="Icon" />
-                    <Binding Path="DisplayIcon" />
+                    <Binding Path="CharacterSymbolCategory" />
+                    <Binding Path="Symbol" />
+                    <Binding Path="SymbolHue" />
+                    <Binding Path="SymbolSaturation" />
+                    <Binding Path="SymbolLightness" />
                     <Binding Path="SmileyExpression" />
                     <Binding Path="SmileyAuraColor" />
                     <Binding Path="SmileyBodyColor" />
                     <Binding Path="SmileyLineColor" />
+                    <Binding Path="GameSymbol" />
                     <Binding Path="SymbolType" />
                 </MultiBinding>
             </ContentPresenter.Content>
@@ -266,8 +270,21 @@
                           HorizontalAlignment="Center"
                           Visibility="{Binding AttackAttributes, Converter={StaticResource AttackAttributeCollectionNonEmptyVisibilityConverter}}">
             <ContentPresenter.Content>
-                <Binding Source="{x:Static coreModelEnums:ImageResources.ImbueWeaponRed}" 
-                         Converter="{StaticResource ItemGridIconImageConverter}" />
+                <MultiBinding Converter="{StaticResource SymbolImageConverter}">
+                    <Binding Path="CharacterColor" />
+                    <Binding Path="CharacterSymbol" />
+                    <Binding Path="CharacterSymbolCategory" />
+                    <Binding Path="Symbol" />
+                    <Binding Path="SymbolHue" />
+                    <Binding Path="SymbolSaturation" />
+                    <Binding Path="SymbolLightness" />
+                    <Binding Path="SmileyExpression" />
+                    <Binding Path="SmileyAuraColor" />
+                    <Binding Path="SmileyBodyColor" />
+                    <Binding Path="SmileyLineColor" />
+                    <Binding Path="GameSymbol" />
+                    <Binding Path="SymbolType" />
+                </MultiBinding>
             </ContentPresenter.Content>
             <ContentPresenter.ToolTip>
                 <ToolTip Background="Transparent"
@@ -287,15 +304,19 @@
                                 <DataTemplate>
                                     <ContentPresenter Margin="4" Visibility="{Binding Converter={StaticResource AttackAttributeIsSetVisibilityConverter}}">
                                         <ContentPresenter.Content>
-                                            <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
+                                            <MultiBinding Converter="{StaticResource SymbolImageConverter}">
                                                 <Binding Path="CharacterColor" />
                                                 <Binding Path="CharacterSymbol" />
-                                                <Binding Path="Icon" />
-                                                <Binding Path="DisplayIcon" />
+                                                <Binding Path="CharacterSymbolCategory" />
+                                                <Binding Path="Symbol" />
+                                                <Binding Path="SymbolHue" />
+                                                <Binding Path="SymbolSaturation" />
+                                                <Binding Path="SymbolLightness" />
                                                 <Binding Path="SmileyExpression" />
+                                                <Binding Path="SmileyAuraColor" />
                                                 <Binding Path="SmileyBodyColor" />
                                                 <Binding Path="SmileyLineColor" />
-                                                <Binding Path="SmileyAuraColor" />
+                                                <Binding Path="GameSymbol" />
                                                 <Binding Path="SymbolType" />
                                             </MultiBinding>                                            
                                         </ContentPresenter.Content>

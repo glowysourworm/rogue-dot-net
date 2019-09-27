@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.Symbol.SymbolEffectEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+    
+    <!-- Symbol Delta Parameters -->
+        <GroupBox x:Name="SymbolDeltaParametersGB" Visibility="Collapsed" Margin="10" Header="Symbol Change Parameters">
+            <StackPanel>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Full Symbol Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsFullSymbolDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Image Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsImageDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Expression Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsExpressionDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Body Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsBodyDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Line Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsLineDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Aura Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsAuraDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Character Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsCharacterDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+                <Grid Margin="10">
+                    <TextBlock Text="Is Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                    <CheckBox  IsChecked="{Binding IsColorDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>

@@ -7,20 +7,24 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
 {
     public class SymbolDetailsTemplateViewModel : TemplateViewModel
     {
-        private SymbolTypes _type;
+        private SymbolType _symbolType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
         private string _characterSymbol;
+        private string _characterSymbolCategory;
         private string _characterColor;
-        private ImageResources _icon;
-        private DisplayImageResources _displayIcon;
+        private string _symbol;
+        private double _symbolHue;
+        private double _symbolSaturation;
+        private double _symbolLightness;
+        private string _gameSymbol;
 
-        public SymbolTypes Type
+        public SymbolType SymbolType
         {
-            get { return _type; }
-            set { this.RaiseAndSetIfChanged(ref _type, value); }
+            get { return _symbolType; }
+            set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
         }
         public SmileyExpression SmileyExpression
         {
@@ -47,42 +51,50 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             get { return _characterSymbol; }
             set { this.RaiseAndSetIfChanged(ref _characterSymbol, value); }
         }
+        public string CharacterSymbolCategory
+        {
+            get { return _characterSymbolCategory; }
+            set { this.RaiseAndSetIfChanged(ref _characterSymbolCategory, value); }
+        }
         public string CharacterColor
         {
             get { return _characterColor; }
             set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
         }
-        public ImageResources Icon
+        public string Symbol
         {
-            get { return _icon; }
-            set { this.RaiseAndSetIfChanged(ref _icon, value); }
+            get { return _symbol; }
+            set { this.RaiseAndSetIfChanged(ref _symbol, value); }
         }
-        public DisplayImageResources DisplayIcon
+        public double SymbolHue
         {
-            get { return _displayIcon; }
-            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
+            get { return _symbolHue; }
+            set { this.RaiseAndSetIfChanged(ref _symbolHue, value); }
+        }
+        public double SymbolSaturation
+        {
+            get { return _symbolSaturation; }
+            set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
+        }
+        public double SymbolLightness
+        {
+            get { return _symbolLightness; }
+            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
+        }
+        public string GameSymbol
+        {
+            get { return _gameSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _gameSymbol, value); }
         }
 
         public SymbolDetailsTemplateViewModel()
         {
-            this.Type = SymbolTypes.Image;
-            this.Icon = ImageResources.AmuletOrange;
+            this.SymbolType = SymbolType.Smiley;
 
+            this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();
-
-            this.CharacterColor = Colors.White.ToString();
-            this.CharacterSymbol = "T";
-        }
-        public SymbolDetailsTemplateViewModel(SymbolDetailsTemplateViewModel tmp)
-        {
-            this.Type = tmp.Type;
-            this.Icon = tmp.Icon;
-            this.SmileyAuraColor = tmp.SmileyAuraColor;
-            this.SmileyBodyColor = tmp.SmileyBodyColor;
-            this.SmileyLineColor = tmp.SmileyLineColor;
-            this.Type = tmp.Type;
         }
     }
 }

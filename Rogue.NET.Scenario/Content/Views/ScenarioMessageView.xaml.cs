@@ -192,8 +192,7 @@ namespace Rogue.NET.Scenario.Content.Views
         {
             scenarioImage.CharacterColor = scenarioMetaData.CharacterColor;
             scenarioImage.CharacterSymbol = scenarioMetaData.CharacterSymbol;
-            scenarioImage.Icon = scenarioMetaData.Icon;
-            scenarioImage.DisplayIcon = scenarioMetaData.DisplayIcon;
+            scenarioImage.CharacterSymbolCategory = scenarioMetaData.CharacterSymbolCategory;
             scenarioImage.SmileyBodyColor = scenarioMetaData.SmileyBodyColor;
             scenarioImage.SmileyLineColor = scenarioMetaData.SmileyLineColor;
             scenarioImage.SmileyAuraColor = scenarioMetaData.SmileyLightRadiusColor;

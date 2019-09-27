@@ -1,4 +1,4 @@
-﻿using Rogue.NET.Core.Utility;
+﻿using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Converter
             if (value == null)
                 return Colors.Transparent;
 
-            return ColorUtility.Convert((string)value);
+            return ColorFilter.Convert((string)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -21,7 +21,7 @@ namespace Rogue.NET.Core.Converter
             if (value == null)
                 return "#00000000";
 
-            return ColorUtility.ConvertBack((Color)value);
+            return ColorFilter.ConvertBack((Color)value);
         }
     }
 }

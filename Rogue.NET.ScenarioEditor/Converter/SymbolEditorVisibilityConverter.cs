@@ -9,8 +9,8 @@ namespace Rogue.NET.ScenarioEditor.Converter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var desiredValue = (SymbolTypes)parameter;
-            var actualValue = (SymbolTypes)value;
+            var desiredValue = (SymbolType)parameter;
+            var actualValue = (SymbolType)value;
             return (desiredValue == actualValue) ? Visibility.Visible : Visibility.Collapsed;
         }
 

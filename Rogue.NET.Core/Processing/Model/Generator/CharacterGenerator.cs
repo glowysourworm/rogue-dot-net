@@ -15,6 +15,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     public class CharacterGenerator : ICharacterGenerator
     {
         private readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        private readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         private readonly IAttackAttributeGenerator _attackAttributeGenerator;
         private readonly ISkillSetGenerator _skillSetGenerator;
         private readonly IBehaviorGenerator _behaviorGenerator;
@@ -25,6 +26,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
         [ImportingConstructor]
         public CharacterGenerator(
             IRandomSequenceGenerator randomSequenceGenerator, 
+            ISymbolDetailsGenerator symbolDetailsGenerator,
             IAttackAttributeGenerator attackAttributeGenerator,
             ISkillSetGenerator skillSetGenerator,
             IBehaviorGenerator behaviorGenerator,
@@ -33,6 +35,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             IAlterationGenerator alterationGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _skillSetGenerator = skillSetGenerator;
             _behaviorGenerator = behaviorGenerator;
@@ -126,14 +129,9 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             character.IntelligenceBase = _randomSequenceGenerator.GetRandomValue(template.Intelligence);
             character.SpeedBase = _randomSequenceGenerator.GetRandomValue(template.Speed);
             character.LightRadiusBase = _randomSequenceGenerator.GetRandomValue(template.LightRadius);
-            character.Icon = template.SymbolDetails.Icon;
-            character.CharacterSymbol = template.SymbolDetails.CharacterSymbol;
-            character.CharacterColor = template.SymbolDetails.CharacterColor;
-            character.SmileyExpression = template.SymbolDetails.SmileyExpression;
-            character.SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor;
-            character.SmileyBodyColor = template.SymbolDetails.SmileyBodyColor;
-            character.SmileyLineColor = template.SymbolDetails.SmileyLineColor;
-            character.SymbolType = template.SymbolDetails.Type;
+
+            // Map Symbol Details
+            _symbolDetailsGenerator.MapSymbolDetails(template.SymbolDetails, character);
 
             // Attack Attributes
             character.AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x))

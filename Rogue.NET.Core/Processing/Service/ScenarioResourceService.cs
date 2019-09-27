@@ -5,7 +5,6 @@ using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.ResourceCache;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Core.View;
 using Rogue.NET.Core.Extension;
 using System;
@@ -22,6 +21,11 @@ using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Common.Extension;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Model.ResourceCache.Interface;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
+using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Media.SymbolEffect;
 
 namespace Rogue.NET.Core.Processing.Service
 {
@@ -29,13 +33,25 @@ namespace Rogue.NET.Core.Processing.Service
     [Export(typeof(IScenarioResourceService))]
     public class ScenarioResourceService : IScenarioResourceService
     {
+        // Default symbol for a failed SVG load
+        readonly static DrawingGroup DEFAULT_DRAWING;
+
         readonly IScenarioFileService _scenarioFileService;
 
-        const int DPI = 96;
+        // These are paths relative to the Svg folder in Rogue.NET.Common
+        const string SVG_PATH_GAME = "Game";
+        const string SVG_PATH_SCENARIO_CHARACTER = "Scenario.Character";
+        const string SVG_PATH_SCENARIO_SYMBOL = "Scenario.Symbol";
 
         IDictionary<string, ScenarioConfigurationContainer> _scenarioConfigurations;
         IDictionary<string, object> _scenarioImageCache;
         IEnumerable<ColorViewModel> _colors;
+
+        // Static constructor for loading default symbol
+        static ScenarioResourceService()
+        {
+            DEFAULT_DRAWING = LoadSVG(SVG_PATH_GAME, "", GameSymbol.Consume);
+        }
 
         [ImportingConstructor]
         public ScenarioResourceService(
@@ -48,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Service
                                                                 .ToDictionary(x => x.DungeonTemplate.Name, x => x);
 
             _scenarioImageCache = new Dictionary<string, object>();
-            _colors = ColorUtility.CreateColors();
+            _colors = ColorFilter.CreateColors();
         }
 
         #region (public) Methods
@@ -97,7 +113,7 @@ namespace Rogue.NET.Core.Processing.Service
             // Have to copy configuration because of the HasBeenGenerated flags in memory
             return _scenarioConfigurations[configurationName].DeepClone();
         }
-        public BitmapSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, bool bypassCache = false)
+        public ImageSource GetImageSource(SymbolDetailsTemplate symbolDetails, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -108,35 +124,19 @@ namespace Rogue.NET.Core.Processing.Service
 
             // Check for cached image
             if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
-                return _scenarioImageCache[cacheKey] as BitmapSource;
-
-            BitmapSource result;
-
-            // Create a new BitmapSource
-            switch (cacheImage.SymbolType)
-            {
-                case SymbolTypes.Character:
-                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterColor, cacheImage.Scale);
-                    break;
-                case SymbolTypes.Smiley:
-                    result = GetImage(cacheImage.SmileyExpression, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor, cacheImage.Scale);
-                    break;
-                case SymbolTypes.Image:
-                    result = GetImage(cacheImage.Icon);
-                    break;
-                case SymbolTypes.DisplayImage:
-                    result = GetImage(cacheImage.DisplayIcon);
-                    break;
-                default:
-                    throw new Exception("Unknown symbol type");
-            }
+                return _scenarioImageCache[cacheKey] as ImageSource;
 
             // Cache the result
-            _scenarioImageCache[cacheKey] = result;
+            else
+            {
+                var result = GetImageSource(cacheImage);
+                
+                _scenarioImageCache[cacheKey] = result;
 
-            return result;
+                return result;
+            }
         }
-        public BitmapSource GetImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
+        public ImageSource GetImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -144,38 +144,47 @@ namespace Rogue.NET.Core.Processing.Service
             // Create cache image to retrieve cached BitmapSource or to store it
             var cacheImage = new ScenarioCacheImage(scenarioImage, ScenarioCacheImageType.ImageSource, false, safeScale);
             var cacheKey = cacheImage.ToFingerprint();
-            
+
             // Check for cached image
             if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
-                return _scenarioImageCache[cacheKey] as BitmapSource;
+                return _scenarioImageCache[cacheKey] as ImageSource;
 
-            BitmapSource result;
+            // Cache the result
+            else
+            {
+                var result = GetImageSource(cacheImage);
+
+                _scenarioImageCache[cacheKey] = result;
+
+                return result;
+            }
+        }
+        protected ImageSource GetImageSource(ScenarioCacheImage cacheImage)
+        {
+            ImageSource result;
 
             // Create a new BitmapSource
-            switch (scenarioImage.SymbolType)
+            switch (cacheImage.Type)
             {
-                case SymbolTypes.Character:
-                    result = GetImage(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, safeScale);
+                case SymbolType.Character:
+                    result = GetImage(cacheImage.CharacterSymbol, cacheImage.CharacterSymbolCategory, cacheImage.CharacterColor, cacheImage.Scale);
                     break;
-                case SymbolTypes.Smiley:
-                    result = GetImage(scenarioImage.SmileyExpression, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor, safeScale);
+                case SymbolType.Smiley:
+                    result = GetImage(cacheImage.SmileyExpression, cacheImage.SmileyBodyColor, cacheImage.SmileyLineColor, cacheImage.SmileyAuraColor, cacheImage.Scale);
                     break;
-                case SymbolTypes.Image:
-                    result = GetImage(scenarioImage.Icon);
+                case SymbolType.Symbol:
+                    result = GetImage(cacheImage.Symbol, cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.Scale);
                     break;
-                case SymbolTypes.DisplayImage:
-                    result = GetImage(scenarioImage.DisplayIcon);
+                case SymbolType.Game:
+                    result = GetImage(cacheImage.GameSymbol, cacheImage.Scale);
                     break;
                 default:
                     throw new Exception("Unknown symbol type");
             }
 
-            // Cache the result
-            _scenarioImageCache[cacheKey] = result;
-
             return result;
         }
-        public BitmapSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
+        public ImageSource GetDesaturatedImageSource(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
             // Clip the scale to a safe number
             var safeScale = scale.Clip(1, 10);
@@ -188,15 +197,20 @@ namespace Rogue.NET.Core.Processing.Service
             if (_scenarioImageCache.ContainsKey(cacheKey) && !bypassCache)
                 return _scenarioImageCache[cacheKey] as BitmapSource;
 
-            // Create gray-scale image (also can use cache to get color image)
-            // TODO: figure out why transparency doesn't work; and fix the gray scale image
-            var bitmapSource = GetImageSource(scenarioImage, safeScale);
-            var formatConvertedBitmap = new FormatConvertedBitmap(bitmapSource, PixelFormats.Pbgra32, BitmapPalettes.WebPaletteTransparent, 100);
+            var source = GetImageSource(cacheImage);
 
-            // Cache the gray-scale image
-            _scenarioImageCache[cacheKey] = formatConvertedBitmap;
+            if (source is DrawingImage)
+            {
+                // Recurse drawing to desaturate colors
+                DrawingFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new SaturationEffect(0));
 
-            return formatConvertedBitmap;
+                // Cache the gray-scale image
+                _scenarioImageCache[cacheKey] = source;
+
+                return source;
+            }
+            else
+                throw new Exception("Unhandled ImageSource type");
         }
         public FrameworkElement GetFrameworkElement(ScenarioImage scenarioImage, double scale, bool bypassCache = false)
         {
@@ -215,17 +229,17 @@ namespace Rogue.NET.Core.Processing.Service
 
             switch (scenarioImage.SymbolType)
             {
-                case SymbolTypes.Character:
-                    result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterColor, safeScale);
+                case SymbolType.Character:
+                    result = GetElement(scenarioImage.CharacterSymbol, scenarioImage.CharacterSymbolCategory, scenarioImage.CharacterColor, safeScale);
                     break;
-                case SymbolTypes.Smiley:
+                case SymbolType.Smiley:
                     result = GetElement(scenarioImage.SmileyExpression, scenarioImage.SmileyBodyColor, scenarioImage.SmileyLineColor, scenarioImage.SmileyLightRadiusColor, safeScale);
                     break;
-                case SymbolTypes.Image:
-                    result = GetElement(scenarioImage.Icon, safeScale);
+                case SymbolType.Symbol:
+                    result = GetElement(cacheImage.Symbol, cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, safeScale);
                     break;
-                case SymbolTypes.DisplayImage:
-                    result = GetElement(scenarioImage.DisplayIcon, safeScale);
+                case SymbolType.Game:
+                    result = GetElement(cacheImage.GameSymbol, cacheImage.Scale);
                     break;
                 default:
                     throw new Exception("Unknown symbol type");
@@ -243,80 +257,91 @@ namespace Rogue.NET.Core.Processing.Service
         #endregion
 
         #region (private) Methods
-        private BitmapSource GetImage(ImageResources img)
+        private ImageSource GetImage(string symbol, double symbolHue, double symbolSaturation, double symbolLightness, double scale)
         {
-            var path = "Rogue.NET.Common.Resource.Images.ScenarioObjects." + img.ToString() + ".png";
-            var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
-            var stream = assembly.GetManifestResourceStream(path);
-            var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            return decoder.Frames[0];
+            // Load SVG drawing
+            var drawingGroup = LoadSVG(SVG_PATH_SCENARIO_SYMBOL, "", symbol);
+
+            // Apply Transform
+            ApplyDrawingTransform(drawingGroup, scale);
+
+            // Apply coloring to SVG - TODO:SYMBOL:  Figure out how to apply a general HSL shift
+            if (symbolHue > 0)
+                DrawingFilter.ApplyEffect(drawingGroup, new HueShiftEffect(symbolHue));
+
+            // Return image source
+            return new DrawingImage(drawingGroup);
         }
-        private BitmapSource GetImage(DisplayImageResources displayImageResources)
+        private ImageSource GetImage(string gameSymbol, double scale)
         {
-            var path = "Rogue.NET.Common.Resource.Images.DisplayImages." + displayImageResources.ToString() + ".png";
-            var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
-            var stream = assembly.GetManifestResourceStream(path);
-            var decoder = new PngBitmapDecoder(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-            return decoder.Frames[0];
+            // Load SVG drawing
+            var drawingGroup = LoadSVG(SVG_PATH_GAME, "", gameSymbol);
+
+            // Apply Transform
+            ApplyDrawingTransform(drawingGroup, scale);
+
+            // Apply coloring to SVG
+
+            // Return image source
+            return new DrawingImage(drawingGroup);
         }
-        private BitmapSource GetImage(string symbol, string symbolColor, double scale)
+        private ImageSource GetImage(string character, string characterCategory, string characterColor, double scale)
         {
-            var text = GetElement(symbol, symbolColor, scale);
-            text.Background = Brushes.Transparent;
-            text.Measure(new Size(text.Width, text.Height));
-            text.Arrange(new Rect(text.DesiredSize));
+            // Load SVG drawing
+            var drawingGroup = LoadSVG(SVG_PATH_SCENARIO_CHARACTER, characterCategory, character);
 
-            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth * scale), (int)(ModelConstants.CellHeight * scale), DPI, DPI, PixelFormats.Default);
-            bmp.Render(text);
-            return bmp;
+            // Apply Transform
+            ApplyDrawingTransform(drawingGroup, scale);
+
+            // Apply coloring to SVG
+            DrawingFilter.ApplyEffect(drawingGroup, new ClampEffect(characterColor));
+
+            // Return image source
+            return new DrawingImage(drawingGroup);
         }
-        private BitmapSource GetImage(SmileyExpression expression, string bodyColor, string lineColor, string auraColor, double scale)
+        private ImageSource GetImage(SmileyExpression expression, string bodyColor, string lineColor, string auraColor, double scale)
         {
-            var ctrl = GetElement(expression, bodyColor, lineColor, auraColor, scale);
-            ctrl.Background = Brushes.Transparent;
-            ctrl.Measure(new Size(ctrl.Width, ctrl.Height));
-            ctrl.Arrange(new Rect(0,0,ctrl.Width, ctrl.Height));
-            RenderOptions.SetBitmapScalingMode(ctrl, BitmapScalingMode.Fant);
-            var bmp = new RenderTargetBitmap((int)(ModelConstants.CellWidth * scale), (int)(ModelConstants.CellHeight * scale), DPI, DPI, PixelFormats.Default);
+            // Create a smiley control
+            var control = GetElement(expression, bodyColor, lineColor, auraColor, scale);
 
-            bmp.Render(ctrl);
-            return bmp;
+            // Smiley control rendering doesn't seem to need a transform applied
+
+            // Create a drawing to represent the paths (includes coloring)
+            var drawing = control.CreateDrawing();
+
+            // Return image source
+            return new DrawingImage(drawing);
+        }
+        private Image GetElement(string symbol, double symbolHue, double symbolSaturation, double symbolLightness, double scale)
+        {
+            // Return scaled image
+            var image = new Image();
+            image.Width = ModelConstants.CellWidth * scale;
+            image.Height = ModelConstants.CellHeight * scale;
+            image.Source = GetImage(symbol, symbolHue, symbolSaturation, symbolLightness, scale);
+
+            return image;
         }
 
-        private Image GetElement(ImageResources imageResource, double scale)
+        private Image GetElement(string gameSymbol, double scale)
         {
-            var result = new Image();
-            result.Width = ModelConstants.CellWidth * scale;
-            result.Height = ModelConstants.CellHeight * scale;
-            result.Source = GetImage(imageResource);
+            // Return scaled image
+            var image = new Image();
+            image.Width = ModelConstants.CellWidth * scale;
+            image.Height = ModelConstants.CellHeight * scale;
+            image.Source = GetImage(gameSymbol, scale);
 
-            return result;
+            return image;
         }
-        private Image GetElement(DisplayImageResources displayImageResource, double scale)
+        private Image GetElement(string character, string characterCategory, string characterColor, double scale)
         {
-            var result = new Image();
-            result.Width = ModelConstants.CellWidth * scale;
-            result.Height = ModelConstants.CellHeight * scale;
-            result.Source = GetImage(displayImageResource);
+            // Return scaled image
+            var image = new Image();
+            image.Width = ModelConstants.CellWidth * scale;
+            image.Height = ModelConstants.CellHeight * scale;
+            image.Source = GetImage(character, characterCategory, characterColor, scale);
 
-            return result;
-        }
-        private TextBlock GetElement(string symbol, string symbolColor, double scale)
-        {
-            var text = new TextBlock();
-            var foregroundColor = (Color)ColorConverter.ConvertFromString(symbolColor);
-
-            text.Foreground = new SolidColorBrush(foregroundColor);
-            text.Background = Brushes.Black;
-            text.Text = symbol;
-            text.FontSize = 12 * scale.Clip(1, 10);
-            text.FontFamily = Application.Current.MainWindow.FontFamily;
-            text.TextAlignment = TextAlignment.Center;
-            text.Margin = new Thickness(0);
-            text.Height = ModelConstants.CellHeight * scale;
-            text.Width = ModelConstants.CellWidth * scale;
-
-            return text;
+            return image;
         }
         private Smiley GetElement(SmileyExpression expression, string bodyColor, string lineColor, string auraColor, double scale)
         {
@@ -327,7 +352,7 @@ namespace Rogue.NET.Core.Processing.Service
             ctrl.SmileyLineColor = (Color)ColorConverter.ConvertFromString(lineColor);
             ctrl.SmileyExpression = expression;
 
-            // TODO: fix the initialization problem. (OR) just get rid of images in favor of vector drawings...
+            // TODO: fix the initialization problem
             ctrl.Initialize();
 
             return ctrl;
@@ -340,11 +365,73 @@ namespace Rogue.NET.Core.Processing.Service
 
             return characterSymbols.Any() ? new ScenarioImage(characterSymbols.PickRandom()) : new ScenarioImage()
             {
-                SymbolType = SymbolTypes.Smiley,
+                SymbolType = SymbolType.Smiley,
                 SmileyBodyColor = Colors.Yellow.ToString(),
                 SmileyLineColor = Colors.Black.ToString(),
                 SmileyExpression = SmileyExpression.Happy
             };
+        }
+        #endregion
+
+        #region (private) SVG Methods
+
+        /// <summary>
+        /// SEE SVG_PATH_* ABOVE!!! SubPath is the symbol category (points to sub-folder for symbols)
+        /// </summary>
+        /// <param name="svgPath">Path to primary SVG folder (See SVG_PATH_*) { Game, Scenario -> Character, Scenario -> Symbol }</param>
+        /// <param name="subPath">This is the character category (</param>
+        /// <param name="svgName">This is the NAME of the svg file (WITHOUT THE EXTENSION)</param>
+        /// <returns></returns>
+        private static DrawingGroup LoadSVG(string svgPath, string subPath, string svgName)
+        {
+            var assembly = Assembly.GetAssembly(typeof(ZipEncoder));
+            var settings = new WpfDrawingSettings();
+            settings.IncludeRuntime = true;
+            settings.TextAsGeometry = true;
+            settings.OptimizePath = false;
+
+            var basePath = "Rogue.NET.Common.Resource.Svg";
+            var path = !string.IsNullOrEmpty(subPath) ? string.Join(".", basePath, svgPath, subPath, svgName, "svg")
+                                                      : string.Join(".", basePath, svgPath, svgName, "svg");
+
+            try
+            {
+                using (var stream = assembly.GetManifestResourceStream(path))
+                {
+                    using (var reader = new FileSvgReader(settings))
+                    {
+                        return reader.Read(stream);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // TODO: REMOVE THIS TRY / CATCH
+                return DEFAULT_DRAWING;
+            }
+        }
+
+        /// <summary>
+        /// Applies a transform to the drawing group to fit it to a bounding box with the supplied scale
+        /// </summary>
+        /// <param name="group">The drawing</param>
+        /// <param name="scale">relative scale</param>
+        private void ApplyDrawingTransform(DrawingGroup group, double scale)
+        {
+            // TODO:SYMBOL - Figure out best way to apply this transform without modifying image sources 
+            //               too much. Also have to manage cache... So, there's issues with this method.
+            var transform = new TransformGroup();
+
+            // HAVE TO MAINTAIN THE SYMBOL'S ASPECT RATIO WHILE FITTING IT TO OUR BOUNDING BOX
+            //
+
+            var scaleFactor = Math.Min((ModelConstants.CellWidth / group.Bounds.Width) * scale,
+                                       (ModelConstants.CellHeight / group.Bounds.Height) * scale);
+
+            transform.Children.Add(new TranslateTransform(group.Bounds.X * -1, group.Bounds.Y * -1));
+            transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
+
+            group.Transform = transform;
         }
         #endregion
     }

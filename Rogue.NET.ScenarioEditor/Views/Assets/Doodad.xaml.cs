@@ -1,5 +1,4 @@
-﻿using Rogue.NET.ScenarioEditor.Views.Controls;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel.Composition;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
@@ -8,6 +7,7 @@ using Rogue.NET.ScenarioEditor.Events;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.ScenarioEditor.Service.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
 
 namespace Rogue.NET.ScenarioEditor.Views.Assets
 {

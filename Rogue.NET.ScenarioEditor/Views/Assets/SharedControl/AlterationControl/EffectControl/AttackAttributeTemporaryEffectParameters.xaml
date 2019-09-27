@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.EffectControl.AttackAttributeTemporaryEffectParameters"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"             
              xmlns:commonControl="clr-namespace:Rogue.NET.ScenarioEditor.Views.Assets.SharedControl.AlterationControl.CommonControl">
@@ -48,7 +49,7 @@
                                              EnumValue="{Binding CombatType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Symbol Change">
-            <controls:SymbolEditor SymbolDeltaMode="True" DataContext="{Binding SymbolAlteration}" />
+            <symbol:SymbolEditor DataContext="{Binding SymbolAlteration}" />
         </TabItem>
         <TabItem Header="Attack Attributes">
             <commonControl:AlterationAttackAttributeListControl />

@@ -62,13 +62,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             //must have for each level (Except the last one) (MAPPED)
             if (levelNumber != configurationContainer.DungeonTemplate.NumberOfLevels)
             {
-                var stairsDown = new DoodadNormal(DoodadNormalType.StairsDown, ModelConstants.DoodadStairsDownRogueName, "");
+                var stairsDown = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsDownRogueName, DoodadNormalType.StairsDown);
                 stairsDown.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
                 level.AddStairsDown(stairsDown);
             }
 
             //Stairs up - every level has one - (MAPPED)
-            var stairsUp = new DoodadNormal(DoodadNormalType.StairsUp, ModelConstants.DoodadStairsUpRogueName, "");
+            var stairsUp = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadStairsUpRogueName, DoodadNormalType.StairsUp);
             stairsUp.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
             level.AddStairsUp(stairsUp);
 
@@ -86,7 +86,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Every level has a save point if not in survivor mode - (MAPPED)
             if (!survivorMode)
             {
-                var savePoint = new DoodadNormal(DoodadNormalType.SavePoint, ModelConstants.DoodadSavePointRogueName, "");
+                var savePoint = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadSavePointRogueName, DoodadNormalType.SavePoint);
                 savePoint.Location = GetRandomCell(false, null, freeCells, freeRoomCells);
                 level.AddSavePoint(savePoint);
             }
@@ -116,7 +116,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 for (int i = 0; (i < number || (doodadTemplate.IsObjectiveItem && !doodadTemplate.HasBeenGenerated))
                                             && !(doodadTemplate.IsUnique && doodadTemplate.HasBeenGenerated); i++)
                 {
-                    level.AddContent(_doodadGenerator.GenerateDoodad(doodadTemplate));
+                    level.AddContent(_doodadGenerator.GenerateMagicDoodad(doodadTemplate));
                 }
             }
         }
@@ -185,8 +185,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // Connect rooms with teleporters sequentially to make sure can reach all rooms
             for (int i = 0; i < rooms.Count - 1; i++)
             {
-                var teleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
-                var teleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, teleport1.Id);
+                var teleport1 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
+                var teleport2 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
 
                 var location1 = GetRandomCell(true, rooms.ElementAt(i), freeCells, freeRoomCells);
                 var location2 = GetRandomCell(true, rooms.ElementAt(i + 1), freeCells, freeRoomCells);
@@ -206,8 +206,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 level.AddContent(teleport2);
             }
 
-            var lastRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
-            var firstRoomTeleport = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, lastRoomTeleport.Id);
+            var lastRoomTeleport = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
+            var firstRoomTeleport = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
 
             var lastRoomLocation = GetRandomCell(true, rooms.ElementAt(rooms.Count - 1), freeCells, freeRoomCells);
             var firstRoomLocation = GetRandomCell(true, rooms.ElementAt(0), freeCells, freeRoomCells);
@@ -221,6 +221,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             lastRoomTeleport.Location = lastRoomLocation;
             firstRoomTeleport.Location = firstRoomLocation;
 
+            // Pair the teleporters
+            firstRoomTeleport.PairId = lastRoomTeleport.Id;
             lastRoomTeleport.PairId = firstRoomTeleport.Id;
 
             level.AddContent(lastRoomTeleport);
@@ -237,13 +239,15 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     extraLocation2 == GridLocation.Empty)
                     return;
 
-                var extraTeleport1 = new DoodadNormal(DoodadNormalType.Teleport1, ModelConstants.DoodadTeleporterARogueName, "");
-                var extraTeleport2 = new DoodadNormal(DoodadNormalType.Teleport2, ModelConstants.DoodadTeleporterBRogueName, extraTeleport1.Id);
+                var extraTeleport1 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterARogueName, DoodadNormalType.Teleport1);
+                var extraTeleport2 = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterBRogueName, DoodadNormalType.Teleport2);
 
                 extraTeleport1.Location = extraLocation1;
                 extraTeleport2.Location = extraLocation2;
 
+                // Pair the teleporters
                 extraTeleport1.PairId = extraTeleport2.Id;
+                extraTeleport2.PairId = extraTeleport1.Id;
 
                 level.AddContent(extraTeleport1);
                 level.AddContent(extraTeleport2);
@@ -257,7 +261,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             // one per room
             for (int i = 0; i < rooms.Count; i++)
             {
-                var doodad = new DoodadNormal(DoodadNormalType.TeleportRandom, ModelConstants.DoodadTeleporterRandomRogueName, "");
+                var doodad = _doodadGenerator.GenerateNormalDoodad(ModelConstants.DoodadTeleporterRandomRogueName, DoodadNormalType.TeleportRandom);
                 var location = GetRandomCell(true, rooms[i], freeCells, freeRoomCells);
 
                 if (location == GridLocation.Empty)

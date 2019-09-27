@@ -131,6 +131,43 @@ namespace Rogue.NET.Core.View
             Draw();
         }
 
+        public DrawingGroup CreateDrawing()
+        {
+            var group = new DrawingGroup();
+
+            var leftEye = new GeometryDrawing(this.LeftEyePath.Fill,
+                                              new Pen(this.LeftEyePath.Stroke,
+                                                      this.LeftEyePath.StrokeThickness),
+                                              this.LeftEyePath.Data);
+
+            var rightEye = new GeometryDrawing(this.RightEyePath.Fill,
+                                               new Pen(this.RightEyePath.Stroke,
+                                                       this.RightEyePath.StrokeThickness),
+                                              this.RightEyePath.Data);
+
+            // Have to build a geometry because the "RenderedGeometry" isn't ready before this is called
+            var bodyGeometry = new RectangleGeometry(new Rect(new Size(this.BodyRectangle.Width, this.BodyRectangle.Height)));
+
+            bodyGeometry.RadiusX = this.BodyRectangle.RadiusX;
+            bodyGeometry.RadiusY = this.BodyRectangle.RadiusY;
+
+            var body = new GeometryDrawing(this.BodyRectangle.Fill,
+                                           new Pen(this.BodyRectangle.Stroke,
+                                                   this.BodyRectangle.StrokeThickness),
+                                           bodyGeometry);
+            
+            var mouth = new GeometryDrawing(this.MouthPath.Fill,
+                                            new Pen(this.MouthPath.Stroke,
+                                                    this.MouthPath.StrokeThickness),
+                                            this.MouthPath.Data);
+
+            group.Children.Add(body);
+            group.Children.Add(leftEye);
+            group.Children.Add(rightEye);
+            group.Children.Add(mouth);
+
+            return group;
+        }
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             // SCALE BASED ON NEW SIZE

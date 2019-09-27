@@ -6,6 +6,5 @@
     <scenarioConverter:CharacterBaseAttributeForegroundConverter x:Key="CharacterBaseAttributeForegroundConverter" />
     <scenarioConverter:ItemGridViewModelTypeMultipleSelectionVisibilityConverter x:Key="ItemGridViewModelTypeMultipleSelectionVisibilityConverter" />
     <scenarioConverter:ItemGridViewModelTypeMultipleSelectionVisibilityInverseConverter x:Key="ItemGridViewModelTypeMultipleSelectionVisibilityInverseConverter" />
-    <scenarioConverter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageViewModelSourceConverter" />
     <scenarioConverter:ScenarioObjectiveTypeCompletionConverter x:Key="ScenarioObjectiveTypeCompletionConverter" />
 </ResourceDictionary>

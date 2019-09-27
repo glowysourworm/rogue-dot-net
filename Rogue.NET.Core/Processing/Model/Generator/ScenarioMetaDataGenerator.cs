@@ -1,4 +1,5 @@
-﻿using Rogue.NET.Core.Model;
+﻿using Rogue.NET.Common.Constant;
+using Rogue.NET.Core.Model;
 using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario;
 using Rogue.NET.Core.Model.Scenario.Content;
@@ -15,7 +16,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     [Export(typeof(IScenarioMetaDataGenerator))]
     public class ScenarioMetaDataGenerator : IScenarioMetaDataGenerator
     {
-        public ScenarioMetaDataGenerator() { }
+        readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
+
+        [ImportingConstructor]
+        public ScenarioMetaDataGenerator(ISymbolDetailsGenerator symbolDetailsGenerator)
+        {
+            _symbolDetailsGenerator = symbolDetailsGenerator;
+        }
 
         public ScenarioMetaData CreateScenarioMetaData(ConsumableTemplate template)
         {
@@ -128,7 +135,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                     return new ScenarioMetaData()
                     {
                         Description = "Some stairs leading up (Press \"D\" to Advance to Previous Level)",
-                        Icon = ImageResources.StairsUp,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -136,14 +142,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "These stairs lead to the previous upper level",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsUpRogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.StairsUp,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.StairsUp,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.StairsDown:
                     return new ScenarioMetaData()
                     {
                         Description = "Some stairs leading down (Press \"D\" to Advance to Next Level)",
-                        Icon = ImageResources.StairsDown,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -151,14 +161,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "These stairs lead to the next lower level",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadStairsDownRogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.StairsDown,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.StairsDown,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.SavePoint:
                     return new ScenarioMetaData()
                     {
                         Description = "A Tall Odd Shrine (Press \"D\" to Save Progress)",
-                        Icon = ImageResources.SavePoint,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -166,14 +180,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "Contains strange markings related to reincarnation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadSavePointRogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.SavePoint,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.SavePoint,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.Teleport1:
                     return new ScenarioMetaData()
                     {
                         Description = "A shrine dedicated to magical transport",
-                        Icon = ImageResources.teleport1,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -181,14 +199,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterARogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.Teleport1,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.Teleport1,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.Teleport2:
                     return new ScenarioMetaData()
                     {
                         Description = "A shrine dedicated to magical transport",
-                        Icon = ImageResources.teleport2,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -196,14 +218,18 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterBRogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.Teleport2,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.Teleport2,
                         Type = DoodadType.Normal.ToString()
                     };
                 case DoodadNormalType.TeleportRandom:
                     return new ScenarioMetaData()
                     {
                         Description = "A shrine dedicated to magical transport",
-                        Icon = ImageResources.TeleportRandom,
                         IsCursed = false,
                         IsIdentified = false,
                         IsObjective = false,
@@ -211,7 +237,12 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                         LongDescription = "Contains strange markings related to magical transportation",
                         ObjectType = DungeonMetaDataObjectTypes.Doodad,
                         RogueName = ModelConstants.DoodadTeleporterRandomRogueName,
-                        SymbolType = SymbolTypes.Image,
+                        SymbolType = SymbolType.Game,
+                        Symbol = GameSymbol.TeleportRandom,
+                        SymbolHue = 0,
+                        SymbolLightness = 1,
+                        SymbolSaturation = 1,
+                        GameSymbol = GameSymbol.TeleportRandom,
                         Type = DoodadType.Normal.ToString()
                     };
                 default:
@@ -222,11 +253,11 @@ namespace Rogue.NET.Core.Processing.Model.Generator
 
         protected void SetScenarioObjectProperties(ScenarioMetaData metaData, DungeonObjectTemplate template)
         {
-            metaData.CharacterColor = template.SymbolDetails.CharacterColor;
-            metaData.CharacterSymbol = template.SymbolDetails.CharacterSymbol;
+            // Map the base symbol details
+            _symbolDetailsGenerator.MapSymbolDetails(template.SymbolDetails, metaData);
+
+            // Map the rest of the public properties
             metaData.Description = template.ShortDescription;
-            metaData.DisplayIcon = template.SymbolDetails.DisplayIcon;
-            metaData.Icon = template.SymbolDetails.Icon;
             metaData.IsCursed = template.IsCursed;
             metaData.IsCurseIdentified = false;
             metaData.IsIdentified = template.IsObjectiveItem;
@@ -234,11 +265,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             metaData.IsUnique = template.IsUnique;
             metaData.LongDescription = template.LongDescription;
             metaData.RogueName = template.Name;
-            metaData.SmileyLightRadiusColor = template.SymbolDetails.SmileyAuraColor;
-            metaData.SmileyBodyColor = template.SymbolDetails.SmileyBodyColor;
-            metaData.SmileyLineColor = template.SymbolDetails.SmileyLineColor;
-            metaData.SmileyExpression = template.SymbolDetails.SmileyExpression;
-            metaData.SymbolType = template.SymbolDetails.Type;
         }
     }
 }

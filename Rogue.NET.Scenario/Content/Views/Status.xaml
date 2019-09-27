@@ -69,15 +69,19 @@
                     <!-- Symbol -->
                     <Image HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Width="20">
                         <Image.Source>
-                            <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                                <Binding Path="ActiveSkillSet.CharacterSymbol" />
+                            <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                                 <Binding Path="ActiveSkillSet.CharacterColor" />
-                                <Binding Path="ActiveSkillSet.Icon" />
-                                <Binding Path="ActiveSkillSet.DisplayIcon" />
+                                <Binding Path="ActiveSkillSet.CharacterSymbol" />
+                                <Binding Path="ActiveSkillSet.CharacterSymbolCategory" />
+                                <Binding Path="ActiveSkillSet.Symbol" />
+                                <Binding Path="ActiveSkillSet.SymbolHue" />
+                                <Binding Path="ActiveSkillSet.SymbolSaturation" />
+                                <Binding Path="ActiveSkillSet.SymbolLightness" />
                                 <Binding Path="ActiveSkillSet.SmileyExpression" />
+                                <Binding Path="ActiveSkillSet.SmileyAuraColor" />
                                 <Binding Path="ActiveSkillSet.SmileyBodyColor" />
                                 <Binding Path="ActiveSkillSet.SmileyLineColor" />
-                                <Binding Path="ActiveSkillSet.SmileyAuraColor" />
+                                <Binding Path="ActiveSkillSet.GameSymbol" />
                                 <Binding Path="ActiveSkillSet.SymbolType" />
                             </MultiBinding>
                         </Image.Source>

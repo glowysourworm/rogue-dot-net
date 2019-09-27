@@ -32,7 +32,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content
             this.Skills = new ObservableCollection<SkillSetTemplateViewModel>();
             this.FoodUsage = new RangeViewModel<double>(0.005, 0.01);
             this.Class = "Fighter";
-            this.SymbolDetails.Type = SymbolTypes.Smiley;
+            this.SymbolDetails.SymbolType = SymbolType.Smiley;
         }
     }
 }

@@ -3,7 +3,6 @@
 	         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
 	         xmlns:local="clr-namespace:Rogue.NET.Scenario.Content.Views"
-             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              xmlns:view="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core"
              xmlns:itemGrid="clr-namespace:Rogue.NET.Scenario.Content.Views.ItemGrid">
 
@@ -16,7 +15,6 @@
                     <DataTemplate x:Key="AttackAttribCtrl" >
                         <local:DungeonEncyclopediaAttackAttributeCtrl  />
                     </DataTemplate>
-                    <converter:ScenarioImageViewModelSourceConverter x:Key="ScenarioImageSourceConverter" />
                 </ResourceDictionary>                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -40,31 +38,139 @@
                 <StackPanel x:Name="RightHandStack" Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Right Hand" TextWrapping="Wrap" VerticalAlignment="Center"/>
                     <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="RightHandImageWeapon"  Source="{Binding EquippedRightHandWeapon, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="RightHandImageWeapon" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedRightHandWeapon.CharacterColor" />
+                                    <Binding Path="EquippedRightHandWeapon.CharacterSymbol" />
+                                    <Binding Path="EquippedRightHandWeapon.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedRightHandWeapon.Symbol" />
+                                    <Binding Path="EquippedRightHandWeapon.SymbolHue" />
+                                    <Binding Path="EquippedRightHandWeapon.SymbolSaturation" />
+                                    <Binding Path="EquippedRightHandWeapon.SymbolLightness" />
+                                    <Binding Path="EquippedRightHandWeapon.SmileyExpression" />
+                                    <Binding Path="EquippedRightHandWeapon.SmileyAuraColor" />
+                                    <Binding Path="EquippedRightHandWeapon.SmileyBodyColor" />
+                                    <Binding Path="EquippedRightHandWeapon.SmileyLineColor" />
+                                    <Binding Path="EquippedRightHandWeapon.GameSymbol" />
+                                    <Binding Path="EquippedRightHandWeapon.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                     <Border HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="RightHandImageGlove"  Source="{Binding EquippedGauntlets, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2"/>
+                        <Image x:Name="RightHandImageGlove" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedGauntlets.CharacterColor" />
+                                    <Binding Path="EquippedGauntlets.CharacterSymbol" />
+                                    <Binding Path="EquippedGauntlets.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedGauntlets.Symbol" />
+                                    <Binding Path="EquippedGauntlets.SymbolHue" />
+                                    <Binding Path="EquippedGauntlets.SymbolSaturation" />
+                                    <Binding Path="EquippedGauntlets.SymbolLightness" />
+                                    <Binding Path="EquippedGauntlets.SmileyExpression" />
+                                    <Binding Path="EquippedGauntlets.SmileyAuraColor" />
+                                    <Binding Path="EquippedGauntlets.SmileyBodyColor" />
+                                    <Binding Path="EquippedGauntlets.SmileyLineColor" />
+                                    <Binding Path="EquippedGauntlets.GameSymbol" />
+                                    <Binding Path="EquippedGauntlets.SymbolType" />                                    
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                     <Border BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="20" Height="20" Margin="4">
-                        <Image x:Name="RightRing1"  Source="{Binding EquippedRightRing, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="1" />
+                        <Image x:Name="RightRing1" Margin="1">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedRightRing.CharacterColor" />
+                                    <Binding Path="EquippedRightRing.CharacterSymbol" />
+                                    <Binding Path="EquippedRightRing.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedRightRing.Symbol" />
+                                    <Binding Path="EquippedRightRing.SymbolHue" />
+                                    <Binding Path="EquippedRightRing.SymbolSaturation" />
+                                    <Binding Path="EquippedRightRing.SymbolLightness" />
+                                    <Binding Path="EquippedRightRing.SmileyExpression" />
+                                    <Binding Path="EquippedRightRing.SmileyAuraColor" />
+                                    <Binding Path="EquippedRightRing.SmileyBodyColor" />
+                                    <Binding Path="EquippedRightRing.SmileyLineColor" />
+                                    <Binding Path="EquippedRightRing.GameSymbol" />
+                                    <Binding Path="EquippedRightRing.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                 </StackPanel>
                 <StackPanel x:Name="HeadStack" Margin="0" Grid.Column="1" VerticalAlignment="Top">
 					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Head" TextWrapping="Wrap"/>
 					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="HeadImage" Source="{Binding EquippedHelmet, Converter={StaticResource ScenarioImageSourceConverter}}"  Margin="2" />
+                        <Image x:Name="HeadImage" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedHelmet.CharacterColor" />
+                                    <Binding Path="EquippedHelmet.CharacterSymbol" />
+                                    <Binding Path="EquippedHelmet.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedHelmet.Symbol" />
+                                    <Binding Path="EquippedHelmet.SymbolHue" />
+                                    <Binding Path="EquippedHelmet.SymbolSaturation" />
+                                    <Binding Path="EquippedHelmet.SymbolLightness" />
+                                    <Binding Path="EquippedHelmet.SmileyExpression" />
+                                    <Binding Path="EquippedHelmet.SmileyAuraColor" />
+                                    <Binding Path="EquippedHelmet.SmileyBodyColor" />
+                                    <Binding Path="EquippedHelmet.SmileyLineColor" />
+                                    <Binding Path="EquippedHelmet.GameSymbol" />
+                                    <Binding Path="EquippedHelmet.SymbolType" />                                    
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
 					</Border>
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Amulet" TextWrapping="Wrap"/>
                     <Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-                        <Image x:Name="AmuletImage"  Source="{Binding EquippedAmulet, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="AmuletImage" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedAmulet.CharacterColor" />
+                                    <Binding Path="EquippedAmulet.CharacterSymbol" />
+                                    <Binding Path="EquippedAmulet.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedAmulet.Symbol" />
+                                    <Binding Path="EquippedAmulet.SymbolHue" />
+                                    <Binding Path="EquippedAmulet.SymbolSaturation" />
+                                    <Binding Path="EquippedAmulet.SymbolLightness" />
+                                    <Binding Path="EquippedAmulet.SmileyExpression" />
+                                    <Binding Path="EquippedAmulet.SmileyAuraColor" />
+                                    <Binding Path="EquippedAmulet.SmileyBodyColor" />
+                                    <Binding Path="EquippedAmulet.SmileyLineColor" />
+                                    <Binding Path="EquippedAmulet.GameSymbol" />
+                                    <Binding Path="EquippedAmulet.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                 </StackPanel>
 				<StackPanel x:Name="CenterStack" Grid.Column="2" VerticalAlignment="Center">
                     <StackPanel x:Name="OrbStack" Margin="0,0,0,12" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
 						<TextBlock HorizontalAlignment="Center" Margin="0" FontSize="16" Foreground="White" Text="Orb" TextWrapping="Wrap"/>
 						<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="24" Height="24" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                            <Image x:Name="OrbImage" Source="{Binding EquippedOrb, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
-						</Border>
+                            <Image x:Name="OrbImage" Margin="2">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                        <Binding Path="EquippedOrb.CharacterColor" />
+                                        <Binding Path="EquippedOrb.CharacterSymbol" />
+                                        <Binding Path="EquippedOrb.CharacterSymbolCategory" />
+                                        <Binding Path="EquippedOrb.Symbol" />
+                                        <Binding Path="EquippedOrb.SymbolHue" />
+                                        <Binding Path="EquippedOrb.SymbolSaturation" />
+                                        <Binding Path="EquippedOrb.SymbolLightness" />
+                                        <Binding Path="EquippedOrb.SmileyExpression" />
+                                        <Binding Path="EquippedOrb.SmileyAuraColor" />
+                                        <Binding Path="EquippedOrb.SmileyBodyColor" />
+                                        <Binding Path="EquippedOrb.SmileyLineColor" />
+                                        <Binding Path="EquippedOrb.GameSymbol" />
+                                        <Binding Path="EquippedOrb.SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                        </Border>
 					</StackPanel>
                     <view:Smiley x:Name="Smiley" Height="150" 
                                              SmileyColor="{Binding SmileyBodyColor}" 
@@ -74,36 +180,162 @@
                 
                     <TextBlock HorizontalAlignment="Center" Margin="0,4" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Belt" TextWrapping="Wrap"/>
                     <Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-                        <Image x:Name="BeltImage"  Source="{Binding EquippedBelt, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="BeltImage" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedBelt.CharacterColor" />
+                                    <Binding Path="EquippedBelt.CharacterSymbol" />
+                                    <Binding Path="EquippedBelt.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedBelt.Symbol" />
+                                    <Binding Path="EquippedBelt.SymbolHue" />
+                                    <Binding Path="EquippedBelt.SymbolSaturation" />
+                                    <Binding Path="EquippedBelt.SymbolLightness" />
+                                    <Binding Path="EquippedBelt.SmileyExpression" />
+                                    <Binding Path="EquippedBelt.SmileyAuraColor" />
+                                    <Binding Path="EquippedBelt.SmileyBodyColor" />
+                                    <Binding Path="EquippedBelt.SmileyLineColor" />
+                                    <Binding Path="EquippedBelt.GameSymbol" />
+                                    <Binding Path="EquippedBelt.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
 
                     <StackPanel x:Name="FeetStack" Margin="0,8,0,0" Orientation="Vertical">
 						<TextBlock Margin="0,4,0,0" FontSize="16" Foreground="White" Text="Feet" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 						<Border Margin="0,4,0,0" BorderBrush="White" BorderThickness="1" CornerRadius="2" Width="36" Height="36">
-                            <Image x:Name="FeetImage"  Source="{Binding EquippedBoots, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
-						</Border>
+                            <Image x:Name="FeetImage" Margin="2">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                        <Binding Path="EquippedBoots.CharacterColor" />
+                                        <Binding Path="EquippedBoots.CharacterSymbol" />
+                                        <Binding Path="EquippedBoots.CharacterSymbolCategory" />
+                                        <Binding Path="EquippedBoots.Symbol" />
+                                        <Binding Path="EquippedBoots.SymbolHue" />
+                                        <Binding Path="EquippedBoots.SymbolSaturation" />
+                                        <Binding Path="EquippedBoots.SymbolLightness" />
+                                        <Binding Path="EquippedBoots.SmileyExpression" />
+                                        <Binding Path="EquippedBoots.SmileyAuraColor" />
+                                        <Binding Path="EquippedBoots.SmileyBodyColor" />
+                                        <Binding Path="EquippedBoots.SmileyLineColor" />
+                                        <Binding Path="EquippedBoots.GameSymbol" />
+                                        <Binding Path="EquippedBoots.SymbolType" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                        </Border>
 					</StackPanel>
 				</StackPanel>
                 <StackPanel x:Name="BodyStack" Grid.Column="3" VerticalAlignment="Top">
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Body" TextWrapping="Wrap"/>
                     <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="BodyImage"  Source="{Binding EquippedArmor, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="BodyImage" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedArmor.CharacterColor" />
+                                    <Binding Path="EquippedArmor.CharacterSymbol" />
+                                    <Binding Path="EquippedArmor.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedArmor.Symbol" />
+                                    <Binding Path="EquippedArmor.SymbolHue" />
+                                    <Binding Path="EquippedArmor.SymbolSaturation" />
+                                    <Binding Path="EquippedArmor.SymbolLightness" />
+                                    <Binding Path="EquippedArmor.SmileyExpression" />
+                                    <Binding Path="EquippedArmor.SmileyAuraColor" />
+                                    <Binding Path="EquippedArmor.SmileyBodyColor" />
+                                    <Binding Path="EquippedArmor.SmileyLineColor" />
+                                    <Binding Path="EquippedArmor.GameSymbol" />
+                                    <Binding Path="EquippedArmor.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                     <TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Shoulders" TextWrapping="Wrap"/>
                     <Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="ShoulderImage"  Source="{Binding EquippedShoulder, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="ShoulderImage" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedShoulder.CharacterColor" />
+                                    <Binding Path="EquippedShoulder.CharacterSymbol" />
+                                    <Binding Path="EquippedShoulder.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedShoulder.Symbol" />
+                                    <Binding Path="EquippedShoulder.SymbolHue" />
+                                    <Binding Path="EquippedShoulder.SymbolSaturation" />
+                                    <Binding Path="EquippedShoulder.SymbolLightness" />
+                                    <Binding Path="EquippedShoulder.SmileyExpression" />
+                                    <Binding Path="EquippedShoulder.SmileyAuraColor" />
+                                    <Binding Path="EquippedShoulder.SmileyBodyColor" />
+                                    <Binding Path="EquippedShoulder.SmileyLineColor" />
+                                    <Binding Path="EquippedShoulder.GameSymbol" />
+                                    <Binding Path="EquippedShoulder.SymbolType" />                                    
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                 </StackPanel>
                 <StackPanel x:Name="LeftHandStack" Grid.Column="4" VerticalAlignment="Center">
 					<TextBlock HorizontalAlignment="Center" Margin="0,24,0,8" FontSize="16" Foreground="White" Text="Left Hand" TextWrapping="Wrap"/>
 					<Border HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="LeftHandImageWeapon"  Source="{Binding EquippedLeftHandWeapon, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="LeftHandImageWeapon" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedLeftHandWeapon.CharacterColor" />
+                                    <Binding Path="EquippedLeftHandWeapon.CharacterSymbol" />
+                                    <Binding Path="EquippedLeftHandWeapon.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedLeftHandWeapon.Symbol" />
+                                    <Binding Path="EquippedLeftHandWeapon.SymbolHue" />
+                                    <Binding Path="EquippedLeftHandWeapon.SymbolSaturation" />
+                                    <Binding Path="EquippedLeftHandWeapon.SymbolLightness" />
+                                    <Binding Path="EquippedLeftHandWeapon.SmileyExpression" />
+                                    <Binding Path="EquippedLeftHandWeapon.SmileyAuraColor" />
+                                    <Binding Path="EquippedLeftHandWeapon.SmileyBodyColor" />
+                                    <Binding Path="EquippedLeftHandWeapon.SmileyLineColor" />
+                                    <Binding Path="EquippedLeftHandWeapon.GameSymbol" />
+                                    <Binding Path="EquippedLeftHandWeapon.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
 					</Border>
 					<Border HorizontalAlignment="Center" Margin="0,4,0,0" VerticalAlignment="Center" Width="36" Height="36" BorderBrush="White" BorderThickness="1" CornerRadius="2">
-                        <Image x:Name="LeftHandImageGlove"  Source="{Binding EquippedGauntlets, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="2" />
+                        <Image x:Name="LeftHandImageGlove" Margin="2">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedGauntlets.CharacterColor" />
+                                    <Binding Path="EquippedGauntlets.CharacterSymbol" />
+                                    <Binding Path="EquippedGauntlets.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedGauntlets.Symbol" />
+                                    <Binding Path="EquippedGauntlets.SymbolHue" />
+                                    <Binding Path="EquippedGauntlets.SymbolSaturation" />
+                                    <Binding Path="EquippedGauntlets.SymbolLightness" />
+                                    <Binding Path="EquippedGauntlets.SmileyExpression" />
+                                    <Binding Path="EquippedGauntlets.SmileyAuraColor" />
+                                    <Binding Path="EquippedGauntlets.SmileyBodyColor" />
+                                    <Binding Path="EquippedGauntlets.SmileyLineColor" />
+                                    <Binding Path="EquippedGauntlets.GameSymbol" />
+                                    <Binding Path="EquippedGauntlets.SymbolType" />                                    
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
 					</Border>
                     <Border BorderBrush="White" BorderThickness="1" CornerRadius="2"  Width="20" Height="20" Margin="4">
-                        <Image x:Name="LeftRing1"  Source="{Binding EquippedLeftRing, Converter={StaticResource ScenarioImageSourceConverter}}" Margin="1" />
+                        <Image x:Name="LeftRing1" Margin="1">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                                    <Binding Path="EquippedLeftRing.CharacterColor" />
+                                    <Binding Path="EquippedLeftRing.CharacterSymbol" />
+                                    <Binding Path="EquippedLeftRing.CharacterSymbolCategory" />
+                                    <Binding Path="EquippedLeftRing.Symbol" />
+                                    <Binding Path="EquippedLeftRing.SymbolHue" />
+                                    <Binding Path="EquippedLeftRing.SymbolSaturation" />
+                                    <Binding Path="EquippedLeftRing.SymbolLightness" />
+                                    <Binding Path="EquippedLeftRing.SmileyExpression" />
+                                    <Binding Path="EquippedLeftRing.SmileyAuraColor" />
+                                    <Binding Path="EquippedLeftRing.SmileyBodyColor" />
+                                    <Binding Path="EquippedLeftRing.SmileyLineColor" />
+                                    <Binding Path="EquippedLeftRing.GameSymbol" />
+                                    <Binding Path="EquippedLeftRing.SymbolType" />
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
                     </Border>
                 </StackPanel>
 

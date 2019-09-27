@@ -9,11 +9,13 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     public class AttackAttributeGenerator : IAttackAttributeGenerator
     {
         private readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        private readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
 
         [ImportingConstructor]
-        public AttackAttributeGenerator(IRandomSequenceGenerator randomSequenceGenerator)
+        public AttackAttributeGenerator(IRandomSequenceGenerator randomSequenceGenerator, ISymbolDetailsGenerator symbolDetailsGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
         }
 
         public AttackAttribute GenerateAttackAttribute(AttackAttributeTemplate attackAttributeTemplate)
@@ -21,14 +23,10 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             var attackAttribute = new AttackAttribute();
 
             attackAttribute.RogueName = attackAttributeTemplate.Name;
-            attackAttribute.CharacterColor = attackAttributeTemplate.SymbolDetails.CharacterColor;
-            attackAttribute.CharacterSymbol = attackAttributeTemplate.SymbolDetails.CharacterSymbol;
-            attackAttribute.Icon = attackAttributeTemplate.SymbolDetails.Icon;
-            attackAttribute.SmileyLightRadiusColor = attackAttributeTemplate.SymbolDetails.SmileyAuraColor;
-            attackAttribute.SmileyBodyColor = attackAttributeTemplate.SymbolDetails.SmileyBodyColor;
-            attackAttribute.SmileyLineColor = attackAttributeTemplate.SymbolDetails.SmileyLineColor;
-            attackAttribute.SmileyExpression = attackAttributeTemplate.SymbolDetails.SmileyExpression;
-            attackAttribute.SymbolType = attackAttributeTemplate.SymbolDetails.Type;
+
+            // Map symbol details
+            _symbolDetailsGenerator.MapSymbolDetails(attackAttributeTemplate.SymbolDetails, attackAttribute);
+
             attackAttribute.Attack = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Attack);
             attackAttribute.Resistance = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Resistance);
             attackAttribute.Weakness = _randomSequenceGenerator.GetRandomValue(attackAttributeTemplate.Weakness);

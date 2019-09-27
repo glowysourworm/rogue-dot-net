@@ -6,7 +6,7 @@ using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
-using Rogue.NET.ScenarioEditor.Views.Controls;
+using Rogue.NET.ScenarioEditor.Views.Controls.Symbol;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
@@ -83,10 +83,9 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
 
             _eventAggregator.GetEvent<AddGeneralAssetEvent>().Publish(new AlteredCharacterStateTemplateViewModel()
             {
+                // TODO:SYMBOL
                 SymbolDetails = new SymbolDetailsTemplateViewModel()
                 {
-                    Icon = this.AlteredStateSymbolCB.Value,
-                    Type = SymbolTypes.Image
                 },
                 Name = this.AlteredStateTB.Text,
                 BaseType = (CharacterStateType)this.AlteredStateEnumCB.EnumValue

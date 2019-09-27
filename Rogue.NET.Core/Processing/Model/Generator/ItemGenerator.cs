@@ -11,17 +11,20 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     public class ItemGenerator : IItemGenerator
     {
         private readonly IRandomSequenceGenerator _randomSequenceGenerator;
+        private readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         private readonly IAttackAttributeGenerator _attackAttributeGenerator;
         private readonly IAnimationGenerator _animationGenerator;
         private readonly ISkillSetGenerator _skillSetGenerator;       
 
         [ImportingConstructor]
         public ItemGenerator(IRandomSequenceGenerator randomSequenceGenerator, 
+                             ISymbolDetailsGenerator symbolDetailsGenerator,
                              IAttackAttributeGenerator attackAttributeGenerator,
                              IAnimationGenerator animationGenerator,
                              ISkillSetGenerator skillSetGenerator)
         {
             _randomSequenceGenerator = randomSequenceGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
             _attackAttributeGenerator = attackAttributeGenerator;
             _animationGenerator = animationGenerator;
             _skillSetGenerator = skillSetGenerator;
@@ -42,14 +45,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             if (equipmentTemplate.HasAttackAlteration)
                 equipment.AttackAlteration = equipmentTemplate.EquipmentAttackAlteration;
 
-            equipment.CharacterColor = equipmentTemplate.SymbolDetails.CharacterColor;
-            equipment.CharacterSymbol = equipmentTemplate.SymbolDetails.CharacterSymbol;
-            equipment.Icon = equipmentTemplate.SymbolDetails.Icon;
-            equipment.SmileyLightRadiusColor = equipmentTemplate.SymbolDetails.SmileyAuraColor;
-            equipment.SmileyBodyColor = equipmentTemplate.SymbolDetails.SmileyBodyColor;
-            equipment.SmileyLineColor = equipmentTemplate.SymbolDetails.SmileyLineColor;
-            equipment.SmileyExpression = equipmentTemplate.SymbolDetails.SmileyExpression;
-            equipment.SymbolType = equipmentTemplate.SymbolDetails.Type;
+            // Map Symbol Details
+            _symbolDetailsGenerator.MapSymbolDetails(equipmentTemplate.SymbolDetails, equipment);
 
             equipment.HasEquipAlteration = equipmentTemplate.HasEquipAlteration;
             equipment.HasCurseAlteration = equipmentTemplate.HasCurseAlteration;
@@ -93,14 +90,8 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             consumable.HasAlteration = consumableTemplate.HasAlteration;
             consumable.HasProjectileAlteration = consumableTemplate.HasProjectileAlteration;
 
-            consumable.CharacterColor = consumableTemplate.SymbolDetails.CharacterColor;
-            consumable.CharacterSymbol = consumableTemplate.SymbolDetails.CharacterSymbol;
-            consumable.Icon = consumableTemplate.SymbolDetails.Icon;
-            consumable.SmileyLightRadiusColor = consumableTemplate.SymbolDetails.SmileyAuraColor;
-            consumable.SmileyBodyColor = consumableTemplate.SymbolDetails.SmileyBodyColor;
-            consumable.SmileyLineColor = consumableTemplate.SymbolDetails.SmileyLineColor;
-            consumable.SmileyExpression = consumableTemplate.SymbolDetails.SmileyExpression;
-            consumable.SymbolType = consumableTemplate.SymbolDetails.Type;
+            // Map Symbol Details
+            _symbolDetailsGenerator.MapSymbolDetails(consumableTemplate.SymbolDetails, consumable);
 
             consumable.Type = consumableTemplate.Type;
             consumable.SubType = consumableTemplate.SubType;

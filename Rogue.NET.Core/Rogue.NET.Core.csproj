@@ -80,6 +80,30 @@
     <Reference Include="QuickGraph.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.Serialization.dll</HintPath>
     </Reference>
+    <Reference Include="SharpVectors.Converters, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b532964b8548be77, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Converters.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Core, Version=0.3.1.1588, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Css, Version=0.3.1.1590, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Css.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Dom, Version=0.3.1.1589, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Dom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Model, Version=0.3.1.1592, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Gdi, Version=0.3.1.1595, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Rendering.Gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d0902381100df30e, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Rendering.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d16e717f0a981fb9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.Composition.Registration" />
@@ -142,9 +166,7 @@
     <Compile Include="Converter\ItemGrid\ItemGridCombatTypeConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridFontStyleConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridForegroundConverter.cs" />
-    <Compile Include="Converter\ItemGrid\ItemGridIconImageConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridRowDetailsVisibilityConverter.cs" />
-    <Compile Include="Converter\ItemGrid\ItemGridRowImageMultiConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridSelectionColorConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridTooltipForegroundConverter.cs" />
     <Compile Include="Converter\ItemGrid\ItemGridZeroValueParameterConverter.cs" />
@@ -157,9 +179,6 @@
     <Compile Include="Converter\ParameterVisibilityVisibleConverter.cs" />
     <Compile Include="Converter\ParameterVisibilityCollapsedConverter.cs" />
     <Compile Include="Converter\RadioButtonEnumConverter.cs" />
-    <Compile Include="Converter\ScenarioImageElementConverter.cs" />
-    <Compile Include="Converter\ScenarioImageSourceConverter.cs" />
-    <Compile Include="Converter\ScenarioImageSourceMultiConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
@@ -167,6 +186,15 @@
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
+    <Compile Include="Converter\SymbolImageConverter.cs" />
+    <Compile Include="Converter\SymbolImageSourceConverter.cs" />
+    <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
+    <Compile Include="Media\SymbolEffect\Utility\DrawingFilter.cs" />
+    <Compile Include="Media\SymbolEffect\HueShiftEffect.cs" />
+    <Compile Include="Media\SymbolEffect\SaturationEffect.cs" />
+    <Compile Include="Media\SymbolEffect\SymbolEffectBase.cs" />
+    <Compile Include="Media\SymbolEffect\Utility\BrushFilter.cs" />
+    <Compile Include="Media\SymbolEffect\Utility\ColorFilter.cs" />
     <Compile Include="Model\ResourceCache\Interface\IScenarioConfigurationCache.cs" />
     <Compile Include="Model\ResourceCache\ScenarioConfigurationCache.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
@@ -336,6 +364,8 @@
     <Compile Include="Processing\Event\Dialog\Enum\DialogEventType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\Factory\Interface\IBackendEventDataFactory.cs" />
     <Compile Include="Processing\Event\Backend\EventData\Factory\BackendEventDataFactory.cs" />
+    <Compile Include="Processing\Model\Generator\Interface\ISymbolDetailsGenerator.cs" />
+    <Compile Include="Processing\Model\Generator\SymbolDetailsGenerator.cs" />
     <Compile Include="Processing\Model\Static\Calculator.cs" />
     <Compile Include="Processing\Model\Static\EquipmentCalculator.cs" />
     <Compile Include="Processing\Model\Static\MeleeCalculator.cs" />
@@ -354,14 +384,14 @@
     <Compile Include="Processing\Event\Backend\Enum\ScenarioUpdateType.cs" />
     <Compile Include="Processing\Event\Backend\EventData\ScenarioEventData.cs" />
     <Compile Include="Processing\Event\Backend\EventData\SplashEventData.cs" />
-    <Compile Include="Media\Animation.cs" />
-    <Compile Include="Media\AnimationCreator.cs" />
-    <Compile Include="Media\AnimationQueue.cs" />
-    <Compile Include="Media\AnimationPrimitive.cs" />
-    <Compile Include="Media\Graphic.cs" />
-    <Compile Include="Media\Interface\IAnimationCreator.cs" />
-    <Compile Include="Media\ITimedGraphic.cs" />
-    <Compile Include="Media\TimedFigure.cs" />
+    <Compile Include="Media\Animation\Animation.cs" />
+    <Compile Include="Media\Animation\AnimationCreator.cs" />
+    <Compile Include="Media\Animation\AnimationQueue.cs" />
+    <Compile Include="Media\Animation\AnimationPrimitive.cs" />
+    <Compile Include="Media\Animation\Graphic.cs" />
+    <Compile Include="Media\Animation\Interface\IAnimationCreator.cs" />
+    <Compile Include="Media\Animation\ITimedGraphic.cs" />
+    <Compile Include="Media\Animation\TimedFigure.cs" />
     <Compile Include="Model\Event\LocationChangedEventArgs.cs" />
     <Compile Include="Processing\Event\Dialog\Enum\SplashEventType.cs" />
     <Compile Include="Processing\Event\Backend\LevelEvent.cs" />

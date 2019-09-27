@@ -178,12 +178,16 @@ namespace Rogue.NET.ScenarioEditor.Service
                     var existing = dest.First(a => a.Name == attrib.Name);
                     existing.SymbolDetails.CharacterColor = attrib.SymbolDetails.CharacterColor;
                     existing.SymbolDetails.CharacterSymbol = attrib.SymbolDetails.CharacterSymbol;
-                    existing.SymbolDetails.Icon = attrib.SymbolDetails.Icon;
+                    existing.SymbolDetails.CharacterSymbolCategory = attrib.SymbolDetails.CharacterSymbolCategory;
+                    existing.SymbolDetails.Symbol = attrib.SymbolDetails.Symbol;
+                    existing.SymbolDetails.SymbolHue = attrib.SymbolDetails.SymbolHue;
+                    existing.SymbolDetails.SymbolLightness = attrib.SymbolDetails.SymbolLightness;
+                    existing.SymbolDetails.SymbolSaturation = attrib.SymbolDetails.SymbolSaturation;
                     existing.SymbolDetails.SmileyAuraColor = attrib.SymbolDetails.SmileyAuraColor;
                     existing.SymbolDetails.SmileyBodyColor = attrib.SymbolDetails.SmileyBodyColor;
                     existing.SymbolDetails.SmileyLineColor = attrib.SymbolDetails.SmileyLineColor;
                     existing.SymbolDetails.SmileyExpression = attrib.SymbolDetails.SmileyExpression;
-                    existing.SymbolDetails.Type = attrib.SymbolDetails.Type;
+                    existing.SymbolDetails.SymbolType = attrib.SymbolDetails.SymbolType;
                 }
             }
 

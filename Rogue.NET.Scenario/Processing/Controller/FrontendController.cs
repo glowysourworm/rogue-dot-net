@@ -1,7 +1,7 @@
 ﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Common.Extension.Event;
 using Rogue.NET.Common.Extension.Prism.EventAggregator;
 using Rogue.NET.Core.GameRouter.GameEvent.Backend.Enum;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
 using Rogue.NET.Core.Model.Scenario.Content.Layout;
 using Rogue.NET.Core.Processing.Command.Frontend.Data;
 using Rogue.NET.Core.Processing.Command.Frontend.Enum;
@@ -10,7 +10,6 @@ using Rogue.NET.Core.Processing.Event.Backend.EventData;
 using Rogue.NET.Core.Processing.Event.Level;
 using Rogue.NET.Core.Processing.Model.Content.Enum;
 using Rogue.NET.Core.Processing.Service.Interface;
-using Rogue.NET.Core.Utility;
 using Rogue.NET.Scenario.Content.ViewModel.LevelCanvas.Inteface;
 using Rogue.NET.Scenario.Processing.Controller.Interface;
 using Rogue.NET.Scenario.Processing.Service.Interface;
@@ -210,8 +209,8 @@ namespace Rogue.NET.Scenario.Processing.Controller
         private void OnUpdateLayout()
         {
             _levelCanvasViewModel.UpdateLayout(_modelService.Level.Grid.Bounds,
-                                   ColorUtility.Convert(_modelService.Level.WallColor),
-                                   ColorUtility.Convert(_modelService.Level.DoorColor));
+                                   ColorFilter.Convert(_modelService.Level.WallColor),
+                                   ColorFilter.Convert(_modelService.Level.DoorColor));
         }
         private void OnUpdateLayoutVisibility()
         {

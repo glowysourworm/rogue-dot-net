@@ -8,15 +8,13 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     [Serializable]
     public class SymbolDeltaTemplate : Template
     {
-        private SymbolTypes _type;
+        //private SymbolTypes _type;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
         private string _smileyAuraColor;
         private string _characterSymbol;
         private string _characterColor;
-        private ImageResources _icon;
-        private DisplayImageResources _displayIcon;
         private bool _isFullSymbolDelta;
         private bool _isImageDelta;
         private bool _isExpressionDelta;
@@ -26,18 +24,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private bool _isCharacterDelta;
         private bool _isColorDelta;
 
-        public SymbolTypes Type
-        {
-            get { return _type; }
-            set
-            {
-                if (_type != value)
-                {
-                    _type = value;
-                    OnPropertyChanged("Type");
-                }
-            }
-        }
         public SmileyExpression SmileyExpression
         {
             get { return _smileyExpression; }
@@ -107,30 +93,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 {
                     _characterColor = value;
                     OnPropertyChanged("CharacterColor");
-                }
-            }
-        }
-        public ImageResources Icon
-        {
-            get { return _icon; }
-            set
-            {
-                if (_icon != value)
-                {
-                    _icon = value;
-                    OnPropertyChanged("Icon");
-                }
-            }
-        }
-        public DisplayImageResources DisplayIcon
-        {
-            get { return _displayIcon; }
-            set
-            {
-                if (_displayIcon != value)
-                {
-                    _displayIcon = value;
-                    OnPropertyChanged("DisplayIcon");
                 }
             }
         }
@@ -245,10 +207,6 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public SymbolDeltaTemplate()
         {
-            this.Type = SymbolTypes.Image;
-            this.Icon = ImageResources.AmuletOrange;
-            this.DisplayIcon = DisplayImageResources.ChristianBlack;
-
             this.SmileyBodyColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();

@@ -12,15 +12,18 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         string _displayName;
 
         // Symbol Data
+        SymbolType _symbolType;
         string _characterSymbol;
+        string _characterSymbolCategory;
         string _characterColor;
-        ImageResources _icon;
-        DisplayImageResources _displayIcon;
         SmileyExpression _smileyExpression;
         string _smileyBodyColor;
         string _smileyLineColor;
         string _smileyAuraColor;
-        SymbolTypes _symbolType;
+        string _symbol;
+        double _symbolHue;
+        double _symbolSaturation;
+        double _symbolLightness;
         #endregion
 
         #region (public) Properties
@@ -34,20 +37,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _characterSymbol; }
             set { this.RaiseAndSetIfChanged(ref _characterSymbol, value); }
         }
+        public string CharacterSymbolCategory
+        {
+            get { return _characterSymbolCategory; }
+            set { this.RaiseAndSetIfChanged(ref _characterSymbolCategory, value); }
+        }
         public string CharacterColor
         {
             get { return _characterColor; }
             set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
-        }
-        public ImageResources Icon
-        {
-            get { return _icon; }
-            set { this.RaiseAndSetIfChanged(ref _icon, value); }
-        }
-        public DisplayImageResources DisplayIcon
-        {
-            get { return _displayIcon; }
-            set { this.RaiseAndSetIfChanged(ref _displayIcon, value); }
         }
         public SmileyExpression SmileyExpression
         {
@@ -69,7 +67,27 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _smileyAuraColor; }
             set { this.RaiseAndSetIfChanged(ref _smileyAuraColor, value); }
         }
-        public SymbolTypes SymbolType
+        public string Symbol
+        {
+            get { return _symbol; }
+            set { this.RaiseAndSetIfChanged(ref _symbol, value); }
+        }
+        public double SymbolHue
+        {
+            get { return _symbolHue; }
+            set { this.RaiseAndSetIfChanged(ref _symbolHue, value); }
+        }
+        public double SymbolLightness
+        {
+            get { return _symbolLightness; }
+            set { this.RaiseAndSetIfChanged(ref _symbolLightness, value); }
+        }
+        public double SymbolSaturation
+        {
+            get { return _symbolSaturation; }
+            set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
+        }
+        public SymbolType SymbolType
         {
             get { return _symbolType; }
             set { this.RaiseAndSetIfChanged(ref _symbolType, value); }
@@ -79,9 +97,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         public void UpdateSymbol(ScenarioImage scenarioImage)
         {
             this.CharacterSymbol = scenarioImage.CharacterSymbol;
+
             this.CharacterColor = scenarioImage.CharacterColor;
-            this.Icon = scenarioImage.Icon;
-            this.DisplayIcon = scenarioImage.DisplayIcon;
             this.SmileyExpression = scenarioImage.SmileyExpression;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
@@ -103,13 +120,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 
             this.CharacterColor = symbolDetailsTemplate.CharacterColor;
             this.CharacterSymbol = symbolDetailsTemplate.CharacterSymbol;
-            this.DisplayIcon = symbolDetailsTemplate.DisplayIcon;
-            this.Icon = symbolDetailsTemplate.Icon;
+            this.CharacterSymbolCategory = symbolDetailsTemplate.CharacterSymbolCategory;
             this.SmileyAuraColor = symbolDetailsTemplate.SmileyAuraColor;
             this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
             this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
             this.SmileyExpression = symbolDetailsTemplate.SmileyExpression;
-            this.SymbolType = symbolDetailsTemplate.Type;
+            this.Symbol = symbolDetailsTemplate.Symbol;
+            this.SymbolHue = symbolDetailsTemplate.SymbolHue;
+            this.SymbolLightness = symbolDetailsTemplate.SymbolLightness;
+            this.SymbolSaturation = symbolDetailsTemplate.SymbolSaturation;
+            this.SymbolType = symbolDetailsTemplate.SymbolType;
         }
     }
 }

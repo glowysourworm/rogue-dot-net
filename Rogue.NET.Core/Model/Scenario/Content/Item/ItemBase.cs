@@ -19,8 +19,5 @@ namespace Rogue.NET.Core.Model.Scenario.Content.Item
         public ItemBase()
         {
         }
-        public ItemBase(string name, ImageResources icon) : base(name, icon)
-        {
-        }
     }
 }

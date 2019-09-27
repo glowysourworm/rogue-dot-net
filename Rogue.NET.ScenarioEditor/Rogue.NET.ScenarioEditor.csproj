@@ -87,6 +87,30 @@
     <Reference Include="Prism.Wpf, Version=6.3.0.0, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="SharpVectors.Converters, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b532964b8548be77, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Converters.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Core, Version=0.3.1.1588, Culture=neutral, PublicKeyToken=7407205e337c98ef, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Css, Version=0.3.1.1590, Culture=neutral, PublicKeyToken=7a46e3f532fdb787, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Css.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Dom, Version=0.3.1.1589, Culture=neutral, PublicKeyToken=517340b6277b1a7a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Dom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Model, Version=0.3.1.1592, Culture=neutral, PublicKeyToken=2236cfc76b505845, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Gdi, Version=0.3.1.1595, Culture=neutral, PublicKeyToken=03902092284347e3, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Rendering.Gdi.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Rendering.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d0902381100df30e, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Rendering.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpVectors.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d16e717f0a981fb9, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpVectors.1.0\lib\net20\SharpVectors.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Splat, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Splat.4.0.2\lib\net461\Splat.dll</HintPath>
     </Reference>
@@ -262,8 +286,6 @@
     <Compile Include="Converter\EnemyAttackTypeMeleeVisibilityConverter.cs" />
     <Compile Include="Converter\EnemyAttackTypeSkillVisibilityConverter.cs" />
     <Compile Include="Converter\LayoutConnectionGeometryVisibilityConverter.cs" />
-    <Compile Include="Converter\SymbolDetailsImageSourceConverter.cs" />
-    <Compile Include="Converter\SymbolDetailsMultiConverter.cs" />
     <Compile Include="Converter\SymbolDetailsTemplateAuraToColorConverter.cs" />
     <Compile Include="Converter\SymbolEditorVisibilityConverter.cs" />
     <Compile Include="Events\AddAssetEvent.cs" />
@@ -637,7 +659,7 @@
     <Compile Include="Views\Controls\BrushSelectorControl.xaml.cs">
       <DependentUpon>BrushSelectorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\CharacterMap.xaml.cs">
+    <Compile Include="Views\Controls\Symbol\CharacterMap.xaml.cs">
       <DependentUpon>CharacterMap.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\ColorComboBox.xaml.cs">
@@ -646,14 +668,8 @@
     <Compile Include="Views\Controls\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\DisplayImageEnumComboBox.xaml.cs">
-      <DependentUpon>DisplayImageEnumComboBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\EnumFlagsControl.xaml.cs">
       <DependentUpon>EnumFlagsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\ImageEnumComboBox.xaml.cs">
-      <DependentUpon>ImageEnumComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\ListBuilder.xaml.cs">
       <DependentUpon>ListBuilder.xaml</DependentUpon>
@@ -671,9 +687,19 @@
       <DependentUpon>ScenarioDifficultyChartTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\SelectionFreeListBox.cs" />
-    <Compile Include="Views\Controls\SymbolEditor.xaml.cs">
+    <Compile Include="Views\Controls\Symbol\SymbolChooser.xaml.cs">
+      <DependentUpon>SymbolChooser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Symbol\SymbolComboBox.xaml.cs">
+      <DependentUpon>SymbolComboBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Symbol\SymbolEditor.xaml.cs">
       <DependentUpon>SymbolEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Symbol\SymbolEffectEditor.xaml.cs">
+      <DependentUpon>SymbolEffectEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Symbol\ViewModel\SvgSymbolViewModel.cs" />
     <Compile Include="Views\Controls\TemplateSelector\ListBuilderTemplateSelector.cs" />
     <Compile Include="Views\DesignRegion\AssetContainerControl.xaml.cs">
       <DependentUpon>AssetContainerControl.xaml</DependentUpon>
@@ -992,7 +1018,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\CharacterMap.xaml">
+    <Page Include="Views\Controls\Symbol\CharacterMap.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1004,17 +1030,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\DisplayImageEnumComboBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\Controls\EnumFlagsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\ImageEnumComboBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Controls\ListBuilder.xaml">
       <SubType>Designer</SubType>
@@ -1036,7 +1054,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\SymbolEditor.xaml">
+    <Page Include="Views\Controls\Symbol\SymbolChooser.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Symbol\SymbolComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Symbol\SymbolEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Symbol\SymbolEffectEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1104,11 +1134,6 @@
       <Project>{3e574589-233f-4b39-b93c-445e6f44a736}</Project>
       <Name>Rogue.NET.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\unicode-languages.png" />
-    <Resource Include="Resources\Images\unicode-math.png" />
-    <Resource Include="Resources\Images\unicode-symbols.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

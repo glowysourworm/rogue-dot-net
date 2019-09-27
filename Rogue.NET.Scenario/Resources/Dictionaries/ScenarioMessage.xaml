@@ -71,15 +71,19 @@
                               VerticalAlignment="Center" 
                               HorizontalAlignment="Center">
                 <ContentPresenter.Content>
-                    <MultiBinding Converter="{StaticResource ItemGridRowImageMultiConverter}">
+                    <MultiBinding Converter="{StaticResource SymbolImageConverter}">
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
-                        <Binding Path="Icon" />
-                        <Binding Path="DisplayIcon" />
+                        <Binding Path="CharacterSymbolCategory" />
+                        <Binding Path="Symbol" />
+                        <Binding Path="SymbolHue" />
+                        <Binding Path="SymbolSaturation" />
+                        <Binding Path="SymbolLightness" />
                         <Binding Path="SmileyExpression" />
                         <Binding Path="SmileyAuraColor" />
                         <Binding Path="SmileyBodyColor" />
                         <Binding Path="SmileyLineColor" />
+                        <Binding Path="GameSymbol" />
                         <Binding Path="SymbolType" />
                     </MultiBinding>
                 </ContentPresenter.Content>

@@ -9,30 +9,26 @@ namespace Rogue.NET.Core.Processing.Model.Generator
     [Export(typeof(ISkillSetGenerator))]
     public class SkillSetGenerator : ISkillSetGenerator
     {
+        private readonly ISymbolDetailsGenerator _symbolDetailsGenerator;
         private readonly ISkillGenerator _skillGenerator;
 
         [ImportingConstructor]
-        public SkillSetGenerator(ISkillGenerator skillGenerator)
+        public SkillSetGenerator(ISkillGenerator skillGenerator, ISymbolDetailsGenerator symbolDetailsGenerator)
         {
             _skillGenerator = skillGenerator;
+            _symbolDetailsGenerator = symbolDetailsGenerator;
         }
 
         public SkillSet GenerateSkillSet(SkillSetTemplate skillSetTemplate)
         {
-            return new SkillSet()
-            {
-                CharacterColor = skillSetTemplate.SymbolDetails.CharacterColor,
-                CharacterSymbol = skillSetTemplate.SymbolDetails.CharacterSymbol,
-                DisplayIcon = skillSetTemplate.SymbolDetails.DisplayIcon,
-                Icon = skillSetTemplate.SymbolDetails.Icon,
-                RogueName = skillSetTemplate.Name,
-                Skills = skillSetTemplate.Skills.Select(x => _skillGenerator.GenerateSkill(x)).ToList(),
-                SmileyLightRadiusColor = skillSetTemplate.SymbolDetails.SmileyAuraColor,
-                SmileyBodyColor = skillSetTemplate.SymbolDetails.SmileyBodyColor,
-                SmileyLineColor = skillSetTemplate.SymbolDetails.SmileyLineColor,
-                SmileyExpression = skillSetTemplate.SymbolDetails.SmileyExpression,
-                SymbolType = skillSetTemplate.SymbolDetails.Type
-            };
+            var result = new SkillSet();
+
+            result.RogueName = skillSetTemplate.Name;
+            result.Skills = skillSetTemplate.Skills.Select(x => _skillGenerator.GenerateSkill(x)).ToList();
+
+            _symbolDetailsGenerator.MapSymbolDetails(skillSetTemplate.SymbolDetails, result);
+
+            return result;
         }
     }
 }

@@ -25,15 +25,19 @@
         <Grid Margin="4">
             <Image Height="15" Width="10" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Image.Source>
-                    <MultiBinding Converter="{StaticResource ScenarioImageSourceMultiConverter}">
-                        <Binding Path="RemediedState.CharacterSymbol" />
+                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
                         <Binding Path="RemediedState.CharacterColor" />
-                        <Binding Path="RemediedState.Icon" />
-                        <Binding Path="RemediedState.DisplayIcon" />
+                        <Binding Path="RemediedState.CharacterSymbol" />
+                        <Binding Path="RemediedState.CharacterSymbolCategory" />
+                        <Binding Path="RemediedState.Symbol" />
+                        <Binding Path="RemediedState.SymbolHue" />
+                        <Binding Path="RemediedState.SymbolSaturation" />
+                        <Binding Path="RemediedState.SymbolLightness" />
                         <Binding Path="RemediedState.SmileyExpression" />
+                        <Binding Path="RemediedState.SmileyAuraColor" />
                         <Binding Path="RemediedState.SmileyBodyColor" />
                         <Binding Path="RemediedState.SmileyLineColor" />
-                        <Binding Path="RemediedState.SmileyAuraColor" />
+                        <Binding Path="RemediedState.GameSymbol" />
                         <Binding Path="RemediedState.SymbolType" />
                     </MultiBinding>
                 </Image.Source>

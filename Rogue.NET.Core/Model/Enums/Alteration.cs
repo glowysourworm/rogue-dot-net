@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Rogue.NET.Core.Model.Enums
 {
+    /// <summary>
+    /// Alteration Costs are actually calculated from the context the alteration is used in. However,
+    /// this enum is handy to have around for processing
+    /// </summary>
     public enum AlterationCostType : int
     {
         None = 0,
