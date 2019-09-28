@@ -90,7 +90,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             if (source is DrawingImage)
             {
                 // Recurse drawing to desaturate colors
-                DrawingFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0));
+                DrawingFilter.ApplyEffect((source as DrawingImage).Drawing as DrawingGroup, new HSLEffect(0, -1, 0, false));
 
                 // Cache the gray-scale image
                 _imageSourceCache[cacheKey] = source;
@@ -242,7 +242,7 @@ namespace Rogue.NET.Core.Processing.Symbol
                         drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
 
                         // Apply HSL transform
-                        DrawingFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness));
+                        DrawingFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness, cacheImage.SymbolUseColorMask));
                     }
                     break;
             }

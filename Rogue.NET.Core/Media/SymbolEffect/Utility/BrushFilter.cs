@@ -6,12 +6,30 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
     public static class BrushFilter
     {
         /// <summary>
+        /// Color used as a mask for applying effects
+        /// </summary>
+        private static Color ColorMask = Colors.Red;
+
+        /// <summary>
         /// Applies HSL filter to the specified brush - HSL(0,0,0) being the neutral position - shifting positive
         /// or negative.
         /// </summary>
-        public static Brush ShiftHSL(Brush brush, double hueRadians, double saturation, double lightness)
+        public static Brush ShiftHSL(Brush brush, double hueRadians, double saturation, double lightness, bool useColorMask)
         {
-            return ApplyFilter(brush, color => ColorFilter.ShiftHSL(color, hueRadians, saturation, lightness));
+            return ApplyFilter(brush, color => 
+            {
+                if (!useColorMask)
+                    return ColorFilter.ShiftHSL(color, hueRadians, saturation, lightness);
+
+                else
+                {
+                    if (color == ColorMask)
+                        return ColorFilter.ShiftHSL(color, hueRadians, saturation, lightness);
+
+                    else
+                        return color;
+                }
+            });
         }
 
         /// <summary>

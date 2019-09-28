@@ -28,7 +28,9 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
                     RecursiveHSL(child as DrawingGroup, effect);
 
                 else if (child is Drawing)
-                    (child as GeometryDrawing).Brush = BrushFilter.ShiftHSL((child as GeometryDrawing).Brush, effect.Hue, effect.Saturation, effect.Lightness);
+                {
+                    (child as GeometryDrawing).Brush = BrushFilter.ShiftHSL((child as GeometryDrawing).Brush, effect.Hue, effect.Saturation, effect.Lightness, effect.UseColorMask);
+                }
 
                 else
                     throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");

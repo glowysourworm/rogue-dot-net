@@ -79,6 +79,7 @@
                                 <Binding Path="ActiveSkillSet.SymbolSaturation" />
                                 <Binding Path="ActiveSkillSet.SymbolLightness" />
                                 <Binding Path="ActiveSkillSet.SymbolScale" />
+                                <Binding Path="ActiveSkillSet.SymbolUseColorMask" />
                                 <Binding Path="ActiveSkillSet.SmileyExpression" />
                                 <Binding Path="ActiveSkillSet.SmileyAuraColor" />
                                 <Binding Path="ActiveSkillSet.SmileyBodyColor" />

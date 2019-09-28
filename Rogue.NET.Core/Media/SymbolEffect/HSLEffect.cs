@@ -23,11 +23,17 @@ namespace Rogue.NET.Core.Media.SymbolEffect
         /// </summary>
         public double Lightness { get; private set; }
 
-        public HSLEffect(double hue, double saturation, double lightness)
+        /// <summary>
+        /// Transforms only Red (#FF0000) 
+        /// </summary>
+        public bool UseColorMask { get; private set; }
+
+        public HSLEffect(double hue, double saturation, double lightness, bool useColorMask)
         {
             this.Hue = hue;
             this.Saturation = saturation;
             this.Lightness = lightness;
+            this.UseColorMask = useColorMask;
         }
     }
 }

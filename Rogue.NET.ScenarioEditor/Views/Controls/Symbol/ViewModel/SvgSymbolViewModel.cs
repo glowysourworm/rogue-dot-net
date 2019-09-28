@@ -14,6 +14,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
         double _hue;
         double _saturation;
         double _lightness;
+        bool _useColorMask;
         public ImageSource ImageSource
         {
             get { return _imageSource; }

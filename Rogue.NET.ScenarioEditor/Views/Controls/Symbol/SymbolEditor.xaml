@@ -56,6 +56,7 @@
                                 <Binding Path="SymbolSaturation" />
                                 <Binding Path="SymbolLightness" />
                                 <Binding Path="SymbolScale" />
+                                <Binding Path="SymbolUseColorMask" />
                                 <Binding Path="SmileyExpression" />
                                 <Binding Path="SmileyAuraColor" />
                                 <Binding Path="SmileyBodyColor" />
@@ -103,12 +104,12 @@
                         <Button x:Name="CharacterSymbolButton" Click="CharacterSymbolButton_Click" Content="View Symbol Map" HorizontalAlignment="Right" Padding="10,2,10,2" />
                     </Grid>
                     <Grid Margin="10">
-                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Color" />
-                        <controls:ColorComboBox SelectedValue="{Binding CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
-                    </Grid>
-                    <Grid Margin="5">
                         <TextBlock Text="Scale" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
                         <Slider x:Name="SaturationSlider" Value="{Binding CharacterScale, Delay=500, Mode=TwoWay}" Minimum="0" Maximum="1" Width="200" HorizontalAlignment="Right" />
+                    </Grid>                    
+                    <Grid Margin="10">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" FontSize="16" Text="Symbol Color" />
+                        <controls:ColorComboBox SelectedValue="{Binding CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
                     </Grid>
                 </StackPanel>
             </GroupBox>

@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Converter
         public ScenarioImage GetScenarioImage(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null ||
-                values.Length != 15 ||
+                values.Length != 16 ||
                 values.Any(x => x == DependencyProperty.UnsetValue))
                 return null;
 
@@ -54,6 +54,7 @@ namespace Rogue.NET.Core.Converter
                 <Binding Path="SymbolSaturation" />
                 <Binding Path="SymbolLightness" />
                 <Binding Path="SymbolScale" />
+                <Binding Path="SymbolUseColorMask" />
                 <Binding Path="SmileyExpression" />
                 <Binding Path="SmileyAuraColor" />
                 <Binding Path="SmileyBodyColor" />
@@ -74,12 +75,13 @@ namespace Rogue.NET.Core.Converter
                 SymbolSaturation = (double)values[6],
                 SymbolLightness = (double)values[7],
                 SymbolScale = (double)values[8],
-                SmileyExpression = (SmileyExpression)values[9],
-                SmileyLightRadiusColor = (string)values[10],
-                SmileyBodyColor = (string)values[11],
-                SmileyLineColor = (string)values[12],
-                GameSymbol = (string)values[13],
-                SymbolType = (SymbolType)values[14]
+                SymbolUseColorMask = (bool)values[9],
+                SmileyExpression = (SmileyExpression)values[10],
+                SmileyLightRadiusColor = (string)values[11],
+                SmileyBodyColor = (string)values[12],
+                SmileyLineColor = (string)values[13],
+                GameSymbol = (string)values[14],
+                SymbolType = (SymbolType)values[15]
             };
 
             // Have to validate the symbol data per type (These should be set in the constructor; but there's too many 

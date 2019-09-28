@@ -78,6 +78,7 @@
                                                         <Binding Path="SymbolSaturation" />
                                                         <Binding Path="SymbolLightness" />
                                                         <Binding Path="SymbolScale" />
+                                                        <Binding Path="SymbolUseColorMask" />
                                                         <Binding Path="SmileyExpression" />
                                                         <Binding Path="SmileyAuraColor" />
                                                         <Binding Path="SmileyBodyColor" />
@@ -117,6 +118,7 @@
                                                             <Binding Path="SymbolDetails.SymbolSaturation" />
                                                             <Binding Path="SymbolDetails.SymbolLightness" />
                                                             <Binding Path="SymbolDetails.SymbolScale" />
+                                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
                                                             <Binding Path="SymbolDetails.SmileyExpression" />
                                                             <Binding Path="SymbolDetails.SmileyAuraColor" />
                                                             <Binding Path="SymbolDetails.SmileyBodyColor" />
@@ -165,6 +167,7 @@
                                                             <Binding Path="SymbolDetails.SymbolSaturation" />
                                                             <Binding Path="SymbolDetails.SymbolLightness" />
                                                             <Binding Path="SymbolDetails.SymbolScale" />
+                                                            <Binding Path="SymbolDetails.SymbolUseColorMask" />
                                                             <Binding Path="SymbolDetails.SmileyExpression" />
                                                             <Binding Path="SymbolDetails.SmileyAuraColor" />
                                                             <Binding Path="SymbolDetails.SmileyBodyColor" />

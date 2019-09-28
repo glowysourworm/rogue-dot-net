@@ -54,6 +54,7 @@
                         <Binding Path="AlteredState.SymbolSaturation" />
                         <Binding Path="AlteredState.SymbolLightness" />
                         <Binding Path="AlteredState.SymbolScale" />
+                        <Binding Path="AlteredState.SymbolUseColorMask" />
                         <Binding Path="AlteredState.SmileyExpression" />
                         <Binding Path="AlteredState.SmileyAuraColor" />
                         <Binding Path="AlteredState.SmileyBodyColor" />

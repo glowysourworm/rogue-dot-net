@@ -53,6 +53,10 @@
         <!-- Effects { HSL, Color Map } -->
         <StackPanel Grid.Column="1" Grid.Row="1">
             <Grid Margin="5">
+                <TextBlock Text="Use Mask Color (Red)" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
+                <CheckBox x:Name="ColorMaskCheckBox" IsChecked="{Binding SymbolUseColorMask, Mode=TwoWay}" Checked="ColorMaskCheckBox_Checked" Unchecked="ColorMaskCheckBox_Unchecked" HorizontalAlignment="Right" />
+            </Grid>            
+            <Grid Margin="5">
                 <TextBlock Text="Hue" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
                 <Slider x:Name="HueSlider" Value="{Binding SymbolHue, Delay=500}" Minimum="-3.1415926" Maximum="3.1415926" Width="200" HorizontalAlignment="Right" />
             </Grid>

@@ -22,6 +22,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
         private double _symbolSaturation;
         private double _symbolLightness;
         private double _symbolScale;
+        private bool _symbolUseColorMask;
         private string _gameSymbol;
 
         public SymbolType SymbolType
@@ -192,6 +193,18 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
+        public bool SymbolUseColorMask
+        {
+            get { return _symbolUseColorMask; }
+            set
+            {
+                if (_symbolUseColorMask != value)
+                {
+                    _symbolUseColorMask = value;
+                    OnPropertyChanged("SymbolUseColorMask");
+                }
+            }
+        }
         public string GameSymbol
         {
             get { return _gameSymbol; }
@@ -219,6 +232,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
             this.SymbolHue = 0;
             this.SymbolLightness = 0;
             this.SymbolSaturation = 0;
+            this.SymbolUseColorMask = false;
         }
     }
 }

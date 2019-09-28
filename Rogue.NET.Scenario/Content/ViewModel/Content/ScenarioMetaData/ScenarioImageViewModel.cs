@@ -26,6 +26,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         double _symbolSaturation;
         double _symbolLightness;
         double _symbolScale;
+        bool _symbolUseColorMask;
         string _gameSymbol;
         #endregion
 
@@ -100,6 +101,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _symbolScale; }
             set { this.RaiseAndSetIfChanged(ref _symbolScale, value); }
         }
+        public bool SymbolUseColorMask
+        {
+            get { return _symbolUseColorMask; }
+            set { this.RaiseAndSetIfChanged(ref _symbolUseColorMask, value); }
+        }
         public string GameSymbol
         {
             get { return _gameSymbol; }
@@ -130,6 +136,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.SymbolLightness = scenarioImage.SymbolLightness;
             this.SymbolSaturation = scenarioImage.SymbolSaturation;
             this.SymbolScale = scenarioImage.SymbolScale;
+            this.SymbolUseColorMask = scenarioImage.SymbolUseColorMask;
 
             this.GameSymbol = scenarioImage.GameSymbol;
 
@@ -163,6 +170,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.SymbolLightness = symbolDetailsTemplate.SymbolLightness;
             this.SymbolSaturation = symbolDetailsTemplate.SymbolSaturation;
             this.SymbolScale = symbolDetailsTemplate.SymbolScale;
+            this.SymbolUseColorMask = symbolDetailsTemplate.SymbolUseColorMask;
 
             this.GameSymbol = symbolDetailsTemplate.GameSymbol;
 

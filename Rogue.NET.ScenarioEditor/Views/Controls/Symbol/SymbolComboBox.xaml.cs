@@ -66,7 +66,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 ImageSource source;
 
                 if (type == SymbolType.Symbol)
-                    source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0), 2.0);
+                    source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol, 0, 0, 0, false), 2.0);
 
                 else
                     source = _scenarioResourceService.GetImageSource(new ScenarioImage(symbol, symbol), 2.0);

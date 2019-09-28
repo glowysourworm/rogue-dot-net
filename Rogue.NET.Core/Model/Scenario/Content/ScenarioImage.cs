@@ -28,11 +28,12 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public double SymbolSaturation { get; set; }
         public double SymbolLightness { get; set; }
         public double SymbolScale { get; set; }
+        public bool SymbolUseColorMask { get; set; }
 
         // Game Symbol Details
         public string GameSymbol { get; set; }
         public ScenarioImage() { }
-        public ScenarioImage(string name, string symbol, double symbolHue, double symbolSaturation, double symbolLightness)
+        public ScenarioImage(string name, string symbol, double symbolHue, double symbolSaturation, double symbolLightness, bool symbolUseColorMask)
             : base(name)
         {
             this.SymbolType = SymbolType.Symbol;
@@ -40,6 +41,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolHue = symbolHue;
             this.SymbolSaturation = symbolSaturation;
             this.SymbolLightness = symbolLightness;
+            this.SymbolUseColorMask = symbolUseColorMask;
 
             this.SymbolScale = 1.0;
         }
@@ -85,6 +87,7 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolHue = template.SymbolHue;
             this.SymbolScale = template.SymbolScale;
             this.SymbolType = template.SymbolType;
+            this.SymbolUseColorMask = template.SymbolUseColorMask;
         }
     }
 }
