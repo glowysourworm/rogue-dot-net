@@ -4,7 +4,7 @@
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:commonUtility="clr-namespace:Rogue.NET.Common.Utility;assembly=Rogue.NET.Common"
              xmlns:local="clr-namespace:Rogue.NET.Scenario.Views"
-             xmlns:dialog="clr-namespace:Rogue.NET.Scenario.Content.Views.Dialog"
+             xmlns:const="clr-namespace:Rogue.NET.Common.Constant;assembly=Rogue.NET.Common"
              Height="Auto" 
              Width="Auto" 
              Background="Black">
@@ -13,6 +13,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/ShinySmileyButton.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -73,7 +74,7 @@
                         <Button x:Name="CollapseLHSButton"  Content="&#xf0d9;" FontFamily="{StaticResource FontAwesome}" FontSize="20" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="CollapseLHSButton_Click" Margin="4" Width="32" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="32" ToolTip="Collapse Left Side Controls"/>
                         <Button x:Name="CollapseRHSButton"  Content="&#xf0da;" FontFamily="{StaticResource FontAwesome}" FontSize="20" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="CollapseRHSButton_Click" Margin="4" Width="32" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="32" ToolTip="Collapse Right Side Controls"/>
                         <Button x:Name="CollapseALLButton"  Content="&#xf065;" FontFamily="{StaticResource FontAwesome}" FontSize="20" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="CollapseALLButton_Click" Margin="4" Width="32" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="32" ToolTip="Collapse All Controls"/>
-                        <Button x:Name="ExitButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/StairsUp.png" Background="Black" BorderBrush="White" HorizontalAlignment="Center" Click="ExitButton_Click" Margin="2" Width="32" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="32" ToolTip="Exit"/>
+                        <Button x:Name="ExitButton" Content="{Binding Source={x:Static const:GameSymbol.StairsUp}, Converter={StaticResource SymbolGameImageSourceConverter}}" Background="Black" BorderBrush="White" HorizontalAlignment="Center" Click="ExitButton_Click" Margin="2" Width="32" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="32" ToolTip="Exit"/>
                     </StackPanel>
                 </Grid>
             </Border>

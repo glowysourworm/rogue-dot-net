@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Views.LevelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:const="clr-namespace:Rogue.NET.Common.Constant;assembly=Rogue.NET.Common"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
              xmlns:scenarioContentView="clr-namespace:Rogue.NET.Scenario.Content.Views"
              xmlns:coreView="clr-namespace:Rogue.NET.Core.View;assembly=Rogue.NET.Core">
@@ -101,9 +102,9 @@
                         <Button x:Name="DownButton"   Content="&#xf063;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="DownButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Down"/>
                         <Button x:Name="LeftButton"   Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="LeftButton_Click" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Height="28" Margin="4" Cursor="Hand" ToolTip="Shift Display Left" />
                         <Button x:Name="RightButton"  Content="&#xf061;" FontFamily="{StaticResource FontAwesome}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="RightButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyTextButtonStyle}" Cursor="Hand" Height="28" ToolTip="Shift Display Right"/>
-                        <Button x:Name="ObjectivesButton" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Scroll.png" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="ObjectivesButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="28" ToolTip="Scenario Objectives"/>
+                        <Button x:Name="ObjectivesButton" Content="{Binding Source={x:Static const:GameSymbol.Write}, Converter={StaticResource SymbolGameImageSourceConverter}}" Background="Black" Foreground="White" BorderBrush="White" HorizontalAlignment="Center" Click="ObjectivesButton_Click" Margin="4" Width="28" Style="{DynamicResource ShinyButtonStyle}" Cursor="Hand" Height="28" ToolTip="Scenario Objectives"/>
                         <Button x:Name="HelpButton" 
-                                Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Identify.png" 
+                                Content="{Binding Source={x:Static const:GameSymbol.Write}, Converter={StaticResource SymbolGameImageSourceConverter}}"
                                 Background="Black" 
                                 BorderBrush="White" 
                                 Click="HelpButton_Click"

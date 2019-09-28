@@ -182,6 +182,8 @@
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataTextConverter.cs" />
     <Compile Include="Converter\ScenarioMetaData\ScenarioMetaDataToBrushConverter.cs" />
     <Compile Include="Converter\SkillGrid\SkillGridLevelLearnedTooltipConverter.cs" />
+    <Compile Include="Converter\SymbolGameImageConverter.cs" />
+    <Compile Include="Converter\SymbolGameImageSourceConverter.cs" />
     <Compile Include="Converter\StringColorConverter.cs" />
     <Compile Include="Converter\StringNullOrEmptyVisibilityConverter.cs" />
     <Compile Include="Converter\SumConverter.cs" />
@@ -355,7 +357,6 @@
     <Compile Include="Model\Scenario\Alteration\Skill\SkillAlteration.cs" />
     <Compile Include="Model\Scenario\Animation\AnimationData.cs" />
     <Compile Include="Model\Scenario\Content\Extension\ArrayExtension.cs" />
-    <Compile Include="Extension\SerializerExtension.cs" />
     <Compile Include="Processing\Model\Content\Enum\InteractionType.cs" />
     <Compile Include="Processing\Model\Content\DebugEngine.cs" />
     <Compile Include="Processing\Model\Content\Interface\IDebugEngine.cs" />

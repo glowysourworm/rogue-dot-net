@@ -40,6 +40,8 @@
     <converter:SumGreaterThanParameterBoolConverter x:Key="SumGreaterThanParameterBoolConverter" />
     <converter:SymbolImageConverter x:Key="SymbolImageConverter" />
     <converter:SymbolImageSourceConverter x:Key="SymbolImageSourceConverter" />
+    <converter:SymbolGameImageConverter x:Key="SymbolGameImageConverter" />
+    <converter:SymbolGameImageSourceConverter x:Key="SymbolGameImageSourceConverter" />
     <converter:BoolInverseVisibilityCollapseConverter x:Key="BoolInverseVisibilityCollapseConverter" />
     <converterAttackAttribute:AttackAttributeNonzeroConverter x:Key="AttackAttributeNonzeroConverter" />
     <converterAttackAttribute:AttackAttributeVibilityCollapsedConverter x:Key="AttackAttributeVibilityCollapsedConverter" />

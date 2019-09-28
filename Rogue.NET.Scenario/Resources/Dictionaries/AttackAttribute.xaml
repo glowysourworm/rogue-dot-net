@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary x:Class="Rogue.NET.Scenario.Resources.Dictionaries.AttackAttribute"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -14,6 +15,9 @@
                               HorizontalAlignment="Center">
                 <ContentPresenter.Content>
                     <MultiBinding Converter="{StaticResource SymbolImageConverter}">
+                        <MultiBinding.ConverterParameter>
+                            <system:Double>1.5</system:Double>
+                        </MultiBinding.ConverterParameter>
                         <Binding Path="CharacterColor" />
                         <Binding Path="CharacterSymbol" />
                         <Binding Path="CharacterSymbolCategory" />
@@ -51,6 +55,9 @@
                                                   HorizontalAlignment="Center">
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource SymbolImageConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>1.5</system:Double>
+                                            </MultiBinding.ConverterParameter>
                                             <Binding Path="CharacterColor" />
                                             <Binding Path="CharacterSymbol" />
                                             <Binding Path="CharacterSymbolCategory" />
@@ -112,6 +119,9 @@
                                                   HorizontalAlignment="Center">
                                     <ContentPresenter.Content>
                                         <MultiBinding Converter="{StaticResource SymbolImageConverter}">
+                                            <MultiBinding.ConverterParameter>
+                                                <system:Double>1.5</system:Double>
+                                            </MultiBinding.ConverterParameter>
                                             <Binding Path="CharacterColor" />
                                             <Binding Path="CharacterSymbol" />
                                             <Binding Path="CharacterSymbolCategory" />

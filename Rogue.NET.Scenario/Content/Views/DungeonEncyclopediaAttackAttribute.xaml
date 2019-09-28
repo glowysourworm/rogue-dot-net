@@ -3,15 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converter="clr-namespace:Rogue.NET.Scenario.Converter"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
     </UserControl.Resources>
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Image Source="{Binding Converter={StaticResource ScenarioImageViewModelSourceConverter}}" 
-                   Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" />
+            <Image Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}">
+                <Image.Source>
+                    <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
+                        <Binding Path="CharacterColor" />
+                        <Binding Path="CharacterSymbol" />
+                        <Binding Path="CharacterSymbolCategory" />
+                        <Binding Path="CharacterScale" />
+                        <Binding Path="Symbol" />
+                        <Binding Path="SymbolHue" />
+                        <Binding Path="SymbolSaturation" />
+                        <Binding Path="SymbolLightness" />
+                        <Binding Path="SymbolScale" />
+                        <Binding Path="SmileyExpression" />
+                        <Binding Path="SmileyAuraColor" />
+                        <Binding Path="SmileyBodyColor" />
+                        <Binding Path="SmileyLineColor" />
+                        <Binding Path="GameSymbol" />
+                        <Binding Path="SymbolType" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
             <TextBlock Text="{Binding RogueName}"  Visibility="{Binding Converter={StaticResource AttackAttributeNonzeroConverter}}" VerticalAlignment="Center" FontSize="14" Foreground="Beige" Margin="4">
             </TextBlock>
         </StackPanel>

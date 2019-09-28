@@ -16,6 +16,7 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         string _characterSymbol;
         string _characterSymbolCategory;
         string _characterColor;
+        double _characterScale;
         SmileyExpression _smileyExpression;
         string _smileyBodyColor;
         string _smileyLineColor;
@@ -24,6 +25,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         double _symbolHue;
         double _symbolSaturation;
         double _symbolLightness;
+        double _symbolScale;
+        string _gameSymbol;
         #endregion
 
         #region (public) Properties
@@ -46,6 +49,11 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
         {
             get { return _characterColor; }
             set { this.RaiseAndSetIfChanged(ref _characterColor, value); }
+        }
+        public double CharacterScale
+        {
+            get { return _characterScale; }
+            set { this.RaiseAndSetIfChanged(ref _characterScale, value); }
         }
         public SmileyExpression SmileyExpression
         {
@@ -87,6 +95,16 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             get { return _symbolSaturation; }
             set { this.RaiseAndSetIfChanged(ref _symbolSaturation, value); }
         }
+        public double SymbolScale
+        {
+            get { return _symbolScale; }
+            set { this.RaiseAndSetIfChanged(ref _symbolScale, value); }
+        }
+        public string GameSymbol
+        {
+            get { return _gameSymbol; }
+            set { this.RaiseAndSetIfChanged(ref _gameSymbol, value); }
+        }
         public SymbolType SymbolType
         {
             get { return _symbolType; }
@@ -96,13 +114,25 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 
         public void UpdateSymbol(ScenarioImage scenarioImage)
         {
-            this.CharacterSymbol = scenarioImage.CharacterSymbol;
 
             this.CharacterColor = scenarioImage.CharacterColor;
-            this.SmileyExpression = scenarioImage.SmileyExpression;
+            this.CharacterSymbol = scenarioImage.CharacterSymbol;
+            this.CharacterSymbolCategory = scenarioImage.CharacterSymbolCategory;
+            this.CharacterScale = scenarioImage.CharacterScale;
+
+            this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
             this.SmileyBodyColor = scenarioImage.SmileyBodyColor;
             this.SmileyLineColor = scenarioImage.SmileyLineColor;
-            this.SmileyAuraColor = scenarioImage.SmileyLightRadiusColor;
+            this.SmileyExpression = scenarioImage.SmileyExpression;
+
+            this.Symbol = scenarioImage.Symbol;
+            this.SymbolHue = scenarioImage.SymbolHue;
+            this.SymbolLightness = scenarioImage.SymbolLightness;
+            this.SymbolSaturation = scenarioImage.SymbolSaturation;
+            this.SymbolScale = scenarioImage.SymbolScale;
+
+            this.GameSymbol = scenarioImage.GameSymbol;
+
             this.SymbolType = scenarioImage.SymbolType;
         }
 
@@ -121,14 +151,21 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
             this.CharacterColor = symbolDetailsTemplate.CharacterColor;
             this.CharacterSymbol = symbolDetailsTemplate.CharacterSymbol;
             this.CharacterSymbolCategory = symbolDetailsTemplate.CharacterSymbolCategory;
+            this.CharacterScale = symbolDetailsTemplate.CharacterScale;
+            
             this.SmileyAuraColor = symbolDetailsTemplate.SmileyAuraColor;
             this.SmileyBodyColor = symbolDetailsTemplate.SmileyBodyColor;
             this.SmileyLineColor = symbolDetailsTemplate.SmileyLineColor;
             this.SmileyExpression = symbolDetailsTemplate.SmileyExpression;
+
             this.Symbol = symbolDetailsTemplate.Symbol;
             this.SymbolHue = symbolDetailsTemplate.SymbolHue;
             this.SymbolLightness = symbolDetailsTemplate.SymbolLightness;
             this.SymbolSaturation = symbolDetailsTemplate.SymbolSaturation;
+            this.SymbolScale = symbolDetailsTemplate.SymbolScale;
+
+            this.GameSymbol = symbolDetailsTemplate.GameSymbol;
+
             this.SymbolType = symbolDetailsTemplate.SymbolType;
         }
     }

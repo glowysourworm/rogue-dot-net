@@ -13,7 +13,7 @@
                                 <BlurBitmapEffect Radius="1" />
                             </Ellipse.BitmapEffect>
                         </Ellipse>
-                        <Image Source="{Binding Path=Tag, RelativeSource={RelativeSource TemplatedParent}}" 
+                        <Image Source="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" 
                                Margin="{Binding Path=ImagePadding, FallbackValue=4}" 
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"

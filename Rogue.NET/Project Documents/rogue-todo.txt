@@ -2743,7 +2743,9 @@ IMMEDIATE TODO'S:
 
 	- IDEAS:
 
-		Doodad Pairs:      One Doodad turns on / off another Doodad. (like a teleporter that you can switch on / off)
+		Doodad Pairs:      One Doodad turns on / off another Doodad. (like a teleporter that you can switch on / off). could also have 
+						   light sources - so like, doodads that emit light; and can be switched on / off. Also, could emit auras that
+						   switch on / off.
 
 		Barriers:  	   	   Maybe a section of the level or a wall that is a "Barrier" to another room - switched on / off with a Doodad
 	

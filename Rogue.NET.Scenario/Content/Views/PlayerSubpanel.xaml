@@ -9,7 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Scenario;component/Resources/Dictionaries/Game.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Common;component/Resource/Dictionaries/ShinyTextButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -45,9 +45,9 @@
                             region:RogueRegionManager.DefaultViewType="{x:Type contentView:AlterationCtrl}"/>
         
         <Grid Margin="4,0,4,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-            <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/LeftArrow.png" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
+            <Button Style="{StaticResource ShinyTextButtonStyle}" Content="&#xf060;" FontFamily="{StaticResource FontAwesome}" Cursor="Hand" x:Name="LeftButton" Click="LeftButton_Click" Margin="0,0,2,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Left" Grid.Row="2" />
             <TextBlock x:Name="TitleTB" Grid.Row="0" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0,0,0" Foreground="#FFFFDE87" Text="Title" />
-            <Button Style="{StaticResource ShinyButtonStyle}" Cursor="Hand" x:Name="RightButton" Click="RightButton_Click" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/RightArrow.png" Margin="2,0,0,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Right" Grid.Row="2" />
+            <Button Style="{StaticResource ShinyTextButtonStyle}" Content="&#xf061;" FontFamily="{StaticResource FontAwesome}" Cursor="Hand" x:Name="RightButton" Click="RightButton_Click" Margin="2,0,0,0" Foreground="White" Background="Black" BorderBrush="LightGray" Height="18" Width="18" HorizontalAlignment="Right" Grid.Row="2" />
         </Grid>
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
             <RadioButton x:Name="EquipmentRB" IsEnabled="False" Tag="Equipment" Height="18" Cursor="Hand" Width="18" Style="{StaticResource GameRadioButtonStyle}" Foreground="White" Background="White" VerticalAlignment="Center" Margin="4" />

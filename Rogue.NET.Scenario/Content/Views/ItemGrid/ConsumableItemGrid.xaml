@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Rogue.NET.Scenario.Content.Views.ItemGrid.ConsumableItemGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:const="clr-namespace:Rogue.NET.Common.Constant;assembly=Rogue.NET.Common"
              xmlns:itemGridEnum="clr-namespace:Rogue.NET.Scenario.Content.ViewModel.ItemGrid.Enum">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -34,9 +35,9 @@
                     HorizontalAlignment="Right" 
                     Margin="8"
                     Visibility="{Binding IsDialog, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
-            <RadioButton x:Name="Consume" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Consume}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Consume.png" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
-            <RadioButton x:Name="Throw" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Throw}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Throw.png" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
-            <RadioButton x:Name="Drop" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Drop}}" Tag="pack://application:,,,/Rogue.NET.Common;component/Resource/Images/Drop.png" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
+            <RadioButton x:Name="Consume" Content="{Binding Source={x:Static const:GameSymbol.Consume}, Converter={StaticResource SymbolGameImageSourceConverter}}" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Consume}}" BorderBrush="Fuchsia" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Consume" Cursor="Hand"/>
+            <RadioButton x:Name="Throw" Content="{Binding Source={x:Static const:GameSymbol.Throw}, Converter={StaticResource SymbolGameImageSourceConverter}}" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Throw}}" BorderBrush="Orange" Margin="4,0,0,0" VerticalAlignment="Center" Height="24" Width="24" Background="Black" Foreground="White" Style="{DynamicResource ImageButtonStyle}" HorizontalAlignment="Right" ToolTip="Throw" Cursor="Hand" />
+            <RadioButton x:Name="Drop" Content="{Binding Source={x:Static const:GameSymbol.Drop}, Converter={StaticResource SymbolGameImageSourceConverter}}" IsChecked="{Binding PrimaryMode, Converter={StaticResource ParameterEqualityBoolConverter}, ConverterParameter={x:Static itemGridEnum:ConsumablePrimaryMode.Drop}}" BorderBrush="Red" Style="{StaticResource ImageButtonStyle}" Height="24" Width="24" Margin="4,0,0,0" VerticalAlignment="Center" Background="Black" Foreground="White" HorizontalAlignment="Right" ToolTip="Drop" Cursor="Hand" />
         </StackPanel>
 
         <!-- Item Grid (Single Selection Mode) -->
