@@ -45,7 +45,7 @@ namespace Rogue.NET.Core.Processing.Symbol
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey].Clone();
+                return _imageSourceCache[cacheKey];
 
             // Cache the result
             else
@@ -64,7 +64,7 @@ namespace Rogue.NET.Core.Processing.Symbol
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey].Clone();
+                return _imageSourceCache[cacheKey];
 
             // Cache the result
             else
@@ -83,7 +83,7 @@ namespace Rogue.NET.Core.Processing.Symbol
 
             // Check for cached image
             if (_imageSourceCache.ContainsKey(cacheKey))
-                return _imageSourceCache[cacheKey].Clone();
+                return _imageSourceCache[cacheKey];
 
             var source = GetImageSource(cacheImage);
 
@@ -108,7 +108,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             // Check for cached FrameworkElement
             if (_imageSourceCache.ContainsKey(cacheKey))
             {
-                // Using Clone() to create new image sources 
+                // Using Clone() to create new framework elements
                 var source = _imageSourceCache[cacheKey].Clone();
 
                 return CreateScaledImage(source, scale);
@@ -210,11 +210,27 @@ namespace Rogue.NET.Core.Processing.Symbol
                     break;
                 case SymbolType.Character:
                     {
-                        // Calculate total scale factor
-                        var scaleFactor = cacheImage.Scale * cacheImage.CharacterScale;
+                        // Additional user-input scale + additional offset
+                        if (cacheImage.CharacterScale < 1)
+                        {
+                            // Calculate total scale factor
+                            var scaleFactor = cacheImage.Scale * cacheImage.CharacterScale;
 
+                            // Calculate additional offset
+                            var offsetX = ((1.0 - cacheImage.CharacterScale) * ModelConstants.CellWidth) * 0.5;
+                            var offsetY = ((1.0 - cacheImage.CharacterScale) * ModelConstants.CellHeight) * 0.5;
+
+                            var transform = new TransformGroup();
+
+                            transform.Children.Add(new TranslateTransform(offsetX, offsetY));
+                            transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
+
+                            drawing.Transform = transform;
+                        }
                         // Additional user-input scale
-                        drawing.Transform = new ScaleTransform(scaleFactor, scaleFactor);
+                        else
+                            drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
+                        
 
                         // Apply Coloring
                         DrawingFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));

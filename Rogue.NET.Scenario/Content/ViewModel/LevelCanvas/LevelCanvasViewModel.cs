@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using Rogue.NET.Core.View;
 using Rogue.NET.Core.Model.Scenario.Content.Doodad;
 using Rogue.NET.Core.Model.Scenario.Content.Item;
+using Rogue.NET.Core.Model;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
 {
@@ -315,6 +316,15 @@ namespace Rogue.NET.Scenario.Content.ViewModel.LevelCanvas
         private LevelCanvasImage CreateContent(ScenarioObject scenarioObject)
         {
             var image = new LevelCanvasImage(scenarioObject.Id);
+
+            // NOTE*** Have to set the dimensions of the image here and the stretch because
+            //         the image sources are scaled to the cell size. This must be set to
+            //         the cell size with no stretch so that the drawing transforms apply
+            //         properly.
+            //
+            image.Width = ModelConstants.CellWidth;
+            image.Height = ModelConstants.CellHeight;
+            image.Stretch = Stretch.None;
 
             _scenarioUIService.UpdateContent(image, scenarioObject);
 
