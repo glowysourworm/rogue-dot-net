@@ -50,7 +50,7 @@ namespace Rogue.NET.Core.Processing.Symbol
             _characterResourceNames = GetCharacterResourceNamesImpl();
 
             // Load default drawing
-            DEFAULT_DRAWING = LoadGameSVG(GameSymbol.Consume);
+            DEFAULT_DRAWING = LoadGameSVG(GameSymbol.Identify);
         }
 
         /// <summary>
@@ -275,8 +275,8 @@ namespace Rogue.NET.Core.Processing.Symbol
             var scaleFactor = Math.Min((ModelConstants.CellWidth / group.Bounds.Width),
                                        (ModelConstants.CellHeight / group.Bounds.Height));
 
-            transform.Children.Add(new TranslateTransform(group.Bounds.X * -1, group.Bounds.Y * -1));
             transform.Children.Add(new ScaleTransform(scaleFactor, scaleFactor));
+            transform.Children.Add(new TranslateTransform(group.Bounds.X * -1, group.Bounds.Y * -1));
 
             RecurseTransformDrawing(group, transform);
         }

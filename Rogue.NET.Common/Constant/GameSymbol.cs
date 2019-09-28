@@ -19,6 +19,7 @@ namespace Rogue.NET.Common.Constant
         public const string Identify = "Identify";
         public const string ImbueArmor = "ImbueArmor";
         public const string ImbueWeapon = "ImbueWeapon";
+        public const string QuestionMark = "QuestionMark";
         public const string StairsDown = "StairsDown";
         public const string StairsUp = "StairsUp";
         public const string SavePoint = "SavePoint";
