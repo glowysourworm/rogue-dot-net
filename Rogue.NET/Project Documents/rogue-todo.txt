@@ -2724,48 +2724,22 @@ IMMEDIATE TODO'S:
 
 		- Need a Default "?" symbol for the UI for the encyclopedia
 
-		- Map the configuration and remove old SymbolTypes enum
-
 		- Repair game buttons with the new SVG symbols
 
 		- Create new SymbolDelta parameters to work like we want (Maybe called SymbolEffect)
 
-		- Create new Symbol Editor - including Character Map
-
-		- Create DrawingImage source for the Smiley for "ImageSource" mode
-
-		- Apply coloring to SVG's
-
 		- Delete some empty symbols from the SVG character sets (just a few in there)
-
-		- IDEA:  Add color map to Symbol Details - but just for "Symbol" types. This would have a map of symbol colors (loaded
-				 when it's iterated before any hue effect is applied) it would be set by the user in the editor - each color can
-				 be mapped individually to a new one.
-
-				 So, the effect is that the user can select bulk color changes. For the most part, there's only several colors 
-				 per image - so this would likely be a simple one to do.
-
-				 Hue could also be used for selecting an image "color" - and ALSO used for randomizing the picture.
-
-		- Create another "Level" of caching in the resource service. It should be used to cache a "base symbol" for every loaded
-		  symbol. 
-
-		  Hopefully, can use "Cloning" to create new symbols from the base symbol. If not, figure out how to inject cloning somewhere
-		  in the chain so that it can function that way. Loading the SVG resources is expensive - and gets MORE expensive with the 
-		  level of SVG detail.
 
 		- IDEA:  Allow user to create symbol sets for randomization. This would prevent issues with weird looking hue shifted symbols.
 
 		- ANOTHER IDEA:  Prevent weird hue shifted symbols by making neutral mask colors. Example:  Potion could have a WHITE flask.
 
-		- FIX SCALING PROBLEM:  Currently, a transform group is applied when rendering the image source - which is an extra step that could
-								removed. 
-
-								The images should probably all be scaled / translated prior to using - according to our cell size scale.
-
-		- CENTRALIZE RESOURCE LOADING:  Make sure to put any / all resource combing in the resource service. This needs to be kept together.
+						 UPDATE:  This works; but is a little much. What we need is an effect that's pre-built to accomplish this. Like...
+								  "Change the primary mask color (red) to this color"
 
 		- MARKUP EXTENSION:  Create a new markup extension to monitor the symbol details to update the symbol instead of the multi-binding
+
+		- CENTERING:  The scaled SVG's need to be centered in the viewing area. The current scale feature will put them in the top left.
 
 	- IDEAS:
 
