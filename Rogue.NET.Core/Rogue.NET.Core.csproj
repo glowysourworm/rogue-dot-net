@@ -188,7 +188,6 @@
     <Compile Include="Converter\SumGreaterThanParameterBoolConverter.cs" />
     <Compile Include="Converter\SymbolImageConverter.cs" />
     <Compile Include="Converter\SymbolImageSourceConverter.cs" />
-    <Compile Include="Media\SymbolEffect\ColorMapEffect.cs" />
     <Compile Include="Media\SymbolEffect\ClampEffect.cs" />
     <Compile Include="Media\SymbolEffect\HSLEffect.cs" />
     <Compile Include="Media\SymbolEffect\Utility\DrawingFilter.cs" />

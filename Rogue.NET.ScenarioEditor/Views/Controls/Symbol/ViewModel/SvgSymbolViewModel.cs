@@ -8,6 +8,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
     {
         ImageSource _imageSource;
         string _category;
+        string _character;
+        double _characterScale;
         string _symbol;
         double _hue;
         double _saturation;
@@ -21,6 +23,16 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
         {
             get { return _category; }
             set { this.RaiseAndSetIfChanged(ref _category, value); }
+        }
+        public string Character
+        {
+            get { return _character; }
+            set { this.RaiseAndSetIfChanged(ref _character, value); }
+        }
+        public double CharacterScale
+        {
+            get { return _characterScale; }
+            set { this.RaiseAndSetIfChanged(ref _characterScale, value); }
         }
         public string Symbol
         {
@@ -42,13 +54,18 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol.ViewModel
             get { return _lightness; }
             set { this.RaiseAndSetIfChanged(ref _lightness, value); }
         }
-        public SvgSymbolViewModel(ImageSource imageSource, string category, string symbol)
+        public SvgSymbolViewModel(ImageSource imageSource, string category, string character, double symbolScale)
         {
             this.ImageSource = imageSource;
             this.Category = category;
-            this.Symbol = symbol;
+            this.Character = character;
+            this.CharacterScale = symbolScale;
         }
-        public SvgSymbolViewModel(ImageSource imageSource, string symbol, double hue, double saturation, double lightness)
+        public SvgSymbolViewModel(ImageSource imageSource, 
+                                  string symbol, 
+                                  double hue, 
+                                  double saturation, 
+                                  double lightness)
         {
             this.ImageSource = imageSource;
             this.Symbol = symbol;

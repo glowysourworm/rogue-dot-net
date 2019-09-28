@@ -24,8 +24,6 @@ namespace Rogue.NET.Core.Model.ResourceCache
         public double SymbolSaturation { get; set; }
         public double SymbolLightness { get; set; }
         public double SymbolScale { get; set; }
-        public string SymbolColorMapFrom { get; set; }
-        public string SymbolColorMapTo { get; set; }
         public string GameSymbol { get; set; }
 
         // Gray-scale flag
@@ -49,8 +47,6 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.SymbolLightness = scenarioImage.SymbolLightness;
             this.SymbolSaturation = scenarioImage.SymbolSaturation;
             this.SymbolScale = scenarioImage.SymbolScale;
-            this.SymbolColorMapFrom = scenarioImage.SymbolColorMapFrom;
-            this.SymbolColorMapTo = scenarioImage.SymbolColorMapTo;
             this.GameSymbol = scenarioImage.GameSymbol;
 
             this.IsGrayScale = isGrayScale;
@@ -77,8 +73,6 @@ namespace Rogue.NET.Core.Model.ResourceCache
             this.SymbolLightness = symbolDetails.SymbolLightness;
             this.SymbolSaturation = symbolDetails.SymbolSaturation;
             this.SymbolScale = symbolDetails.SymbolScale;
-            this.SymbolColorMapFrom = symbolDetails.SymbolColorMapFrom;
-            this.SymbolColorMapTo = symbolDetails.SymbolColorMapTo;
             this.GameSymbol = symbolDetails.GameSymbol;
 
             this.IsGrayScale = grayScale;

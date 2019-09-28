@@ -20,8 +20,6 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
     {
         readonly IScenarioResourceService _scenarioResourceService;
         readonly ISvgCache _svgCache;
-        public string SelectedCharacter { get; private set; }
-        public string SelectedCategory { get; private set; }
         public CharacterMap()
         {
             _scenarioResourceService = ServiceLocator.Current.GetInstance<IScenarioResourceService>();
@@ -34,19 +32,28 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
             this.CategoryLB.SelectionChanged += (sender, e) =>
             {
                 var category = e.AddedItems.Count > 0 ? (string)e.AddedItems[0] : null;
+                var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (category != null)
+                if (category != null &&
+                    viewModel != null)
+                {
+                    viewModel.CharacterSymbolCategory = category;
+
                     LoadCharacters(category);
+                }
             };
 
             this.SymbolLB.SelectionChanged += (sender, e) =>
             {
                 var symbol = e.AddedItems.Count > 0 ? (SvgSymbolViewModel)e.AddedItems[0] : null;
+                var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (symbol != null && !loading)
+                if (symbol != null && 
+                    viewModel != null &&
+                   !loading)
                 {
-                    this.SelectedCategory = symbol.Category;
-                    this.SelectedCharacter = symbol.Symbol;
+                    viewModel.CharacterSymbolCategory = symbol.Category;
+                    viewModel.CharacterSymbol = symbol.Character;
 
                     // Force Dialog Result to be set here
                     var window = Window.GetWindow(this);
@@ -63,7 +70,8 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 
                 var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
 
-                if (viewModel == null)
+                if (viewModel == null ||
+                    string.IsNullOrEmpty(viewModel.CharacterSymbolCategory))
                     this.CategoryLB.Items.MoveCurrentToFirst();
 
                 else
@@ -97,7 +105,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                                                                                             Colors.White.ToString(),
                                                                                             1.0), 1.0);
 
-                return new SvgSymbolViewModel(imageSource, category, characterName);
+                return new SvgSymbolViewModel(imageSource, category, characterName, 1.0);
             });
         }
     }

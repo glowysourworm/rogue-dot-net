@@ -50,8 +50,6 @@
                                     <Binding Path="EquippedRightHandWeapon.SymbolSaturation" />
                                     <Binding Path="EquippedRightHandWeapon.SymbolLightness" />
                                     <Binding Path="EquippedRightHandWeapon.SymbolScale" />
-                                    <Binding Path="EquippedRightHandWeapon.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedRightHandWeapon.SymbolColorMapTo" />
                                     <Binding Path="EquippedRightHandWeapon.SmileyExpression" />
                                     <Binding Path="EquippedRightHandWeapon.SmileyAuraColor" />
                                     <Binding Path="EquippedRightHandWeapon.SmileyBodyColor" />
@@ -75,8 +73,6 @@
                                     <Binding Path="EquippedGauntlets.SymbolSaturation" />
                                     <Binding Path="EquippedGauntlets.SymbolLightness" />
                                     <Binding Path="EquippedGauntlets.SymbolScale" />
-                                    <Binding Path="EquippedGauntlets.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedGauntlets.SymbolColorMapTo" />
                                     <Binding Path="EquippedGauntlets.SmileyExpression" />
                                     <Binding Path="EquippedGauntlets.SmileyAuraColor" />
                                     <Binding Path="EquippedGauntlets.SmileyBodyColor" />
@@ -100,8 +96,6 @@
                                     <Binding Path="EquippedRightRing.SymbolSaturation" />
                                     <Binding Path="EquippedRightRing.SymbolLightness" />
                                     <Binding Path="EquippedRightRing.SymbolScale" />
-                                    <Binding Path="EquippedRightRing.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedRightRing.SymbolColorMapTo" />
                                     <Binding Path="EquippedRightRing.SmileyExpression" />
                                     <Binding Path="EquippedRightRing.SmileyAuraColor" />
                                     <Binding Path="EquippedRightRing.SmileyBodyColor" />
@@ -128,8 +122,6 @@
                                     <Binding Path="EquippedHelmet.SymbolSaturation" />
                                     <Binding Path="EquippedHelmet.SymbolLightness" />
                                     <Binding Path="EquippedHelmet.SymbolScale" />
-                                    <Binding Path="EquippedHelmet.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedHelmet.SymbolColorMapTo" />
                                     <Binding Path="EquippedHelmet.SmileyExpression" />
                                     <Binding Path="EquippedHelmet.SmileyAuraColor" />
                                     <Binding Path="EquippedHelmet.SmileyBodyColor" />
@@ -154,8 +146,6 @@
                                     <Binding Path="EquippedAmulet.SymbolSaturation" />
                                     <Binding Path="EquippedAmulet.SymbolLightness" />
                                     <Binding Path="EquippedAmulet.SymbolScale" />
-                                    <Binding Path="EquippedAmulet.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedAmulet.SymbolColorMapTo" />
                                     <Binding Path="EquippedAmulet.SmileyExpression" />
                                     <Binding Path="EquippedAmulet.SmileyAuraColor" />
                                     <Binding Path="EquippedAmulet.SmileyBodyColor" />
@@ -183,8 +173,6 @@
                                         <Binding Path="EquippedOrb.SymbolSaturation" />
                                         <Binding Path="EquippedOrb.SymbolLightness" />
                                         <Binding Path="EquippedOrb.SymbolScale" />
-                                        <Binding Path="EquippedOrb.SymbolColorMapFrom" />
-                                        <Binding Path="EquippedOrb.SymbolColorMapTo" />
                                         <Binding Path="EquippedOrb.SmileyExpression" />
                                         <Binding Path="EquippedOrb.SmileyAuraColor" />
                                         <Binding Path="EquippedOrb.SmileyBodyColor" />
@@ -216,8 +204,6 @@
                                     <Binding Path="EquippedBelt.SymbolSaturation" />
                                     <Binding Path="EquippedBelt.SymbolLightness" />
                                     <Binding Path="EquippedBelt.SymbolScale" />
-                                    <Binding Path="EquippedBelt.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedBelt.SymbolColorMapTo" />
                                     <Binding Path="EquippedBelt.SmileyExpression" />
                                     <Binding Path="EquippedBelt.SmileyAuraColor" />
                                     <Binding Path="EquippedBelt.SmileyBodyColor" />
@@ -244,8 +230,6 @@
                                         <Binding Path="EquippedBoots.SymbolSaturation" />
                                         <Binding Path="EquippedBoots.SymbolLightness" />
                                         <Binding Path="EquippedBoots.SymbolScale" />
-                                        <Binding Path="EquippedBoots.SymbolColorMapFrom" />
-                                        <Binding Path="EquippedBoots.SymbolColorMapTo" />
                                         <Binding Path="EquippedBoots.SmileyExpression" />
                                         <Binding Path="EquippedBoots.SmileyAuraColor" />
                                         <Binding Path="EquippedBoots.SmileyBodyColor" />
@@ -273,8 +257,6 @@
                                     <Binding Path="EquippedArmor.SymbolSaturation" />
                                     <Binding Path="EquippedArmor.SymbolLightness" />
                                     <Binding Path="EquippedArmor.SymbolScale" />
-                                    <Binding Path="EquippedArmor.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedArmor.SymbolColorMapTo" />
                                     <Binding Path="EquippedArmor.SmileyExpression" />
                                     <Binding Path="EquippedArmor.SmileyAuraColor" />
                                     <Binding Path="EquippedArmor.SmileyBodyColor" />
@@ -299,8 +281,6 @@
                                     <Binding Path="EquippedShoulder.SymbolSaturation" />
                                     <Binding Path="EquippedShoulder.SymbolLightness" />
                                     <Binding Path="EquippedShoulder.SymbolScale" />
-                                    <Binding Path="EquippedShoulder.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedShoulder.SymbolColorMapTo" />
                                     <Binding Path="EquippedShoulder.SmileyExpression" />
                                     <Binding Path="EquippedShoulder.SmileyAuraColor" />
                                     <Binding Path="EquippedShoulder.SmileyBodyColor" />
@@ -327,8 +307,6 @@
                                     <Binding Path="EquippedLeftHandWeapon.SymbolSaturation" />
                                     <Binding Path="EquippedLeftHandWeapon.SymbolLightness" />
                                     <Binding Path="EquippedLeftHandWeapon.SymbolScale" />
-                                    <Binding Path="EquippedLeftHandWeapon.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedLeftHandWeapon.SymbolColorMapTo" />
                                     <Binding Path="EquippedLeftHandWeapon.SmileyExpression" />
                                     <Binding Path="EquippedLeftHandWeapon.SmileyAuraColor" />
                                     <Binding Path="EquippedLeftHandWeapon.SmileyBodyColor" />
@@ -352,8 +330,6 @@
                                     <Binding Path="EquippedGauntlets.SymbolSaturation" />
                                     <Binding Path="EquippedGauntlets.SymbolLightness" />
                                     <Binding Path="EquippedGauntlets.SymbolScale" />
-                                    <Binding Path="EquippedGauntlets.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedGauntlets.SymbolColorMapTo" />
                                     <Binding Path="EquippedGauntlets.SmileyExpression" />
                                     <Binding Path="EquippedGauntlets.SmileyAuraColor" />
                                     <Binding Path="EquippedGauntlets.SmileyBodyColor" />
@@ -377,8 +353,6 @@
                                     <Binding Path="EquippedLeftRing.SymbolSaturation" />
                                     <Binding Path="EquippedLeftRing.SymbolLightness" />
                                     <Binding Path="EquippedLeftRing.SymbolScale" />
-                                    <Binding Path="EquippedLeftRing.SymbolColorMapFrom" />
-                                    <Binding Path="EquippedLeftRing.SymbolColorMapTo" />
                                     <Binding Path="EquippedLeftRing.SmileyExpression" />
                                     <Binding Path="EquippedLeftRing.SmileyAuraColor" />
                                     <Binding Path="EquippedLeftRing.SmileyBodyColor" />

@@ -40,7 +40,7 @@ namespace Rogue.NET.Core.Converter
         public ScenarioImage GetScenarioImage(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null ||
-                values.Length != 17 ||
+                values.Length != 15 ||
                 values.Any(x => x == DependencyProperty.UnsetValue))
                 return null;
 
@@ -54,8 +54,6 @@ namespace Rogue.NET.Core.Converter
                 <Binding Path="SymbolSaturation" />
                 <Binding Path="SymbolLightness" />
                 <Binding Path="SymbolScale" />
-                <Binding Path="SymbolColorMapFrom" />
-                <Binding Path="SymbolColorMapTo" />
                 <Binding Path="SmileyExpression" />
                 <Binding Path="SmileyAuraColor" />
                 <Binding Path="SmileyBodyColor" />
@@ -76,14 +74,12 @@ namespace Rogue.NET.Core.Converter
                 SymbolSaturation = (double)values[6],
                 SymbolLightness = (double)values[7],
                 SymbolScale = (double)values[8],
-                SymbolColorMapFrom = (string)values[9],
-                SymbolColorMapTo = (string)values[10],
-                SmileyExpression = (SmileyExpression)values[11],
-                SmileyLightRadiusColor = (string)values[12],
-                SmileyBodyColor = (string)values[13],
-                SmileyLineColor = (string)values[14],
-                GameSymbol = (string)values[15],
-                SymbolType = (SymbolType)values[16]
+                SmileyExpression = (SmileyExpression)values[9],
+                SmileyLightRadiusColor = (string)values[10],
+                SmileyBodyColor = (string)values[11],
+                SmileyLineColor = (string)values[12],
+                GameSymbol = (string)values[13],
+                SymbolType = (SymbolType)values[14]
             };
 
             // Have to validate the symbol data per type (These should be set in the constructor; but there's too many 
@@ -105,9 +101,7 @@ namespace Rogue.NET.Core.Converter
                         return null;
                     break;
                 case SymbolType.Symbol:
-                    if (string.IsNullOrEmpty(scenarioImage.Symbol) ||
-                        string.IsNullOrEmpty(scenarioImage.SymbolColorMapFrom) ||
-                        string.IsNullOrEmpty(scenarioImage.SymbolColorMapTo))
+                    if (string.IsNullOrEmpty(scenarioImage.Symbol))
                         return null;
                     break;
                 case SymbolType.Game:

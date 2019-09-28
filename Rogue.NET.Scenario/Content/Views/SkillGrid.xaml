@@ -72,8 +72,6 @@
                                             <Binding Path="SymbolSaturation" />
                                             <Binding Path="SymbolLightness" />
                                             <Binding Path="SymbolScale" />
-                                            <Binding Path="SymbolColorMapFrom" />
-                                            <Binding Path="SymbolColorMapTo" />
                                             <Binding Path="SmileyExpression" />
                                             <Binding Path="SmileyAuraColor" />
                                             <Binding Path="SmileyBodyColor" />
@@ -98,8 +96,6 @@
                                         <Binding Path="SymbolSaturation" />
                                         <Binding Path="SymbolLightness" />
                                         <Binding Path="SymbolScale" />
-                                        <Binding Path="SymbolColorMapFrom" />
-                                        <Binding Path="SymbolColorMapTo" />
                                         <Binding Path="SmileyExpression" />
                                         <Binding Path="SmileyAuraColor" />
                                         <Binding Path="SmileyBodyColor" />

@@ -1,15 +1,20 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.Symbol.SymbolChooser"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls"
              Height="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         
         <!-- Base Symbol -->
-        <ListBox x:Name="BaseSymbolLB" Margin="5">
+        <ListBox x:Name="BaseSymbolLB" Margin="5" Grid.RowSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="2" Background="Transparent" Cursor="Hand">
@@ -21,8 +26,7 @@
         </ListBox>
 
         <!-- Colored Symbols -->
-        <ListBox x:Name="ColoredSymbolLB" Grid.Column="1" Margin="5" Width="400" HorizontalAlignment="Right"
-                 VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox x:Name="ColoredSymbolLB" Grid.Column="1" Grid.RowSpan="1" Margin="5" VerticalAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border HorizontalAlignment="Center"
@@ -45,6 +49,24 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
+        
+        <!-- Effects { HSL, Color Map } -->
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <Grid Margin="5">
+                <TextBlock Text="Hue" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
+                <Slider x:Name="HueSlider" Value="{Binding SymbolHue, Delay=500}" Minimum="-3.1415926" Maximum="3.1415926" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="5">
+                <TextBlock Text="Saturation" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
+                <Slider x:Name="SaturationSlider" Value="{Binding SymbolSaturation, Delay=500}" Minimum="-1" Maximum="1" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+            <Grid Margin="5">
+                <TextBlock Text="Lightness" HorizontalAlignment="Left" FontSize="16" Foreground="White" />
+                <Slider x:Name="LightnessSlider" Value="{Binding SymbolLightness, Delay=500}"  Minimum="-1" Maximum="1" Width="200" HorizontalAlignment="Right" />
+            </Grid>
+            
+            <Button x:Name="SymbolResetButton" Padding="5" Width="80" Click="SymbolResetButton_Click" Margin="5" Content="Reset" HorizontalAlignment="Right" Foreground="White" />
+        </StackPanel>
 
     </Grid>
 </UserControl>

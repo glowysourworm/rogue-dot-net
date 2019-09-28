@@ -99,6 +99,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
                                                   .Select(x => x as BrushTemplateViewModel)
                                                   .ToList();
 
+
             return configuration;
         }
         public ScenarioConfigurationContainer MapBack(ScenarioConfigurationContainerViewModel viewModel)

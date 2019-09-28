@@ -1,5 +1,8 @@
-﻿using Rogue.NET.Core.Model.Enums;
+﻿using Rogue.NET.Common.Extension;
+using Rogue.NET.Core.Media.SymbolEffect.Utility;
+using Rogue.NET.Core.Model.Enums;
 using Rogue.NET.Core.Model.Scenario.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using Rogue.NET.Core.Processing.Service.Interface;
 using Rogue.NET.Core.Processing.Symbol.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
@@ -9,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
 {
@@ -117,24 +121,37 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
                 cursor += increment;
             }
 
-            //// Light / Dark
-            //var lightImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
-            //                                                                                 viewModel.Symbol,
-            //                                                                                 0.0,
-            //                                                                                 0.0,
-            //                                                                                 1.0), 2.0);
+            // Light / Dark
+            var lightImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
+                                                                                             viewModel.Symbol,
+                                                                                             0.0,
+                                                                                             0.0,
+                                                                                             1.0), 2.0);
 
-            //var darkImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
-            //                                                                                viewModel.Symbol,
-            //                                                                                0.0,
-            //                                                                                0.0,
-            //                                                                                0.0), 2.0);
+            var darkImageSource = _scenarioResourceService.GetImageSource(new ScenarioImage(viewModel.Symbol,
+                                                                                            viewModel.Symbol,
+                                                                                            0.0,
+                                                                                            -1,
+                                                                                            0.0), 2.0);
 
-            //result.Add(new SvgSymbolViewModel(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0));
-            //result.Add(new SvgSymbolViewModel(darkImageSource, viewModel.Symbol, 0.0, 0.0, 0.0));
+            result.Add(new SvgSymbolViewModel(lightImageSource, viewModel.Symbol, 0.0, 0.0, 1.0));
+            result.Add(new SvgSymbolViewModel(darkImageSource, viewModel.Symbol, 0.0, -1, 0.0));
 
 
             this.ColoredSymbolLB.ItemsSource = result;
+        }
+
+        private void SymbolResetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
+
+            if (viewModel != null)
+            {
+                viewModel.SymbolHue = 0;
+                viewModel.SymbolLightness = 0;
+                viewModel.SymbolSaturation = 0;
+                viewModel.SymbolScale = 1;
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Linq;
 using System;
+using Rogue.NET.Common.Extension;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 {
@@ -64,6 +65,11 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             var huePrime = CalculateHue(color) + hueRadians;
             var saturationPrime = CalculateSaturation(color) + saturation;
             var lightnessPrime = CalculateLightness(color) + lightness;
+
+            // Clip values
+            huePrime = huePrime % (Math.PI * 2);
+            saturationPrime = saturationPrime.Clip(0, 1);
+            lightnessPrime = lightnessPrime.Clip(0, 1);
 
             return FromHSL(color.A / 255.0, huePrime, saturationPrime, lightnessPrime);
         }

@@ -198,14 +198,23 @@ namespace Rogue.NET.Core.Processing.Symbol
 
             switch (cacheImage.Type)
             {
-                case SymbolType.Smiley:
-                case SymbolType.Game:
+                // Smiley symbol scaling is handled else-where
+                case SymbolType.Smiley:                
                 default:
                     return;
+                case SymbolType.Game:
+                    {
+                        // Apply base scale - requested by calling code
+                        drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
+                    }
+                    break;
                 case SymbolType.Character:
                     {
+                        // Calculate total scale factor
+                        var scaleFactor = cacheImage.Scale * cacheImage.CharacterScale;
+
                         // Additional user-input scale
-                        drawing.Transform = new ScaleTransform(cacheImage.CharacterScale, cacheImage.CharacterScale);
+                        drawing.Transform = new ScaleTransform(scaleFactor, scaleFactor);
 
                         // Apply Coloring
                         DrawingFilter.ApplyEffect(drawing, new ClampEffect(cacheImage.CharacterColor));
@@ -213,8 +222,8 @@ namespace Rogue.NET.Core.Processing.Symbol
                     break;
                 case SymbolType.Symbol:
                     {
-                        // Color Clamp / Color Map
-                        DrawingFilter.ApplyEffect(drawing, new ColorMapEffect(cacheImage.SymbolColorMapFrom, cacheImage.SymbolColorMapTo));
+                        // Apply base scale - requested by calling code
+                        drawing.Transform = new ScaleTransform(cacheImage.Scale, cacheImage.Scale);
 
                         // Apply HSL transform
                         DrawingFilter.ApplyEffect(drawing, new HSLEffect(cacheImage.SymbolHue, cacheImage.SymbolSaturation, cacheImage.SymbolLightness));

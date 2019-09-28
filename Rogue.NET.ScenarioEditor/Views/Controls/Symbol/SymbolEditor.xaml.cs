@@ -31,14 +31,10 @@ namespace Rogue.NET.ScenarioEditor.Views.Controls.Symbol
         private void CharacterSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             var view = new CharacterMap();
-            var viewModel = this.DataContext as SymbolDetailsTemplateViewModel;
             view.DataContext = this.DataContext;
 
-            if (DialogWindowFactory.Show(view, "Rogue UTF-8 Character Map"))
-            {
-                viewModel.CharacterSymbol = view.SelectedCharacter;
-                viewModel.CharacterSymbolCategory = view.SelectedCategory;
-            }
+            // Can be shown as a dialog
+            DialogWindowFactory.Show(view, "Rogue UTF-8 Character Map");
         }
     }
 }

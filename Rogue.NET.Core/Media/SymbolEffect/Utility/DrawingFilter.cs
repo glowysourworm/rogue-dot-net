@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 
 namespace Rogue.NET.Core.Media.SymbolEffect.Utility
@@ -10,10 +12,6 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
             if (effect is HSLEffect)
             {
                 RecursiveHSL(drawing, effect as HSLEffect);
-            }
-            else if (effect is ColorMapEffect)
-            {
-                RecursiveColorMap(drawing, effect as ColorMapEffect);
             }
             else if (effect is ClampEffect)
             {
@@ -31,20 +29,6 @@ namespace Rogue.NET.Core.Media.SymbolEffect.Utility
 
                 else if (child is Drawing)
                     (child as GeometryDrawing).Brush = BrushFilter.ShiftHSL((child as GeometryDrawing).Brush, effect.Hue, effect.Saturation, effect.Lightness);
-
-                else
-                    throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");
-            }
-        }
-        private static void RecursiveColorMap(DrawingGroup group, ColorMapEffect effect)
-        {
-            foreach (var child in group.Children)
-            {
-                if (child is DrawingGroup)
-                    RecursiveColorMap(child as DrawingGroup, effect);
-
-                else if (child is Drawing)
-                    (child as GeometryDrawing).Brush = BrushFilter.MapColor((child as GeometryDrawing).Brush, effect.FromColor, effect.ToColor);
 
                 else
                     throw new Exception("Unknown Drawing Type DrawingIterator.RecursiveHueShift");

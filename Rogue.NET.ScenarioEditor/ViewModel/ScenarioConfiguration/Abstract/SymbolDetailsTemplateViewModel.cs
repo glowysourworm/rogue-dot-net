@@ -21,8 +21,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
         private double _symbolSaturation;
         private double _symbolLightness;
         private double _symbolScale;
-        private string _symbolColorMapFrom;
-        private string _symbolColorMapTo;
         private string _gameSymbol;
 
         public SymbolType SymbolType
@@ -95,16 +93,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             get { return _symbolScale; }
             set { this.RaiseAndSetIfChanged(ref _symbolScale, value); }
         }
-        public string SymbolColorMapFrom
-        {
-            get { return _symbolColorMapFrom; }
-            set { this.RaiseAndSetIfChanged(ref _symbolColorMapFrom, value); }
-        }
-        public string SymbolColorMapTo
-        {
-            get { return _symbolColorMapTo; }
-            set { this.RaiseAndSetIfChanged(ref _symbolColorMapTo, value); }
-        }
         public string GameSymbol
         {
             get { return _gameSymbol; }
@@ -127,8 +115,6 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
             this.SymbolLightness = 0;
             this.SymbolSaturation = 0;
             this.SymbolScale = 1;
-            this.SymbolColorMapFrom = Colors.White.ToString();
-            this.SymbolColorMapTo = Colors.White.ToString();
         }
     }
 }

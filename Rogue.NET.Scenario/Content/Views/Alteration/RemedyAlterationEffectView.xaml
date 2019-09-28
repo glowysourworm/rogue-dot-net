@@ -35,8 +35,6 @@
                         <Binding Path="RemediedState.SymbolSaturation" />
                         <Binding Path="RemediedState.SymbolLightness" />
                         <Binding Path="RemediedState.SymbolScale" />
-                        <Binding Path="RemediedState.SymbolColorMapFrom" />
-                        <Binding Path="RemediedState.SymbolColorMapTo" />                        
                         <Binding Path="RemediedState.SmileyExpression" />
                         <Binding Path="RemediedState.SmileyAuraColor" />
                         <Binding Path="RemediedState.SmileyBodyColor" />

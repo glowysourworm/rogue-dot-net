@@ -132,8 +132,6 @@
                             <Binding Path="Effect.AlteredState.SymbolSaturation" />
                             <Binding Path="Effect.AlteredState.SymbolLightness" />
                             <Binding Path="Effect.AlteredState.SymbolScale" />
-                            <Binding Path="Effect.AlteredState.SymbolColorMapFrom" />
-                            <Binding Path="Effect.AlteredState.SymbolColorMapTo" />
                             <Binding Path="Effect.AlteredState.SmileyExpression" />
                             <Binding Path="Effect.AlteredState.SmileyAuraColor" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />
@@ -273,8 +271,6 @@
                             <Binding Path="Effect.AlteredState.SymbolSaturation" />
                             <Binding Path="Effect.AlteredState.SymbolLightness" />
                             <Binding Path="Effect.AlteredState.SymbolScale" />
-                            <Binding Path="Effect.AlteredState.SymbolColorMapFrom" />
-                            <Binding Path="Effect.AlteredState.SymbolColorMapTo" />
                             <Binding Path="Effect.AlteredState.SmileyExpression" />
                             <Binding Path="Effect.AlteredState.SmileyAuraColor" />
                             <Binding Path="Effect.AlteredState.SmileyBodyColor" />

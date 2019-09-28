@@ -28,8 +28,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
         public double SymbolSaturation { get; set; }
         public double SymbolLightness { get; set; }
         public double SymbolScale { get; set; }
-        public string SymbolColorMapFrom { get; set; }
-        public string SymbolColorMapTo { get; set; }
 
         // Game Symbol Details
         public string GameSymbol { get; set; }
@@ -43,8 +41,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolSaturation = symbolSaturation;
             this.SymbolLightness = symbolLightness;
 
-            this.SymbolColorMapFrom = Colors.White.ToString();
-            this.SymbolColorMapTo = Colors.White.ToString();
             this.SymbolScale = 1.0;
         }
         public ScenarioImage(string name, string gameSymbol)
@@ -88,8 +84,6 @@ namespace Rogue.NET.Core.Model.Scenario.Content
             this.SymbolSaturation = template.SymbolSaturation;
             this.SymbolHue = template.SymbolHue;
             this.SymbolScale = template.SymbolScale;
-            this.SymbolColorMapFrom = template.SymbolColorMapFrom;
-            this.SymbolColorMapTo = template.SymbolColorMapTo;
             this.SymbolType = template.SymbolType;
         }
     }

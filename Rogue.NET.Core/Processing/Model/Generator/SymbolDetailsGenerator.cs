@@ -24,8 +24,6 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             dest.SymbolLightness = source.SymbolLightness;
             dest.SymbolSaturation = source.SymbolSaturation;
             dest.SymbolScale = source.SymbolScale;
-            dest.SymbolColorMapFrom = source.SymbolColorMapFrom;
-            dest.SymbolColorMapTo = source.SymbolColorMapTo;
             dest.GameSymbol = source.GameSymbol;
             dest.SymbolType = source.SymbolType;
         }
