@@ -92,13 +92,13 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                        .Actualize();
         }
 
-        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()
         {
             // Attack attribute effects don't support symbol changes
             return this.Alterations
                        .Select(x => x.Effect)
                        .Cast<AttackAttributeTemporaryAlterationEffect>()
-                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
+                       .Where(x => x.SymbolAlteration.HasSymbolChange())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
         }

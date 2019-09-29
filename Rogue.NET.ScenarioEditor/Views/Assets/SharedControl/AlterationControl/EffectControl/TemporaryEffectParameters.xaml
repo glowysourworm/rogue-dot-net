@@ -132,7 +132,7 @@
             <StackPanel Background="Black">
                 <TextBlock Margin="8" FontSize="18" HorizontalAlignment="Left"
                            Text="This symbol change accompanies this temporary effect" />
-                <symbol:SymbolEditor DataContext="{Binding SymbolAlteration}" />
+                <symbol:SymbolEffectEditor DataContext="{Binding SymbolAlteration}" />
             </StackPanel>
         </TabItem>
     </TabControl>

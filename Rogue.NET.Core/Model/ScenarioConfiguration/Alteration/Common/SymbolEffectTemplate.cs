@@ -1,42 +1,28 @@
 ﻿using Rogue.NET.Core.Model.Enums;
-
+using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
 using System.Windows.Media;
 
-namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
+namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 {
     [Serializable]
-    public class SymbolDetailsTemplate : Template
+    public class SymbolEffectTemplate : Template
     {
-        private SymbolType _symbolType;
         private SmileyExpression _smileyExpression;
         private string _smileyBodyColor;
         private string _smileyLineColor;
-        private string _smileyAuraColor;
+        private string _smileyLightRadiusColor;
         private string _characterSymbol;
         private string _characterSymbolCategory;
         private string _characterColor;
-        private double _characterScale;
-        private string _symbol;
-        private double _symbolHue;
-        private double _symbolSaturation;
-        private double _symbolLightness;
-        private double _symbolScale;
-        private bool _symbolUseColorMask;
-        private string _gameSymbol;
-
-        public SymbolType SymbolType
-        {
-            get { return _symbolType; }
-            set
-            {
-                if (_symbolType != value)
-                {
-                    _symbolType = value;
-                    OnPropertyChanged("SymbolType");
-                }
-            }
-        }
+        private SymbolDetailsTemplate _fullSymbolChangeDetails;
+        private bool _isFullSymbolChange;
+        private bool _isSmileyExpressionChange;
+        private bool _isSmileyBodyColorChange;
+        private bool _isSmileyLineColorChange;
+        private bool _isSmileyLightRadiusColorChange;
+        private bool _isCharacterSymbolChange;
+        private bool _isCharacterColorChange;
         public SmileyExpression SmileyExpression
         {
             get { return _smileyExpression; }
@@ -73,15 +59,15 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        public string SmileyAuraColor
+        public string SmileyLightRadiusColor
         {
-            get { return _smileyAuraColor; }
+            get { return _smileyLightRadiusColor; }
             set
             {
-                if (_smileyAuraColor != value)
+                if (_smileyLightRadiusColor != value)
                 {
-                    _smileyAuraColor = value;
-                    OnPropertyChanged("SmileyAuraColor");
+                    _smileyLightRadiusColor = value;
+                    OnPropertyChanged("SmileyLightRadiusColor");
                 }
             }
         }
@@ -121,124 +107,124 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                 }
             }
         }
-        public double CharacterScale
+        public bool IsFullSymbolChange
         {
-            get { return _characterScale; }
+            get { return _isFullSymbolChange; }
             set
             {
-                if (_characterScale != value)
+                if (_isFullSymbolChange != value)
                 {
-                    _characterScale = value;
-                    OnPropertyChanged("CharacterScale");
+                    _isFullSymbolChange = value;
+                    OnPropertyChanged("IsFullSymbolChange");
                 }
             }
         }
-        public string Symbol
+        public bool IsSmileyExpressionChange
         {
-            get { return _symbol; }
+            get { return _isSmileyExpressionChange; }
             set
             {
-                if (_symbol != value)
+                if (_isSmileyExpressionChange != value)
                 {
-                    _symbol = value;
-                    OnPropertyChanged("Symbol");
+                    _isSmileyExpressionChange = value;
+                    OnPropertyChanged("IsSmileyExpressionChange");
                 }
             }
         }
-        public double SymbolHue
+        public bool IsSmileyBodyColorChange
         {
-            get { return _symbolHue; }
+            get { return _isSmileyBodyColorChange; }
             set
             {
-                if (_symbolHue != value)
+                if (_isSmileyBodyColorChange != value)
                 {
-                    _symbolHue = value;
-                    OnPropertyChanged("SymbolHue");
+                    _isSmileyBodyColorChange = value;
+                    OnPropertyChanged("IsSmileyBodyColorChange");
                 }
             }
         }
-        public double SymbolSaturation
+        public bool IsSmileyLineColorChange
         {
-            get { return _symbolSaturation; }
+            get { return _isSmileyLineColorChange; }
             set
             {
-                if (_symbolSaturation != value)
+                if (_isSmileyLineColorChange != value)
                 {
-                    _symbolSaturation = value;
-                    OnPropertyChanged("SymbolSaturation");
+                    _isSmileyLineColorChange = value;
+                    OnPropertyChanged("IsSmileyLineColorChange");
                 }
             }
         }
-        public double SymbolLightness
+        public bool IsSmileyLightRadiusColorChange
         {
-            get { return _symbolLightness; }
+            get { return _isSmileyLightRadiusColorChange; }
             set
             {
-                if (_symbolLightness != value)
+                if (_isSmileyLightRadiusColorChange != value)
                 {
-                    _symbolLightness = value;
-                    OnPropertyChanged("SymbolLightness");
+                    _isSmileyLightRadiusColorChange = value;
+                    OnPropertyChanged("IsSmileyLightRadiusColorChange");
                 }
             }
         }
-        public double SymbolScale
+        public bool IsCharacterSymbolChange
         {
-            get { return _symbolScale; }
+            get { return _isCharacterSymbolChange; }
             set
             {
-                if (_symbolScale != value)
+                if (_isCharacterSymbolChange != value)
                 {
-                    _symbolScale = value;
-                    OnPropertyChanged("SymbolScale");
+                    _isCharacterSymbolChange = value;
+                    OnPropertyChanged("IsCharacterSymbolChange");
                 }
             }
         }
-        public bool SymbolUseColorMask
+        public bool IsCharacterColorChange
         {
-            get { return _symbolUseColorMask; }
+            get { return _isCharacterColorChange; }
             set
             {
-                if (_symbolUseColorMask != value)
+                if (_isCharacterColorChange != value)
                 {
-                    _symbolUseColorMask = value;
-                    OnPropertyChanged("SymbolUseColorMask");
+                    _isCharacterColorChange = value;
+                    OnPropertyChanged("IsCharacterColorChange");
                 }
             }
         }
-        public string GameSymbol
+        public SymbolDetailsTemplate FullSymbolChangeDetails
         {
-            get { return _gameSymbol; }
+            get { return _fullSymbolChangeDetails; }
             set
             {
-                if (_gameSymbol != value)
+                if (_fullSymbolChangeDetails != value)
                 {
-                    _gameSymbol = value;
-                    OnPropertyChanged("GameSymbol");
+                    _fullSymbolChangeDetails = value;
+                    OnPropertyChanged("FullSymbolChangeDetails");
                 }
             }
         }
-        public SymbolDetailsTemplate()
+        public bool HasSymbolChange()
         {
-            this.SymbolType = SymbolType.Smiley;
+            return this.IsCharacterColorChange ||
+                   this.IsCharacterSymbolChange ||
+                   this.IsFullSymbolChange ||
+                   this.IsSmileyBodyColorChange ||
+                   this.IsSmileyExpressionChange ||
+                   this.IsSmileyLightRadiusColorChange ||
+                   this.IsSmileyLineColorChange;
+        }
+        public SymbolEffectTemplate()
+        {
+            this.FullSymbolChangeDetails = new SymbolDetailsTemplate();
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyAuraColor = Colors.Yellow.ToString();
+            this.SmileyLightRadiusColor = Colors.Yellow.ToString();
             this.SmileyLineColor = Colors.Black.ToString();
 
             this.CharacterColor = Colors.White.ToString();
             this.CharacterSymbol = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterSymbol;
             this.CharacterSymbolCategory = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterCategory;
-            this.CharacterScale = 1;
-
-            this.GameSymbol = Rogue.NET.Common.Constant.GameSymbol.Identify;
-
-            this.Symbol = Rogue.NET.Common.Constant.Symbol.DefaultSymbol;
-            this.SymbolScale = 1;
-            this.SymbolHue = 0;
-            this.SymbolLightness = 0;
-            this.SymbolSaturation = 0;
-            this.SymbolUseColorMask = false;
         }
     }
 }

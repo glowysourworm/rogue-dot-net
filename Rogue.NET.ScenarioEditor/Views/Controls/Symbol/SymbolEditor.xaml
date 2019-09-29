@@ -7,7 +7,6 @@
              xmlns:extension="clr-namespace:Rogue.NET.Common.Extension;assembly=Rogue.NET.Common"
              xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
              xmlns:region="clr-namespace:Rogue.NET.Common.Extension.Prism.RegionManager;assembly=Rogue.NET.Common"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              Background="Black">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,50 +22,7 @@
             <!-- Symbol Preview -->
             <Grid Margin="10">
                 <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
-                <Border HorizontalAlignment="Right" Height="60" Width="60" BorderBrush="White" BorderThickness="1" CornerRadius="3">
-                    <Border.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Offset="0">
-                                <GradientStop.Color>
-                                    <MultiBinding Converter="{StaticResource SymbolDetailsTemplateAuraToColorConverter}">
-                                        <Binding Path="SmileyAuraColor" />
-                                        <Binding Path="Type" />
-                                    </MultiBinding>
-                                </GradientStop.Color>
-                            </GradientStop>
-                            <GradientStop Color="Transparent" Offset="1" />
-                        </RadialGradientBrush>
-                    </Border.Background>
-                    <Image  VerticalAlignment="Stretch" 
-                            HorizontalAlignment="Stretch"
-                            Height="30"
-                            Width="20"
-                            Stretch="None">
-                        <Image.Source>
-                            <MultiBinding Converter="{StaticResource SymbolImageSourceConverter}">
-                                <MultiBinding.ConverterParameter>
-                                    <system:Double>2.0</system:Double>
-                                </MultiBinding.ConverterParameter>
-                                <Binding Path="CharacterColor" />
-                                <Binding Path="CharacterSymbol" />
-                                <Binding Path="CharacterSymbolCategory" />
-                                <Binding Path="CharacterScale" />
-                                <Binding Path="Symbol" />
-                                <Binding Path="SymbolHue" />
-                                <Binding Path="SymbolSaturation" />
-                                <Binding Path="SymbolLightness" />
-                                <Binding Path="SymbolScale" />
-                                <Binding Path="SymbolUseColorMask" />
-                                <Binding Path="SmileyExpression" />
-                                <Binding Path="SmileyAuraColor" />
-                                <Binding Path="SmileyBodyColor" />
-                                <Binding Path="SmileyLineColor" />
-                                <Binding Path="GameSymbol" />
-                                <Binding Path="SymbolType" />
-                            </MultiBinding>
-                        </Image.Source>
-                    </Image>
-                </Border>
+                <symbol:SymbolPreviewControl HorizontalAlignment="Right" />
             </Grid>      
             
             <!-- Symbol Type -->

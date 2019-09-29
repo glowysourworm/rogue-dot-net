@@ -15,7 +15,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                                                         ITemporaryCharacterAlterationEffect,
                                                         ISkillAlterationEffect
     {
-        public SymbolDeltaTemplate SymbolAlteration { get; set; }
+        public SymbolEffectTemplate SymbolAlteration { get; set; }
         public bool CanSeeInvisibleCharacters { get; set; }
         public int EventTime { get; set; }
         public AlteredCharacterState AlteredState { get; set; }
@@ -38,7 +38,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 
         public TemporaryAlterationEffect()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
             this.AlteredState = new AlteredCharacterState();   
         }
     }

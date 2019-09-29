@@ -390,7 +390,7 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\StealAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\RunAwayAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\RevealAlterationEffectTemplateViewModel.cs" />
-    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\SymbolEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TeleportManualAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TeleportRandomAlterationEffectTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Alteration\Common\TemporaryAlterationEffectTemplateViewModel.cs" />
@@ -698,6 +698,9 @@
     </Compile>
     <Compile Include="Views\Controls\Symbol\SymbolEffectEditor.xaml.cs">
       <DependentUpon>SymbolEffectEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\Symbol\SymbolPreviewControl.xaml.cs">
+      <DependentUpon>SymbolPreviewControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\Symbol\ViewModel\SvgSymbolViewModel.cs" />
     <Compile Include="Views\Controls\TemplateSelector\ListBuilderTemplateSelector.cs" />
@@ -1067,6 +1070,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Symbol\SymbolEffectEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Symbol\SymbolPreviewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

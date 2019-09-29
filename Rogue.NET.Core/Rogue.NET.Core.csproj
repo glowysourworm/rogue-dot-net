@@ -201,6 +201,7 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\AlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateTemporaryCharacterAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\CreateFriendlyAlterationEffectTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Common\TeleportManualAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Friendly\FriendlyAlterationTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ITemporaryCharacterAlterationEffectTemplate.cs" />
@@ -310,7 +311,6 @@
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\IEquipmentAttackAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Interface\ISkillAlterationEffectTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Alteration\Skill\SkillAlterationTemplate.cs" />
-    <Compile Include="Model\ScenarioConfiguration\Alteration\Common\SymbolDeltaTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Animation\AnimationGroupTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Extension\ScenarioConfigurationContainerExtension.cs" />
     <Compile Include="Model\Scenario\Alteration\Common\AlterationContainer.cs" />

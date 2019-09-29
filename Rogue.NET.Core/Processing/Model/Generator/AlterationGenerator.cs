@@ -533,7 +533,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
             {
                 AttackAttributes = template.AttackAttributes.Select(x => _attackAttributeGenerator.GenerateAttackAttribute(x)).ToList(),
                 CombatType = template.CombatType,
-                RogueName = template.Name,
+                RogueName = template.Name, 
                 SymbolAlteration = template.SymbolAlteration
             };
         }
@@ -781,7 +781,7 @@ namespace Rogue.NET.Core.Processing.Model.Generator
                 MentalBlockProbability = _randomSequenceGenerator.GetRandomValue(template.MentalBlockProbabilityRange),
                 MpPerStep = _randomSequenceGenerator.GetRandomValue(template.MpPerStepRange),
                 Speed = _randomSequenceGenerator.GetRandomValue(template.SpeedRange),
-                Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),                
+                Strength = _randomSequenceGenerator.GetRandomValue(template.StrengthRange),
                 SymbolAlteration = template.SymbolAlteration,
                 RogueName = template.Name,
                 HasAlteredState = template.HasAlteredState

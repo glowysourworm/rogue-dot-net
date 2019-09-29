@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector.Interface
         /// <summary>
         /// Gets symbol changes for all alterations that have a symbol change
         /// </summary>
-        IEnumerable<SymbolDeltaTemplate> GetSymbolChanges();
+        IEnumerable<SymbolEffectTemplate> GetSymbolChanges();
 
         /// <summary>
         /// Gets attribute alteration sum for all alterations

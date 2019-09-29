@@ -86,12 +86,12 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                        .Actualize();
         }
 
-        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()
         {
             return this.Alterations
                        .Select(x => x.Effect)
                        .Cast<TemporaryAlterationEffect>()
-                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
+                       .Where(x => x.SymbolAlteration.HasSymbolChange())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
         }

@@ -18,7 +18,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
     {
         AlterationAttackAttributeCombatType _combatType;
         AlteredCharacterStateTemplate _alteredState;
-        SymbolDeltaTemplate _symbolAlteration;
+        SymbolEffectTemplate _symbolAlteration;
         bool _isStackable;
         bool _hasAlteredState;
         Range<int> _eventTime;
@@ -49,7 +49,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public SymbolDeltaTemplate SymbolAlteration
+        public SymbolEffectTemplate SymbolAlteration
 
         {
             get { return _symbolAlteration; }
@@ -106,7 +106,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
             this.AttackAttributes = new List<AttackAttributeTemplate>();
             this.AlteredState = new AlteredCharacterStateTemplate();
             this.EventTime = new Range<int>();
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
         }
     }
 }

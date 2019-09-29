@@ -40,70 +40,70 @@ namespace Rogue.NET.Core.Processing.Model.Content
             // TODO:SYMBOL
             return character;
 
-            var symbol = new ScenarioImage();
+            //var symbol = new ScenarioImage();
 
-            // Map properties onto the symbol
-            character.Update(symbol);
+            //// Map properties onto the symbol
+            //character.Update(symbol);
 
-            bool firstAlteration = true;
+            //bool firstAlteration = true;
 
-            foreach (var symbolDelta in character.Alteration
-                                                 .GetSymbolChanges())
-            {
-                //Full symbol
-                if (symbolDelta.IsFullSymbolDelta)
-                    return new ScenarioImage()
-                    {
-                        CharacterColor = symbolDelta.CharacterColor,
-                        CharacterSymbol = symbolDelta.SmileyAuraColor,
+            //foreach (var symbolDelta in character.Alteration
+            //                                     .GetSymbolChanges())
+            //{
+            //    //Full symbol
+            //    if (symbolDelta.IsFullSymbolDelta)
+            //        return new ScenarioImage()
+            //        {
+            //            CharacterColor = symbolDelta.CharacterColor,
+            //            CharacterSymbol = symbolDelta.SmileyAuraColor,
                         
-                        SmileyLightRadiusColor = symbolDelta.SmileyAuraColor,
-                        SmileyBodyColor = symbolDelta.SmileyBodyColor,
-                        SmileyLineColor = symbolDelta.SmileyLineColor,
-                        SmileyExpression = symbolDelta.SmileyExpression
-                    };
+            //            SmileyLightRadiusColor = symbolDelta.SmileyAuraColor,
+            //            SmileyBodyColor = symbolDelta.SmileyBodyColor,
+            //            SmileyLineColor = symbolDelta.SmileyLineColor,
+            //            SmileyExpression = symbolDelta.SmileyExpression
+            //        };
 
-                //Aura
-                if (symbolDelta.IsAuraDelta)
-                    symbol.SmileyLightRadiusColor = firstAlteration ?
-                                                symbolDelta.SmileyAuraColor :
-                                                ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
+            //    //Aura
+            //    if (symbolDelta.IsAuraDelta)
+            //        symbol.SmileyLightRadiusColor = firstAlteration ?
+            //                                    symbolDelta.SmileyAuraColor :
+            //                                    ColorFilter.Add(symbol.SmileyLightRadiusColor, symbolDelta.SmileyAuraColor);
 
-                //Body
-                if (symbolDelta.IsBodyDelta)
-                    symbol.SmileyBodyColor = firstAlteration ?
-                                                symbolDelta.SmileyBodyColor :
-                                                ColorFilter.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
+            //    //Body
+            //    if (symbolDelta.IsBodyDelta)
+            //        symbol.SmileyBodyColor = firstAlteration ?
+            //                                    symbolDelta.SmileyBodyColor :
+            //                                    ColorFilter.Add(symbol.SmileyBodyColor, symbolDelta.SmileyBodyColor);
 
-                //Character symbol
-                if (symbolDelta.IsCharacterDelta)
-                    symbol.CharacterSymbol = symbolDelta.CharacterSymbol;
+            //    //Character symbol
+            //    if (symbolDelta.IsCharacterDelta)
+            //        symbol.CharacterSymbol = symbolDelta.CharacterSymbol;
 
-                //Character delta
-                if (symbolDelta.IsColorDelta)
-                    symbol.CharacterColor = firstAlteration ?
-                                                symbolDelta.CharacterColor :
-                                                ColorFilter.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
+            //    //Character delta
+            //    if (symbolDelta.IsColorDelta)
+            //        symbol.CharacterColor = firstAlteration ?
+            //                                    symbolDelta.CharacterColor :
+            //                                    ColorFilter.Add(symbol.CharacterColor, symbolDelta.CharacterColor);
 
-                // TODO:SYMBOL
+            //    // TODO:SYMBOL
 
-                //Image
-                //if (symbolDelta.IsImageDelta)
-                //    symbol.Icon = symbolDelta.Icon;
+            //    //Image
+            //    //if (symbolDelta.IsImageDelta)
+            //    //    symbol.Icon = symbolDelta.Icon;
 
-                //Line
-                if (symbolDelta.IsLineDelta)
-                    symbol.SmileyLineColor = firstAlteration ?
-                                                symbolDelta.SmileyLineColor :
-                                                ColorFilter.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
+            //    //Line
+            //    if (symbolDelta.IsLineDelta)
+            //        symbol.SmileyLineColor = firstAlteration ?
+            //                                    symbolDelta.SmileyLineColor :
+            //                                    ColorFilter.Add(symbol.SmileyLineColor, symbolDelta.SmileyLineColor);
 
-                //Expression
-                if (symbolDelta.IsExpressionDelta)
-                    symbol.SmileyExpression = symbolDelta.SmileyExpression;
+            //    //Expression
+            //    if (symbolDelta.IsExpressionDelta)
+            //        symbol.SmileyExpression = symbolDelta.SmileyExpression;
 
-                firstAlteration = false;
-            }
-            return symbol;
+            //    firstAlteration = false;
+            //}
+            //return symbol;
         }
 
         public bool CalculateMeetsAlterationCost(Character character, AlterationCost cost)

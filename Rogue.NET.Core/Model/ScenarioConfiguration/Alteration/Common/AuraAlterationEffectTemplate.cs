@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                     IEquipmentEquipAlterationEffectTemplate,
                     ISkillAlterationEffectTemplate
     {
-        private SymbolDeltaTemplate _symbolAlteration;
+        private SymbolEffectTemplate _symbolAlteration;
         private Range<double> _strengthRange;
         private Range<double> _intelligenceRange;
         private Range<double> _agilityRange;
@@ -23,7 +23,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _magicBlockProbabilityRange;
         private Range<double> _dodgeProbabilityRange;
 
-        public SymbolDeltaTemplate SymbolAlteration
+        public SymbolEffectTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
             set
@@ -158,7 +158,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public AuraAlterationEffectTemplate()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
 
             this.AgilityRange = new Range<double>(0, 0);
             this.SpeedRange = new Range<double>(0, 0);

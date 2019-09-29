@@ -99,10 +99,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
             return new List<AlteredCharacterState>();
         }
 
-        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()
         {
             // Aura Sources don't have symbol changes
-            return new List<SymbolDeltaTemplate>();
+            return new List<SymbolEffectTemplate>();
         }
 
         public double GetAttributeAggregate(CharacterAttribute attribute)

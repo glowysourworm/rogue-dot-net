@@ -111,16 +111,21 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract
 
             this.SmileyExpression = SmileyExpression.Happy;
             this.SmileyBodyColor = Colors.Yellow.ToString();
-            this.SmileyLineColor = Colors.Black.ToString();
             this.SmileyAuraColor = Colors.Yellow.ToString();
+            this.SmileyLineColor = Colors.Black.ToString();
 
             this.CharacterColor = Colors.White.ToString();
+            this.CharacterSymbol = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterSymbol;
+            this.CharacterSymbolCategory = Rogue.NET.Common.Constant.CharacterSymbol.DefaultCharacterCategory;
             this.CharacterScale = 1;
 
+            this.GameSymbol = Rogue.NET.Common.Constant.GameSymbol.Identify;
+
+            this.Symbol = Rogue.NET.Common.Constant.Symbol.DefaultSymbol;
+            this.SymbolScale = 1;
             this.SymbolHue = 0;
             this.SymbolLightness = 0;
             this.SymbolSaturation = 0;
-            this.SymbolScale = 1;
             this.SymbolUseColorMask = false;
         }
     }

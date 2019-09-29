@@ -13,7 +13,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                          ISkillAlterationEffectTemplate
     {
         AlterationAttackAttributeCombatType _combatType;
-        SymbolDeltaTemplate _symbolAlteration;
+        SymbolEffectTemplate _symbolAlteration;
 
         public AlterationAttackAttributeCombatType CombatType
         {
@@ -27,7 +27,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                 }
             }
         }
-        public SymbolDeltaTemplate SymbolAlteration
+        public SymbolEffectTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
             set
@@ -45,7 +45,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         public AttackAttributeAuraAlterationEffectTemplate()
         {
             this.AttackAttributes = new List<AttackAttributeTemplate>();
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
         }
     }
 }

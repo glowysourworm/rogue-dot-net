@@ -1,44 +1,142 @@
 ﻿<UserControl x:Class="Rogue.NET.ScenarioEditor.Views.Controls.Symbol.SymbolEffectEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:symbol="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls.Symbol"
+             xmlns:coreModelEnums="clr-namespace:Rogue.NET.Core.Model.Enums;assembly=Rogue.NET.Core"
+             xmlns:views="clr-namespace:Rogue.NET.Common.View;assembly=Rogue.NET.Common"
+             xmlns:controls="clr-namespace:Rogue.NET.ScenarioEditor.Views.Controls">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.Core;component/Resource/Converter.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Rogue.NET.ScenarioEditor;component/Resources/Dictionaries/Converter.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <StackPanel>
-    
-    <!-- Symbol Delta Parameters -->
-        <GroupBox x:Name="SymbolDeltaParametersGB" Visibility="Collapsed" Margin="10" Header="Symbol Change Parameters">
-            <StackPanel>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Full Symbol Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsFullSymbolDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Image Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsImageDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Expression Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsExpressionDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Body Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsBodyDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Line Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsLineDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Aura Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsAuraDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Character Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsCharacterDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-                <Grid Margin="10">
-                    <TextBlock Text="Is Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-                    <CheckBox  IsChecked="{Binding IsColorDelta, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                </Grid>
-            </StackPanel>
-        </GroupBox>
+
+        <StackPanel>
+
+            <!-- Full Symbol Change -->
+            <GroupBox Header="Full Symbol Change Parameters">
+                <StackPanel>
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Full Symbol Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsFullSymbolChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsFullSymbolChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <symbol:SymbolEditor DataContext="{Binding FullSymbolChangeDetails}" HorizontalAlignment="Stretch"  />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Smiley Change Parameters -->
+            <GroupBox Header="Smiley Change Parameters"
+                          Visibility="{Binding IsFullSymbolChange, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                <StackPanel>
+
+                    <!-- Symbol Preview -->
+                    <Grid Margin="10">
+                        <Grid.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                <Binding Path="IsSmileyExpressionChange" />
+                                <Binding Path="IsSmileyBodyColorChange" />
+                                <Binding Path="IsSmileyLineColorChange" />
+                                <Binding Path="IsSmileyLightRadiusColorChange" />
+                            </MultiBinding>
+                        </Grid.Visibility>
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
+                        <symbol:SymbolPreviewControl x:Name="SmileyPreviewControl" HorizontalAlignment="Right" />
+                    </Grid>
+
+                    <!-- Smiley Expression Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Expression Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsSmileyExpressionChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsSmileyExpressionChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Expression" />
+                        <views:EnumComboBox EnumType="{x:Type coreModelEnums:SmileyExpression}"  EnumValue="{Binding SmileyExpression, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+
+                    <!-- Smiley Body Color Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Body Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsSmileyBodyColorChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsSmileyBodyColorChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Body Color" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyBodyColor, Mode=TwoWay}"  Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+
+                    <!-- Smiley Line Color Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Line Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsSmileyLineColorChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsSmileyLineColorChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Line Color" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyLineColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+
+                    <!-- Smiley Light Radius Color Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Light Radius Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsSmileyLightRadiusColorChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsSmileyLightRadiusColorChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Light Radius Color" />
+                        <controls:ColorComboBox SelectedValue="{Binding SmileyLightRadiusColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Character Change Parameters -->
+            <GroupBox Header="Character Change Parameters"
+                          Visibility="{Binding IsFullSymbolChange, Converter={StaticResource BoolInverseVisibilityCollapseConverter}}">
+                <StackPanel>
+
+                    <!-- Symbol Preview -->
+                    <Grid Margin="10">
+                        <Grid.Visibility>
+                            <MultiBinding Converter="{StaticResource BoolORVisibilityMultiConverter}">
+                                <Binding Path="IsCharacterSymbolChange" />
+                                <Binding Path="IsCharacterColorChange" />
+                            </MultiBinding>
+                        </Grid.Visibility>
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" Text="Symbol Preview" />
+                        <symbol:SymbolPreviewControl x:Name="CharacterPreviewControl" HorizontalAlignment="Right"  />
+                    </Grid>
+
+                    <!-- Character Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Character Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsCharacterSymbolChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsCharacterSymbolChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <Button x:Name="CharacterSymbolButton" Click="CharacterSymbolButton_Click" Content="View Symbol Map" HorizontalAlignment="Right" Padding="10,2,10,2" />
+                    </Grid>
+
+                    <!-- Character Color Change -->
+                    <Grid Margin="10">
+                        <TextBlock Text="Is Color Change" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+                        <CheckBox  IsChecked="{Binding IsCharacterColorChange, Mode=TwoWay}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="10"
+                              Visibility="{Binding IsCharacterColorChange, Converter={StaticResource BoolVisibilityCollapseConverter}}">
+                        <TextBlock Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" FontSize="16" Text="Symbol Color" />
+                        <controls:ColorComboBox SelectedValue="{Binding CharacterColor, Mode=TwoWay}" Width="200" HorizontalAlignment="Right" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
     </StackPanel>
 </UserControl>

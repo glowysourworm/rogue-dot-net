@@ -15,7 +15,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              IEquipmentEquipAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
-        private SymbolDeltaTemplateViewModel _symbolAlteration;
+        private SymbolEffectTemplateViewModel _symbolAlteration;
         private RangeViewModel<double> _strengthRange;
         private RangeViewModel<double> _intelligenceRange;
         private RangeViewModel<double> _agilityRange;
@@ -27,7 +27,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _magicBlockProbabilityRange;
         private RangeViewModel<double> _dodgeProbabilityRange;
 
-        public SymbolDeltaTemplateViewModel SymbolAlteration
+        public SymbolEffectTemplateViewModel SymbolAlteration
         {
             get { return _symbolAlteration; }
             set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
@@ -85,7 +85,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public AuraAlterationEffectTemplateViewModel()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
+            this.SymbolAlteration = new SymbolEffectTemplateViewModel();
 
             this.AgilityRange = new RangeViewModel<double>(0, 0);
             this.SpeedRange = new RangeViewModel<double>(0, 0);

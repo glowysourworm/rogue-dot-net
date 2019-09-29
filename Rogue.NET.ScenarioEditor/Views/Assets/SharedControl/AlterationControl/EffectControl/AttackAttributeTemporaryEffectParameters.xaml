@@ -49,7 +49,7 @@
                                              EnumValue="{Binding CombatType, Mode=TwoWay}" />
         </TabItem>
         <TabItem Header="Symbol Change">
-            <symbol:SymbolEditor DataContext="{Binding SymbolAlteration}" />
+            <symbol:SymbolEffectEditor DataContext="{Binding SymbolAlteration}" />
         </TabItem>
         <TabItem Header="Attack Attributes">
             <commonControl:AlterationAttackAttributeListControl />

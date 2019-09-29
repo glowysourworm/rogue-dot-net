@@ -86,6 +86,7 @@ namespace Rogue.NET.ScenarioEditor.Views.Construction
                 // TODO:SYMBOL
                 SymbolDetails = new SymbolDetailsTemplateViewModel()
                 {
+                    
                 },
                 Name = this.AlteredStateTB.Text,
                 BaseType = (CharacterStateType)this.AlteredStateEnumCB.EnumValue

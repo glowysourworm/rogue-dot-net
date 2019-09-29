@@ -208,7 +208,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constant\CharacterSymbol.cs" />
     <Compile Include="Constant\GameSymbol.cs" />
+    <Compile Include="Constant\Symbol.cs" />
     <Compile Include="Control\EditableTextBlock.cs" />
     <Compile Include="Extension\ButtonExtension.cs" />
     <Compile Include="Extension\EnumerableExtension.cs" />

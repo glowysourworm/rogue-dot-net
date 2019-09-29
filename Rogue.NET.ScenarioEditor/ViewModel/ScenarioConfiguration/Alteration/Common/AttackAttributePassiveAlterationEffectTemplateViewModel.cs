@@ -20,14 +20,15 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              ISkillAlterationEffectTemplateViewModel
     {
         AlterationAttackAttributeCombatType _combatType;
-        SymbolDeltaTemplateViewModel _symbolAlteration;
+        SymbolEffectTemplateViewModel _symbolAlteration;
 
         public AlterationAttackAttributeCombatType CombatType
         {
             get { return _combatType; }
             set { this.RaiseAndSetIfChanged(ref _combatType, value); }
         }
-        public SymbolDeltaTemplateViewModel SymbolAlteration
+
+        public SymbolEffectTemplateViewModel SymbolAlteration
         {
             get { return _symbolAlteration; }
             set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
@@ -38,7 +39,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         public AttackAttributePassiveAlterationEffectTemplateViewModel()
         {
             this.AttackAttributes = new ObservableCollection<AttackAttributeTemplateViewModel>();
-            this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
+            this.SymbolAlteration = new SymbolEffectTemplateViewModel();
         }
     }
 }

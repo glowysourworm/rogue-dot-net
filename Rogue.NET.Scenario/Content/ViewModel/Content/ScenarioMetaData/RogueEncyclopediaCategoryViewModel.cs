@@ -6,6 +6,7 @@ using System.Windows.Media;
 using Rogue.NET.Core.Model.Scenario.Content;
 using Rogue.NET.Common.ViewModel;
 using Rogue.NET.Core.Processing.Service.Interface;
+using Rogue.NET.Common.Constant;
 
 namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 {
@@ -54,9 +55,8 @@ namespace Rogue.NET.Scenario.Content.ViewModel.Content.ScenarioMetaData
 
             this.Items = new PagedObservableCollection<ScenarioMetaDataViewModel>(PAGE_SIZE);
 
-            // TODO:SYMBOL
             // Initialize the category as not known
-            // this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("", "?", Colors.White.ToString()), 1.0);
+            this.Source = scenarioResourceService.GetImageSource(new ScenarioImage("Unknwon", GameSymbol.Identify), 1.0);
         }
 
         /// <summary>

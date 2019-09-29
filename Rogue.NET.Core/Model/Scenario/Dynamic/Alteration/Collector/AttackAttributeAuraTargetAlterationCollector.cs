@@ -43,10 +43,10 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration.Collector
                        .ToDictionary(x => x.RogueName, x => (IAlterationEffect)x);
         }
 
-        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()
         {
             return this.TargetEffects
-                       .Where(x => x.SymbolAlteration.HasSymbolDelta())
+                       .Where(x => x.SymbolAlteration.HasSymbolChange())
                        .Select(x => x.SymbolAlteration)
                        .Actualize();
         }

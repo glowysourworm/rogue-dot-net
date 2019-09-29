@@ -10,7 +10,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
                      IEquipmentEquipAlterationEffect,
                      ISkillAlterationEffect
     {
-        public SymbolDeltaTemplate SymbolAlteration { get; set; }
+        public SymbolEffectTemplate SymbolAlteration { get; set; }
         public bool CanSeeInvisibleCharacters { get; set; }
         public double Strength { get; set; }
         public double Intelligence { get; set; }
@@ -28,7 +28,7 @@ namespace Rogue.NET.Core.Model.Scenario.Alteration.Effect
 
         public PassiveAlterationEffect()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
                              ITemporaryCharacterAlterationEffectTemplateViewModel,
                              ISkillAlterationEffectTemplateViewModel
     {
-        private SymbolDeltaTemplateViewModel _symbolAlteration;
+        private SymbolEffectTemplateViewModel _symbolAlteration;
         private bool _canSeeInvisibleCharacters;
         private RangeViewModel<int> _eventTime;
         private AlteredCharacterStateTemplateViewModel _alteredState;
@@ -42,8 +42,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
         private RangeViewModel<double> _criticalHit;
         private bool _isStackable;
         private bool _hasAlteredState;
-
-        public SymbolDeltaTemplateViewModel SymbolAlteration
+        public SymbolEffectTemplateViewModel SymbolAlteration
         {
             get { return _symbolAlteration; }
             set { this.RaiseAndSetIfChanged(ref _symbolAlteration, value); }
@@ -162,7 +161,7 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Co
 
         public TemporaryAlterationEffectTemplateViewModel()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplateViewModel();
+            this.SymbolAlteration = new SymbolEffectTemplateViewModel();
             this.EventTime = new RangeViewModel<int>(20, 30);
 
             this.AgilityRange = new RangeViewModel<double>(0, 0);

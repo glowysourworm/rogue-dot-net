@@ -14,7 +14,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
                                                                ITemporaryCharacterAlterationEffectTemplate,
                                                                ISkillAlterationEffectTemplate
     {
-        private SymbolDeltaTemplate _symbolAlteration;
+        private SymbolEffectTemplate _symbolAlteration;
         private bool _canSeeInvisibleCharacters;
         private Range<int> _eventTime;
         private AlteredCharacterStateTemplate _alteredState;
@@ -37,8 +37,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
         private Range<double> _criticalHit;
         private bool _isStackable;
         private bool _hasAlteredState;
-
-        public SymbolDeltaTemplate SymbolAlteration
+        public SymbolEffectTemplate SymbolAlteration
         {
             get { return _symbolAlteration; }
             set
@@ -317,7 +316,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common
 
         public TemporaryAlterationEffectTemplate()
         {
-            this.SymbolAlteration = new SymbolDeltaTemplate();
+            this.SymbolAlteration = new SymbolEffectTemplate();
             this.AlteredState = new AlteredCharacterStateTemplate(); // Creates a state of "Normal"
             this.EventTime = new Range<int>(20, 30);
 

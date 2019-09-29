@@ -122,7 +122,7 @@ namespace Rogue.NET.Core.Model.Scenario.Dynamic.Alteration
         /// <summary>
         /// Returns all symbol changes as an enumerable collection
         /// </summary>
-        public IEnumerable<SymbolDeltaTemplate> GetSymbolChanges()
+        public IEnumerable<SymbolEffectTemplate> GetSymbolChanges()
         {
             return _effectCollectors.SelectMany(collector => collector.GetSymbolChanges());
         }
