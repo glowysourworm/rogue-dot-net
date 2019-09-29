@@ -1,31 +1,17 @@
-﻿using Rogue.NET.Common.Extension;
-using Rogue.NET.Core.Model;
-using Rogue.NET.Core.Model.Enums;
-using Rogue.NET.Core.Model.Scenario.Alteration.Effect;
+﻿using Rogue.NET.Common.Constant;
 using Rogue.NET.Core.Model.ScenarioConfiguration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Common;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Consumable;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Doodad;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Enemy;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Equipment;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Interface;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration.Skill;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Animation;
-using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Common;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration.Interface;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Animation;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Extension;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Media;
 
 namespace Rogue.NET.ScenarioEditor.Utility
 {
@@ -99,6 +85,102 @@ namespace Rogue.NET.ScenarioEditor.Utility
                                                   .Select(x => x as BrushTemplateViewModel)
                                                   .ToList();
 
+            //// FIX DEFAULT CHARACTER CATEGORY
+            //foreach (var template in _forwardReferenceMap.Values
+            //                                             .Where(x => x is SymbolDetailsTemplateViewModel)
+            //                                             .Select(x => x as SymbolDetailsTemplateViewModel))
+            //{
+            //    if (template.CharacterSymbolCategory == CharacterSymbol.DefaultCharacterCategory.Replace("_", " "))
+            //    {
+            //        template.CharacterSymbolCategory = CharacterSymbol.DefaultCharacterCategory;
+            //        template.CharacterSymbol = CharacterSymbol.DefaultCharacterSymbol;
+            //    }
+            //}
+
+            //// MAP DATA TO NEW FACILITIES
+            ////
+
+            //// Scenario Design
+            //configuration.ScenarioDesign = new ScenarioDesignTemplateViewModel();
+            //configuration.ScenarioDesign.Name = configuration.DungeonTemplate.Name;
+            //configuration.ScenarioDesign.ObjectiveDescription = configuration.DungeonTemplate.ObjectiveDescription;
+
+            //// DungeonTemplate.LayoutTemplates -> LayoutTemplates
+            //configuration.LayoutTemplates = new ObservableCollection<LayoutTemplateViewModel>(configuration.DungeonTemplate.LayoutTemplates);
+
+
+            //// Scenario Design -> Levels -> Assets
+            //for (int i = 0; i < configuration.DungeonTemplate.NumberOfLevels; i++)
+            //{
+            //    var levelNumber = i + 1;
+
+            //    var layouts = configuration.LayoutTemplates.Where(x => x.Level.Contains(levelNumber));
+            //    var consumables = configuration.ConsumableTemplates.Where(x => x.Level.Contains(levelNumber));
+            //    var equipment = configuration.EquipmentTemplates.Where(x => x.Level.Contains(levelNumber));
+            //    var enemies = configuration.EnemyTemplates.Where(x => x.Level.Contains(levelNumber));
+            //    var friendlies = configuration.FriendlyTemplates.Where(x => x.Level.Contains(levelNumber));
+            //    var doodads = configuration.DoodadTemplates.Where(x => x.Level.Contains(levelNumber));
+
+            //    // Don't generate level if there's no layout selected
+            //    if (layouts.Any())
+            //    {
+            //        var level = new LevelDesignTemplateViewModel();
+
+            //        // Consumables
+            //        level.Consumables.AddRange(consumables.Select(x => new ConsumableGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //        }));
+
+            //        // Doodads
+            //        level.Doodads.AddRange(doodads.Select(x => new DoodadGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //        }));
+
+            //        // Enemies
+            //        level.Enemies.AddRange(enemies.Select(x => new EnemyGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //        }));
+
+            //        // Equipment
+            //        level.Equipment.AddRange(equipment.Select(x => new EquipmentGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //        }));
+
+            //        // Friendlies
+            //        level.Friendlies.AddRange(friendlies.Select(x => new FriendlyGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //        }));
+
+            //        // Layouts
+            //        level.Layouts.AddRange(layouts.Select(x => new LayoutGenerationTemplateViewModel()
+            //        {
+            //            Asset = x,
+            //            GenerationWeight = 1.0,
+            //            Name = x.Name,
+            //            PartyRoomGenerationRate = configuration.DungeonTemplate.PartyRoomGenerationRate
+            //        }));
+
+            //        level.MonsterGenerationPerStep = configuration.DungeonTemplate.MonsterGenerationBase;
+            //        level.Name = "Level " + levelNumber.ToString();
+
+            //        configuration.ScenarioDesign.LevelDesigns.Add(level);
+            //    }
+            //}
 
             return configuration;
         }

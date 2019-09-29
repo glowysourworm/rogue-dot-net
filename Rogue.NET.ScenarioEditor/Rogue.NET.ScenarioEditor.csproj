@@ -437,6 +437,14 @@
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityConsumableTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\ProbabilityEquipmentTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Content\TemporaryCharacterTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\ConsumableGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\DoodadGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\EnemyGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\EquipmentGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\FriendlyGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\LayoutGenerationTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\LevelDesignTemplateViewModel.cs" />
+    <Compile Include="ViewModel\ScenarioConfiguration\Design\ScenarioDesignTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Extension\ObservableCollectionExtension.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\DungeonTemplateViewModel.cs" />
     <Compile Include="ViewModel\ScenarioConfiguration\Layout\LayoutTemplateViewModel.cs" />

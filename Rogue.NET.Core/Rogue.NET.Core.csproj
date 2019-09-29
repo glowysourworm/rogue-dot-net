@@ -209,6 +209,14 @@
     <Compile Include="Model\ScenarioConfiguration\Content\FriendlyTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\NonPlayerCharacterTemplate.cs" />
     <Compile Include="Model\ScenarioConfiguration\Content\TemporaryCharacterTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\ConsumableGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\DoodadGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\FriendlyGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\EnemyGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\EquipmentGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\LayoutGenerationTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\LevelDesignTemplate.cs" />
+    <Compile Include="Model\ScenarioConfiguration\Design\ScenarioDesignTemplate.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\CreateFriendlyAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Effect\TeleportManualAlterationEffect.cs" />
     <Compile Include="Model\Scenario\Alteration\Friendly\FriendlyAlteration.cs" />

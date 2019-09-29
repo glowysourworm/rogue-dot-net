@@ -2767,5 +2767,7 @@ IMMEDIATE TODO'S:
 														when we have some terrain.
 
 						   Static Layouts?  YES!  Let's build an editor
+
+	- TODO: Saw problem with null values in AuraSourceParameters. Should definitely fix any null strings - especially colors
 	
 						  

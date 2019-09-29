@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
 {
@@ -45,6 +46,23 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Abstract
                     _guid = value;
                     OnPropertyChanged("Guid");
                 }
+            }
+        }
+
+        protected virtual void RaiseAndSetIfChanged<T>(ref T field, T value, [CallerMemberName] string memberName = "")
+        {
+            var changed = false;
+            if (field == null)
+                changed = value != null;
+            else
+                changed = !field.Equals(value);
+
+            if (changed)
+            {
+                field = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(memberName));
             }
         }
 

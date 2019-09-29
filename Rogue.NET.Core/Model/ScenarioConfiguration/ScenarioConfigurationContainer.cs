@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Alteration;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Content;
+using Rogue.NET.Core.Model.ScenarioConfiguration.Design;
 using Rogue.NET.Core.Model.ScenarioConfiguration.Layout;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,9 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
     public class ScenarioConfigurationContainer
     {
         public DungeonTemplate DungeonTemplate { get; set; }
-
+        public ScenarioDesignTemplate ScenarioDesign { get; set; }
         public List<PlayerTemplate> PlayerTemplates { get; set; }
+        public List<LayoutTemplate> LayoutTemplates { get; set; }
         public List<SkillSetTemplate> SkillTemplates { get; set; }
         public List<EnemyTemplate> EnemyTemplates { get; set; }
         public List<FriendlyTemplate> FriendlyTemplates { get; set; }
@@ -23,6 +25,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
 
         public ScenarioConfigurationContainer()
         {
+            // TODO:LEVEL
+            this.ScenarioDesign = new ScenarioDesignTemplate();
+            this.LayoutTemplates = new List<LayoutTemplate>();
+
             this.DungeonTemplate = new DungeonTemplate();
             this.PlayerTemplates = new List<PlayerTemplate>();
             this.EnemyTemplates = new List<EnemyTemplate>();

@@ -1,5 +1,6 @@
 ﻿using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Alteration;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Content;
+using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design;
 using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Layout;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,14 +11,20 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
     public class ScenarioConfigurationContainerViewModel : INotifyPropertyChanged, INotifyPropertyChanging
     {        
         DungeonTemplateViewModel _dungeonTemplate;
+        ScenarioDesignTemplateViewModel _scenarioDesign;
 
         public DungeonTemplateViewModel DungeonTemplate
         {
             get { return _dungeonTemplate; }
             set { this.RaiseAndSetIfChanged(ref _dungeonTemplate, value); }
         }
-
+        public ScenarioDesignTemplateViewModel ScenarioDesign
+        {
+            get { return _scenarioDesign; }
+            set { this.RaiseAndSetIfChanged(ref _scenarioDesign, value); }
+        }
         public ObservableCollection<PlayerTemplateViewModel> PlayerTemplates { get; set; }
+        public ObservableCollection<LayoutTemplateViewModel> LayoutTemplates { get; set; }
         public ObservableCollection<EnemyTemplateViewModel> EnemyTemplates { get; set; }
         public ObservableCollection<FriendlyTemplateViewModel> FriendlyTemplates { get; set; }
         public ObservableCollection<EquipmentTemplateViewModel> EquipmentTemplates { get; set; }
@@ -32,7 +39,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration
         public ScenarioConfigurationContainerViewModel()
         {
             this.DungeonTemplate = new DungeonTemplateViewModel();
+            this.ScenarioDesign = new ScenarioDesignTemplateViewModel();
+
             this.PlayerTemplates = new ObservableCollection<PlayerTemplateViewModel>();
+            this.LayoutTemplates = new ObservableCollection<LayoutTemplateViewModel>();
             this.EnemyTemplates = new ObservableCollection<EnemyTemplateViewModel>();
             this.FriendlyTemplates = new ObservableCollection<FriendlyTemplateViewModel>();
             this.EquipmentTemplates = new ObservableCollection<EquipmentTemplateViewModel>();

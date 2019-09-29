@@ -33,6 +33,17 @@
         public const string DoodadTeleporterBRogueName = "Teleporter B";
         public const string DoodadTeleporterRandomRogueName = "Random Teleporter";
 
+        public static class Scenario
+        {
+            public const double MonsterGenerationPerStepDefault = 0.01;
+            public const double PartyRoomGenerationRateDefault = 0.05;
+
+            public const int EnemyGenerationDefault = 5;
+            public const int FriendlyGenerationDefault = 1;
+            public const int ConsumableGenerationDefault = 4;
+            public const int EquipmentGenerationDefault = 2;
+            public const int DoodadGenerationDefault = 2;
+        }
         public static class Melee
         {
             public const double AttackBaseMultiplier = 1.0D;
