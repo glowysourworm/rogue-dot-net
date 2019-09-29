@@ -2720,13 +2720,9 @@ IMMEDIATE TODO'S:
 
 	- TODO:SYMBOL
 
-		- Need a Default "UNKNOWN" symbol for catching exceptions
-
 		- Need a Default "?" symbol for the UI for the encyclopedia
 
 		- Repair game buttons with the new SVG symbols
-
-		- Create new SymbolDelta parameters to work like we want (Maybe called SymbolEffect)
 
 		- Delete some empty symbols from the SVG character sets (just a few in there)
 
