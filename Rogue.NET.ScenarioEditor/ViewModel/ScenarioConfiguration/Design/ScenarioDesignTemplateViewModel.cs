@@ -11,10 +11,10 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
             get { return _objectiveDescription; }
             set { this.RaiseAndSetIfChanged(ref _objectiveDescription, value); }
         }
-        public ObservableCollection<LevelDesignTemplateViewModel> LevelDesigns { get; set; }
+        public ObservableCollection<LevelTemplateViewModel> LevelDesigns { get; set; }
         public ScenarioDesignTemplateViewModel()
         {
-            this.LevelDesigns = new ObservableCollection<LevelDesignTemplateViewModel>();
+            this.LevelDesigns = new ObservableCollection<LevelTemplateViewModel>();
             this.ObjectiveDescription = "Objective Description (Goes Here)";
         }
     }

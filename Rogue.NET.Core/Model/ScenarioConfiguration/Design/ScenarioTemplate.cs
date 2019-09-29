@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
 {
     [Serializable]
-    public class ScenarioDesignTemplate : Template
+    public class ScenarioTemplate : Template
     {
         private string _objectiveDescription;
         public string ObjectiveDescription
@@ -23,10 +23,10 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
                 }
             }
         }
-        public List<LevelDesignTemplate> LevelDesigns { get; set; }
-        public ScenarioDesignTemplate()
+        public List<LevelTemplate> LevelDesigns { get; set; }
+        public ScenarioTemplate()
         {
-            this.LevelDesigns = new List<LevelDesignTemplate>();
+            this.LevelDesigns = new List<LevelTemplate>();
             this.ObjectiveDescription = "Objective Description (Goes Here)";
         }
     }

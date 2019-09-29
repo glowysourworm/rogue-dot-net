@@ -97,8 +97,8 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //    }
             //}
 
-            //// MAP DATA TO NEW FACILITIES
-            ////
+            // MAP DATA TO NEW FACILITIES
+            //
 
             //// Scenario Design
             //configuration.ScenarioDesign = new ScenarioDesignTemplateViewModel();
@@ -124,10 +124,11 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //    // Don't generate level if there's no layout selected
             //    if (layouts.Any())
             //    {
-            //        var level = new LevelDesignTemplateViewModel();
+            //        var level = new LevelTemplateViewModel();
+            //        var levelBranch = new LevelBranchTemplateViewModel();
 
             //        // Consumables
-            //        level.Consumables.AddRange(consumables.Select(x => new ConsumableGenerationTemplateViewModel()
+            //        levelBranch.Consumables.AddRange(consumables.Select(x => new ConsumableGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -135,7 +136,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //        }));
 
             //        // Doodads
-            //        level.Doodads.AddRange(doodads.Select(x => new DoodadGenerationTemplateViewModel()
+            //        levelBranch.Doodads.AddRange(doodads.Select(x => new DoodadGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -143,7 +144,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //        }));
 
             //        // Enemies
-            //        level.Enemies.AddRange(enemies.Select(x => new EnemyGenerationTemplateViewModel()
+            //        levelBranch.Enemies.AddRange(enemies.Select(x => new EnemyGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -151,7 +152,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //        }));
 
             //        // Equipment
-            //        level.Equipment.AddRange(equipment.Select(x => new EquipmentGenerationTemplateViewModel()
+            //        levelBranch.Equipment.AddRange(equipment.Select(x => new EquipmentGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -159,7 +160,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //        }));
 
             //        // Friendlies
-            //        level.Friendlies.AddRange(friendlies.Select(x => new FriendlyGenerationTemplateViewModel()
+            //        levelBranch.Friendlies.AddRange(friendlies.Select(x => new FriendlyGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -167,7 +168,7 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //        }));
 
             //        // Layouts
-            //        level.Layouts.AddRange(layouts.Select(x => new LayoutGenerationTemplateViewModel()
+            //        levelBranch.Layouts.AddRange(layouts.Select(x => new LayoutGenerationTemplateViewModel()
             //        {
             //            Asset = x,
             //            GenerationWeight = 1.0,
@@ -175,8 +176,15 @@ namespace Rogue.NET.ScenarioEditor.Utility
             //            PartyRoomGenerationRate = configuration.DungeonTemplate.PartyRoomGenerationRate
             //        }));
 
-            //        level.MonsterGenerationPerStep = configuration.DungeonTemplate.MonsterGenerationBase;
+            //        levelBranch.MonsterGenerationPerStep = configuration.DungeonTemplate.MonsterGenerationBase;
+            //        levelBranch.Name = "Level " + levelNumber.ToString() + " Branch A";
+
             //        level.Name = "Level " + levelNumber.ToString();
+            //        level.LevelBranches.Add(new LevelBranchGenerationTemplateViewModel()
+            //        {
+            //            LevelBranch = levelBranch,
+            //            GenerationWeight = 1.0
+            //        });
 
             //        configuration.ScenarioDesign.LevelDesigns.Add(level);
             //    }

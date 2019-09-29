@@ -1,11 +1,11 @@
-﻿using Rogue.NET.Core.Model;
-using Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Abstract;
+﻿using Rogue.NET.Core.Model.ScenarioConfiguration.Abstract;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
-namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
+namespace Rogue.NET.Core.Model.ScenarioConfiguration.Design
 {
-    public class LevelDesignTemplateViewModel : TemplateViewModel
+    [Serializable]
+    public class LevelBranchTemplate : Template
     {
         private double _monsterGenerationPerStep;
         private int _equipmentGeneration;
@@ -43,13 +43,13 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
             get { return _doodadGeneration; }
             set { this.RaiseAndSetIfChanged(ref _doodadGeneration, value); }
         }
-        public ObservableCollection<LayoutGenerationTemplateViewModel> Layouts { get; set; }
-        public ObservableCollection<EquipmentGenerationTemplateViewModel> Equipment { get; set; }
-        public ObservableCollection<ConsumableGenerationTemplateViewModel> Consumables { get; set; }
-        public ObservableCollection<EnemyGenerationTemplateViewModel> Enemies { get; set; }
-        public ObservableCollection<FriendlyGenerationTemplateViewModel> Friendlies { get; set; }
-        public ObservableCollection<DoodadGenerationTemplateViewModel> Doodads { get; set; }
-        public LevelDesignTemplateViewModel()
+        public List<LayoutGenerationTemplate> Layouts { get; set; }
+        public List<EquipmentGenerationTemplate> Equipment { get; set; }
+        public List<ConsumableGenerationTemplate> Consumables { get; set; }
+        public List<EnemyGenerationTemplate> Enemies { get; set; }
+        public List<FriendlyGenerationTemplate> Friendlies { get; set; }
+        public List<DoodadGenerationTemplate> Doodads { get; set; }
+        public LevelBranchTemplate()
         {
             this.MonsterGenerationPerStep = ModelConstants.Scenario.MonsterGenerationPerStepDefault;
 
@@ -59,12 +59,12 @@ namespace Rogue.NET.ScenarioEditor.ViewModel.ScenarioConfiguration.Design
             this.FriendlyGeneration = ModelConstants.Scenario.FriendlyGenerationDefault;
             this.DoodadGeneration = ModelConstants.Scenario.DoodadGenerationDefault;
 
-            this.Layouts = new ObservableCollection<LayoutGenerationTemplateViewModel>();
-            this.Equipment = new ObservableCollection<EquipmentGenerationTemplateViewModel>();
-            this.Consumables = new ObservableCollection<ConsumableGenerationTemplateViewModel>();
-            this.Enemies = new ObservableCollection<EnemyGenerationTemplateViewModel>();
-            this.Friendlies = new ObservableCollection<FriendlyGenerationTemplateViewModel>();
-            this.Doodads = new ObservableCollection<DoodadGenerationTemplateViewModel>();
+            this.Layouts = new List<LayoutGenerationTemplate>();
+            this.Equipment = new List<EquipmentGenerationTemplate>();
+            this.Consumables = new List<ConsumableGenerationTemplate>();
+            this.Enemies = new List<EnemyGenerationTemplate>();
+            this.Friendlies = new List<FriendlyGenerationTemplate>();
+            this.Doodads = new List<DoodadGenerationTemplate>();
         }
     }
 }

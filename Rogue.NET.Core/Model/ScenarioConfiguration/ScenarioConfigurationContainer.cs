@@ -11,7 +11,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
     public class ScenarioConfigurationContainer
     {
         public DungeonTemplate DungeonTemplate { get; set; }
-        public ScenarioDesignTemplate ScenarioDesign { get; set; }
+        public ScenarioTemplate ScenarioDesign { get; set; }
         public List<PlayerTemplate> PlayerTemplates { get; set; }
         public List<LayoutTemplate> LayoutTemplates { get; set; }
         public List<SkillSetTemplate> SkillTemplates { get; set; }
@@ -26,7 +26,7 @@ namespace Rogue.NET.Core.Model.ScenarioConfiguration
         public ScenarioConfigurationContainer()
         {
             // TODO:LEVEL
-            this.ScenarioDesign = new ScenarioDesignTemplate();
+            this.ScenarioDesign = new ScenarioTemplate();
             this.LayoutTemplates = new List<LayoutTemplate>();
 
             this.DungeonTemplate = new DungeonTemplate();
